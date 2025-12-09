@@ -35,12 +35,13 @@
 
 /**
  * NotificationTargetProblem Class
+ *
  * @extends NotificationTargetCommonITILObject<Problem>
- **/
+ */
 class NotificationTargetProblem extends NotificationTargetCommonITILObject
 {
     #[Override]
-    public function getEvents(): array
+    public function getEvents()
     {
 
         $events = ['new'            => __('New problem'),
@@ -54,7 +55,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         asort($events);
         return $events;
     }
-
 
     #[Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
@@ -186,7 +186,6 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         }
         return $data;
     }
-
 
     #[Override]
     public function getTags()

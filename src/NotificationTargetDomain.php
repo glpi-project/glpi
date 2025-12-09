@@ -58,6 +58,7 @@ class NotificationTargetDomain extends NotificationTarget
             __('Group in charge of the domain')
         );
     }
+
     #[Override]
     public function addDataForTemplate($event, $options = [])
     {

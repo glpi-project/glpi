@@ -52,13 +52,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      */
     public $central_profiles = [];
 
-    /**
-     * @param $entity  (default '')
-     * @param $event   (default '')
-     * @param $object  (default null)
-     * @param $options array
-     **/
-    public function __construct($entity = '', $event = '', $object = null, $options = [])
+    public function __construct($entity = null, $event = '', $object = null, $options = [])
     {
         parent::__construct($entity, $event, $object, $options);
 
@@ -333,9 +327,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
-    /**
-     * Get the email of the item's user : Overloaded manual address used
-     **/
     #[Override]
     public function addItemAuthor()
     {
@@ -400,6 +391,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * Get supplier related to the ITIL object
      *
      * @param boolean $sendprivate (false by default)
+     *
      * @return void
      */
     public function addSupplier($sendprivate = false)
@@ -443,8 +435,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add approver related to the ITIL object validation
      *
-     * This method has no effect if $option parameter has no 'validation_id' key
-     *
      * @param array $options
      * @param array{
      *     validation_id?: int
@@ -455,35 +445,31 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     public function addValidationApprover($options = [])
     {
         global $DB;
-        if (!isset($options['validation_id'])) {
-            return;
-        }
 
-        $validation_id = (int) $options['validation_id'];
-        $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
+        if (isset($options['validation_id'])) {
+            $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
 
-        $criteria = ['LEFT JOIN' => [
-            User::getTable() => [
-                'ON' => [
-                    $validationtable  => 'users_id_validate',
-                    User::getTable()  => 'id',
+            $criteria = ['LEFT JOIN' => [
+                User::getTable() => [
+                    'ON' => [
+                        $validationtable  => 'users_id_validate',
+                        User::getTable()  => 'id',
+                    ],
                 ],
             ],
-        ],
-        ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
-        $criteria['FROM'] = $validationtable;
-        $criteria['WHERE']["$validationtable.id"] = $validation_id;
+            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+            $criteria['FROM'] = $validationtable;
+            $criteria['WHERE']["$validationtable.id"] = (int) $options['validation_id'];
 
-        $iterator = $DB->request($criteria);
-        foreach ($iterator as $data) {
-            $this->addToRecipientsList($data);
+            $iterator = $DB->request($criteria);
+            foreach ($iterator as $data) {
+                $this->addToRecipientsList($data);
+            }
         }
     }
 
     /**
      * Add requester related to the ITIL object validation
-     *
-     * This method has no effect if $option parameter has no 'validation_id' key
      *
      * @param array{
      *     validation_id?: int
@@ -495,35 +481,30 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     {
         global $DB;
 
-        if (!isset($options['validation_id'])) {
-            return;
-        }
+        if (isset($options['validation_id'])) {
+            $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
 
-        $validation_id = (int) $options['validation_id'];
-        $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
-
-        $criteria = ['LEFT JOIN' => [
-            User::getTable() => [
-                'ON' => [
-                    $validationtable  => 'users_id',
-                    User::getTable()  => 'id',
+            $criteria = ['LEFT JOIN' => [
+                User::getTable() => [
+                    'ON' => [
+                        $validationtable  => 'users_id',
+                        User::getTable()  => 'id',
+                    ],
                 ],
             ],
-        ],
-        ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
-        $criteria['FROM'] = $validationtable;
-        $criteria['WHERE']["$validationtable.id"] = $validation_id;
+            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+            $criteria['FROM'] = $validationtable;
+            $criteria['WHERE']["$validationtable.id"] = (int) $options['validation_id'];
 
-        $iterator = $DB->request($criteria);
-        foreach ($iterator as $data) {
-            $this->addToRecipientsList($data);
+            $iterator = $DB->request($criteria);
+            foreach ($iterator as $data) {
+                $this->addToRecipientsList($data);
+            }
         }
     }
 
     /**
      * Add all users and groups who were asked for an approval answer
-     *
-     * This method has no effect if $option parameter has no 'validation_id' key
      *
      * @param array{
      *     validation_id?: int
@@ -583,60 +564,57 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     {
         global $DB;
 
-        if (!isset($options['validation_id'])) {
-            return;
-        }
+        if (isset($options['validation_id'])) {
+            $validation = $this->obj->getValidationClassInstance();
+            $validation->getFromDB((int) $options['validation_id']);
+            if ($validation->fields['itemtype_target'] === User::class) {
+                $validationtable = $validation::getTable();
+                $validator_substitute_table = ValidatorSubstitute::getTable();
+                $user_table = User::getTable();
 
-        $validation_id = (int) $options['validation_id'];
-        $validation = $this->obj->getValidationClassInstance();
-        $validation->getFromDB($validation_id);
-        if ($validation->fields['itemtype_target'] === User::class) {
-            $validationtable = $validation::getTable();
-            $validator_substitute_table = ValidatorSubstitute::getTable();
-            $user_table = User::getTable();
-
-            $criteria = [
-                'LEFT JOIN' => [
-                    $validator_substitute_table => [
-                        'ON' => [
-                            $validationtable => 'items_id_target',
-                            $validator_substitute_table => 'users_id',
+                $criteria = [
+                    'LEFT JOIN' => [
+                        $validator_substitute_table => [
+                            'ON' => [
+                                $validationtable => 'items_id_target',
+                                $validator_substitute_table => 'users_id',
+                            ],
+                        ],
+                        $user_table => [
+                            'ON' => [
+                                $validator_substitute_table => 'users_id_substitute',
+                                $user_table => 'id',
+                            ],
+                        ],
+                        $user_table . ' AS target_user' => [
+                            'ON' => [
+                                $validationtable => 'items_id_target',
+                                'target_user' => 'id',
+                            ],
                         ],
                     ],
-                    $user_table => [
-                        'ON' => [
-                            $validator_substitute_table => 'users_id_substitute',
-                            $user_table => 'id',
+                ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+                $criteria['FROM'] = $validationtable;
+                $criteria['WHERE']["$validationtable.id"] = (int) $options['validation_id'];
+                $criteria['WHERE'][] = [
+                    [
+                        'OR' => [
+                            ['target_user.substitution_start_date' => null],
+                            ['target_user.substitution_start_date' => ['<=', QueryFunction::now()]],
                         ],
                     ],
-                    $user_table . ' AS target_user' => [
-                        'ON' => [
-                            $validationtable => 'items_id_target',
-                            'target_user' => 'id',
+                    [
+                        'OR' => [
+                            ['target_user.substitution_end_date' => null],
+                            ['target_user.substitution_end_date' => ['>=', QueryFunction::now()]],
                         ],
                     ],
-                ],
-            ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
-            $criteria['FROM'] = $validationtable;
-            $criteria['WHERE']["$validationtable.id"] = $validation_id;
-            $criteria['WHERE'][] = [
-                [
-                    'OR' => [
-                        ['target_user.substitution_start_date' => null],
-                        ['target_user.substitution_start_date' => ['<=', QueryFunction::now()]],
-                    ],
-                ],
-                [
-                    'OR' => [
-                        ['target_user.substitution_end_date' => null],
-                        ['target_user.substitution_end_date' => ['>=', QueryFunction::now()]],
-                    ],
-                ],
-            ];
+                ];
 
-            $iterator = $DB->request($criteria);
-            foreach ($iterator as $data) {
-                $this->addToRecipientsList($data);
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    $this->addToRecipientsList($data);
+                }
             }
         }
     }
@@ -847,7 +825,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
 
     #[Override]
-    public function addAdditionnalUserInfo(array $data): array
+    public function addAdditionnalUserInfo(array $data)
     {
         return [
             'show_private'    => $this->getShowPrivateInfo($data),
@@ -857,6 +835,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     /**
      * @param array $data{users_id?: int}
+     *
      * @return bool
      */
     protected function getShowPrivateInfo(array $data)
@@ -884,6 +863,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     /**
      * @param array $data{users_id?: int}
+     *
      * @return bool
      */
     protected function getIsSelfServiceInfo(array $data)
@@ -1153,6 +1133,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     /**
      * Add mentionned user to recipients.
+     *
+     * @param array $options
+     *
+     * @return void
      */
     protected function addMentionnedUser(array $options): void
     {
@@ -1991,9 +1975,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         return $data;
     }
 
-    /**
-     * @return array|void
-     */
     #[Override]
     public function getTags()
     {
@@ -2535,6 +2516,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
     /**
      * @param TimelinePosition $position
+     *
      * @return string
      */
     private function getUserPositionFromTimelineItemPosition(int $position): string

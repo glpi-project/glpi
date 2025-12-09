@@ -149,7 +149,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
      * Extra steps raising
      *
      * @param array{
-     *              notificationtarget: NotificationTarget<CommonGLPI>,
+     *              notificationtarget: NotificationTarget<covariant CommonGLPI>,
      *              event: string,
      *              options: array<mixed>,
      *              data: array<mixed>,

@@ -36,8 +36,7 @@
 /**
  * NotificationTargetContract Class
  *
- * @extends \NotificationTarget<\Contract>
- *
+ * @extends NotificationTarget<Contract>
  **/
 class NotificationTargetContract extends NotificationTarget
 {
@@ -181,7 +180,6 @@ class NotificationTargetContract extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

@@ -76,6 +76,7 @@ class QueuedNotification extends CommonDBTM
         if (
             !array_key_exists('event', $fields)
             || !array_key_exists('itemtype', $fields)
+            || !is_a((string) $fields['itemtype'], CommonGLPI::class, true)
         ) {
             return;
         }
@@ -118,6 +119,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
+     * @param CommonDBTM $checkitem
      * @param bool $is_deleted
      * @return array<string, string>
      */
@@ -428,6 +430,7 @@ class QueuedNotification extends CommonDBTM
                 if (
                     array_key_exists('event', $values)
                     && array_key_exists('itemtype', $values)
+                    && is_a((string) $values['itemtype'], CommonGLPI::class, true)
                 ) {
                     $target = NotificationTarget::getInstanceByType((string) $values['itemtype']);
                     if (
@@ -529,7 +532,7 @@ class QueuedNotification extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param string $name : task's name
+     * @param string $name task's name
      *
      * @return array{queuednotification?: array{description: string, parameter?:string}}
      **/
@@ -725,14 +728,6 @@ class QueuedNotification extends CommonDBTM
         return ($vol > 0 ? 1 : 0);
     }
 
-    /**
-     * Print the queued mail form
-     *
-     * @param integer $ID      ID of the item
-     * @param array   $options Options
-     *
-     * @return boolean true if displayed  false if item not found or not right to display
-     **/
     #[Override]
     public function showForm($ID, array $options = [])
     {
@@ -743,11 +738,15 @@ class QueuedNotification extends CommonDBTM
         $options['canedit'] = false;
 
         $item = getItemForItemtype($this->fields['itemtype']);
+        if ($item === false) {
+            return false;
+        }
+
         if ($item instanceof CommonDBTM) {
             $item->getFromDB($this->fields['items_id']);
         }
 
-        $target = NotificationTarget::getInstanceByType((string) $this->fields['itemtype']);
+        $target = NotificationTarget::getInstanceByType($item::class);
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/queued_notification.html.twig', [
             'item' => $this,

@@ -40,9 +40,7 @@ use Glpi\Plugin\Hooks;
  * NotificationTarget Class
  *
  * @template T of CommonGLPI
- *
- * @phpstan-type NotificationTargetValues Notification::GLOBAL_ADMINISTRATOR|Notification::ASSIGN_TECH|Notification::AUTHOR|Notification::OLD_TECH_IN_CHARGE|Notification::ITEM_TECH_IN_CHARGE|Notification::ITEM_USER|Notification::RECIPIENT|Notification::SUPPLIER|Notification::ASSIGN_GROUP|Notification::SUPERVISOR_ASSIGN_GROUP|Notification::ENTITY_ADMINISTRATOR|Notification::SUPERVISOR_REQUESTER_GROUP|Notification::REQUESTER_GROUP|Notification::VALIDATION_APPROVER|Notification::VALIDATION_REQUESTER|Notification::TASK_ASSIGN_TECH|Notification::TASK_AUTHOR|Notification::FOLLOWUP_AUTHOR|Notification::USER|Notification::OBSERVER_GROUP|Notification::OBSERVER|Notification::SUPERVISOR_OBSERVER_GROUP|Notification::ITEM_TECH_GROUP_IN_CHARGE|Notification::ASSIGN_GROUP_WITHOUT_SUPERVISOR|Notification::REQUESTER_GROUP_WITHOUT_SUPERVISOR|Notification::OBSERVER_GROUP_WITHOUT_SUPERVISOR|Notification::MANAGER_USER|Notification::MANAGER_GROUP|Notification::MANAGER_GROUP_SUPERVISOR|Notification::MANAGER_GROUP_WITHOUT_SUPERVISOR|Notification::TEAM_USER|Notification::TEAM_GROUP|Notification::TEAM_GROUP_SUPERVISOR|Notification::TEAM_GROUP_WITHOUT_SUPERVISOR|Notification::TEAM_CONTACT|Notification::TEAM_SUPPLIER|Notification::TASK_ASSIGN_GROUP|Notification::PLANNING_EVENT_GUESTS|Notification::MENTIONNED_USER|Notification::VALIDATION_TARGET|Notification::VALIDATION_TARGET_SUBSTITUTES
- **/
+ */
 class NotificationTarget extends CommonDBChild
 {
     /** @var string unused variable */
@@ -63,7 +61,7 @@ class NotificationTarget extends CommonDBChild
     public $notification_targets        = [];
 
     /**
-     * @var array<Notification::*_TYPE, array<NotificationTargetValues, string>>
+     * @var array<Notification::*_TYPE, array<int, string>>
      */
     public $notification_targets_labels = [];
 
@@ -90,9 +88,9 @@ class NotificationTarget extends CommonDBChild
     public $target                      = [];
 
     /**
-     * @var int|string
+     * @var int
      */
-    public $entity                      = '';
+    public $entity;
 
     /**
      * @var T|null Object which raises the notification event
@@ -150,7 +148,7 @@ class NotificationTarget extends CommonDBChild
     public const EXTERNAL_USER              = 2;
 
     /**
-     * @param int|''          $entity
+     * @param int|null        $entity
      * @param string          $event
      * @param CommonGLPI|null $object
      * @param array{
@@ -162,9 +160,9 @@ class NotificationTarget extends CommonDBChild
      *      },
      *      sendprivate?: bool} $options
      **/
-    public function __construct($entity = '', $event = '', $object = null, $options = [])
+    public function __construct($entity = null, $event = '', $object = null, $options = [])
     {
-        if ($entity === '') {
+        if ($entity === null) {
             $this->entity = ($_SESSION['glpiactive_entity'] ?? 0);
         } else {
             $this->entity = $entity;
@@ -210,7 +208,8 @@ class NotificationTarget extends CommonDBChild
      * @param int                      $ID               ID of the target to retrieve
      *
      * @return boolean
-     **@since 0.85
+     *
+     * @since 0.85
      */
     public function getFromDBForTarget($notifications_id, $type, $ID)
     {
@@ -232,7 +231,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string          $event     notification event
      * @param array           $infos     destination of the notification
-     * @param boolean         $notify_me notify me on my action ?
+     * @param bool            $notify_me notify me on my action ?
      *                                   ($infos contains users_id to check if the target is me)
      * @param int|string|null $emitter   if this action is executed by the cron, we can
      *                                   supply the id of the user (or the email if this
@@ -287,7 +286,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Check if notification (for a specific event) can be disabled
      *
-     * @return bool (child class can return false)
+     * @return bool
      **/
     protected function canNotificationBeDisabled(string $event): bool
     {
@@ -348,6 +347,15 @@ class NotificationTarget extends CommonDBChild
         );
     }
 
+    /**
+     * Get message ID for given item/event.
+     *
+     * @param string|null $itemtype
+     * @param int|null $items_id
+     * @param string|null $event
+     *
+     * @return string
+     */
     final public static function getMessageIdForEvent(?string $itemtype, ?int $items_id, ?string $event): string
     {
         if (empty($event)) {
@@ -395,15 +403,17 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving the object which raises the event
      *
-     * @param CommonGLPI  $item    Object which raises the event
+     * @template Item of CommonGLPI
+     *
+     * @param Item        $item    Object which raises the event
      * @param string|null $event
      * @param array       $options
      *
-     * @return NotificationTarget<CommonGLPI>|false
-     **/
+     * @return NotificationTarget<Item>|false
+     */
     public static function getInstance($item, $event = '', $options = [])
     {
-        $name = self::getInstanceClass($item->getType());
+        $name = self::getInstanceClass($item::class);
 
         $entity = 0;
         if (is_a($name, NotificationTarget::class, true)) {
@@ -423,8 +433,10 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get the expected notification target class name for a given itemtype
      *
-     * @param class-string<CommonGLPI> $itemtype
-     * @return class-string<NotificationTarget<CommonGLPI>>
+     * @template Item of CommonGLPI
+     *
+     * @param class-string<Item> $itemtype
+     * @return class-string<NotificationTarget<Item>>
      */
     public static function getInstanceClass(string $itemtype): string
     {
@@ -447,12 +459,14 @@ class NotificationTarget extends CommonDBChild
     /**
      * Get a notificationtarget class by giving an itemtype
      *
-     * @param class-string<CommonDBTM> $itemtype the itemtype of the object which raises the event
-     * @param string|null              $event    Event which will be used
-     * @param array                    $options
+     * @template Item of CommonGLPI
      *
-     * @return NotificationTarget<CommonGLPI>|false
-     **/
+     * @param class-string<Item> $itemtype the itemtype of the object which raises the event
+     * @param string|null        $event    Event which will be used
+     * @param array              $options
+     *
+     * @return NotificationTarget<Item>|false
+     */
     public static function getInstanceByType($itemtype, $event = '', $options = [])
     {
         if (
@@ -627,8 +641,7 @@ class NotificationTarget extends CommonDBChild
      *              usertype?: int,
      *              }
      *
-     * returns false if user is not found/active or it has no profile.
-     * @return void|false
+     * @return void
      **/
     public function addToRecipientsList(array $data)
     {
@@ -657,7 +670,7 @@ class NotificationTarget extends CommonDBChild
                   && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))
             ) {
                 // unknown, deleted or disabled user
-                return false;
+                return;
             }
             $filt = getEntitiesRestrictCriteria(
                 'glpi_profiles_users',
@@ -679,7 +692,7 @@ class NotificationTarget extends CommonDBChild
             $prof = Profile_User::getUserProfiles($data['users_id'], $filt);
             if (!count($prof)) {
                 // No right on the entity of the object
-                return false;
+                return;
             }
             if (empty($username)) {
                 $username = formatUserName(
@@ -744,10 +757,10 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @since 0.84
-     *
      * @return self::EXTERNAL_USER|self::GLPI_USER
-     **/
+     *
+     * @since 0.84
+     */
     public function getDefaultUserType()
     {
         return Auth::isAlternateAuth(Auth::checkAlternateAuthSystems())
@@ -758,9 +771,10 @@ class NotificationTarget extends CommonDBChild
     /**
      * @param self::EXTERNAL_USER|self::GLPI_USER|self::ANONYMOUS_USER $usertype
      * @param string                                                   $redirect
-     * @since 0.84
      *
      * @return string
+     *
+     * @since 0.84
      */
     public function formatURL($usertype, $redirect, ?string $anchor = null)
     {
@@ -1018,6 +1032,11 @@ class NotificationTarget extends CommonDBChild
         return [];
     }
 
+    /**
+     * Return list of notification events for which the notifications should be sent immediately.
+     *
+     * @return array
+     */
     public function getEventsToSendImmediately(): array
     {
         return [];
@@ -1043,6 +1062,8 @@ class NotificationTarget extends CommonDBChild
 
     /**
      * Return whether the notification content corresponding to the given event can be disclosed.
+     *
+     * @return bool
      */
     public function canNotificationContentBeDisclosed(string $event): bool
     {
@@ -1064,13 +1085,13 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @param NotificationTargetValues|'' $target
+     * @param ?int $target
      * @param string                      $label  Recipient label
      * @param Notification::*_TYPE        $type   Recipient type
      *
      * @return void
-     **/
-    public function addTarget($target = '', $label = '', $type = Notification::USER_TYPE)
+     */
+    public function addTarget($target = null, $label = '', $type = Notification::USER_TYPE)
     {
         $key                                               = ((string) $type) . '_' . $target;
         // Value used for sort
@@ -1101,7 +1122,7 @@ class NotificationTarget extends CommonDBChild
      * @param int|int[]|'' $entity (could maybe be narrowed, using getEntitiesRestrictCriteria() signature)
      *
      * @return void
-     **/
+     */
     final public function addGroupsToTargets($entity)
     {
         global $DB;
@@ -1194,8 +1215,9 @@ class NotificationTarget extends CommonDBChild
      * Parameter $event is ignored
      *
      * @param string $event
+     *
      * @return void
-     **/
+     */
     public function getObjectItem($event = '')
     {
         $this->target_object[] = $this->obj;
@@ -1349,7 +1371,7 @@ class NotificationTarget extends CommonDBChild
      * Get the url base for the entity
      *
      * @return string
-     **/
+     */
     public function getUrlBase()
     {
         global $CFG_GLPI;
@@ -1537,7 +1559,7 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @return int|''
+     * @return int
      */
     public function getEntity()
     {
@@ -1610,6 +1632,11 @@ class NotificationTarget extends CommonDBChild
         return $this->data;
     }
 
+    /**
+     * Register global tags.
+     *
+     * @return void
+     */
     private function registerGlobalTags(): void
     {
         $this->addTagToList([
@@ -1767,6 +1794,16 @@ class NotificationTarget extends CommonDBChild
         return $count['cpt'];
     }
 
+
+    /**
+     * Display notification registered for a group
+     *
+     * @since 0.83
+     *
+     * @param $group Group object
+     *
+     * @return bool
+     **/
     public static function showForGroup(Group $group): bool
     {
         global $DB;
@@ -1834,8 +1871,11 @@ class NotificationTarget extends CommonDBChild
         if ($item instanceof Group) {
             return self::showForGroup($item);
         } elseif ($item instanceof Notification) {
+            /** @var class-string<CommonGLPI> $itemtype */
+            $itemtype = $item->fields['itemtype'];
+
             $target = self::getInstanceByType(
-                $item->getField('itemtype'),
+                $itemtype,
                 $item->getField('event'),
                 ['entities_id' => $item->getField('entities_id')]
             );
@@ -1851,7 +1891,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string $mode Mode (see Notification_NotificationTemplate::MODE_*)
      *
-     * @return NotificationTarget<CommonGLPI>
+     * @return static
      */
     public function setMode($mode)
     {
@@ -1884,7 +1924,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string $event Event class
      *
-     * @return NotificationTarget<CommonGLPI>
+     * @return static
      */
     public function setEvent($event)
     {
@@ -1907,7 +1947,8 @@ class NotificationTarget extends CommonDBChild
      * Set the value of allow_response
      *
      * @param bool $allow_response
-     * @return NotificationTarget<CommonGLPI>
+     *
+     * @return static
      */
     public function setAllowResponse($allow_response)
     {
@@ -1916,6 +1957,11 @@ class NotificationTarget extends CommonDBChild
         return $this;
     }
 
+    /**
+     * Check if at least one target item is recursive
+     *
+     * @return bool
+     */
     protected function isTargetItemRecursive(): bool
     {
         // If the notification target more than one item, we can't handle the

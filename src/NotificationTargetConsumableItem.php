@@ -36,7 +36,7 @@
 /**
  * NotificationTargetConsumableItem Class
  *
- * @extends \NotificationTarget<ConsumableItem>
+ * @extends NotificationTarget<ConsumableItem>
  **/
 class NotificationTargetConsumableItem extends NotificationTarget
 {
@@ -87,7 +87,6 @@ class NotificationTargetConsumableItem extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

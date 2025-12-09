@@ -116,8 +116,9 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * Reset already computed templates
+     *
      * @return void
-     **/
+     */
     public function resetComputedTemplates()
     {
         $this->templates_by_languages = [];
@@ -181,10 +182,10 @@ class NotificationTemplate extends CommonDBTM
      *
      * @param string                   $name     dropdown name
      * @param class-string<CommonDBTM> $itemtype templates for this itemtype only
-     * @param string|int               $value    default value
+     * @param int                      $value    default value
      *
      * @return void
-     **/
+     */
     public static function dropdownTemplates($name, $itemtype, $value = 0)
     {
         self::dropdown([
@@ -198,10 +199,9 @@ class NotificationTemplate extends CommonDBTM
     /**
      * @param array{sendprivate?: bool} $options
      * @return 0|1
-     * @todo can probably be removed
      *
      * @return int
-     **/
+     */
     public function getAdditionnalProcessOption($options)
     {
         //Additionnal option can be given for template processing
@@ -216,10 +216,10 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param NotificationTarget<CommonGLPI> $target
-     * @param array<mixed>                   $user_infos
-     * @param string                         $event
-     * @param array<mixed>                   $options
+     * @param NotificationTarget<covariant CommonGLPI> $target
+     * @param array<mixed>                             $user_infos
+     * @param string                                   $event
+     * @param array<mixed>                             $options
      *
      * @return false|string id of the template in templates_by_languages / false if computation failed
      **/
@@ -266,7 +266,7 @@ class NotificationTemplate extends CommonDBTM
             }
 
             //If event is raised by a plugin, load it in order to get the language file available
-            if ($plug = isPluginItemType($target->obj !== null ? get_class($target->obj) : self::class)) {
+            if ($target->obj !== null && ($plug = isPluginItemType($target->obj !== null ? get_class($target->obj) : self::class))) {
                 Plugin::loadLang(strtolower($plug['plugin']), $language);
             }
 
@@ -428,6 +428,9 @@ class NotificationTemplate extends CommonDBTM
 
     /**
      * Convert relative links to GLPI nto absolute links.
+     *
+     * @param string $string
+     * @return string
      */
     private static function convertRelativeGlpiLinksToAbsolute(string $string, bool $html_context): string
     {
@@ -599,11 +602,11 @@ class NotificationTemplate extends CommonDBTM
     }
 
     /**
-     * @param NotificationTarget<CommonGLPI> $target     Target instance
-     * @param string                         $tid        template computed id
-     * @param mixed                          $to         Recipient
-     * @param array                          $user_infos Extra user infos
-     * @param array                          $options    Options
+     * @param NotificationTarget<covariant CommonGLPI>  $target     Target instance
+     * @param string                                    $tid        template computed id
+     * @param mixed                                     $to         Recipient
+     * @param array                                     $user_infos Extra user infos
+     * @param array                                     $options    Options
      *
      * @return array
      **/

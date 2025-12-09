@@ -49,11 +49,11 @@ class NotificationEvent extends CommonDBTM
 
 
     /**
-     * @param string $itemtype Item type
-     * @param array  $options  array to pass to showFromArray or $value
+     * @param class-string<CommonGLPI> $itemtype Item type
+     * @param array                    $options  array to pass to showFromArray or $value
      *
      * @return string
-     **/
+     */
     public static function dropdownEvents($itemtype, $options = [])
     {
 
@@ -82,11 +82,11 @@ class NotificationEvent extends CommonDBTM
      *
      * @since 0.83
      *
-     * @param string $itemtype name of the type
-     * @param string $event    name of the event
+     * @param class-string<CommonGLPI> $itemtype name of the type
+     * @param string                   $event    name of the event
      *
      * @return string
-     **/
+     */
     public static function getEventName($itemtype, $event)
     {
 

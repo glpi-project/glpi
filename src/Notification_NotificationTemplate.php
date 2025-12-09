@@ -291,7 +291,7 @@ TWIG, $twig_params);
      * Form for Notification on Massive action
      *
      * @return void
-     **/
+     */
     public static function showFormMassiveAction()
     {
         echo __s('Mode') . "<br>";
@@ -483,7 +483,7 @@ TWIG, $twig_params);
     /**
      * Get class name for specified mode
      *
-     * @param string               $mode      Requested mode
+     * @param string $mode      Requested mode
      * @param 'event'|'setting'|'' $extratype Extra type
      *
      * @return (

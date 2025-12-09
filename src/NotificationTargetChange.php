@@ -37,7 +37,7 @@
  * NotificationTargetChange Class
  *
  * @extends NotificationTargetCommonITILObject<Change>
- **/
+ */
 class NotificationTargetChange extends NotificationTargetCommonITILObject
 {
     #[Override]
@@ -50,9 +50,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         return parent::validateSendTo($event, $infos, $notify_me, $emitter);
     }
 
-    /**
-     * Get events related to tickets
-     **/
     #[Override]
     public function getEvents()
     {
@@ -72,7 +69,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         asort($events);
         return $events;
     }
-
 
     #[Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
@@ -267,7 +263,6 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         }
         return $data;
     }
-
 
     #[Override]
     public function getTags()

@@ -36,9 +36,10 @@
 /**
  * NotificationTargetTicket Class
  *
- * @since 0.85
  * @extends NotificationTarget<Project>
- **/
+ *
+ * @since 0.85
+ */
 class NotificationTargetProject extends NotificationTarget
 {
     #[Override]

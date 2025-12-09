@@ -35,8 +35,9 @@
 
 /**
  * NotificationTargetTicket Class
+ *
  * @extends NotificationTargetCommonITILObject<Ticket>
- **/
+ */
 class NotificationTargetTicket extends NotificationTargetCommonITILObject
 {
     public const HEADERTAG = '=-=-=-=';
@@ -54,9 +55,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return parent::validateSendTo($event, $infos, $notify_me, $emitter);
     }
 
-    /**
-     * @param string $event
-     */
     #[Override]
     public function getSubjectPrefix($event = '')
     {
@@ -76,9 +74,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return parent::getSubjectPrefix();
     }
 
-    /**
-     * Get header to add to content
-     **/
     #[Override]
     public function getContentHeader()
     {
@@ -95,10 +90,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return '';
     }
 
-
-    /**
-     * Get footer to add to content
-     **/
     #[Override]
     public function getContentFooter()
     {
@@ -135,7 +126,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
     }
 
     #[Override]
-    public function getEvents(): array
+    public function getEvents()
     {
 
         $events = ['new'               => __('New ticket'),
@@ -158,7 +149,6 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         asort($events);
         return $events;
     }
-
 
     #[Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)

@@ -36,8 +36,8 @@
 /**
  * NotificationTargetMailCollector Class
  *
- * @extends \NotificationTarget<\MailCollector>
- **/
+ * @extends NotificationTarget<MailCollector>
+ */
 class NotificationTargetMailCollector extends NotificationTarget
 {
     #[Override]

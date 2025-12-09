@@ -34,12 +34,11 @@
  */
 
 /**
- * Summary of NotificationTargetObjectLock
- *
  * Notifications for ObjectLock
  *
- * @since 9.1
  * @extends NotificationTarget<ObjectLock>
+ *
+ * @since 9.1
  **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
@@ -161,11 +160,8 @@ class NotificationTargetObjectLock extends NotificationTarget
         return $ret;
     }
 
-    /**
-     * @param array $options
-     */
     #[Override]
-    public function getReplyTo($options = []): array
+    public function getReplyTo(): array
     {
         return $this->getSender();
     }

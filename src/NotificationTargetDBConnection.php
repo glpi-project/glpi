@@ -36,8 +36,8 @@
 /**
  * Class NotificationTarget
  *
- * @extends \NotificationTarget<\DBConnection>
- **/
+ * @extends NotificationTarget<DBConnection>
+ */
 class NotificationTargetDBConnection extends NotificationTarget
 {
     #[Override]

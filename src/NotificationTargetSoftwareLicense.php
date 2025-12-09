@@ -36,9 +36,8 @@
 /**
  * NotificationTargetSoftwareLicense Class
  *
- * @extends \NotificationTarget<\SoftwareLicense>
- *
- **/
+ * @extends NotificationTarget<SoftwareLicense>
+ */
 class NotificationTargetSoftwareLicense extends NotificationTarget
 {
     #[Override]
@@ -85,7 +84,6 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

@@ -299,6 +299,7 @@ class Notification extends CommonDBTM implements FilterableInterface
                 : $CFG_GLPI["notificationtemplates_types"];
 
                 $events = [];
+                /** @var list<class-string<CommonGLPI>> $itemtypes */
                 foreach ($itemtypes as $itemtype) {
                     $target = NotificationTarget::getInstanceByType($itemtype);
                     if ($target) {
@@ -446,12 +447,6 @@ class Notification extends CommonDBTM implements FilterableInterface
         return $tab;
     }
 
-    /**
-     * Get the massive actions for this object
-     *
-     * @param object|null $checkitem
-     * @return array list of actions
-     */
     #[Override]
     public function getSpecificMassiveActions($checkitem = null)
     {

@@ -46,7 +46,7 @@ abstract class NotificationSetting extends CommonDBTM
     /**
      * @var string
      */
-    public $table             = 'glpi_configs';
+    public $table           = 'glpi_configs';
     protected $displaylist  = false;
     public static $rightname       = 'config';
 

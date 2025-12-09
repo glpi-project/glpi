@@ -35,8 +35,7 @@
 
 /**
  * NotificationTargetReservation Class
- **/
-/**
+ *
  * @extends NotificationTarget<Reservation>
  */
 class NotificationTargetReservation extends NotificationTarget
@@ -227,7 +226,6 @@ class NotificationTargetReservation extends NotificationTarget
                 if (
                     ($itemtype != NOT_AVAILABLE) && ($itemtype != '')
                     && ($item = getItemForItemtype($itemtype))
-                    && $item instanceof CommonDBChild
                 ) {
                     $item->getFromDB($ri->getField('items_id'));
                     $this->target_object[] = $item;

@@ -446,7 +446,8 @@ class NotificationEventMailing extends NotificationEventAbstract
      * - update the number of retries in notification or delete it when number of retries is reached
      *
      * @param QueuedNotification $notification The notification that failed
-     * @param string             $error        Message to log
+     * @param string $error The error message to log
+     * @return void
      */
     private static function handleFailedSend(QueuedNotification $notification, string $error): void
     {
@@ -499,6 +500,11 @@ class NotificationEventMailing extends NotificationEventAbstract
     /**
      * Attach documents to message.
      * Documents will not be attached if configuration says they should not be.
+     *
+     * @param Email $mail
+     * @param array $documents_ids
+     *
+     * @return void
      */
     private static function attachDocuments(Email $mail, array $documents_ids): void
     {
@@ -517,8 +523,8 @@ class NotificationEventMailing extends NotificationEventAbstract
     protected static function extraRaise($params)
     {
         //Set notification's signature (the one which corresponds to the entity)
-        $entities_id = $params['notificationtarget']->getEntity();
-        $params['template']->setSignature(Notification::getMailingSignature($entities_id));
+        $entity = $params['notificationtarget']->getEntity();
+        $params['template']->setSignature(Notification::getMailingSignature($entity));
     }
 
     public static function setMailer(?GLPIMailer $mailer): void

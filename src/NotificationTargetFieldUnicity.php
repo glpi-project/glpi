@@ -36,9 +36,8 @@
 /**
  * Class NotificationTarget
  *
- * @extends \NotificationTarget<\FieldUnicity>
- *
- **/
+ * @extends NotificationTarget<FieldUnicity>
+ */
 class NotificationTargetFieldUnicity extends NotificationTarget
 {
     #[Override]

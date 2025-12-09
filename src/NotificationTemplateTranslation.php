@@ -129,7 +129,7 @@ class NotificationTemplateTranslation extends CommonDBChild
      * @param array                $options
      *
      * @return void
-     **/
+     */
     public function showSummary(NotificationTemplate $template, $options = [])
     {
         global $CFG_GLPI, $DB;
@@ -191,6 +191,7 @@ TWIG, $twig_params);
     }
 
     /**
+     * @param array $input
      * @return array
      */
     public static function cleanContentHtml(array $input)
@@ -477,7 +478,7 @@ TWIG, $twig_params);
 
             $template->resetComputedTemplates();
             $template->setSignature(Notification::getMailingSignature($_SESSION['glpiactive_entity']));
-            if ($tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
+            if ($target !== false && $tid = $template->getTemplateByLanguage($target, $infos, $event, $options)) {
                 $data = $template->templates_by_languages[$tid];
             }
         }

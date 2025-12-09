@@ -36,8 +36,7 @@
 /**
  * NotificationTargetCronTask Class
  *
- * @extends \NotificationTarget<CronTask>
- *
+ * @extends NotificationTarget<CronTask>
  **/
 class NotificationTargetCronTask extends NotificationTarget
 {
@@ -54,6 +53,7 @@ class NotificationTargetCronTask extends NotificationTarget
             'alert',
         ];
     }
+
     #[Override]
     public function addDataForTemplate($event, $options = [])
     {

@@ -36,8 +36,9 @@
 /**
  * NotificationTargetSoftwareLicense Class
  *
- * @since 9.2
  * @extends NotificationTarget<Certificate>
+ *
+ * @since 9.2
  **/
 class NotificationTargetCertificate extends NotificationTarget
 {
@@ -58,6 +59,7 @@ class NotificationTargetCertificate extends NotificationTarget
             __('Group in charge of the certificate')
         );
     }
+
     #[Override]
     public function addDataForTemplate($event, $options = [])
     {
@@ -117,7 +119,6 @@ class NotificationTargetCertificate extends NotificationTarget
             }
         }
     }
-
 
     #[Override]
     public function getTags()

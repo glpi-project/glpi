@@ -35,7 +35,6 @@
 
 use function Safe\strtotime;
 
-// Class NotificationTarget
 /**
  * @extends NotificationTarget<User>
  */
@@ -218,6 +217,10 @@ class NotificationTargetUser extends NotificationTarget
 
     /**
      * Add tags for given event.
+     *
+     * @param string $event
+     *
+     * @return void
      */
     private function addTagsForEvent(string $event): void
     {
