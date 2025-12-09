@@ -120,7 +120,20 @@ describe('Entity', () => {
         cy.get('.fancytree-expander[role=button]:visible').as('toggle_tree').click(); // From entities_selector tests.
         cy.findByRole('gridcell', {'name': subentity_name}).findByRole('button').click();
 
-        // We can't create the sub-subentity, form is inaccessible
+        // We can create the sub-subentity (first child so recursive will be automatically set)
+        cy.visit(`/front/entity.form.php`);
+        cy.intercept(`/front/entity.form.php`).as('formSent');
+        cy.findByLabelText('Name').type(`First-sub-${subentity_name}`);
+        cy.findByRole('button', {'name': "Add"}).click();
+        cy.wait('@formSent').then((interception) => {
+            expect(interception.response.statusCode).to.eq(302);
+        });
+
+        // We can't create the sub-subentity, form is inaccessible as we already have a sub-subentity
+        cy.visit('/front/entity.php');
+        cy.openEntitySelector();
+        cy.findByRole('button',  {'name': `${subentity_name}`}).click();
+
         cy.intercept('GET', '/front/entity.form.php').as('formRequest');
         cy.visit('/front/entity.form.php', {failOnStatusCode: false} );
         cy.wait('@formRequest').then((interception) => {
@@ -131,16 +144,15 @@ describe('Entity', () => {
         cy.visit('/front/entity.php');
         cy.get('div.toast-container .toast-body').should('exist');
 
-
-        // We switch context to be in recursive mode
+        // We switch context to be in ALL recursive mode
         cy.openEntitySelector();
         cy.findByRole("button", {'name': "Select all"}).click();
 
         cy.visit(`/front/entity.form.php`);
-        cy.intercept(`/front/entity.form.php`).as('formSent');
+        cy.intercept(`/front/entity.form.php`).as('formRecursiveSent');
         cy.findByLabelText('Name').type(`Sub-${subentity_name}`);
         cy.findByRole('button', {'name': "Add"}).click();
-        cy.wait('@formSent').then((interception) => {
+        cy.wait('@formRecursiveSent').then((interception) => {
             expect(interception.response.statusCode).to.eq(302);
         });
     });

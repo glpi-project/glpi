@@ -280,6 +280,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             return true;
         }
 
+        // The entity doesn't have children, we allow the creation (in the postAdd will enable the recursivity)
+        $active_entity = Entity::getById(Session::getActiveEntity());
+        if ($active_entity && !$active_entity->haveChildren()) {
+            return true;
+        }
+
         return !empty($_SESSION["glpiactive_entity_recursive"]);
     }
 
@@ -779,6 +785,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function post_addItem()
     {
         parent::post_addItem();
+
+        // The entity didn't initially had children, we switch to recursive mode
+        $active_entity = Entity::getById(Session::getActiveEntity());
+        if ($active_entity && $active_entity->countChildren() === 1) {
+            $_SESSION["glpiactive_entity_recursive"] = true;
+        }
 
         // Add right to current user - Hack to avoid login/logout
         $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
