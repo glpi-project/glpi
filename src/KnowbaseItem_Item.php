@@ -83,6 +83,15 @@ class KnowbaseItem_Item extends CommonDBRelation
         if (!$item instanceof CommonDBTM) {
             return false;
         }
+
+        // If we are creating a project from a template, show read-only warning
+        if ($withtemplate == 2 && $item instanceof Project) {
+            echo '<div class="alert alert-info mb-3">';
+            echo '<i class="ti ti-info-circle me-2"></i>';
+            echo __('You are viewing knowledge base items from the template. Save the project first to be able to add or modify linked articles.');
+            echo '</div>';
+        }
+
         self::showForItem($item, $withtemplate);
         return true;
     }
@@ -118,7 +127,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         }
 
         $rand = mt_rand();
-        if ($canedit && $ok_state) {
+        if ($canedit && $ok_state && $withtemplate != 2) {
             if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
                 $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];

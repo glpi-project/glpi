@@ -1211,7 +1211,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void|false
      **/
-    public static function showFor($item)
+    public static function showFor($item, $withtemplate = 0)
     {
         global $DB;
 
@@ -1288,7 +1288,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 return;
         }
 
-        if ($canedit) {
+        if ($canedit && $withtemplate != 2) {
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div class="mb-3">
@@ -1297,7 +1297,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 TWIG, ['projects_id' => $ID, 'btn_label' => _x('button', 'Add a task')]);
         }
 
-        if ($item::class === self::class && $item->can($ID, UPDATE)) {
+        if ($item::class === self::class && $item->can($ID, UPDATE) && $withtemplate != 2) {
             $twig_params = [
                 'projects_id' => $item->fields['projects_id'],
                 'projecttasks_id' => $ID,
@@ -1444,10 +1444,18 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        // If we are creating from a template, show read-only view with explanation
+        if ($withtemplate == 2) {
+            echo '<div class="alert alert-info mb-3">';
+            echo '<i class="ti ti-info-circle me-2"></i>';
+            echo __('You are viewing tasks from the template. Save the project first to be able to add or modify tasks.');
+            echo '</div>';
+        }
+
         switch ($item::class) {
             case Project::class:
             case self::class:
-                self::showFor($item);
+                self::showFor($item, $withtemplate);
                 break;
         }
         return true;
