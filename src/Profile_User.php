@@ -45,10 +45,10 @@ class Profile_User extends CommonDBRelation
     public $auto_message_on_action               = false;
 
     // From CommonDBRelation
-    public static $itemtype_1                    = 'User';
+    public static $itemtype_1                    = User::class;
     public static $items_id_1                    = 'users_id';
 
-    public static $itemtype_2                    = 'Profile';
+    public static $itemtype_2                    = Profile::class;
     public static $items_id_2                    = 'profiles_id';
     public static $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
 
@@ -120,12 +120,14 @@ class Profile_User extends CommonDBRelation
      * Show rights of a user
      *
      * @param User $user object
-     **/
+     *
+     * @return void
+     */
     public static function showForUser(User $user)
     {
         $ID = $user->getField('id');
         if (!$user->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $user->canEdit($ID);
@@ -237,14 +239,16 @@ class Profile_User extends CommonDBRelation
      * Show users of an entity
      *
      * @param Entity $entity object
-     **/
+     *
+     * @return void
+     */
     public static function showForEntity(Entity $entity)
     {
         global $DB;
 
         $ID = $entity->getField('id');
         if (!$entity->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit     = $entity->canEdit($ID);
@@ -428,7 +432,9 @@ TWIG, $avatar_params) . $username;
      * Show the User having a profile, in allowed Entity
      *
      * @param Profile $prof object
-     **/
+     *
+     * @return void
+     */
     public static function showForProfile(Profile $prof)
     {
         global $DB;
@@ -437,7 +443,7 @@ TWIG, $avatar_params) . $username;
         $canedit = Session::haveRightsOr("user", [CREATE, UPDATE, DELETE, PURGE]);
         $rand = mt_rand();
         if (!$prof->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $start       = (int) ($_GET["start"] ?? 0);
@@ -620,12 +626,12 @@ TWIG, $avatar_params) . $username;
     /**
      * Get entities for which a user have a right
      *
-     * @param $user_ID         user ID
-     * @param $is_recursive    check also using recursive rights (true by default)
-     * @param $default_first   user default entity first (false by default)
+     * @param int  $user_ID       user ID
+     * @param bool $is_recursive  check also using recursive rights (true by default)
+     * @param bool $default_first user default entity first (false by default)
      *
-     * @return array of entities ID
-     **/
+     * @return array
+     */
     public static function getUserEntities($user_ID, $is_recursive = true, $default_first = false)
     {
         global $DB;
@@ -772,12 +778,12 @@ TWIG, $avatar_params) . $username;
     /**
      * retrieve the entities allowed to a user for a profile
      *
-     * @param $users_id     Integer  ID of the user
-     * @param $profiles_id  Integer  ID of the profile
-     * @param $child        Boolean  when true, include child entity when recursive right
-     *                               (false by default)
+     * @param int  $users_id    ID of the user
+     * @param int  $profiles_id ID of the profile
+     * @param bool $child       when true, include child entity when recursive right
+     *                          (false by default)
      *
-     * @return Array of entity ID
+     * @return array
      **/
     public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
     {
@@ -816,8 +822,8 @@ TWIG, $avatar_params) . $username;
      * @param bool $child    when true, include child entity when recursive right
      *                       (false by default)
      *
-     * @return array of entity ID
-     **/
+     * @return array
+     */
     public static function getEntitiesForUser($users_id, $child = false)
     {
         global $DB;
@@ -866,9 +872,11 @@ TWIG, $avatar_params) . $username;
 
 
     /**
-     * @param $user_ID
-     * @param $profile_id
-     **/
+     * @param int $user_ID
+     * @param int $profile_id
+     *
+     * @return int
+     */
     public static function haveUniqueRight($user_ID, $profile_id)
     {
         global $DB;
@@ -886,9 +894,11 @@ TWIG, $avatar_params) . $username;
 
 
     /**
-     * @param $user_ID
-     * @param $only_dynamic    (false by default)
-     **/
+     * @param int $user_ID
+     * @param bool $only_dynamic    (false by default)
+     *
+     * @return void
+     */
     public static function deleteRights($user_ID, $only_dynamic = false)
     {
 

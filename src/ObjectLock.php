@@ -46,7 +46,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class ObjectLock extends CommonDBTM
 {
-    private static $shutdownregistered = false;
+    private static bool $shutdownregistered = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -206,7 +206,9 @@ class ObjectLock extends CommonDBTM
      * Switches current profile with read-only profile
      * Registers a shutdown function to be sure that even in case of a fatal error,
      * the switch back will be done: to ensure correct reset of normal profile
-     **/
+     *
+     * @return void
+     */
     public static function setReadOnlyProfile()
     {
         global $CFG_GLPI;
@@ -239,6 +241,8 @@ class ObjectLock extends CommonDBTM
 
     /**
      * Will revert normal user profile
+     *
+     * @return void
      **/
     public static function revertProfile()
     {
@@ -251,9 +255,11 @@ class ObjectLock extends CommonDBTM
     /**
      * Is the main function to be called in order to lock an item
      *
-     * @param  string $itemtype
-     * @param  array $options
-     **/
+     * @param string $itemtype
+     * @param array $options
+     *
+     * @return void
+     */
     public static function manageObjectLock($itemtype, &$options)
     {
         global $CFG_GLPI;
@@ -294,6 +300,11 @@ class ObjectLock extends CommonDBTM
         }
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         global $CFG_GLPI;
@@ -408,10 +419,10 @@ TWIG;
     /**
      * Give cron information
      *
-     * @param $name Task's name
+     * @param string $name Task's name
      *
-     * @return array of information
-     **/
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
