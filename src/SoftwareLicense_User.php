@@ -81,15 +81,6 @@ class SoftwareLicense_User extends CommonDBRelation
             $count += Item_SoftwareLicense::countForLicense($softwarelicenses_id);
 
             if ($count >= $license->getField('number')) {
-                trigger_error(
-                    sprintf(
-                        'License quota exceeded for software license %d (current: %d, max: %d)',
-                        $softwarelicenses_id,
-                        $count,
-                        $license->getField('number')
-                    ),
-                    E_USER_WARNING
-                );
                 Session::addMessageAfterRedirect(
                     __s('Maximum number of items reached for this license.'),
                     false,
