@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Psr\Log\LogLevel;
 
 /* Test for inc/softwarelicense.class.php */
 
@@ -619,6 +620,12 @@ class SoftwareLicenseTest extends DbTestCase
 
         // Expected: false (assignment rejected due to quota)
         $this->assertFalse($result);
+
+        // Consume the PHP warning triggered by prepareInputForAdd
+        $this->hasPhpLogRecordThatContains(
+            'License quota exceeded for software license',
+            LogLevel::WARNING
+        );
 
         // Consume the error message added by prepareInputForAdd
         $this->hasSessionMessages(ERROR, ['Maximum number of items reached for this license.']);
