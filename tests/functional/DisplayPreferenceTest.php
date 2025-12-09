@@ -41,10 +41,12 @@ class DisplayPreferenceTest extends DbTestCase
 {
     public function testCanAddOneDisplayPreference()
     {
+        // Add a display preference
         $instance = new DisplayPreference();
         $instance->updateOrder('ComputerType', 0, [
             0 => 16,
         ]);
+        // Check the display preference is actually added
         $instance->getFromDBByCrit([
             'itemtype'  => 'ComputerType',
             'users_id'  => 0,
@@ -108,5 +110,45 @@ class DisplayPreferenceTest extends DbTestCase
             'interface' => 'central',
         ]);
         $this->assertSame(0, count($rows));
+    }
+
+    public function testCanRemoveOneDisplayPreference()
+    {
+        $instance = new DisplayPreference();
+        // Add several display preferences
+        $instance->updateOrder('ComputerType', 0, [
+            0 => '16',
+            1 => '121',
+            2 => '19',
+        ]);
+        //Remove one display preference
+        $instance->updateOrder('ComputerType', 0, [
+            0 => '16',
+            1 => '19',
+        ]);
+        $instance->getFromDBByCrit([
+            'itemtype'  => 'ComputerType',
+            'users_id'  => 0,
+            'interface' => 'central',
+            'num'       => 16,
+            'rank'      => 0,
+        ]);
+        $this->assertFalse($instance->isNewItem());
+        $instance->getFromDBByCrit([
+            'itemtype'  => 'ComputerType',
+            'users_id'  => 0,
+            'interface' => 'central',
+            'num'       => 19,
+            'rank'      => 1,
+        ]);
+        $this->assertFalse($instance->isNewItem());
+        $instance->getFromDBByCrit([
+            'itemtype'  => 'ComputerType',
+            'users_id'  => 0,
+            'interface' => 'central',
+            'num'       => 16,
+            'rank'      => 0,
+        ]);
+        $this->assertFalse($instance->isNewItem());
     }
 }
