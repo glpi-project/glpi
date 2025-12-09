@@ -152,6 +152,12 @@
             margin-top: .25rem;
             top: unset;
         }
+
+        // Handle input groups, the button next to the input also need to have
+        // the same border color.
+        .is-invalid + button {
+            border-color: red;
+        }
     }
 
     [data-glpi-form-renderer-section] {

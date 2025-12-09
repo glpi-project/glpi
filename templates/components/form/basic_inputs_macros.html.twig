@@ -227,8 +227,10 @@
     {% set options = {
         'rand': random(),
         'enableTime': false,
+        'noCalendar': false,
         'checkIsExpired': false,
         'clearable': false,
+        'container_addclass': '',
         'input_addclass': '',
         'readonly': false,
         'disabled': false,
@@ -262,7 +264,13 @@
         {% endif %}
     {% endif %}
 
-    <div class="btn-group flex-grow-1 flatpickr d-flex" id="{{ options.id }}" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ editable ? __('Enter or select a date') : _n('Date', 'Dates', 1) }}">
+    <div
+        class="btn-group flex-grow-1 flatpickr d-flex {{ options.container_addclass }}"
+        id="{{ options.id }}"
+        data-bs-toggle="tooltip"
+        data-bs-placement="bottom"
+        title="{{ editable ? __('Enter or select a date') : _n('Date', 'Dates', 1) }}"
+    >
         {{ _self.input(name, value, options|merge({
             'type': 'text',
             'id': options.id ~ '_input',
@@ -288,8 +296,19 @@
 
     {% if editable %}
         {% set locale = get_current_locale() %}
-        {% set date_format = options.enableTime ? 'Y-m-d H:i:S' : 'Y-m-d' %}
-        {% set alt_format = call('Toolbox::getDateFormat', ['js']) ~ (options.enableTime ? ' H:i:S' : '') %}
+        {% if options.enableTime and not options.noCalendar %}
+            {% set date_format = 'Y-m-d H:i:S' %}
+            {% set alt_format = call('Toolbox::getDateFormat', ['js']) ~ (options.enableTime ? ' H:i:S' : '') %}
+        {% elseif options.enableTime and options.noCalendar %}
+            {% set date_format = 'H:i:S' %}
+            {% set alt_format = (options.enableTime ? ' H:i:S' : '') %}
+        {% elseif not options.enableTime and not options.noCalendar %}
+            {% set date_format = 'Y-m-d' %}
+            {% set alt_format = call('Toolbox::getDateFormat', ['js']) %}
+        {% else %}
+            {# No time and no date, doesn't make sense so fallback to full format #}
+            {% set date_format = 'Y-m-d H:i:S' %}
+        {% endif %}
         <script>
             $(function() {
                 $("#{{ options.id|e('css')|e('js') }}").flatpickr({
@@ -299,6 +318,7 @@
                     altFormat: '{{ alt_format|e('js') }}',
                     enableTime: {{ options.enableTime ? "true" : "false" }},
                     enableSeconds: {{ options.enableTime ? "true" : "false" }},
+                    noCalendar: {{ options.noCalendar ? "true" : "false" }},
                     weekNumbers: true,
                     time_24hr: true,
                     allowInput: {{ options.readonly ? 'false' : 'true' }},
