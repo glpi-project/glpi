@@ -721,7 +721,7 @@ describe('Service catalog page', () => {
         // Act: Visit the service catalog and apply filters
         cy.visit('/ServiceCatalog');
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
-        cy.get('@filter_input').type(`Nested ${uuid}`);
+        cy.get('@filter_input').type(`${uuid}`);
 
         // Wait input debounce
         cy.waitForNetworkIdle(1000);
