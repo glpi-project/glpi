@@ -122,6 +122,18 @@
                      {{ include('layout/parts/goto_button.html.twig') }}
                   </span>
                </div>
+               {% elseif menu|length > 0 %}
+               <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
+                  <ul class="navbar-nav">
+                     {% for item in menu %}
+                        <li class="nav-item">
+                           <a class="nav-link" href="{{ path(item['default']) }}">
+                              <span class="menu-label">{{ item['title'] }}</span>
+                           </a>
+                        </li>
+                     {% endfor %}
+                  </ul>
+               </div>
                {% endif %}
             {% endif %}
 
