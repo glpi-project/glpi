@@ -59,6 +59,7 @@ class SoftwareLicense_User extends CommonDBRelation
             || !is_numeric($input['softwarelicenses_id'])
             || !isset($input['users_id'])
         ) {
+            trigger_error('softwarelicenses_id and users_id are mandatory', E_USER_WARNING);
             return false;
         }
 
@@ -66,6 +67,7 @@ class SoftwareLicense_User extends CommonDBRelation
 
         $license = new SoftwareLicense();
         if (!$license->getFromDB($softwarelicenses_id)) {
+            trigger_error(sprintf('Unable to load software license %d', $softwarelicenses_id), E_USER_WARNING);
             return false;
         }
 
@@ -79,6 +81,15 @@ class SoftwareLicense_User extends CommonDBRelation
             $count += Item_SoftwareLicense::countForLicense($softwarelicenses_id);
 
             if ($count >= $license->getField('number')) {
+                trigger_error(
+                    sprintf(
+                        'License quota exceeded for software license %d (current: %d, max: %d)',
+                        $softwarelicenses_id,
+                        $count,
+                        $license->getField('number')
+                    ),
+                    E_USER_WARNING
+                );
                 Session::addMessageAfterRedirect(
                     __s('Maximum number of items reached for this license.'),
                     false,
