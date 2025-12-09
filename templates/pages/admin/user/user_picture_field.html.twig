@@ -34,7 +34,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 {% import 'components/form/modals_macros.html.twig' as modals %}
 
-{% set can_update = item.canUpdate() and item.canUpdateItem() %}
+{% set can_update = (item.canUpdate() and item.canUpdateItem()) or (is_preference_form|default(false)) %}
 {% set avatar %}
     {{ include('components/user/picture.html.twig', {
         user_object: item,
