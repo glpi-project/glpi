@@ -785,20 +785,19 @@ class ReservationTest extends DbTestCase
         $_SESSION['glpiactiveprofile']['reservation'] = ReservationItem::RESERVEANITEM;
 
         ob_start();
-        $result = \Reservation::showCalendar($res_item->getID());
+        \Reservation::showCalendar($res_item->getID());
         $output = ob_get_clean();
 
-        $this->assertNotFalse($result, "showCalendar should work with RESERVEANITEM right");
-        $this->assertNotEmpty($output, "showCalendar should produce output");
+        $this->assertNotEmpty($output, "showCalendar should work with RESERVEANITEM right");
 
         // Test showCalendar with no rights
         $_SESSION['glpiactiveprofile']['reservation'] = 0;
 
         ob_start();
-        $result = \Reservation::showCalendar($res_item->getID());
+        \Reservation::showCalendar($res_item->getID());
         $output = ob_get_clean();
 
-        $this->assertFalse($result, "showCalendar should not work without any rights");
+        $this->assertEmpty($output, "showCalendar should not work without any rights");
     }
 
     /**
