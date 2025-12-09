@@ -234,7 +234,7 @@ class Calendar extends CommonDropdown
      **/
     public function isHoliday($date)
     {
-        // Validação: se $date for null ou vazio, retorna false
+        // Check if date is null or emtpy
         if (empty($date)) {
             return false;
         }
@@ -243,7 +243,7 @@ class Calendar extends CommonDropdown
         $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
 
         foreach ($holidays as $holiday) {
-            // Validação adicional: verificar se begin_date e end_date não são null
+            // CHeck if begin_date and end_date are not null or empty
             if (empty($holiday['begin_date']) || empty($holiday['end_date'])) {
                 continue;
             }
