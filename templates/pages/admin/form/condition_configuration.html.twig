@@ -129,10 +129,11 @@
                             data-glpi-conditions-editor-value-operator
                         />
                         {% if condition.getValue() is iterable %}
+                            {% set original_loop_index = loop.index0 %}
                             {% for key, value in condition.getValue() %}
                                 <input
                                     type="hidden"
-                                    name="_conditions[{{ loop.index0 }}][value][{{ key }}]"
+                                    name="_conditions[{{ original_loop_index }}][value][{{ key }}]"
                                     value="{{ value }}"
                                     data-glpi-conditions-editor-value
                                 />
