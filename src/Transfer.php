@@ -2549,7 +2549,7 @@ final class Transfer extends CommonDBTM
         ];
 
         if ($link_item->maybeRecursive() && !empty($this->noneedtobe_transfer[$link_type])) {
-            $criteria['WHERE']['NOT'] = ['items_id' => $this->noneedtobe_transfer[$link_type]];
+            $criteria['WHERE']['NOT'] = ['items_id_peripheral' => $this->noneedtobe_transfer[$link_type]];
         }
 
         $iterator = $DB->request($criteria);
