@@ -41,8 +41,8 @@ class IPNetmask extends IPAddress
 
 
     /**
-     * @param $ipnetmask (default '')
-     * @param $version   (default 0)
+     * @param string|array|IPNetmask $ipnetmask
+     * @param int $version
      **/
     public function __construct($ipnetmask = '', $version = 0)
     {
@@ -50,7 +50,7 @@ class IPNetmask extends IPAddress
         // First, be sure that the parent is correctly initialised
         parent::__construct();
 
-        // If $ipnetmask if empty, then, empty netmask !
+        // If $ipnetmask is empty, then, empty netmask!
         if ($ipnetmask != '') {
             // If $ipnetmask if an IPNetmask, then just clone it
             if ($ipnetmask instanceof IPNetmask) {
@@ -80,14 +80,13 @@ class IPNetmask extends IPAddress
      * Create a binary Netmask from dot notation (for instance : 255.255.255.0) or
      * integer (for instance /24). Rely on setAddressFromString()
      *
-     * @param $netmask   string   netmask defined as textual
-     * @param $version   integer  =4 or =6 : version of IP protocol
+     * @param string $netmask netmask defined as textual
+     * @param int|string $version =4 or =6 : version of IP protocol
      *
      * @return bool false if the netmask is not valid or if it does not correspond to version
-     **/
+     */
     public function setNetmaskFromString($netmask, $version)
     {
-
         if (is_numeric($netmask)) {
             if ($netmask < 0) {
                 return false;

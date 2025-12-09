@@ -79,7 +79,7 @@ class MassiveAction
      * Current action name.
      * @var string|null
      */
-    private $action_name;
+    private ?string $action_name;
 
     /**
      * Class used to process current action.
@@ -137,23 +137,23 @@ class MassiveAction
     /**
      * Item used to check rights.
      * Variable is used for caching purpose.
-     * @var CommonGLPI|null
+     * @var CommonDBTM|null
      */
-    private $check_item;
+    private ?CommonDBTM $check_item = null;
 
     /**
      * Redirect URL used after actions are processed.
      * @var string
      */
-    private $redirect;
+    private string $redirect;
 
     /**
      * Itemtype currently processed.
-     * @var class-string<CommonDBTM>
+     * @var ?class-string<CommonDBTM>
      */
-    private $current_itemtype;
+    private ?string $current_itemtype = null;
 
-    private $from_single_item = false;
+    private bool $from_single_item = false;
 
     /**
      * Constructor of massive actions.
@@ -344,7 +344,7 @@ class MassiveAction
                             'noright'  => 0,
                             'messages'  => [],
                         ];
-                        foreach ($POST['items'] as $itemtype => $ids) {
+                        foreach ($POST['items'] as $ids) {
                             $this->nb_items += count($ids);
                         }
                         $this->redirect = Html::getBackUrl();
@@ -484,8 +484,10 @@ class MassiveAction
 
 
     /**
-     * @param $POST
-     **/
+     * @param array $POST
+     *
+     * @return ?CommonDBTM
+     */
     public function getCheckItem($POST)
     {
 
@@ -580,8 +582,10 @@ class MassiveAction
     /**
      * Get 'add to transfer list' action when needed
      *
-     * @param $actions   array
-     **/
+     * @param array $actions
+     *
+     * @return void
+     */
     public static function getAddTransferList(array &$actions)
     {
 
@@ -830,6 +834,11 @@ class MassiveAction
     }
 
 
+    /**
+     * @param MassiveAction $ma
+     *
+     * @return bool
+     */
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         global $DB;
@@ -1316,6 +1325,13 @@ class MassiveAction
     }
 
 
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM $item
+     * @param array $ids
+     *
+     * @return false|void
+     */
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -1719,7 +1735,7 @@ class MassiveAction
      **/
     public function setRedirect($redirect)
     {
-        $this->redirect = $redirect;
+        $this->redirect = (string) $redirect;
     }
 
 
@@ -1748,12 +1764,14 @@ class MassiveAction
      *                self::NO_ACTION      in case of no specific action (used internally for older actions)
      *                MassiveAction::ACTION_OK      everything is OK for the action
      *                MassiveAction::ACTION_KO      something went wrong for the action
-     *                MassiveAction::ACTION_NORIGHT not anough right for the action
+     *                MassiveAction::ACTION_NORIGHT not enough right for the action
      * @phpstan-param array<integer>|integer $id
+     *
+     * @return void
      **/
     public function itemDone($itemtype, $id, $result)
     {
-        $this->current_itemtype = $itemtype;
+        $this->current_itemtype = (string) $itemtype;
 
         if (!isset($this->done[$itemtype])) {
             $this->done[$itemtype] = [];

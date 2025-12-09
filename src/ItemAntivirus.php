@@ -146,6 +146,9 @@ class ItemAntivirus extends CommonDBChild
     }
 
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];

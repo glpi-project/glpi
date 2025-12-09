@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_OperatingSystem extends CommonDBRelation
 {
-    public static $itemtype_1 = 'OperatingSystem';
+    public static $itemtype_1 = OperatingSystem::class;
     public static $items_id_1 = 'operatingsystems_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
@@ -145,6 +145,7 @@ class Item_OperatingSystem extends CommonDBRelation
      * Print the item's operating system form
      *
      * @param CommonDBTM $item Item instance
+     * @param int $withtemplate
      *
      * @since 9.2
      *
@@ -352,6 +353,11 @@ class Item_OperatingSystem extends CommonDBRelation
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         $tab = [];
@@ -565,6 +571,11 @@ class Item_OperatingSystem extends CommonDBRelation
         return parent::showMassiveActionsSubForm($ma);
     }
 
+    /**
+     * @param MassiveAction $ma
+     *
+     * @return void
+     */
     public static function showFormMassiveUpdate($ma)
     {
         global $CFG_GLPI;

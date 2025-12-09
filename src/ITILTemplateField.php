@@ -57,7 +57,7 @@ abstract class ITILTemplateField extends CommonDBChild
      */
     public static $itiltype; //to be filled in subclass
 
-    private $all_fields;
+    private array $all_fields;
 
     // From CommonDBTM
     public $dohistory = true;
@@ -128,9 +128,10 @@ abstract class ITILTemplateField extends CommonDBChild
      *
      * @param ITILTemplate $tt           ITIL Template
      * @param integer      $withtemplate Template or basic item (default 0)
+     * @param bool         $withtypeandcategory
      *
      * @return bool
-     **/
+     */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0, $withtypeandcategory = true): bool
     {
         global $DB, $CFG_GLPI;
@@ -314,7 +315,7 @@ TWIG, $twig_params);
      */
     public function getFieldNum(ITILTemplate $tt, $name)
     {
-        if ($this->all_fields === null) {
+        if (!isset($this->all_fields)) {
             $this->getAllFields($tt);
         }
         return array_search($name, $this->all_fields);

@@ -93,7 +93,8 @@ class KnowbaseItem_Item extends CommonDBRelation
      * @param CommonDBTM $item
      * @param integer $withtemplate withtemplate param (default 0)
      *
-     **/
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $item_id = $item->getID();

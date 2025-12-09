@@ -167,6 +167,11 @@ class ManualLink extends CommonDBChild
         return $iterator;
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];

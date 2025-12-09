@@ -41,7 +41,7 @@ class Item_SoftwareVersion extends CommonDBRelation
     // From CommonDBRelation
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = 'SoftwareVersion';
+    public static $itemtype_2 = SoftwareVersion::class;
     public static $items_id_2 = 'softwareversions_id';
 
 
@@ -244,13 +244,19 @@ class Item_SoftwareVersion extends CommonDBRelation
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return bool
+     */
     public function updateDatasForItem($itemtype, $items_id)
     {
         global $DB;
 
         $item = getItemForItemtype($itemtype);
         if ($item->getFromDB($items_id)) {
-            $result = $DB->update(
+            return $DB->update(
                 static::getTable(),
                 [
                     'is_template_item'  => $item->maybeTemplate() ? $item->getField('is_template') : 0,
@@ -261,7 +267,6 @@ class Item_SoftwareVersion extends CommonDBRelation
                     'itemtype' => $itemtype,
                 ]
             );
-            return $result;
         }
         return false;
     }

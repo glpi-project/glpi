@@ -136,8 +136,10 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $input
-     **/
+     * @param array $input
+     *
+     * @return array|false
+     */
     public function prepareInput($input)
     {
 
@@ -229,6 +231,12 @@ class IPAddress extends CommonDBChild
         $this->setAddressFromArray($this->fields, "version", "name", "binary");
     }
 
+    /**
+     * @param CommonGLPI $item
+     * @param int $withtemplate
+     *
+     * @return void
+     */
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
         global $DB;
@@ -335,8 +343,10 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $item      CommonDBTM object
-     **/
+     * @param CommonDBTM $item
+     *
+     * @return int|void
+     */
     public static function countForItem(CommonDBTM $item)
     {
         global $DB;
@@ -378,7 +388,9 @@ class IPAddress extends CommonDBChild
 
     /**
      * Disable the address
-     **/
+     *
+     * @return void
+     */
     public function disableAddress()
     {
         $this->version = '';
@@ -481,32 +493,49 @@ class IPAddress extends CommonDBChild
 
     /**
      * Check address validity
-     **/
+     *
+     * @return  bool
+     */
     public function is_valid()
     {
         return (($this->version != '') && ($this->textual != '') && ($this->binary != ''));
     }
 
+    /**
+     * @return false|int|string
+     */
     public function getVersion()
     {
         return $this->version !== '' ? $this->version : false;
     }
 
+    /**
+     * @return bool
+     */
     public function is_ipv4()
     {
         return ($this->getVersion() == 4);
     }
 
+    /**
+     * @return bool
+     */
     public function is_ipv6()
     {
         return ($this->getVersion() == 6);
     }
 
+    /**
+     * @return false|string
+     */
     public function getTextual()
     {
         return $this->textual !== '' ? $this->textual : false;
     }
 
+    /**
+     * @return false|int[]|string
+     */
     public function getBinary()
     {
         return $this->binary !== '' ? $this->binary : false;
@@ -1052,12 +1081,14 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $itemtype
-     * @param $base                  HTMLTableBase object
-     * @param $super                 HTMLTableSuperHeader object (default NULL)
-     * @param $father                HTMLTableHeader object (default NULL)
+     * @param class-string<CommonDBTM> $itemtype
+     * @param HTMLTableBase $base
+     * @param ?HTMLTableSuperHeader $super
+     * @param ?HTMLTableHeader $father
      * @param $options      array
-     **/
+     *
+     * @return void
+     */
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -1261,11 +1292,13 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param HTMLTableRow $row
-     * @param CommonDBTM $item
-     * @param HTMLTableCell $father
+     * @param ?HTMLTableRow $row
+     * @param ?CommonDBTM $item
+     * @param ?HTMLTableCell $father
      * @param array $options
-     **/
+     *
+     * @return void
+     */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
         ?CommonDBTM $item = null,
