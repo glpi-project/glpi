@@ -89,7 +89,7 @@ class NotificationTarget extends CommonDBChild
      * (like unique tokens) during the ITEM_GET_DATA hook.
      *
      * @var array
-     * @since 10.0.22
+     * @since 10.0.23
      */
     public $current_user_infos          = [];
 
