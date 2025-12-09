@@ -3841,11 +3841,6 @@ class AuthLDAP extends CommonDBTM
                     if (empty($_SESSION['ldap_import']['basedn'])) {
                         $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                     }
-
-                    if ($entity->getField('entity_ldapfilter') != NOT_AVAILABLE) {
-                        $_SESSION['ldap_import']['entity_filter']
-                        = $entity->getField('entity_ldapfilter');
-                    }
                 } else {
                     if (
                         $_SESSION['ldap_import']['authldaps_id'] == NOT_AVAILABLE
@@ -3858,6 +3853,10 @@ class AuthLDAP extends CommonDBTM
                         $authldap->getFromDB($_SESSION['ldap_import']['authldaps_id']);
                         $_SESSION['ldap_import']['basedn'] = $authldap->getField('basedn');
                     }
+                }
+
+                if ($entity->getField('entity_ldapfilter') != NOT_AVAILABLE) {
+                    $_SESSION['ldap_import']['entity_filter'] = $entity->getField('entity_ldapfilter');
                 }
 
                 if ($_SESSION['ldap_import']['authldaps_id'] > 0) {
