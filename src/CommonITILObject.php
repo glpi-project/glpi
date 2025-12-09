@@ -68,7 +68,9 @@ use function Safe\strtotime;
  * @property-read array $users
  * @property-read array $groups
  * @property-read array $suppliers
- **/
+ *
+ * @phpstan-type TimelinePosition self::NO_TIMELINE|self::TIMELINE_NOTSET|self::TIMELINE_LEFT|self::TIMELINE_MIDLEFT|self::TIMELINE_MIDRIGHT|self::TIMELINE_RIGHT
+ */
 abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, TeamworkInterface
 {
     /** @use Clonable<static> */
@@ -7528,11 +7530,29 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * - hide_private_items : force hiding private items (followup/tasks), even if session allow it
      * @since 9.4.0
      *
-     * @return mixed[] Timeline items
+     * @return array<array{
+     *     type: class-string<CommonITILObject>,
+     *     itiltype: class-string<CommonITILObject>,
+     *     item: array{
+     *      id: int,
+     *      content: string,
+     *      date: string|null,
+     *      users_id: int,
+     *      solutiontypes_id: int,
+     *      can_edit: bool,
+     *      timeline_position: TimelinePosition,
+     *      users_id_editor: int,
+     *      date_creation: string|null,
+     *      date_mod: string|null,
+     *      users_id_approval: int,
+     *      date_approval: string|null,
+     *      status: int
+     *     },
+     *     object: mixed
+     * }> Timeline items
      */
     public function getTimelineItems(array $options = [])
     {
-
         $params = [
             'with_documents'     => true,
             'with_logs'          => true,

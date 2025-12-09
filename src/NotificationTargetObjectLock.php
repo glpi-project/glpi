@@ -34,25 +34,21 @@
  */
 
 /**
- * @since 9.1
- */
-
-
-/**
- * Summary of NotificationTargetObjectLock
- *
  * Notifications for ObjectLock
+ *
+ * @extends NotificationTarget<ObjectLock>
  *
  * @since 9.1
  **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['unlock'               => __('Unlock Item Request')];
     }
 
-
+    #[Override]
     public function getTags()
     {
 
@@ -78,19 +74,12 @@ class NotificationTargetObjectLock extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
-
-    /**
-     * @see NotificationTarget::addNotificationTargets()
-     **/
+    #[Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, __('Locking User'));
     }
 
-
-    /**
-     * @see NotificationTarget::addSpecificTargets()
-     **/
     public function addSpecificTargets($data, $options)
     {
 
@@ -101,7 +90,6 @@ class NotificationTargetObjectLock extends NotificationTarget
             ]);
         }
     }
-
 
     public function addDataForTemplate($event, $options = [])
     {
@@ -143,7 +131,7 @@ class NotificationTargetObjectLock extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getSender(): array
     {
 
@@ -172,10 +160,9 @@ class NotificationTargetObjectLock extends NotificationTarget
         return $ret;
     }
 
-
-    public function getReplyTo($options = []): array
+    #[Override]
+    public function getReplyTo(): array
     {
-
         return $this->getSender();
     }
 }

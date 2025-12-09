@@ -131,7 +131,7 @@ class NotificationMailing implements NotificationInterface
         ];
     }
 
-
+    #[Override]
     public function sendNotification($options = [])
     {
         global $CFG_GLPI;

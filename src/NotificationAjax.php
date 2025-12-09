@@ -72,24 +72,19 @@ class NotificationAjax implements NotificationInterface
         ]);
     }
 
-
+    #[Override]
     public function sendNotification($options = [])
     {
-
         $data = [];
         $data['itemtype']                             = $options['_itemtype'];
         $data['items_id']                             = $options['_items_id'];
         $data['notificationtemplates_id']             = $options['_notificationtemplates_id'];
         $data['entities_id']                          = $options['_entities_id'];
-
         $data['sendername']                           = $options['fromname'];
-
         $data['name']                                 = $options['subject'];
         $data['body_text']                            = $options['content_text'];
         $data['recipient']                            = $options['to'];
-
         $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
-
         $data['mode'] = Notification_NotificationTemplate::MODE_AJAX;
 
         $queue = new QueuedNotification();

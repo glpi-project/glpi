@@ -36,19 +36,19 @@
 /**
  * NotificationTargetPlanningRecall Class
  *
+ * @extends NotificationTarget<CommonITILTask>
+ *
  * @since 0.84
- **/
+ */
 class NotificationTargetPlanningRecall extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['planningrecall' => __('Planning recall')];
     }
 
-
-    /**
-     * @see NotificationTarget::addNotificationTargets()
-     **/
+    #[Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::AUTHOR, _n('Requester', 'Requesters', 1));
@@ -57,10 +57,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         $this->addTarget(Notification::PLANNING_EVENT_GUESTS, __('Guests'));
     }
 
-
-    /**
-     * @see NotificationTarget::addSpecificTargets()
-     **/
+    #[Override]
     public function addSpecificTargets($data, $options)
     {
         switch ($data['type']) {
@@ -84,14 +81,15 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
     /**
      * Get group assigned to the task
+     *
+     * @return void
      */
     public function addTaskAssignGroup()
     {
         if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
-            return false;
+            return;
         }
         if (
             $item->getFromDB($this->obj->fields['items_id'])
@@ -101,14 +99,15 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
     /**
      * Get tech related to the task
+     *
+     * @return void
      **/
     public function addTaskAssignUser()
     {
         if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
-            return false;
+            return;
         }
 
         if ($item->getFromDB($this->obj->fields['items_id'])) {
@@ -132,14 +131,15 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
     /**
      * Get guests related to external events
+     *
+     * @return void
      **/
     public function addGuests()
     {
         if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
-            return false;
+            return;
         }
         if ($item->getFromDB($this->obj->fields['items_id'])) {
             $user = new User();
@@ -156,13 +156,14 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
     public function addDataForTemplate($event, $options = [])
     {
-
         $events                             = $this->getAllEvents();
         $target_object                      = reset($this->target_object);
-        ;
+
+        if (!($target_object instanceof CommonDBTM)) {
+            return;
+        }
 
         $this->data['##recall.action##']   = $events[$event];
         $this->data['##recall.itemtype##'] = $target_object->getTypeName(1);
@@ -192,7 +193,8 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             $this->data['##recall.item.name##'] = $target_object->getField('name');
         } else {
             if (
-                ($item2 = $target_object->getItem())
+                $target_object instanceof CommonDBChild
+                && ($item2 = $target_object->getItem()) !== false
                 && $item2->isField('name')
             ) {
                 $this->data['##recall.item.name##'] = $item2->getField('name');
@@ -243,10 +245,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
-
         $tags_all = ['recall.action'            => _n('Event', 'Events', 1),
             'recall.item.user'         => __('Writer'),
             'recall.item.date_mod'     => __('Last update'),
@@ -270,9 +271,9 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         asort($this->tag_descriptions);
     }
 
+    #[Override]
     public function getObjectItem($event = '')
     {
-
         if ($this->obj) {
             if (
                 ($item = getItemForItemtype($this->obj->getField('itemtype')))

@@ -35,13 +35,16 @@
 
 /**
  * NotificationTargetTicket Class
- **/
+ *
+ * @extends NotificationTargetCommonITILObject<Ticket>
+ */
 class NotificationTargetTicket extends NotificationTargetCommonITILObject
 {
     public const HEADERTAG = '=-=-=-=';
     public const FOOTERTAG = '=_=_=_=';
 
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    #[Override]
+    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null): bool
     {
         // Always send notification for satisfaction : if send on ticket closure
         // Always send notification for new ticket
@@ -52,10 +55,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return parent::validateSendTo($event, $infos, $notify_me, $emitter);
     }
 
-
+    #[Override]
     public function getSubjectPrefix($event = '')
     {
-
         if ($event != 'alertnotclosed') {
             $perso_tag = trim(Entity::getUsedConfig(
                 'notification_subject_tag',
@@ -72,9 +74,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return parent::getSubjectPrefix();
     }
 
-    /**
-     * Get header to add to content
-     **/
+    #[Override]
     public function getContentHeader()
     {
 
@@ -90,10 +90,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return '';
     }
 
-
-    /**
-     * Get footer to add to content
-     **/
+    #[Override]
     public function getContentFooter()
     {
 
@@ -109,9 +106,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return '';
     }
 
+    #[Override]
     public function getObjectItem($event = '')
     {
-
         if ($this->obj && isset($this->obj->fields['id']) && !empty($this->obj->fields['id'])) {
             $item_ticket = new Item_Ticket();
             $data = $item_ticket->find(['tickets_id' => $this->obj->fields['id']]);
@@ -128,9 +125,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
     }
 
-    /**
-     *Get events related to tickets
-     **/
+    #[Override]
     public function getEvents()
     {
 
@@ -155,7 +150,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return $events;
     }
 
-
+    #[Override]
     public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
     {
         // Common ITIL data
@@ -553,7 +548,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         return $data;
     }
 
-
+    #[Override]
     public function getTags()
     {
 

@@ -38,20 +38,20 @@ interface NotificationEventInterface
     /**
      * Raise a notification event
      *
-     * @param string               $event              Event
-     * @param CommonGLPI           $item               Notification data
-     * @param array                $options            Options
-     * @param string               $label              Label
-     * @param array                $data               Notification data
-     * @param NotificationTarget   $notificationtarget Target
-     * @param NotificationTemplate $template           Template
-     * @param boolean              $notify_me          Whether to notify current user
-     * @param mixed                $emitter            If this action is executed by the cron, we can
-     *                                                 supply the id of the user (or the email if this
-     *                                                 is an anonymous user with no account) who
-     *                                                 triggered the event so it can be used instead of
-     *                                                 getLoginUserID
-     * @param CommonDBTM|null      $trigger            Item that raises the notification (in case notification was raised by a child item).
+     * @param string                                    $event              Event
+     * @param CommonGLPI                                $item               Notification data
+     * @param array                                     $options            Options
+     * @param string                                    $label              Label
+     * @param array                                     $data               Notification data
+     * @param NotificationTarget<covariant CommonGLPI>  $notificationtarget Target
+     * @param NotificationTemplate                      $template           Template
+     * @param boolean                                   $notify_me          Whether to notify current user
+     * @param mixed                                     $emitter            If this action is executed by the cron, we can
+     *                                                                      supply the id of the user (or the email if this
+     *                                                                      is an anonymous user with no account) who
+     *                                                                      triggered the event so it can be used instead of
+     *                                                                      getLoginUserID
+     * @param CommonDBTM|null                           $trigger            Item that raises the notification (in case notification was raised by a child item).
      *
      * @return void
      *

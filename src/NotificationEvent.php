@@ -41,6 +41,7 @@ class NotificationEvent extends CommonDBTM
 {
     protected static $notable = true;
 
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Event', 'Events', $nb);
@@ -48,11 +49,11 @@ class NotificationEvent extends CommonDBTM
 
 
     /**
-     * @param string $itemtype Item type
-     * @param array  $options  array to pass to showFromArray or $value
+     * @param class-string<CommonGLPI> $itemtype Item type
+     * @param array                    $options  array to pass to showFromArray or $value
      *
      * @return string
-     **/
+     */
     public static function dropdownEvents($itemtype, $options = [])
     {
 
@@ -81,11 +82,11 @@ class NotificationEvent extends CommonDBTM
      *
      * @since 0.83
      *
-     * @param string $itemtype name of the type
-     * @param string $event    name of the event
+     * @param class-string<CommonGLPI> $itemtype name of the type
+     * @param string                   $event    name of the event
      *
      * @return string
-     **/
+     */
     public static function getEventName($itemtype, $event)
     {
 
@@ -104,11 +105,11 @@ class NotificationEvent extends CommonDBTM
     /**
      * Raise a notification event
      *
-     * @param string            $event   the event raised for the itemtype
-     * @param CommonGLPI        $item    the object which raised the event
-     * @param array             $options array of options used
-     * @param CommonDBTM|null   $trigger item that raises the notification (in case notification was raised by a child item)
-     * @param string            $label   used for debugEvent()
+     * @param string          $event   the event raised for the itemtype
+     * @param CommonGLPI      $item    the object which raised the event
+     * @param array           $options array of options used
+     * @param CommonDBTM|null $trigger item that raises the notification (in case notification was raised by a child item)
+     * @param string          $label   used for debugEvent()
      *
      * @return boolean
      *
@@ -148,7 +149,7 @@ class NotificationEvent extends CommonDBTM
 
                 $notificationtarget->clearAddressesList();
                 $notificationtarget->setMode($data['mode']);
-                $notificationtarget->setAllowResponse($data['allow_response']);
+                $notificationtarget->setAllowResponse((bool) $data['allow_response']);
 
                 // Get template's information
                 $template = new NotificationTemplate();
