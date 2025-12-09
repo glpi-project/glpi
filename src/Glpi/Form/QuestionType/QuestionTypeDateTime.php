@@ -322,13 +322,13 @@ TWIG;
         Question $question,
     ): string {
         $template = <<<TWIG
-            <input
-                type="{{ input_type }}"
-                class="form-control w-50"
-                name="{{ question.getEndUserInputName() }}"
-                value="{{ default_value }}"
-                {{ question.fields.is_mandatory ? 'required' : '' }}
-            >
+            {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+            {{ inputs.date(question.getEndUserInputName(), default_value, {
+                'enableTime': input_type != "date",
+                'noCalendar': input_type == "time",
+                'container_addclass': 'w-50',
+                'input_addclass': 'is-flatpicker',
+            }) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
@@ -388,4 +388,5 @@ TWIG;
 
     #[Override]
     public function beforeConversion(array $rawData): void {}
+
 }
