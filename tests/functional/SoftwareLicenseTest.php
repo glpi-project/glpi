@@ -349,11 +349,12 @@ class SoftwareLicenseTest extends DbTestCase
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ])->getID();
 
-        // Create a license
+        // Create a license with overquota allowed (this test explicitly exceeds quota)
         $license_id = $this->createItem(\SoftwareLicense::class, [
             'name' => 'Test license for counting consistency',
             'softwares_id' => $software_id,
             'number' => 5,
+            'allow_overquota' => 1,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ])->getID();
 
@@ -577,5 +578,53 @@ class SoftwareLicenseTest extends DbTestCase
     private function actionExists($actions, $action_key)
     {
         return array_key_exists($action_key, $actions);
+    }
+
+    public function testOverQuotaBypassWhenAssigningUserDirectly()
+    {
+        $this->login();
+
+        $software_id = $this->createItem(\Software::class, [
+            'name' => 'Test software for over-quota bypass',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        $license_id = $this->createItem(\SoftwareLicense::class, [
+            'name' => 'Test license strict quota',
+            'softwares_id' => $software_id,
+            'number' => 1,
+            'allow_overquota' => 0,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        $user1 = getItemByTypeName('User', TU_USER);
+        $user2 = getItemByTypeName('User', 'glpi');
+
+        // First assignment should succeed (quota: 1/1)
+        $license_user1_id = $this->createItem(\SoftwareLicense_User::class, [
+            'softwarelicenses_id' => $license_id,
+            'users_id' => $user1->getID(),
+        ])->getID();
+        $this->assertGreaterThan(0, $license_user1_id);
+
+        $count_after_first = \SoftwareLicense_User::countForLicense($license_id);
+        $this->assertEquals(1, $count_after_first);
+
+        // Second assignment should FAIL (quota exceeded, allow_overquota=0)
+        $license_user = new \SoftwareLicense_User();
+        $result = $license_user->add([
+            'softwarelicenses_id' => $license_id,
+            'users_id' => $user2->getID(),
+        ]);
+
+        // Expected: false (assignment rejected due to quota)
+        $this->assertFalse($result);
+
+        // Consume the error message added by prepareInputForAdd
+        $this->hasSessionMessages(ERROR, ['Maximum number of items reached for this license.']);
+
+        // Verify count remains at 1 (no over-quota bypass)
+        $count_after_second = \SoftwareLicense_User::countForLicense($license_id);
+        $this->assertEquals(1, $count_after_second);
     }
 }
