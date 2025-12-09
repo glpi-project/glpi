@@ -269,8 +269,25 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return ['admin', self::class];
     }
 
+    /**
+     * Verify the current user can create a child entity.
+     * This method is used for example in the showSearchStatusArea.
+     * @return bool
+     */
+    private static function canCreateChild(): bool
+    {
+        if (!Session::isMultiEntitiesMode()) {
+            return true;
+        }
+
+        return !empty($_SESSION["glpiactive_entity_recursive"]);
+    }
+
     public static function canCreate(): bool
     {
+        if (!self::canCreateChild()) {
+            return false;
+        }
         // Do not show the create button if no recusive access on current entity
         return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
     }
@@ -689,6 +706,24 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
             default:
                 return false;
+        }
+    }
+
+
+    /**
+     * This method is used to display an error message on the entities list page.
+     *
+     * @return void
+     * @used-by templates/components/search/controls.html.twig
+     */
+    public static function showSearchStatusArea(): void
+    {
+        if (!self::canCreateChild() && Session::haveRight(static::$rightname, CREATE)) {
+            Session::addMessageAfterRedirect(
+                __s("To create a child entity, you must enable entity tree structure."),
+                false,
+                INFO
+            );
         }
     }
 
