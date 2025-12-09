@@ -137,10 +137,10 @@ describe('Actors configuration', () => {
                     'Specific actors',
                     'Answer from specific questions',
                     `Answer to last "${actorConfig.name}s" or "Email" question`,
-                    'User from GLPI object answer',
-                    'Tech user from GLPI object answer',
-                    'Group from GLPI object answer',
-                    'Tech group from GLPI object answer',
+                    'User that own an asset from an answer',
+                    'Technician in charge of an asset from an answer',
+                    'Group that own an asset from an answer',
+                    'Group in charge of an asset from an answer',
                     'Supervisor of the user who filled the form'
                 ];
 

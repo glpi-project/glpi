@@ -153,45 +153,45 @@ describe('Observer configuration', () => {
         cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@observers_dropdown').should('have.text', 'Answer to last "Observers" or "Email" question');
 
-        // Switch to "User from GLPI object answer"
-        cy.get('@observers_dropdown').selectDropdownValue('User from GLPI object answer');
+        // Switch to "User that own an asset from an answer"
+        cy.get('@observers_dropdown').selectDropdownValue('User that own an asset from an answer');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('user_object_answer_dropdown');
         cy.get('@user_object_answer_dropdown').selectDropdownValue('My Computer question');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@observers_dropdown').should('have.text', 'User from GLPI object answer');
+        cy.get('@observers_dropdown').should('have.text', 'User that own an asset from an answer');
         cy.get('@user_object_answer_dropdown').should('have.text', '×My Computer question');
 
-        // Switch to "Tech user from GLPI object answer"
-        cy.get('@observers_dropdown').selectDropdownValue('Tech user from GLPI object answer');
+        // Switch to "Technician in charge of an asset from an answer"
+        cy.get('@observers_dropdown').selectDropdownValue('Technician in charge of an asset from an answer');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('tech_user_object_answer_dropdown');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@observers_dropdown').should('have.text', 'Tech user from GLPI object answer');
+        cy.get('@observers_dropdown').should('have.text', 'Technician in charge of an asset from an answer');
         cy.get('@tech_user_object_answer_dropdown').should('have.text', '×My Computer question');
 
-        // Switch to "Group from GLPI object answer"
-        cy.get('@observers_dropdown').selectDropdownValue('Group from GLPI object answer');
+        // Switch to "Group that own an asset from an answer"
+        cy.get('@observers_dropdown').selectDropdownValue('Group that own an asset from an answer');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('group_object_answer_dropdown');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@observers_dropdown').should('have.text', 'Group from GLPI object answer');
+        cy.get('@observers_dropdown').should('have.text', 'Group that own an asset from an answer');
         cy.get('@group_object_answer_dropdown').should('have.text', '×My Computer question');
 
-        // Switch to "Tech group from GLPI object answer"
-        cy.get('@observers_dropdown').selectDropdownValue('Tech group from GLPI object answer');
+        // Switch to "Group in charge of an asset from an answer"
+        cy.get('@observers_dropdown').selectDropdownValue('Group in charge of an asset from an answer');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('tech_group_object_answer_dropdown');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@observers_dropdown').should('have.text', 'Tech group from GLPI object answer');
+        cy.get('@observers_dropdown').should('have.text', 'Group in charge of an asset from an answer');
         cy.get('@tech_group_object_answer_dropdown').should('have.text', '×My Computer question');
     });
 
