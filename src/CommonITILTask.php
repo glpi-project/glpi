@@ -133,7 +133,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Does current user have right to show the current task?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canViewItem(): bool
     {
@@ -176,7 +176,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Does current user have right to create the current task?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canCreateItem(): bool
     {
@@ -196,7 +196,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Does current user have right to update the current task?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateItem(): bool
     {
@@ -230,7 +230,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * Does current user have right to purge the current task?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canPurgeItem(): bool
     {
@@ -264,7 +264,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * can read the parent ITIL Object ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canReadITILItem()
     {
@@ -280,7 +280,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @since 0.85
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateITILItem()
     {
@@ -1580,9 +1580,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @param string          $itemtype  itemtype
      * @param array           $val       the item to display
-     * @param integer         $who       ID of the user (0 if all)
+     * @param int         $who       ID of the user (0 if all)
      * @param string          $type      position of the item in the time block (in, through, begin or end)
-     * @param integer|boolean $complete  complete display (more details) (default 0)
+     * @param int|bool $complete  complete display (more details) (default 0)
      *
      * @return false|string Output
      **/
@@ -1785,9 +1785,9 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @since 9.2
      *
-     * @param integer $start            Start number to display
+     * @param int $start            Start number to display
      * @param string  $status           The task status to filter
-     * @param boolean $showgrouptickets As we display for group defined in task or not?
+     * @param bool $showgrouptickets As we display for group defined in task or not?
      *
      * @return void
      */
@@ -1939,7 +1939,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @since 9.2
      *
-     * @param integer $ID       The ID of the task
+     * @param int $ID       The ID of the task
      * @param string  $itemtype The itemtype (TicketTask, ProblemTask)
      *
      * @return void

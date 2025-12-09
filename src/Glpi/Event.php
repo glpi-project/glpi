@@ -158,7 +158,7 @@ class Event extends CommonDBTM
      *
      * @param int $day
      *
-     * @return integer number of events deleted
+     * @return int number of events deleted
      **/
     public static function cleanOld($day)
     {

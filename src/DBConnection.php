@@ -93,14 +93,14 @@ class DBConnection extends CommonGLPI
      * @param string  $user                      The DB user
      * @param string  $password                  The DB password
      * @param string  $dbname                    The name of the DB
-     * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
-     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-     * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param bool $use_timezones             Flag that indicates if timezones usage should be activated
+     * @param bool $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+     * @param bool $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+     * @param bool $allow_datetime            Flag that indicates if datetime fields usage should be allowed
+     * @param bool $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
      * @param string  $config_dir
      *
-     * @return boolean
+     * @return bool
      */
     public static function createMainConfig(
         string $host,
@@ -163,7 +163,7 @@ class DBConnection extends CommonGLPI
      * @param bool   $update_slave
      * @param string $config_dir
      *
-     * @return boolean
+     * @return bool
      *
      * @since 10.0.0
      */
@@ -180,7 +180,7 @@ class DBConnection extends CommonGLPI
      * @param bool   $update_slave
      * @param string $config_dir
      *
-     * @return boolean
+     * @return bool
      *
      * @since 10.0.0
      */
@@ -242,14 +242,14 @@ class DBConnection extends CommonGLPI
      * @param string  $user                      The DB user
      * @param string  $password                  The DB password
      * @param string  $dbname                    The name of the DB
-     * @param boolean $use_timezones             Flag that indicates if timezones usage should be activated
-     * @param boolean $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
-     * @param boolean $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
-     * @param boolean $allow_datetime            Flag that indicates if datetime fields usage should be allowed
-     * @param boolean $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
+     * @param bool $use_timezones             Flag that indicates if timezones usage should be activated
+     * @param bool $log_deprecation_warnings  Flag that indicates if DB deprecation warnings should be logged
+     * @param bool $use_utf8mb4               Flag that indicates if utf8mb4 charset/collation should be used
+     * @param bool $allow_datetime            Flag that indicates if datetime fields usage should be allowed
+     * @param bool $allow_signed_keys         Flag that indicates if signed integers in primary/foreign keys usage should be allowed
      * @param string  $config_dir
      *
-     * @return boolean for success
+     * @return bool for success
      **/
     public static function createSlaveConnectionFile(
         string $host,
@@ -306,7 +306,7 @@ class DBConnection extends CommonGLPI
     /**
      * Indicates is the DB replicate is active or not
      *
-     * @return boolean true if active / false if not active
+     * @return bool true if active / false if not active
      **/
     public static function isDBSlaveActive()
     {
@@ -317,7 +317,7 @@ class DBConnection extends CommonGLPI
     /**
      * Read slave DB configuration file
      *
-     * @param integer $choice  Host number (default NULL)
+     * @param int $choice  Host number (default NULL)
      *
      * @return DBmysql|void object
      **/
@@ -494,11 +494,11 @@ class DBConnection extends CommonGLPI
     /**
      *  Establish a connection to a mysql server (main or replicate)
      *
-     * @param boolean $use_slave try to connect to slave server first not to main server
-     * @param boolean $required  connection to the specified server is required
+     * @param bool $use_slave try to connect to slave server first not to main server
+     * @param bool $required  connection to the specified server is required
      *                           (if connection failed, do not try to connect to the other server)
      *
-     * @return boolean True if successfull, false otherwise
+     * @return bool True if successfull, false otherwise
      *
      * @since 11.0.0 The `$display` parameter has been removed.
      */
@@ -551,9 +551,9 @@ class DBConnection extends CommonGLPI
     /**
      * Get delay between slave and master
      *
-     * @param integer $choice  Host number (default NULL)
+     * @param int $choice  Host number (default NULL)
      *
-     * @return integer
+     * @return int
      **/
     public static function getReplicateDelay($choice = null)
     {
@@ -674,7 +674,7 @@ class DBConnection extends CommonGLPI
      *
      * @param CronTask $task to log and get param
      *
-     * @return integer
+     * @return int
      */
     public static function cronCheckDBreplicate(CronTask $task)
     {
@@ -725,7 +725,7 @@ class DBConnection extends CommonGLPI
     /**
      * Display in HTML, delay between master and slave
      * 1 line per slave is multiple
-     * @param boolean $no_display if true, the function returns the HTML string to display
+     * @param bool $no_display if true, the function returns the HTML string to display
      * @return ($no_display is true ? string : null)
      **/
     public static function showAllReplicateDelay($no_display = false)
@@ -788,7 +788,7 @@ class DBConnection extends CommonGLPI
     /**
      * Enable or disable db replication check cron task
      *
-     * @param boolean $enable Enable or disable cron task (true by default)
+     * @param bool $enable Enable or disable cron task (true by default)
      *
      * @return void
      */

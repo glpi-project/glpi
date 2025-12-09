@@ -109,7 +109,7 @@ class Appliance_Item extends CommonDBRelation
      *
      * @param Appliance $appliance  Appliance object wanted
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showItems(Appliance $appliance)
     {
@@ -224,7 +224,7 @@ class Appliance_Item extends CommonDBRelation
      * @since 9.5.2
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param integer    $withtemplate not used (to be deleted)
+     * @param int    $withtemplate not used (to be deleted)
      *
      * @return void
      **/

@@ -71,7 +71,7 @@ abstract class FQDNLabel extends CommonDBChild
      * Get the internet name from a label and a domain ID
      *
      * @param string  $label   the label of the computer or its alias
-     * @param integer $domain  id of the domain that owns the item
+     * @param int $domain  id of the domain that owns the item
      *
      * @return string  result the full internet name
      **/
@@ -247,7 +247,7 @@ abstract class FQDNLabel extends CommonDBChild
      * Look for "computer name" inside all databases
      *
      * @param string  $fqdn             name to search (for instance : forge.indepnet.net)
-     * @param boolean $wildcard_search  true if we search with wildcard (false by default)
+     * @param bool $wildcard_search  true if we search with wildcard (false by default)
      *
      * @return array
      *    each value of the array (corresponding to one NetworkPort) is an array of the
@@ -302,7 +302,7 @@ abstract class FQDNLabel extends CommonDBChild
      * Get an Object ID by its name (only if one result is found in the entity)
      *
      * @param string  $value  the name
-     * @param integer $entity the entity to look for
+     * @param int $entity the entity to look for
      *
      * @return array  an array containing the object ID
      *    or an empty array is no value of serverals ID where found

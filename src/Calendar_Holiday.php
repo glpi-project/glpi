@@ -61,7 +61,7 @@ class Calendar_Holiday extends CommonDBRelation
      *
      * @param Calendar $calendar object
      *
-     * @return void|boolean (HTML display) False if there is a rights error.
+     * @return void|bool (HTML display) False if there is a rights error.
      */
     public static function showForCalendar(Calendar $calendar)
     {

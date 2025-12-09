@@ -53,7 +53,7 @@ class Appliance_Item_Relation extends CommonDBRelation
     /**
      * Get item types that can be linked to an appliance item
      *
-     * @param boolean $all Get all possible types or only allowed ones
+     * @param bool $all Get all possible types or only allowed ones
      *
      * @return array
      */

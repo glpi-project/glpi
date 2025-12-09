@@ -207,7 +207,7 @@ class NotificationTarget extends CommonDBChild
      * @param class-string<CommonDBTM> $type             type of the target to retrive
      * @param int                      $ID               ID of the target to retrieve
      *
-     * @return boolean
+     * @return bool
      *
      * @since 0.85
      */
@@ -239,7 +239,7 @@ class NotificationTarget extends CommonDBChild
      *                                   triggered the event so it can be used instead of
      *                                   getLoginUserID
      *
-     * @return boolean
+     * @return bool
      **/
     public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
     {
@@ -939,8 +939,8 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add users of a group to targets
      *
-     * @param integer $manager  0 all users, 1 only supervisors, 2 all users without supervisors
-     * @param integer $group_id id of the group
+     * @param int $manager  0 all users, 1 only supervisors, 2 all users without supervisors
+     * @param int $group_id id of the group
      *
      * @since 9.2
      *
@@ -1174,7 +1174,7 @@ class NotificationTarget extends CommonDBChild
      * Can be updated by implementing the addAdditionnalTargets() method
      * Can be overriden (like dbconnection)
      *
-     * @param integer $entity the entity on which the event is raised
+     * @param int $entity the entity on which the event is raised
      *
      * @return void
      **/
@@ -1228,7 +1228,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param string  $field            look for user looking for this field in the object
      *                                  which raises the event
-     * @param boolean $search_in_object search is done in the object ? if not  in target object
+     * @param bool $search_in_object search is done in the object ? if not  in target object
      *                                  (false by default)
      *
      * @return void
@@ -1311,7 +1311,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Add users from a profile
      *
-     * @param integer $profiles_id the profile ID
+     * @param int $profiles_id the profile ID
      *
      * @return void
      */
@@ -1765,7 +1765,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @param $group Group object
      *
-     * @return integer
+     * @return int
      **/
     public static function countForGroup(Group $group)
     {
@@ -1912,7 +1912,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * Is current mode for mail
      *
-     * @return boolean
+     * @return bool
      */
     protected function isMailMode()
     {

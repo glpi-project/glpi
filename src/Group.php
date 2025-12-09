@@ -533,13 +533,13 @@ class Group extends CommonTreeDropdown
      * @since 0.83
      *
      * @param bool $tech     Whether to fetch items related to technician assignment or not.
-     * @param boolean $tree  Include child groups
-     * @param boolean $user  Include members (users)
-     * @param integer $start First row to retrieve
+     * @param bool $tree  Include child groups
+     * @param bool $user  Include members (users)
+     * @param int $start First row to retrieve
      * @param array $res     Result filled on ouput
      * @param array $extra_criteria
      *
-     * @return integer total of items
+     * @return int total of items
      **/
     public function getDataItems(bool $tech, bool $tree, bool $user, int $start, array &$res, array $extra_criteria = []): int
     {
@@ -687,7 +687,7 @@ class Group extends CommonTreeDropdown
     /**
      * Show items for the group
      *
-     * @param boolean $tech False search groups_id, true, search groups_id_tech
+     * @param bool $tech False search groups_id, true, search groups_id_tech
      *
      * @return void
      */
@@ -860,7 +860,7 @@ class Group extends CommonTreeDropdown
     /**
      * Check if group is used in consumables.
      *
-     * @return boolean
+     * @return bool
      */
     private function isUsedInConsumables()
     {

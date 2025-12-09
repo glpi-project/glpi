@@ -84,7 +84,7 @@ abstract class MainAsset extends InventoryAsset
     protected $raw_data;
     /* @var array */
     protected $hardware;
-    /** @var ?integer */
+    /** @var ?int */
     protected $states_id_default;
     /** @var stdClass */
     private $current_data;
@@ -96,7 +96,7 @@ abstract class MainAsset extends InventoryAsset
     protected $refused = [];
     /** @var array */
     protected $inventoried = [];
-    /** @var boolean */
+    /** @var bool */
     protected $partial = false;
     /** @var bool */
     protected bool $is_discovery = false;
@@ -687,10 +687,10 @@ abstract class MainAsset extends InventoryAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer       $items_id id of the item (0 if new)
+     * @param int       $items_id id of the item (0 if new)
      * @param string        $itemtype Item type
      * @param int|null      $rules_id Matched rule id, if any (else null)
-     * @param integer|array $ports_id Matched port id, if any
+     * @param int|array $ports_id Matched port id, if any
      *
      * @return void
      */
@@ -1012,7 +1012,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Retrieve computer entities id
      *
-     * @return integer
+     * @return int
      */
     public function getEntityID()
     {
@@ -1022,7 +1022,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Retrieve computer entities is_recursive
      *
-     * @return integer
+     * @return int
      */
     public function getEntityRecursive()
     {
@@ -1140,7 +1140,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Is inventory partial
      *
-     * @return boolean
+     * @return bool
      */
     public function isPartial(): bool
     {
@@ -1153,7 +1153,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param stdClass $object
      *
-     * @return boolean
+     * @return bool
      */
     protected function isAccessPoint($object): bool
     {

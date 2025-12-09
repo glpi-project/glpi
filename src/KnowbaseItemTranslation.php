@@ -243,7 +243,7 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID
+     * @param int $ID
      * @param array   $options
      */
     public function showForm($ID = -1, array $options = [])
@@ -303,7 +303,7 @@ TWIG, $twig_params);
      *
      * @param KnowbaseItem $item
      *
-     * @return integer  the number of translations for this item
+     * @return int  the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
@@ -349,9 +349,9 @@ TWIG, $twig_params);
     /**
      * Reverts item translation contents to specified revision
      *
-     * @param integer $revid Revision ID
+     * @param int $revid Revision ID
      *
-     * @return boolean
+     * @return bool
      */
     public function revertTo($revid)
     {

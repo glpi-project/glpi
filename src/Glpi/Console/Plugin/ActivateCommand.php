@@ -44,7 +44,7 @@ class ActivateCommand extends AbstractPluginCommand
     /**
      * Error code returned when a plugin activation failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_ACTIVATION_FAILED = 1;
 
@@ -117,7 +117,7 @@ class ActivateCommand extends AbstractPluginCommand
      *
      * @param string  $directory
      *
-     * @return boolean
+     * @return bool
      */
     private function canRunActivateMethod($directory)
     {

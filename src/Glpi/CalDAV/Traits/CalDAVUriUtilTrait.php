@@ -80,7 +80,7 @@ trait CalDAVUriUtilTrait
     /**
      * Get principal URI for a group, relative to CalDAV server root.
      *
-     * @param integer $group_id
+     * @param int $group_id
      *
      * @return string
      */

@@ -230,7 +230,7 @@ class Calendar extends CommonDropdown
      *
      * @param string $date Date of the day to check
      *
-     * @return boolean
+     * @return bool
      **/
     public function isHoliday($date)
     {
@@ -341,9 +341,9 @@ class Calendar extends CommonDropdown
      *
      * @since 0.84
      *
-     * @param integer $time Time to check
+     * @param int $time Time to check
      *
-     * @return boolean
+     * @return bool
      */
     public function isAWorkingDay($time)
     {
@@ -360,7 +360,7 @@ class Calendar extends CommonDropdown
      *
      * @since 9.4.3
      *
-     * @return boolean
+     * @return bool
      */
     public function hasAWorkingDay()
     {
@@ -376,9 +376,9 @@ class Calendar extends CommonDropdown
      *
      * @since 0.85
      *
-     * @param integer $time Time to check
+     * @param int $time Time to check
      *
-     * @return boolean
+     * @return bool
      */
     public function isAWorkingHour($time)
     {
@@ -402,12 +402,12 @@ class Calendar extends CommonDropdown
      * else work in minutes
      *
      * @param string   $start               begin
-     * @param integer  $delay               delay to add (in seconds)
-     * @param integer  $additional_delay    delay to add (default 0)
-     * @param boolean  $work_in_days        force working in days (false by default)
-     * @param boolean  $end_of_working_day  end of working day (false by default)
+     * @param int  $delay               delay to add (in seconds)
+     * @param int  $additional_delay    delay to add (default 0)
+     * @param bool  $work_in_days        force working in days (false by default)
+     * @param bool  $end_of_working_day  end of working day (false by default)
      *
-     * @return boolean|string end date
+     * @return bool|string end date
      **/
     public function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
     {
@@ -639,7 +639,7 @@ class Calendar extends CommonDropdown
     /**
      * Get days durations including all segments of the current calendar
      *
-     * @return boolean|array
+     * @return bool|array
      **/
     public function getDurationsCache()
     {
@@ -662,7 +662,7 @@ class Calendar extends CommonDropdown
     /**
      * Get days durations including all segments of the current calendar
      *
-     * @return boolean|array
+     * @return bool|array
      **/
     public function getDaysDurations()
     {
@@ -687,7 +687,7 @@ class Calendar extends CommonDropdown
     /**
      * Update the calendar cache
      *
-     * @param integer $calendars_id ID of the calendar
+     * @param int $calendars_id ID of the calendar
      *
      * @return bool True if successful in updating the cache, otherwise returns false.
      */
@@ -708,9 +708,9 @@ class Calendar extends CommonDropdown
     /**
      * Get day number (in week) for a date.
      *
-     * @param integer $date Date as a UNIX timestamp
+     * @param int $date Date as a UNIX timestamp
      *
-     * @return integer
+     * @return int
      */
     public static function getDayNumberInWeek($date)
     {

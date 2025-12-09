@@ -56,10 +56,10 @@ class Group_User extends CommonDBRelation
      *
      * @since 9.4
      *
-     * @param integer $users_id  the user ID
-     * @param integer $groups_id the group ID
+     * @param int $users_id  the user ID
+     * @param int $groups_id the group ID
      *
-     * @return boolean true if the user belongs to the group
+     * @return bool true if the user belongs to the group
      */
     public static function isUserInGroup($users_id, $groups_id): bool
     {
@@ -75,7 +75,7 @@ class Group_User extends CommonDBRelation
     /**
      * Get groups for a user
      *
-     * @param integer $users_id  User id
+     * @param int $users_id  User id
      * @param array   $condition Query extra condition (default [])
      *
      * @return array
@@ -116,7 +116,7 @@ class Group_User extends CommonDBRelation
      *
      * @since 0.84
      *
-     * @param integer $groups_id Group ID
+     * @param int $groups_id Group ID
      * @param array   $condition Query extra condition (default [])
      *
      * @return array
@@ -764,7 +764,7 @@ class Group_User extends CommonDBRelation
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     * @param bool    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
      *
      * @return array
      */

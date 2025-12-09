@@ -95,7 +95,7 @@ class DBmysql
     /**
      * Defines if connection must use SSL.
      *
-     * @var boolean
+     * @var bool
      */
     public $dbssl              = false;
 
@@ -223,7 +223,7 @@ class DBmysql
     /**
      * Constructor / Connect to the MySQL Database
      *
-     * @param integer $choice host number (default NULL)
+     * @param int $choice host number (default NULL)
      *
      * @return void
      */
@@ -236,7 +236,7 @@ class DBmysql
      * Connect using current database settings
      * Use dbhost, dbuser, dbpassword and dbdefault
      *
-     * @param integer $choice host number (default NULL)
+     * @param int $choice host number (default NULL)
      *
      * @return void
      */
@@ -355,7 +355,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      *
      * @deprecated 10.0.11
      */
@@ -371,7 +371,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function doQuery($query)
     {
@@ -528,7 +528,7 @@ class DBmysql
      *
      * @param mysqli_result $result MySQL result handler
      *
-     * @return integer number of rows
+     * @return int number of rows
      */
     public function numrows($result)
     {
@@ -588,9 +588,9 @@ class DBmysql
      * Move current pointer of a Mysql result to the specific row
      *
      * @param mysqli_result $result MySQL result handler
-     * @param integer       $num    Row to move current pointer
+     * @param int       $num    Row to move current pointer
      *
-     * @return boolean
+     * @return bool
      */
     public function dataSeek($result, $num)
     {
@@ -631,7 +631,7 @@ class DBmysql
      * Give name of a field of a Mysql result
      *
      * @param mysqli_result $result MySQL result handler
-     * @param integer       $nb     ID of the field
+     * @param int       $nb     ID of the field
      *
      * @return string name of the field
      */
@@ -900,7 +900,7 @@ class DBmysql
      * List fields of a table
      *
      * @param string  $table    Table name condition
-     * @param boolean $usecache If use field list cache (default true)
+     * @param bool $usecache If use field list cache (default true)
      *
      * @return mixed list of fields
      */
@@ -929,7 +929,7 @@ class DBmysql
      *
      * @param string  $table
      * @param string  $field
-     * @param boolean $usecache
+     * @param bool $usecache
      *
      * @return array|null Field characteristics
      */
@@ -955,7 +955,7 @@ class DBmysql
      *
      * @param mysqli_result $result MySQL result handler
      *
-     * @return boolean
+     * @return bool
      */
     public function freeResult($result)
     {
@@ -986,7 +986,7 @@ class DBmysql
     /**
      * Close MySQL connection
      *
-     * @return boolean TRUE on success or FALSE on failure.
+     * @return bool TRUE on success or FALSE on failure.
      */
     public function close()
     {
@@ -999,7 +999,7 @@ class DBmysql
     /**
      * is a slave database ?
      *
-     * @return boolean
+     * @return bool
      */
     public function isSlave()
     {
@@ -1011,7 +1011,7 @@ class DBmysql
      *
      * @param string $path with file full path
      *
-     * @return boolean true if all query are successfull
+     * @return bool true if all query are successfull
      */
     public function runFile($path)
     {
@@ -1104,7 +1104,7 @@ class DBmysql
      *
      * @param string $name lock's name
      *
-     * @return boolean
+     * @return bool
      */
     public function getLock($name)
     {
@@ -1123,7 +1123,7 @@ class DBmysql
      *
      * @param string $name lock's name
      *
-     * @return boolean
+     * @return bool
      */
     public function releaseLock($name)
     {
@@ -1143,9 +1143,9 @@ class DBmysql
      * @since 9.5 Added $usecache parameter.
      *
      * @param string  $tablename Table name
-     * @param boolean $usecache  If use table list cache
+     * @param bool $usecache  If use table list cache
      *
-     * @return boolean
+     * @return bool
      **/
     public function tableExists($tablename, $usecache = true)
     {
@@ -1182,9 +1182,9 @@ class DBmysql
      *
      * @param string  $table    Table name for the field we're looking for
      * @param string  $field    Field name
-     * @param Boolean $usecache Use cache; @see DBmysql::listFields(), defaults to true
+     * @param bool $usecache Use cache; @see DBmysql::listFields(), defaults to true
      *
-     * @return boolean
+     * @return bool
      **/
     public function fieldExists($table, $field, $usecache = true)
     {
@@ -1343,7 +1343,7 @@ class DBmysql
      * @param string $table  Table name
      * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function insert($table, $params)
     {
@@ -1362,7 +1362,7 @@ class DBmysql
      * @param array  $params  Query parameters ([field name => field value)
      * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      *
      * @deprecated 11.0.0
      */
@@ -1461,7 +1461,7 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function update($table, $params, $where, array $joins = [])
     {
@@ -1482,7 +1482,7 @@ class DBmysql
      * @param array  $joins   JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      *
      * @deprecated 11.0.0
      */
@@ -1501,9 +1501,9 @@ class DBmysql
      * @param string  $table   Table name
      * @param array   $params  Query parameters ([:field name => field value)
      * @param array   $where   WHERE clause
-     * @param boolean $onlyone Do the update only one element, defaults to true
+     * @param bool $onlyone Do the update only one element, defaults to true
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function updateOrInsert($table, $params, $where, $onlyone = true)
     {
@@ -1570,7 +1570,7 @@ class DBmysql
      * @param array  $joins  JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      */
     public function delete($table, $where, array $joins = [])
     {
@@ -1590,7 +1590,7 @@ class DBmysql
      * @param array  $joins   JOINS criteria array
      *
      * @since 9.4.0 $joins parameter added
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      *
      * @deprecated 11.0.0
      */
@@ -1609,7 +1609,7 @@ class DBmysql
      *
      * @param string $table Table name
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      *
      * @deprecated 11.0.0
      */
@@ -1630,7 +1630,7 @@ class DBmysql
      * @param string $table   Table name
      * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result|boolean Query result handler
+     * @return mysqli_result|bool Query result handler
      *
      * @deprecated 11.0.0
      */
@@ -1930,7 +1930,7 @@ class DBmysql
      * replacements in the source code in the future.
      *
      * @param mixed   $value Value to quote
-     * @param integer $type  Value type, defaults to PDO::PARAM_STR
+     * @param int $type  Value type, defaults to PDO::PARAM_STR
      *
      * @return mixed
      *
@@ -1959,7 +1959,7 @@ class DBmysql
      *
      * @param string|QueryExpression $value Value to check
      *
-     * @return boolean
+     * @return bool
      *
      * @since 9.5.0
      */

@@ -63,7 +63,7 @@ class Browser extends Plugin
     /**
      * Check if connected user can display the HTML frontend.
      *
-     * @return boolean
+     * @return bool
      */
     private function canDisplayDebugInterface()
     {

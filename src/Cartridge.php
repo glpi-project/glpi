@@ -233,7 +233,7 @@ class Cartridge extends CommonDBRelation
      *
      * @since 0.85 (before name was restore)
      * @param array   $input
-     * @param boolean $history
+     * @param bool $history
      * @return bool
      */
     public function backToStock(array $input, $history = true)
@@ -261,10 +261,10 @@ class Cartridge extends CommonDBRelation
      *
      * Link the first unused cartridge of type $Tid to the printer $pID.
      *
-     * @param integer $tID ID of the cartridge
-     * @param integer $pID : ID of the printer
+     * @param int $tID ID of the cartridge
+     * @param int $pID : ID of the printer
      *
-     * @return boolean True if successful
+     * @return bool True if successful
      **/
     public function install($pID, $tID)
     {
@@ -314,9 +314,9 @@ class Cartridge extends CommonDBRelation
     /**
      * Unlink a cartridge from a printer by cartridge ID.
      *
-     * @param integer $ID ID of the cartridge
+     * @param int $ID ID of the cartridge
      *
-     * @return boolean
+     * @return bool
      **/
     public function uninstall($ID)
     {
@@ -365,9 +365,9 @@ class Cartridge extends CommonDBRelation
     /**
      * Print the cartridge count HTML array for the cartridge item $tID
      *
-     * @param integer         $tID      ID of the cartridge item
-     * @param integer         $alarm_threshold Alarm threshold value
-     * @param integer|boolean $nohtml          True if the return value should be without HTML tags (default 0/false).
+     * @param int         $tID      ID of the cartridge item
+     * @param int         $alarm_threshold Alarm threshold value
+     * @param int|bool $nohtml          True if the return value should be without HTML tags (default 0/false).
      *                                         The return value will anyway be a safe HTML string.
      *
      * @return string String to display
@@ -448,8 +448,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @since 0.85
      *
-     * @param integer         $pID    ID of the printer
-     * @param integer|boolean $nohtml True if the return value should be without HTML tags (default 0/false).
+     * @param int         $pID    ID of the printer
+     * @param int|bool $nohtml True if the return value should be without HTML tags (default 0/false).
      *                                The return value will anyway be a safe HTML string.
      *
      * @return string String to display
@@ -514,9 +514,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * Count the total number of cartridges for the cartridge item $tID.
      *
-     * @param integer $tID ID of cartridge item.
+     * @param int $tID ID of cartridge item.
      *
-     * @return integer Number of cartridges counted.
+     * @return int Number of cartridges counted.
      **/
     public static function getTotalNumber($tID)
     {
@@ -535,9 +535,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @since 0.85
      *
-     * @param integer $pID ID of the printer.
+     * @param int $pID ID of the printer.
      *
-     * @return integer Number of cartridges counted.
+     * @return int Number of cartridges counted.
      **/
     public static function getTotalNumberForPrinter($pID)
     {
@@ -554,9 +554,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * Count the number of used cartridges for the cartridge item $tID.
      *
-     * @param integer $tID ID of the cartridge item.
+     * @param int $tID ID of the cartridge item.
      *
-     * @return integer Number of used cartridges counted.
+     * @return int Number of used cartridges counted.
      **/
     public static function getUsedNumber($tID)
     {
@@ -582,9 +582,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @since 0.85
      *
-     * @param integer $pID ID of the printer.
+     * @param int $pID ID of the printer.
      *
-     * @return integer Number of used cartridge counted.
+     * @return int Number of used cartridge counted.
      **/
     public static function getUsedNumberForPrinter($pID)
     {
@@ -605,9 +605,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * Count the number of old cartridges for the cartridge item $tID.
      *
-     * @param integer $tID ID of the cartridge item.
+     * @param int $tID ID of the cartridge item.
      *
-     * @return integer Number of old cartridges counted.
+     * @return int Number of old cartridges counted.
      **/
     public static function getOldNumber($tID)
     {
@@ -629,9 +629,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @since 0.85
      *
-     * @param integer $pID printer identifier.
+     * @param int $pID printer identifier.
      *
-     * @return integer : number of old cartridge counted.
+     * @return int : number of old cartridge counted.
      **/
     public static function getOldNumberForPrinter($pID)
     {
@@ -651,9 +651,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * count how many cartridge unused for the cartridge item $tID
      *
-     * @param integer $tID cartridge item identifier.
+     * @param int $tID cartridge item identifier.
      *
-     * @return integer : number of cartridge unused counted.
+     * @return int : number of cartridge unused counted.
      **/
     public static function getUnusedNumber($tID)
     {
@@ -674,8 +674,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      * The desired stock level
      *
      * This is used when the alarm threshold is reached to know how many to order.
-     * @param integer $tID Cartridge item ID
-     * @return integer
+     * @param int $tID Cartridge item ID
+     * @return int
      */
     public static function getStockTarget(int $tID): int
     {
@@ -697,8 +697,8 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
     /**
      * The lower threshold for the stock amount before an alarm is triggered
      *
-     * @param integer $tID Cartridge item ID
-     * @return integer
+     * @param int $tID Cartridge item ID
+     * @return int
      */
     public static function getAlarmThreshold(int $tID): int
     {
@@ -737,9 +737,9 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      * Print out the cartridges of a defined type
      *
      * @param CartridgeItem   $cartitem  The cartridge item
-     * @param boolean|integer $show_old  Show old cartridges or not (default 0/false)
+     * @param bool|int $show_old  Show old cartridges or not (default 0/false)
      *
-     * @return boolean|void
+     * @return bool|void
      **/
     public static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0)
     {
@@ -936,7 +936,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @param CartridgeItem $cartitem
      *
-     * @return boolean|void
+     * @return bool|void
      **/
     public static function showAddForm(CartridgeItem $cartitem)
     {
@@ -984,9 +984,9 @@ TWIG, $twig_params);
      * @since 0.84 (before showInstalled)
      *
      * @param Printer         $printer Printer object
-     * @param boolean|integer $old     Old cartridges or not? (default 0/false)
+     * @param bool|int $old     Old cartridges or not? (default 0/false)
      *
-     * @return boolean|void
+     * @return bool|void
      **/
     public static function showForPrinter(Printer $printer, $old = 0)
     {
@@ -1226,11 +1226,11 @@ TWIG, ['printer_id' => $printer->getID()]);
      * Show form for Cartridge
      * @since 0.84
      *
-     * @param integer $ID       Id of the cartridge
+     * @param int $ID       Id of the cartridge
      * @param array   $options  Array of possible options:
      *     - parent Object : the printers where the cartridge is used
      *
-     * @return boolean False if there was a rights issue. Otherwise, returns true.
+     * @return bool False if there was a rights issue. Otherwise, returns true.
      */
     public function showForm($ID, array $options = [])
     {
@@ -1284,7 +1284,7 @@ TWIG, ['printer_id' => $printer->getID()]);
     /**
      * Count the number of cartridges associated with the given cartridge item.
      * @param CartridgeItem $item CartridgeItem object
-     * @return integer
+     * @return int
      */
     public static function countForCartridgeItem(CartridgeItem $item)
     {
@@ -1294,7 +1294,7 @@ TWIG, ['printer_id' => $printer->getID()]);
     /**
      * Count the number of cartridges associated with the given printer.
      * @param Printer $item Printer object
-     * @return integer
+     * @return int
      */
     public static function countForPrinter(Printer $item)
     {

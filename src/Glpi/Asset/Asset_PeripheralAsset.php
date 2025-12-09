@@ -76,7 +76,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * @param CommonDBTM $main_item
      * @param CommonDBTM $peripheral_item
      *
-     * @return boolean
+     * @return bool
      */
     private static function isAlreadyConnected(CommonDBTM $main_item, CommonDBTM $peripheral_item): bool
     {
@@ -292,7 +292,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * Print the form for computers or templates connections to printers, screens or peripherals
      *
      * @param CommonDBTM $asset        CommonDBTM object
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
@@ -459,7 +459,7 @@ TWIG, $twig_params);
      * Print the form for a peripheral
      *
      * @param CommonDBTM $peripheral         CommonDBTM object
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
@@ -655,11 +655,11 @@ TWIG, $twig_params);
      * @param string            $itemtype        type to connect
      * @param string            $fromtype        from where the connection is
      * @param string            $myname          select name
-     * @param integer|integer[] $entity_restrict Restrict to a defined entity (default = -1)
-     * @param boolean           $onlyglobal      display only global devices (used for templates) (default 0)
-     * @param integer[]         $used            Already used items ID: not to display in dropdown
+     * @param int|int[] $entity_restrict Restrict to a defined entity (default = -1)
+     * @param bool           $onlyglobal      display only global devices (used for templates) (default 0)
+     * @param int[]         $used            Already used items ID: not to display in dropdown
      *
-     * @return integer Random generated number used for select box ID (select box HTML is printed)
+     * @return int Random generated number used for select box ID (select box HTML is printed)
      */
     public static function dropdownConnect(
         $itemtype,

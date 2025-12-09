@@ -53,8 +53,8 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
     /**
-     * @param integer $portID
-     * @param integer $vlanID
+     * @param int $portID
+     * @param int $vlanID
      *
      * @return bool
      **/
@@ -69,8 +69,8 @@ class NetworkPort_Vlan extends CommonDBRelation
     }
 
     /**
-     * @param integer $port
-     * @param integer $vlan
+     * @param int $port
+     * @param int $vlan
      * @param int $tagged
      * @return bool|int
      **/
@@ -270,7 +270,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param integer $portID
+     * @param int $portID
      * @return array
      */
     public static function getVlansForNetworkPort($portID)

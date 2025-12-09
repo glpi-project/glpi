@@ -148,7 +148,7 @@ class ITILSolution extends CommonDBChild
      * @param $options array
      *     - item: CommonITILObject instance
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -169,9 +169,9 @@ class ITILSolution extends CommonDBChild
      * Count solutions for specific item
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
-     * @return integer
+     * @return int
      */
     public static function countFor($itemtype, $items_id)
     {

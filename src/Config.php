@@ -100,7 +100,7 @@ class Config extends CommonDBTM
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
-     * @var boolean
+     * @var bool
      */
     private static $loaded = false;
 
@@ -880,7 +880,7 @@ class Config extends CommonDBTM
      *
      * @param string       $name   select name
      * @param string       $value  default value
-     * @param integer|null $rand   rand
+     * @param int|null $rand   rand
      *
      * @return void
      */
@@ -1082,10 +1082,10 @@ class Config extends CommonDBTM
      *
      * @since 9.3
      *
-     * @param boolean $fordebug display for debug (no html required) (false by default)
+     * @param bool $fordebug display for debug (no html required) (false by default)
      * @param string  $version  Version to check (mainly from install), defaults to null
      *
-     * @return integer 2: missing extension,  1: missing optional extension, 0: OK,
+     * @return int 2: missing extension,  1: missing optional extension, 0: OK,
      **/
     public static function displayCheckDbEngine($fordebug = false, $version = null)
     {
@@ -1329,7 +1329,7 @@ class Config extends CommonDBTM
     /**
      * Load legacy configuration into $CFG_GLPI global variable.
      *
-     * @return boolean True for success, false if an error occurred
+     * @return bool True for success, false if an error occurred
      *
      * @since 10.0.0 Parameter $older_to_latest is no longer used.
      */
@@ -1570,7 +1570,7 @@ class Config extends CommonDBTM
      *
      * @since 9.3
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showFormLogs()
     {
@@ -1631,7 +1631,7 @@ class Config extends CommonDBTM
      *
      * @since 9.5.0
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showFormSecurity()
     {
@@ -1652,7 +1652,7 @@ class Config extends CommonDBTM
      *
      * @since 10.0.0
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      */
     public function showFormManagement()
     {
@@ -1804,7 +1804,7 @@ class Config extends CommonDBTM
     /**
      * Get the GLPI Config without unsafe keys like passwords and emails (true on $safer)
      *
-     * @param boolean $safer do we need to clean more (avoid emails disclosure)
+     * @param bool $safer do we need to clean more (avoid emails disclosure)
      * @return array of $CFG_GLPI without unsafe keys
      *
      * @since 9.5

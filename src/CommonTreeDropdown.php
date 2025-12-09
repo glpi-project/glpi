@@ -319,8 +319,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
     /**
      * Clean from database and caches the sons of the current entity and of all its parents.
      *
-     * @param null|integer $id    ID of the entity that have its sons cache to be cleaned.
-     * @param boolean      $cache Whether to clean cache (defaults to true)
+     * @param null|int $id    ID of the entity that have its sons cache to be cleaned.
+     * @param bool      $cache Whether to clean cache (defaults to true)
      *
      * @return void
      */

@@ -137,10 +137,10 @@ class ItemVirtualMachine extends CommonDBChild
     /**
      * Display form
      *
-     * @param integer $ID
+     * @param int $ID
      * @param array   $options
      *
-     * @return boolean TRUE if form is ok
+     * @return bool TRUE if form is ok
      **/
     public function showForm($ID, array $options = [])
     {
@@ -256,7 +256,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param CommonDBTM $asset Asset instance
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForAsset(CommonDBTM $asset)
     {
@@ -395,7 +395,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param array $fields  Array of virtualmachine fields
      *
-     * @return integer|boolean ID of the asset that have this uuid or false otherwise
+     * @return int|bool ID of the asset that have this uuid or false otherwise
      **/
     public static function findVirtualMachine($fields = [])
     {

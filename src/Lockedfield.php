@@ -212,7 +212,7 @@ class Lockedfield extends CommonDBTM
      *
      * @param CommonDBTM $item Item instance
      *
-     * @return boolean
+     * @return bool
      */
     public function isHandled(CommonGLPI $item)
     {
@@ -250,7 +250,7 @@ class Lockedfield extends CommonDBTM
      * Get locked fields
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
      * return array
      */
@@ -282,7 +282,7 @@ class Lockedfield extends CommonDBTM
      * Get locked fields
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      * @param bool $fields_only
      *
      * @return array
@@ -318,7 +318,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Item has been deleted, remove all locks
      *
-     * @return boolean
+     * @return bool
      */
     public function itemDeleted()
     {
@@ -340,7 +340,7 @@ class Lockedfield extends CommonDBTM
      * @param string $field
      * @param mixed $value
      *
-     * @return boolean
+     * @return bool
      */
     public function setLastValue($itemtype, $items_id, $field, $value)
     {

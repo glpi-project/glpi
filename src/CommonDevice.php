@@ -498,7 +498,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @param array $input Array of datas
      *
-     * @return integer ID of existing or new Device
+     * @return int ID of existing or new Device
      **/
     public function import(array $input)
     {

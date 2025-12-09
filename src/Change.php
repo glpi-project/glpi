@@ -817,7 +817,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
     /**
      * @param CommonDBTM $item
-     * @param integer    $withtemplate
+     * @param int    $withtemplate
      *
      * @return void|false
      **/

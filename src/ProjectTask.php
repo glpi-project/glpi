@@ -111,7 +111,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Is the current user have right to show the current task ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canViewItem(): bool
     {
@@ -146,7 +146,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Is the current user have right to edit the current task ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateItem(): bool
     {
@@ -411,7 +411,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Is the current user in the team?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isInTheTeam()
     {
@@ -441,7 +441,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get team member count
      *
-     * @return integer
+     * @return int
      */
     public function getTeamCount()
     {
@@ -676,7 +676,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all tasks for a project
      *
-     * @param integer $ID ID of the project
+     * @param int $ID ID of the project
      *
      * @return array of tasks ordered by dates
      **/
@@ -702,7 +702,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all sub-tasks for a project task
      * @since 9.5.0
-     * @param integer $ID ID of the project task
+     * @param int $ID ID of the project task
      *
      * @return array of tasks ordered by dates
      **/
@@ -728,7 +728,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get all linked tickets for a project
      *
-     * @param integer $ID ID of the project
+     * @param int $ID ID of the project
      *
      * @return array of tickets
      **/
@@ -762,7 +762,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Print the Project task form
      *
-     * @param integer $ID Id of the project task
+     * @param int $ID Id of the project task
      * @param array $options of possible options:
      *     - target form target
      *     - projects_id ID of the software for add process
@@ -821,9 +821,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get total effective duration of a project task (sum of effective duration + sum of action time of tickets)
      *
-     * @param integer $projecttasks_id $projecttasks_id ID of the project task
+     * @param int $projecttasks_id $projecttasks_id ID of the project task
      *
-     * @return integer total effective duration
+     * @return int total effective duration
      **/
     public static function getTotalEffectiveDuration($projecttasks_id)
     {
@@ -870,9 +870,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get total effective duration of a project (sum of effective duration + sum of action time of tickets)
      *
-     * @param integer $projects_id $project_id ID of the project
+     * @param int $projects_id $project_id ID of the project
      *
-     * @return integer total effective duration
+     * @return int total effective duration
      **/
     public static function getTotalEffectiveDurationForProject($projects_id)
     {
@@ -893,9 +893,9 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /**
      * Get total planned duration of a project
      *
-     * @param integer $projects_id $project_id ID of the project
+     * @param int $projects_id $project_id ID of the project
      *
-     * @return integer total effective duration
+     * @return int total effective duration
      **/
     public static function getTotalPlannedDurationForProject($projects_id)
     {
@@ -1458,7 +1458,7 @@ TWIG, $twig_params);
      *
      * @param ProjectTask $task object
      *
-     * @return boolean
+     * @return bool
      **/
     public function showTeam(ProjectTask $task)
     {
@@ -2027,10 +2027,10 @@ TWIG, $twig_params);
      * @since 9.1
      *
      * @param array $val Array of the items to display
-     * @param integer $who ID of the user (0 if all)
+     * @param int $who ID of the user (0 if all)
      * @param string $type Position of the item in the time block (in, through, begin or end)
      *                         (default '')
-     * @param integer $complete (Not used)
+     * @param int $complete (Not used)
      *
      * @return string
      **/
@@ -2111,7 +2111,7 @@ TWIG, $twig_params);
      * The parent project's percent_done is not updated here to avoid duplicate updates.
      * @param int $ID The ID of the project task to recalculate.
      * @since 9.5.0
-     * @return boolean False if the specified project task is not set to automatically update the percent done.
+     * @return bool False if the specified project task is not set to automatically update the percent done.
      */
     public static function recalculatePercentDone($ID)
     {
@@ -2152,7 +2152,7 @@ TWIG, $twig_params);
      * Recalculate the status of a project task based on the percent_done.
      * @since 11.0.0
      * @param array $input
-     * @return integer|false
+     * @return int|false
      */
     public function recalculateStatus(array $input): int|false
     {

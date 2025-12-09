@@ -268,7 +268,7 @@ class Ajax
      *                                                                   url    => 'url_toload',
      *                                                                   params => 'url_params')...
      * @param string  $type             itemtype for active tab
-     * @param integer $ID               ID of element for active tab (default 0)
+     * @param int $ID               ID of element for active tab (default 0)
      * @param string  $orientation      orientation of tabs (default vertical may also be horizontal)
      * @param array   $options          Display options
      *
@@ -522,10 +522,10 @@ JS;
      * @param string       $url          Url to get datas to update the item
      * @param array        $parameters   of parameters to send to ajax URL
      * @param array        $events       of the observed events (default 'change')
-     * @param integer      $minsize      minimum size of data to update content (default -1)
-     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param int      $minsize      minimum size of data to update content (default -1)
+     * @param int      $buffertime   minimum time to wait before reload (default -1)
      * @param array        $forceloadfor of content which must force update content
-     * @param boolean      $display      display or get string (default true)
+     * @param bool      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -572,7 +572,7 @@ JS;
      * @param string       $toupdate   id of the item to update
      * @param string       $url        Url to get datas to update the item
      * @param array        $parameters of parameters to send to ajax URL
-     * @param boolean      $display    display or get string (default true)
+     * @param bool      $display    display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -606,10 +606,10 @@ JS;
      * @param string       $url          Url to get datas to update the item
      * @param array        $parameters   of parameters to send to ajax URL
      * @param array        $events       of the observed events (default 'change')
-     * @param integer      $minsize      minimum size of data to update content (default -1)
-     * @param integer      $buffertime   minimum time to wait before reload (default -1)
+     * @param int      $minsize      minimum size of data to update content (default -1)
+     * @param int      $buffertime   minimum time to wait before reload (default -1)
      * @param array        $forceloadfor of content which must force update content
-     * @param boolean      $display      display or get string (default true)
+     * @param bool      $display      display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -682,7 +682,7 @@ JS;
      *               (need value_fieldname, to_update,
      *                url (@see Ajax::updateItemOnSelectEvent for information)
      *                and may have moreparams)
-     * @param boolean $display display or get string (default true)
+     * @param bool $display display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -757,7 +757,7 @@ JS;
      * @param string|array $toobserve  id of another item used to get value in case of __VALUE__ used or array    of id to get value in case of __VALUE#__ used (default '')
      *                               or
      *                      array    of id to get value in case of __VALUE#__ used (default '')
-     * @param boolean      $display    display or get string (default true)
+     * @param bool      $display    display or get string (default true)
      *
      * @return void|string (see $display)
      */
@@ -813,7 +813,7 @@ JS;
      * @param array   $parameters of parameters to send to ajax URL
      * @param string  $toobserve  id of another item used to get value in case of __VALUE__ used
      *                               (default '')
-     * @param boolean $display    display or get string (default true)
+     * @param bool $display    display or get string (default true)
      *
      * @return void|string (see $display)
      */

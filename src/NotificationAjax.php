@@ -47,7 +47,7 @@ class NotificationAjax implements NotificationInterface
      * @param mixed $value   The data to check (may differ for every notification mode)
      * @param array $options Optional special options (may be needed)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function check($value, $options = [])
     {
@@ -163,7 +163,7 @@ class NotificationAjax implements NotificationInterface
     /**
      * Mark raised notification as deleted
      *
-     * @param integer $id Notification id
+     * @param int $id Notification id
      *
      * @return void
      */

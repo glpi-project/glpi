@@ -229,7 +229,7 @@ final class SearchEngine
      * @param string $parent_itemtype
      * @param string $child_itemtype
      *
-     * @return boolean
+     * @return bool
      */
     public static function isPossibleMetaSubitemOf(string $parent_itemtype, string $child_itemtype): bool
     {

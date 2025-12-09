@@ -102,7 +102,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user have right to show the current project ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canViewItem(): bool
     {
@@ -122,7 +122,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user have right to create the current change ?
      *
-     * @return boolean
+     * @return bool
      **/
     public function canCreateItem(): bool
     {
@@ -374,7 +374,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
      * @return array
      */
@@ -428,7 +428,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user in the team?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isInTheTeam()
     {
@@ -458,7 +458,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Is the current user in manager group?
      *
-     * @return boolean
+     * @return bool
      **/
     public function isInTheManagerGroup()
     {
@@ -478,7 +478,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     /**
      * Get team member count
      *
-     * @return integer
+     * @return int
      **/
     public function getTeamCount()
     {
@@ -1366,7 +1366,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
     /**
      * Print the Project form
      *
-     * @param integer $ID ID of the item
+     * @param int $ID ID of the item
      * @param array $options
      *     - target for the Form
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
@@ -2504,7 +2504,7 @@ TWIG, $twig_params);
      * This function indirectly updates the percent done for all parents if they are set to automatically update.
      * @param int $ID The ID of the project to recalculate.
      * @since 9.5.0
-     * @return boolean False if the specified project is not set to automatically update the percent done.
+     * @return bool False if the specified project is not set to automatically update the percent done.
      */
     public static function recalculatePercentDone($ID)
     {

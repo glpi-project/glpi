@@ -181,7 +181,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
      *
      * Overloaded from CommonDBTM
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {

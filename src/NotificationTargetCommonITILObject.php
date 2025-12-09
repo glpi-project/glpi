@@ -237,7 +237,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add linked group to the notified user list
      *
-     * @param integer $type type of linked groups
+     * @param int $type type of linked groups
      *
      * @return void
      */
@@ -271,7 +271,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @since 0.84.1
      *
-     * @param integer $type type of linked groups
+     * @param int $type type of linked groups
      *
      * @return void
      */
@@ -301,7 +301,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Add linked group supervisor to the notified user list
      *
-     * @param integer $type type of linked groups
+     * @param int $type type of linked groups
      *
      * @return void
      */
@@ -390,7 +390,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get supplier related to the ITIL object
      *
-     * @param boolean $sendprivate (false by default)
+     * @param bool $sendprivate (false by default)
      *
      * @return void
      */
@@ -1213,7 +1213,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @param CommonITILObject $item    Object instance
      * @param array            $options Options
-     * @param boolean          $simple  (false by default)
+     * @param bool          $simple  (false by default)
      *
      * @return array
      **/

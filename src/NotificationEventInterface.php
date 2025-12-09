@@ -45,7 +45,7 @@ interface NotificationEventInterface
      * @param array                                     $data               Notification data
      * @param NotificationTarget<covariant CommonGLPI>  $notificationtarget Target
      * @param NotificationTemplate                      $template           Template
-     * @param boolean                                   $notify_me          Whether to notify current user
+     * @param bool                                   $notify_me          Whether to notify current user
      * @param mixed                                     $emitter            If this action is executed by the cron, we can
      *                                                                      supply the id of the user (or the email if this
      *                                                                      is an anonymous user with no account) who
@@ -90,7 +90,7 @@ interface NotificationEventInterface
     /**
      * Whether notifications can be handled by a crontab
      *
-     * @return boolean
+     * @return bool
      */
     public static function canCron();
 
@@ -104,7 +104,7 @@ interface NotificationEventInterface
     /**
      * Get entity admin data
      *
-     * @param integer $entity Entity ID
+     * @param int $entity Entity ID
      *
      * @return array
      */
@@ -115,7 +115,7 @@ interface NotificationEventInterface
      *
      * @param array $data Data to send
      *
-     * @return false|integer False if something went wrong, number of send notifications otherwise
+     * @return false|int False if something went wrong, number of send notifications otherwise
      */
     public static function send(array $data);
 }

@@ -46,7 +46,7 @@ class NotificationMailing implements NotificationInterface
      * @param mixed $value   The data to check (may differ for every notification mode)
      * @param array $options Optionnal special options (may be needed)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function check($value, $options = [])
     {
@@ -60,7 +60,7 @@ class NotificationMailing implements NotificationInterface
      * @param array  $options options used (by default 'checkdns'=>false)
      *     - checkdns :check dns entry
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {

@@ -210,7 +210,7 @@ class NetworkPort extends CommonDBChild
      *
      * @param class-string<NetworkPortInstantiation> $new_instantiation_type  the name of the new instaniation type
      *
-     * @return NetworkPortInstantiation|boolean false on error, true if the previous instantiation is not available
+     * @return NetworkPortInstantiation|bool false on error, true if the previous instantiation is not available
      *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
      **/
     public function switchInstantiationType($new_instantiation_type)
@@ -543,9 +543,9 @@ class NetworkPort extends CommonDBChild
     /**
      * Get port opposite port ID if linked item
      *
-     * @param integer $ID  networking port ID
+     * @param int $ID  networking port ID
      *
-     * @return integer|false  ID of the NetworkPort found, false if not found
+     * @return int|false  ID of the NetworkPort found, false if not found
      **/
     public function getContact($ID): bool|int
     {
@@ -576,7 +576,7 @@ class NetworkPort extends CommonDBChild
      * Show ports for an item
      *
      * @param CommonDBTM $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
@@ -1836,9 +1836,9 @@ class NetworkPort extends CommonDBChild
     /**
      * Is port connected to a hub?
      *
-     * @param integer $networkports_id Port ID
+     * @param int $networkports_id Port ID
      *
-     * @return boolean
+     * @return bool
      */
     public function isHubConnected($networkports_id): bool
     {

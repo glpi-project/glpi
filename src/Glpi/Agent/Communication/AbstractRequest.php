@@ -114,17 +114,17 @@ abstract class AbstractRequest
     public const COMPRESS_BR   = 3;
     public const COMPRESS_DEFLATE = 4;
 
-    /** @var ?integer */
+    /** @var ?int */
     protected ?int $mode = null;
     /** @var string */
     private string $deviceid;
     /** @var DOMDocument|array|null */
     private DOMDocument|array|null $response = null;
-    /** @var ?integer */
+    /** @var ?int */
     private ?int $compression = null;
-    /** @var boolean */
+    /** @var bool */
     private bool $error = false;
-    /** @var boolean */
+    /** @var bool */
     protected bool $test_rules = false;
     /** @var Common */
     protected Common $headers;
@@ -145,7 +145,7 @@ abstract class AbstractRequest
     /**
      * Set mode and initialize response
      *
-     * @param integer $mode Expected mode. One of *_MODE constants
+     * @param int $mode Expected mode. One of *_MODE constants
      *
      * @return void
      *
@@ -228,7 +228,7 @@ abstract class AbstractRequest
      *
      * @param mixed $data Sent data
      *
-     * @return boolean
+     * @return bool
      */
     public function handleRequest(mixed $data): bool
     {
@@ -349,7 +349,7 @@ abstract class AbstractRequest
      * @param string $action  Action (one of self::*_ACTION)
      * @param ?mixed $content Contents, optional
      *
-     * @return boolean
+     * @return bool
      */
     abstract protected function handleAction(string $action, mixed $content = null): bool;
 
@@ -367,7 +367,7 @@ abstract class AbstractRequest
      *
      * @param string $data Sent XML
      *
-     * @return boolean
+     * @return bool
      */
     public function handleXMLRequest(string $data): bool
     {
@@ -412,7 +412,7 @@ abstract class AbstractRequest
      *
      * @param string $data Sent JSON
      *
-     * @return boolean
+     * @return bool
      */
     public function handleJSONRequest(string $data): bool
     {
@@ -437,7 +437,7 @@ abstract class AbstractRequest
     /**
      * Get request mode
      *
-     * @return null|integer One of self::*_MODE
+     * @return null|int One of self::*_MODE
      */
     public function getMode(): ?int
     {
@@ -448,7 +448,7 @@ abstract class AbstractRequest
      * Adds an error
      *
      * @param ?string $message Error message
-     * @param integer $code    HTTP response code
+     * @param int $code    HTTP response code
      *
      * @return void
      */
@@ -699,7 +699,7 @@ abstract class AbstractRequest
     /**
      * Is current request in error?
      *
-     * @return boolean
+     * @return bool
      */
     public function inError(): bool
     {
@@ -747,7 +747,7 @@ abstract class AbstractRequest
     /**
      * Get HTTP headers
      *
-     * @param boolean $legacy Set to true to shunt required headers checks
+     * @param bool $legacy Set to true to shunt required headers checks
      *
      * @return array
      */
@@ -804,7 +804,7 @@ abstract class AbstractRequest
     /**
      * Is inventory local?
      *
-     * @return boolean
+     * @return bool
      */
     public function isLocal(): bool
     {

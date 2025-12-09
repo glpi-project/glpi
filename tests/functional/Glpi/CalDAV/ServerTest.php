@@ -1865,7 +1865,7 @@ VCALENDAR
      * Validate that response is OK.
      *
      * @param Response $response
-     * @param integer              $status
+     * @param int              $status
      * @param string|null          $content_type
      */
     private function validateResponseIsOk(Response $response, int $status, string $content_type)

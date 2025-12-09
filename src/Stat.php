@@ -372,7 +372,7 @@ class Stat extends CommonGLPI
      * @param string $type
      * @param string $date1
      * @param string $date2
-     * @param integer $start
+     * @param int $start
      * @param array $value
      * @param string $value2 (default '')
      * @return array|mixed
@@ -432,7 +432,7 @@ class Stat extends CommonGLPI
      * @param string $type
      * @param string $date1
      * @param string $date2
-     * @param integer $start
+     * @param int $start
      * @param array $value
      * @param int|string $value2
      * @return void
@@ -1602,7 +1602,7 @@ class Stat extends CommonGLPI
      * @param string $target
      * @param string $date1
      * @param string $date2
-     * @param integer $start
+     * @param int $start
      * @param class-string<CommonITILObject>|null $itemtype
      *
      * @return void
@@ -1935,7 +1935,7 @@ class Stat extends CommonGLPI
      *                    ['name' => 'another name', 'data' => []]
      *                 ]
      * @param array    $options  Options
-     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param bool  $display  Whether to display directly; defauts to true
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
@@ -2111,7 +2111,7 @@ TWIG, $twig_params);
      *                    ['name' => 'another name', 'data' => []]
      *                 ]
      * @param array    $options  Options
-     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param bool  $display  Whether to display directly; defauts to true
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
@@ -2242,7 +2242,7 @@ TWIG, $twig_params);
      * @param string  $itemtype Item type
      * @param string  $date1    First date
      * @param string  $date2    Second date
-     * @param boolean $display  Whether to display directly; defauts to true
+     * @param bool $display  Whether to display directly; defauts to true
      *
      * @return void|string
      * @phpstan-return ($display is true ? void : string)

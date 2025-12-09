@@ -305,7 +305,7 @@ class RuleCriteria extends CommonDBChild
     /**
      * Get all criteria for a given rule
      *
-     * @param integer $rules_id the rule ID
+     * @param int $rules_id the rule ID
      *
      * @return array of RuleCriteria objects
      **/
@@ -335,7 +335,7 @@ class RuleCriteria extends CommonDBChild
      * @param array        &$criterias_results
      * @param array        &$regex_result
      *
-     * @return boolean
+     * @return bool
      **/
     public static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result)
     {
@@ -560,7 +560,7 @@ class RuleCriteria extends CommonDBChild
     /**
      * Return the condition label by giving his ID
      *
-     * @param integer $ID        condition's ID
+     * @param int $ID        condition's ID
      * @param string  $itemtype  itemtype
      * @param string  $criterion (default '')
      *
