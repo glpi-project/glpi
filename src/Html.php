@@ -5441,6 +5441,22 @@ HTML;
                            .text(file.error)
                            .css('width', '100%')
                            .show();
+
+                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
+                        const editor_id = '" . jsescape($p['editor_id']) . "';
+                        if (editor_id && typeof tinyMCE !== 'undefined') {
+                            const editor = tinyMCE.get(editor_id);
+                            if (editor) {
+                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
+                                if (uploaded_image) {
+                                    const img = editor.dom.select('img[data-upload_id=\"' + uploaded_image.upload_id + '\"]');
+                                    if (img.length > 0) {
+                                        editor.dom.remove(img);
+                                    }
+                                    uploaded_images = uploaded_images.filter((entry) => entry.upload_id !== uploaded_image.upload_id);
+                                }
+                            }
+                        }
                         return;
                      }
                   }

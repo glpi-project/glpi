@@ -3171,4 +3171,112 @@ class AuthLdapTest extends DbTestCase
             LogLevel::WARNING
         );
     }
+
+    public function testDefaultGroupPreservedDuringLdapSync()
+    {
+        $ldap = $this->ldap;
+
+        // Create a GLPI-only group (no LDAP mapping)
+        $group_id = $this->createItem(Group::class, [
+            "name" => "Rule Default Group Test",
+        ])->getID();
+
+        // Create a RuleRight that assigns this group to a specific LDAP user
+        $rules_id = $this->createItem(
+            RuleRight::class,
+            [
+                'sub_type'     => 'RuleRight',
+                'name'         => 'test default group preservation',
+                'match'        => 'AND',
+                'is_active'    => 1,
+                'entities_id'  => 0,
+                'is_recursive' => 1,
+            ]
+        )->getID();
+
+        // Rule criteria: match user 'remi'
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id'  => $rules_id,
+            'criteria'  => 'LOGIN',
+            'condition' => \Rule::PATTERN_IS,
+            'pattern'   => 'remi',
+        ]);
+
+        // Rule actions: assign profile and entity
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'profiles_id',
+            'value'       => 5, // 'normal' profile
+        ]);
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'entities_id',
+            'value'       => 0,
+        ]);
+
+        // Rule action: assign the group via specific_groups_id
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'specific_groups_id',
+            'value'       => $group_id,
+        ]);
+
+        // Rule action: set the same group as the default group (groups_id)
+        $this->createItem(\RuleAction::class, [
+            'rules_id'    => $rules_id,
+            'action_type' => 'assign',
+            'field'       => 'groups_id',
+            'value'       => $group_id,
+        ]);
+
+        // Import the LDAP user - this will trigger the rule
+        $import = AuthLDAP::ldapImportUserByServerId(
+            [
+                'method' => AuthLDAP::IDENTIFIER_LOGIN,
+                'value'  => 'remi',
+            ],
+            AuthLDAP::ACTION_IMPORT,
+            $ldap->getID(),
+            true
+        );
+        $this->assertCount(2, $import);
+        $this->assertSame(AuthLDAP::USER_IMPORTED, $import['action']);
+        $this->assertGreaterThan(0, $import['id']);
+
+        $users_id = $import['id'];
+
+        // Verify user was created with the correct default group
+        $user = new \User();
+        $this->assertTrue($user->getFromDB($users_id));
+        $this->assertSame('remi', $user->fields['name']);
+        $this->assertEquals($group_id, $user->fields['groups_id'], 'Default group should be set by rule after import');
+
+        // Verify user is a member of the group (dynamic membership)
+        $this->assertTrue(Group_User::isUserInGroup($users_id, $group_id), 'User should be member of the rule-assigned group');
+
+        // Now force a synchronization
+        $synchro = $ldap->forceOneUserSynchronization($user);
+        $this->assertCount(2, $synchro);
+        $this->assertSame(AuthLDAP::USER_SYNCHRONIZED, $synchro['action']);
+        $this->assertSame($users_id, $synchro['id']);
+
+        // Reload user from database
+        $this->assertTrue($user->getFromDB($users_id));
+
+        // The default group should still be preserved after sync
+        $this->assertEquals(
+            $group_id,
+            $user->fields['groups_id'],
+            'Default group (groups_id) assigned by rule should be preserved after LDAP sync'
+        );
+
+        // User should still be a member of the group
+        $this->assertTrue(
+            Group_User::isUserInGroup($users_id, $group_id),
+            'User should still be member of the rule-assigned group after sync'
+        );
+    }
 }

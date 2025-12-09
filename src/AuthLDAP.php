@@ -3671,10 +3671,6 @@ TWIG, $twig_params);
 
                 // No dn specified in entity : use standard one
                 $_REQUEST['basedn'] ??= $authldap->fields['basedn'];
-
-                if ((string) $entity->fields['entity_ldapfilter'] !== '') {
-                    $_REQUEST['entity_filter'] = $entity->fields['entity_ldapfilter'];
-                }
             } else {
                 if (
                     $_REQUEST['authldaps_id'] === 0
@@ -3692,6 +3688,10 @@ TWIG, $twig_params);
                     $authldap->getFromDB($_REQUEST['authldaps_id']);
                     $_REQUEST['basedn'] = $authldap->fields['basedn'];
                 }
+            }
+
+            if ((string) $entity->fields['entity_ldapfilter'] !== '') {
+                $_REQUEST['entity_filter'] = $entity->fields['entity_ldapfilter'];
             }
 
             if ($_REQUEST['authldaps_id'] > 0) {

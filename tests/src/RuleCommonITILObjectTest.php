@@ -48,6 +48,7 @@ use ITILFollowupTemplate;
 use Location;
 use Rule;
 use RuleAction;
+use RuleCommonITILObject;
 use RuleCriteria;
 use Session;
 use SingletonRuleList;
@@ -62,7 +63,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Return the name of the Rule class this test class tests (RuleTicket, ChangeTicket, ...)
      *
-     * @return class-string<\RuleCommonITILObject>
+     * @return class-string<RuleCommonITILObject>
      */
     protected function getTestedClass(): string
     {
@@ -74,9 +75,9 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     /**
      * Get an instance of the tested Rule class, TicketRule, ChangeRule, ...
      *
-     * @return \RuleCommonITILObject
+     * @return RuleCommonITILObject
      */
-    protected function getRuleInstance(): \RuleCommonITILObject
+    protected function getRuleInstance(): RuleCommonITILObject
     {
         $tested_class = $this->getTestedClass();
         return new $tested_class();
@@ -88,7 +89,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      */
     protected function getITILObjectClass(): string
     {
-        /** @var \RuleCommonITILObject $tested_class */
+        /** @var RuleCommonITILObject $tested_class */
         $tested_class = $this->getTestedClass();
         return $tested_class::getItemtype();
     }
@@ -150,7 +151,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->login();
 
         // prepare rule
-        $this->createTestTriggerRule(\RuleCommonITILObject::ONADD);
+        $this->createTestTriggerRule(RuleCommonITILObject::ONADD);
 
         // test create ITIL Object (trigger on title)
         $itil = $this->getITILObjectInstance();
@@ -182,7 +183,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $users_id = (int) getItemByTypeName('User', 'tech', true);
 
         // prepare rule
-        $this->createTestTriggerRule(\RuleCommonITILObject::ONUPDATE);
+        $this->createTestTriggerRule(RuleCommonITILObject::ONUPDATE);
 
         // test create ITIL Object (for check triggering on title after update)
         $itil = $this->getITILObjectInstance();
@@ -282,7 +283,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -340,7 +341,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'OR',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -458,7 +459,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'OR',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -520,7 +521,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'OR',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -603,7 +604,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -632,7 +633,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid_assign, $ruletinput_assign);
@@ -699,7 +700,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -789,7 +790,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'OR',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD + \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD + RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $rule_itil_id);
@@ -918,7 +919,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'OR',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD + \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD + RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $rule_itil_id);
@@ -1045,7 +1046,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 0,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -1206,7 +1207,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 0,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -1332,7 +1333,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 0,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -1514,7 +1515,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -1597,7 +1598,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -1689,7 +1690,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule = $this->createRule($rule_builder);
 
         // instantiate new ITILRule (TicketRule, etc)
-        /** @var \RuleCommonITILObject $itil_rule */
+        /** @var RuleCommonITILObject $itil_rule */
         $itil_rule = new ($rule_classname);
         $itil_rule->getFromDB($rule->getID());
 
@@ -1740,7 +1741,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule = $this->createRule($rule_builder);
 
         // instantiate new ITILRule (TicketRule, etc)
-        /** @var \RuleCommonITILObject $itil_rule */
+        /** @var RuleCommonITILObject $itil_rule */
         $itil_rule = new ($rule_classname);
         $itil_rule->getFromDB($rule->getID());
 
@@ -1794,7 +1795,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule = $this->createRule($rule_builder);
 
         // instantiate new ITILRule (TicketRule, etc)
-        /** @var \RuleCommonITILObject $itil_rule */
+        /** @var RuleCommonITILObject $itil_rule */
         $itil_rule = new ($rule_classname);
         $itil_rule->getFromDB($rule->getID());
 
@@ -1841,7 +1842,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $rule = $this->createRule($rule_builder);
 
         // instantiate new ITILRule (TicketRule, etc)
-        /** @var \RuleCommonITILObject $itil_rule */
+        /** @var RuleCommonITILObject $itil_rule */
         $itil_rule = new ($rule_classname);
         $itil_rule->getFromDB($rule->getID());
 
@@ -1882,7 +1883,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD | \RuleCommonITILObject::ONUPDATE,
+            'condition'    => RuleCommonITILObject::ONADD | RuleCommonITILObject::ONUPDATE,
             'is_recursive' => 1,
         ]);
         $this->createItem('RuleCriteria', [
@@ -1976,7 +1977,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE + \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONUPDATE + RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -2088,7 +2089,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE + \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONUPDATE + RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -2212,7 +2213,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONUPDATE + \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONUPDATE + RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
@@ -2322,7 +2323,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid_1, $ruletinput);
@@ -2332,7 +2333,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid_2, $ruletinput);
@@ -2342,7 +2343,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             'match'        => 'AND',
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
-            'condition'    => \RuleCommonITILObject::ONADD,
+            'condition'    => RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid_3, $ruletinput);
@@ -3102,5 +3103,47 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         // assert
         $this->assertEquals($old_priority, $itil_object_1->fields['priority']);
         $this->assertEquals($new_priority, $itil_object_2->fields['priority']);
+    }
+
+    /**
+     * Test that the PATTERN_DOES_NOT_EXISTS condition correctly matches
+     * when testing a rule with an empty input value.
+     *
+     * @return void
+     */
+    public function testPatternDoesNotExistsWithEmptyInput(): void
+    {
+        $rule = $this->createItem($this->getTestedClass(), [
+            'name'        => 'test pattern does not exists',
+            'match'       => 'AND',
+            'is_active'   => 1,
+            'sub_type'    => $this->getTestedClass(),
+            'condition'   => RuleCommonITILObject::ONADD,
+            'entities_id' => 0,
+        ]);
+        $rule_id = $rule->getID();
+
+        $criterion = $this->createItem(RuleCriteria::class, [
+            'rules_id'  => $rule_id,
+            'criteria'  => 'locations_id',
+            'condition' => Rule::PATTERN_DOES_NOT_EXISTS,
+            'pattern'   => 1,
+        ]);
+
+        $rule = new ($this->getTestedClass())();
+        $rule->getRuleWithCriteriasAndActions($rule_id, true, false);
+
+        $input = ['locations_id' => ''];
+        $check_results = [];
+        $rule->testCriterias($input, $check_results);
+
+        $this->assertSame([
+            $criterion->getID() => [
+                'name'   => 'locations_id',
+                'value'  => '1',
+                'result' => 1,
+                'id'     => $criterion->getID(),
+            ],
+        ], $check_results);
     }
 }
