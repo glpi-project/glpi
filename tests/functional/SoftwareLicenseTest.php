@@ -35,7 +35,6 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
-use Psr\Log\LogLevel;
 
 /* Test for inc/softwarelicense.class.php */
 
