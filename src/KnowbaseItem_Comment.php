@@ -93,7 +93,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      * Show linked items of a knowbase item
      *
      * @param CommonDBTM $item
-     * @param integer $withtemplate withtemplate param (default 0)
+     * @param int $withtemplate withtemplate param (default 0)
      *
      * @return void
      */
@@ -116,9 +116,9 @@ class KnowbaseItem_Comment extends CommonDBTM
     /**
      * Gat all comments for specified KB entry
      *
-     * @param integer $kbitem_id KB entry ID
+     * @param int $kbitem_id KB entry ID
      * @param string  $lang      Requested language
-     * @param integer $parent    Parent ID (defaults to 0)
+     * @param int $parent    Parent ID (defaults to 0)
      * @param array   $user_data_cache
      *
      * @return array
@@ -171,10 +171,10 @@ class KnowbaseItem_Comment extends CommonDBTM
     /**
      * Get comment form
      *
-     * @param integer       $kbitem_id Knowbase item ID
+     * @param int       $kbitem_id Knowbase item ID
      * @param string        $lang      Related item language
-     * @param false|integer $edit      Comment id to edit, or false
-     * @param false|integer $answer    Comment id to answer to, or false
+     * @param false|int $edit      Comment id to edit, or false
+     * @param false|int $answer    Comment id to answer to, or false
      * @return string
      */
     public static function getCommentForm($kbitem_id, $lang = null, $edit = false, $answer = false)

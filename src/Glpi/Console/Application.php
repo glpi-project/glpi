@@ -68,28 +68,28 @@ class Application extends BaseApplication
     /**
      * Error code returned when system requirements are missing.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
 
     /**
      * Error code returned if write access to configuration files is denied.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_CONFIG_WRITE_ACCESS_DENIED = 129;
 
     /**
      * Error code returned when DB is not available.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_UNAVAILABLE = 130;
 
     /**
      * Error code returned when DB is not up-to-date.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_OUTDATED = 131;
 
@@ -395,7 +395,7 @@ class Application extends BaseApplication
      *
      * @param string $language
      *
-     * @return boolean
+     * @return bool
      */
     private function isLanguageValid($language)
     {
@@ -409,7 +409,7 @@ class Application extends BaseApplication
      *
      * @param RequirementInterface[] $command_specific_requirements
      *
-     * @return boolean  true if requirements are OK, false otherwise
+     * @return bool  true if requirements are OK, false otherwise
      */
     private function checkCoreMandatoryRequirements(
         array $command_specific_requirements

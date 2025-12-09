@@ -635,7 +635,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * Criteria for expired domains
      *
-     * @param integer $entities_id Entity ID
+     * @param int $entities_id Entity ID
      *
      * @return array
      */
@@ -659,7 +659,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * Criteria for domains closed expiries
      *
-     * @param integer $entities_id Entity ID
+     * @param int $entities_id Entity ID
      *
      * @return array
      */

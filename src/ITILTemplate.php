@@ -89,7 +89,7 @@ abstract class ITILTemplate extends CommonDropdown
      * @param int  $ID                  ID of the item to get
      * @param bool $withtypeandcategory with type and category (true by default)
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBWithData($ID, $withtypeandcategory = true)
     {
@@ -241,8 +241,8 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
     /**
-     * @param boolean $withtypeandcategory
-     * @param boolean $withitemtype
+     * @param bool $withtypeandcategory
+     * @param bool $withitemtype
      *
      * @return array
      */
@@ -395,8 +395,8 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @since 9.5.0
      *
-     * @param boolean $withtypeandcategory
-     * @param boolean $withitemtype
+     * @param bool $withtypeandcategory
+     * @param bool $withitemtype
      *
      * @return array
      *
@@ -815,7 +815,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @param array $input  array of value to import (name, ...)
      *
-     * @return integer|boolean true in case of success, -1 otherwise
+     * @return int|bool true in case of success, -1 otherwise
      **/
     public function import(array $input)
     {

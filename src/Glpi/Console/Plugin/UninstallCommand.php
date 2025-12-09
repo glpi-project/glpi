@@ -143,7 +143,7 @@ class UninstallCommand extends AbstractPluginCommand
      *
      * @param string  $directory
      *
-     * @return boolean
+     * @return bool
      */
     private function canRunUninstallMethod($directory)
     {

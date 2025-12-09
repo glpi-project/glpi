@@ -49,28 +49,28 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
     /**
      * Error code returned when empty SQL file is not available / readable.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
     /**
      * Error code returned when differences are found.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_FOUND_DIFFERENCES = 2;
 
     /**
      * Error code returned when a DB update is necessary to be able to perform the check.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_REQUIRE_DB_UPDATE = 3;
 
     /**
      * Error code returned when a DB version is not supported.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNSUPPORTED_VERSION = 4;
 

@@ -47,7 +47,7 @@ class InstallCommand extends AbstractPluginCommand
     /**
      * Error code returned when a plugin installation failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_INSTALLATION_FAILED = 1;
 
@@ -234,9 +234,9 @@ class InstallCommand extends AbstractPluginCommand
      * Check if install method can be run for given plugin.
      *
      * @param string  $directory
-     * @param boolean $allow_reinstall
+     * @param bool $allow_reinstall
      *
-     * @return boolean
+     * @return bool
      */
     private function canRunInstallMethod($directory, $allow_reinstall)
     {

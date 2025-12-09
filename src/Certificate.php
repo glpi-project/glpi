@@ -539,7 +539,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *     - target filename : where to go when done.
      *     - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -682,7 +682,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * Type than could be linked to a certificate
      *
-     * @param boolean $all Get all possible types or only allowed ones
+     * @param bool $all Get all possible types or only allowed ones
      *
      * @return array of types
      **/
@@ -720,7 +720,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @param CronTask $task CronTask to log, if NULL display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      */
     public static function cronCertificate($task = null)
     {

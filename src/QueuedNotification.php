@@ -509,9 +509,9 @@ class QueuedNotification extends CommonDBTM
     /**
      * Send notification in queue
      *
-     * @param integer $ID Id
+     * @param int $ID Id
      *
-     * @return boolean
+     * @return bool
      */
     public function sendById($ID)
     {
@@ -558,7 +558,7 @@ class QueuedNotification extends CommonDBTM
      * Get pending notifications in queue
      *
      * @param string  $send_time   Maximum sent_time
-     * @param integer $limit       Query limit clause
+     * @param int $limit       Query limit clause
      * @param array   $limit_modes Modes to limit to
      * @param array   $extra_where Extra params to add to the where clause
      *
@@ -621,7 +621,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @param CronTask $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      * @used-by CronTask
      **/
     public static function cronQueuedNotification($task = null)
@@ -663,7 +663,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @param CronTask $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      * @used-by CronTask
      **/
     public static function cronQueuedNotificationClean(?CronTask $task = null)
@@ -695,7 +695,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @param CronTask $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      * @used-by CronTask
      **/
     public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)

@@ -143,8 +143,8 @@ class FieldUnicity extends CommonDropdown
     /**
      * Display a dropdown which contains all the available itemtypes
      *
-     * @param integer $ID     The field unicity item id
-     * @param integer $value  The selected value (default 0)
+     * @param int $ID     The field unicity item id
+     * @param int $value  The selected value (default 0)
      *
      * @return void
      **/
@@ -187,8 +187,8 @@ class FieldUnicity extends CommonDropdown
      * Return criteria unicity for an itemtype, in an entity
      *
      * @param string  $itemtype       the itemtype for which unicity must be checked
-     * @param integer $entities_id    the entity for which configuration must be retrivied
-     * @param boolean $check_active
+     * @param int $entities_id    the entity for which configuration must be retrivied
+     * @param bool $check_active
      *
      * @return array an array of fields to check, or an empty array if no
      **/

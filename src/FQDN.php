@@ -73,7 +73,7 @@ class FQDN extends CommonDropdown
      *
      * @param array $input fields of the record to check
      *
-     * @return boolean|array  false or fields checked and updated (lowercase for the fqdn field)
+     * @return bool|array  false or fields checked and updated (lowercase for the fqdn field)
      **/
     public function prepareInput($input)
     {
@@ -142,9 +142,9 @@ class FQDN extends CommonDropdown
      * Search FQDN id from string FDQDN
      *
      * @param string  $fqdn             value of the fdqn (for instance : indeptnet.net)
-     * @param boolean $wildcard_search  true if we search with wildcard (false by default)
+     * @param bool $wildcard_search  true if we search with wildcard (false by default)
      *
-     * @return integer|integer[]
+     * @return int|int[]
      *    if $wildcard_search == false : the id of the fqdn, -1 if not found or several answers
      *    if $wildcard_search == true : an array of the id of the fqdn
      **/
@@ -191,7 +191,7 @@ class FQDN extends CommonDropdown
 
 
     /**
-     * @param integer $ID  id of the FQDN
+     * @param int $ID  id of the FQDN
      *
      * @return string  the FQDN of the element, or "" if invalid FQDN
      **/
@@ -227,7 +227,7 @@ class FQDN extends CommonDropdown
      *
      * @param string $fqdn  the FQDN to check
      *
-     * @return boolean  true if the FQDN is valid
+     * @return bool  true if the FQDN is valid
      **/
     public static function checkFQDN($fqdn)
     {

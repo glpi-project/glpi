@@ -142,7 +142,7 @@ class Document_Item extends CommonDBRelation
      *
      * @param array $input
      *
-     * @return boolean
+     * @return bool
      *
      * @since 9.5.0
      */
@@ -527,7 +527,7 @@ TWIG, $twig_params);
      * @param int $withtemplate    (default 0)
      * @param array $options
      *
-     * @return boolean
+     * @return bool
      */
     public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
     {
@@ -610,7 +610,7 @@ TWIG, $twig_params);
      * @since 0.90
      *
      * @param CommonDBTM $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @param array $options
      *
      * @return void
@@ -764,9 +764,9 @@ TWIG, $twig_params);
      *
      * @since 9.3.1
      *
-     * @param integer $items_id Object id to restrict on
+     * @param int $items_id Object id to restrict on
      * @param class-string<CommonDBTM> $itemtype Type for items to retrieve
-     * @param boolean $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
+     * @param bool $noent    Flag to not compute enitty information (see Document_Item::getTypeItemsQueryParams)
      * @param array   $where    Inital WHERE clause. Defaults to []
      *
      * @return array Criteria to use in a request
@@ -810,7 +810,7 @@ TWIG, $twig_params);
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
+     * @param bool    $noent Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
      *
      * @return array
      */
@@ -832,7 +832,7 @@ TWIG, $twig_params);
      *
      * @since 9.3.1
      *
-     * @param integer $items_id    Object id to restrict on
+     * @param int $items_id    Object id to restrict on
      * @param array   $extra_where Extra where clause
      *
      * @return array

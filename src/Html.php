@@ -132,7 +132,7 @@ class Html
      * Convert a date YY-MM-DD to DD-MM-YY for calendar
      *
      * @param string       $time    Date to convert
-     * @param integer|null $format  Date format
+     * @param int|null $format  Date format
      *
      * @return null|string
      *
@@ -179,7 +179,7 @@ class Html
      * Convert a date YY-MM-DD HH:MM to DD-MM-YY HH:MM for display in a html table
      *
      * @param string       $time            Datetime to convert
-     * @param integer|null $format          Datetime format
+     * @param int|null $format          Datetime format
      * @param bool         $with_seconds    Indicates if seconds should be present in output
      *
      * @return null|string
@@ -230,7 +230,7 @@ class Html
      * This method always encodes the HTML special chars of the provided text.
      *
      * @param string  $string  string to resume
-     * @param integer $length  resume length (default 255)
+     * @param int $length  resume length (default 255)
      *
      * @return string
      **/
@@ -266,8 +266,8 @@ class Html
      * Convert a number to correct display
      *
      * @param float   $number        Number to display
-     * @param boolean $edit          display number for edition ? (id edit use . in all case)
-     * @param integer $forcedecimal  Force decimal number (do not use default value) (default -1)
+     * @param bool $edit          display number for edition ? (id edit use . in all case)
+     * @param int $forcedecimal  Force decimal number (do not use default value) (default -1)
      *
      * @return string
      **/
@@ -307,8 +307,8 @@ class Html
      * Make a good string from the unix timestamp $sec
      *
      * @param int|float  $time         timestamp
-     * @param boolean    $display_sec  display seconds ?
-     * @param boolean    $use_days     use days for display ?
+     * @param bool    $display_sec  display seconds ?
+     * @param bool    $use_days     use days for display ?
      *
      * @return string
      **/
@@ -408,7 +408,7 @@ class Html
     /**
      * Format a timestamp into a normalized string (hh:mm:ss).
      *
-     * @param integer $time
+     * @param int $time
      *
      * @return string
      **/
@@ -564,8 +564,8 @@ class Html
     /**
      * Display Debug Information
      *
-     * @param boolean $with_session with session information (true by default)
-     * @param boolean $ajax         If we're called from ajax (false by default)
+     * @param bool $with_session with session information (true by default)
+     * @param bool $ajax         If we're called from ajax (false by default)
      *
      * @return void
      * @deprecated 10.0.0
@@ -650,7 +650,7 @@ class Html
      * Simple Error message page
      *
      * @param string  $message  displayed before dying
-     * @param boolean $minimal  set to true do not display app menu (false by default)
+     * @param bool $minimal  set to true do not display app menu (false by default)
      *
      * @return void
      *
@@ -929,7 +929,7 @@ class Html
     /**
      * Display a simple progress bar
      *
-     * @param integer $width       Width   of the progress bar
+     * @param int $width       Width   of the progress bar
      * @param float   $percent     Percent of the progress bar
      * @param array   $options     possible options:
      *            - title : string title to display (default Progesssion)
@@ -1350,7 +1350,7 @@ TWIG,
      *
      * @since  9.2
      *
-     * @param  boolean $force do we need to force regeneration of $_SESSION['glpimenu']
+     * @param  bool $force do we need to force regeneration of $_SESSION['glpimenu']
      * @return array the menu array
      */
     public static function generateMenuSession($force = false)
@@ -1977,7 +1977,7 @@ TWIG,
      *
      * @param string  $title    title of the page
      * @param string  $url      not used anymore
-     * @param boolean $in_modal indicate if page loaded in modal - css target
+     * @param bool $in_modal indicate if page loaded in modal - css target
      * @param string  $sector    sector in which the page displayed is (default 'none')
      * @param string  $item      item corresponding to the page displayed (default 'none')
      * @param string  $option    option corresponding to the page displayed (default '')
@@ -2296,7 +2296,7 @@ TWIG,
      * @since 0.84
      *
      * @param string  $itemtype  Massive action itemtype
-     * @param string|integer $id        ID of the item
+     * @param string|int $id        ID of the item
      * @param array   $options
      *
      * @return string
@@ -2329,7 +2329,7 @@ TWIG,
      * @since 0.84
      *
      * @param string  $itemtype  Massive action itemtype
-     * @param string|integer $id        ID of the item
+     * @param string|int $id        ID of the item
      * @param array   $options
      *
      * @return void
@@ -2592,7 +2592,7 @@ TWIG,
      *      - placeholder  : text to display when input is empty
      *      - on_change    : function to execute when date selection changed
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -2726,7 +2726,7 @@ JS;
      *   - display    : boolean display or get string (default true)
      *   - rand       : specific random value (default generated one)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -2770,7 +2770,7 @@ JS;
      *   - required   : required field (will add required attribute)
      *   - on_change    : function to execute when date selection changed
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -2908,7 +2908,7 @@ JS;
      *      - with_future display with future date selection ? (default false)
      *      - with_days display specific days selection TODAY, BEGINMONTH, LASTMONDAY... ? (default true)
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -3130,8 +3130,8 @@ JS;
      * @since 0.83
      *
      * @param string         $val           date / datetime value passed
-     * @param boolean        $force_day     force computation in days
-     * @param integer|string $specifictime  set specific timestamp
+     * @param bool        $force_day     force computation in days
+     * @param int|string $specifictime  set specific timestamp
      *
      * @return string  computed date / datetime value
      * @see self::showGenericDateTimeSearch()
@@ -3476,9 +3476,9 @@ JS;
      *
      * @param string  $id               id of the html textarea to use
      * @param string  $rand             rand of the html textarea to use (if empty no image paste system)(default '')
-     * @param boolean $display          display or get js script (true by default)
-     * @param boolean $readonly         editor will be readonly or not
-     * @param boolean $enable_images    enable image pasting in rich text
+     * @param bool $display          display or get js script (true by default)
+     * @param bool $readonly         editor will be readonly or not
+     * @param bool $enable_images    enable image pasting in rich text
      * @param int     $editor_height    editor default height
      * @param array   $add_body_classes tinymce iframe's body classes
      * @param bool    $toolbar          tinymce toolbar (default: true)
@@ -3885,10 +3885,10 @@ JAVASCRIPT
      * Print Ajax pager for list in tab panel
      *
      * @param string  $title              displayed above
-     * @param integer $start              from witch item we start
-     * @param integer $numrows            total items
+     * @param int $start              from witch item we start
+     * @param int $numrows            total items
      * @param string  $additional_info    Additional information to display (default '')
-     * @param boolean $display            display if true, return the pager if false
+     * @param bool $display            display if true, return the pager if false
      * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
      *
      * @return void|string
@@ -3985,8 +3985,8 @@ JAVASCRIPT
      * ONLY FOR DEBUG
      *
      * @param array   $tab       the array to display
-     * @param integer $pad       Pad used
-     * @param boolean $jsexpand  Expand using JS ?
+     * @param int $pad       Pad used
+     * @param bool $jsexpand  Expand using JS ?
      *
      * @return void
      **/
@@ -4048,12 +4048,12 @@ JAVASCRIPT
     /**
      * Print pager for search option (first/previous/next/last)
      *
-     * @param integer        $start                   from witch item we start
-     * @param integer        $numrows                 total items
+     * @param int        $start                   from witch item we start
+     * @param int        $numrows                 total items
      * @param string         $target                  page would be open when click on the option (last,previous etc)
      * @param string         $parameters              parameters would be passed on the URL.
-     * @param integer|string $item_type_output        item type display - if >0 display export
-     * @param integer|array  $item_type_output_param  item type parameter for export
+     * @param int|string $item_type_output        item type display - if >0 display export
+     * @param int|array  $item_type_output_param  item type parameter for export
      * @param string         $additional_info         Additional information to display (default '')
      *
      * @return void
@@ -4203,7 +4203,7 @@ JAVASCRIPT
      * Display the list_limit combo choice
      *
      * @param string  $action             page would be posted when change the value (URL + param) (default '')
-     * @param boolean $display            display the pager form if true, return it if false
+     * @param bool $display            display the pager form if true, return it if false
      * @param string  $additional_params  Additional parameters to pass to tab reload request (default '')
      *
      * ajax Pager will be displayed if empty
@@ -4241,8 +4241,8 @@ JAVASCRIPT
      * Create a title for list, as  "List (5 on 35)"
      *
      * @param string $string Text for title
-     * @param integer $num   Number of item displayed
-     * @param integer $tot   Number of item existing
+     * @param int $num   Number of item displayed
+     * @param int $tot   Number of item existing
      *
      * @since 0.83.1
      *
@@ -4372,7 +4372,7 @@ JAVASCRIPT
     /**
      * Create a close form part including CSRF token
      *
-     * @param boolean $display Display or return string (default true)
+     * @param bool $display Display or return string (default true)
      *
      * @since 0.83.
      *
@@ -5137,7 +5137,7 @@ HTML;
      *
      * @param string  $url     File to include (relative to GLPI_ROOT)
      * @param array   $options Array of HTML attributes
-     * @param boolean $minify  Try to load minified file (defaults to true)
+     * @param bool $minify  Try to load minified file (defaults to true)
      *
      * @return string
      **/
@@ -5177,7 +5177,7 @@ HTML;
      *
      * @param string  $url     File to include (relative to GLPI_ROOT)
      * @param array   $options Array of HTML attributes
-     * @param boolean $minify  Try to load minified file (defaults to true)
+     * @param bool $minify  Try to load minified file (defaults to true)
      *
      * @return string CSS link tag
      **/
@@ -5655,7 +5655,7 @@ HTML;
      *       'col_check_all' set to true to display a checkbox to check all elements of the col
      *       'rand'          random number to use for ids
      *
-     * @return integer random value used to generate the ids
+     * @return int random value used to generate the ids
      **/
     public static function showCheckboxMatrix(array $columns, array $rows, array $options = [])
     {
@@ -5968,7 +5968,7 @@ JS);
     /**
      * Get copyright message in HTML (used in footers)
      * @since 9.1
-     * @param boolean $withVersion include GLPI version ?
+     * @param bool $withVersion include GLPI version ?
      * @return string HTML copyright
      */
     public static function getCopyrightMessage($withVersion = true)
@@ -6382,8 +6382,8 @@ JS);
      *
      * @param  string  $hexcolor the color, you can pass hex color (prefixed or not by #)
      *                           You can also pass a short css color (ex #FFF)
-     * @param  boolean $bw       default true, should we invert the color or return black/white function of the input color
-     * @param  boolean $sbw      default true, should we soft the black/white to a dark/light grey
+     * @param  bool $bw       default true, should we invert the color or return black/white function of the input color
+     * @param  bool $sbw      default true, should we soft the black/white to a dark/light grey
      * @return string            the inverted color prefixed by #
      */
     public static function getInvertedColor($hexcolor = "", $bw = true, $sbw = true)

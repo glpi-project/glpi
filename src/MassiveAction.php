@@ -536,9 +536,9 @@ class MassiveAction
      * window), then display a dropdown to select the itemtype.
      * This is only usefull in case of itemtype specific massive actions (update, ...)
      *
-     * @param boolean $display_selector  can we display the itemtype selector ?
+     * @param bool $display_selector  can we display the itemtype selector ?
      *
-     * @return string|boolean  the itemtype, or true if the selector is displayed, or false if we cannot define the itemtype nor display the selector
+     * @return string|bool  the itemtype, or true if the selector is displayed, or false if we cannot define the itemtype nor display the selector
      **/
     public function getItemtype($display_selector)
     {
@@ -605,7 +605,7 @@ class MassiveAction
      * Get the standard massive actions
      *
      * @param string|CommonDBTM $item        the item for which we want the massive actions
-     * @param boolean           $is_deleted  massive action for deleted items ?   (default false)
+     * @param bool           $is_deleted  massive action for deleted items ?   (default false)
      * @param CommonDBTM        $checkitem   link item to check right              (default NULL)
      * @param int|null          $items_id    Get actions for a single item
      *
@@ -1759,8 +1759,8 @@ class MassiveAction
      * Update the progress if necessary.
      *
      * @param string  $itemtype    the type of the item that has been done
-     * @param integer|array $id    id or array of ids of the item(s) that have been done.
-     * @param integer $result
+     * @param int|array $id    id or array of ids of the item(s) that have been done.
+     * @param int $result
      *                self::NO_ACTION      in case of no specific action (used internally for older actions)
      *                MassiveAction::ACTION_OK      everything is OK for the action
      *                MassiveAction::ACTION_KO      something went wrong for the action

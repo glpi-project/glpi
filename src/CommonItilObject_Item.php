@@ -661,7 +661,7 @@ TWIG, $twig_params);
      * Will also display objects of linked items
      *
      * @param CommonDBTM $item         CommonDBTM object
-     * @param integer    $withtemplate (default 0)
+     * @param int    $withtemplate (default 0)
      * @param array      $options
      *
      * @return bool|void (display a table)
@@ -776,10 +776,10 @@ TWIG, $twig_params);
     /**
      * Make a select box for Object my devices
      *
-     * @param integer $userID           User ID for my device section (default 0)
-     * @param integer $entity_restrict  restrict to a specific entity (default -1)
+     * @param int $userID           User ID for my device section (default 0)
+     * @param int $entity_restrict  restrict to a specific entity (default -1)
      * @param string  $itemtype         of selected item (default 0)
-     * @param integer $items_id         of selected item (default 0) UNUSED
+     * @param int $items_id         of selected item (default 0) UNUSED
      * @param array   $options          array of possible options:
      *    - used     : ID of the requester user
      *    - multiple : allow multiple choice
@@ -1319,7 +1319,7 @@ TWIG, $twig_params);
     /**
      * Return used items for a ITIL object
      *
-     * @param integer $items_id ITIL object on which the used item are attached
+     * @param int $items_id ITIL object on which the used item are attached
      *
      * @return array
      */

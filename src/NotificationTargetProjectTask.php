@@ -139,7 +139,7 @@ class NotificationTargetProjectTask extends NotificationTarget
     /**
      * Add team groups to the notified user list
      *
-     * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+     * @param int $manager 0 all users, 1 only supervisors, 2 all users without supervisors
      *
      * @return void
      **/
@@ -164,7 +164,7 @@ class NotificationTargetProjectTask extends NotificationTarget
     /**
      * Add project team groups to the notified user list
      *
-     * @param integer $manager 0 all users, 1 only supervisors, 2 all users without supervisors
+     * @param int $manager 0 all users, 1 only supervisors, 2 all users without supervisors
      *
      * @return void
      **/

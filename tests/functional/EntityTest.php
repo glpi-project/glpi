@@ -166,8 +166,8 @@ class EntityTest extends DbTestCase
     /**
      * Run getSonsOf tests
      *
-     * @param boolean $cache Is cache enabled?
-     * @param boolean $hit   Do we expect a cache hit? (ie. data already exists)
+     * @param bool $cache Is cache enabled?
+     * @param bool $hit   Do we expect a cache hit? (ie. data already exists)
      *
      * @return void
      */

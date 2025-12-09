@@ -61,14 +61,14 @@ class Plugins
     /**
      * Max request attempts on READ operations.
      *
-     * @var integer
+     * @var int
      */
     protected const MAX_REQUEST_ATTEMPTS = 3;
 
     /**
      * Flag that indicates that plugin list is truncated (due to an errored response from marketplace API).
      *
-     * @var boolean
+     * @var bool
      */
     protected $is_list_truncated = false;
 

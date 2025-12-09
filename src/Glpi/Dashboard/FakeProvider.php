@@ -76,7 +76,7 @@ final class FakeProvider extends Provider
 
     /**
      * @param string|null $itemtype
-     * @return integer|array|null
+     * @return int|array|null
      */
     private static function getItemCount(?string $itemtype = null)
     {

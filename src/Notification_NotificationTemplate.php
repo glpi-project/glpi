@@ -110,7 +110,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      * Print the notification templates
      *
      * @param Notification $notif        Notification object
-     * @param integer      $withtemplate Template or basic item (default '')
+     * @param int      $withtemplate Template or basic item (default '')
      *
      * @return bool
      **/
@@ -214,7 +214,7 @@ TWIG, $twig_params);
      * Print associated notifications
      *
      * @param NotificationTemplate $template     Notification template object
-     * @param integer              $withtemplate Template or basic item (default '')
+     * @param int              $withtemplate Template or basic item (default '')
      *
      * @return bool
      */
@@ -456,7 +456,7 @@ TWIG, $twig_params);
      *
      * @param array $options array of options
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      */
@@ -538,7 +538,7 @@ TWIG, $twig_params);
     /**
      * Check if at least one mode is currently enabled
      *
-     * @return boolean
+     * @return bool
      */
     public static function hasActiveMode()
     {

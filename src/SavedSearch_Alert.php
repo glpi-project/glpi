@@ -109,12 +109,12 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Print the form
      *
-     * @param integer $ID      integer ID of the item
+     * @param int $ID      integer ID of the item
      * @param array   $options array
      *     - target for the Form
      *     - computers_id ID of the computer for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -152,7 +152,7 @@ class SavedSearch_Alert extends CommonDBChild
      * Print the searches alerts
      *
      * @param SavedSearch $search       Object instance
-     * @param integer     $withtemplate Template or basic item (default '')
+     * @param int     $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
@@ -242,7 +242,7 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Get operators
      *
-     * @param integer $id ID for the operator to retrieve, or null for the full list
+     * @param int $id ID for the operator to retrieve, or null for the full list
      *
      * @return string|array
      */

@@ -170,8 +170,8 @@ class Contract_Item extends CommonDBRelation
     /**
      * @since 0.84
      *
-     * @param integer $contract_id   contract ID
-     * @param integer $entities_id   entity ID
+     * @param int $contract_id   contract ID
+     * @param int $entities_id   entity ID
      *
      * @return array of items linked to contracts
      **/
@@ -251,7 +251,7 @@ class Contract_Item extends CommonDBRelation
      * @since 0.84
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param integer    $withtemplate
+     * @param int    $withtemplate
      *
      * @return void
      **/
@@ -394,9 +394,9 @@ TWIG, $twig_params);
      * @since 0.84
      *
      * @param Contract $contract     Contract object
-     * @param integer  $withtemplate (default 0)
+     * @param int  $withtemplate (default 0)
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {

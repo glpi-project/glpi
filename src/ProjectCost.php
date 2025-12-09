@@ -209,7 +209,7 @@ class ProjectCost extends CommonDBChild
     /**
      * Get last datas for a project
      *
-     * @param integer $projects_id ID of the project
+     * @param int $projects_id ID of the project
      * @return array
      **/
     public function getLastCostForProject($projects_id)
@@ -232,7 +232,7 @@ class ProjectCost extends CommonDBChild
     /**
      * Print the project cost form
      *
-     * @param integer $ID ID of the item
+     * @param int $ID ID of the item
      * @param array $options options used
      **/
     public function showForm($ID, array $options = [])

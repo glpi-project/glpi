@@ -223,7 +223,7 @@ class ContractCost extends CommonDBChild
     /**
      * Get last datas for a contract
      *
-     * @param integer $contracts_id ID of the contract
+     * @param int $contracts_id ID of the contract
      * @return array
      **/
     public function getLastCostForContract($contracts_id)
@@ -270,7 +270,7 @@ class ContractCost extends CommonDBChild
      * Print the contract costs
      *
      * @param Contract $contract
-     * @param integer  $withtemplate Template or basic item
+     * @param int  $withtemplate Template or basic item
      *
      * @return void
      **/

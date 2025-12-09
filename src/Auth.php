@@ -62,18 +62,18 @@ class Auth extends CommonGLPI
     public $extauth = 0;
     /** @var array External authentication methods */
     public $authtypes;
-    /** @var boolean Indicates if the user is authenticated or not */
+    /** @var bool Indicates if the user is authenticated or not */
     public $auth_succeded = false;
-    /** @var boolean Indicates if the user is already present in database */
+    /** @var bool Indicates if the user is already present in database */
     public $user_present = false;
-    /** @var boolean Indicates if the user password expired */
+    /** @var bool Indicates if the user password expired */
     public $password_expired = false;
     /** @var bool Indicates the login was valid by explicitly denied by a rule */
     public $denied_by_rule = false;
 
     /**
      * Indicated if user was found in the directory.
-     * @var boolean
+     * @var bool
      */
     public $user_found = false;
 
@@ -91,11 +91,11 @@ class Auth extends CommonGLPI
 
     /**
      * Indicates if an error occurs during connection to the user LDAP.
-     * @var boolean
+     * @var bool
      */
     public $user_ldap_error = false;
 
-    /** @var resource|boolean LDAP connection descriptor */
+    /** @var resource|bool LDAP connection descriptor */
     public $ldap_connection;
     /** @var bool Store user LDAP dn */
     public $user_dn = false;
@@ -186,7 +186,7 @@ class Auth extends CommonGLPI
      * @param  array   $options conditions : array('name'=>'glpi')
      *                                    or array('email' => 'test at test.com')
      *
-     * @return integer {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
+     * @return int {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
      */
     public function userExists($options = [])
     {
@@ -231,7 +231,7 @@ class Auth extends CommonGLPI
      * @param string $login Login to try
      * @param string $pass  Password to try
      *
-     * @return boolean connection success
+     * @return bool connection success
      */
     public function connection_imap($host, $login, $pass)
     {
@@ -372,7 +372,7 @@ class Auth extends CommonGLPI
      * @param string $pass Password (pain-text)
      * @param string $hash Hash
      *
-     * @return boolean
+     * @return bool
      */
     public static function checkPassword($pass, $hash)
     {
@@ -399,7 +399,7 @@ class Auth extends CommonGLPI
      *
      * @param string $hash Hash
      *
-     * @return boolean
+     * @return bool
      */
     public static function needRehash($hash)
     {
@@ -433,7 +433,7 @@ class Auth extends CommonGLPI
      * @param string $name     User Login
      * @param string $password User Password
      *
-     * @return boolean user in GLPI DB with the right password
+     * @return bool user in GLPI DB with the right password
      */
     public function connection_db($name, $password)
     {
@@ -537,9 +537,9 @@ class Auth extends CommonGLPI
     /**
      * Try to get login of external auth method
      *
-     * @param integer $authtype external auth type (default 0)
+     * @param int $authtype external auth type (default 0)
      *
-     * @return boolean user login success
+     * @return bool user login success
      */
     public function getAlternateAuthSystemsUserLogin($authtype = 0)
     {
@@ -1020,11 +1020,11 @@ class Auth extends CommonGLPI
      *
      * @param string  $login_name      Login
      * @param string  $login_password  Password
-     * @param boolean $noauto          (false by default)
+     * @param bool $noauto          (false by default)
      * @param bool    $remember_me
      * @param string  $login_auth      Type of auth - id of the auth
      *
-     * @return boolean (success)
+     * @return bool (success)
      */
     public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
     {
@@ -1298,8 +1298,8 @@ class Auth extends CommonGLPI
     /**
      * Get name of an authentication method
      *
-     * @param integer $authtype Authentication method
-     * @param integer $auths_id Authentication method ID
+     * @param int $authtype Authentication method
+     * @param int $auths_id Authentication method ID
      *
      * @return string
      */
@@ -1329,8 +1329,8 @@ class Auth extends CommonGLPI
     /**
      * Get link of an authentication method
      *
-     * @param integer $authtype Authentication method
-     * @param integer $auths_id Authentication method ID
+     * @param int $authtype Authentication method
+     * @param int $auths_id Authentication method ID
      *
      * @return string
      */
@@ -1361,8 +1361,8 @@ class Auth extends CommonGLPI
      * Get all the authentication methods parameters for a specific authtype
      *  and auths_id and return it as an array
      *
-     * @param integer $authtype Authentication method
-     * @param integer $auths_id Authentication method ID
+     * @param int $authtype Authentication method
+     * @param int $auths_id Authentication method ID
      *
      * @return mixed
      */
@@ -1414,7 +1414,7 @@ class Auth extends CommonGLPI
     /**
      * Is an external authentication used?
      *
-     * @return boolean
+     * @return bool
      */
     public static function useAuthExt()
     {
@@ -1454,9 +1454,9 @@ class Auth extends CommonGLPI
     /**
      * Is an alternate auth?
      *
-     * @param integer $authtype auth type
+     * @param int $authtype auth type
      *
-     * @return boolean
+     * @return bool
      */
     public static function isAlternateAuth($authtype)
     {
@@ -1466,11 +1466,11 @@ class Auth extends CommonGLPI
     /**
      * Check alternate authentication systems
      *
-     * @param boolean $redirect        need to redirect (true) or get type of Auth system which match
+     * @param bool $redirect        need to redirect (true) or get type of Auth system which match
      *                                (false by default)
      * @param string  $redirect_string redirect string if exists (default '')
      *
-     * @return false|integer nothing if redirect is true, else Auth system ID
+     * @return false|int nothing if redirect is true, else Auth system ID
      */
     public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
     {
@@ -1541,7 +1541,7 @@ class Auth extends CommonGLPI
      *
      * @param string $redirect redirect string if exists, if null, check in $_POST or $_GET
      *
-     * @return void|boolean nothing if redirect is true, else false
+     * @return void|bool nothing if redirect is true, else false
      */
     public static function redirectIfAuthenticated($redirect = null)
     {
@@ -1604,7 +1604,7 @@ class Auth extends CommonGLPI
      *
      * @param string $login login to check
      *
-     * @return boolean
+     * @return bool
      */
     public static function isValidLogin($login)
     {
@@ -1639,7 +1639,7 @@ class Auth extends CommonGLPI
     /**
      * Show form for authentication configuration.
      *
-     * @return void|boolean False if the form is not shown due to right error. Form is directly printed.
+     * @return void|bool False if the form is not shown due to right error. Form is directly printed.
      */
     public static function showOtherAuthList()
     {

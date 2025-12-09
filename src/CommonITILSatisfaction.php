@@ -102,7 +102,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * Is the current user have right to update the current satisfaction
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateItem(): bool
     {

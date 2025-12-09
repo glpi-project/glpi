@@ -102,7 +102,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * TODO : study to be sure that the order is the one we have defined ...
      *
-     * @return boolean|HTMLTableGroup
+     * @return bool|HTMLTableGroup
      * @see HTMLTableEntity::content
      **/
     public function createGroup($name, $content)
@@ -129,7 +129,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @param string $group_name the group name
      *
-     * @return boolean|HTMLTableGroup
+     * @return bool|HTMLTableGroup
      **/
     public function getGroup($group_name)
     {
@@ -158,7 +158,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * Beware that a row is counted only if it is not empty (ie.: at least one addCell)
      *
-     * @return integer the total number of rows
+     * @return int the total number of rows
      **/
     public function getNumberOfRows()
     {

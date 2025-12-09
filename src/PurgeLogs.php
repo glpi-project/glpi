@@ -442,7 +442,7 @@ class PurgeLogs extends CommonDBTM
     /**
      * Get modification date restriction clause
      *
-     * @param integer $month Number of months
+     * @param int $month Number of months
      *
      * @return array|false
      */
@@ -462,7 +462,7 @@ class PurgeLogs extends CommonDBTM
     /**
      * Count logs
      *
-     * @return integer
+     * @return int
      */
     public static function getLogsCount()
     {

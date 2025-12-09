@@ -93,7 +93,7 @@ class ITILFollowup extends CommonDBChild
     /**
      * can read the parent ITIL Object ?
      *
-     * @return boolean
+     * @return bool
      */
     public function canReadITILItem()
     {

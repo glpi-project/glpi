@@ -160,7 +160,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * Overloaded from CommonDBTM
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {
@@ -310,7 +310,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *     - target filename : where to go when done.
      *     - withtemplate boolean : template or basic item
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -809,10 +809,10 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @param string  $name         the printer's name
      * @param string  $manufacturer the printer's manufacturer
-     * @param integer $entity       the entity in which the printer must be added
+     * @param int $entity       the entity in which the printer must be added
      * @param string  $comment      (default '')
      *
-     * @return integer the printer's ID
+     * @return int the printer's ID
      **/
     public function addPrinter($name, $manufacturer, $entity, $comment = '')
     {

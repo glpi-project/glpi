@@ -98,17 +98,17 @@ class Router
     protected array $controllers = [];
 
     /**
-     * @var array{middleware: AuthMiddlewareInterface, priority: integer, condition: callable}[]
+     * @var array{middleware: AuthMiddlewareInterface, priority: int, condition: callable}[]
      */
     protected array $auth_middlewares = [];
 
     /**
-     * @var array{middleware: RequestMiddlewareInterface, priority: integer, condition: callable}[]
+     * @var array{middleware: RequestMiddlewareInterface, priority: int, condition: callable}[]
      */
     protected array $request_middlewares = [];
 
     /**
-     * @var array{middleware: ResponseMiddlewareInterface, priority: integer, condition: callable}[]
+     * @var array{middleware: ResponseMiddlewareInterface, priority: int, condition: callable}[]
      */
     protected array $response_middlewares = [];
 

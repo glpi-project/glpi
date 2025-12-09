@@ -216,7 +216,7 @@ class Conf extends CommonGLPI
      *
      * @param string $name
      *
-     * @return boolean
+     * @return bool
      */
     public function isInventoryFile($name): bool
     {
@@ -1104,7 +1104,7 @@ class Conf extends CommonGLPI
      *
      * @param array $values Configuration values
      *
-     * @return boolean
+     * @return bool
      */
     public function saveConf(array $values)
     {

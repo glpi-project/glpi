@@ -150,7 +150,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @param $rights   array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function addProfileRights(array $rights)
     {
@@ -186,7 +186,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @param $rights   array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function deleteProfileRights(array $rights)
     {

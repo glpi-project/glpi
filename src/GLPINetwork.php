@@ -234,7 +234,7 @@ class GLPINetwork extends CommonGLPI
     /**
      * Check if GLPI Network registration is existing and valid.
      *
-     * @return boolean
+     * @return bool
      */
     public static function isRegistered(): bool
     {
@@ -279,7 +279,7 @@ class GLPINetwork extends CommonGLPI
      *
      * @param string $curl_error  will contains original curl error string if an error occurs
      *
-     * @return boolean
+     * @return bool
      */
     public static function isServicesAvailable(&$curl_error = null): bool
     {

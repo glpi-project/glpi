@@ -161,9 +161,9 @@ class QueuedWebhook extends CommonDBChild
     /**
      * Send webhook in queue
      *
-     * @param integer $ID Id
+     * @param int $ID Id
      *
-     * @return boolean
+     * @return bool
      */
     public static function sendById(int $ID): bool
     {
@@ -509,7 +509,7 @@ JS);
      * Get pending webhooks in queue
      *
      * @param string  $send_time   Maximum sent_time
-     * @param integer $limit       Query limit clause
+     * @param int $limit       Query limit clause
      * @param array   $extra_where Extra params to add to the where clause
      *
      * @return array Array of IDs of pending webhooks
@@ -572,7 +572,7 @@ JS);
      *
      * @param CronTask|null $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      **/
     public static function cronQueuedWebhook(?CronTask $task = null)
     {
@@ -598,7 +598,7 @@ JS);
      *
      * @param CronTask|null $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      **/
     public static function cronQueuedWebhookClean(?CronTask $task = null)
     {

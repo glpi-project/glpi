@@ -204,7 +204,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @param Domain $domain Domain object
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForDomain(Domain $domain)
     {
@@ -468,7 +468,7 @@ TWIG, $twig_params);
      * Show domains associated to an item
      *
      * @param CommonDBTM $item      Object for which associated domains must be displayed
-     * @param integer $withtemplate
+     * @param int $withtemplate
      *
      * @return void|false
      */

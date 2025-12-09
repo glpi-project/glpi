@@ -376,7 +376,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      * @param string         $begin_date     Begin date of the recurrent item in 'Y-m-d H:i:s' format.
      * @param string         $end_date       End date of the recurrent item in 'Y-m-d H:i:s' format,
      *                                       or 'NULL' or empty value.
-     * @param string|integer $periodicity    Periodicity of creation, could be:
+     * @param string|int $periodicity    Periodicity of creation, could be:
      *                                        - an integer corresponding to seconds,
      *                                        - a string using "/([0-9]+)(MONTH|YEAR)/" pattern.
      * @param int            $create_before  Anticipated creation delay in seconds.
@@ -588,7 +588,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      *
      * @param CommonITILObject|null $created_item   Will contain the created item instance
      *
-     * @return boolean
+     * @return bool
      */
     public function createItem(array $linked_items = [], ?CommonITILObject &$created_item = null)
     {

@@ -160,7 +160,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     /**
      * Check if current user can comment on KB entries
      *
-     * @return boolean
+     * @return bool
      */
     public function canComment()
     {
@@ -195,7 +195,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * Get the form page URL for the current classe
      *
      * @param array   $params parameters to add to the URL
-     * @param boolean $full  path or relative one
+     * @param bool $full  path or relative one
      * @return string
      **/
     public static function getFormURLWithParam($params = [], $full = true): string
@@ -418,7 +418,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @since 0.83
      *
-     * @return Boolean
+     * @return bool
      **/
     public function isPubliclyVisible()
     {
@@ -462,7 +462,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @since 9.2
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
      * @return array
      */
@@ -865,7 +865,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @param array $options Array of options
      *
-     * @return boolean|string
+     * @return bool|string
      **/
     public function showFull($options = [])
     {
@@ -2040,9 +2040,9 @@ TWIG, $twig_params);
     /**
      * Reverts item contents to specified revision
      *
-     * @param integer $revid Revision ID
+     * @param int $revid Revision ID
      *
-     * @return boolean
+     * @return bool
      */
     public function revertTo($revid)
     {

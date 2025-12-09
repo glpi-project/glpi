@@ -46,7 +46,7 @@ class ChangekeyCommand extends AbstractCommand implements ConfigurationCommandIn
     /**
      * Error code returned when unable to renew key.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_RENEW_KEY = 1;
 

@@ -66,9 +66,9 @@ abstract class InventoryAsset
     protected $extra_data = [];
     /** @var Agent */
     protected Agent $agent;
-    /** @var integer */
+    /** @var int */
     protected $entities_id = 0;
-    /** @var integer */
+    /** @var int */
     protected $is_recursive = 0;
     /** @var array */
     protected $ruleentity_data = [];
@@ -76,9 +76,9 @@ abstract class InventoryAsset
     protected $rulelocation_data = [];
     /** @var array */
     protected array $rulematchedlog_input = [];
-    /** @var boolean */
+    /** @var bool */
     protected $links_handled = false;
-    /** @var boolean */
+    /** @var bool */
     protected $with_history = true;
     /** @var ?MainAsset */
     protected $main_asset;
@@ -198,7 +198,7 @@ abstract class InventoryAsset
      *
      * @param Conf $conf Conf instance
      *
-     * @return boolean
+     * @return bool
      */
     abstract public function checkConf(Conf $conf): bool;
 
@@ -354,7 +354,7 @@ abstract class InventoryAsset
     /**
      * Set entity id from main asset
      *
-     * @param integer $id Entity ID
+     * @param int $id Entity ID
      *
      * @return $this
      */
@@ -367,7 +367,7 @@ abstract class InventoryAsset
     /**
      * Set entity recursive from main asset
      *
-     * @param integer $is_recursive
+     * @param int $is_recursive
      *
      * @return $this
      */
@@ -393,7 +393,7 @@ abstract class InventoryAsset
     /**
      * Are link handled already (call to handleLinks should happen only once
      *
-     * @return boolean
+     * @return bool
      */
     public function areLinksHandled(): bool
     {

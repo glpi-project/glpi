@@ -51,7 +51,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
      * @since 9.4: $num param has been dropped
      *
      * @param string  $itemtype item type
-     * @param integer $ID       ID of the SEARCH_OPTION item
+     * @param int $ID       ID of the SEARCH_OPTION item
      * @param array   $data     array retrieved data array
      *
      * @return string String to print

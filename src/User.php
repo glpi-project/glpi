@@ -335,8 +335,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Load minimal session for user.
      *
-     * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursively or not
+     * @param int $entities_id  Entity to use
+     * @param bool $is_recursive Whether to load entities recursively or not
      *
      * @return void
      *
@@ -587,7 +587,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $name Login of the user
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyName($name)
     {
@@ -598,10 +598,10 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * Retrieve a user from the database using its login.
      *
      * @param string  $name     Login of the user
-     * @param integer $authtype Auth type (see Auth constants)
-     * @param integer $auths_id ID of auth server
+     * @param int $authtype Auth type (see Auth constants)
+     * @param int $auths_id ID of auth server
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyNameAndAuth($name, $authtype, $auths_id)
     {
@@ -617,7 +617,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $value Value of the sync field
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbySyncField($value)
     {
@@ -629,7 +629,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $user_dn dn of the user
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyDn($user_dn)
     {
@@ -722,7 +722,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string $email     user email
      * @param array  $condition add condition
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyEmail($email, $condition = [])
     {
@@ -772,7 +772,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @param string $email
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmail($email)
     {
@@ -790,7 +790,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string $token user token
      * @param string $field the field storing the token
      *
-     * @return boolean
+     * @return bool
      */
     public function getFromDBbyToken($token, $field = 'personal_token')
     {
@@ -1478,7 +1478,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Apply rules to determine dynamic rights of the user.
      *
-     * @return boolean true if rules are applied, false otherwise
+     * @return bool true if rules are applied, false otherwise
      */
     public function applyRightRules()
     {
@@ -1714,7 +1714,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 0.85
      *
-     * @return string|boolean Filename to be stored in user picture field, false if no picture found
+     * @return string|bool Filename to be stored in user picture field, false if no picture found
      */
     public function syncLdapPhoto()
     {
@@ -2131,7 +2131,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string   $userdn             Basedn of the user
      * @param string   $login              User login
      *
-     * @return boolean true if search is applicable, false otherwise
+     * @return bool true if search is applicable, false otherwise
      */
     private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
     {
@@ -2186,9 +2186,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param array    $ldap_method     LDAP method
      * @param string   $userdn          Basedn of the user
      * @param string   $login           User Login
-     * @param boolean  $import          true for import, false for update
+     * @param bool  $import          true for import, false for update
      *
-     * @return boolean true if found / false if not
+     * @return bool true if found / false if not
      */
     public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
     {
@@ -2454,7 +2454,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param string   $user_dn            Basedn of the user
      * @param string   $group_condition    group search condition
      * @param string   $group_member_field group field member in a user object
-     * @param boolean  $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
+     * @param bool  $use_dn             search dn of user ($login_field=$user_dn) in group_member_field
      * @param string   $login_field        user login field
      *
      * @return array Groups of the user located in [0][$group_member_field] in returned array
@@ -2526,7 +2526,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @param array  $mail_method  mail method description array
      * @param string $name         login of the user
      *
-     * @return boolean true if method is applicable, false otherwise
+     * @return bool true if method is applicable, false otherwise
      */
     public function getFromIMAP(array $mail_method, $name)
     {
@@ -2583,7 +2583,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @since 0.84
      *
-     * @return boolean true if method is applicable, false otherwise
+     * @return bool true if method is applicable, false otherwise
      */
     public function getFromSSO()
     {
@@ -2715,9 +2715,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
     /**
      * Check if current user have more right than the specified one.
      *
-     * @param integer $ID ID of the user
+     * @param int $ID ID of the user
      *
-     * @return boolean
+     * @return bool
      */
     public function currentUserHaveMoreRightThan($ID)
     {
@@ -2794,12 +2794,12 @@ HTML;
     /**
      * Print the user form.
      *
-     * @param integer $ID    ID of the user
+     * @param int $ID    ID of the user
      * @param array $options Options
      *     - string   target        Form target
      *     - boolean  withtemplate  Template or basic item
      *
-     * @return boolean true if user found, false otherwise
+     * @return bool true if user found, false otherwise
      */
     public function showForm($ID, array $options = [])
     {
@@ -2884,9 +2884,9 @@ HTML;
      * Print the user preference form.
      *
      * @param string  $target Form target
-     * @param integer $ID     ID of the user
+     * @param int $ID     ID of the user
      *
-     * @return boolean true if user found, false otherwise
+     * @return bool true if user found, false otherwise
      */
     public function showMyForm($target, $ID)
     {
@@ -3718,9 +3718,9 @@ HTML;
      *
      * @since 0.83
      *
-     * @param integer|string $entities_id ID of the entity to restrict
+     * @param int|string $entities_id ID of the entity to restrict
      *
-     * @return integer[]
+     * @return int[]
      */
     public static function getDelegateGroupsForUser($entities_id = '')
     {
@@ -3754,7 +3754,7 @@ HTML;
     /**
      * Get all users from groups where the current user have delegating, plus the current user.
      *
-     * @param integer|string $entities_id ID of the entity to restrict
+     * @param int|string $entities_id ID of the entity to restrict
      *
      * @return array<int, string> Array of user IDs mapped to their friendly names, sorted alphabetically, with "Myself" first.
      */
@@ -3787,16 +3787,16 @@ HTML;
      *
      * Internally used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
      *
-     * @param boolean         $count            true if execute an count(*) (true by default)
+     * @param bool         $count            true if execute an count(*) (true by default)
      * @param string|string[] $right            limit user who have specific right (default 'all')
-     * @param integer|array   $entity_restrict  Restrict to a defined entity (default -1)
-     * @param integer         $value            default value (default 0)
-     * @param integer[]       $used             Already used items ID: not to display in dropdown
+     * @param int|array   $entity_restrict  Restrict to a defined entity (default -1)
+     * @param int         $value            default value (default 0)
+     * @param int[]       $used             Already used items ID: not to display in dropdown
      * @param string          $search           pattern (default '')
-     * @param integer         $start            start LIMIT value (default 0)
-     * @param integer         $limit            limit LIMIT value (default -1 no limit)
-     * @param boolean         $inactive_deleted true to retrieve also inactive or deleted users
-     * @param boolean         $with_no_right    true to include users without any rights assigned
+     * @param int         $start            start LIMIT value (default 0)
+     * @param int         $limit            limit LIMIT value (default -1 no limit)
+     * @param bool         $inactive_deleted true to retrieve also inactive or deleted users
+     * @param bool         $with_no_right    true to include users without any rights assigned
      *
      * @return DBmysqlIterator
      */
@@ -4214,7 +4214,7 @@ HTML;
      *    - readonly         : boolean / return getUserName is true (default false)
      *    - required         : boolean / is the field required (default false)
      *
-     * @return integer|string Random value if displayed, string otherwise
+     * @return int|string Random value if displayed, string otherwise
      */
     public static function dropdown($options = [])
     {
@@ -4480,7 +4480,7 @@ HTML;
     /**
      * Show simple add user form for external auth.
      *
-     * @return void|boolean false if user does not have rights to import users from external sources,
+     * @return void|bool false if user does not have rights to import users from external sources,
      *    print form otherwise
      */
     public static function showAddExtAuthForm()
@@ -4520,11 +4520,11 @@ HTML;
     /**
      * Change auth method for given users.
      *
-     * @param integer[] $IDs      IDs of users
-     * @param integer   $authtype Auth type (see Auth constants)
-     * @param integer   $server   ID of auth server
+     * @param int[] $IDs      IDs of users
+     * @param int   $authtype Auth type (see Auth constants)
+     * @param int   $server   ID of auth server
      *
-     * @return boolean
+     * @return bool
      */
     public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
@@ -4636,7 +4636,7 @@ HTML;
     /**
      * Show items of the current user.
      *
-     * @param boolean $tech false to display items owned by user, true to display items managed by user
+     * @param bool $tech false to display items owned by user, true to display items managed by user
      *
      * @return void
      */
@@ -4812,7 +4812,7 @@ HTML;
      * @param string $email
      * @param bool $createuserfromemail
      *
-     * @return integer ID of user, 0 if not found nor imported
+     * @return int ID of user, 0 if not found nor imported
      */
     public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
     {
@@ -4875,7 +4875,7 @@ HTML;
     /**
      * Handle user deleted in LDAP using configured policy.
      *
-     * @param integer $users_id
+     * @param int $users_id
      *
      * @return void
      */
@@ -5013,7 +5013,7 @@ HTML;
      *
      * @param string $name User name
      *
-     * @return integer
+     * @return int
      */
     public static function getIdByName($name)
     {
@@ -5030,7 +5030,7 @@ HTML;
      * @param string $field Field name
      * @param string $value Field value
      *
-     * @return false|integer
+     * @return false|int
      */
     public static function getIdByField($field, $value)
     {
@@ -5133,7 +5133,7 @@ HTML;
      * @throws ForgetPasswordException when requirements are not met
      * @throws PasswordTooWeakException
      *
-     * @return boolean true if password successfully changed, false otherwise
+     * @return bool true if password successfully changed, false otherwise
      */
     public function updateForgottenPassword(array $input)
     {
@@ -5525,10 +5525,10 @@ HTML;
     /**
      * Get token of a user. If not exists generate it.
      *
-     * @param integer $ID    User ID
+     * @param int $ID    User ID
      * @param string  $field Field storing the token
      *
-     * @return string|boolean User token, false if user does not exist
+     * @return string|bool User token, false if user does not exist
      */
     public static function getToken($ID, $field = 'personal_token')
     {
@@ -5547,7 +5547,7 @@ HTML;
      * @since 9.4
      *
      * @param string $field the field storing the token
-     * @param boolean $force_new force generation of a new token
+     * @param bool $force_new force generation of a new token
      *
      * @return string|false token or false in case of error
      */
@@ -5824,7 +5824,7 @@ HTML;
     /**
      * Get list of entities ids for current user.
      *
-     * @return integer[]
+     * @return int[]
      */
     private function getEntities()
     {
@@ -5864,7 +5864,7 @@ HTML;
      *
      * @param CronTask $task
      *
-     * @return integer
+     * @return int
      */
     public static function cronPasswordExpiration(CronTask $task)
     {
@@ -6046,7 +6046,7 @@ HTML;
     /**
      * Check if password should be changed (if it expires soon).
      *
-     * @return boolean
+     * @return bool
      */
     public function shouldChangePassword()
     {
@@ -6074,7 +6074,7 @@ HTML;
     /**
      * Check if password expired.
      *
-     * @return boolean
+     * @return bool
      */
     public function hasPasswordExpired()
     {
@@ -6269,12 +6269,12 @@ HTML;
     /**
      * Print a simplified user form.
      *
-     * @param integer $ID    ID of the user
+     * @param int $ID    ID of the user
      * @param array $options Options
      *     - string   target        Form target
      *     - boolean  withtemplate  Template or basic item
      *
-     * @return boolean true
+     * @return bool true
      */
     public function showSystemUserForm($ID, array $options = []): bool
     {
@@ -6546,7 +6546,7 @@ HTML;
     /**
      * Get name of the user with ID
      *
-     * @param integer $ID   ID of the user.
+     * @param int $ID   ID of the user.
      *
      * @return string username string (realname if not empty and name if realname is empty).
      */
@@ -6624,7 +6624,7 @@ HTML;
     /**
      * Is a substitute of an other user ?
      *
-     * @param integer $users_id_delegator
+     * @param int $users_id_delegator
      * @param bool    $use_date_range
      *
      * @return bool
@@ -6818,10 +6818,10 @@ HTML;
      * User has right for given module and right.
      *
      * @param string  $module Module to check
-     * @param integer $right  Right to check
-     * @param integer $entities_id Entity to check
+     * @param int $right  Right to check
+     * @param int $entities_id Entity to check
      *
-     * @return boolean|int
+     * @return bool|int
      **/
     public function hasRight($module, $right, $entities_id)
     {

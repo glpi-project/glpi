@@ -102,7 +102,7 @@ class ReservationItem extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype Type of the item
      * @param int $ID ID of the item
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBbyItem($itemtype, $ID)
     {
@@ -710,7 +710,7 @@ TWIG, $twig_params);
      *
      * @param CronTask $task Task to log, if NULL use display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
     public static function cronReservation($task = null)
