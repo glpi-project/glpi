@@ -268,6 +268,11 @@ class ReservationItem extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         return [
@@ -381,12 +386,15 @@ TWIG, $twig_params);
         return false;
     }
 
+    /**
+     * @return void
+     */
     public static function showListSimple()
     {
         global $CFG_GLPI, $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM])) {
-            return false;
+            return;
         }
 
         $ok         = false;
@@ -687,7 +695,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param $name
+     * @param string $name
      *
      * @return array
      * @used-by CronTask

@@ -283,6 +283,11 @@ class Telemetry extends CommonGLPI
         return '500000+';
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {

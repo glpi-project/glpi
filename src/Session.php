@@ -359,7 +359,9 @@ class Session
      *
      * @param string  $itemtype Device type
      * @param integer $ID       ID of the item
-     **/
+     *
+     * @return void
+     */
     public static function addToNavigateListItems($itemtype, $ID)
     {
         $_SESSION['glpilistitems'][$itemtype][] = $ID;
@@ -368,9 +370,12 @@ class Session
 
     /** Initialise a list of items to use navigate through search results
      *
-     * @param string $itemtype Device type
-     * @param string $title    List title (default '')
-     **/
+     * @param string  $itemtype Device type
+     * @param string  $title    List title (default '')
+     * @param ?string $url
+     *
+     * @return void
+     */
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
         if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
@@ -2453,7 +2458,7 @@ class Session
      * Is locale RTL
      * See native PHP 8.5 function locale_is_right_to_left
      *
-     * @param $locale
+     * @param string $locale
      *
      * @return bool
      */

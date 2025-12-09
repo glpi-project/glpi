@@ -52,21 +52,19 @@ class Update
 {
     use LoggerAwareTrait;
 
-    private $DB;
-    private $version;
-    private $language;
+    private DBmysql $DB;
+    private ?string $version = null;
+    private string $language;
 
     /**
      * Directory containing migrations.
-     *
-     * @var string
      */
-    private $migrations_directory;
+    private string $migrations_directory;
 
     /**
      * Constructor
      *
-     * @param object $DB   Database instance
+     * @param DBmysql $DB   Database instance
      * @param string $migrations_directory
      *
      * @since 11.0.0 The `$args` parameter has been removed.

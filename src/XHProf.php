@@ -59,11 +59,11 @@ class XHProf
     public const XHPROF_URL  = '/xhprof';
 
 
-    private static $run = false;
+    private static bool $run = false;
 
 
     /**
-     * @param $msg (default '')
+     * @param string $msg (default '')
      **/
     public function __construct($msg = '')
     {
@@ -78,8 +78,10 @@ class XHProf
 
 
     /**
-     * @param $msg (default '')
-     **/
+     * @param string $msg (default '')
+     *
+     * @return void
+     */
     public function start($msg = '')
     {
 
@@ -101,6 +103,9 @@ class XHProf
     }
 
 
+    /**
+     * @return void
+     */
     public function stop()
     {
         if (self::$run) {

@@ -60,15 +60,18 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
     public $dohistory                   = true;
-    protected static $forward_entity_to = ['TicketValidation', 'TicketCost'];
+    protected static $forward_entity_to = [TicketValidation::class, TicketCost::class];
 
     // From CommonITIL
-    public $userlinkclass               = 'Ticket_User';
-    public $grouplinkclass              = 'Group_Ticket';
-    public $supplierlinkclass           = 'Supplier_Ticket';
+    public $userlinkclass               = Ticket_User::class;
+    public $grouplinkclass              = Group_Ticket::class;
+    public $supplierlinkclass           = Supplier_Ticket::class;
 
     public static $rightname                   = 'ticket';
 
+    /**
+     * @var bool
+     */
     protected $userentity_oncreate      = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
@@ -77,9 +80,15 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     public const STATUS_MATRIX_FIELD           = 'ticket_status';
 
     // Specific ones
-    /// Hardware datas used by getFromDBwithData
+    /**
+     * Hardware datas used by getFromDBwithData
+     * @var array
+     */
     public $hardwaredatas = [];
-    /// Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
+    /**
+     * Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
+     * @var int
+     */
     public $computerfound = 0;
 
     // Request type
@@ -170,6 +179,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
+    /**
+     * @param int $ticket_id
+     * @param int $user_id
+     *
+     * @return void
+     */
     public static function assignToMe($ticket_id, $user_id)
     {
         $ticket = new Ticket();
@@ -1062,9 +1077,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      *  @since 9.1
      *
-     * @param $type
-     * @param $input
-     * @param $manual_slas_id
+     * @param int $type
+     * @param array $input
+     * @param array $manual_slas_id
+     *
+     * @return void
      */
     public function slaAffect($type, &$input, $manual_slas_id)
     {
@@ -1154,9 +1171,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      *  @since 9.1
      *
-     * @param $type
-     * @param $input
-     * @param $manual_olas_id
+     * @param int $type
+     * @param array $input
+     * @param array $manual_olas_id
+     *
+     * @return void
      */
     public function olaAffect($type, &$input, $manual_olas_id)
     {
@@ -1243,7 +1262,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @since 9.1
      *
-     * @param $slas_id
+     * @param int $slas_id
+     *
+     * @return void
      **/
     public function manageSlaLevel($slas_id)
     {
@@ -1271,8 +1292,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @since 9.1
      *
-     * @param $slas_id
-     **/
+     * @param int $slas_id
+     *
+     * @return void
+     */
     public function manageOlaLevel($slas_id)
     {
 
@@ -1326,7 +1349,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     /**
      * Compute take into account stat of the current ticket
-     **/
+     *
+     * @return int
+     */
     public function computeTakeIntoAccountDelayStat()
     {
 
@@ -1350,7 +1375,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         return 0;
     }
 
-    private function handleContractInputs()
+    private function handleContractInputs(): void
     {
         $contracts_id = $this->input['_contracts_id'] ?? 0;
         if (!is_array($contracts_id)) {
@@ -1798,16 +1823,14 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     /**
-     * Get active or solved tickets for an hardware last X days
+     * Get active or solved tickets for a hardware last X days
      *
-     * @since 0.83
-     *
-     * @param $itemtype  string   Item type
-     * @param $items_id  integer  ID of the Item
-     * @param $days      integer  day number
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int $items_id  ID of the Item
+     * @param int $days day number
      *
      * @return array
-     **/
+     */
     public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days)
     {
         return $this->getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days);
@@ -1817,13 +1840,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Count active tickets for an hardware
      *
-     * @since 0.83
-     *
-     * @param $itemtype  string   Item type
-     * @param $items_id  integer  ID of the Item
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int $items_id ID of the Item
      *
      * @return integer
-     **/
+     */
     public function countActiveTicketsForItem($itemtype, $items_id)
     {
         global $DB;
@@ -1899,16 +1920,16 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     /**
-     * Count solved tickets for an hardware last X days
+     * Count solved tickets for a hardware last X days
      *
      * @since 0.83
      *
-     * @param $itemtype  string   Item type
-     * @param $items_id  integer  ID of the Item
-     * @param $days      integer  day number
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int $items_id ID of the Item
+     * @param int $days day number
      *
      * @return integer
-     **/
+     */
     public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
     {
         global $DB;
@@ -3286,7 +3307,9 @@ JAVASCRIPT;
      * Get ticket type Name
      *
      * @param integer $value Type ID
-     **/
+     *
+     * @return string|int
+     */
     public static function getTicketTypeName($value)
     {
 
@@ -3796,6 +3819,8 @@ JAVASCRIPT;
      * @param string  $status             (default ''process)
      * @param boolean $showgrouptickets   (true by default)
      * @param boolean $display            set to false to return html
+     *
+     * @return void|string|false
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
@@ -4612,7 +4637,9 @@ JAVASCRIPT;
      *
      * @param boolean $foruser  Only for current login user as requester or observer (false by default)
      * @param boolean $display  il false return html
-     **/
+     *
+     * @return string|false|void
+     */
     public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
         global $CFG_GLPI, $DB;
@@ -4742,12 +4769,15 @@ JAVASCRIPT;
     }
 
 
+    /**
+     * @return void
+     */
     public static function showCentralNewList()
     {
         global $DB;
 
         if (!Session::haveRightsOr(self::$rightname, [self::READALL, self::READNEWTICKET])) {
-            return false;
+            return;
         }
 
         $criteria = self::getCommonCriteria();
@@ -4840,9 +4870,11 @@ JAVASCRIPT;
     }
 
     /**
-     * @param $ID
-     * @param $forcetab  string   name of the tab to force at the display (default '')
-     **/
+     * @param int $ID
+     * @param string $forcetab name of the tab to force at the display (default '')
+     *
+     * @return void
+     */
     public static function showVeryShort($ID, $forcetab = '')
     {
         // Prints a job in short form
@@ -6192,6 +6224,11 @@ JAVASCRIPT;
         }
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         global $CFG_GLPI;
@@ -6222,6 +6259,11 @@ JAVASCRIPT;
         return $options;
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return array
+     */
     public static function getListForItemRestrict(CommonDBTM $item)
     {
         $restrict = [];

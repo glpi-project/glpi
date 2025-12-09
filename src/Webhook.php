@@ -344,6 +344,8 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     /**
     * Return status icon
+     *
+     * @param string $status
     *
     * @return string
     */
@@ -1049,11 +1051,17 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     private function showSentQueries(): void
     {
-        // Show embeded search engine for QueuedWebhook with the criteria for the current webhook ID
+        // Show embedded search engine for QueuedWebhook with the criteria for the current webhook ID
         $params = $this->getSentQueriesSearchParams();
         Search::showList(QueuedWebhook::class, $params);
     }
 
+    /**
+     * @param string $data
+     * @param string $secret
+     *
+     * @return string
+     */
     public static function getSignature($data, $secret): string
     {
         return hash_hmac('sha256', $data, $secret);
@@ -1280,11 +1288,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $this->fields['custom_headers'] = importArrayFromDB($this->fields['custom_headers']);
     }
 
+    /**
+     * @return string
+     */
     public static function generateRandomSecret()
     {
         return Toolbox::getRandomString(40);
     }
 
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     */
     public function handleInput($input)
     {
         $valid_input = true;
