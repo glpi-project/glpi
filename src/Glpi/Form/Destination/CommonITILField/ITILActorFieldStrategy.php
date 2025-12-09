@@ -66,10 +66,10 @@ enum ITILActorFieldStrategy: string
             self::SPECIFIC_VALUES               => __('Specific actors'),
             self::SPECIFIC_ANSWERS              => __('Answer from specific questions'),
             self::LAST_VALID_ANSWER             => sprintf(__('Answer to last "%s" or "Email" question'), $label),
-            self::USER_FROM_OBJECT_ANSWER       => __('User from GLPI object answer'),
-            self::TECH_USER_FROM_OBJECT_ANSWER  => __('Tech user from GLPI object answer'),
-            self::GROUP_FROM_OBJECT_ANSWER      => __('Group from GLPI object answer'),
-            self::TECH_GROUP_FROM_OBJECT_ANSWER => __('Tech group from GLPI object answer'),
+            self::USER_FROM_OBJECT_ANSWER       => __('User that own an asset from an answer'),
+            self::TECH_USER_FROM_OBJECT_ANSWER  => __('Technician in charge of an asset from an answer'),
+            self::GROUP_FROM_OBJECT_ANSWER      => __('Group that own an asset from an answer'),
+            self::TECH_GROUP_FROM_OBJECT_ANSWER => __('Group in charge of an asset from an answer'),
         };
     }
 
