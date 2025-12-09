@@ -676,6 +676,7 @@ class Auth extends CommonGLPI
 
                         if (self::checkPassword($cookie_token, $hash)) {
                             $this->user->fields['name'] = $user->fields['name'];
+                            // Use current time as session time may not be initialized yet or may be from previous session
                             $user->update(['id' => $user->getID(), 'last_login' => date("Y-m-d H:i:s")]);
                             return true;
                         } else {
@@ -924,6 +925,7 @@ class Auth extends CommonGLPI
                 }
                 // Reset to secure it
                 $this->user->fields['name']       = $login_name;
+                // Use current time as session time may not be initialized yet or may be from previous session
                 $this->user->fields["last_login"] = date("Y-m-d H:i:s");
             } else {
                 $this->addToError(__('Empty login or password'));
@@ -1009,6 +1011,7 @@ class Auth extends CommonGLPI
             $this->user->fields['is_deleted_ldap'] = 0;
 
             // Prepare data
+            // Use current time as session time may not be initialized yet or may be from previous session
             $this->user->fields["last_login"] = date("Y-m-d H:i:s");
             if ($this->extauth) {
                 $this->user->fields["_extauth"] = 1;
