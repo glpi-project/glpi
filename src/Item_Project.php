@@ -86,10 +86,11 @@ class Item_Project extends CommonDBRelation
      * Print the HTML array for Items linked to a project
      *
      * @param Project $project
+     * @param int $withtemplate
      *
      * @return bool
      **/
-    public static function showForProject(Project $project): bool
+    public static function showForProject(Project $project, int $withtemplate = 0): bool
     {
         $instID = $project->getID();
 
@@ -169,7 +170,8 @@ class Item_Project extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
             'item' => $project,
-            'can_edit' => $canedit,
+            'can_edit' => $canedit && $withtemplate != 2,
+            'withtemplate' => $withtemplate,
             'used' => $used,
             'datatable_params' => [
                 'is_tab' => true,
@@ -246,7 +248,7 @@ class Item_Project extends CommonDBRelation
         }
 
         if ($item instanceof Project) {
-            return self::showForProject($item);
+            return self::showForProject($item, $withtemplate);
         }
 
         if (
