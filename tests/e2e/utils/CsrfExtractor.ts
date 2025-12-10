@@ -37,14 +37,14 @@ export class CsrfExtractor
     public extractToken(body: string): string
     {
         const dom = new JSDOM(body);
-        const input = dom.window.document.querySelector(
-            'input[name="_glpi_csrf_token"]'
-        ) as HTMLInputElement;
+        const meta = dom.window.document.querySelector(
+            'meta[property="glpi:csrf_token"]'
+        ) as HTMLMetaElement;
 
-        if (input === null || input.value === null) {
+        if (meta === null || meta.content === null) {
             throw new Error(`Unexpected body content: ${body}`);
         }
 
-        return input.value;
+        return meta.content;
     }
 }
