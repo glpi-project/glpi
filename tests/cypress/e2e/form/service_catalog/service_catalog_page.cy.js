@@ -700,7 +700,7 @@ describe('Service catalog page', () => {
         cy.findByRole('region', { 'name': 'Forms' }).contains('No forms found').should('exist');
     });
 
-    it.only('can filter forms, kb items and categories nested in category', () => {
+    it('can filter forms, kb items and categories nested in category', () => {
         const uuid = Cypress._.uniqueId(Date.now().toString());
 
         // Arrange: Create categories, form and KB item
