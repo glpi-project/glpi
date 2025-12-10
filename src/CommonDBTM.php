@@ -2434,15 +2434,12 @@ class CommonDBTM extends CommonGLPI
      * Unglobalize the item : duplicate item and connections.
      *
      * @see Asset_PeripheralAsset::unglobalizeItem()
-     * @return null
-     * @TODO Return a bool value (true on success, false on failure).
+     * @return bool true on success, false on failure
      */
     public function unglobalize()
     {
         // Wrapper only to standardize the usage of form actions in generic forms
-        Asset_PeripheralAsset::unglobalizeItem($this);
-
-        return null;
+        return Asset_PeripheralAsset::unglobalizeItem($this);
     }
 
     /**

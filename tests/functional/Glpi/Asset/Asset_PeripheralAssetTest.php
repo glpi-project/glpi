@@ -39,6 +39,7 @@ use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPeripheralAssetsCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
+use Monitor;
 use Toolbox;
 
 class Asset_PeripheralAssetTest extends DbTestCase
@@ -76,5 +77,22 @@ class Asset_PeripheralAssetTest extends DbTestCase
             $item = \getItemForItemtype($itemtype);
             $this->assertContains(Asset_PeripheralAsset::class, $item->getCloneRelations(), $itemtype);
         }
+    }
+
+    public function testUnglobalizeReturnsBoolean(): void
+    {
+        $monitor = $this->createItem(
+            Monitor::class,
+            [
+                'name' => 'Test Monitor',
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_global' => 1,
+            ]
+        );
+
+        $result = $monitor->unglobalize();
+
+        $this->assertIsBool($result);
+        $this->assertTrue($result);
     }
 }
