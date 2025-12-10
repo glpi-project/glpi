@@ -243,7 +243,6 @@ abstract class InventoryAsset
                     continue;
                 }
 
-
                 $known_key = md5($key . $val);
                 //keep raw values...
                 $this->raw_links[$known_key] = $val;
@@ -259,6 +258,9 @@ abstract class InventoryAsset
                     $manufacturer = new Manufacturer();
                     unset($this->raw_links[$known_key]);
                     $val  = $manufacturer->processName($val);
+                    if ($val < 0) { //rule can return -1
+                        $val = 0;
+                    }
                     $known_key = md5($key . $val);
                     //keep raw values...
                     $this->raw_links[$known_key] = $val;
@@ -270,26 +272,42 @@ abstract class InventoryAsset
                 if (!isset($this->known_links[$known_key]) && $value->$key !== 0) {
                     $entities_id = $this->entities_id;
                     if ($key == "locations_id") {
-                        $this->known_links[$known_key] = Dropdown::importExternal('Location', $value->$key, $entities_id);
+                        $new_id = Dropdown::importExternal('Location', $value->$key, $entities_id);
+                        if ($new_id < 0) { //importExternal can return -1
+                            $new_id = 0;
+                        }
+                        $this->known_links[$known_key] = $new_id;
                     } elseif (preg_match('/^.+models_id/', $key)) {
                         // models that need manufacturer relation for dictionary import
                         // see CommonDCModelDropdown::$additional_fields_for_dictionnary
-                        $this->known_links[$known_key] = Dropdown::importExternal(
+                        $new_id = Dropdown::importExternal(
                             getItemtypeForForeignKeyField($key),
                             $value->$key,
                             $entities_id,
                             ['manufacturer' => $manufacturer_name]
                         );
+                        if ($new_id < 0) { //importExternal can return -1
+                            $new_id = 0;
+                        }
+                        $this->known_links[$known_key] = $new_id;
                     } elseif (isset($foreignkey_itemtype[$key])) {
-                        $this->known_links[$known_key] = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
+                        $new_id = Dropdown::importExternal($foreignkey_itemtype[$key], $value->$key, $entities_id);
+                        if ($new_id < 0) { //importExternal can return -1
+                            $new_id = 0;
+                        }
+                        $this->known_links[$known_key] = $new_id;
                     } elseif ($key !== 'entities_id' && $key !== 'states_id' && isForeignKeyField($key) && is_a($itemtype = getItemtypeForForeignKeyField($key), CommonDropdown::class, true)) {
                         $foreignkey_itemtype[$key] = $itemtype;
 
-                        $this->known_links[$known_key] = Dropdown::importExternal(
+                        $new_id = Dropdown::importExternal(
                             $foreignkey_itemtype[$key],
                             $value->$key,
                             $entities_id
                         );
+                        if ($new_id < 0) { //importExternal can return -1
+                            $new_id = 0;
+                        }
+                        $this->known_links[$known_key] = $new_id;
 
                         if (
                             $key == 'operatingsystemkernelversions_id'
