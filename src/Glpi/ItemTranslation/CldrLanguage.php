@@ -45,7 +45,7 @@ final class CldrLanguage
     {
         $language = Language::getById($lang_identifier);
         if ($language === null) {
-            throw new LogicException();
+            throw new LogicException(sprintf('Invalid lang `%s`.', $lang_identifier));
         }
 
         $this->language = $language;
