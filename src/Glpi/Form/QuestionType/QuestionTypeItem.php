@@ -364,6 +364,23 @@ class QuestionTypeItem extends AbstractQuestionType implements
         $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
         $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
 
+        $displaywith = [];
+        if ($is_itil_type && !$id_already_visible) {
+            $displaywith[] = 'id';
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
+            $item = getItemForItemtype($itemtype);
+            if ($item) {
+                if ($item->isField('serial')) {
+                    $displaywith[] = 'serial';
+                }
+                if ($item->isField('users_id')) {
+                    $displaywith[] = 'users_id';
+                }
+            }
+        }
+
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/question_type/item/end_user_template.html.twig',
@@ -374,8 +391,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 'aria_label'                  => $question->fields['name'],
                 'sub_types'                   => $this->getSubTypes(),
                 'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
-                'is_itil_type'                => $is_itil_type,
-                'id_already_visible'          => $id_already_visible,
+                'displaywith'                 => $displaywith,
             ]
         );
     }
