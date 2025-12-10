@@ -2894,7 +2894,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<int|string, array|string> If the value is defined as a string, it will create a new section in the dropdown
+     * @return array<int|string, array<mixed>|string> If the value is defined as a string, it will create a new section in the dropdown
      */
     public function getCriterias()
     {
@@ -2911,7 +2911,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<int|string, array|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
+     * @return array<int|string, array<mixed>|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
      */
     public function getActions()
     {
