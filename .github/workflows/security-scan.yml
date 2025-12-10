@@ -20,7 +20,7 @@ jobs:
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
-      PHP_IMAGE: "githubactions-php-apache:8.4"
+      PHP_IMAGE: "githubactions-php-apache:8.5"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
