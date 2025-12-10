@@ -340,6 +340,9 @@ jobs:
         if: ${{ !cancelled() }}
         run: |
           docker compose exec -T app .github/actions/e2e_install.sh
+      - name: Lint tests
+        if: ${{ !cancelled() }}
+        run: docker compose exec -T app npx tsc -p tsconfig.json --noEmit
       - name: Run Playwright tests
         if: ${{ !cancelled() }}
         run: docker compose exec -T app npx playwright test
