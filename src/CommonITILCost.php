@@ -499,19 +499,18 @@ abstract class CommonITILCost extends CommonDBChild
 
         if (
             $canedit
+            && static::canCreate()
             && !in_array($item->fields['status'], array_merge(
                 $item->getClosedStatusArray(),
                 $item->getSolvedStatusArray()
             ))
         ) {
             $twig_params = [
-                'cancreate' => static::canCreate(),
                 'id'        => $ID,
                 'rand'      => $rand,
                 'type'      => static::getType(),
                 'parenttype' => static::$itemtype,
                 'items_id'  => static::$items_id,
-                'add_new_label' => __('Add a new cost'),
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id='viewcost{{ id }}_{{ rand }}'></div>
@@ -531,14 +530,15 @@ abstract class CommonITILCost extends CommonDBChild
                         ]) %}
                     }
                 </script>
-                {% if cancreate %}
-                    <div class="text-center mt-1 mb-3">
-                        <button type="button" class="btn btn-primary" onclick="viewAddCost{{ id }}_{{ rand }}(this);">
-                            {{ add_new_label }}
-                        </button>
-                    </div>
-                {% endif %}
 TWIG, $twig_params);
+
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
+                    'button_label' => __('Add a new cost')
+                ]
+            );
         }
 
         $total          = 0.;

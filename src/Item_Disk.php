@@ -231,10 +231,14 @@ class Item_Disk extends CommonDBChild
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
             $link = self::getFormURL() . '?itemtype=' . $item::class . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
-            echo "<div class='mt-1 mb-3 text-center'>"
-               . "<a class='btn btn-primary' href='" . htmlescape($link) . "'>";
-            echo __s('Add a volume');
-            echo "</a></div>\n";
+
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => $link,
+                    'button_label' => __('Add a volume')
+                ]
+            );
         }
 
         $iterator = self::getFromItem($item);

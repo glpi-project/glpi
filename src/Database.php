@@ -396,10 +396,13 @@ class Database extends CommonDBChild
         $canedit = $instance->canEdit($ID);
 
         if ($canedit) {
-            echo "<div class='center firstbloc'>"
-            . "<a class='btn btn-primary' href='" . htmlescape(static::getFormURL()) . "?databaseinstances_id=$ID'>";
-            echo __s('Add a database');
-            echo "</a></div>\n";
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => static::getFormURL() . "?databaseinstances_id=$ID",
+                    'button_label' => __('Add a database')
+                ]
+            );
         }
 
         echo "<div class='center'>";

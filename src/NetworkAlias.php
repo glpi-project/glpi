@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  *  NetworkAlias Class
  *
@@ -255,8 +257,6 @@ class NetworkAlias extends FQDNLabel
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-
             echo Html::scriptBlock(
                 "function viewAddAlias$rand() {"
                 . Ajax::updateItemJsCode(
@@ -273,9 +273,13 @@ class NetworkAlias extends FQDNLabel
                 . "};"
             );
 
-            echo "<a class='btn btn-primary' href='javascript:viewAddAlias$rand();'>";
-            echo __s('Add a network alias') . "</a>";
-            echo "</div>";
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:viewAddAlias'. $rand . '();',
+                    'button_label' => __('Add a network alias')
+                ]
+            );
         }
         echo "<div id='viewnetworkalias$rand'></div>";
 

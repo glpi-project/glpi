@@ -37,12 +37,14 @@
     is_horizontal: false,
 } %}
 
-<div class="firstbloc">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form">
-        <i class="ti ti-link"></i>
-        <span>{{ _x('button', 'Add a note') }}</span>
-    </button>
-</div>
+{% include 'components/tab/addlink_block.html.twig' with {
+    'add_link': 'javascript:return false;',
+    'button_label': _x('button', 'Add a note'),
+    'button_attributes': {
+        'data-bs-toggle': 'modal',
+        'data-bs-target': '#new-note-form'
+    }
+} %}
 
 <div class="my-3">
     <div id="new-note-form" class="modal fade">

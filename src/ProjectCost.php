@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /// ProjectCost class
 /// since version 0.85
 class ProjectCost extends CommonDBChild
@@ -318,7 +320,9 @@ class ProjectCost extends CommonDBChild
         if ($canedit) {
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
             echo "<script type='text/javascript' >\n";
-            echo "function viewAddCost" . $ID . "_$rand() {\n";
+            echo "function viewAddCost" . $ID . "_$rand(btn) {\n";
+            echo "// Hide the triggering button\n";
+            echo "$(btn).hide();\n";
             $params = ['type'         => self::class,
                 'parenttype'   => Project::class,
                 'projects_id' => $ID,
@@ -331,10 +335,13 @@ class ProjectCost extends CommonDBChild
             );
             echo "};";
             echo "</script>";
-            echo "<div class='firstbloc'>"
-               . "<a class='btn btn-primary ms-1' href='javascript:viewAddCost" . $ID . "_$rand();'>";
-            echo "<i class='ti ti-link'></i>";
-            echo __s('Add a new cost') . "</a></div>";
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
+                    'button_label' => __('Add a new cost')
+                ]
+            );
         }
         $total = 0;
         echo "<table class='table'>";

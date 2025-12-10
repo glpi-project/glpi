@@ -1328,12 +1328,13 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         $entries_to_fetch = [];
 
         if ($canedit) {
-            // langauge=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ 'Project'|itemtype_form_path() }}?projects_id={{ projects_id }}">{{ label }}</a>
-                </div>
-TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this project')]);
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => Project::getFormURL() . '?projects_id=' . $ID,
+                    'button_label' => __('Create a sub project from this project')
+                ]
+            );
         }
 
         foreach ($iterator as $data) {

@@ -30,33 +30,31 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/alerts_macros.html.twig' as alerts %}
+{% set block_class = block_class ?? 'd-flex mb-3' %}
+{% set button_id = button_id ?? false %}
+{% set button_class = button_class ?? 'btn btn-primary ms-1' %}
+{% set button_icon = button_icon ?? 'ti ti-link' %}
+{% set button_label = button_label ?? _x('button', 'Add') %}
+{% set button_attributes = button_attributes ?? {} %}
 
-{% if canedit %}
-    {% include 'components/tab/addlink_block.html.twig' with {'add_link': form_url, 'button_label': __('Add a remote management')} %}
+<div class="{{ block_class }}">
+    <a
+        class="{{ button_class }}"
+{% if button_id %}
+        id="{{ button_id }}"
 {% endif %}
-
-{% if entries|length > 0 %}
-    {{ include('components/datatable.html.twig', {
-        'is_tab': true,
-        'nofilter': true,
-        'nosort': true,
-        'columns': {
-            'remoteid': __('Remote ID'),
-            'type': _n('Type', 'Types', 1),
-            'comment': __('Comments'),
-        },
-        'formatters': {
-            'remoteid': 'raw_html',
-        },
-        'entries': entries,
-        'total_number': entries|length,
-        'showmassiveactions': canedit,
-        'massiveactionparams': massiveactionparams,
-    }, with_context = false) }}
+{% if add_link starts with 'javascript:' %}
+        onclick="{{ add_link }}"
 {% else %}
-    {{ alerts.alert_info(
-        __('No results found')
-    ) }}
+        href="{{ add_link }}"
 {% endif %}
-
+{% for attribute, value in button_attributes %}
+        {{ attribute }}="{{ value }}"
+{% endfor %}
+    >
+{% if button_icon is not empty %}
+        <i class="{{ button_icon }}"></i>
+{% endif %}
+        {{ button_label }}
+    </a>
+</div>
