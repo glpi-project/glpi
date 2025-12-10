@@ -36,7 +36,6 @@ namespace Glpi\ItemTranslation;
 
 use CommonDBChild;
 use CommonDBTM;
-use Gettext\Languages\Language;
 use Glpi\Form\FormTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
@@ -112,23 +111,20 @@ abstract class ItemTranslation extends CommonDBChild
             return '';
         }
 
-        $translations =  json_decode($this->fields['translations'], true);
+        $language = new CldrLanguage($this->fields['language']);
+        $category_index = $language->getPluralKey($count);
 
-        // retrieve the formulas associated to the language
-        $gettext_language = Language::getById($this->fields['language']);
-        if ($gettext_language === null) {
+        $translations =  json_decode($this->fields['translations'], true);
+        return $translations[$category_index] ?? null;
+    }
+
+    final public function getCldrLanguage(): ?CldrLanguage
+    {
+        if ($this->isNewItem()) {
             return null;
         }
 
-        // compute the formula with the paramater count
-        $formula_to_compute = str_replace('n', (string) $count, $gettext_language->formula);
-        $category_index_number = eval("return $formula_to_compute;");
-
-        // retrieve the category index string (one, few, many, other) based on the index
-        $found_category = $gettext_language->categories[$category_index_number] ?? $gettext_language->categories[0];
-        $category_index_string = $found_category->id;
-
-        return $translations[$category_index_string] ?? null;
+        return new CldrLanguage($this->fields['language']);
     }
 
     /**

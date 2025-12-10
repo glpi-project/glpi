@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% macro getTranslationInput(handler, translation) %}
+{% macro getTranslationInput(handler, translation, plural_key) %}
     {% import 'components/form/fields_macros.html.twig' as fields %}
 
     {% set rand = random() %}
@@ -56,7 +56,7 @@
         {% endif %}
         {% if handler.isRichText() %}
             {{ fields.textareaField(
-                'translations[%s][translations][one]'|format(rand),
+                'translations[%s][translations][%s]'|format(rand, plural_key),
                 current_translation,
                 '',
                 {
@@ -75,7 +75,7 @@
         {% else %}
             <input
                 type="text"
-                name="translations[{{ rand }}][translations][one]"
+                name="translations[{{ rand }}][translations][{{ plural_key }}]"
                 class="form-control"
                 placeholder="{{ __('Enter translation') }}"
                 value="{{ current_translation }}"
@@ -106,7 +106,8 @@
                 'default': default_value,
                 'translation': _self.getTranslationInput(
                     handler,
-                    item_translation
+                    item_translation,
+                    form_translation.getCldrLanguage().getPluralKey(1)
                 ),
                 'type_aria_label': __('Translation name'),
                 'default_aria_label': __('Default value'),
