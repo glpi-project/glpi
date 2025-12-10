@@ -39,14 +39,17 @@ use CommonDBTM;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ArrayParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use Item_Ola;
 use Item_Ticket;
 use KnowbaseItem;
 use KnowbaseItem_Item;
 use Location;
+use LogicException;
 use OLA;
 use RequestType;
 use Session;
 use SLA;
+use SLM;
 use Ticket;
 use TicketValidation;
 
@@ -114,9 +117,22 @@ class TicketParameters extends CommonITILObjectParameters
 
         // Add ticket's OLA
         $ola_parameters = new OLAParameters();
-        $_getOlas = fn(array $ola_datas) => OLA::getByIds(array_column($ola_datas, 'olas_id'));
-        $values['olas_tto'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTOData()));
-        $values['olas_ttr'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTRData()));
+
+        $values['olas_tto'] = [];
+        $values['olas_ttr'] = [];
+
+        $ticket_olas = (new Item_Ola())->find(['itemtype' => Ticket::class, 'items_id' => $ticket->getID()]);
+        foreach ($ticket_olas as $ticket_ola_data) {
+            $key = match ($ticket_ola_data['ola_type']) {
+                SLM::TTO => 'olas_tto',
+                SLM::TTR => 'olas_ttr',
+                default => throw new LogicException(),
+            };
+
+            if ($ola = OLA::getById($ticket_ola_data['olas_id'])) {
+                $values[$key][] = $ola_parameters->getValues($ola);
+            }
+        }
 
         // Add ticket's request type
         if ($requesttype = RequestType::getById($fields['requesttypes_id'])) {
