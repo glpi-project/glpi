@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 
 ### Changed
+- High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
 
 ### Deprecated
 

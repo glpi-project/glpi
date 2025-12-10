@@ -54,6 +54,7 @@ final class SearchContext
      * @var array Cache of table names for foreign keys.
      */
     private array $fkey_tables = [];
+    private array $prop_to_join_names = [];
 
     public function __construct(array $schema, array $request_params)
     {
@@ -279,5 +280,20 @@ final class SearchContext
             }
         }
         return $this->fkey_tables[$fkey];
+    }
+
+    public function getJoinNameForProperty(string $prop_name): string
+    {
+        if (!isset($this->prop_to_join_names[$prop_name])) {
+            $joins = $this->getJoins();
+            $prop_name = str_replace(chr(0x1F), '.', $prop_name);
+            if (array_key_exists($prop_name, $joins)) {
+                $join_name = $prop_name;
+            } else {
+                $join_name = substr($prop_name, 0, strrpos($prop_name, '.'));
+            }
+            $this->prop_to_join_names[$prop_name] = $join_name;
+        }
+        return $this->prop_to_join_names[$prop_name];
     }
 }

@@ -146,13 +146,16 @@ final class GraphQLGenerator
 
         // Handle "internal" types that are used for object properties
         foreach ($schema['properties'] as $prop_name => $prop) {
-            if (isset($prop['x-full-schema'])) {
-                continue;
-            }
             if ($prop['type'] === Doc\Schema::TYPE_OBJECT) {
+                if (isset($prop['x-full-schema'])) {
+                    continue;
+                }
                 $namespaced_type = "{$schema_name}_{$prop_name}";
                 $types['_' . $namespaced_type] = $this->convertRESTPropertyToGraphQLType($prop, $namespaced_type);
             } elseif ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
+                if (isset($prop['items']['x-full-schema'])) {
+                    continue;
+                }
                 $items = $prop['items'];
                 if ($items['type'] === Doc\Schema::TYPE_OBJECT) {
                     $namespaced_type = "{$schema_name}_{$prop_name}";
