@@ -1063,7 +1063,7 @@ class Rule extends CommonDBTM
      **/
     public function maxActionsCount()
     {
-        return count(array_filter($this->getAllActions(), static fn($action_obj) => !isset($action_obj['duplicatewith'])));
+        return count(array_filter($this->getAllActions(), static fn($action_obj) => is_array($action_obj) && !isset($action_obj['duplicatewith'])));
     }
 
     /**
@@ -1405,7 +1405,7 @@ TWIG, $twig_params);
 
         $items      = [];
         $group      = [];
-        $groupname  = ''; // Default group name is empty to match previous no group logic
+        $groupname  = _n('Action', 'Actions', Session::getPluralNumber());
         foreach ($actions as $ID => $act) {
             // Manage group system
             if (!is_array($act)) {
