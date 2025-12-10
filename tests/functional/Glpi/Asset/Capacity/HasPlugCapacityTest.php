@@ -160,6 +160,7 @@ class HasPlugCapacityTest extends DbTestCase
                 'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
                 'plugs_id' => $plug_1->getID(),
+                'number_plugs' => 1,
             ]
         );
         $plug_item_2 = $this->createItem(
@@ -168,6 +169,7 @@ class HasPlugCapacityTest extends DbTestCase
                 'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
                 'plugs_id' => $plug_2->getID(),
+                'number_plugs' => 1,
             ]
         );
 
@@ -247,7 +249,9 @@ class HasPlugCapacityTest extends DbTestCase
     {
         yield [
             'target_classname'   => Plug::class,
+            'target_fields'      => [],
             'relation_classname' => Item_Plug::class,
+            'relation_fields'    => ['number_plugs' => 1],
         ];
     }
 
@@ -255,8 +259,10 @@ class HasPlugCapacityTest extends DbTestCase
     {
         yield [
             'target_classname'   => Plug::class,
-            'relation_classname' => Item_Plug::class,
             'expected'           => '%d plugs attached to %d assets',
+            'target_fields'      => [],
+            'relation_classname' => Item_Plug::class,
+            'relation_fields'    => ['number_plugs' => 1],
         ];
     }
 }
