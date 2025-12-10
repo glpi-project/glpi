@@ -182,21 +182,19 @@ class Item_Plug extends CommonDBRelation
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): false|array
     {
         // Check number_plugs requirement
         if (
-            isset($input['number_plugs'])
-            || $this->isNewItem()
+            ($this->isNewItem() || isset($input['number_plugs']))
+            && (!isset($input['number_plugs']) || $input['number_plugs'] === '' || $input['number_plugs'] < 1)
         ) {
-            if (!isset($input['number_plugs']) || $input['number_plugs'] === '' || $input['number_plugs'] < 1) {
-                Session::addMessageAfterRedirect(
-                    __s('A number of plugs is required'),
-                    true,
-                    ERROR
-                );
-                return false;
-            }
+            Session::addMessageAfterRedirect(
+                __s('A number of plugs is required'),
+                true,
+                ERROR
+            );
+            return false;
         }
 
         return $input;

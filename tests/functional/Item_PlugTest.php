@@ -91,7 +91,7 @@ class Item_PlugTest extends DbTestCase
         $item_plug->getEmpty();
         $this->assertFalse($item_plug->add([
             'plugs_id' => $plug->getID(),
-            'itemtype' => 'Computer',
+            'itemtype' => Computer::class,
             'items_id' => $computer->getID(),
             'number_plugs' => '',
         ]));
@@ -101,7 +101,7 @@ class Item_PlugTest extends DbTestCase
         $item_plug->getEmpty();
         $this->assertGreaterThan(0, $item_plug->add([
             'plugs_id' => $plug->getID(),
-            'itemtype' => 'Computer',
+            'itemtype' => Computer::class,
             'items_id' => $computer->getID(),
             'number_plugs' => 1,
         ]));
