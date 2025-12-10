@@ -304,10 +304,12 @@ jobs:
     runs-on: "ubuntu-latest"
     timeout-minutes: 60
     env:
-      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-playwright.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-mariadb:11.8"
       PHP_IMAGE: "githubactions-php-apache:8.5"
+      PLAYWRIGHT_BROWSERS_PATH: "/opt/playwright-browsers"
+      PLAYWRIGHT_BROWSERS_PATH_CACHE: "/tmp/playwright-browsers-cache"
       UPDATE_FILES_ACL: true
     steps:
       - name: "Set env"
@@ -334,6 +336,15 @@ jobs:
       - name: "Build GLPI's dependencies and translations"
         run: |
           docker compose exec -T app .github/actions/init_build.sh
+      - name: Get playwright version
+        id: playwright-version
+        run: echo "version=$(jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)" >> $GITHUB_OUTPUT
+      - name: "Restore playwright browsers cache"
+        uses: actions/cache@v4
+        with:
+          path: |
+            ${{ env.PLAYWRIGHT_BROWSERS_PATH_CACHE }}
+          key: "playwright-browsers-cache-${{ steps.playwright-version.outputs.version }}"
       - name: Install Playwright Browsers
         run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
       - name: "Install DB tests"
