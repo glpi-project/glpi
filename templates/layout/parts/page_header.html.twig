@@ -115,24 +115,14 @@
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
-               {% if not anonymous %}
+               {% if not anonymous or menu|length > 0 %}
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
+                  {% if not anonymous %}
                   <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">
                      {{ include('layout/parts/goto_button.html.twig') }}
                   </span>
-               </div>
-               {% elseif menu|length > 0 %}
-               <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
-                  <ul class="navbar-nav">
-                     {% for item in menu %}
-                        <li class="nav-item">
-                           <a class="nav-link" href="{{ path(item['default']) }}">
-                              <span class="menu-label">{{ item['title'] }}</span>
-                           </a>
-                        </li>
-                     {% endfor %}
-                  </ul>
+                  {% endif %}
                </div>
                {% endif %}
             {% endif %}
