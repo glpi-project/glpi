@@ -975,7 +975,7 @@ function initFormTranslationFixtures()
         'itemtype' => Form::class,
         'items_id' => $form->getID(),
         'key' => 'form_name',
-        'language' => 'en_XX',
+        'language' => 'en_AU',
         'translations' => '{"one": "Request a service translated"}',
         'hash' => md5('Request a service'),
     ]);
@@ -983,7 +983,7 @@ function initFormTranslationFixtures()
         'itemtype' => Section::class,
         'items_id' => $section->getID(),
         'key' => 'section_name',
-        'language' => 'en_XX',
+        'language' => 'en_AU',
         'translations' => '{"one": "First Section translated"}',
         'hash' => md5('First Section'),
     ]);
@@ -991,7 +991,7 @@ function initFormTranslationFixtures()
         'itemtype' => Question::class,
         'items_id' => $question->getID(),
         'key' => 'question_name',
-        'language' => 'en_XX',
+        'language' => 'en_AU',
         'translations' => '{"one": "Title translated"}',
         'hash' => md5('Title'),
     ]);
@@ -1005,7 +1005,7 @@ function initFormTranslationFixtures()
         'itemtype' => GlpiPageTile::class,
         'items_id' => $question->getID(),
         'key' => 'title',
-        'language' => 'en_XX',
+        'language' => 'en_AU',
         'translations' => '{"one": "Browse help articles translated"}',
         'hash' => md5('Browse help articles'),
     ]);
