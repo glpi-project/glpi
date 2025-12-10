@@ -1072,11 +1072,16 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
+        global $CFG_GLPI;
+
         $challenge_response = [];
         $options = [
             'base_uri'        => $url,
             'connect_timeout' => 1,
         ];
+        if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+            $options['proxy_excluded'] = true;
+        }
 
         // init guzzle client with base options
         $httpClient = Toolbox::getGuzzleClient($options);
