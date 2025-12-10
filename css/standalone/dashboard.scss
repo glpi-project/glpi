@@ -99,7 +99,7 @@ $break_tablet: 1400px;
 
         .main-icon {
             font-size: 1.5em;
-            right: 3px;
+            inset-inline-end: 3px;
             bottom: 3px;
         }
 
@@ -734,7 +734,7 @@ $break_tablet: 1400px;
     }
 
     .card {
-        text-align: left;
+        text-align: start;
         padding: 5px;
         height: 100%;
         width: 100%;
@@ -755,7 +755,7 @@ $break_tablet: 1400px;
         }
 
         .main-icon {
-            right: 5px;
+            inset-inline-end: 5px;
             top: 5px;
         }
 
@@ -783,7 +783,7 @@ $break_tablet: 1400px;
     .main-icon {
         font-size: 3em;
         position: absolute;
-        right: 5px;
+        inset-inline-end: 5px;
         bottom: 5px;
 
         @media screen and (min-width: $break_phones) and (max-width: $break_tablet) {
@@ -1240,7 +1240,7 @@ $break_tablet: 1400px;
 
         .main-icon {
             font-size: 2em;
-            right: 5px;
+            inset-inline-end: 5px;
             bottom: 5px;
         }
 
