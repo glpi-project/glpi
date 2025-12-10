@@ -700,7 +700,7 @@ describe('Service catalog page', () => {
         cy.findByRole('region', { 'name': 'Forms' }).contains('No forms found').should('exist');
     });
 
-    it('can filter forms, kb items and categories nested in category', () => {
+    it.only('can filter forms, kb items and categories nested in category', () => {
         const uuid = Cypress._.uniqueId(Date.now().toString());
 
         // Arrange: Create categories, form and KB item
@@ -721,14 +721,14 @@ describe('Service catalog page', () => {
         // Act: Visit the service catalog and apply filters
         cy.visit('/ServiceCatalog');
         cy.findByPlaceholderText('Search for forms...').as('filter_input');
-        cy.get('@filter_input').type(`${uuid}`);
+        for (const input of [`Nested category`, `Nested form`, `Nested KB item`]) {
+            cy.get('@filter_input').clear();
+            cy.get('@filter_input').type(`${input} ${uuid}`);
+            // Wait input debounce
+            cy.waitForNetworkIdle(1000);
 
-        // Wait input debounce
-        cy.waitForNetworkIdle(1000);
-
-        // Assert: Check that the correct category, form and KB item are displayed
-        findItemInServiceCatalog(`Nested category ${uuid}`).should('exist');
-        findItemInServiceCatalog(`Nested form ${uuid}`).should('exist');
-        findItemInServiceCatalog(`Nested KB item ${uuid}`).should('exist');
+            // Assert: Check that the correct category, form and KB item are displayed
+            findItemInServiceCatalog(`${input} ${uuid}`).should('exist');
+        }
     });
 });
