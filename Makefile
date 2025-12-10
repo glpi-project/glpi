@@ -309,6 +309,10 @@ lint-js: ## Run the js linter script
 	@$(PHP) .github/actions/lint_js-lint.sh
 .PHONY: lint-js
 
+lint-playwright: ## Run the ts linter script
+	@$(PHP) npx tsc -p tsconfig.json --noEmit
+.PHONY: lint-playwright
+
 ## —— Xdebug ———————————————————————————————————————————————————————————————————
 XDEBUG_FILE = xdebug-mode.ini
 
