@@ -561,6 +561,6 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
     public static function getIcon()
     {
-        return "fas fa-network-wired";
+        return "ti ti-network";
     }
 }
