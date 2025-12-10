@@ -375,6 +375,9 @@ class QuestionTypeItem extends AbstractQuestionType implements
                 if ($item->isField('serial')) {
                     $displaywith[] = 'serial';
                 }
+                if ($item->isField('otherserial')) {
+                    $displaywith[] = 'otherserial';
+                }
                 if ($item->isField('users_id')) {
                     $displaywith[] = 'users_id';
                 }
