@@ -36,3 +36,5 @@
  */
 $migration->addConfig(['found_new_version' => ''], 'core');
 $migration->removeConfig(['founded_new_version']);
+
+$migration->addConfig(['proxy_exclusions' => exportArrayToDB([])]);

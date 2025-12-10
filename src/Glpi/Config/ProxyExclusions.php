@@ -73,11 +73,11 @@ final class ProxyExclusions
         return $values;
     }
 
-    public function getDescriptions(): string
+    public function getDescriptions(): array
     {
-        $descriptions = __('Objects that should not use proxy configuration:');
+        $descriptions = [__('Objects that should not use proxy configuration:')];
         foreach ($this->exclusions as $exclusion) {
-            $descriptions .= '<br/>- ' . $exclusion->getDescription();
+            $descriptions[] = $exclusion->getDescription();
         }
         return $descriptions;
     }

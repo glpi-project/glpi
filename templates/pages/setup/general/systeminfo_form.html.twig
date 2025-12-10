@@ -73,8 +73,8 @@
         {
             multiple: true,
             size: 3,
-            values: config['proxy_exclusions'],
-            helper: possible_proxy_exclusions.getDescriptions()
+            values: config['proxy_exclusions']|default([]),
+            helper: possible_proxy_exclusions.getDescriptions()|map((description) => description|e)|join('<br />')
         },
     ) }}
 
