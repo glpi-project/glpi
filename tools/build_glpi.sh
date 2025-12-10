@@ -99,6 +99,7 @@ dev_nodes=(
     "stubs"
     "tests"
     "tools"
+    "tsconfig.json"
     "vendor/glpi-project/inventory_format/examples"
     "vendor/glpi-project/inventory_format/source_files"
 )
