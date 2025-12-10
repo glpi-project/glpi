@@ -599,8 +599,9 @@ TWIG, $twig_params);
      * Unglobalize an item : duplicate item and connections
      *
      * @param CommonDBTM $item object to unglobalize
+     * @return bool true on success, false on failure
      **/
-    public static function unglobalizeItem(CommonDBTM $item): void
+    public static function unglobalizeItem(CommonDBTM $item): bool
     {
         global $DB, $CFG_GLPI;
 
@@ -611,42 +612,48 @@ TWIG, $twig_params);
             throw new LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
         }
 
+        if (!$item->getField('is_global')) {
+            return true;
+        }
+
         // Update item to unit management :
-        if ($item->getField('is_global')) {
-            $input = [
-                'id'        => $item->fields['id'],
-                'is_global' => 0,
-            ];
-            $item->update($input);
+        $input = [
+            'id'        => $item->fields['id'],
+            'is_global' => 0,
+        ];
+        if (!$item->update($input)) {
+            return false;
+        }
 
-            // Get connect_wire for this connection
-            $iterator = $DB->request([
-                'SELECT' => ['id'],
-                'FROM'   => self::getTable(),
-                'WHERE'  => [
-                    'items_id_peripheral' => $item->getID(),
-                    'itemtype_peripheral' => $item->getType(),
-                ],
-            ]);
+        // Get connect_wire for this connection
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'items_id_peripheral' => $item->getID(),
+                'itemtype_peripheral' => $item->getType(),
+            ],
+        ]);
 
-            $first = true;
-            foreach ($iterator as $data) {
-                if ($first) {
-                    $first = false;
-                    unset($input['id']);
-                } else {
-                    $temp = clone $item;
-                    unset($temp->fields['id']);
-                    if ($newID = $temp->add($temp->fields)) {
-                        $conn = new self();
-                        $conn->update([
-                            'id'                  => $data['id'],
-                            'items_id_peripheral' => $newID,
-                        ]);
-                    }
+        $first = true;
+        foreach ($iterator as $data) {
+            if ($first) {
+                $first = false;
+                unset($input['id']);
+            } else {
+                $temp = clone $item;
+                unset($temp->fields['id']);
+                if ($newID = $temp->add($temp->fields)) {
+                    $conn = new self();
+                    $conn->update([
+                        'id'                  => $data['id'],
+                        'items_id_peripheral' => $newID,
+                    ]);
                 }
             }
         }
+
+        return true;
     }
 
     /**
