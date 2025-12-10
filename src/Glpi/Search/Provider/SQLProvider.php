@@ -2732,7 +2732,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param array   $already_link_tables  Array of tables already joined
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
-     * @param boolean $meta                 Is it a meta item? (default 0)
+     * @param bool $meta                 Is it a meta item? (default 0)
      * @param class-string<CommonDBTM>|'' $meta_type Meta type table (default 0)
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
@@ -4662,7 +4662,7 @@ final class SQLProvider implements SearchProviderInterface
      *                            contains all the search part (sql, criteria, params, itemtype etc)
      *                            TODO: should be a property of the class
      * @param  array   $searchopt Search options for the current itemtype
-     * @param  boolean $is_having Do we construct sql WHERE or HAVING part
+     * @param  bool $is_having Do we construct sql WHERE or HAVING part
      *
      * @return string             the sql sub string
      */
@@ -5259,7 +5259,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @param string  $field  Name (should be ` protected)
      * @param string  $val    Value to search
-     * @param boolean $not    Is a negative search ? (false by default)
+     * @param bool $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
      *
      * @return string Search SQL string
@@ -5362,7 +5362,7 @@ final class SQLProvider implements SearchProviderInterface
      * Create SQL search condition
      *
      * @param string  $val  Value to search
-     * @param boolean $not  Is a negative search? (false by default)
+     * @param bool $not  Is a negative search? (false by default)
      *
      * @return string Search string
      **/
@@ -5388,9 +5388,9 @@ final class SQLProvider implements SearchProviderInterface
      * @since 9.4: $num param has been dropped
      *
      * @param string  $itemtype        item type
-     * @param integer $ID              ID of the SEARCH_OPTION item
+     * @param int $ID              ID of the SEARCH_OPTION item
      * @param array   $data            array containing data results
-     * @param boolean $meta            is a meta item? (default false)
+     * @param bool $meta            is a meta item? (default false)
      * @param array   $addobjectparams array added parameters for union search
      * @param string  $orig_itemtype   Original itemtype, used for union_search_type
      *

@@ -53,14 +53,14 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
     /**
      * Error code returned if plugin version or plugin data is invalid.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
      * Error code returned when import failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_PLUGIN_IMPORT_FAILED = 2;
 
@@ -267,9 +267,9 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Define target item for given source item.
      *
      * @param string  $source_itemtype
-     * @param integer $source_id
+     * @param int $source_id
      * @param string  $target_itemtype
-     * @param integer $target_id
+     * @param int $target_id
      *
      * @return void
      */
@@ -288,7 +288,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      * Returns target item corresponding to given itemtype and id.
      *
      * @param string  $source_itemtype
-     * @param integer $source_id
+     * @param int $source_id
      *
      * @return null|CommonDBTM
      */

@@ -52,6 +52,12 @@ class PendingReason_Item extends CommonDBRelation
         return _n('Item', 'Items', $nb);
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param bool $get_empty
+     *
+     * @return false|PendingReason_Item
+     */
     public static function getForItem(CommonDBTM $item, bool $get_empty = false)
     {
         $em = new self();
@@ -309,7 +315,7 @@ class PendingReason_Item extends CommonDBRelation
      *
      * @param CommonITILObject $item
      * @param CommonDBTM       $timeline_item
-     * @return boolean
+     * @return bool
      */
     public static function isLastPendingForItem(
         CommonITILObject $item,
@@ -332,7 +338,7 @@ class PendingReason_Item extends CommonDBRelation
      * parent timeline
      *
      * @param CommonDBTM $timeline_item
-     * @return boolean
+     * @return bool
      */
     public static function isLastTimelineItem(CommonDBTM $timeline_item): bool
     {
@@ -394,7 +400,7 @@ class PendingReason_Item extends CommonDBRelation
      * Determines if a pending reason can be displayed for a given item.
      *
      * @param CommonDBTM $item
-     * @return boolean
+     * @return bool
      */
     public static function canDisplayPendingReasonForItem(CommonDBTM $item): bool
     {

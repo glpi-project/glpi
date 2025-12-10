@@ -55,7 +55,7 @@ final class RichText
      * @since 10.0.0
      *
      * @param null|string   $content        HTML string to be made safe
-     * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
      *
      * @return string
      *
@@ -89,10 +89,10 @@ final class RichText
      * @since 10.0.0
      *
      * @param string  $content                HTML string to be made safe
-     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
-     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-     * @param boolean $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
-     * @param boolean $preserve_line_breaks   Indicates whether the line breaks should be preserved
+     * @param bool $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param bool $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param bool $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool $preserve_line_breaks   Indicates whether the line breaks should be preserved
      *
      * @return string
      */

@@ -45,6 +45,8 @@ use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\EntityField;
+use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
+use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\ITILTaskField;
@@ -129,10 +131,27 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             'content' => '',
         ];
 
-        // Entity must be computed first as it will be used to pick the correct template
+        // If entity is set to be computed from the requester, then we need to
+        // compute the requesters before going any further.
         $entity_field = new EntityField();
+        $entity_config = $entity_field->getConfig($form, $config);
+        if (
+            $entity_config instanceof EntityFieldConfig
+            && $entity_config->getStrategy() === EntityFieldStrategy::REQUESTER_ENTITY
+        ) {
+            // Compute requester field
+            $requester_field = new RequesterField();
+            $input = $requester_field->applyConfiguratedValueToInputUsingAnswers(
+                $requester_field->getConfig($form, $config),
+                $input,
+                $answers_set
+            );
+            $already_applied_fields[] = RequesterField::class;
+        }
+
+        // Entity must be computed first as it will be used to pick the correct template
         $input = $entity_field->applyConfiguratedValueToInputUsingAnswers(
-            $entity_field->getConfig($form, $config),
+            $entity_config,
             $input,
             $answers_set
         );

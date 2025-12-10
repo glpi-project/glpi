@@ -559,6 +559,16 @@ class DocumentTest extends DbTestCase
             ])
         );
 
+        $unrelatedDocument = new \Document();
+        $this->assertGreaterThan(
+            0,
+            $unrelatedDocument->add([
+                'name'     => 'unrelated document',
+                'filename' => 'unrelated.png',
+                'users_id' => '2', // user "glpi"
+            ])
+        );
+
         $kbItem = new \KnowbaseItem();
         $this->assertGreaterThan(
             0,
@@ -590,9 +600,20 @@ class DocumentTest extends DbTestCase
             ])
         );
 
+        $this->assertGreaterThan(
+            0,
+            $document_item->add([
+                'documents_id' => $unrelatedDocument->getID(),
+                'items_id'     => \getItemByTypeName(\Computer::class, '_test_pc01', true),
+                'itemtype'     => \Computer::class,
+                'users_id'     => getItemByTypeName('User', 'normal', true),
+            ])
+        );
+
         // anonymous cannot see documents if not linked to FAQ items
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         // anonymous cannot see documents linked to FAQ items if public FAQ is not active
         $CFG_GLPI['use_public_faq'] = 0;
@@ -617,12 +638,14 @@ class DocumentTest extends DbTestCase
 
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         // anonymous can see documents linked to FAQ items when public FAQ is active
         $CFG_GLPI['use_public_faq'] = 1;
 
         $this->assertTrue($basicDocument->canViewFile());
         $this->assertTrue($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         $CFG_GLPI['use_public_faq'] = 0;
 
@@ -631,6 +654,7 @@ class DocumentTest extends DbTestCase
 
         $this->assertTrue($basicDocument->canViewFile());
         $this->assertTrue($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
 
         // post-only cannot see documents if not linked to FAQ items
         $this->assertTrue(
@@ -649,6 +673,16 @@ class DocumentTest extends DbTestCase
 
         $this->assertFalse($basicDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
+
+        // KB admin cannot see documents if not linked to FAQ items
+        $this->login('tech', 'tech');
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = 0; // remove rights on documents
+        $_SESSION["glpiactiveprofile"][\KnowbaseItem::$rightname] = READ | \KnowbaseItem::KNOWBASEADMIN; // give KB admin rights
+
+        $this->assertTrue($basicDocument->canViewFile());
+        $this->assertTrue($inlinedDocument->canViewFile());
+        $this->assertFalse($unrelatedDocument->canViewFile());
     }
 
     /**
@@ -876,6 +910,76 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($inlinedDocument->canViewFile()); // False without params
         $this->assertTrue($inlinedDocument->canViewFile([$fkey => $itil->getID()]));
         $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]));
+    }
+
+    /**
+     * Check visibility of document attached to an item identified in URL.
+     */
+    public function testCanViewFileFromItem()
+    {
+        global $CFG_GLPI;
+
+        $glpi_user_id   = \getItemByTypeName('User', 'glpi', true);
+        $normal_user_id = \getItemByTypeName('User', 'normal', true);
+
+        $computer_id = \getItemByTypeName(\Computer::class, '_test_pc01', true);
+        $printer_id  = \getItemByTypeName(\Printer::class, '_test_printer_all', true);
+
+        $document_1 = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'document 1',
+                'filename' => 'doc.xls',
+                'users_id' => $glpi_user_id,
+            ]
+        );
+        $this->createItem(
+            \Document_Item::class,
+            [
+                'documents_id' => $document_1->getID(),
+                'items_id'     => $computer_id,
+                'itemtype'     => \Computer::class,
+                'users_id'     => $glpi_user_id,
+            ]
+        );
+        $document_2 = $this->createItem(
+            \Document::class,
+            [
+                'name'     => 'document 2',
+                'filename' => 'whatever.xls',
+            ]
+        );
+        $this->createItem(
+            \Document_Item::class,
+            [
+                'documents_id' => $document_2->getID(),
+                'items_id'     => $printer_id,
+                'itemtype'     => \Printer::class,
+                'users_id'     => $glpi_user_id,
+            ]
+        );
+
+        // `glpi` user can access all documents, options does not alter the result
+        $this->login('glpi', 'glpi');
+        $this->assertTrue($document_1->canViewFile());
+        $this->assertTrue($document_1->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertTrue($document_1->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+        $this->assertTrue($document_2->canViewFile());
+        $this->assertTrue($document_2->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertTrue($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+
+        // check that viewing document is only allowed if reading item specified in the options is allowed and
+        // document is attached to it
+        $this->login('normal', 'normal');
+        $_SESSION["glpiactiveprofile"][\Document::$rightname] = 0; // remove access to all documents
+        $_SESSION["glpiactiveprofile"][\Computer::$rightname] = 1; // give access to all computers
+        $_SESSION["glpiactiveprofile"][\Printer::$rightname] = 0; // remove access to all printers
+        $this->assertFalse($document_1->canViewFile());
+        $this->assertTrue($document_1->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertFalse($document_1->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
+        $this->assertFalse($document_2->canViewFile());
+        $this->assertFalse($document_2->canViewFile(['items_id' => $computer_id, 'itemtype' => \Computer::class]));
+        $this->assertFalse($document_2->canViewFile(['items_id' => $printer_id, 'itemtype' => \Printer::class]));
     }
 
     public function testCronCleanorphans()
@@ -1233,4 +1337,368 @@ class DocumentTest extends DbTestCase
         $this->assertTrue($document->getFromDB(current($data)['documents_id']));
         $this->assertEquals($documentCategory_id, $document->fields['documentcategories_id']);
     }
+
+    public function testDefaultDocumentCategoryForTicketWithChangeTask()
+    {
+        global $CFG_GLPI;
+        $documentCategory = new DocumentCategory();
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket creation //
+        /////////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+        $this->assertGreaterThan(0, $documentCategory_id);
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+        $input = [
+            'name' => 'Ticket 1',
+            'content' => 'testDefaultDocumentCategoryFromDocumentForm',
+            'entities_id' => 0,
+        ];
+        $ticket_id = $this->createItem(\Ticket::class, $input)->getID();
+
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $ticketTask = new \TicketTask();
+        $filename = 'wdgrgserh5515rgg.222222' . 'foo.txt';
+
+        //ajouter un ticket tast avec un document et vérifier si ce document a bien la catégorie par defaut
+        $input2 = [
+            'tickets_id' => $ticket_id,
+            'content' => 'test ticket task with document',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [ '564grgt4-684vfv8-fvs8b81.0000',
+            ],
+            '_prefix_filename' => [
+                'wdgrgserh5515rgg.222222',
+            ],
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $ticketTask_id = $ticketTask->add($input2);
+        $this->assertGreaterThan(0, $ticketTask_id);
+
+        $document = new \Document();
+        $document_item = new \Document_Item();
+
+        $data = $document_item->find([
+            'itemtype' => \TicketTask::class,
+            'items_id' => $ticketTask_id,
+        ]);
+        $this->assertCount(1, $data);
+
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals($documentCategory_id, $document->fields['documentcategories_id']);
+
+    }
+
+    public function testDefaultDocumentCategoryForTicketWithITILFollowup()
+    {
+        $this->login();
+        global $CFG_GLPI;
+        $documentCategory = new DocumentCategory();
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket creation //
+        /////////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'       => 'Ticket for ITIL followup',
+            'content'    => 'Ticket content for followup',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $itilFollowup = new \ITILFollowup();
+        $filename = 'itilfollowup_doc.999999' . 'foo.txt';
+        $inputFollowup = [
+            'items_id'          => $tickets_id,
+            'itemtype'          => \Ticket::class,
+            'content'           => 'Followup with document',
+            '_filename'         => [$filename],
+            '_tag_filename'     => ['tag-itilfollowup-999999'],
+            '_prefix_filename'  => ['itilfollowup_doc.999999'],
+        ];
+
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $itilFollowups_id = $itilFollowup->add($inputFollowup);
+        $this->assertGreaterThan(0, $itilFollowups_id);
+
+        $document = new \Document();
+        $document_item = new \Document_Item();
+
+        $data = $document_item->find([
+            'itemtype' => \ITILFollowup::class,
+            'items_id' => $itilFollowups_id,
+        ]);
+        $this->assertCount(1, $data);
+
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals($documentCategory_id, $document->fields['documentcategories_id']);
+
+    }
+
+    public function testDefaultDocumentCategoryForTicketWithITILSolution()
+    {
+        $this->login();
+        global $CFG_GLPI;
+        $documentCategory = new DocumentCategory();
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket creation //
+        /////////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+        $ticket = new \Ticket();
+        $tickets_id = $ticket->add([
+            'name'       => 'Ticket for ITIL solution',
+            'content'    => 'Ticket content for solution',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $tickets_id);
+
+        $itilSolution = new \ITILSolution();
+        $filename = 'itilsolution_doc.888888' . 'foo.txt';
+        $inputSolution = [
+            'items_id'          => $tickets_id,
+            'itemtype'          => \Ticket::class,
+            'content'           => 'Solution with document',
+            '_filename'         => [$filename],
+            '_tag_filename'     => ['tag-itilsolution-888888'],
+            '_prefix_filename'  => ['itilsolution_doc.888888'],
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $itilSolutions_id = $itilSolution->add($inputSolution);
+        $this->assertGreaterThan(0, $itilSolutions_id);
+
+        $document = new \Document();
+        $document_item = new \Document_Item();
+
+        $data = $document_item->find([
+            'itemtype' => \ITILSolution::class,
+            'items_id' => $itilSolutions_id,
+        ]);
+        $this->assertCount(1, $data);
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals($documentCategory_id, $document->fields['documentcategories_id']);
+
+    }
+
+    public function testDefaultDocumentCategoryForChange()
+    {
+        $this->login();
+
+        $document = new \Document();
+        $document_item = new \Document_Item();
+
+        ///////////////////////////////////////////////////////////////////////
+        // Create Change with document, check document has no category //
+        ///////////////////////////////////////////////////////////////////////
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name'           => "test new change",
+            'content'        => "test new change",
+        ]);
+
+        $this->assertGreaterThan(0, $changes_id);
+
+        // ajouter un document à un change
+        $filename = 'wdgrgserh5515rgg.222222' . 'foo.txt';
+        $input = [
+            'name' => 'Change 1 Document',
+            'content' => 'testUploadDocumentWithoutCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [ '564grgt4-684vfv8-fvs8b81.0000',
+            ],
+            '_prefix_filename' => [
+                'wdgrgserh5515rgg.222222',
+            ],
+            'itemtype' => \Change::class,
+            'items_id' => $changes_id,
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $doc_id = $document->add($input);
+        $this->assertGreaterThan(0, $doc_id);
+        $data = $document_item->find([
+            'itemtype' => \Change::class,
+            'items_id' => $changes_id,
+        ]);
+        $this->assertCount(1, $data);
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+
+    }
+
+    public function testDefaultDocumentCategoryForChangeWithChangeTask()
+    {
+        $this->login();
+
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name'           => "test new change",
+            'content'        => "test new change",
+        ]);
+        $this->assertGreaterThan(0, $changes_id);
+
+        // add a change task to the change
+        $changeTask = new \ChangeTask();
+        $changeTasks_id = $changeTask->add([
+            'changes_id'    => $changes_id,
+            'name'          => "test change task",
+            'content'       => "test change task",
+        ]);
+        $this->assertGreaterThan(0, $changeTasks_id);
+        $document = new \Document();
+        $document_item = new \Document_Item();
+        $filename = 'wdgrgserh5515rgg.222222' . 'foo.txt';
+        $input = [
+            'name' => 'ChangeTask Document',
+            'content' => 'testUploadDocumentWithoutCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => [ '564grgt4-684vfv8-fvs8b81.0000',
+            ],
+            '_prefix_filename' => [
+                'wdgrgserh5515rgg.222222',
+            ],
+            'itemtype' => \ChangeTask::class,
+            'items_id' => $changeTasks_id,
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $doc_id = $document->add($input);
+        $this->assertGreaterThan(0, $doc_id);
+        $data = $document_item->find([
+            'itemtype' => \ChangeTask::class,
+            'items_id' => $changeTasks_id,
+        ]);
+        $this->assertCount(1, $data);
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+    }
+
+    public function testDefaultDocumentCategoryForChangeWithITILFollowup()
+    {
+
+        $this->login();
+        global $CFG_GLPI;
+        $documentCategory = new DocumentCategory();
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket creation //
+        /////////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name' => "test new change",
+            'content' => "test new change",
+        ]);
+        $this->assertGreaterThan(0, $changes_id);
+
+        // add an itil followup to the change
+        $itilFollowup = new \ITILFollowup();
+        $itilFollowups_id = $itilFollowup->add([
+            'items_id' => $changes_id,
+            'itemtype' => \Change::class,
+            'content' => "test itil followup",
+        ]);
+        $this->assertGreaterThan(0, $itilFollowups_id);
+        $document = new \Document();
+        $document_item = new \Document_Item();
+        $filename = 'wdgrgserh5515rgg.222222' . 'foo.txt';
+        $input = [
+            'name' => 'ITILFollowup Document',
+            'content' => 'testUploadDocumentWithoutCategory',
+            '_filename' => [
+                $filename,
+            ],
+            '_tag_filename' => ['564grgt4-684vfv8-fvs8b81.0000',
+            ],
+            '_prefix_filename' => [
+                'wdgrgserh5515rgg.222222',
+            ],
+            'itemtype' => \ITILFollowup::class,
+            'items_id' => $itilFollowups_id,
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $doc_id = $document->add($input);
+        $this->assertGreaterThan(0, $doc_id);
+        $data = $document_item->find([
+            'itemtype' => \ITILFollowup::class,
+            'items_id' => $itilFollowups_id,
+        ]);
+        $this->assertCount(1, $data);
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+    }
+
+    public function testDefaultDocumentCategoryForChangeWithITILSolution()
+    {
+        $this->login();
+        global $CFG_GLPI;
+        $documentCategory = new DocumentCategory();
+
+        /////////////////////////////////////////////////////////////////////////////////////////
+        // Update config to have default category for document uploaded during ticket creation //
+        /////////////////////////////////////////////////////////////////////////////////////////
+        $documentCategory_id = $documentCategory->add([
+            'name'        => 'Default Category',
+        ]);
+
+        $CFG_GLPI['documentcategories_id_forticket'] = $documentCategory_id;
+
+        $change = new \Change();
+        $changes_id = $change->add([
+            'name'           => "test new change",
+            'content'        => "test new change",
+        ]);
+        $this->assertGreaterThan(0, $changes_id);
+
+        $itilSolution = new \ITILSolution();
+        $filename = 'itilsolution_doc.888888' . 'foo.txt';
+        $inputSolution = [
+            'items_id'          => $changes_id,
+            'itemtype'          => \Change::class,
+            'content'           => 'Solution with document',
+            '_filename'         => [$filename],
+            '_tag_filename'     => ['tag-itilsolution-888888'],
+            '_prefix_filename'  => ['itilsolution_doc.888888'],
+        ];
+        copy(FIXTURE_DIR . '/uploads/foo.txt', GLPI_TMP_DIR . '/' . $filename);
+        $itilSolutions_id = $itilSolution->add($inputSolution);
+        $this->assertGreaterThan(0, $itilSolutions_id);
+
+        $document = new \Document();
+        $document_item = new \Document_item();
+
+        $data = $document_item->find([
+            'itemtype' => \ITILSolution::class,
+            'items_id' => $itilSolutions_id,
+        ]);
+
+        $this->assertCount(1, $data);
+        $this->assertTrue($document->getFromDB(current($data)['documents_id']));
+        $this->assertEquals(0, $document->fields['documentcategories_id']);
+
+    }
+
 }

@@ -43,6 +43,6 @@ class Network extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-network-wired";
+        return "ti ti-network";
     }
 }

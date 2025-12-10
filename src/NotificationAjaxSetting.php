@@ -40,6 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class NotificationAjaxSetting extends NotificationSetting
 {
+    #[Override]
     public static function getTypeName($nb = 0)
     {
         return __('Browser notifications configuration');
@@ -82,6 +83,7 @@ TWIG, $twig_params);
         }
     }
 
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-message";

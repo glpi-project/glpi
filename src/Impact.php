@@ -78,6 +78,9 @@ class Impact extends CommonGLPI
         return __('Impact analysis');
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return 'ti ti-affiliate';
@@ -766,6 +769,8 @@ TWIG, $twig_params);
      * @param string  $graph      The network graph (json)
      * @param string  $params     Params of the graph (json)
      * @param bool    $readonly   Is the graph editable ?
+     *
+     * @return void
      */
     public static function printHeader(
         string $graph,
@@ -990,6 +995,8 @@ TWIG, $twig_params);
      * Load the impact network container
      *
      * @since 9.5
+     *
+     * @return void
      */
     public static function printImpactNetworkContainer()
     {

@@ -40,7 +40,6 @@ use Glpi\Api\HL\Doc as Doc;
 use Glpi\Debug\Profiler;
 use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\ScalarType;
 use GraphQL\Type\Definition\Type;
 use Throwable;
 
@@ -147,13 +146,16 @@ final class GraphQLGenerator
 
         // Handle "internal" types that are used for object properties
         foreach ($schema['properties'] as $prop_name => $prop) {
-            if (isset($prop['x-full-schema'])) {
-                continue;
-            }
             if ($prop['type'] === Doc\Schema::TYPE_OBJECT) {
+                if (isset($prop['x-full-schema'])) {
+                    continue;
+                }
                 $namespaced_type = "{$schema_name}_{$prop_name}";
                 $types['_' . $namespaced_type] = $this->convertRESTPropertyToGraphQLType($prop, $namespaced_type);
             } elseif ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
+                if (isset($prop['items']['x-full-schema'])) {
+                    continue;
+                }
                 $items = $prop['items'];
                 if ($items['type'] === Doc\Schema::TYPE_OBJECT) {
                     $namespaced_type = "{$schema_name}_{$prop_name}";
@@ -184,7 +186,7 @@ final class GraphQLGenerator
      * @param string|null $name
      * @param string $prefix
      *
-     * @return Closure|ListOfType|ObjectType|ScalarType|void
+     * @return Type|ListOfType<Type|Closure>|Closure|null
      */
     private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = '')
     {
@@ -204,7 +206,7 @@ final class GraphQLGenerator
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
             $graphql_type = $this->convertRESTPropertyToGraphQLType($items, $name, $prefix);
-            return Type::listOf($graphql_type);
+            return new ListOfType($graphql_type);
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
@@ -224,5 +226,6 @@ final class GraphQLGenerator
                 'fields' => $fields,
             ]);
         }
+        return null;
     }
 }

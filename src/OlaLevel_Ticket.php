@@ -50,12 +50,12 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Retrieve an item from the database
      *
-     * @param integer $ID        ID of the item to get
+     * @param int $ID        ID of the item to get
      * @param SLM::TTR|SLM::TTO $olaType
      *
      * @since 9.1 2 mandatory parameters
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBForTicket($ID, $olaType)
     {
@@ -136,9 +136,9 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
-     * @return array of information
+     * @return array
      * @used-by CronTask
      **/
     public static function cronInfo($name)
@@ -155,7 +155,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @param $task : CronTask object
      *
-     * @return integer (0 : nothing done - 1 : done)
+     * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
     public static function cronOlaTicket(CronTask $task)
@@ -309,11 +309,12 @@ class OlaLevel_Ticket extends CommonDBTM
     /**
      * Replay all task needed for a specific ticket
      *
-     * @param integer $tickets_id Ticket ID
+     * @param int $tickets_id Ticket ID
      * @param SLM::TTR|SLM::TTO $olaType Type of ola
      *
      * @since 9.1    2 parameters mandatory
      *
+     * @return void
      */
     public static function replayForTicket($tickets_id, $olaType)
     {

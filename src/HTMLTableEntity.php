@@ -42,10 +42,13 @@
  **/
 abstract class HTMLTableEntity
 {
+    /** @var string */
     private $html_id    = '';
+    /** @var string[] */
     private $html_style = [];
+    /** @var string[] */
     private $html_class = [];
-
+    /** @var string|string[] */
     private $content;
 
     /**
@@ -67,6 +70,8 @@ abstract class HTMLTableEntity
 
     /**
      * @param HTMLTableEntity $origin
+     *
+     * @return void
      */
     public function copyAttributsFrom(HTMLTableEntity $origin)
     {
@@ -76,8 +81,10 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param $html_id
-     **/
+     * @param string $html_id
+     *
+     * @return void
+     */
     public function setHTMLID($html_id)
     {
         $this->html_id = $html_id;
@@ -86,8 +93,10 @@ abstract class HTMLTableEntity
     /**
      * userfull ? function never called
      *
-     * @param array|string $html_style
-     **/
+     * @param string[]|string $html_style
+     *
+     * @return void
+     */
     public function setHTMLStyle($html_style)
     {
         if (is_array($html_style)) {
@@ -98,8 +107,10 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param array|string $html_class
-     **/
+     * @param string[]|string $html_class
+     *
+     * @return void
+     */
     public function setHTMLClass($html_class)
     {
         if (is_array($html_class)) {
@@ -111,7 +122,9 @@ abstract class HTMLTableEntity
 
     /**
      * @param array $options
-     **/
+     *
+     * @return void
+     */
     public function displayEntityAttributs(array $options = [])
     {
         $id = $options['id'] ?? $this->html_id;
@@ -145,16 +158,21 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param $content
+     * @param string|string[] $content
+     *
+     * @return void
      *
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $content (string will be added to HTML source)
-     **/
+     */
     public function setContent($content)
     {
         $this->content = $content;
     }
 
+    /**
+     * @return void
+     */
     public function displayContent()
     {
         if (is_array($this->content)) {
@@ -170,7 +188,7 @@ abstract class HTMLTableEntity
             }
         } else {
             // Manage __RAND__ to be computed on display
-            $content = $this->content ?? '';
+            $content = $this->content;
             $content = str_replace('__RAND__', (string) mt_rand(), $content);
             echo $content;
         }

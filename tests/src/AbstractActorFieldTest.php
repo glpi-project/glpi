@@ -35,6 +35,7 @@
 namespace Glpi\Tests;
 
 use Computer;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Form;
@@ -316,6 +317,170 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    public function testTechUserActorsFromCustomAssetItemQuestions(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        // Create a custom asset definition with tech user field enabled
+        $definition = $this->initAssetDefinition();
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            [
+                'fields_display' => ['name', 'users_id_tech', 'groups_id_tech'],
+            ],
+            ['fields_display']
+        );
+        $definition->getFromDB($definition->getID());
+
+        $asset_class = $definition->getAssetClassName();
+
+        // Create form with custom asset question
+        $form = $this->createAndGetFormWithCustomAssetQuestion($asset_class);
+
+        $field_inst = new ($this->getFieldClass())();
+        $config_class = $field_inst->getConfigClass();
+        $config = new $config_class(
+            strategies: [ITILActorFieldStrategy::TECH_USER_FROM_OBJECT_ANSWER],
+            specific_question_ids: [$this->getQuestionId($form, "Custom asset question")]
+        );
+
+        $users = $this->createItems(User::class, [
+            ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User 1'],
+            ['name' => 'testTechUserActorsFromCustomAssetItemQuestions User 2'],
+        ]);
+
+        $assets = $this->createItems($asset_class, [
+            [
+                'name' => 'testTechUserActorsFromCustomAssetItemQuestions Asset 1',
+                'entities_id' => $this->getTestRootEntity(true),
+                'users_id_tech' => $users[0]->getID(),
+            ],
+            [
+                'name' => 'testTechUserActorsFromCustomAssetItemQuestions Asset 2',
+                'entities_id' => $this->getTestRootEntity(true),
+                'users_id_tech' => $users[1]->getID(),
+            ],
+        ]);
+
+        // No answers
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [],
+            expected_actors: []
+        );
+
+        // Answer with first custom asset
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [
+                'Custom asset question' => [
+                    'itemtype' => $asset_class,
+                    'items_id' => $assets[0]->getID(),
+                ],
+            ],
+            expected_actors: [['items_id' => $users[0]->getID()]]
+        );
+
+        // Answer with second custom asset
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [
+                'Custom asset question' => [
+                    'itemtype' => $asset_class,
+                    'items_id' => $assets[1]->getID(),
+                ],
+            ],
+            expected_actors: [['items_id' => $users[1]->getID()]]
+        );
+    }
+
+    public function testTechGroupActorsFromCustomAssetItemQuestions(): void
+    {
+        // Login is required to assign actors
+        $this->login();
+
+        // Create a custom asset definition with tech group field enabled
+        $definition = $this->initAssetDefinition();
+        $this->updateItem(
+            AssetDefinition::class,
+            $definition->getID(),
+            [
+                'fields_display' => ['name', 'users_id_tech', 'groups_id_tech'],
+            ],
+            ['fields_display']
+        );
+        $definition->getFromDB($definition->getID());
+
+        $asset_class = $definition->getAssetClassName();
+
+        // Create form with custom asset question
+        $form = $this->createAndGetFormWithCustomAssetQuestion($asset_class);
+
+        $field_inst = new ($this->getFieldClass())();
+        $config_class = $field_inst->getConfigClass();
+        $config = new $config_class(
+            strategies: [ITILActorFieldStrategy::TECH_GROUP_FROM_OBJECT_ANSWER],
+            specific_question_ids: [$this->getQuestionId($form, "Custom asset question")]
+        );
+
+        $groups = $this->createItems(Group::class, [
+            ['name' => 'testTechGroupActorsFromCustomAssetItemQuestions Group 1'],
+            ['name' => 'testTechGroupActorsFromCustomAssetItemQuestions Group 2'],
+        ]);
+
+        $assets = $this->createItems($asset_class, [
+            [
+                'name' => 'testTechGroupActorsFromCustomAssetItemQuestions Asset 1',
+                'entities_id' => $this->getTestRootEntity(true),
+                '_groups_id_tech' => [$groups[0]->getID()],
+            ],
+            [
+                'name' => 'testTechGroupActorsFromCustomAssetItemQuestions Asset 2',
+                'entities_id' => $this->getTestRootEntity(true),
+                '_groups_id_tech' => [$groups[1]->getID()],
+            ],
+        ]);
+
+        // No answers
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [],
+            expected_actors: []
+        );
+
+        // Answer with first custom asset
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [
+                'Custom asset question' => [
+                    'itemtype' => $asset_class,
+                    'items_id' => $assets[0]->getID(),
+                ],
+            ],
+            expected_actors: [['items_id' => $groups[0]->getID()]]
+        );
+
+        // Answer with second custom asset
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $config,
+            answers: [
+                'Custom asset question' => [
+                    'itemtype' => $asset_class,
+                    'items_id' => $assets[1]->getID(),
+                ],
+            ],
+            expected_actors: [['items_id' => $groups[1]->getID()]]
+        );
+    }
+
     private function createAndGetFormWithItemQuestions(): Form
     {
         $builder = new FormBuilder();
@@ -324,6 +489,19 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             QuestionTypeItem::class,
             '',
             json_encode((new QuestionTypeItemExtraDataConfig(Computer::class))->jsonSerialize())
+        );
+
+        return $this->createForm($builder);
+    }
+
+    private function createAndGetFormWithCustomAssetQuestion(string $asset_class): Form
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            'Custom asset question',
+            QuestionTypeItem::class,
+            '',
+            json_encode((new QuestionTypeItemExtraDataConfig($asset_class))->jsonSerialize())
         );
 
         return $this->createForm($builder);

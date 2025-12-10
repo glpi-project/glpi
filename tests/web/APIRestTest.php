@@ -619,7 +619,7 @@ class APIRestTest extends TestCase
     /**
      * Create a network port
      *
-     * @param integer $computers_id Computer ID
+     * @param int $computers_id Computer ID
      *
      * @return void
      */
@@ -658,7 +658,7 @@ class APIRestTest extends TestCase
     /**
      * Create a note
      *
-     * @param integer $computers_id Computer ID
+     * @param int $computers_id Computer ID
      *
      * @return void
      */

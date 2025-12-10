@@ -681,15 +681,15 @@ trait PlanningEvent
      * Generate the html code to display a Planning Item.
      * Note: despite its name, this method do not display anything by itself.
      *
-     * @param $val        array of the item to display
-     * @param $who        ID of the user (0 if all)
-     * @param $type       position of the item in the time block (in, through, begin or end)
-     *                    default '')
-     * @param $complete   complete display (more details) (default 0)
+     * @param array  $val       array of the item to display
+     * @param int    $who       ID of the user (0 if all)
+     * @param string $type      position of the item in the time block (in, through, begin or end)
+     *                          default '')
+     * @param bool    $complete complete display (more details) (default false)
      *
      * @return string
-     **/
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+     */
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
     {
         global $CFG_GLPI;
 

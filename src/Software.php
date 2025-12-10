@@ -187,7 +187,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     /**
      * Update validity indicator of specific software
      *
-     * @param integer $ID ID of the licence
+     * @param int $ID ID of the licence
      *
      * @since 0.85
      *
@@ -651,9 +651,9 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * Make a select box for software to install
      *
      * @param string $myname select name
-     * @param integer|array<int> $entity_restrict restrict to a defined entity
+     * @param int|array<int> $entity_restrict restrict to a defined entity
      *
-     * @return integer random part of elements id
+     * @return int random part of elements id
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
@@ -689,9 +689,9 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * Make a select box for license software to associate
      *
      * @param string $myname select name
-     * @param integer|array<int> $entity_restrict restrict to a defined entity
+     * @param int|array<int> $entity_restrict restrict to a defined entity
      *
-     * @return integer random part of elements id
+     * @return int random part of elements id
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
@@ -747,13 +747,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * Create new software
      *
      * @param string   $name                the software's name
-     * @param integer  $manufacturer_id     id of the software's manufacturer
-     * @param integer  $entity              the entity in which the software must be added
+     * @param int  $manufacturer_id     id of the software's manufacturer
+     * @param int  $entity              the entity in which the software must be added
      * @param string   $comment             (default '')
-     * @param boolean  $is_recursive        must the software be recursive (false by default)
-     * @param ?boolean $is_helpdesk_visible show in helpdesk, default: from config (false by default)
+     * @param bool  $is_recursive        must the software be recursive (false by default)
+     * @param ?bool $is_helpdesk_visible show in helpdesk, default: from config (false by default)
      *
-     * @return integer the software's ID
+     * @return int the software's ID
      **/
     public function addSoftware(
         $name,
@@ -799,10 +799,10 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @param string  $name                the software's name
      * @param string  $manufacturer        the software's manufacturer
-     * @param integer $entity              the entity in which the software must be added
+     * @param int $entity              the entity in which the software must be added
      * @param string  $comment             comment (default '')
-     * @param boolean $is_recursive        must the software be recursive (false by default)
-     * @param boolean $is_helpdesk_visible show in helpdesk, default = config value (false by default)
+     * @param bool $is_recursive        must the software be recursive (false by default)
+     * @param bool $is_helpdesk_visible show in helpdesk, default = config value (false by default)
      *
      * @return int
      */
@@ -867,7 +867,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * @param int    $ID      the ID of the software to put in trashbin
      * @param string $comment the comment to add to the already existing software's comment (default '')
      *
-     * @return boolean (success)
+     * @return bool (success)
      **/
     public function putInTrash($ID, $comment = '')
     {
@@ -896,7 +896,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @param int $ID the ID of the software to put in trashbin
      *
-     * @return boolean
+     * @return bool
      **/
     public function removeFromTrash($ID)
     {
@@ -1002,7 +1002,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @param array   $item array of software ID to be merged
      *
-     * @return boolean about success
+     * @return bool about success
      */
     private function merge($item): bool
     {

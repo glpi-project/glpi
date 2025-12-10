@@ -89,6 +89,12 @@ class QueuedWebhook extends CommonDBChild
         return $forbidden;
     }
 
+    /**
+     * @param CommonDBTM $checkitem
+     * @param bool $is_deleted
+     *
+     * @return array
+     */
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
         $isadmin = static::canUpdate();
@@ -155,9 +161,9 @@ class QueuedWebhook extends CommonDBChild
     /**
      * Send webhook in queue
      *
-     * @param integer $ID Id
+     * @param int $ID Id
      *
-     * @return boolean
+     * @return bool
      */
     public static function sendById(int $ID): bool
     {
@@ -411,6 +417,12 @@ class QueuedWebhook extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @param int $value
+     * @param int|null $id
+     *
+     * @return string
+     */
     public static function getStatusCodeBadge($value, ?int $id = null): string
     {
         $display_value = (int) $value;
@@ -497,7 +509,7 @@ JS);
      * Get pending webhooks in queue
      *
      * @param string  $send_time   Maximum sent_time
-     * @param integer $limit       Query limit clause
+     * @param int $limit       Query limit clause
      * @param array   $extra_where Extra params to add to the where clause
      *
      * @return array Array of IDs of pending webhooks
@@ -560,7 +572,7 @@ JS);
      *
      * @param CronTask|null $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      **/
     public static function cronQueuedWebhook(?CronTask $task = null)
     {
@@ -586,7 +598,7 @@ JS);
      *
      * @param CronTask|null $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      **/
     public static function cronQueuedWebhookClean(?CronTask $task = null)
     {

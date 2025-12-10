@@ -47,7 +47,7 @@ class NotificationAjax implements NotificationInterface
      * @param mixed $value   The data to check (may differ for every notification mode)
      * @param array $options Optional special options (may be needed)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function check($value, $options = [])
     {
@@ -72,24 +72,19 @@ class NotificationAjax implements NotificationInterface
         ]);
     }
 
-
+    #[Override]
     public function sendNotification($options = [])
     {
-
         $data = [];
         $data['itemtype']                             = $options['_itemtype'];
         $data['items_id']                             = $options['_items_id'];
         $data['notificationtemplates_id']             = $options['_notificationtemplates_id'];
         $data['entities_id']                          = $options['_entities_id'];
-
         $data['sendername']                           = $options['fromname'];
-
         $data['name']                                 = $options['subject'];
         $data['body_text']                            = $options['content_text'];
         $data['recipient']                            = $options['to'];
-
         $data['event'] = $options['event'] ?? null; // `event` has been added in GLPI 10.0.7
-
         $data['mode'] = Notification_NotificationTemplate::MODE_AJAX;
 
         $queue = new QueuedNotification();
@@ -168,7 +163,7 @@ class NotificationAjax implements NotificationInterface
     /**
      * Mark raised notification as deleted
      *
-     * @param integer $id Notification id
+     * @param int $id Notification id
      *
      * @return void
      */

@@ -862,7 +862,7 @@ class RuleCriteriaTest extends DbTestCase
     /**
      * Update rule modification date
      *
-     * @param integer $rules_id Rule ID
+     * @param int $rules_id Rule ID
      * @param string  $time     Time to set modification date to
      *
      * @return void

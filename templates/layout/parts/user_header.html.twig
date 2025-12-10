@@ -88,15 +88,17 @@
                   {{ __('Help') }}
                </a>
 
+      {% if has_profile_right('config', constant('READ')) %}
                <a href="#" class="dropdown-item" title="{{ __('About') }}"
                   id="show_about_modal_{{ rand_header }}">
                   <i class="ti ti-info-circle"></i>
                   {{ __('About') }}
-                  {% if founded_new_version is not null %}
+                  {% if found_new_version is not null %}
                      <span class="badge bg-info text-dark ms-2">
                         1
                      </span>
                   {% endif %}
+      {% endif %}
                </a>
 
                <div class="dropdown-divider"></div>
@@ -113,6 +115,7 @@
          </div>
       </div>
 
+      {% if has_profile_right('config', constant('READ')) %}
       <div class="modal fade" id="about_modal_{{ rand_header }}" role="dialog">
          <div class="modal-dialog">
             <div class="modal-content">
@@ -121,7 +124,7 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                </div>
                <div class="modal-body">
-                  {% if not call('\Glpi\Toolbox\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
+                  {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
                       <div class='alert alert-important alert-warning d-flex'>
                         <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
                       </div>
@@ -130,11 +133,11 @@
                      GLPI {{ constant('GLPI_VERSION') }}
                      Copyright (C) 2015-{{ constant('GLPI_YEAR') }} Teclib' and contributors
                   </a></p>
-                  {% if founded_new_version is not null %}
+                  {% if found_new_version is not null %}
                      <p>
                         <a href="http://www.glpi-project.org" target="_blank"
                            title="{{ __('You will find it on the GLPI-PROJECT.org site.') }}">
-                           {{ __('A new version is available: %s.')|format(founded_new_version) }}
+                           {{ __('A new version is available: %s.')|format(found_new_version) }}
                            <span class="badge bg-info text-dark">
                               1
                            </span>
@@ -145,6 +148,7 @@
             </div>
          </div>
       </div>
+      {% endif %}
    {% endif %}
 </div>
 

@@ -53,7 +53,7 @@ class Item_TicketRecurrent extends CommonItilObject_Item
         return _n('Ticket recurrent item', 'Ticket recurrent items', $nb);
     }
 
-    public static function itemAddForm(CommonDBTM $ticketrecurrent, $options = [])
+    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $ticketrecurrent, $options = [])
     {
         parent::displayItemAddForm($ticketrecurrent, $options);
     }

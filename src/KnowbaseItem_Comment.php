@@ -93,8 +93,10 @@ class KnowbaseItem_Comment extends CommonDBTM
      * Show linked items of a knowbase item
      *
      * @param CommonDBTM $item
-     * @param integer $withtemplate withtemplate param (default 0)
-     **/
+     * @param int $withtemplate withtemplate param (default 0)
+     *
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         $kbitem_id = $item::class === KnowbaseItem::class ? $item->getID() : $item->fields['knowbaseitems_id'];
@@ -114,9 +116,9 @@ class KnowbaseItem_Comment extends CommonDBTM
     /**
      * Gat all comments for specified KB entry
      *
-     * @param integer $kbitem_id KB entry ID
+     * @param int $kbitem_id KB entry ID
      * @param string  $lang      Requested language
-     * @param integer $parent    Parent ID (defaults to 0)
+     * @param int $parent    Parent ID (defaults to 0)
      * @param array   $user_data_cache
      *
      * @return array
@@ -141,13 +143,22 @@ class KnowbaseItem_Comment extends CommonDBTM
         foreach ($db_comments as $db_comment) {
             if (!isset($user_data_cache[$db_comment['users_id']])) {
                 $user = new User();
-                $user->getFromDB($db_comment['users_id']);
-                $user_data_cache[$db_comment['users_id']] = [
-                    'avatar' => User::getThumbnailURLForPicture($user->fields['picture']),
-                    'link'   => $user->getLinkURL(),
-                    'initials' => $user->getUserInitials(),
-                    'initials_bg_color' => $user->getUserInitialsBgColor(),
-                ];
+                if ($user->getFromDB($db_comment['users_id'])) {
+                    $user_data_cache[$db_comment['users_id']] = [
+                        'avatar' => User::getThumbnailURLForPicture($user->fields['picture']),
+                        'link'   => $user->getLinkURL(),
+                        'initials' => $user->getUserInitials(),
+                        'initials_bg_color' => $user->getUserInitialsBgColor(),
+                    ];
+                } else {
+                    // User has been deleted, use default values
+                    $user_data_cache[$db_comment['users_id']] = [
+                        'avatar' => User::getThumbnailURLForPicture(''),
+                        'link'   => '',
+                        'initials' => '',
+                        'initials_bg_color' => '#cccccc',
+                    ];
+                }
             }
             $db_comment['answers'] = self::getCommentsForKbItem($kbitem_id, $lang, $db_comment['id'], $user_data_cache);
             $db_comment['user_info'] = $user_data_cache[$db_comment['users_id']];
@@ -160,10 +171,10 @@ class KnowbaseItem_Comment extends CommonDBTM
     /**
      * Get comment form
      *
-     * @param integer       $kbitem_id Knowbase item ID
+     * @param int       $kbitem_id Knowbase item ID
      * @param string        $lang      Related item language
-     * @param false|integer $edit      Comment id to edit, or false
-     * @param false|integer $answer    Comment id to answer to, or false
+     * @param false|int $edit      Comment id to edit, or false
+     * @param false|int $answer    Comment id to answer to, or false
      * @return string
      */
     public static function getCommentForm($kbitem_id, $lang = null, $edit = false, $answer = false)

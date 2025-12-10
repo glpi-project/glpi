@@ -209,8 +209,8 @@ trait Clonable
      *
      * @param int     $n              Number of clones
      * @param array   $override_input Custom input to override
-     * @param boolean $history        Do history log ? (true by default)
-     * @param boolean $clone_as_template If true, the resulting clones will be templates
+     * @param bool $history        Do history log ? (true by default)
+     * @param bool $clone_as_template If true, the resulting clones will be templates
      *
      * @return bool the new ID of the clone (or false if fail)
      */
@@ -247,10 +247,10 @@ trait Clonable
      * @since 10.0.0
      *
      * @param array $override_input custom input to override
-     * @param boolean $history do history log ?
-     * @param boolean $clone_as_template If true, the resulting clone will be a template
+     * @param bool $history do history log ?
+     * @param bool $clone_as_template If true, the resulting clone will be a template
      *
-     * @return false|integer The new ID of the clone (or false if fail)
+     * @return false|int The new ID of the clone (or false if fail)
      */
     public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
     {

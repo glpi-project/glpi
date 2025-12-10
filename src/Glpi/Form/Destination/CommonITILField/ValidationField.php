@@ -165,11 +165,19 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
             if (!empty($validations)) {
                 foreach ($validations as $validation) {
                     $input['_add_validation'] = 0;
-                    $validation_target = [
-                        'validatortype'   => $validation['itemtype'],
-                        'itemtype_target' => $validation['itemtype'],
-                        'items_id_target' => $validation['items_id'],
-                    ];
+                    if (isset($validation['_template_id'])) {
+                        // Let the template compute the values
+                        $validation_target = [
+                            '_template_id' => $validation['_template_id'],
+                        ];
+                    } else {
+                        // Manual values
+                        $validation_target = [
+                            'validatortype'   => $validation['itemtype'],
+                            'itemtype_target' => $validation['itemtype'],
+                            'items_id_target' => $validation['items_id'],
+                        ];
+                    }
 
                     if ($strategy_config->getSpecificValidationStepId() > 0) {
                         $validation_target['validationsteps_id'] = $strategy_config->getSpecificValidationStepId();

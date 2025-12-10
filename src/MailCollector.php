@@ -66,7 +66,7 @@ use function Safe\strtotime;
  *
  * modif and debug by  INDEPNET Development Team.
  * Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
- * Description: Reciving mail With Attechment
+ * Description: Receiving mail With Attachment
  * Email: mitulkoradia@gmail.com
  **/
 class MailCollector extends CommonDBTM
@@ -74,26 +74,52 @@ class MailCollector extends CommonDBTM
     // Specific one
     /**
      * IMAP / POP connection
-     * @var AbstractStorage
      */
-    private $storage;
-    /// UID of the current message
+    private ?AbstractStorage $storage = null;
+    /**
+     * UID of the current message
+     * @var int
+     */
     public $uid             = -1;
-    /// structure used to store files attached to a mail
+    /**
+     * structure used to store files attached to a mail
+     * @var ?array
+     */
     public $files;
-    /// structure used to store alt files attached to a mail
+    /**
+     * structure used to store alt files attached to a mail
+     * @var array
+     */
     public $altfiles;
-    /// Tag used to recognize embedded images of a mail
+    /**
+     * Tag used to recognize embedded images of a mail
+     * @var array
+     */
     public $tags;
-    /// Message to add to body to build ticket
+    /**
+     * Message to add to body to build ticket
+     * @var string
+     */
     public $addtobody;
-    /// Number of fetched emails
+    /**
+     * Number of fetched emails
+     * @var int
+     */
     public $fetch_emails    = 0;
-    /// Maximum number of emails to fetch : default to 10
+    /**
+     * Maximum number of emails to fetch : default to 10
+     * @var int
+     */
     public $maxfetch_emails = 10;
-    /// array of indexes -> uid for messages
+    /**
+     * array of indexes -> uid for messages
+     * @var array
+     */
     public $messages_uid    = [];
-    /// Max size for attached files
+    /**
+     * Max size for attached files
+     * @var int
+     */
     public $filesize_max    = 0;
 
     /**
@@ -184,6 +210,12 @@ class MailCollector extends CommonDBTM
         $this->fields['is_active']    = 1;
     }
 
+    /**
+     * @param array $input
+     * @param string $mode
+     *
+     * @return array|false
+     */
     public function prepareInput(array $input, $mode = 'add')
     {
         $missing_fields = [];
@@ -266,7 +298,7 @@ class MailCollector extends CommonDBTM
      * @param $options   array
      *     - target filename : where to go when done.
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -451,10 +483,12 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $emails_ids   array
-     * @param $action                (default 0)
-     * @param $entity                (default 0)
-     **/
+     * @param array $emails_ids
+     * @param int $action
+     * @param int $entity
+     *
+     * @return void
+     */
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
         global $DB;
@@ -576,8 +610,8 @@ class MailCollector extends CommonDBTM
     /**
      * Do collect
      *
-     * @param integer $mailgateID  ID of the mailgate
-     * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
+     * @param int $mailgateID  ID of the mailgate
+     * @param bool $display     display messages in MessageAfterRedirect or just return error (default 0=)
      *
      * @return string|void
      **/
@@ -614,7 +648,7 @@ class MailCollector extends CommonDBTM
             // Clean from previous collect (from GUI, cron already truncate the table)
             $rejected->deleteByCriteria(['mailcollectors_id' => $this->fields['id']]);
 
-            if ($this->storage) {
+            if ($this->storage !== null) {
                 $maxfetch_emails  = $this->maxfetch_emails;
                 $error            = 0;
                 $refused          = 0;
@@ -1462,7 +1496,7 @@ class MailCollector extends CommonDBTM
     /**
      * Number of entries in the mailbox
      *
-     * @return integer
+     * @return int
      **/
     public function getTotalMails()
     {
@@ -1476,7 +1510,7 @@ class MailCollector extends CommonDBTM
      *
      * @param Part $part Message part
      * @param string                     $path     Temporary path
-     * @param integer                    $maxsize  Maximum size of document to be retrieved
+     * @param int                    $maxsize  Maximum size of document to be retrieved
      * @param string                     $subject  Message subject
      * @param string                     $subpart  Subpart index (used in document filenames)
      *
@@ -1641,7 +1675,7 @@ class MailCollector extends CommonDBTM
      *
      * @param Message $message Message
      * @param string                        $path     Temporary path
-     * @param integer                       $maxsize  Maximaum size of document to be retrieved
+     * @param int                       $maxsize  Maximaum size of document to be retrieved
      *
      * @return array containing extracted filenames in file/_tmp
      **/
@@ -1667,6 +1701,8 @@ class MailCollector extends CommonDBTM
      * Get The actual mail content from this mail
      *
      * @param Message $message Message
+     *
+     * @return string
      **/
     public function getBody(Message $message)
     {
@@ -1760,7 +1796,7 @@ class MailCollector extends CommonDBTM
      * @param string $uid    mail UID
      * @param string $folder Folder to move (delete if empty) (default '')
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteMails($uid, $folder = '')
     {
@@ -1847,6 +1883,11 @@ class MailCollector extends CommonDBTM
     }
 
 
+    /**
+     * @param string $name
+     *
+     * @return array|void
+     */
     public static function cronInfo($name)
     {
 
@@ -1866,10 +1907,10 @@ class MailCollector extends CommonDBTM
     /**
      * Send Alarms on mailgate errors
      *
-     * @since 0.85
-     *
      * @param CronTask $task for log
-     **/
+     *
+     * @return int
+     */
     public static function cronMailgateError($task)
     {
         global $CFG_GLPI, $DB;
@@ -1953,9 +1994,11 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $to        (default '')
-     * @param $subject   (default '')
-     **/
+     * @param string $to        (default '')
+     * @param string $subject   (default '')
+     *
+     * @return void
+     */
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
         global $CFG_GLPI;
@@ -2011,9 +2054,9 @@ class MailCollector extends CommonDBTM
     /**
      * Count collectors
      *
-     * @param boolean $active Count active only, defaults to false
+     * @param bool $active Count active only, defaults to false
      *
-     * @return integer
+     * @return int
      */
     public static function countCollectors($active = false)
     {
@@ -2036,7 +2079,7 @@ class MailCollector extends CommonDBTM
     /**
      * Count active collectors
      *
-     * @return integer
+     * @return int
      */
     public static function countActiveCollectors()
     {
@@ -2281,9 +2324,11 @@ class MailCollector extends CommonDBTM
     }
 
     /**
-     * @param $name
-     * @param $value  (default 0)
-     * @param $rand
+     * @param string $name
+     * @param int $value  (default 0)
+     * @param int $rand
+     *
+     * @return void
      **/
     public static function showMaxFilesize($name, $value = 0, $rand = null)
     {

@@ -733,7 +733,7 @@ final class DbUtils
      * @param string $table table of the index
      * @param string $field name of the index
      *
-     * @return boolean
+     * @return bool
      */
     public function isIndex($table, $field)
     {
@@ -762,7 +762,7 @@ final class DbUtils
      * @param string $table
      * @param string $keyname
      *
-     * @return boolean
+     * @return bool
      */
     public function isForeignKeyContraint($table, $keyname)
     {
@@ -1664,13 +1664,13 @@ final class DbUtils
     /**
      * Format a user name.
      *
-     * @param integer       $ID           ID of the user.
+     * @param int       $ID           ID of the user.
      * @param string|null   $login        login of the user
      * @param string|null   $realname     realname of the user
      * @param string|null   $firstname    firstname of the user
-     * @param integer       $link         include link
-     * @param integer       $cut          IGNORED PARAMETER
-     * @param boolean       $force_config force order and id_visible to use common config
+     * @param int       $link         include link
+     * @param int       $cut          IGNORED PARAMETER
+     * @param bool       $force_config force order and id_visible to use common config
      *
      * @return string
      *
@@ -1734,7 +1734,7 @@ final class DbUtils
     /**
      * Format a user link.
      *
-     * @param integer       $id           ID of the user.
+     * @param int       $id           ID of the user.
      * @param string|null   $login        login of the user
      * @param string|null   $realname     realname of the user
      * @param string|null   $firstname    firstname of the user
@@ -1840,9 +1840,9 @@ final class DbUtils
      *
      * @param string  $objectName  autoname template
      * @param string  $field       field to autoname
-     * @param boolean $isTemplate  true if create an object from a template
+     * @param bool $isTemplate  true if create an object from a template
      * @param string  $itemtype    item type
-     * @param integer $entities_id limit generation to an entity (default -1)
+     * @param int $entities_id limit generation to an entity (default -1)
      *
      * @return string new auto string
      */

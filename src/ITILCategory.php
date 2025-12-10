@@ -406,6 +406,11 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForClone($input)
     {
         // The code must be unique so we cannot clone it
@@ -437,7 +442,7 @@ class ITILCategory extends CommonTreeDropdown
 
     /**
      * @param ITILTemplate $tt
-     * @param integer $withtemplate (default 0)
+     * @param int $withtemplate (default 0)
      * @return false|void
      */
     public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)

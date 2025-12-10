@@ -112,6 +112,9 @@ class ProfileRight extends CommonDBChild
     }
 
 
+    /**
+     * @return void
+     */
     public static function cleanAllPossibleRights()
     {
         global $GLPI_CACHE;
@@ -119,9 +122,11 @@ class ProfileRight extends CommonDBChild
     }
 
     /**
-     * @param $profiles_id
-     * @param $rights         array
-     **/
+     * @param int $profiles_id
+     * @param array $rights
+     *
+     * @return array
+     */
     public static function getProfileRights($profiles_id, array $rights = [])
     {
         global $DB;
@@ -145,7 +150,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @param $rights   array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function addProfileRights(array $rights)
     {
@@ -181,7 +186,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @param $rights   array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function deleteProfileRights(array $rights)
     {
@@ -204,8 +209,10 @@ class ProfileRight extends CommonDBChild
     }
 
     /**
-     * @param $profiles_id
-     **/
+     * @param int $profiles_id
+     *
+     * @return void
+     */
     public static function fillProfileRights($profiles_id)
     {
         global $DB;
@@ -248,10 +255,12 @@ class ProfileRight extends CommonDBChild
 
 
     /**
-     * Update the rights of a profile (static since 0.90.1)
+     * Update the rights of a profile
      *
-     * @param $profiles_id
-     * @param $rights         array
+     * @param int $profiles_id
+     * @param array $rights
+     *
+     * @return void
      */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
@@ -283,6 +292,11 @@ class ProfileRight extends CommonDBChild
     }
 
 
+    /**
+     * @param bool $history
+     *
+     * @return void
+     */
     public function post_addItem($history = true)
     {
         // Refresh session rights to avoid log out and login when rights change

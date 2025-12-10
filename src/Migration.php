@@ -47,14 +47,14 @@ use function Safe\preg_replace;
  **/
 class Migration
 {
-    private $change    = [];
-    private $fulltexts = [];
-    private $uniques   = [];
-    private $search_opts = [];
-    protected $version;
-    private $lastMessage;
-    private $log_errors = 0;
-    private $queries = [
+    private array $change    = [];
+    private array $fulltexts = [];
+    private array $uniques   = [];
+    private array $search_opts = [];
+    protected string $version;
+    private array $lastMessage;
+    private int $log_errors = 0;
+    private array $queries = [
         'pre'    => [],
         'post'   => [],
     ];
@@ -85,7 +85,7 @@ class Migration
     {
         global $DB;
         $this->db = $DB;
-        $this->version = $ver;
+        $this->version = (string) $ver;
         $this->progress_indicator = $progress_indicator;
     }
 
@@ -100,7 +100,7 @@ class Migration
      **/
     public function setVersion($ver)
     {
-        $this->version = $ver;
+        $this->version = (string) $ver;
     }
 
     /**
@@ -144,7 +144,7 @@ class Migration
      * @since 0.84
      *
      * @param string  $message Message to display
-     * @param boolean $warning Is a warning
+     * @param bool $warning Is a warning
      *
      * @return void
      **/
@@ -222,7 +222,7 @@ class Migration
      * @param string  $type          can be "bool"|"boolean", "char"|"character", "str"|"string", "int"|"integer", "date", "time", "timestamp"|"datetime", "text"|"mediumtext"|"longtext", "autoincrement", "fkey", "json", or a complete type definition like "decimal(20,4) NOT NULL DEFAULT '0.0000'"
      * @param string  $default_value new field's default value,
      *                               if a specific default value needs to be used
-     * @param boolean $nodefault     No default value (false by default)
+     * @param bool $nodefault     No default value (false by default)
      *
      * @return string
      **/
@@ -371,7 +371,7 @@ class Migration
      *                         - after     : where adding the new field
      *                         - null      : value could be NULL (default false)
      *
-     * @return boolean
+     * @return bool
      **/
     public function addField($table, $field, $type, $options = [])
     {
@@ -435,7 +435,7 @@ class Migration
      *                         - comment comment to be added during field creation
      *                         - nodefault : do not define default value (default false)
      *
-     * @return boolean
+     * @return bool
      **/
     public function changeField($table, $oldfield, $newfield, $type, $options = [])
     {
@@ -524,7 +524,7 @@ class Migration
      * @param string|array $fields    Field(s) name(s)
      * @param string       $indexname Index name, $fields if empty, defaults to empty
      * @param string       $type      Index type (index or unique - default 'INDEX')
-     * @param integer      $len       Field length (default 0)
+     * @param int      $len       Field length (default 0)
      *
      * The table must exist before calling this function.
      *
@@ -699,7 +699,7 @@ class Migration
      * @param string $table The table to alter
      * @param array  $input The elements to add inside the table
      *
-     * @return integer|null id of the last item inserted by mysql
+     * @return int|null id of the last item inserted by mysql
      **/
     public function insertInTable($table, array $input)
     {
@@ -799,7 +799,7 @@ class Migration
      * @param array $criteria Array of Array of fields of glpi_rulecriterias
      * @param array $actions  Array of Array of fields of glpi_ruleactions
      *
-     * @return integer new rule id
+     * @return int new rule id
      **/
     public function createRule(array $rule, array $criteria, array $actions)
     {
@@ -998,7 +998,7 @@ class Migration
      *
      * @param array $tables Existing tables to backup
      *
-     * @return boolean
+     * @return bool
      */
     public function backupTables($tables)
     {
@@ -1117,7 +1117,7 @@ class Migration
      *    Default is to give rights to profiles with READ and UPDATE rights on config
      *
      * @param string  $name   Right name
-     * @param integer $rights Right to set (defaults to ALLSTANDARDRIGHT)
+     * @param int $rights Right to set (defaults to ALLSTANDARDRIGHT)
      * @param array<string, int>   $requiredrights Array of right name => value
      *                   A profile must have these rights in order to get the new right.
      *                   This array can be empty to add the right to every profile.
@@ -1202,7 +1202,7 @@ class Migration
      * Add specific right to profiles that match interface
      *
      * @param string  $name      Right name
-     * @param integer $right     Right to add
+     * @param int $right     Right to add
      * @param string  $interface Interface to set (defaults to central)
      *
      * @return void
@@ -1264,7 +1264,7 @@ class Migration
      * Default is to update rights of profiles with READ and UPDATE rights on config.
      *
      * @param string  $name   Right name
-     * @param integer $rights Right to set
+     * @param int $rights Right to set
      * @param array<string, int>   $requiredrights Array of right name => value
      *                   A profile must have these rights in order to get its rights updated.
      *                   This array can be empty to add the right to every profile.
@@ -1329,7 +1329,7 @@ class Migration
      *   Default is to give rights to profiles with READ and UPDATE rights on config
      *
      * @param string  $name   Right name
-     * @param integer $rights Right to set
+     * @param int $rights Right to set
      * @param array<string, int>   $requiredrights Array of right name => value
      *                   A profile must have these rights in order to get its rights added.
      *                   This array can be empty to add the right to every profile.
@@ -1455,7 +1455,7 @@ class Migration
      *
      * @param string  $old_itemtype
      * @param string  $new_itemtype
-     * @param boolean $update_structure
+     * @param bool $update_structure
      *    Whether to update or not DB structure (itemtype table name and foreign key fields)
      *
      * @return void
@@ -1638,7 +1638,7 @@ class Migration
      */
     private function migrateSearchOptions()
     {
-        if (empty($this->search_opts)) {
+        if ($this->search_opts === []) {
             return;
         }
 
@@ -1789,6 +1789,8 @@ class Migration
      * @param string $table Table name
      * @param class-string<CommonDBTM> $class_1 First itemtype (CommonDBTM)
      * @param class-string<CommonDBTM> $class_2 Second itemtype (CommonDBTM)
+     *
+     * @return void
      */
     public function createLinkTable(
         string $table,

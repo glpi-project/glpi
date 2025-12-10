@@ -51,6 +51,7 @@ use function Safe\mktime;
  **/
 class Report extends CommonGLPI
 {
+    /** @var bool */
     protected static $notable = false;
     public static $rightname         = 'reports';
 
@@ -131,7 +132,9 @@ class Report extends CommonGLPI
 
     /**
      * Show report selector which always appears on the top of the report pages
-     **/
+     *
+     * @return void
+     */
     public static function title()
     {
         $twig_params = [
@@ -889,7 +892,7 @@ TWIG, $twig_params);
 
     /**
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      */
     private static function getYearlyAssetsReport(array $itemtypes, array $years): array
     {
@@ -1055,7 +1058,7 @@ TWIG, $twig_params);
      * Show assets by year report
      *
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      * @return void
      */
     public static function showYearlyAssetsReport(array $itemtypes, array $years): void
@@ -1139,7 +1142,7 @@ TWIG, $twig_params);
 
     /**
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      */
     private static function getContractAssetsReport(array $itemtypes, array $years): array
     {
@@ -1328,7 +1331,7 @@ TWIG, $twig_params);
      * Show assets under contract report
      *
      * @param array<class-string<CommonDBTM>> $itemtypes
-     * @param array<integer> $years
+     * @param array<int> $years
      * @return void
      */
     public static function showContractAssetsReport(array $itemtypes, array $years): void
@@ -1896,11 +1899,19 @@ TWIG, $twig_params);
 TWIG, $twig_params);
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
         return [ READ => __('Read')];
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-report";

@@ -54,6 +54,9 @@ class Stat extends CommonGLPI
 {
     public static $rightname = 'statistic';
 
+    /**
+     * @var array
+     */
     public static $cache = [];
 
     public static function getTypeName($nb = 0)
@@ -369,7 +372,7 @@ class Stat extends CommonGLPI
      * @param string $type
      * @param string $date1
      * @param string $date2
-     * @param integer $start
+     * @param int $start
      * @param array $value
      * @param string $value2 (default '')
      * @return array|mixed
@@ -429,7 +432,7 @@ class Stat extends CommonGLPI
      * @param string $type
      * @param string $date1
      * @param string $date2
-     * @param integer $start
+     * @param int $start
      * @param array $value
      * @param int|string $value2
      * @return void
@@ -1599,9 +1602,11 @@ class Stat extends CommonGLPI
      * @param string $target
      * @param string $date1
      * @param string $date2
-     * @param integer $start
+     * @param int $start
      * @param class-string<CommonITILObject>|null $itemtype
-     **/
+     *
+     * @return void
+     */
     public static function showItems($target, $date1, $date2, $start, $itemtype = null)
     {
         $view_entities = Session::isMultiEntitiesMode();
@@ -1709,6 +1714,9 @@ class Stat extends CommonGLPI
         }
     }
 
+    /**
+     * @return array
+     */
     public static function getAvailableStatistics()
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
@@ -1858,6 +1866,9 @@ class Stat extends CommonGLPI
         return $values;
     }
 
+    /**
+     * @return void
+     */
     public static function title()
     {
         $values = self::getAvailableStatistics();
@@ -1879,6 +1890,11 @@ class Stat extends CommonGLPI
         ]);
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
         $values[READ] = __('Read');
@@ -1887,7 +1903,10 @@ class Stat extends CommonGLPI
 
     /**
      * Call displayLineGraph with arguments from a StatData object
+     *
      * @param StatData $stat_data
+     *
+     * @return void
      */
     public function displayLineGraphFromData(StatData $stat_data)
     {
@@ -1916,7 +1935,7 @@ class Stat extends CommonGLPI
      *                    ['name' => 'another name', 'data' => []]
      *                 ]
      * @param array    $options  Options
-     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param bool  $display  Whether to display directly; defauts to true
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
@@ -2062,6 +2081,8 @@ TWIG, $twig_params);
 
     /**
      * Call displayPieGraph with arguments from a StatData object
+     *
+     * @return void
      */
     public function displayPieGraphFromData(StatData $stat_data)
     {
@@ -2090,7 +2111,7 @@ TWIG, $twig_params);
      *                    ['name' => 'another name', 'data' => []]
      *                 ]
      * @param array    $options  Options
-     * @param boolean  $display  Whether to display directly; defauts to true
+     * @param bool  $display  Whether to display directly; defauts to true
      * @param string|null $csv_link Link to download the dataset as csv
      *
      * @return string|void
@@ -2221,7 +2242,7 @@ TWIG, $twig_params);
      * @param string  $itemtype Item type
      * @param string  $date1    First date
      * @param string  $date2    Second date
-     * @param boolean $display  Whether to display directly; defauts to true
+     * @param bool $display  Whether to display directly; defauts to true
      *
      * @return void|string
      * @phpstan-return ($display is true ? void : string)
@@ -2257,6 +2278,9 @@ TWIG, $twig_params);
         }
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-chart-pie";

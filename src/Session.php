@@ -323,7 +323,7 @@ class Session
     /**
      * Is GLPI used in multi-entities mode?
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isMultiEntitiesMode()
     {
@@ -345,7 +345,7 @@ class Session
      *
      * @since 9.3.2
      *
-     * @return boolean
+     * @return bool
      **/
     public static function canViewAllEntities()
     {
@@ -358,8 +358,10 @@ class Session
     /** Add an item to the navigate through search results list
      *
      * @param string  $itemtype Device type
-     * @param integer $ID       ID of the item
-     **/
+     * @param int $ID       ID of the item
+     *
+     * @return void
+     */
     public static function addToNavigateListItems($itemtype, $ID)
     {
         $_SESSION['glpilistitems'][$itemtype][] = $ID;
@@ -368,9 +370,12 @@ class Session
 
     /** Initialise a list of items to use navigate through search results
      *
-     * @param string $itemtype Device type
-     * @param string $title    List title (default '')
-     **/
+     * @param string  $itemtype Device type
+     * @param string  $title    List title (default '')
+     * @param ?string $url
+     *
+     * @return void
+     */
     public static function initNavigateListItems($itemtype, $title = "", $url = null)
     {
         if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
@@ -440,11 +445,11 @@ class Session
      * Change active entity to the $ID one. Update glpiactiveentities session variable.
      * Reload groups related to this entity.
      *
-     * @param integer|string $ID           ID of the new active entity ("all"=>load all possible entities)
+     * @param int|string $ID           ID of the new active entity ("all"=>load all possible entities)
      *                                     (default 'all')
-     * @param boolean         $is_recursive Also display sub entities of the active entity? (false by default)
+     * @param bool         $is_recursive Also display sub entities of the active entity? (false by default)
      *
-     * @return boolean true on success, false on failure
+     * @return bool true on success, false on failure
      **/
     public static function changeActiveEntities($ID = "all", $is_recursive = false)
     {
@@ -573,7 +578,7 @@ class Session
     /**
      * Change active profile to the $ID one. Update glpiactiveprofile session variable.
      *
-     * @param integer $ID ID of the new profile
+     * @param int $ID ID of the new profile
      *
      * @return void
      **/
@@ -627,7 +632,7 @@ class Session
     /**
      * Set the entities session variable. Load all entities from DB
      *
-     * @param integer $userID ID of the user
+     * @param int $userID ID of the user
      *
      * @return void
      **/
@@ -800,7 +805,7 @@ class Session
      * And load the dict that correspond.
      *
      * @param string  $forcelang     Force to load a specific lang
-     * @param boolean $with_plugins  Whether to load plugin languages or not
+     * @param bool $with_plugins  Whether to load plugin languages or not
      *
      * @return string
      **/
@@ -843,6 +848,11 @@ class Session
             public function __construct(?I18nCache $cache)
             {
                 $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
+            }
+
+            public function removeCoreTranslationsForLanguage(string $language): void
+            {
+                $this->messages['glpi'][$language] = [];
             }
         };
 
@@ -899,6 +909,13 @@ class Session
     /**
      * Loads all locales from the core for the translation system.
      * Should only be used during the install or update process to allow initialization of text in multiple languages.
+     *
+     * Note: be careful as this method may lead to a big chunk of the available
+     * memory being used to store all translations.
+     * A given language translation will be added to memory the first time
+     * a translation is requested for this language (so note that the memory
+     * usage is a bit delayed and won't be visible right after this method end).
+     *
      * @return void
      */
     public static function loadAllCoreLocales(): void
@@ -979,7 +996,7 @@ class Session
     /**
      * Get plural form number
      *
-     * @return integer
+     * @return int
      */
     public static function getPluralNumber()
     {
@@ -998,7 +1015,7 @@ class Session
      *
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isCron()
     {
@@ -1012,7 +1029,7 @@ class Session
     /**
      * Detect inventory mode
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isInventory(): bool
     {
@@ -1028,7 +1045,7 @@ class Session
     /**
      * Get the Login User ID or return cron user ID for cron jobs
      *
-     * @param boolean $force_human Force human / do not return cron user (true by default)
+     * @param bool $force_human Force human / do not return cron user (true by default)
      *
      * @return false|int|string false if user is not logged in
      *                          int for user id, string for cron jobs
@@ -1249,7 +1266,7 @@ class Session
      * Check if I have the right $right to module $module (compare to session variable)
      *
      * @param string  $module Module to check
-     * @param integer $right  Right to check
+     * @param int $right  Right to check
      *
      * @return void
      **/
@@ -1332,7 +1349,7 @@ class Session
      *
      * @param array $tab List ID of entities
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveAccessToAllOfEntities($tab)
     {
@@ -1351,10 +1368,10 @@ class Session
     /**
      * Check if you could access (read) to the entity of id = $ID
      *
-     * @param integer $ID           ID of the entity
-     * @param boolean $is_recursive if recursive item (default false)
+     * @param int $ID           ID of the entity
+     * @param bool $is_recursive if recursive item (default false)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveAccessToEntity($ID, $is_recursive = false)
     {
@@ -1385,9 +1402,9 @@ class Session
      * Check if you could access to one entity of a list
      *
      * @param array   $tab          list ID of entities
-     * @param boolean $is_recursive if recursive item (default false)
+     * @param bool $is_recursive if recursive item (default false)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveAccessToOneOfEntities($tab, $is_recursive = false)
     {
@@ -1406,9 +1423,9 @@ class Session
     /**
      * Check if you could create recursive object in the entity of id = $ID
      *
-     * @param integer $ID ID of the entity
+     * @param int $ID ID of the entity
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveRecursiveAccessToEntity($ID)
     {
@@ -1431,7 +1448,7 @@ class Session
      * Have I the right $right to module $module (compare to session variable)
      *
      * @param string  $module Module to check
-     * @param integer $right  Right to check
+     * @param int $right  Right to check
      *
      * @return bool
      **/
@@ -1463,9 +1480,9 @@ class Session
      * Have I all rights of array $rights to module $module (compare to session variable)
      *
      * @param string    $module Module to check
-     * @param integer[] $rights Rights to check
+     * @param int[] $rights Rights to check
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveRightsAnd($module, $rights = [])
     {
@@ -1483,9 +1500,9 @@ class Session
      * Have I one right of array $rights to module $module (compare to session variable)
      *
      * @param string    $module Module to check
-     * @param integer[] $rights Rights to check
+     * @param int[] $rights Rights to check
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveRightsOr($module, $rights = [])
     {
@@ -1540,9 +1557,9 @@ class Session
      * Add a message to be displayed after redirect
      *
      * @param string  $msg          Message to add
-     * @param boolean $check_once   Check if the message is not already added (false by default)
-     * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
-     * @param boolean $reset        Clear previous added message (false by default)
+     * @param bool $check_once   Check if the message is not already added (false by default)
+     * @param int $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+     * @param bool $reset        Clear previous added message (false by default)
      *
      * @return void
      *
@@ -1588,7 +1605,7 @@ class Session
      * Delete a session message
      *
      * @param string  $msg          Message to delete
-     * @param integer $message_type Message type (INFO, WARNING, ERROR) (default INFO)
+     * @param int $message_type Message type (INFO, WARNING, ERROR) (default INFO)
      *
      * @return void
      */
@@ -1652,7 +1669,7 @@ class Session
      *
      * @since 0.83
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isReadOnlyAccount()
     {
@@ -1742,7 +1759,7 @@ class Session
      * @param array $data           $_POST data
      * @param bool  $preserve_token Whether to preserve token after it has been validated.
      *
-     * @return boolean
+     * @return bool
      **/
     public static function validateCSRF($data, bool $preserve_token = false)
     {
@@ -1832,7 +1849,7 @@ class Session
      *
      * @param array $data $_POST data
      *
-     * @return boolean
+     * @return bool
      **/
     public static function validateIDOR(array $data = []): bool
     {
@@ -1917,7 +1934,7 @@ class Session
      * @param string $itemtype itemtype
      * @param string $field    field
      *
-     * @return boolean
+     * @return bool
      **/
     public static function haveTranslations($itemtype, $field)
     {
@@ -1945,9 +1962,9 @@ class Session
     /**
      * Check if current user can impersonate another user having given id.
      *
-     * @param integer $user_id
+     * @param int $user_id
      *
-     * @return boolean
+     * @return bool
      */
     public static function canImpersonate($user_id, ?string &$message = null)
     {
@@ -2004,9 +2021,9 @@ class Session
     /**
      * Impersonate user having given id.
      *
-     * @param integer $user_id
+     * @param int $user_id
      *
-     * @return boolean
+     * @return bool
      */
     public static function startImpersonating($user_id)
     {
@@ -2065,7 +2082,7 @@ class Session
     /**
      * Stop impersonating any user.
      *
-     * @return boolean
+     * @return bool
      */
     public static function stopImpersonating()
     {
@@ -2110,7 +2127,7 @@ class Session
     /**
      * Check if impersonate feature is currently used.
      *
-     * @return boolean
+     * @return bool
      */
     public static function isImpersonateActive()
     {
@@ -2131,7 +2148,7 @@ class Session
     /**
      * Check if current connected user password has expired.
      *
-     * @return boolean
+     * @return bool
      */
     public static function mustChangePassword()
     {
@@ -2271,8 +2288,8 @@ class Session
     /**
      * Load given entity.
      *
-     * @param integer $entities_id  Entity to use
-     * @param boolean $is_recursive Whether to load entities recursively or not
+     * @param int $entities_id  Entity to use
+     * @param bool $is_recursive Whether to load entities recursively or not
      *
      * @return void
      */
@@ -2441,7 +2458,7 @@ class Session
      * Is locale RTL
      * See native PHP 8.5 function locale_is_right_to_left
      *
-     * @param $locale
+     * @param string $locale
      *
      * @return bool
      */

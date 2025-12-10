@@ -144,9 +144,21 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $users = $this->createAndGetUserActors();
         $groups = $this->createAndGetGroupActors();
+        $step = $this->createAndGetValidationStep();
         $templates = [
-            $this->createITILValidationTemplate(User::class, $users[0]->getID()),
-            $this->createITILValidationTemplate(Group::class, $groups[0]->getID()),
+            $this->createITILValidationTemplate(
+                itemtype: User::class,
+                items_id: $users[0]->getID(),
+                step_id: $step->getID(),
+                // Use a variable to make sure they are computed
+                content: "Test comment for user: {{ itemtype }}",
+            ),
+            $this->createITILValidationTemplate(
+                itemtype: Group::class,
+                items_id: $groups[0]->getID(),
+                step_id: $step->getID(),
+                content: "Test comment for group",
+            ),
         ];
 
         // With no answers
@@ -166,13 +178,22 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 [
                     'itemtype_target' => 'User',
                     'items_id_target' => $users[0]->getID(),
+                    'comment_submission' => "<p>Test comment for user: Ticket</p>",
+                    'validationsteps_id' => $step->getID(),
                 ],
                 [
                     'itemtype_target' => 'Group',
                     'items_id_target' => $groups[0]->getID(),
+                    'comment_submission' => "<p>Test comment for group</p>",
+                    'validationsteps_id' => $step->getID(),
                 ],
             ],
-            keys_to_be_considered: ['itemtype_target', 'items_id_target']
+            keys_to_be_considered: [
+                'itemtype_target',
+                'items_id_target',
+                'comment_submission',
+                'validationsteps_id',
+            ]
         );
 
         // With answers
@@ -365,11 +386,19 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
         $users = $this->createAndGetUserActors();
         $groups = $this->createAndGetGroupActors();
-        $templates = [
-            $this->createITILValidationTemplate(User::class, $users[3]->getID()),
-            $this->createITILValidationTemplate(Group::class, $groups[2]->getID()),
-        ];
         $first_validation_step = $this->createAndGetValidationStep();
+        $templates = [
+            $this->createITILValidationTemplate(
+                itemtype: User::class,
+                items_id: $users[3]->getID(),
+                step_id: $first_validation_step->getID(),
+            ),
+            $this->createITILValidationTemplate(
+                itemtype: Group::class,
+                items_id: $groups[2]->getID(),
+                step_id: $first_validation_step->getID(),
+            ),
+        ];
         $second_validation_step = $this->createAndGetValidationStep();
         $third_validation_step = $this->createAndGetValidationStep();
 
@@ -383,7 +412,6 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                         $templates[0]->getID(),
                         $templates[1]->getID(),
                     ],
-                    specific_validation_step_id: $first_validation_step->getID()
                 ),
                 new ValidationFieldStrategyConfig(
                     strategy: ValidationFieldStrategy::SPECIFIC_ACTORS,
@@ -692,14 +720,19 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         return $groups;
     }
 
-    private function createITILValidationTemplate(string $itemtype, int $items_id): ITILValidationTemplate
-    {
+    private function createITILValidationTemplate(
+        string $itemtype,
+        int $items_id,
+        ?int $step_id = null,
+        ?string $content = null,
+    ): ITILValidationTemplate {
         return $this->createItem(ITILValidationTemplate::class, [
             'name'               => 'ITIL Validation Template',
             'entities_id'        => $this->getTestRootEntity()->getID(),
-            'validationsteps_id' => $this->createAndGetValidationStep()->getID(),
+            'validationsteps_id' => $step_id ?? $this->createAndGetValidationStep()->getID(),
             'itemtype_target'    => $itemtype,
             'items_id_target'    => $items_id,
+            'content'            => $content,
         ], ['itemtype_target', 'items_id_target']);
     }
 

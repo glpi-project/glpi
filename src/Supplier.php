@@ -377,8 +377,10 @@ class Supplier extends CommonDBTM
     /**
      * Get links for an enterprise (website / edit)
      *
-     * @param boolean $withname Also display name ? (false by default)
-     **/
+     * @param bool $withname Also display name ? (false by default)
+     *
+     * @return string
+     */
     public function getLinks($withname = false)
     {
         $ret = $withname ? ('<span class="ms-3 me-1">' . htmlescape($this->fields["name"]) . '</span>') : '';
@@ -611,6 +613,8 @@ class Supplier extends CommonDBTM
      * @since 9.5
      *
      * @param string $email Also display name ? (false by default)
+     *
+     * @return DBmysqlIterator
      **/
     public static function getSuppliersByEmail($email)
     {

@@ -287,7 +287,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      * Prepare input for add and update
      *
      * @param array   $input Input values
-     * @param boolean $add   True when we're adding a record
+     * @param bool $add   True when we're adding a record
      *
      * @return array|false
      */
@@ -401,7 +401,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      *
      * @param Domain $domain Domain object
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForDomain(Domain $domain)
     {

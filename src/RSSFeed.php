@@ -156,7 +156,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
      * @return array
      */
@@ -563,7 +563,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     /**
      * Print the rssfeed form
      *
-     * @param integer $ID Id of the item to print
+     * @param int $ID Id of the item to print
      * @param array $options Array of possible options:
      *     - target filename : where to go when done.
      **/
@@ -597,8 +597,10 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Set error field
      *
-     * @param boolean $error   (false by default)
-     **/
+     * @param bool $error   (false by default)
+     *
+     * @return void
+     */
     public function setError($error = false)
     {
         if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
@@ -749,8 +751,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Show list for central view
      *
-     * @param boolean $personal display rssfeeds created by me?
-     * @param boolean $display  if false, return html
+     * @param bool $personal display rssfeeds created by me?
+     * @param bool $display  if false, return html
      *
      * @return false|void|string
      **/

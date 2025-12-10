@@ -91,7 +91,7 @@ class State extends CommonTreeDropdown
      * States for behaviour config
      *
      * @param string $lib to add for -1 value (default '')
-     * @param boolean $is_inheritable
+     * @param bool $is_inheritable
      * @return array
      */
     final public static function getBehaviours(string $lib = "", bool $is_inheritable = false): array
@@ -126,16 +126,21 @@ class State extends CommonTreeDropdown
      *
      * @param string $name  select name
      * @param string $lib   to add for -1 value (default '')
-     * @param integer $value
-     * @param boolean $is_inheritable
+     * @param int $value
+     * @param bool $is_inheritable
      * @used-by templates/pages/admin/entity/assets.html.twig
-     **/
+     *
+     * @return void
+     */
     public static function dropdownBehaviour($name, $lib = "", $value = 0, $is_inheritable = false)
     {
         $elements = self::getBehaviours($lib, $is_inheritable);
         Dropdown::showFromArray($name, $elements, ['value' => $value]);
     }
 
+    /**
+     * @return void
+     */
     public static function showSummary()
     {
         global $CFG_GLPI, $DB;
@@ -751,7 +756,7 @@ class State extends CommonTreeDropdown
      *       - states_id
      *       - name
      * @param array $input Array of field names and values
-     * @return boolean True if the new/updated record will be unique
+     * @return bool True if the new/updated record will be unique
      */
     public function isUnique($input)
     {

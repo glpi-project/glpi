@@ -37,7 +37,7 @@ class ITILValidationTemplate_Target extends CommonDBRelation
 {
     public $dohistory = true;
 
-    public static $itemtype_1 = 'ITILValidationTemplate';
+    public static $itemtype_1 = ITILValidationTemplate::class;
     public static $items_id_1 = 'itilvalidationtemplates_id';
     public static $take_entity_1 = false;
 
@@ -50,6 +50,11 @@ class ITILValidationTemplate_Target extends CommonDBRelation
         return _n('Approval template target', 'Approval template targets', $nb);
     }
 
+    /**
+     * @param int $itilvalidationtemplates_id
+     *
+     * @return array
+     */
     public static function getTargets($itilvalidationtemplates_id)
     {
         return (new self())->find([

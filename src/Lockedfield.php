@@ -212,7 +212,7 @@ class Lockedfield extends CommonDBTM
      *
      * @param CommonDBTM $item Item instance
      *
-     * @retrun boolean
+     * @return bool
      */
     public function isHandled(CommonGLPI $item)
     {
@@ -223,11 +223,23 @@ class Lockedfield extends CommonDBTM
         return (bool) $item->isDynamic();
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return array
+     */
     public function getLockedNames($itemtype, $items_id)
     {
         return $this->getLocks($itemtype, $items_id, true);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return array
+     */
     public function getLockedValues($itemtype, $items_id)
     {
         return $this->getLocks($itemtype, $items_id, false);
@@ -238,7 +250,7 @@ class Lockedfield extends CommonDBTM
      * Get locked fields
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
      * return array
      */
@@ -270,9 +282,10 @@ class Lockedfield extends CommonDBTM
      * Get locked fields
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
+     * @param bool $fields_only
      *
-     * return array
+     * @return array
      */
     public function getLocks($itemtype, $items_id, bool $fields_only = true)
     {
@@ -305,7 +318,7 @@ class Lockedfield extends CommonDBTM
     /**
      * Item has been deleted, remove all locks
      *
-     * @return boolean
+     * @return bool
      */
     public function itemDeleted()
     {
@@ -322,7 +335,12 @@ class Lockedfield extends CommonDBTM
     /**
      * Store value from inventory on locked fields
      *
-     * @return boolean
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $field
+     * @param mixed $value
+     *
+     * @return bool
      */
     public function setLastValue($itemtype, $items_id, $field, $value)
     {
@@ -377,6 +395,11 @@ class Lockedfield extends CommonDBTM
         return $this->prepareInput($input);
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     protected function prepareInput($input)
     {
         if (isset($input['item'])) {

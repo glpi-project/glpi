@@ -59,21 +59,25 @@ class Planning extends CommonGLPI
 {
     public static $rightname = 'planning';
 
+    /** @var string[]  */
     public static $palette_bg = ['#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
         '#D6CACA', '#D3D6ED', '#C8E5E3', '#FBD5BF', '#E9EBA2',
         '#E8E5E5', '#DBECDF', '#FCE7F2', '#E9D3D3', '#D2DBDC',
     ];
 
+    /** @var string[]  */
     public static $palette_fg = ['#57544D', '#59707E', '#5B3B5B', '#3A431A', '#58242F',
         '#3B2727', '#272D59', '#2E4645', '#6F4831', '#46481B',
         '#4E4E4E', '#274C30', '#6A535F', '#473232', '#454545',
     ];
 
+    /** @var string[]  */
     public static $palette_ev = ['#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
         '#364959', '#8C5344', '#FF8100', '#F600C4', '#0017FF',
         '#000000', '#FFFFFF', '#005800', '#925EFF',
     ];
 
+    /** @var string[]  */
     public static $directgroup_itemtype = ['PlanningExternalEvent', 'ProjectTask', 'TicketTask', 'ProblemTask', 'ChangeTask'];
 
     public const READMY    =    1;
@@ -212,7 +216,9 @@ class Planning extends CommonGLPI
      * Get planning state name
      *
      * @param int $value status ID
-     **/
+     *
+     * @return string
+     */
     public static function getState($value)
     {
         return match ($value) {
@@ -280,9 +286,11 @@ class Planning extends CommonGLPI
      *
      * @param string $name   Select name
      * @param string $value  Default value (default '')
-     * @param boolean $display  Display of send string ? (true by default)
+     * @param bool $display  Display of send string ? (true by default)
      * @param array $options
-     **/
+     *
+     * @return int|string
+     */
     public static function dropdownState($name, $value = '', $display = true, $options = [])
     {
         $js = <<<JAVASCRIPT
@@ -329,11 +337,13 @@ JAVASCRIPT;
     /**
      * Check already planned user for a period
      *
-     * @param integer $users_id user id
+     * @param int $users_id user id
      * @param string  $begin    begin date
      * @param string  $end      end date
      * @param array   $except   items which not be into account ['Reminder' => [1, 2, id_of_items]]
-     **/
+     *
+     * @return bool
+     */
     public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
     {
         global $CFG_GLPI;
@@ -494,11 +504,10 @@ JAVASCRIPT;
     /**
      * Show the planning
      *
-     * Function name change since version 0.84 show() => showPlanning
-     * Function prototype changes in 9.1 (no more parameters)
+     * @param bool $fullview
      *
      * @return void
-     **/
+     */
     public static function showPlanning($fullview = true)
     {
         if (!static::canView()) {
@@ -539,6 +548,9 @@ JAVASCRIPT;
         );
     }
 
+    /**
+     * @return array
+     */
     public static function getTimelineResources()
     {
         $resources = [];
@@ -623,7 +635,7 @@ JAVASCRIPT;
     /**
      * Return an hexa color from a palette
      * @param  string  $palette_name the short name for palette (bg, fg, ev)
-     * @param  integer $color_index  The color index in this palette
+     * @param  int $color_index  The color index in this palette
      * @return mixed                 the color in hexa (ex: #FFFFFF) or false
      *
      * @since  9.1.1
@@ -641,6 +653,9 @@ JAVASCRIPT;
         return false;
     }
 
+    /**
+     * @return array
+     */
     public static function getPlanningTypes()
     {
         global $CFG_GLPI;
@@ -718,11 +733,11 @@ JAVASCRIPT;
      * Display a single line of planning filter.
      * See self::showPlanningFilter function
      *
-     * @param $filter_key  : identify curent line of filter
-     * @param $filter_data : array of filter date, must contains :
+     * @param string $filter_key identify curent line of filter
+     * @param array $filter_data array of filter date, must contain:
      *   * 'show_delete' (boolean): show delete button
      *   * 'filter_color_index' (integer): index of the color to use in self::$palette_bg
-     * @param $options
+     * @param array $options
      *
      * @return void
      * @used-by templates/pages/assistance/planning/filters.html.twig
@@ -911,7 +926,7 @@ TWIG, $twig_params);
 
         // show only users with right to add planning events
         $rights = ['change', 'problem', 'reminder', 'task', 'projecttask'];
-        // Can we see only personnal planning ?
+        // Can we see only personal planning ?
         if (!Session::haveRightsOr('planning', [self::READALL, self::READGROUP])) {
             $rights = 'id';
         }
@@ -944,9 +959,11 @@ TWIG, $twig_params);
     }
 
     /**
-     * Recieve 'User' data from self::showAddPlanningForm and save them to session and DB
+     * Receive 'User' data from self::showAddPlanningForm and save them to session and DB
      *
      * @param array $params Must contain form data (typically $_REQUEST)
+     *
+     * @return void
      */
     public static function sendAddUserForm($params = [])
     {
@@ -996,11 +1013,13 @@ TWIG, $twig_params);
     }
 
     /**
-     * Recieve 'All users of a group' data from self::showAddGroupUsersForm and save them to session and DB
+     * Receive 'All users of a group' data from self::showAddGroupUsersForm and save them to session and DB
      *
      * @since 9.1
      *
      * @param array $params Must contain form data (typically $_REQUEST)
+     *
+     * @return void
      */
     public static function sendAddGroupUsersForm($params = [])
     {
@@ -1042,6 +1061,11 @@ TWIG, $twig_params);
         self::savePlanningsInDB();
     }
 
+    /**
+     * @param array $params
+     *
+     * @return void
+     */
     public static function editEventForm($params = [])
     {
         $item = getItemForItemtype($params['itemtype']);
@@ -1111,11 +1135,13 @@ TWIG, $twig_params);
     }
 
     /**
-     * Recieve 'Group' data from self::showAddGroupForm and save them to session and DB
+     * Receive 'Group' data from self::showAddGroupForm and save them to session and DB
      *
      * @since 9.1
      *
      * @param array $params Must contain form data (typically $_REQUEST)
+     *
+     * @return void
      */
     public static function sendAddGroupForm($params = [])
     {
@@ -1198,6 +1224,11 @@ TWIG, $twig_params);
         $_SESSION['glpi_plannings_color_index']++;
     }
 
+    /**
+     * @param array $params
+     *
+     * @return void
+     */
     public static function showAddEventForm($params = [])
     {
         global $CFG_GLPI;
@@ -1293,6 +1324,8 @@ TWIG, $twig_params);
      *   - end (optionnal) (string) : end date of event. Ifg missing, it will computerd from begin+1hour
      *   - rand_user (integer) : a random number for planning user avaibility or not specified if no user availability check should be done
      *   - rand : specific rand if needed (default is generated one)
+     *
+     * @return void
      */
     public static function showAddEventClassicForm($params = [])
     {
@@ -1382,7 +1415,7 @@ TWIG, $twig_params);
      *
      * @param array $event the event to clone
      *
-     * @return integer|false the id (integer) or false if it failed
+     * @return int|false the id (integer) or false if it failed
      */
     public static function cloneEvent(array $event = [])
     {
@@ -1538,6 +1571,9 @@ TWIG, $twig_params);
         self::savePlanningsInDB();
     }
 
+    /**
+     * @return void
+     */
     public static function savePlanningsInDB()
     {
         $user = new User();
@@ -2138,9 +2174,9 @@ TWIG, $twig_params);
      * Display a Planning Item
      *
      * @param array $val       Array of the item to display
-     * @param integer $who             ID of the user (0 if all)
+     * @param int $who             ID of the user (0 if all)
      * @param 'in'|'through'|'begin'|'end'|'' $type Position of the item in the time block (in, through, begin or end)
-     * @param boolean $complete        complete display (more details)
+     * @param bool $complete        complete display (more details)
      *
      * @return string
      **/
@@ -2168,7 +2204,7 @@ TWIG, $twig_params);
     /**
      * Show the planning for the central page of a user
      *
-     * @param integer $who ID of the user
+     * @param int $who ID of the user
      *
      * @return void
      **/
@@ -2207,8 +2243,8 @@ TWIG, ['msg' => __('Your planning')]);
     /**
      *  Generate ical file content
      *
-     * @param integer $who             user ID
-     * @param integer $whogroup        group ID
+     * @param int $who             user ID
+     * @param int $whogroup        group ID
      * @param string  $limititemtype   itemtype only display this itemtype (default '')
      *
      * @return void Outputs ical contents
@@ -2353,9 +2389,14 @@ TWIG, ['msg' => __('Your planning')]);
         echo $output;
     }
 
+    /**
+     * @param string $interface
+     *
+     * @return array
+     */
     public function getRights($interface = 'central')
     {
-        $values[self::READMY]    = __('See personnal planning');
+        $values[self::READMY]    = __('See personal planning');
         $values[self::READGROUP] = __('See schedule of people in my groups');
         $values[self::READALL]   = __('See all plannings');
 
@@ -2396,7 +2437,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @param string $key
      *
-     * @return integer|null
+     * @return int|null
      */
     public static function getActorIdFromPlanningKey($key)
     {
@@ -2408,7 +2449,7 @@ TWIG, ['msg' => __('Your planning')]);
      * Returns planning key for given actor (key is used in user 'plannings' field).
      *
      * @param string  $itemtype
-     * @param integer $items_id
+     * @param int $items_id
      *
      * @return string
      */
@@ -2448,6 +2489,9 @@ TWIG, ['msg' => __('Your planning')]);
         return $calendar_uri;
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-calendar-time";

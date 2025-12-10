@@ -76,6 +76,7 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
+use Glpi\ItemTranslation\CldrLanguage;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
@@ -1303,6 +1304,9 @@ class FormMigration extends AbstractPluginMigration
                 throw new LogicException("Form with id {$raw_language['plugin_formcreator_forms_id']} not found");
             }
 
+            $cldr_language = new CldrLanguage($raw_language['name']);
+            $plural_key = $cldr_language->getPluralKey(1);
+
             foreach ($form->listTranslationsHandlers() as $handlers) {
                 foreach ($handlers as $handler) {
                     if (!empty($handler->getValue()) && isset($translations[$handler->getValue()])) {
@@ -1313,7 +1317,7 @@ class FormMigration extends AbstractPluginMigration
                                 FormTranslation::$itemtype => $handler->getItem()->getType(),
                                 'key'                      => $handler->getKey(),
                                 'language'                 => $raw_language['name'],
-                                'translations'             => ['one' => $translations[$handler->getValue()]],
+                                'translations'             => [$plural_key => $translations[$handler->getValue()]],
                             ],
                             [
                                 FormTranslation::$items_id => $handler->getItem()->getID(),

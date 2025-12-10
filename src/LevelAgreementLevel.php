@@ -67,20 +67,19 @@ abstract class LevelAgreementLevel extends RuleTicket
         // Override in order not to use glpi_rules table.
     }
 
+    /**
+     * @param LevelAgreement $la
+     *
+     * @return void
+     */
     abstract public function showForParent(LevelAgreement $la);
 
-    /**
-     * @since 0.85
-     **/
     public static function getConditionsArray()
     {
         // Override ruleticket one
         return [];
     }
 
-    /**
-     * @since 0.84
-     **/
     public function getForbiddenStandardMassiveAction()
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -229,6 +228,11 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $criteria;
     }
 
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
     public static function getExecutionTimes($options = [])
     {
         $p = [
@@ -304,7 +308,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      *       - max_time : max time to use
      *       - used : already used values
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
@@ -335,7 +339,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     /**
      * Get already used execution time for a OLA
      *
-     * @param integer $las_id id of the OLA
+     * @param int $las_id id of the OLA
      *
      * @return array of already used execution times
      **/

@@ -50,6 +50,7 @@ class Link extends CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname = 'link';
+    /** @var string[] */
     public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',
         'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL',
@@ -73,8 +74,10 @@ class Link extends CommonDBTM
     /**
      * For plugins, add a tag to the links tags
      *
-     * @param $tag    string    class name
-     **/
+     * @param string  $tag class name
+     *
+     * @return void
+     */
     public static function registerTag($tag)
     {
         if (!in_array($tag, self::$tags)) {
@@ -285,7 +288,7 @@ class Link extends CommonDBTM
         return $tab;
     }
 
-    private static function getIPAndMACForItem(CommonDBTM $item, $get_ip = false, $get_mac = false): array
+    private static function getIPAndMACForItem(CommonDBTM $item, bool $get_ip = false, bool $get_mac = false): array
     {
         global $DB;
 
@@ -648,7 +651,9 @@ TWIG, $buttons_params);
      *
      * @param CommonDBTM $item The item
      * @param array{id: int, name: string, link: string, data: string, open_window: ?bool} $params
-     **/
+     *
+     * @return array
+     */
     public static function getAllLinksFor($item, $params)
     {
         global $CFG_GLPI;
@@ -721,6 +726,11 @@ TWIG, $buttons_params);
         return $computedlinks;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
@@ -750,6 +760,11 @@ TWIG, $buttons_params);
         return $tab;
     }
 
+    /**
+     * @param CommonGLPI $item
+     *
+     * @return array|int|string
+     */
     public static function getEntityRestrictForItem(CommonGLPI $item)
     {
         if (!$item instanceof CommonDBTM) {
@@ -764,6 +779,11 @@ TWIG, $buttons_params);
         return $restrict;
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return DBmysqlIterator
+     */
     public static function getLinksDataForItem(CommonDBTM $item)
     {
         global $DB;

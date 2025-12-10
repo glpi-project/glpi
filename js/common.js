@@ -692,33 +692,6 @@ var stopEvent = function(event) {
     event.stopPropagation();
 };
 
-$(() => {
-    /**
-     * Back to top implementation
-     */
-    if ($('#backtotop').length) {
-        var scrollTrigger = 100, // px
-            backToTop = function () {
-                var scrollTop = $(window).scrollTop();
-                if (scrollTop > scrollTrigger) {
-                    $('#backtotop').addClass('d-md-block');
-                } else {
-                    $('#backtotop').removeClass('d-md-block');
-                }
-            };
-        backToTop();
-        $(window).on('scroll', function () {
-            backToTop();
-        });
-        $('#backtotop').on('click', function (e) {
-            e.preventDefault();
-            $('html,body').animate({
-                scrollTop: 0
-            }, 700);
-        });
-    }
-});
-
 /**
  * Returns element height, including margins
 */
@@ -1219,7 +1192,7 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
         $(events).each((i2, event) => {
             //TODO Manage buffer time
 
-            const cleaned_zone_id = zone.replace('[', '_').replace(']', '_');
+            const cleaned_zone_id = zone.replaceAll('[', '_').replaceAll(']', '_');
             const zone_obj = $(`#${CSS.escape(cleaned_zone_id)}`);
 
             zone_obj.on(event, () => {
@@ -1353,9 +1326,9 @@ function tableToDetails(table) {
     section_els.each((i, e) => {
         if (e.classList.contains('section-header')) {
             if (in_details) {
-                details += '</pre></details>';
+                details += '\n</pre></details>';
             }
-            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>`;
+            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>\n`;
             in_details = true;
         } else {
             if (in_details) {
@@ -1365,7 +1338,7 @@ function tableToDetails(table) {
     });
 
     if (in_details) {
-        details += '</pre></details>';
+        details += '\n</pre></details>';
     }
     return details;
 }
@@ -1397,8 +1370,11 @@ function flashIconButton(button, button_classes, icon_classes, duration) {
  * @see https://stackoverflow.com/a/48593447
  */
 function uniqid(prefix = "", more_entropy = false) {
-    const sec = Date.now() * 1000 + Math.random() * 1000;
-    const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
+    const random = crypto.getRandomValues(new Uint32Array(10)).reduce(
+        (accumulator, value) => accumulator * value,
+        1,
+    );
+    const id = random.toString(16).slice(0, 14).padEnd(14, "0");
     const suffix = more_entropy
         ? '.' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0')
         : '';
@@ -1712,7 +1688,7 @@ function setupAjaxDropdown(config) {
         minimumInputLength: 0,
         quietMillis: 100,
         dropdownAutoWidth: true,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         minimumResultsForSearch: config.ajax_limit_count,
         ajax: {
             url: config.url,
@@ -1816,7 +1792,7 @@ function setupAdaptDropdown(config)
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,
         matcher: function (params, data) {
@@ -1993,4 +1969,3 @@ document.addEventListener('focusin', (e) => {
         e.stopImmediatePropagation();
     }
 });
-

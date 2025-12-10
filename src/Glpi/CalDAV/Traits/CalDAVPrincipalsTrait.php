@@ -164,7 +164,7 @@ trait CalDAVPrincipalsTrait
     {
 
         if (!Session::haveRightsOr(Planning::$rightname, [Planning::READALL, Planning::READGROUP])) {
-            // Can see only personnal planning
+            // Can see only personal planning
             $rights = 'id';
         } elseif (
             Session::haveRight(Planning::$rightname, Planning::READGROUP)

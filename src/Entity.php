@@ -269,8 +269,31 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return ['admin', self::class];
     }
 
+    /**
+     * Verify the current user can create a child entity.
+     * This method is used for example in the showSearchStatusArea.
+     * @return bool
+     */
+    private static function canCreateChild(): bool
+    {
+        if (!Session::isMultiEntitiesMode()) {
+            return true;
+        }
+
+        // The entity doesn't have children, we allow the creation (in the postAdd will enable the recursivity)
+        $active_entity = Entity::getById(Session::getActiveEntity());
+        if ($active_entity && !$active_entity->haveChildren()) {
+            return true;
+        }
+
+        return !empty($_SESSION["glpiactive_entity_recursive"]);
+    }
+
     public static function canCreate(): bool
     {
+        if (!self::canCreateChild()) {
+            return false;
+        }
         // Do not show the create button if no recusive access on current entity
         return parent::canCreate() && Session::haveRecursiveAccessToEntity(Session::getActiveEntity());
     }
@@ -692,6 +715,24 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
     }
 
+
+    /**
+     * This method is used to display an error message on the entities list page.
+     *
+     * @return void
+     * @used-by templates/components/search/controls.html.twig
+     */
+    public static function showSearchStatusArea(): void
+    {
+        if (!self::canCreateChild() && Session::haveRight(static::$rightname, CREATE)) {
+            Session::addMessageAfterRedirect(
+                __s("To create a child entity, you must enable entity tree structure."),
+                false,
+                INFO
+            );
+        }
+    }
+
     public function showForm($ID, array $options = [])
     {
         if ((int) $ID === 0) {
@@ -707,7 +748,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * simply return ID
      *
-     * @return integer ID of the entity
+     * @return int ID of the entity
      **/
     public function getEntityID()
     {
@@ -744,6 +785,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function post_addItem()
     {
         parent::post_addItem();
+
+        // The entity didn't initially had children, we switch to recursive mode
+        $active_entity = Entity::getById(Session::getActiveEntity());
+        if ($active_entity && $active_entity->countChildren() === 1) {
+            $_SESSION["glpiactive_entity_recursive"] = true;
+        }
 
         // Add right to current user - Hack to avoid login/logout
         $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
@@ -2131,7 +2178,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      * Retrieve data of current entity or parent entity
      *
      * @param string  $fieldref       name of the referent field to know if we look at parent entity
-     * @param integer $entities_id
+     * @param int $entities_id
      * @param string  $fieldval       name of the field that we want value (default '')
      * @param mixed   $default_value  value to return (default -2)
      *
@@ -2393,7 +2440,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * get value for auto_assign_mode
      *
-     * @param integer|null $val if not set, ask for all values, else for 1 value (default NULL)
+     * @param int|null $val if not set, ask for all values, else for 1 value (default NULL)
      *
      * @return string|array
      * @phpstan-return ($val is null ? array<int|string, string> : string)

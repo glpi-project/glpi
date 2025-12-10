@@ -102,7 +102,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * Is the current user have right to update the current satisfaction
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateItem(): bool
     {
@@ -171,7 +171,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 $this->fields["satisfaction"] = $default_rate;
             }
             $max_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_max_rate' . $config_suffix);
-            $duration = (int) Entity::getUsedConfig('inquest_duration' . $config_suffix, $item->fields['entities_id']);
+            $duration = (int) Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_duration' . $config_suffix);
             $expired = $duration !== 0 && (time() - strtotime($this->fields['date_begin'])) > $duration * DAY_TIMESTAMP;
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
                 'item'   => $this,
@@ -379,6 +379,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
         $base_id = static::getSearchOptionIDOffset();
         $table = static::getTable();
+        $parent_table = static::getItemInstance()::getTable();
 
         $tab[] = [
             'id'                 => 'satisfaction',
@@ -493,10 +494,10 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'usehaving'          => true,
             'nometa'             => true,
             'computation'        => QueryFunction::if(
-                condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = glpi_entities.id AND durations.inquest_duration > 0)"),
+                condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = $parent_table.entities_id AND durations.inquest_duration > 0)"),
                 true_expression: QueryFunction::dateAdd(
                     date: "$table.date_begin",
-                    interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = glpi_entities.id)"),
+                    interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = $parent_table.entities_id)"),
                     interval_unit: 'DAY',
                 ),
                 false_expression: new QueryExpression($DB::quoteValue(''))

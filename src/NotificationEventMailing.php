@@ -378,7 +378,7 @@ class NotificationEventMailing extends NotificationEventAbstract
                                 // 'cid' must be identical as second arg used in `embedFromPath` method
                                 // Symfony/Mime will then replace it by an auto-generated value
                                 // see Symfony\Mime\Email::prepareParts()
-                                'src="cid:' . $filename . '"',
+                                'src="cid:' . $filename . '" style="max-width: 100%; height: auto;"',
                                 'href="' . htmlescape($CFG_GLPI['url_base'] . '/front/document.send.php?docid=' . $docID) . '$1"',
                             ],
                             $current->fields['body_html']
@@ -441,6 +441,10 @@ class NotificationEventMailing extends NotificationEventAbstract
 
     /**
      * Handle a failure when trying to send an email
+     *
+     * - write an entry in log file "mail-error"
+     * - update the number of retries in notification or delete it when number of retries is reached
+     *
      * @param QueuedNotification $notification The notification that failed
      * @param string $error The error message to log
      * @return void
@@ -502,7 +506,7 @@ class NotificationEventMailing extends NotificationEventAbstract
      *
      * @return void
      */
-    private static function attachDocuments(Email $mail, array $documents_ids)
+    private static function attachDocuments(Email $mail, array $documents_ids): void
     {
         $document = new Document();
         foreach ($documents_ids as $document_id) {
@@ -515,6 +519,7 @@ class NotificationEventMailing extends NotificationEventAbstract
         }
     }
 
+    #[Override]
     protected static function extraRaise($params)
     {
         //Set notification's signature (the one which corresponds to the entity)

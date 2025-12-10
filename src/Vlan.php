@@ -91,11 +91,12 @@ class Vlan extends CommonDropdown
     }
 
     /**
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param HTMLTableBase $base
      * @param HTMLTableSuperHeader|null $super
      * @param HTMLTableHeader|null $father
      * @param array $options
+     * @return void
      * @since 0.84
      */
     public static function getHTMLTableHeader(
@@ -121,6 +122,7 @@ class Vlan extends CommonDropdown
      * @param CommonDBTM|null $item object (default NULL)
      * @param HTMLTableCell|null $father object (default NULL)
      * @param array $options
+     * @return void
      * @since 0.84
      */
     public static function getHTMLTableCellsForItem(
@@ -140,6 +142,9 @@ class Vlan extends CommonDropdown
                 return;
             }
             $item = $father->getItem();
+            if ($item === false) {
+                return;
+            }
         }
 
         if ($item::class === NetworkPort_Vlan::class) {

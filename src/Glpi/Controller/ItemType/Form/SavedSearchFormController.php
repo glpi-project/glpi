@@ -35,8 +35,10 @@
 namespace Glpi\Controller\ItemType\Form;
 
 use Glpi\Controller\GenericFormController;
+use Glpi\Http\Firewall;
 use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Html;
 use SavedSearch;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,6 +46,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class SavedSearchFormController extends GenericFormController
 {
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[ItemtypeFormRoute(SavedSearch::class)]
     public function __invoke(Request $request): Response
     {

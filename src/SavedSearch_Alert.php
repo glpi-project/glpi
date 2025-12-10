@@ -109,12 +109,12 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Print the form
      *
-     * @param integer $ID      integer ID of the item
+     * @param int $ID      integer ID of the item
      * @param array   $options array
      *     - target for the Form
      *     - computers_id ID of the computer for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -152,7 +152,7 @@ class SavedSearch_Alert extends CommonDBChild
      * Print the searches alerts
      *
      * @param SavedSearch $search       Object instance
-     * @param integer     $withtemplate Template or basic item (default '')
+     * @param int     $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
@@ -241,7 +241,7 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Get operators
      *
-     * @param integer $id ID for the operator to retrieve, or null for the full list
+     * @param int $id ID for the operator to retrieve, or null for the full list
      *
      * @return string|array
      */
@@ -258,6 +258,11 @@ class SavedSearch_Alert extends CommonDBChild
         return ($id === null ? $ops : $ops[$id]);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
@@ -274,7 +279,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
      */
-    private static function saveContext()
+    private static function saveContext(): array
     {
         global $CFG_GLPI;
         $context = [];
@@ -290,9 +295,9 @@ class SavedSearch_Alert extends CommonDBChild
      * to be sure that logs will be in GLPI default datetime and language
      * and that session is restored for the next crontaskaction
      *
-     * @param mixed $context is the array returned by saveContext
+     * @param array $context is the array returned by saveContext
      */
-    private static function restoreContext($context)
+    private static function restoreContext(array $context): void
     {
         global $CFG_GLPI;
         $_SESSION = $context['$_SESSION'];

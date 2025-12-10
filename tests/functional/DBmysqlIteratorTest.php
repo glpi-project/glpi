@@ -668,8 +668,28 @@ class DBmysqlIteratorTest extends DbTestCase
 
     public function testHaving()
     {
+        $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => true]]);
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = '1'", $it->getSql());
+
+        $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => false]]);
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = '0'", $it->getSql());
+
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => 1]]);
         $this->assertSame('SELECT * FROM `foo` HAVING `bar` = \'1\'', $it->getSql());
+
+        $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => 23.5579]]);
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = '23.5579'", $it->getSql());
+
+        $stringable_object = new class ("L'Appel de Cthulhu") {
+            public function __construct(private string $val) {}
+
+            public function __toString()
+            {
+                return $this->val;
+            }
+        };
+        $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => $stringable_object]]);
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = 'L\'Appel de Cthulhu'", $it->getSql());
 
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => ['>', 0]]]);
         $this->assertSame('SELECT * FROM `foo` HAVING `bar` > \'0\'', $it->getSql());
@@ -727,6 +747,9 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 1]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = \'1\'', $it->getSql());
 
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 1.1549]]);
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = '1.1549'", $it->getSql());
+
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => [1, 2, 4]]]);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` IN ('1', '2', '4')", $it->getSql());
 
@@ -762,6 +785,17 @@ class DBmysqlIteratorTest extends DbTestCase
                 LogLevel::INFO
             );
         }
+
+        $stringable_object = new class ("L'Appel de Cthulhu") {
+            public function __construct(private string $val) {}
+
+            public function __toString()
+            {
+                return $this->val;
+            }
+        };
+        $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $stringable_object]]);
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'L\'Appel de Cthulhu'", $it->getSql());
     }
 
     public function testEmptyIn(): void
@@ -780,6 +814,29 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`']]]);
         $this->assertSame('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`', $it->getSql());
+
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => true]]]]]);
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '1'", $it->getSql());
+
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => false]]]]]);
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '0'", $it->getSql());
+
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => 150]]]]]);
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '150'", $it->getSql());
+
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => 23.5579]]]]]);
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '23.5579'", $it->getSql());
+
+        $stringable_object = new class ("L'Appel de Cthulhu") {
+            public function __construct(private string $val) {}
+
+            public function __toString()
+            {
+                return $this->val;
+            }
+        };
+        $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => $stringable_object]]]]]);
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = 'L\'Appel de Cthulhu'", $it->getSql());
     }
 
     public function testGroupBy()

@@ -1348,7 +1348,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      * Will also display problems of linked items
      *
      * @param CommonDBTM $item
-     * @param integer    $withtemplate
+     * @param int    $withtemplate
      *
      * @return void|false
      **/
@@ -1510,7 +1510,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      * @since 9.5
      *
      * @param string $itemtype     Item type
-     * @param integer $items_id    ID of the Item
+     * @param int $items_id    ID of the Item
      *
      * @return DBmysqlIterator
      */

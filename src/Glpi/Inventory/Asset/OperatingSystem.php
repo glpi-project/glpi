@@ -209,7 +209,7 @@ class OperatingSystem extends InventoryAsset
     /**
      * Get current OS id
      *
-     * @return integer
+     * @return int
      */
     public function getId()
     {

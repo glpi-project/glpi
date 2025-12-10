@@ -70,35 +70,35 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     /**
      * Error code returned when trying to update from an unstable version.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_NO_UNSTABLE_UPDATE = 1;
 
     /**
      * Error code returned when security key file is missing.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_MISSING_SECURITY_KEY_FILE = 2;
 
     /**
      * Error code returned when database is not a valid GLPI database.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INVALID_DATABASE = 3;
 
     /**
      * Error code returned when database integrity check failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
 
     /**
      * Error code returned when an error occurred during the update.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UPDATE_FAILED = 5;
 

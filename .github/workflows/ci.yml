@@ -28,6 +28,8 @@ jobs:
   lint:
     # Do not run scheduled lint on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "Lint on PHP ${{ matrix.php-version }}"
     runs-on: "ubuntu-latest"
     strategy:
@@ -51,7 +53,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
@@ -115,6 +117,8 @@ jobs:
   generate-tests-matrix:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "Generate tests matrix"
     runs-on: "ubuntu-latest"
     outputs:
@@ -148,6 +152,8 @@ jobs:
   tests:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "Test on PHP ${{ matrix.php-version }} using ${{ matrix.db-image }}"
     needs: "generate-tests-matrix"
     runs-on: "ubuntu-latest"
@@ -171,7 +177,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
           key: "app_home_deps-${{ matrix.php-version }}-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |
@@ -226,6 +232,8 @@ jobs:
   e2e:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
+    permissions:
+      contents: "read"
     name: "E2E and web tests using latest PHP and MariaDB versions"
     runs-on: "ubuntu-latest"
     timeout-minutes: 90
@@ -245,7 +253,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            ${{ env.APP_CONTAINER_HOME }}/.composer/cache/
+            ${{ env.APP_CONTAINER_HOME }}/.cache/composer/
             ${{ env.APP_CONTAINER_HOME }}/.npm/_cacache/
           key: "app_home_deps-8.3-${{ hashFiles('composer.lock', 'package-lock.json') }}"
           restore-keys: |

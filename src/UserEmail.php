@@ -119,7 +119,7 @@ class UserEmail extends CommonDBChild
     /**
      * Get all emails for user.
      *
-     * @param $users_id user ID
+     * @param int $users_id user ID
      *
      * @return array of emails
      **/
@@ -147,10 +147,10 @@ class UserEmail extends CommonDBChild
     /**
      * is an email of the user
      *
-     * @param $users_id           user ID
-     * @param $email     string   email to check user ID
+     * @param int    $users_id user ID
+     * @param string $email    email to check user ID
      *
-     * @return boolean is this email set for the user ?
+     * @return bool is this email set for the user ?
      **/
     public static function isEmailForUser($users_id, $email)
     {
@@ -266,14 +266,16 @@ class UserEmail extends CommonDBChild
 
 
     /**
-     * @param $user
+     * @param User $user
+     *
+     * @return void
      **/
     public static function showAddEmailButton(User $user)
     {
 
         $users_id = $user->getID();
         if (!$user->can($users_id, READ) && ($users_id != Session::getLoginUserID())) {
-            return false;
+            return;
         }
 
         $canedit = $users_id == Session::getLoginUserID();

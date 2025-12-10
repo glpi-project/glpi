@@ -146,7 +146,7 @@ class Plugin extends CommonDBTM
     /**
      * Indicates whether plugins have been initialized.
      *
-     * @var boolean
+     * @var bool
      */
     private static $plugins_initialized = false;
 
@@ -287,7 +287,7 @@ class Plugin extends CommonDBTM
         return $input;
     }
 
-    private function prepareInput(array $input)
+    private function prepareInput(array $input): array|false
     {
         if ($this->isNewItem() || array_key_exists('directory', $input)) {
             if (preg_match(self::PLUGIN_KEY_PATTERN, $input['directory'] ?? '') !== 1) {
@@ -307,7 +307,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $dir directory of the plugin
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBbyDir($dir)
     {
@@ -409,6 +409,8 @@ class Plugin extends CommonDBTM
 
     /**
      * Initialize active plugins.
+     *
+     * @return void
      */
     public function init()
     {
@@ -435,7 +437,7 @@ class Plugin extends CommonDBTM
      * launching plugin_init_NAME function  after checking compatibility
      *
      * @param string  $plugin_key        System name (Plugin directory)
-     * @param boolean $withhook   Load hook functions (false by default)
+     * @param bool $withhook   Load hook functions (false by default)
      *
      * @return void
      **/
@@ -685,7 +687,7 @@ class Plugin extends CommonDBTM
     /**
      * Check plugins states and detect new plugins.
      *
-     * @param boolean $scan_inactive_and_new_plugins
+     * @param bool $scan_inactive_and_new_plugins
      *
      * @return void
      */
@@ -799,7 +801,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $plugin_key System name (Plugin directory)
      *
-     * return void
+     * @return void
      */
     public function checkPluginState($plugin_key, bool $check_for_replacement = false)
     {
@@ -1115,15 +1117,16 @@ class Plugin extends CommonDBTM
     /**
      * Uninstall a plugin
      *
-     * @param integer $ID ID of the plugin (The `id` field, not directory)
-     **/
+     * @param int $ID ID of the plugin (The `id` field, not directory)
+     *
+     * @return void
+     */
     public function uninstall($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
             throw new RuntimeException('Executing a plugin maintenance method is forbidden when plugins execution is suspended.');
         }
 
-        $message = '';
         $type = ERROR;
 
         if ($this->getFromDB($ID)) {
@@ -1181,7 +1184,7 @@ class Plugin extends CommonDBTM
     /**
      * Install a plugin
      *
-     * @param integer $ID      ID of the plugin (The `id` field, not directory)
+     * @param int $ID      ID of the plugin (The `id` field, not directory)
      * @param array   $params  Additional params to pass to install hook.
      *
      * @return void
@@ -1303,9 +1306,9 @@ class Plugin extends CommonDBTM
     /**
      * activate a plugin
      *
-     * @param integer $ID ID of the plugin (The `id` field, not directory)
+     * @param int $ID ID of the plugin (The `id` field, not directory)
      *
-     * @return boolean about success
+     * @return bool about success
      **/
     public function activate($ID)
     {
@@ -1438,9 +1441,9 @@ class Plugin extends CommonDBTM
     /**
      * Unactivate a plugin
      *
-     * @param integer $ID ID of the plugin (The `id` field, not directory)
+     * @param int $ID ID of the plugin (The `id` field, not directory)
      *
-     * @return boolean
+     * @return bool
      **/
     public function unactivate($ID)
     {
@@ -1499,7 +1502,9 @@ class Plugin extends CommonDBTM
      * clean a plugin
      *
      * @param int $ID ID of the plugin
-     **/
+     *
+     * @return void
+     */
     public function clean($ID)
     {
         if ($this->isPluginsExecutionSuspended()) {
@@ -1530,7 +1535,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $directory  Plugin directory
      *
-     * @return boolean
+     * @return bool
      */
     public function isActivated($directory)
     {
@@ -1557,7 +1562,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $directory  Plugin directory
      *
-     * @return boolean
+     * @return bool
      */
     public function isUpdatable($directory)
     {
@@ -1583,7 +1588,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $directory  Plugin directory
      *
-     * @return boolean
+     * @return bool
      */
     public function isLoadable($directory)
     {
@@ -1606,7 +1611,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $directory  Plugin directory
      *
-     * @return boolean
+     * @return bool
      */
     public function isInstalled($directory)
     {
@@ -2091,10 +2096,10 @@ class Plugin extends CommonDBTM
     /**
      * Get additional search options managed by plugins
      *
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      *
      * @return array Array containing plugin search options for given type
-     **/
+     */
     public static function getAddSearchOptions($itemtype)
     {
         if ((new Plugin())->isPluginsExecutionSuspended()) {
@@ -2120,6 +2125,8 @@ class Plugin extends CommonDBTM
      * Include the hook file for a plugin
      *
      * @param string $plugin_key
+     *
+     * @return void
      */
     public static function includeHook(string $plugin_key = "")
     {
@@ -2284,7 +2291,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $name System name (Plugin directory)
      *
-     * @return boolean
+     * @return bool
      */
     public function checkVersions($name)
     {
@@ -2330,7 +2337,7 @@ class Plugin extends CommonDBTM
      *                     - max: maximal supported version
      *                     One of min or max is required.
      *
-     * @return boolean
+     * @return bool
      */
     public function checkGlpiVersion($infos)
     {
@@ -2378,7 +2385,7 @@ class Plugin extends CommonDBTM
      *                     - max: maximal supported version.
      *                     One of min or max is required.
      *
-     * @return boolean
+     * @return bool
      */
     public function checkPhpVersion($infos)
     {
@@ -2422,7 +2429,7 @@ class Plugin extends CommonDBTM
      *
      * @param array $exts Extensions lists/config @see Config::checkExtensions()
      *
-     * @return boolean
+     * @return bool
      */
     public function checkPhpExtensions($exts)
     {
@@ -2456,7 +2463,7 @@ class Plugin extends CommonDBTM
      *
      * @param array $params Expected parameters to be setup
      *
-     * @return boolean
+     * @return bool
      */
     public function checkGlpiParameters($params)
     {
@@ -2495,7 +2502,7 @@ class Plugin extends CommonDBTM
      *
      * @param array $params Expected parameters to be setup
      *
-     * @return boolean
+     * @return bool
      */
     public function checkPhpParameters($params)
     {
@@ -2532,7 +2539,7 @@ class Plugin extends CommonDBTM
      *
      * @param array $plugins Expected plugins
      *
-     * @return boolean
+     * @return bool
      */
     public function checkGlpiPlugins($plugins)
     {
@@ -2593,7 +2600,7 @@ class Plugin extends CommonDBTM
      *
      * @since 9.3
      *
-     * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+     * @param  int $state see this class constants (ex self::ANEW, self::ACTIVATED)
      * @return string  the label
      */
     public static function getState($state = 0)
@@ -2631,7 +2638,7 @@ class Plugin extends CommonDBTM
      *
      * @since 9.5
      *
-     * @param  integer $state see this class constants (ex self::ANEW, self::ACTIVATED)
+     * @param  int $state see this class constants (ex self::ANEW, self::ACTIVATED)
      * @return string  the key
      */
     public static function getStateKey(int $state = 0): string
@@ -2678,7 +2685,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $plugin_key  System name (Plugin directory)
      *
-     * @return boolean
+     * @return bool
      */
     public static function isPluginLoaded($plugin_key)
     {
@@ -2695,7 +2702,7 @@ class Plugin extends CommonDBTM
      *
      * @param string $plugin_key  System name (Plugin directory)
      *
-     * @return boolean
+     * @return bool
      */
     public static function isPluginActive($plugin_key)
     {

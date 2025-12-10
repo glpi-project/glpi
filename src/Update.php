@@ -52,21 +52,19 @@ class Update
 {
     use LoggerAwareTrait;
 
-    private $DB;
-    private $version;
-    private $language;
+    private DBmysql $DB;
+    private ?string $version = null;
+    private string $language;
 
     /**
      * Directory containing migrations.
-     *
-     * @var string
      */
-    private $migrations_directory;
+    private string $migrations_directory;
 
     /**
      * Constructor
      *
-     * @param object $DB   Database instance
+     * @param DBmysql $DB   Database instance
      * @param string $migrations_directory
      *
      * @since 11.0.0 The `$args` parameter has been removed.
@@ -291,7 +289,6 @@ class Update
 
         // Create default forms
         $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
-        Session::loadAllCoreLocales();
         $helpdesk_data_manager = new DefaultDataManager();
         $helpdesk_data_manager->initializeDataIfNeeded();
         $progress_indicator?->advance($init_form_weight);
@@ -360,7 +357,7 @@ class Update
             'version'             => GLPI_VERSION,
             'dbversion'           => GLPI_SCHEMA_VERSION,
             'language'            => $this->language,
-            'founded_new_version' => '',
+            'found_new_version' => '',
         ];
         foreach ($configs as $name => $value) {
             $DB->updateOrInsert(

@@ -48,7 +48,7 @@ class ITILFollowup extends CommonDBChild
     // From CommonDBTM
     public $auto_message_on_action = false;
     public static $rightname              = 'followup';
-    private $item                  = null;
+    private ?CommonITILObject $item = null;
 
     public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -58,6 +58,9 @@ class ITILFollowup extends CommonDBChild
     public static $items_id = 'items_id';
 
 
+    /**
+     * @return string
+     */
     public function getItilObjectItemType()
     {
         return str_replace('Followup', '', $this->getType());
@@ -77,7 +80,7 @@ class ITILFollowup extends CommonDBChild
     /**
      * can read the parent ITIL Object ?
      *
-     * @return boolean
+     * @return bool
      */
     public function canReadITILItem()
     {
@@ -180,6 +183,9 @@ class ITILFollowup extends CommonDBChild
             $itilobject = $this->item;
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
+            if (!$itilobject instanceof CommonITILObject) {
+                return false;
+            }
         }
 
         if (
@@ -228,7 +234,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject instanceof CommonITILObject || !$itilobject->can($this->getField('items_id'), READ)) {
             return false;
         }
 
@@ -625,7 +631,9 @@ class ITILFollowup extends CommonDBChild
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading
         if (!$this->isParentAlreadyLoaded()) {
-            if ($this->item = getItemForItemtype($this->fields['itemtype'])) {
+            $item = getItemForItemtype($this->fields['itemtype']);
+            if ($item instanceof CommonITILObject) {
+                $this->item = $item;
                 $this->item->getFromDB($this->fields['items_id']);
             }
         }
@@ -721,6 +729,10 @@ class ITILFollowup extends CommonDBChild
     }
 
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         global $DB;
@@ -924,6 +936,9 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
+    /**
+     * @return void
+     */
     public static function showMassiveActionAddFollowupForm()
     {
         echo "<table class='tab_cadre_fixe'>";

@@ -180,7 +180,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $obj  object holding the item
+     * @param CommonITILObject|CommonITILRecurrent $obj  object holding the item
      * @param array $options
      *    - id                  : ID of the object holding the items
      *    - _users_id_requester : ID of the requester user
@@ -188,7 +188,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return void|false
      */
-    protected static function displayItemAddForm(CommonITILObject|TicketRecurrent $obj, array $options = [])
+    protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = [])
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;
@@ -373,11 +373,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a ITIL object
      *
-     * @param CommonITILObject|TicketRecurrent $obj
+     * @param CommonITILObject|CommonITILRecurrent $obj
      *
      * @return bool|void
      **/
-    protected static function showForObject(CommonITILObject|TicketRecurrent $obj)
+    protected static function showForObject(CommonITILObject|CommonITILRecurrent $obj)
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;
@@ -538,9 +538,14 @@ TWIG, $twig_params);
 
             if ($item::class === static::$itemtype_1) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
-                    $nb = static::countForMainItem($item, [
-                        'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"],
-                    ]);
+                    $nb = count($_SESSION["glpiactiveprofile"]["helpdesk_item_type"]) > 0
+                        ? static::countForMainItem(
+                            $item,
+                            [
+                                'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"],
+                            ]
+                        )
+                        : 0;
                 }
                 return static::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
             } elseif ($_SESSION['glpishow_count_on_tabs'] && is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
@@ -655,7 +660,7 @@ TWIG, $twig_params);
      * Will also display objects of linked items
      *
      * @param CommonDBTM $item         CommonDBTM object
-     * @param integer    $withtemplate (default 0)
+     * @param int    $withtemplate (default 0)
      * @param array      $options
      *
      * @return bool|void (display a table)
@@ -770,10 +775,10 @@ TWIG, $twig_params);
     /**
      * Make a select box for Object my devices
      *
-     * @param integer $userID           User ID for my device section (default 0)
-     * @param integer $entity_restrict  restrict to a specific entity (default -1)
+     * @param int $userID           User ID for my device section (default 0)
+     * @param int $entity_restrict  restrict to a specific entity (default -1)
      * @param string  $itemtype         of selected item (default 0)
-     * @param integer $items_id         of selected item (default 0) UNUSED
+     * @param int $items_id         of selected item (default 0) UNUSED
      * @param array   $options          array of possible options:
      *    - used     : ID of the requester user
      *    - multiple : allow multiple choice
@@ -1313,7 +1318,7 @@ TWIG, $twig_params);
     /**
      * Return used items for a ITIL object
      *
-     * @param integer $items_id ITIL object on which the used item are attached
+     * @param int $items_id ITIL object on which the used item are attached
      *
      * @return array
      */
@@ -1777,7 +1782,7 @@ TWIG, $twig_params);
     /**
      * Print the HTML ajax associated item add
      *
-     * @param CommonITILObject|TicketRecurrent $object
+     * @param CommonITILObject|CommonITILRecurrent $object
      * @param array $options   array of possible options:
      *    - id                  : ID of the ticket
      *    - _users_id_requester : ID of the requester user
@@ -1785,7 +1790,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function itemAddForm(CommonITILObject|TicketRecurrent $object, $options = [])
+    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, $options = [])
     {
         if (!(is_a($object, static::$itemtype_1))) {
             return;

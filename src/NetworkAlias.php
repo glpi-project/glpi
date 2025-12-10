@@ -65,7 +65,7 @@ class NetworkAlias extends FQDNLabel
     /**
      * Print the network alias form
      *
-     * @param integer $ID ID of the item
+     * @param int $ID ID of the item
      * @param array $options
      *     - target for the Form
      *     - withtemplate template or basic computer
@@ -228,7 +228,7 @@ class NetworkAlias extends FQDNLabel
      * form through NetworkPort::ShowForItem and NetworkName::ShowForItem).
      *
      * @param NetworkName $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      */
     public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
@@ -366,7 +366,7 @@ class NetworkAlias extends FQDNLabel
      * Show the aliases contained by the alias
      *
      * @param FQDN $item The FQDN owning the aliases
-     * @param integer $withtemplate
+     * @param int $withtemplate
      *
      * @return void
      */

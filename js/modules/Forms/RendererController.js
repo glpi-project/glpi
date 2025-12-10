@@ -223,7 +223,17 @@ export class GlpiFormRendererController
 
                 // Add a tooltip with the error message
                 let targetElement;
-                if (inputFields.filter('[type="radio"], [type="checkbox"]').length > 0) {
+                let position = "append";
+                let extra_class = "";
+                if (inputFields.filter('.is-flatpicker').length > 0) {
+                    // Specifics instructions for flatpicker.
+                    // This is needed because it has an extra div that wrap the
+                    // input, we want the tooltip to be right after that wrappper
+                    // div.
+                    targetElement = inputFields.parent();
+                    position = "after";
+                    extra_class = "d-block";
+                } else if (inputFields.filter('[type="radio"], [type="checkbox"]').length > 0) {
                     // For radio/checkbox, find the first common parent
                     targetElement = inputFields.first().closest('.form-check').parent();
                     if (targetElement.length === 0) {
@@ -233,9 +243,12 @@ export class GlpiFormRendererController
                     targetElement = inputFields.parent();
                 }
 
-                targetElement.append(
-                    `<span id="${_.escape(errorId)}" class="invalid-tooltip">${_.escape(error.message)}</span>`
-                );
+                const content = `<span id="${_.escape(errorId)}" class="invalid-tooltip ${extra_class}">${_.escape(error.message)}</span>`;
+                if (position === "append") {
+                    targetElement.append(content);
+                } else {
+                    targetElement.after(content);
+                }
 
                 // Make sure the first error is inside the viewport so the user
                 // can see it properly.

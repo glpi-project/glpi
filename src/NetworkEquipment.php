@@ -181,7 +181,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
      *
      * Overloaded from CommonDBTM
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {
@@ -561,6 +561,6 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
 
     public static function getIcon()
     {
-        return "fas fa-network-wired";
+        return "ti ti-network";
     }
 }

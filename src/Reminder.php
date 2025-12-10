@@ -60,6 +60,7 @@ class Reminder extends CommonDBVisible implements
 
     // From CommonDBTM
     public $dohistory                   = true;
+    /** @var bool */
     public $can_be_translated           = true;
 
     public static $rightname    = 'reminder_public';
@@ -153,6 +154,11 @@ class Reminder extends CommonDBVisible implements
         );
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForClone($input)
     {
         // regenerate uuid
@@ -206,7 +212,7 @@ class Reminder extends CommonDBVisible implements
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
      * @return array
      */
@@ -517,7 +523,7 @@ class Reminder extends CommonDBVisible implements
     /**
      * Print the reminder form
      *
-     * @param integer $ID ID of the item to print
+     * @param int $ID ID of the item to print
      * @param array $options   array of possible options:
      *     - target filename : where to go when done.
      *     - from_planning_ajax : set to disable planning form part
@@ -546,7 +552,15 @@ class Reminder extends CommonDBVisible implements
         return true;
     }
 
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    /**
+     * @param array $val
+     * @param int $who
+     * @param string $type
+     * @param bool $complete
+     *
+     * @return string
+     */
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
     {
         global $CFG_GLPI;
 
@@ -626,7 +640,7 @@ class Reminder extends CommonDBVisible implements
                 'DISTINCT'        => true,
                 'FROM'            => 'glpi_reminders',
                 'WHERE'           => $visibility_criteria,
-                'ORDERBY'         => 'name',
+                'ORDERBY'         => 'glpi_reminders.name',
             ],
             self::getVisibilityCriteria()
         );
@@ -682,8 +696,8 @@ class Reminder extends CommonDBVisible implements
     /**
      * Show list for central view
      *
-     * @param boolean $personal display reminders created by me?
-     * @param boolean $display if false return html
+     * @param bool $personal display reminders created by me?
+     * @param bool $display if false return html
      *
      * @return string|void
      * @phpstan-return ($display is true ? void : string)

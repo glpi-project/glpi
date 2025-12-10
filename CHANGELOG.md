@@ -101,7 +101,50 @@ The present file will list all changes made to the project; according to the
 - `Ticket_Ticket::getLinkedTicketsTo()`
 
 
-## [11.0.3] unreleased
+## [11.0.5] unreleased
+
+### Added
+
+### Changed
+- High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.4] 2025-12-04
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.3] 2025-12-03
 
 ### Added
 - Support for setting a dropdown value like `status` for assets by using the `id` property (ex: `"status": {"id": 5}`) as it shows in the OpenAPI schema for the High-Level API.
@@ -831,7 +874,49 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.21] unreleased
+## [10.0.23] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.22] 2025-12-04
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.21] 2025-12-03
 
 ### Added
 

@@ -148,7 +148,14 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
     /**
      * Extra steps raising
      *
-     * @param array $params All parameters send to raise() method
+     * @param array{
+     *              notificationtarget: NotificationTarget<covariant CommonGLPI>,
+     *              event: string,
+     *              options: array<mixed>,
+     *              data: array<mixed>,
+     *              template: NotificationTemplate,
+     *              notify_me: bool,
+     *     } $params All parameters send to raise() method
      *
      * @return void
      */

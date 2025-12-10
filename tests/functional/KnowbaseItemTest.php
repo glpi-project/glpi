@@ -36,6 +36,7 @@ namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/knowbaseitem.class.php */
@@ -97,7 +98,7 @@ class KnowbaseItemTest extends DbTestCase
         );
 
         //add an user
-        $kbu = new \KnowbaseItem_User();
+        $kbu = new KnowbaseItem_User();
         $this->assertGreaterThan(
             0,
             (int) $kbu->add([
@@ -159,7 +160,7 @@ class KnowbaseItemTest extends DbTestCase
         $relations = [
             $comment->getTable(),
             \KnowbaseItem_Revision::getTable(),
-            \KnowbaseItem_User::getTable(),
+            KnowbaseItem_User::getTable(),
             \Entity_KnowbaseItem::getTable(),
             \Group_KnowbaseItem::getTable(),
             \KnowbaseItem_Profile::getTable(),
@@ -1706,5 +1707,45 @@ HTML,
                 ['knowbaseitems_id' => $kbi->getID()]
             )
         );
+    }
+
+    public function testVisibilityRestrictionsInSearch()
+    {
+        $this->login();
+
+        $fn_can_tech_see_kb = static function () {
+            $criteria = [
+                'itemtype' => \KnowbaseItem::class,
+                'criteria' => [
+                    [
+                        'field' => 1,
+                        'searchtype' => 'contains',
+                        'value' => 'KB visible to tech',
+                    ],
+                ],
+            ];
+            ob_start();
+            \Search::showList(\KnowbaseItem::class, $criteria, [7]);
+            $output = ob_get_clean();
+            return str_contains($output, "KB anwser");
+        };
+
+        $tech_user = getItemByTypeName("User", "tech", true);
+        $kb_item = $this->createItem(\KnowbaseItem::class, [
+            'name'     => 'KB visible to tech',
+            'answer'   => 'KB anwser',
+            'is_faq'   => false,
+            'users_id' => $_SESSION['glpiID'],
+        ]);
+
+        $this->login('tech', 'tech');
+
+        $this->assertFalse($fn_can_tech_see_kb());
+
+        $this->createItem(KnowbaseItem_User::class, [
+            'knowbaseitems_id' => $kb_item->getID(),
+            'users_id'         => $tech_user,
+        ]);
+        $this->assertTrue($fn_can_tech_see_kb());
     }
 }

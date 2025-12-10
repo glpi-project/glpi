@@ -68,7 +68,7 @@ class IPAddress extends CommonDBChild
 
     /**
      * Version of the address. Should be 4 or 6, or empty if not valid address
-     * @var integer|string
+     * @var int|string
      * @phpstan-var 4|6|''
      */
     protected $version = '';
@@ -105,7 +105,7 @@ class IPAddress extends CommonDBChild
 
 
     /**
-     * @param IPAddress|string|integer[] $ipaddress (default '')
+     * @param IPAddress|string|int[] $ipaddress (default '')
      **/
     public function __construct($ipaddress = '')
     {
@@ -136,8 +136,10 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $input
-     **/
+     * @param array $input
+     *
+     * @return array|false
+     */
     public function prepareInput($input)
     {
 
@@ -229,6 +231,12 @@ class IPAddress extends CommonDBChild
         $this->setAddressFromArray($this->fields, "version", "name", "binary");
     }
 
+    /**
+     * @param CommonGLPI $item
+     * @param int $withtemplate
+     *
+     * @return void
+     */
     public static function showForItem(CommonGLPI $item, $withtemplate = 0)
     {
         global $DB;
@@ -334,8 +342,10 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $item      CommonDBTM object
-     **/
+     * @param CommonDBTM $item
+     *
+     * @return int|void
+     */
     public static function countForItem(CommonDBTM $item)
     {
         global $DB;
@@ -377,7 +387,9 @@ class IPAddress extends CommonDBChild
 
     /**
      * Disable the address
-     **/
+     *
+     * @return void
+     */
     public function disableAddress()
     {
         $this->version = '';
@@ -445,7 +457,7 @@ class IPAddress extends CommonDBChild
      *
      * If the field name is empty, then, the field is not set
      *
-     * @return boolean successfully defined
+     * @return bool successfully defined
      **/
     public function setAddressFromArray(array $array, $versionField, $textualField, $binaryField)
     {
@@ -480,32 +492,49 @@ class IPAddress extends CommonDBChild
 
     /**
      * Check address validity
-     **/
+     *
+     * @return  bool
+     */
     public function is_valid()
     {
         return (($this->version != '') && ($this->textual != '') && ($this->binary != ''));
     }
 
+    /**
+     * @return false|int|string
+     */
     public function getVersion()
     {
         return $this->version !== '' ? $this->version : false;
     }
 
+    /**
+     * @return bool
+     */
     public function is_ipv4()
     {
         return ($this->getVersion() == 4);
     }
 
+    /**
+     * @return bool
+     */
     public function is_ipv6()
     {
         return ($this->getVersion() == 6);
     }
 
+    /**
+     * @return false|string
+     */
     public function getTextual()
     {
         return $this->textual !== '' ? $this->textual : false;
     }
 
+    /**
+     * @return false|int[]|string
+     */
     public function getBinary()
     {
         return $this->binary !== '' ? $this->binary : false;
@@ -514,9 +543,9 @@ class IPAddress extends CommonDBChild
     /**
      * Transform an IPv4 address to IPv6
      *
-     * @param integer|integer[] $address (bytes[4] or bytes) the address to transform.
+     * @param int|int[] $address (bytes[4] or bytes) the address to transform.
      *
-     * @return integer[]|false IPv6 mapped address
+     * @return int[]|false IPv6 mapped address
      **/
     public static function getIPv4ToIPv6Address($address)
     {
@@ -532,9 +561,9 @@ class IPAddress extends CommonDBChild
     /**
      * Check an address to see if it is IPv4 mapped to IPv6 address
      *
-     * @param integer[] $address (bytes[4]) the address to check
+     * @param int[] $address (bytes[4]) the address to check
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isIPv4MappedToIPv6Address($address)
     {
@@ -567,9 +596,9 @@ class IPAddress extends CommonDBChild
      *
      * @param string  $address   textual (ie. human readable) address
      * @param string  $itemtype  type of the item this address has to be attached (default '')
-     * @param integer $items_id  id of the item this address has to be attached (default -1)
+     * @param int $items_id  id of the item this address has to be attached (default -1)
      *
-     * @return boolean address is valid
+     * @return bool address is valid
      **/
     public function setAddressFromString($address, $itemtype = "", $items_id = -1)
     {
@@ -748,11 +777,11 @@ class IPAddress extends CommonDBChild
      * one (ie : 2001:db8:0:85a3\::ac1f:8001 rather than 2001:0db8:0000:85a3:0000:0000:ac1f:8001)
      * \warning The resulting binary form is created inside the current object
      *
-     * @param integer[] $address   (bytes[4]) binary (ie. SQL requests) address
+     * @param int[] $address   (bytes[4]) binary (ie. SQL requests) address
      * @param string    $itemtype  type of the item this address has to be attached (default '')
-     * @param integer   $items_id  id of the item this address has to be attached (default -1)
+     * @param int   $items_id  id of the item this address has to be attached (default -1)
      *
-     * @return boolean address is valid
+     * @return bool address is valid
      **/
     public function setAddressFromBinary($address, $itemtype = "", $items_id = -1)
     {
@@ -872,10 +901,10 @@ class IPAddress extends CommonDBChild
     /**
      * \brief add value to the address for iterator on addresses
      *
-     * @param (integer|float)[] $address   (in and out) the address to increment or decrement
-     * @param integer   $value     the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
+     * @param (int|float)[] $address   (in and out) the address to increment or decrement
+     * @param int   $value     the value to add or remove. Must be betwwen -0xffffffff and +0xffffffff
      *
-     * @return boolean true if the increment is valid
+     * @return bool true if the increment is valid
      **/
     public static function addValueToAddress(&$address, $value)
     {
@@ -913,7 +942,7 @@ class IPAddress extends CommonDBChild
      * working on integer with bit-wise boolean operations (&, |, ^, ~), the sign of the operand
      * remain inside the result. That make problem as IP address are only positiv ones.
      *
-     * @param integer $value the integer that we want the absolute value
+     * @param int $value the integer that we want the absolute value
      *
      * @return float value that is the absolute of $value
      *
@@ -975,7 +1004,7 @@ class IPAddress extends CommonDBChild
      * Get an Object ID by its IP address (only if one result is found in the entity)
      *
      * @param string  $value   the ip address
-     * @param integer $entity  the entity to look for
+     * @param int $entity  the entity to look for
      *
      * @return array containing the object ID
      *         or an empty array is no value of serverals ID where found
@@ -1022,9 +1051,9 @@ class IPAddress extends CommonDBChild
     /**
      * Check if two addresses are equals
      *
-     * @param IPAddress|string|integer[] $ipaddress  the ip address to check with this
+     * @param IPAddress|string|int[] $ipaddress  the ip address to check with this
      *
-     * @return boolean true if and only if both addresses are binary equals.
+     * @return bool true if and only if both addresses are binary equals.
      **/
     public function equals($ipaddress)
     {
@@ -1051,12 +1080,14 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param $itemtype
-     * @param $base                  HTMLTableBase object
-     * @param $super                 HTMLTableSuperHeader object (default NULL)
-     * @param $father                HTMLTableHeader object (default NULL)
+     * @param class-string<CommonDBTM> $itemtype
+     * @param HTMLTableBase $base
+     * @param ?HTMLTableSuperHeader $super
+     * @param ?HTMLTableHeader $father
      * @param $options      array
-     **/
+     *
+     * @return void
+     */
     public static function getHTMLTableHeader(
         $itemtype,
         HTMLTableBase $base,
@@ -1260,11 +1291,13 @@ class IPAddress extends CommonDBChild
     }
 
     /**
-     * @param HTMLTableRow $row
-     * @param CommonDBTM $item
-     * @param HTMLTableCell $father
+     * @param ?HTMLTableRow $row
+     * @param ?CommonDBTM $item
+     * @param ?HTMLTableCell $father
      * @param array $options
-     **/
+     *
+     * @return void
+     */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
         ?CommonDBTM $item = null,

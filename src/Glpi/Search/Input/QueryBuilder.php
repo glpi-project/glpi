@@ -975,7 +975,7 @@ final class QueryBuilder implements SearchInputInterface
      * Retrieve a single criteria in Session by its index
      *
      * @param class-string<CommonDBTM> $itemtype which glpi type we must search in session
-     * @param  integer $num         index of the criteria
+     * @param  int $num         index of the criteria
      * @param  array   $parents_num node indexes of the parents (@see displayCriteriaGroup)
      *
      * @return array|false The found criteria array or false if nothing found

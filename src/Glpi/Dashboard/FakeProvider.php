@@ -50,8 +50,8 @@ final class FakeProvider extends Provider
 {
     private static function getObscureNumberForString(string $string, int $max = 100): int
     {
-        // xxh3 should be the fastest hashing algorithm in PHP as of 8.1
-        return (int) abs((int) hexdec(hash('xxh3', $string)) % $max);
+        // xxh32 is pretty fast and produces a 8 bytes string that has an hexadecimal integer representation lower than `PHP_INT_MAX`
+        return (int) abs((int) hexdec(hash('xxh32', $string)) % $max);
     }
 
     /**
@@ -76,7 +76,7 @@ final class FakeProvider extends Provider
 
     /**
      * @param string|null $itemtype
-     * @return integer|array|null
+     * @return int|array|null
      */
     private static function getItemCount(?string $itemtype = null)
     {

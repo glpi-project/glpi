@@ -43,7 +43,7 @@ class ITILSolution extends CommonDBChild
 {
     // From CommonDBTM
     public $dohistory                   = true;
-    private $item                       = null;
+    private ?CommonITILObject $item = null;
 
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
     public static $items_id = 'items_id'; // Field name
@@ -133,7 +133,9 @@ class ITILSolution extends CommonDBChild
             || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
             || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
         ) {
-            if ($this->item = getItemForItemtype($this->fields['itemtype'])) {
+            $item = getItemForItemtype($this->fields['itemtype']);
+            if ($item instanceof CommonITILObject) {
+                $this->item = $item;
                 $this->item->getFromDB($this->fields['items_id']);
             }
         }
@@ -146,7 +148,7 @@ class ITILSolution extends CommonDBChild
      * @param $options array
      *     - item: CommonITILObject instance
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -167,9 +169,9 @@ class ITILSolution extends CommonDBChild
      * Count solutions for specific item
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
-     * @return integer
+     * @return int
      */
     public static function countFor($itemtype, $items_id)
     {
@@ -292,14 +294,13 @@ class ITILSolution extends CommonDBChild
     public function post_addItem()
     {
 
-        //adding a solution mean the ITIL object is now solved
-        //and maybe closed (according to entitiy configuration)
-        if ($this->item == null) {
-            $this->item = getItemForItemtype($this->fields['itemtype']);
-            $this->item->getFromDB($this->fields['items_id']);
+        $item = getItemForItemtype($this->fields['itemtype']);
+        if (!$item instanceof CommonITILObject) {
+            return;
         }
 
-        $item = $this->item;
+        $item->getFromDB($this->fields['items_id']);
+        $this->item = $item;
 
         // Handle rich-text images and uploaded documents
         $this->input["_job"] = $this->item;

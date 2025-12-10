@@ -37,32 +37,30 @@ namespace Glpi\Marketplace;
 
 use Notification;
 use NotificationTarget;
+use Override;
 use Plugin;
 use Session;
 
-// Class NotificationTarget
+/**
+ * @extends NotificationTarget<\Glpi\Marketplace\Controller>
+ */
 class NotificationTargetController extends NotificationTarget
 {
-    /**
-     * Overwrite the function in NotificationTarget because there's only one target to be notified
-     *
-     * @see NotificationTarget::addNotificationTargets()
-     */
+    #[Override]
     public function addNotificationTargets($entity)
     {
-
         $this->addProfilesToTargets();
         $this->addGroupsToTargets($entity);
         $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
     }
 
-
+    #[Override]
     public function getEvents()
     {
         return ['checkpluginsupdate' => __('Check all plugin updates')];
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
         $updated_plugins = $options['plugins'];
@@ -91,10 +89,7 @@ class NotificationTargetController extends NotificationTarget
         }
     }
 
-
-    /**
-     * @return void
-     */
+    #[Override]
     public function getTags()
     {
         //Tags with just lang

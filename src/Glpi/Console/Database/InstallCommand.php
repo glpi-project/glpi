@@ -64,35 +64,35 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
     /**
      * Error code returned when failing to create database.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_CREATION_FAILED = 5;
 
     /**
      * Error code returned when trying to install and having a DB already containing glpi_* tables.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
 
     /**
      * Error code returned when failing to create database schema.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_SCHEMA_CREATION_FAILED = 7;
 
     /**
      * Error code returned when failing to create encryption key file.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
 
     /**
      * Error code returned if DB configuration is not compatible with large indexes.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
 
@@ -364,7 +364,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
      * @param InputInterface $input
      * @param OutputInterface $output
      *
-     * @return boolean
+     * @return bool
      */
     private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output)
     {

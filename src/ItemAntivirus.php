@@ -146,6 +146,9 @@ class ItemAntivirus extends CommonDBChild
     }
 
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -251,10 +254,10 @@ class ItemAntivirus extends CommonDBChild
     /**
      * Display form for antivirus
      *
-     * @param integer $ID      id of the antivirus
+     * @param int $ID      id of the antivirus
      * @param array   $options
      *
-     * @return boolean TRUE if form is ok
+     * @return bool TRUE if form is ok
      **/
     public function showForm($ID, array $options = [])
     {
@@ -289,7 +292,7 @@ class ItemAntivirus extends CommonDBChild
      * Print the items antiviruses
      *
      * @param CommonDBTM $asset         Asset
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/

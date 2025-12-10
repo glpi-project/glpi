@@ -156,7 +156,6 @@ class Item_Kanban extends CommonDBRelation
 
         $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
-        $force_global = false;
         $force_global = $item->forceGlobalState();
 
         $iterator = $DB->request([
@@ -212,6 +211,14 @@ class Item_Kanban extends CommonDBRelation
         }
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param array $card
+     * @param string $column
+     * @param int $position
+     * @return void
+     */
     public static function moveCard($itemtype, $items_id, $card, $column, $position)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -251,12 +258,24 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return array
+     */
     public static function getAllShownColumns($itemtype, $items_id)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         return array_column($state, 'column');
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     * @return void
+     */
     public static function showColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -280,6 +299,13 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     *
+     * @return void
+     */
     public static function hideColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -292,6 +318,13 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     *
+     * @return void
+     */
     public static function collapseColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -304,10 +337,16 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     * @return void
+     */
     public static function expandColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
-        foreach ($state as $column_index => &$col) {
+        foreach ($state as &$col) {
             if ($col['column'] === $column) {
                 $col['folded'] = false;
                 break;
@@ -316,6 +355,14 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     * @param int $position
+     *
+     * @return void
+     */
     public static function moveColumn($itemtype, $items_id, $column, $position)
     {
         $state = self::loadStateForItem($itemtype, $items_id);

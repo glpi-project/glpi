@@ -48,14 +48,14 @@ class MyIsamToInnoDbCommand extends AbstractCommand implements ConfigurationComm
     /**
      * Error code returned when failed to migrate one table.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_TABLE_MIGRATION_FAILED = 1;
 
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UNABLE_TO_UPDATE_CONFIG = 2;
 

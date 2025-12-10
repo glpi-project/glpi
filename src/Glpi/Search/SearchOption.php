@@ -145,7 +145,7 @@ final class SearchOption implements ArrayAccess
      * Get the SEARCH_OPTION array
      *
      * @param class-string<CommonDBTM> $itemtype Item type
-     * @param boolean $withplugins  Get search options from plugins (true by default)
+     * @param bool $withplugins  Get search options from plugins (true by default)
      *
      * @return array The reference to the array of search options for the given item type
      **/
@@ -409,9 +409,9 @@ final class SearchOption implements ArrayAccess
      * Is the search item related to infocoms
      *
      * @param class-string<CommonDBTM> $itemtype Item type
-     * @param integer $searchID  ID of the element in $SEARCHOPTION
+     * @param int $searchID  ID of the element in $SEARCHOPTION
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isInfocomOption($itemtype, $searchID): bool
     {
@@ -427,7 +427,7 @@ final class SearchOption implements ArrayAccess
 
     /**
      * @param class-string<CommonDBTM> $itemtype
-     * @param integer $field_num
+     * @param int $field_num
      *
      * @return array
      **/
@@ -614,7 +614,7 @@ final class SearchOption implements ArrayAccess
      * @param string $field     Name of the field
      * @param class-string<CommonDBTM>|null $meta_itemtype If specified, the itemtype that provides the search option. This affects the table used to match the search option.
      *
-     * @return integer
+     * @return int
      **/
     public static function getOptionNumber($itemtype, $field, $meta_itemtype = null): int
     {
@@ -638,9 +638,9 @@ final class SearchOption implements ArrayAccess
      * Clean search options depending on the user active profile
      *
      * @param class-string<CommonDBTM> $itemtype Item type to manage
-     * @param integer $action       Action which is used to manipulate searchoption
+     * @param int $action       Action which is used to manipulate searchoption
      *                               (default READ)
-     * @param boolean $withplugins  Get plugins options (true by default)
+     * @param bool $withplugins  Get plugins options (true by default)
      *
      * @return array Clean $SEARCH_OPTION array
      **/

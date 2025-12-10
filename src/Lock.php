@@ -65,6 +65,9 @@ class Lock extends CommonGLPI
         return _n('Lock', 'Locks', $nb);
     }
 
+    /**
+     * @return string
+     */
     public static function getIcon()
     {
         return "ti ti-lock";
@@ -74,7 +77,9 @@ class Lock extends CommonGLPI
      * Display form to unlock fields and links
      *
      * @param CommonDBTM $item the source item
-     **/
+     *
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item)
     {
         global $CFG_GLPI, $DB;
@@ -84,7 +89,7 @@ class Lock extends CommonGLPI
 
         //If user doesn't have update right on the item, lock form must not be displayed
         if (!$item->isDynamic() || !$item->can($item->fields['id'], UPDATE)) {
-            return false;
+            return;
         }
 
         // language=Twig
@@ -1281,6 +1286,13 @@ TWIG);
         ];
     }
 
+    /**
+     * @param array $actions
+     * @param class-string<CommonDBTM> $itemtype
+     * @param bool $is_deleted
+     * @param ?CommonDBTM $checkitem
+     * @return void
+     */
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
@@ -1305,6 +1317,11 @@ TWIG);
         }
     }
 
+    /**
+     * @param MassiveAction $ma
+     *
+     * @return bool
+     */
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         switch ($ma->getAction()) {
@@ -1357,6 +1374,13 @@ TWIG);
         return false;
     }
 
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM $baseitem
+     * @param array $ids
+     *
+     * @return void
+     */
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $baseitem,

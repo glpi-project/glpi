@@ -1584,11 +1584,11 @@ class TicketTest extends DbTestCase
      * Checks showForm() output
      *
      * @param Ticket $ticket   Ticket instance
-     * @param boolean $name     Name is editable
-     * @param boolean $textarea Content is editable
-     * @param boolean $priority Priority can be changed
-     * @param boolean $save     Save button is present
-     * @param boolean $assign   Can assign
+     * @param bool $name     Name is editable
+     * @param bool $textarea Content is editable
+     * @param bool $priority Priority can be changed
+     * @param bool $save     Save button is present
+     * @param bool $assign   Can assign
      *
      * @return void
      */
@@ -3293,7 +3293,7 @@ class TicketTest extends DbTestCase
      * @param array   $input    Input used to create the ticket
      * @param array   $user     Array containing 'login' and 'password' fields of tested user,
      *                          and a 'rights' array if rights have to be forced
-     * @param boolean $expected Expected result of "Ticket::canTakeIntoAccount()" method
+     * @param bool $expected Expected result of "Ticket::canTakeIntoAccount()" method
      */
     #[DataProvider('canTakeIntoAccountProvider')]
     public function testCanTakeIntoAccount(array $input, array $user, bool $expected)

@@ -74,7 +74,7 @@ abstract class CommonDBVisible extends CommonDBTM
      * @since 0.83
      * @since 9.2 moved from each class to parent class
      *
-     * @return boolean
+     * @return bool
      **/
     public function haveVisibilityAccess()
     {
@@ -151,7 +151,7 @@ abstract class CommonDBVisible extends CommonDBTM
      * @since 0.83
      * @since 9.2 moved from each class to parent class
      *
-     * @return integer
+     * @return int
      */
     public function countVisibilities()
     {

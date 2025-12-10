@@ -39,7 +39,7 @@ use function Safe\json_encode;
 
 class Item_Rack extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Rack';
+    public static $itemtype_1 = Rack::class;
     public static $items_id_1 = 'racks_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
@@ -758,6 +758,7 @@ class Item_Rack extends CommonDBRelation
      * Get cell content
      *
      * @param mixed $cell Rack cell (array or false)
+     * @param bool $readonly
      *
      * @return string
      */

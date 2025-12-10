@@ -104,9 +104,6 @@ final class ArrayPathAccessor
         $path_array = explode($path_delimiter, $path);
         $current = &$array;
         foreach ($path_array as $key) {
-            if (!isset($current[$key])) {
-                $current[$key] = [];
-            }
             $current = &$current[$key];
         }
         $current = $value;
