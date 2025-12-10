@@ -290,7 +290,7 @@ jobs:
   playwright:
     # Do not run scheduled tests on tier repositories
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
-    name: "Playwright tests using PHP 8.5 and MariaDB 11.8"
+    name: "Playwright tests"
     runs-on: "ubuntu-latest"
     timeout-minutes: 60
     env:
