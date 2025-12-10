@@ -1403,10 +1403,25 @@ TWIG, $twig_params);
             }
         }
 
-        $items = [];
+        $items      = [];
+        $group      = [];
+        $groupname  = ''; // Default group name is empty to match previous no group logic
         foreach ($actions as $ID => $act) {
-            $items[$ID] = $act['name'];
+            // Manage group system
+            if (!is_array($act)) {
+                if (count($group)) {
+                    $items[$groupname] = $group;
+                }
+                $group     = [];
+                $groupname = $act;
+            } else {
+                $group[$ID] = $act['name'];
+            }
         }
+        if (count($group)) {
+            $items[$groupname] = $group;
+        }
+
         return Dropdown::showFromArray($p['name'], $items, $p);
     }
 
@@ -2879,7 +2894,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array
+     * @return array<int|string, array|string> If the value is defined as a string, it will create a new section in the dropdown
      */
     public function getCriterias()
     {
@@ -2896,7 +2911,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array
+     * @return array<int|string, array|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
      */
     public function getActions()
     {
