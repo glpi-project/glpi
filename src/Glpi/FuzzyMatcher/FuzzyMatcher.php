@@ -51,6 +51,10 @@ final class FuzzyMatcher
         $subject = strtolower($subject);
         $filter  = strtolower($filter);
 
+        // Remove accents to avoid counting them as errors
+        $subject = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $subject);
+        $filter  = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $filter);
+
         // Start with a simple string comparison if the strategy allow it.
         if (
             $this->strategy->tryToMatchUsingStrContains()
@@ -67,19 +71,39 @@ final class FuzzyMatcher
             return false;
         }
 
-        // Actual fuzzy matching, use the costs and threshold defined in the
-        // strategy.
+        $subject_words = preg_split('/\s+/', $subject, -1, PREG_SPLIT_NO_EMPTY);
+        $filter_words = preg_split('/\s+/', $filter, -1, PREG_SPLIT_NO_EMPTY);
+
+        // Check if each filter word match at least one subject word
+        foreach ($filter_words as $filter_word) {
+            $word_match = false;
+            foreach ($subject_words as $subject_word) {
+                if ($this->matchWord($subject_word, $filter_word)) {
+                    $word_match = true;
+                    break;
+                }
+            }
+
+            if (!$word_match) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function matchWord(string $word, string $filter): bool
+    {
         $cost = levenshtein(
-            string1: $subject,
+            string1: $word,
             string2: $filter,
             insertion_cost: $this->strategy->insertionCost(),
             replacement_cost: $this->strategy->replacementCost(),
             deletion_cost: $this->strategy->deletionCost(),
         );
-        if ($cost <= $this->strategy->maxCostForSuccess()) {
-            return true;
-        }
 
-        return false;
+        $max_cost = $this->strategy->maxCostForSuccess(strlen($word));
+
+        return $cost <= $max_cost;
     }
 }

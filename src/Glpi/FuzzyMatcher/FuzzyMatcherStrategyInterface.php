@@ -70,5 +70,5 @@ interface FuzzyMatcherStrategyInterface
     /**
      * @see https://www.php.net/manual/en/function.levenshtein.php
      */
-    public function maxCostForSuccess(): int;
+    public function maxCostForSuccess(?int $string_length): int;
 }

@@ -61,13 +61,19 @@ final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
     {
         return 1;
     }
+
     public function deletionCost(): int
     {
         return 0;
     }
 
-    public function maxCostForSuccess(): int
+    public function maxCostForSuccess(?int $word_length = 0): int
     {
-        return 2;
+        if ($this->minimumFilterLenghtForFuzzySearch() >= $word_length) {
+            return 1;
+        }
+
+        // Allow up to 10% of the word length as cost
+        return (int) ceil($word_length * 0.1);
     }
 }
