@@ -52,9 +52,9 @@
     },
 } %}
 
-{# Display ids only if the item is an ITIL object and if ids are not already displayed due to the user preferences. #}
-{% if is_itil_type and not id_already_visible %}
-    {% set dropdown_options = dropdown_options|merge({'displaywith': ['id']}) %}
+{# Display additional fields in dropdown: IDs for ITIL objects, serial/user for assets #}
+{% if displaywith is not empty %}
+    {% set dropdown_options = dropdown_options|merge({'displaywith': displaywith}) %}
 {% endif %}
 
 {{ fields.dropdownField(
