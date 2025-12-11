@@ -152,6 +152,8 @@ TWIG;
     public function formatDefaultValueForDB(mixed $value): ?string
     {
         if (is_array($value)) {
+            // Filter out empty values
+            $value = array_filter($value, fn($v) => $v !== '');
             return implode(',', $value);
         }
 
@@ -330,13 +332,23 @@ TWIG;
         return '';
     }
 
+    /**
+     * Get extra attributes for the input
+     *
+     * @return string
+     */
+    protected function getExtraInputAttributes(): string
+    {
+        return '';
+    }
+
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
         $template = <<<TWIG
         {% set rand = random() %}
 
-        {% macro addOption(input_type, checked, value, translations, uuid = null, order, extra_details = false, disabled = false, hide_default_value_input = false) %}
+        {% macro addOption(input_type, checked, value, translations, uuid = null, order, extra_details = false, disabled = false, hide_default_value_input = false, extra_input_attributes = '') %}
             {% if uuid is null %}
                 {% set uuid = random() %}
             {% endif %}
@@ -363,6 +375,7 @@ TWIG;
                     aria-label="{{ translations.default_option }}"
                     {{ checked ? 'checked' : '' }}
                     {{ disabled ? 'disabled' : '' }}
+                    {{ extra_input_attributes|raw }}
                 >
                 <input
                     data-glpi-form-editor-specific-question-extra-data
@@ -394,20 +407,21 @@ TWIG;
         {% endmacro %}
 
         <template>
-            {{ _self.addOption(input_type, false, '', translations, null, null, true, true, hide_default_value_input) }}
+            {{ _self.addOption(input_type, false, '', translations, null, null, true, true, hide_default_value_input, extra_input_attributes) }}
         </template>
 
         <div class="{{ selectable_question_options_class|default('') }}">
+            <input type="hidden" name="default_value[]" value="">
             <div
                 data-glpi-form-editor-selectable-question-options="{{ rand }}"
                 {{ hide_container_when_unfocused ? 'data-glpi-form-editor-question-extra-details' : '' }}
             >
                 {% for value in values %}
-                    {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid, loop.index0, false, false, hide_default_value_input) }}
+                    {{ _self.addOption(input_type, value.checked, value.value, translations, value.uuid, loop.index0, false, false, hide_default_value_input, extra_input_attributes) }}
                 {% endfor %}
             </div>
 
-            {{ _self.addOption(input_type, false, '', translations, null, values|length, true, true, hide_default_value_input) }}
+            {{ _self.addOption(input_type, false, '', translations, null, values|length, true, true, hide_default_value_input, extra_input_attributes) }}
         </div>
 
         <script>
@@ -428,6 +442,7 @@ TWIG;
             'hide_container_when_unfocused'     => $this->hideOptionsContainerWhenUnfocused(),
             'hide_default_value_input'          => $this->hideOptionsDefaultValueInput(),
             'selectable_question_options_class' => $this->getSelectableQuestionOptionsClass(),
+            'extra_input_attributes'            => $this->getExtraInputAttributes(),
             'translations'                      => [
                 'move_option'       => __('Move option'),
                 'default_option'    => __('Default option'),
@@ -443,6 +458,7 @@ TWIG;
         Question $question,
     ): string {
         $template = <<<TWIG
+            <input type="hidden" name="{{ question.getEndUserInputName() }}[]" value="">
             {% for value in values %}
                 <label class="form-check {{ loop.last ? 'mb-0' : '' }}">
                     <input
@@ -466,10 +482,19 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'   => $question,
-            'values'     => $this->getValues($question),
-            'input_type' => $this->getInputType($question),
+            'question'               => $question,
+            'values'                 => $this->getValues($question),
+            'input_type'             => $this->getInputType($question),
         ]);
+    }
+
+    #[Override]
+    public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
+    {
+        if (is_array($answer)) {
+            return array_values(array_filter($answer, fn($v) => $v !== ''));
+        }
+        return $answer;
     }
 
     #[Override]

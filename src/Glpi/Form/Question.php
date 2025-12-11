@@ -372,6 +372,11 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         if ($question_type) {
             if (isset($input['default_value'])) {
                 $input['default_value'] = $question_type->formatDefaultValueForDB($input['default_value']);
+            } else if (array_key_exists('default_value', $input)) {
+                // If default_value key exists but is null (or not set in isset check), it means it was sent but empty.
+                // This happens when unchecking all radios/checkboxes.
+                // We should set it to empty string or null depending on what formatDefaultValueForDB expects for empty.
+                $input['default_value'] = $question_type->formatDefaultValueForDB(null);
             }
 
             if (isset($input['extra_data']) || $is_creating) {
