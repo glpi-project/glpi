@@ -33,7 +33,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set rand = rand|default(random()) %}
-<div class="firstbloc">
+<div class="mb-3">
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
       {{ form_label }}
       {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id) }}
