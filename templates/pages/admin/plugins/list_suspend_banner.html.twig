@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% if execution_suspended %}
     <div class="alert alert-warning" role="alert">
         {{ __('The execution of the plugins is suspended.') }}

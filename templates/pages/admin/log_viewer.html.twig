@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% macro log_entry(log) %}
     {% apply spaceless %}
         <div class="log_entry d-flex border-bottom" id="{{ log['id'] }}">

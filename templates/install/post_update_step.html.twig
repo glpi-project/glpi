@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% if not is_db_consistent %}
     <div class="alert alert-important alert-danger my-2 mx-4" role="alert">
         <i class="fas fa-2x fa-exclamation-triangle align-middle"></i>

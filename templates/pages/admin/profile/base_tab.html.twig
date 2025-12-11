@@ -31,6 +31,7 @@
  #}
 
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set show_legend = show_legend|default(false) %}
 {% set can_edit = has_profile_right('profile', constant('CREATE')) or has_profile_right('profile', constant('UPDATE')) or has_profile_right('profile', constant('PURGE')) %}

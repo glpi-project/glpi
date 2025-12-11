@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% do call(['Html', 'nullHeader'], [__('Update needed')]) %}
 <div class="container-fluid mb-4">
     <div class="row justify-content-evenly">

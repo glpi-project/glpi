@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% if config_write_denied %}
     <h3>{{ __("Checking write access to configuration files") }}</h3>
     <div class="alert alert-danger" role="alert">
