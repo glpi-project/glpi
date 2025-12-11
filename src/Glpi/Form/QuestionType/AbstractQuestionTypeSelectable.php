@@ -488,13 +488,24 @@ TWIG;
         ]);
     }
 
+    /**
+     * Remove empty string values from an array.
+     *
+     * @param mixed $value
+     * @return mixed
+     */
+    private function filterEmptyValues(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            return array_values(array_filter($value, fn($v) => $v !== ''));
+        }
+        return $value;
+    }
+
     #[Override]
     public function prepareEndUserAnswer(Question $question, mixed $answer): mixed
     {
-        if (is_array($answer)) {
-            return array_values(array_filter($answer, fn($v) => $v !== ''));
-        }
-        return $answer;
+        return $this->filterEmptyValues($answer);
     }
 
     #[Override]
