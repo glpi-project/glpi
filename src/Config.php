@@ -1423,6 +1423,8 @@ class Config extends CommonDBTM
 
         if (isset($CFG_GLPI['proxy_exclusions'])) {
             $CFG_GLPI['proxy_exclusions'] = importArrayFromDB($CFG_GLPI['proxy_exclusions']);
+        } else {
+            $CFG_GLPI['proxy_exclusions'] = [];
         }
 
         if (
