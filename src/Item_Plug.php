@@ -122,6 +122,7 @@ class Item_Plug extends CommonDBRelation
                     'id'     => 'number_plugs',
                     'type'   => 'number',
                     'min'    => 1,
+                    'required' => true,
                 ]
             );
             echo "</td><td>";
@@ -184,6 +185,19 @@ class Item_Plug extends CommonDBRelation
      */
     private function prepareInput(array $input): false|array
     {
+        // Check plugs_id requirement
+        if (
+            $this->isNewItem()
+            && (!isset($input['plugs_id']) || $input['plugs_id'] <= 0)
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('A plug must be selected'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         // Check number_plugs requirement
         if (
             ($this->isNewItem() || isset($input['number_plugs']))

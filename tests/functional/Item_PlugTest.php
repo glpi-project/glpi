@@ -80,14 +80,39 @@ class Item_PlugTest extends DbTestCase
         }
     }
 
-    public function testNumberPlugsValidation()
+    public function testPlugsIdAndNumberPlugsValidation()
     {
         $plug = $this->createItem(Plug::class, ['name' => 'Test plug']);
         $computer = $this->createItem(Computer::class, ['name' => 'Test computer', 'entities_id' => 0]);
 
         $item_plug = new Item_Plug();
 
-        // Empty number_plugs should fail
+        $item_plug->getEmpty();
+        $this->assertFalse($item_plug->add([
+            'itemtype' => Computer::class,
+            'items_id' => $computer->getID(),
+            'number_plugs' => 1,
+        ]));
+        $this->hasSessionMessages(ERROR, ['A plug must be selected']);
+
+        $item_plug->getEmpty();
+        $this->assertFalse($item_plug->add([
+            'plugs_id' => 0,
+            'itemtype' => Computer::class,
+            'items_id' => $computer->getID(),
+            'number_plugs' => 1,
+        ]));
+        $this->hasSessionMessages(ERROR, ['A plug must be selected']);
+
+        $item_plug->getEmpty();
+        $this->assertFalse($item_plug->add([
+            'plugs_id' => -1,
+            'itemtype' => Computer::class,
+            'items_id' => $computer->getID(),
+            'number_plugs' => 1,
+        ]));
+        $this->hasSessionMessages(ERROR, ['A plug must be selected']);
+
         $item_plug->getEmpty();
         $this->assertFalse($item_plug->add([
             'plugs_id' => $plug->getID(),
@@ -97,7 +122,6 @@ class Item_PlugTest extends DbTestCase
         ]));
         $this->hasSessionMessages(ERROR, ['A number of plugs is required']);
 
-        // Valid number_plugs should succeed
         $item_plug->getEmpty();
         $this->assertGreaterThan(0, $item_plug->add([
             'plugs_id' => $plug->getID(),
