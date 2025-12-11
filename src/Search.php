@@ -701,6 +701,7 @@ class Search
      * @param string  $meta_type            Meta item type
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
+     * @param bool    $use_join_subquery    Use a subquery for the join (default false)
      *
      * @return string Left join string
      **/
@@ -713,7 +714,8 @@ class Search
         $meta = false,
         $meta_type = '',
         $joinparams = [],
-        $field = ''
+        $field = '',
+        $use_join_subquery = false
     ) {
         global $DB;
         $criteria = SQLProvider::getLeftJoinCriteria(
@@ -725,7 +727,8 @@ class Search
             (bool) $meta,
             (string) $meta_type,
             $joinparams,
-            $field
+            $field,
+            $use_join_subquery
         );
         $iterator = new DBmysqlIterator($DB);
         $iterator->buildQuery([
