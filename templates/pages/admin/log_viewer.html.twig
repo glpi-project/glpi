@@ -116,7 +116,7 @@
                 {% endif %}
 
                 <input type="hidden" name="filepath" value="{{ filepath }}">
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                {{ fields.csrfField() }}
             </div>
         </form>
 

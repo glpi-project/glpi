@@ -66,5 +66,5 @@
    </div>
 
    <input type="hidden" name="update_end" value="1">
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 </form>

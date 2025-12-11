@@ -168,7 +168,7 @@
         </div>
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
     </form>
 </div>
 
@@ -354,7 +354,7 @@
         </div>
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
 
     </form>
 </div>

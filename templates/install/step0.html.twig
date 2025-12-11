@@ -53,7 +53,7 @@
 
       <input type="hidden" name="update" value="no">
       <input type="hidden" name="install" value="Etape_0">
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+      {{ fields.csrfField() }}
    </form>
 
    <form action="install.php" method="post" class="d-inline" data-submit-once>
@@ -64,6 +64,6 @@
 
       <input type="hidden" name="update" value="yes">
       <input type="hidden" name="install" value="Etape_0">
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+      {{ fields.csrfField() }}
    </form>
 </div>

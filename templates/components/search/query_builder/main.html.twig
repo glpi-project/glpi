@@ -233,6 +233,6 @@
 </div>
 
 {% if mainform and showaction %}
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
    </form>
 {% endif %}

@@ -48,7 +48,7 @@
                             <i class="ti ti-trash"></i>
                             <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                        {{ fields.csrfField() }}
                     {% endif %}
                 </form>
             </td>

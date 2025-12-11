@@ -78,7 +78,7 @@
         {% if canedit %}
         <div class="card-body mb-n5 border-top d-flex flex-row-reverse">
             <input type="hidden" name="id" value="{{ item.fields['id'] }}">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {{ fields.csrfField() }}
             <button type="submit" name="update" class="btn btn-primary">
                 {{ _x('button', 'Save') }}
             </button>

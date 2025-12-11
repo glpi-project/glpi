@@ -59,7 +59,7 @@
     {% if can_edit %}
         <form method="post" action="{{ 'Profile'|itemtype_form_path }}" data-track-changes="true">
             <input type="hidden" name="id" value="{{ item.getID() }}">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {{ fields.csrfField() }}
     {% endif %}
             <div>
                 <div class="card-body p-0">

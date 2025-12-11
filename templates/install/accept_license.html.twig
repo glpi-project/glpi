@@ -48,6 +48,6 @@
             <i class="ti ti-chevron-right ms-1"></i>
         </button>
 
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
     </form>
 </div>

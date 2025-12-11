@@ -43,5 +43,5 @@
    </div>
 
    <input type="hidden" name="install" value="lang_select" />
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 </form>

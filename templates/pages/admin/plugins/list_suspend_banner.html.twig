@@ -34,7 +34,7 @@
     <div class="alert alert-warning" role="alert">
         {{ __('The execution of the plugins is suspended.') }}
         <form class="d-inline" action="{{ 'Plugin'|itemtype_form_path }}" method="POST">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {{ fields.csrfField() }}
             <button type="submit" name="action" value="resume_all_execution" class="btn btn-sm btn-primary me-1">
                 <i class="ti ti-player-play-filled"></i>
                 {{ __('Resume execution of all active plugins') }}
@@ -44,7 +44,7 @@
 {% else %}
     <div class="text-end mb-3">
         <form class="d-inline" action="{{ 'Plugin'|itemtype_form_path }}" method="POST">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {{ fields.csrfField() }}
             <button type="submit" name="action" value="suspend_all_execution" class="btn btn-primary me-1">
                 <i class="ti ti-player-pause-filled"></i>
                 {{ __('Suspend execution of all plugins') }}

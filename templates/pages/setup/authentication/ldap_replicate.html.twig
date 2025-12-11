@@ -62,7 +62,7 @@
     </div>
     <div class="d-flex flex-row-reverse">
         <input type="hidden" name="authldaps_id" value="{{ authldaps_id }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
         <button type="submit" name="add_replicate" class="btn btn-primary">{{ _x('button', 'Add') }}</button>
     </div>
 </form>

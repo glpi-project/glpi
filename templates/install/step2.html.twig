@@ -56,5 +56,5 @@
 
    <input type="hidden" name="update" value="{{ update }}">
    <input type="hidden" name="install" value="Etape_2">
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 </form>

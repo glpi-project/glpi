@@ -110,7 +110,7 @@
                                 {% if can_clear or can_delete %}
                                     <form action="{{ path('/front/logviewer.php') }}" method="post" class="d-inline">
                                         <input type="hidden" name="filepath" value="{{ log['filepath'] }}">
-                                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                                        {{ fields.csrfField() }}
                                         <span>
                                             <button class="btn btn-sm ms-1 btn-ghost-secondary"
                                             data-bs-toggle="dropdown"
