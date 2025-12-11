@@ -9,7 +9,7 @@ CONSOLE = $(PHP) bin/console
 INI_DIR = /usr/local/etc/php/custom_conf.d
 
 # Get playwright's version so that the correct docker image is used.
-PLAYWRIGHT_VERSION = $(shell grep '"@playwright/test"' package.json | sed -E 's/.*"@playwright\/test": *"[^0-9]*([0-9.]+)".*/\1/')
+PLAYWRIGHT_VERSION = $(shell $(PHP) jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)
 
 # Load E2E env files
 include tests/e2e/.env
