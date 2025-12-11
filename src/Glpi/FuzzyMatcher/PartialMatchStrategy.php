@@ -69,10 +69,6 @@ final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
 
     public function maxCostForSuccess(?int $word_length = 0): int
     {
-        if ($this->minimumFilterLenghtForFuzzySearch() >= $word_length) {
-            return 1;
-        }
-
         // Allow up to 10% of the word length as cost
         return (int) ceil($word_length * 0.1);
     }

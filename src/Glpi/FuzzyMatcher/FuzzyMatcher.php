@@ -51,10 +51,6 @@ final class FuzzyMatcher
         $subject = strtolower($subject);
         $filter  = strtolower($filter);
 
-        // Remove accents to avoid counting them as errors
-        $subject = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $subject);
-        $filter  = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $filter);
-
         // Start with a simple string comparison if the strategy allow it.
         if (
             $this->strategy->tryToMatchUsingStrContains()
