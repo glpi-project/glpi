@@ -35,6 +35,8 @@
 
 namespace Glpi\FuzzyMatcher;
 
+use function Safe\preg_split;
+
 final class FuzzyMatcher
 {
     public function __construct(
