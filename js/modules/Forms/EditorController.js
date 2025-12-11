@@ -160,8 +160,8 @@ export class GlpiFormEditorController
     }
 
     #initRadioUncheck() {
-        $(this.#target).on('mousedown', '[data-glpi-form-radio-uncheckable]', function(e) {
-            var $this = $(this);
+        $(this.#target).on('mousedown', '[data-glpi-form-radio-uncheckable]', function() {
+            const $this = $(this);
             if ($this.is(':checked')) {
                 $this.data('was-checked', true);
             } else {
@@ -169,8 +169,8 @@ export class GlpiFormEditorController
             }
         });
 
-        $(this.#target).on('click', '[data-glpi-form-radio-uncheckable]', function(e) {
-            var $this = $(this);
+        $(this.#target).on('click', '[data-glpi-form-radio-uncheckable]', function() {
+            const $this = $(this);
             if ($this.data('was-checked')) {
                 $this.prop('checked', false);
                 $this.data('was-checked', false);
