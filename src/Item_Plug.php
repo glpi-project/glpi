@@ -122,6 +122,7 @@ class Item_Plug extends CommonDBRelation
                     'id'     => 'number_plugs',
                     'type'   => 'number',
                     'min'    => 1,
+                    'required' => true,
                 ]
             );
             echo "</td><td>";
@@ -163,6 +164,54 @@ class Item_Plug extends CommonDBRelation
         ]);
 
         return true;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return false|array
+     */
+    private function prepareInput(array $input): false|array
+    {
+        // Check plugs_id requirement
+        if (
+            $this->isNewItem()
+            && (!isset($input['plugs_id']) || $input['plugs_id'] <= 0)
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('A plug must be selected'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        // Check number_plugs requirement
+        if (
+            ($this->isNewItem() || isset($input['number_plugs']))
+            && (!isset($input['number_plugs']) || $input['number_plugs'] === '' || $input['number_plugs'] < 1)
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('A number of plugs is required'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        return $input;
     }
 
     public function getForbiddenStandardMassiveAction()
