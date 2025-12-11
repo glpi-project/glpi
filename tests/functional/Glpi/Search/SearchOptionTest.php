@@ -64,4 +64,43 @@ class SearchOptionTest extends DbTestCase
             SearchOption::getDefaultToView($itemtype)
         );
     }
+
+    public function testAllAssetsGroupInChargeSearchOption(): void
+    {
+        $this->login();
+
+        // Get search options for AllAssets
+        $search_options = \Search::getOptions('AllAssets');
+
+        // Verify that option 49 (Group in charge) exists and has correct structure
+        $this->assertArrayHasKey(49, $search_options);
+
+        $group_option = $search_options[49];
+
+        // Verify basic structure
+        $this->assertEquals('glpi_groups', $group_option['table']);
+        $this->assertEquals('completename', $group_option['field']);
+        $this->assertEquals('groups_id', $group_option['linkfield']);
+        $this->assertEquals(__('Group in charge'), $group_option['name']);
+        $this->assertEquals('dropdown', $group_option['datatype']);
+
+        // Verify it uses the new glpi_groups_items relationship structure
+        $this->assertArrayHasKey('joinparams', $group_option);
+        $this->assertArrayHasKey('beforejoin', $group_option['joinparams']);
+
+        $beforejoin = $group_option['joinparams']['beforejoin'];
+        $this->assertEquals('glpi_groups_items', $beforejoin['table']);
+        $this->assertEquals('itemtype_item', $beforejoin['joinparams']['jointype']);
+
+        // Verify it targets GROUP_TYPE_TECH specifically
+        $this->assertArrayHasKey('condition', $beforejoin['joinparams']);
+        $condition = $beforejoin['joinparams']['condition'];
+        $this->assertArrayHasKey('NEWTABLE.type', $condition);
+        $this->assertEquals(\Group_Item::GROUP_TYPE_TECH, $condition['NEWTABLE.type']);
+
+        // Verify additional configuration
+        $this->assertTrue($group_option['forcegroupby']);
+        $this->assertFalse($group_option['massiveaction']);
+        $this->assertEquals(['is_assign' => 1], $group_option['condition']);
+    }
 }
