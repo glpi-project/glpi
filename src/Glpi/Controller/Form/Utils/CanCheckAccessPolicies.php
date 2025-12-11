@@ -63,7 +63,7 @@ trait CanCheckAccessPolicies
         // Must be authenticated here
         if (!$form_access_manager->canAnswerForm($form, $parameters)) {
             if (!Session::isAuthenticated()) {
-                \Session::checkLoginUser();
+                Session::checkLoginUser();
             }
             throw new AccessDeniedHttpException();
         }
