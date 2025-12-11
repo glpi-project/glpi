@@ -234,10 +234,19 @@ class Calendar extends CommonDropdown
      **/
     public function isHoliday($date)
     {
+        // Check if date is null or emtpy
+        if (empty($date)) {
+            return false;
+        }
+
         $calendar_holiday = new Calendar_Holiday();
         $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
 
         foreach ($holidays as $holiday) {
+            // CHeck if begin_date and end_date are not null or empty
+            if (empty($holiday['begin_date']) || empty($holiday['end_date'])) {
+                continue;
+            }
             if ($holiday['is_perpetual']) {
                 // Compare only month and day for holidays that occurs every year.
                 $date_to_compare = date('m-d', strtotime($date));
