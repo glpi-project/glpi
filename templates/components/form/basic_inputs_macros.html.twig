@@ -63,7 +63,7 @@
 
     {% set input %}
         <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
-        {% if with_class %}
+        {% if options.with_class %}
                class="form-control {{ options.input_addclass }}"
         {% endif %}
                name="{{ name }}" value="{{ value }}"
