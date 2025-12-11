@@ -1690,7 +1690,11 @@ TWIG, $twig_params);
                         'display_emptychoice' => true,
                     ]
                 );
-                $found_type = isset($types[$itemtype]);
+
+                $found_type = false;
+                if ($itemtype !== null) {
+                    $found_type = isset($types[$itemtype]);
+                }
 
                 $p = [
                     'source_itemtype' => static::$itemtype_1,
