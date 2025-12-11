@@ -731,4 +731,3 @@ class Calendar extends CommonDropdown
         return "ti ti-calendar";
     }
 }
-
