@@ -73,8 +73,8 @@
          </div>
          <div class="col-auto">
             <button class="btn btn-primary ms-1" type="submit" name="add">
-               <i class="ti ti-link"></i>
-               <span>{{ _x('button', 'Add') }}</span>
+               <i class="{{ add_button_icon ?? 'ti ti-link' }}"></i>
+               <span>{{ add_button_label ?? _x('button', 'Add') }}</span>
             </button>
          </div>
          {% if create_link %}
