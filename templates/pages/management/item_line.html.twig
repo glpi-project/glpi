@@ -34,7 +34,7 @@
 
 <div class="mb-3">
     <form method="post" action="{{ 'Item_Line'|itemtype_form_path }}" data-submit-once>
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
         <div class="d-flex">
             {% if from_line %}
                 <input type="hidden" name="lines_id" value="{{ peer_id }}">

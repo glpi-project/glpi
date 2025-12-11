@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% do call(['Html', 'nullHeader'], [__('Update needed')]) %}
 <div class="container-fluid mb-4">
     <div class="row justify-content-evenly">
@@ -46,7 +48,7 @@
                 {% if not core_requirements.hasMissingMandatoryRequirements() %}
                     {% if not is_outdated %}
                         <form method="post" action="{{ path('install/update.php') }}" class="p-2">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {{ fields.csrfField() }}
                             {% if not is_stable_release %}
                                 {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
                             {% endif %}

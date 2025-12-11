@@ -30,6 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% set is_root_entity = entity.getID() == 0 %}
@@ -168,7 +169,7 @@
         </div>
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
     </form>
 </div>
 
@@ -354,7 +355,7 @@
         </div>
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
 
     </form>
 </div>

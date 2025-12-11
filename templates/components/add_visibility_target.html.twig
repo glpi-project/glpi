@@ -34,7 +34,7 @@
 <div class="mb-3">
     <form method="post" action="{{ type|itemtype_form_path }}">
         <input type="hidden" name="{{ type|itemtype_foreign_key }}" value="{{ id }}">
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
         <div class="d-flex flex-wrap">
             {{ fields.dropdownItemTypes('_type', '', add_target_msg, {
                 types: ['Entity', 'Group', 'Profile', 'User'],

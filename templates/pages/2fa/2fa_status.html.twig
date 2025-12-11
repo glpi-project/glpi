@@ -31,6 +31,7 @@
  #}
 
 {% import 'pages/2fa/macros.html.twig' as tfa %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/alerts_macros.html.twig' as alerts %}
 
 <form method="post" action="#" data-submit-once>
@@ -46,7 +47,7 @@
     {{ alerts.alert_info(__('2FA enabled'), [status_message]) }}
    {{ tfa.tfa_backup_codes_container() }}
    <div>
-      <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+      {{ fields.csrfField() }}
       {% if enforcement != constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY') %}
          <button type="submit" class="btn btn-danger" name="disable_2fa">
             {{ __('Disable 2FA') }}

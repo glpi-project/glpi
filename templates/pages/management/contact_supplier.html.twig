@@ -34,7 +34,7 @@
 
 <div class="mb-3">
     <form method="post" action="{{ 'Contact_Supplier'|itemtype_form_path }}" data-submit-once>
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
         <div class="d-flex">
             {% if get_class(peer) == 'Contact' %}
                 <input type="hidden" name="contacts_id" value="{{ peer.getID() }}">

@@ -438,6 +438,10 @@
     {{ _inputs.hidden(name, value, options) }}
 {% endmacro %}
 
+{% macro csrfField() %}
+    {{ _self.hiddenField('_glpi_csrf_token', csrf_token()) }}
+{% endmacro %}
+
 {% macro dropdownNumberField(name, value, label = '', options = {}) %}
     {% set options = {
         'rand': random(),

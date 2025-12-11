@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% set is_ajax = _request['searchform_id'] is defined and _request['searchform_id'] is not null %}
 {% set rand = random() %}
 {% set mainform = mainform is not defined ? true : mainform %}
@@ -233,6 +235,6 @@
 </div>
 
 {% if mainform and showaction %}
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
    </form>
 {% endif %}
