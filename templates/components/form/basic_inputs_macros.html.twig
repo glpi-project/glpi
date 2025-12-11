@@ -44,6 +44,7 @@
         'is_disclosable': false,
         'is_copyable': false,
         'clearable': false,
+        'with_class': true
     }|merge(options) %}
 
     {% if options.fields_template.isMandatoryField(name)|default(false) %}
@@ -62,7 +63,9 @@
 
     {% set input %}
         <input type="{{ options.type }}" {{ options.id != null ? 'id=' ~ options.id : '' }}
+        {% if with_class %}
                class="form-control {{ options.input_addclass }}"
+        {% endif %}
                name="{{ name }}" value="{{ value }}"
             {% for attr, value in options.additional_attributes %}
                {{ attr }}="{{ value }}"
@@ -219,7 +222,7 @@
 
 
 {% macro hidden(name, value, options = {}) %}
-    {{ _self.input(name, value, options|merge({'type': 'hidden'})) }}
+    {{ _self.input(name, value, options|merge({'type': 'hidden', 'with_class': false})) }}
 {% endmacro %}
 
 
