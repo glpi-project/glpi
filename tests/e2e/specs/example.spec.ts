@@ -31,6 +31,7 @@
  */
 
 import { test, expect } from '../fixtures/glpi_fixture';
+import { Profiles } from '../utils/Profiles';
 
 test('has title', async ({ page }) => {
     await page.goto('https://playwright.dev/');
@@ -54,17 +55,40 @@ test('anonymous GLPI page', async ({anonymousPage}) => {
     await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
 });
 
-test('logged in GLPI page', async ({page}) => {
+test('admin GLPI page', async ({page, profile}) => {
+    await profile.set(Profiles.SuperAdmin);
     await page.goto('');
     await expect(page).toHaveTitle("Standard interface - GLPI");
 });
 
-test('logged and anonymous page in the same test', async ({page, anonymousPage}) => {
+test('helpdesk GLPI page', async ({ page, profile}) => {
+    await profile.set(Profiles.SelfService);
+    await page.goto('');
+    await expect(page).toHaveTitle("Home - GLPI");
+});
+
+test('multiple profiles', async ({ page, profile}) => {
+    await profile.set(Profiles.SelfService);
+    await page.goto('');
+    await expect(page).toHaveTitle("Home - GLPI");
+
+    await profile.set(Profiles.SuperAdmin);
+    await page.goto('');
+    await expect(page).toHaveTitle("Standard interface - GLPI");
+
+    await profile.set(Profiles.SelfService);
+    await page.goto('');
+    await expect(page).toHaveTitle("Home - GLPI");
+});
+
+test('logged and anonymous page in the same test', async ({page, profile, anonymousPage}) => {
     // This can be useful if you need to change some settings as an admin, then
     // validate with an anonymous user that they are applied
+    await profile.set(Profiles.SuperAdmin);
     await page.goto('');
     await expect(page).toHaveTitle("Standard interface - GLPI");
 
     await anonymousPage.goto('');
     await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
 });
+
