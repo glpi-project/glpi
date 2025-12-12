@@ -8,6 +8,7 @@
     import {computed, nextTick, onMounted, ref, watch} from "vue";
     import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
+    import { useAJAX } from "../Composables/useAJAX.js";
 
     const props = defineProps({
         /** @type {Rights} */
@@ -90,25 +91,25 @@
     let _background_refresh = null;
     const all_kanbans = ref({});
     const kanban_switcher = ref(null);
-    const debug_mode = $('body.debug-active').length > 0;
+    const debug_mode = document.body.classList.contains('debug-active');
     let mutation_observer = null;
     let is_sorting_active = false;
     let sort_data = undefined;
+    const { ajaxGet, ajaxPost } = useAJAX();
 
     const team_badge_provider = new TeamBadgeProvider(props.display_initials, props.max_team_images);
 
     watch(kanban_switcher, (new_value) => {
         // If selection is new. Treats all 0 and negative values as the same thing (Global).
         if (new_value !== props.item.items_id && !(new_value <= 0 && props.item.items_id <= 0)) {
-            $.ajax({
-                type: "GET",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
-                    action: "get_url",
+            ajaxGet('/ajax/kanban.php', {
+                params: {
+                    action: 'get_url',
                     itemtype: props.item.itemtype,
                     items_id: new_value
-                }
-            }).then((url) => {
+                },
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(({ data: url }) => {
                 window.location = url;
             });
         }
@@ -321,16 +322,14 @@
      */
     async function saveState() {
         emit('kanban:pre_save_state');
-        return $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "save_column_state",
-                itemtype: props.item.itemtype,
-                items_id: props.item.items_id,
-                state: getUpdatedColumnState()
-            },
-        }).always(() => {
+        return ajaxPost('/ajax/kanban.php', {
+            action: "save_column_state",
+            itemtype: props.item.itemtype,
+            items_id: props.item.items_id,
+            state: getUpdatedColumnState()
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).finally(() => {
             emit('kanban:post_save_state');
         });
     }
@@ -342,19 +341,18 @@
      */
     async function loadState() {
         emit('kanban:pre_load_state');
-        return $.ajax({
-            type: "GET",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
+        return ajaxGet('/ajax/kanban.php', {
+            params: {
                 action: "load_column_state",
                 itemtype: props.item.itemtype,
                 items_id: props.item.items_id,
                 last_load: last_refresh
             }
-        }).then(async function(state) {
-            if (state['state'] === undefined || state['state'] === null) {
+        }).then(async (response) => {
+            if (response.data['state'] === undefined || response.data['state'] === null) {
                 return;
             }
+            const state = response.data;
             user_state.value = {
                 state: state['state']
             };
@@ -390,18 +388,15 @@
             return;
         }
         const _clearState = () => {
-            $.ajax({
-                type: "POST",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
-                    action: "clear_column_state",
-                    itemtype: props.item.itemtype,
-                    items_id: props.item.items_id
-                }
-            }).done(() => {
-                // Reload page
+            ajaxPost('/ajax/kanban.php', {
+                action: "clear_column_state",
+                itemtype: props.item.itemtype,
+                items_id: props.item.items_id
+            }, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(() => {
                 window.location.reload();
-            }).fail(() => {
+            }).catch(() => {
                 glpi_toast_error(__('Failed to reset Kanban view'));
             });
         };
