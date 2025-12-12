@@ -963,6 +963,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         foreach ($iterator as $data) {
             $software->getFromDB($data["id"]);
             $entries[] = [
+                'itemtype' => 'Software',
+                'id' => $data["id"],
                 'name' => $software->getLink(),
                 'entity' => $data["entity"],
                 'installations' => Item_SoftwareVersion::countForSoftware($data["id"]),
