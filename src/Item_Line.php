@@ -165,7 +165,7 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showItemsForLine(Line $line)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $ID = $line->fields['id'];
 
@@ -240,11 +240,20 @@ class Item_Line extends CommonDBRelation
                 $used[$row['itemtype']][$row['items_id']] = $row['items_id'];
             }
 
-            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
-                'from_line' => true,
-                'peer_id' => $line->getID(),
-                'used' => $used,
-                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID(),
+            $rand = mt_rand();
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => self::class,
+                'source_itemtype' => $line::class,
+                'source_items_id' => $ID,
+                'link_types' => $CFG_GLPI['line_types'],
+                'generic_target' => true,
+                'dropdown_options' => [
+                    'entity'      => $line->getEntityID(),
+                    'entity_sons' => $line->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Add an item'),
             ]);
         }
 
