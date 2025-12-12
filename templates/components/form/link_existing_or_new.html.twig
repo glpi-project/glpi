@@ -44,7 +44,18 @@
       {% endif %}
             {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
             <div class="d-flex flex-wrap align-items-center gap-2">
-               {% if link_types is defined and link_types is not empty %}
+      {% if generic_target ?? false %}
+          {{ fields.dropdownItemsFromItemtypes('items_id', '', {
+              itemtypes: link_types,
+              used: used,
+              entity_restrict: entity_restrict,
+              field_class: 'd-flex',
+              width: 'auto',
+              mb: '',
+              no_label: true,
+          }) }}
+      {% else %}
+          {% if link_types is defined and link_types is not empty %}
                   {{ fields.dropdownArrayField('link', link_types|first, link_types, '', {
                      no_label: true,
                      mb: '',
@@ -78,6 +89,7 @@
                <button class="btn btn-primary" type="submit" name="add">
                   <i class="ti ti-link"></i>
                   <span>{{ _x('button', 'Add') }}</span>
+      {% endif %}
                </button>
 
                {% if create_link %}
