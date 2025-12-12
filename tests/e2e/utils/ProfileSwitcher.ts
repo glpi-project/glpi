@@ -62,7 +62,7 @@ export class ProfileSwitcher
     public async set(profile_name: Profiles)
     {
         const profile_id = profile_name.valueOf();
-        return this.setById(profile_id);
+        this.setById(profile_id);
     }
 
     /**

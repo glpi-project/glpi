@@ -70,7 +70,7 @@ final class ChangeProfileController extends AbstractController
         // was some background script and we do not need to redirect it to
         // another page.
         if ($request->headers->contains('X-Requested-With', 'XMLHttpRequest')) {
-            return new Response(__("Profile changed successfully"));
+            return new Response();
         }
 
         // Compute redirection URL
