@@ -378,12 +378,19 @@ class Item_Line extends CommonDBRelation
                 $used[] = $row['lines_id'];
             }
 
-            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
-                'from_line' => false,
-                'peer_itemtype' => $itemtype,
-                'peer_id' => $ID,
-                'used' => $used,
-                'entity_restrict' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => mt_rand(),
+                'link_itemtype' => self::class,
+                'generic_source' => true,
+                'source_itemtype' => $item::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Line::class,
+                'dropdown_options' => [
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Add a phone line'),
             ]);
         }
 
