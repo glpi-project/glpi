@@ -37,11 +37,21 @@ import { Config } from '../utils/Config';
 import { JSDOM } from 'jsdom';
 import { CsrfExtractor } from '../utils/CsrfExtractor';
 import { Constants } from '../utils/Constants';
+import { ProfileSwitcher } from '../utils/ProfileSwitcher';
+import { CsrfFetcher } from '../utils/CsrfFetcher';
+import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
+    // Test scoped fixtures, these object will be created for each tests.
     anonymousPage: Page,
-}, { workerStorageState: string }>({
+    profile: ProfileSwitcher,
+    csrf: CsrfFetcher,
+}, {
+    // Worker scoped fixtures, these objects will be created once per thread.
+    workerSessionCache: WorkerSessionCache,
+    workerStorageState: string,
+}>({
     // Use the same storage state for all tests in this worker.
     storageState: ({ workerStorageState }, use) => use(workerStorageState),
 
@@ -119,8 +129,27 @@ export const test = baseTest.extend<{
         await use(file_name);
     }, { scope: 'worker' }],
 
+    // Service used to fetch a CSRF token.
+    csrf: [async ({ request, workerSessionCache }, use) => {
+        await use(new CsrfFetcher(request, workerSessionCache));
+    }, { scope: 'test' }],
+
+    // Service used to switch profiles as needed.
+    profile: [async ({ request, csrf, workerSessionCache }, use) => {
+        await use(new ProfileSwitcher(request, csrf, workerSessionCache));
+    }, { scope: 'test' }],
+
+    // Store the state of the current session.
+    // This avoid fetching CSRF token multiple times or trying to set a profile
+    // that is already the one being used.
+    // Worker scoped so we will get one object per thread (= per session since
+    // each of our thread has a unique account).
+    workerSessionCache: [async ({}, use) => {
+        await use(new WorkerSessionCache());
+    }, { scope: 'worker' }],
+
     // Since the default page will be authenticated, expose another fixture that
-    // return a page without an active GLPI session
+    // return a page without an active GLPI session.
     anonymousPage: async ({ browser }, use) => {
         const context = await browser.newContext({
             storageState: {

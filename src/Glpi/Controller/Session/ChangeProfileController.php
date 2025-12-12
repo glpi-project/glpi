@@ -66,6 +66,13 @@ final class ChangeProfileController extends AbstractController
         // Apply new profile
         Session::changeProfile($profile_id);
 
+        // If the profile change was made with an AJAX request, this mean this
+        // was some background script and we do not need to redirect it to
+        // another page.
+        if ($request->headers->contains('X-Requested-With', 'XMLHttpRequest')) {
+            return new Response();
+        }
+
         // Compute redirection URL
         if (Session::getCurrentInterface() == "helpdesk") {
             $go_to_create_ticket = $_SESSION['glpiactiveprofile']['create_ticket_on_login'];
