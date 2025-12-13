@@ -65,6 +65,9 @@
         define('GLPI_FORCE_MAIL', 'example@glpi-project.org');
     }
 
+    // Developer mode constants
+    define('GLPI_VITE_DEV_SERVER_PORT', $random_val([3000, 5173]));
+
     // Other constants
     define('GLPI_AJAX_DASHBOARD', $random_val([false, true]));
     define('GLPI_ALLOW_IFRAME_IN_RICH_TEXT', $random_val([false, true]));

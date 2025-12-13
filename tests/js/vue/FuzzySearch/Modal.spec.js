@@ -30,7 +30,6 @@
  * ---------------------------------------------------------------------
  */
 
-import '/build/vue/app.js';
 import FuzzySearchModal from '/js/src/vue/FuzzySearch/Modal.vue';
 import '/lib/fuzzy.js';
 import {enableAutoUnmount, mount} from "@vue/test-utils";
@@ -52,14 +51,6 @@ describe('FuzzySearch/Modal Vue Component', () => {
         window.AjaxMock.end();
     });
 
-    test('component in global components list', async () => {
-        /**
-         * This tests how the component would be accessed in a real environment.
-         * Not used like this in tests because the async loading of components doesn't work (or I don't know how to make it work).
-         */
-        expect(window.Vue.components['FuzzySearch/Modal']).toBeDefined();
-        expect(window.Vue.components['FuzzySearch/Modal'].component).toHaveProperty('name', 'AsyncComponentWrapper');
-    });
     test('get menus after display', async () => {
         window.AjaxMock.start();
         window.AjaxMock.addMockResponse(new window.AjaxMockResponse('//ajax/fuzzysearch.php', 'GET', {}, () => {

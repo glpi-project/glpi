@@ -187,6 +187,9 @@ final class SystemConfigurator
                 'GLPI_ALTCHA_MODE'                => AltchaManager::DEFAULT_MODE,
                 'GLPI_ALTCHA_COST'                => AltchaManager::DEFAULT_COMPLEXITY,
                 'GLPI_ALTCHA_EXPIRATION_INTERVAL' => AltchaManager::DEFAULT_EXPIRATION_INTERVAL,
+
+                // Developer mode constants
+                'GLPI_VITE_DEV_SERVER_PORT' => 5173,
             ],
         ];
 
