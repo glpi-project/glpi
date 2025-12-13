@@ -229,6 +229,9 @@ class FrontEndAssetsExtension extends AbstractExtension
      */
     private function getVersionnedPath(string $path, array $options = []): string
     {
+        if ($options['no_version'] ?? false) {
+            return $path;
+        }
         $version = $options['version'] ?? GLPI_VERSION;
         $path .= (str_contains($path, '?') ? '&' : '?') . 'v=' . FrontEnd::getVersionCacheKey($version);
 

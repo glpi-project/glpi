@@ -1,4 +1,10 @@
 <script setup>
+    /*!
+     * GLPI - Gestionnaire Libre de Parc Informatique
+     * SPDX-License-Identifier: GPL-3.0-or-later
+     * SPDX-FileCopyrightText: 2015-2025 Teclib' and contributors.
+     */
+
     /**
      * @typedef {{ id: string, parent_id: string|null, category: string, name: string, start: number, end: number }} ProfilerSection
      * @typedef {{ execution_time: number, memory_usage: number, memory_peak: number, memory_limit: number }} ServerPerformanceMetrics
