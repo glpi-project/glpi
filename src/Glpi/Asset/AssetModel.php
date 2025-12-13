@@ -292,6 +292,13 @@ abstract class AssetModel extends CommonDCModelDropdown
                 'min'    => 0,
             ];
             $fields[] = [
+                'name'   => 'max_power',
+                'type'   => 'integer',
+                'label'  => __('Max. power (in watts)'),
+                'unit'   => __('watts'),
+                'min'    => 0,
+            ];
+            $fields[] = [
                 'name'   => 'is_half_rack',
                 'type'   => 'bool',
                 'label'  => __('Is half rack'),
