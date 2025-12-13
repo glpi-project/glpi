@@ -58,6 +58,7 @@ export default defineConfig({
         alias: {
             '/lib': '/public/lib',
             '/build': '/public/build',
+            '/js': '/js',
         },
     },
 });
