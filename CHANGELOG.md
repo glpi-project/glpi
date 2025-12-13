@@ -6,6 +6,9 @@ The present file will list all changes made to the project; according to the
 ## [11.0.5] unreleased
 
 ### Added
+- New schemas/endpoints for over 20 dropdown itemtypes in High-Level API v2.2.
+- Added `user`, `group`, `code`, `is_helpdesk_visible`, `ticket_incident_template`, `ticket_request_template`, `change_template`, `problem_template`, `is_incident_visible`,`is_request_visible`,`is_change_visible`,`is_problem_visible`, and `knowbase_category` properties for the ITILCategory schema in High-Level API v2.2.
+- Added `is_helpdesk_visible`, `date_creation` and `date_mod` properties for the TaskCategory schema in High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
