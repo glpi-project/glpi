@@ -4711,13 +4711,13 @@ JAVASCRIPT;
             $opt['criteria'][0]['value']      = CommonITILValidation::WAITING;
             $opt['criteria'][0]['link']       = 'AND';
 
-            $opt['criteria'][1]['field']      = 59; // validation aprobator
-            $opt['criteria'][1]['searchtype'] = 'equals';
-            $opt['criteria'][1]['value']      = Session::getLoginUserID();
-            $opt['criteria'][1]['link']       = 'AND';
+            $opt['criteria'][1]['criteria'][0]['field']      = 59; // validation aprobator
+            $opt['criteria'][1]['criteria'][0]['searchtype'] = 'equals';
+            $opt['criteria'][1]['criteria'][0]['value']      = 'myself'; // Resolved as current user's ID
             $opt['criteria'][1]['criteria'][1]['field']      = 195; // validation aprobator substitute user
             $opt['criteria'][1]['criteria'][1]['searchtype'] = 'equals';
             $opt['criteria'][1]['criteria'][1]['value']      = 'myself'; // Resolved as current user's ID
+            $opt['criteria'][1]['criteria'][1]['link']       = 'OR';
             $opt['criteria'][1]['criteria'][2]['field']      = 196; // validation aprobator group
             $opt['criteria'][1]['criteria'][2]['searchtype'] = 'equals';
             $opt['criteria'][1]['criteria'][2]['value']      = 'mygroups'; // Resolved as groups the current user belongs to
