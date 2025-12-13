@@ -24,6 +24,7 @@
      * @property {boolean} main_widget=false
      */
     import {computed, ref, watch} from "vue";
+    import { useAJAX } from "../Composables/useAJAX.js";
 
     const props = defineProps({
         initial_request: {
@@ -45,16 +46,9 @@
     });
 
     const ajax_requests = ref([]);
-
-    const current_request = ref(props.initial_request.id);
-    const current_profile = computed(() => {
-        if (current_request.value === null) {
-            return undefined;
-        }
-        return getProfile(current_request.value);
-    });
-
     const initial_load = ref(true);
+    const { ajaxGet, axiosInstance } = useAJAX();
+
     /**
      * @type {(MainWidget|SubWidget)[]}
      */
@@ -68,7 +62,7 @@
             refreshButton: (button) => {
                 const server_perf = props.initial_request.server_performance;
                 const memory_usage = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
-                const server_performance_button_label = `${_.escape(server_perf.execution_time)} <span class="text-muted"> ms using </span> ${_.escape(memory_usage)} <span class="text-muted"> MiB </span>`;
+                const server_performance_button_label = `${window._.escape(server_perf.execution_time)} <span class="text-muted"> ms using </span> ${window._.escape(memory_usage)} <span class="text-muted"> MiB </span>`;
                 button.find('.debug-text').html(server_performance_button_label);
             }
         },
@@ -80,7 +74,7 @@
             component_registered_name: 'widget-sqlrequests',
             refreshButton: (button) => {
                 const sql_data = getCombinedSQLData();
-                const database_button_label = `${_.escape(sql_data.total_requests)} <span class="text-muted"> requests </span>`;
+                const database_button_label = `${window._.escape(sql_data.total_requests)} <span class="text-muted"> requests </span>`;
                 button.find('.debug-text').html(database_button_label);
             }
         },
@@ -104,7 +98,7 @@
                 if (button.find('.debug-text').text().trim() === '') {
                     setTimeout(() => {
                         const dom_timing = +window.performance.getEntriesByType('navigation')[0].domComplete.toFixed(2);
-                        const client_performance_button_label = `${_.escape(dom_timing)} <span class="text-muted"> ms </span>`;
+                        const client_performance_button_label = `${window._.escape(dom_timing)} <span class="text-muted"> ms </span>`;
                         button.find('.debug-text').html(client_performance_button_label);
                     }, 200);
                 }
@@ -116,7 +110,7 @@
             icon: 'ti ti-list-search',
             main_widget: true, // This widget shows directly in the toolbar
             component_registered_name: 'widget-search-options',
-            refreshButton: (button) => {}
+            refreshButton: () => {}
         },
         {
             id: 'theme_switcher',
@@ -125,7 +119,7 @@
             main_widget: true, // This widget shows directly in the toolbar
             component_registered_name: 'widget-theme-switcher',
             refreshButton: (button) => {
-                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${_.escape(document.documentElement.attributes['data-glpi-theme'].value)}`);
+                button.find('.debug-text').html(`<span class="text-muted">Theme: </span> ${window._.escape(document.documentElement.attributes['data-glpi-theme'].value)}`);
             }
         },
         {
@@ -182,7 +176,7 @@
                 // try parsing the value as JSON
                 try {
                     data_object[key] = JSON.parse(data_object[key]);
-                } catch (e) {
+                } catch {
                     // ignore
                 }
             });
@@ -221,6 +215,89 @@
             }
         }
         refreshWidgetButtons();
+    });
+
+    // Add axios interceptors
+    axiosInstance.interceptors.request.use((config) => {
+        // If the request is going to the debug AJAX endpoint, don't do anything
+        if (config.url.indexOf('ajax/debug.php') !== -1) {
+            return config;
+        }
+        const ajax_id = Math.random().toString(16).slice(2);
+        // Tag the request with an id to identify it on the server side
+        config.headers['X-Glpi-Ajax-ID'] = ajax_id;
+        const parent_id = $('html').attr('data-glpi-request-id');
+        if (parent_id !== undefined) {
+            config.headers['X-Glpi-Ajax-Parent-ID'] = parent_id;
+        }
+
+        let data = config.data;
+        if (config.method !== 'post' && data === undefined) {
+            // get data from query string
+            data = {};
+            const query_string = config.url.split('?')[1];
+            if (query_string !== undefined) {
+                query_string.split('&').forEach((pair) => {
+                    const [key, value] = pair.split('=');
+                    data[key] = value;
+                });
+            }
+        }
+        ajax_requests.value.push({
+            'id': ajax_id,
+            'status': '...',
+            'status_type': 'info',
+            'type': config.method.toUpperCase(),
+            'data': data,
+            'url': config.url,
+            'start': Date.now(),
+        });
+        refreshWidgetButtons();
+
+        return config;
+    });
+
+    axiosInstance.interceptors.response.use((response) => {
+        // If the request is going to the debug AJAX endpoint, don't do anything
+        if (response.config.url.indexOf('ajax/debug.php') !== -1) {
+            return response;
+        }
+        const ajax_id = response.config.headers['X-Glpi-Ajax-ID'];
+        if (ajax_id !== undefined) {
+            const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
+            if (ajax_request !== undefined) {
+                ajax_request.status = response.status;
+                ajax_request.time = Date.now() - ajax_request.start;
+                ajax_request.status_type = response.status >= 200 && response.status < 300 ? 'success' : 'danger';
+
+                // Ask the server for the debug information it saved for this request
+                requestAjaxDebugData(ajax_id);
+            }
+        }
+        refreshWidgetButtons();
+
+        return response;
+    }, (error) => {
+        const response = error.response;
+        // If the request is going to the debug AJAX endpoint, don't do anything
+        if (response.config.url.indexOf('ajax/debug.php') !== -1) {
+            return Promise.reject(error);
+        }
+        const ajax_id = response.config.headers['X-Glpi-Ajax-ID'];
+        if (ajax_id !== undefined) {
+            const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
+            if (ajax_request !== undefined) {
+                ajax_request.status = response.status;
+                ajax_request.time = Date.now() - ajax_request.start;
+                ajax_request.status_type = 'danger';
+
+                // Ask the server for the debug information it saved for this request
+                requestAjaxDebugData(ajax_id);
+            }
+        }
+        refreshWidgetButtons();
+
+        return Promise.reject(error);
     });
 
     const is_dragging = ref(false);
@@ -296,25 +373,17 @@
         }
     });
 
-    function getProfile(request_id) {
-        if (request_id === props.initial_request.id) {
-            return props.initial_request;
-        }
-        return ajax_requests.value.find((request) => request.id === request_id).profile;
-    }
-
     function requestAjaxDebugData(ajax_id, reload_widget = false) {
         const ajax_request = ajax_requests.value.find((request) => request.id === ajax_id);
-        $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/debug.php',
-            data: {
-                'ajax_id': ajax_id,
-            }
-        }).done((data) => {
-            if (!data) {
+        ajaxGet('/ajax/debug.php', {
+            params: { ajax_id: ajax_id },
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then((response) => {
+            if (response.status !== 200 || !response.data) {
                 return;
             }
-            ajax_request.profile = data;
+
+            ajax_request.profile = response.data;
 
             const content_area = $('#debug-toolbar-expanded-content');
             if (content_area.data('active-widget') !== undefined) {
@@ -352,7 +421,7 @@
             </div>
             <div :class="'debug-toolbar-content w-100 justify-content-between align-items-center ' + (show_toolbar ? 'd-flex' : '')" v-show="show_toolbar">
                 <ul class="debug-toolbar-widgets nav nav-tabs align-items-center border-0" data-bs-toggle="tabs">
-                    <widget-button v-for="(widget) in getMainWidgets()" :id="widget.id" :title="widget.title" :icon="widget.icon"
+                    <widget-button v-for="(widget) in getMainWidgets()" :id="widget.id" :key="widget.id" :title="widget.title" :icon="widget.icon"
                                    v-on:click="switchWidget(widget.id)" :active="widget.id === active_widget" @vue:mounted="refreshWidgetButtons"
                     ></widget-button>
                 </ul>
@@ -371,8 +440,8 @@
         </div>
         <div id="debug-toolbar-expanded-content" class="w-100 card pe-2" v-show="show_content_area && show_toolbar">
             <component v-if="active_widget" :is="active_widget_component" :initial_request="props.initial_request"
-               :ajax_requests="ajax_requests" @switchWidget="switchWidget" :widgets="widgets"
-               @refreshButton="refreshWidgetButtons"></component>
+                       :ajax_requests="ajax_requests" @switchWidget="switchWidget" :widgets="widgets"
+                       @refreshButton="refreshWidgetButtons"></component>
         </div>
     </div>
 </template>

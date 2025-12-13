@@ -1,18 +1,18 @@
 <script setup>
     import {computed, onMounted, ref, watch} from "vue";
+    import { useAJAX } from "../../Composables/useAJAX.js";
 
     const rand = Math.floor(Math.random() * 1000000000);
 
     const all_itemtypes = ref([]);
     const current_itemtype = ref('');
     const search_options = ref({});
-
     const sorted_col = ref('opt_id');
     const sort_dir = ref('asc');
     const sorted_search_options = computed(() => {
-        let sorted = [];
+        const sorted = [];
 
-        $.each(search_options.value, (opt_id, data) => {
+        for (const [opt_id, data] of Object.entries(search_options.value)) {
             sorted.push({
                 opt_id: opt_id,
                 table: data['table'],
@@ -23,7 +23,7 @@
                 nosearch: data['nosearch'] || false,
                 massiveaction: data['massiveaction'] || true,
             });
-        });
+        }
 
         // Sort by column
         sorted.sort((a, b) => {
@@ -46,6 +46,8 @@
         return sorted;
     });
 
+    const { ajaxGet } = useAJAX();
+
     function setSortedCol(col) {
         if (sorted_col.value === col) {
             if (sort_dir.value === 'asc') {
@@ -63,24 +65,24 @@
         if (current_itemtype.value === null || current_itemtype.value === '') {
             return;
         }
-        $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/debug.php',
-            data: {
+        ajaxGet('/ajax/debug.php', {
+            params: {
                 action: 'get_search_options',
                 itemtype: current_itemtype.value
             },
-        }).then((data) => {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(({data}) => {
             search_options.value = data;
         });
     }
 
     onMounted(() => {
-        $.ajax({
-            url: CFG_GLPI.root_doc + '/ajax/debug.php',
-            data: {
-                action: 'get_itemtypes'
+        ajaxGet('/ajax/debug.php', {
+            params: {
+                action: 'get_itemtypes',
             },
-        }).then((data) => {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(({data}) => {
             all_itemtypes.value = data;
         });
         updateSearchOptions();
@@ -102,7 +104,7 @@
                     <div class="input-group">
                         <select v-if="itemtype_input_mode === 'select'" class="form-select" :id="`itemtype${rand}`" v-model="current_itemtype">
                             <option value="">-----</option>
-                            <option v-for="itemtype in all_itemtypes" :value="itemtype" v-text="itemtype"></option>
+                            <option v-for="itemtype in all_itemtypes" :key="itemtype" :value="itemtype" v-text="itemtype"></option>
                         </select>
                         <input v-else class="form-control" :id="`itemtype${rand}`" v-model.lazy="current_itemtype">
                         <button class="btn btn-sm btn-outline-secondary" @click="itemtype_input_mode = itemtype_input_mode === 'select' ? 'input' : 'select'"
@@ -130,17 +132,19 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-if="sorted_search_options.length" v-for="opt in sorted_search_options" :key="opt.opt_id">
-                    <td v-text="opt.opt_id"></td>
-                    <td v-text="opt.table"></td>
-                    <td v-text="opt.field"></td>
-                    <td v-text="opt.name"></td>
-                    <td v-text="opt.linkfield"></td>
-                    <td v-if="opt.datatype" v-text="opt.datatype"></td>
-                    <td v-else><span class="fst-italic">Not specified</span></td>
-                    <td v-text="opt.nosearch !== true ? 'Yes' : 'No'"></td>
-                    <td v-text="opt.massiveaction !== false ? 'Yes' : 'No'"></td>
-                </tr>
+                <template v-if="sorted_search_options.length">
+                    <tr v-for="opt in sorted_search_options" :key="opt.opt_id">
+                        <td v-text="opt.opt_id"></td>
+                        <td v-text="opt.table"></td>
+                        <td v-text="opt.field"></td>
+                        <td v-text="opt.name"></td>
+                        <td v-text="opt.linkfield"></td>
+                        <td v-if="opt.datatype" v-text="opt.datatype"></td>
+                        <td v-else><span class="fst-italic">Not specified</span></td>
+                        <td v-text="opt.nosearch !== true ? 'Yes' : 'No'"></td>
+                        <td v-text="opt.massiveaction !== false ? 'Yes' : 'No'"></td>
+                    </tr>
+                </template>
                 <tr v-else>
                     <td colspan="8" class="text-center">No Search Options</td>
                 </tr>

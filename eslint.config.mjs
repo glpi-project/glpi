@@ -119,13 +119,6 @@ export default [
             }],
             "vue/multi-word-component-names": "off",
             "indent": "off",
-            "no-restricted-globals": [
-                "error",
-                {
-                    "name": "$",
-                    "message": "Using jQuery is not allowed here."
-                }
-            ],
             "no-restricted-syntax": [
                 "error",
                 {
@@ -135,7 +128,19 @@ export default [
                 {
                     "selector": "NewExpression[callee.name='XMLHttpRequest']",
                     "message": "Use axios for HTTP requests instead of XMLHttpRequest."
-                }
+                },
+                {
+                    "selector": "CallExpression[callee.object.name='$'][callee.property.name=/^(ajax|get|post)$/]",
+                    "message": "Use axios for HTTP requests instead of jQuery AJAX methods."
+                },
+                // {
+                //     "selector": "CallExpression[callee.object.name='$'][callee.property.name='each']",
+                //     "message": "Use for loop or Array.forEach instead of jQuery $.each."
+                // },
+                // {
+                //     "selector": "CallExpression[callee.name='$']",
+                //     "message": "Use native DOM methods like querySelector instead of jQuery selectors."
+                // }
             ]
         }
     },

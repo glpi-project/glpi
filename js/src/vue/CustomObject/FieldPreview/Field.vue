@@ -1,5 +1,5 @@
 <script setup>
-    const props = defineProps({
+    defineProps({
         field_key: String,
         customfields_id: {
             type: Number,

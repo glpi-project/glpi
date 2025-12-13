@@ -32,7 +32,6 @@
  */
 
 /* global _ */
-/* eslint-disable no-restricted-globals */
 
 import SearchTokenizer from "./SearchTokenizer.js";
 

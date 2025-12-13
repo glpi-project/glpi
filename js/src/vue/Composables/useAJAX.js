@@ -47,5 +47,6 @@ export function useAJAX() {
         ajaxPost: (url, data = {}, config = {}) => instance.post(url, data, config),
         ajaxPut: (url, data = {}, config = {}) => instance.put(url, data, config),
         ajaxDelete: (url, config = {}) => instance.delete(url, config),
+        axiosInstance: instance,
     };
 }

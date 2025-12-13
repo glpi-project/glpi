@@ -1,6 +1,7 @@
 <script setup>
     /* global hotkeys, fuzzy */
-    import {computed, ref, watch} from "vue";
+    import {computed, ref, watch, useTemplateRef, onMounted, onUnmounted} from "vue";
+    import { useAJAX } from "../Composables/useAJAX.js";
 
     let shortcut = `<kbd>Ctrl</kbd> + <kbd>Alt</kbd> + <kbd>G</kbd>`;
     if (navigator.userAgent.includes('Mac')) {
@@ -12,6 +13,21 @@
 
     const input_text = ref(null);
     const all_menus = ref([]);
+    const modal_el = useTemplateRef('ref_modal');
+    const search_input = useTemplateRef('ref_search');
+    const results_el = useTemplateRef('ref_results');
+    const bs_modal = ref(null);
+    const { ajaxGet } = useAJAX();
+
+    onMounted(() => {
+        bs_modal.value = new window.bootstrap.Modal(modal_el.value);
+    });
+
+    onUnmounted(() => {
+        if (bs_modal.value) {
+            bs_modal.value.dispose();
+        }
+    });
 
     const results = computed(() => {
         return fuzzy.filter(input_text.value, all_menus.value, {
@@ -48,43 +64,44 @@
         active_result.value = 0;
     });
     watch(active_result, () => {
-        const results = $('#fuzzysearch .results');
-        const active_li = results.find('li.active');
-        const new_active_li = results.find(`li:nth-child(${active_result.value + 1})`);
+        const active_li = results_el.value.querySelector('li.active');
+        const new_active_li = results_el.value.querySelector(`li:nth-child(${active_result.value + 1})`);
         if (new_active_li) {
             if (active_li) {
-                active_li.removeClass('active');
+                active_li.classList.remove('active');
             }
-            new_active_li.addClass('active');
-            results.scrollTop(new_active_li.position().top - results.find('li:first-child').position().top);
+            new_active_li.classList.add('active');
+            results_el.value.scrollTo({
+                top: new_active_li.offsetTop - results_el.value.querySelector('li:first-child').offsetTop
+            });
         }
     });
 
     const trigger_fuzzy = () => {
         if (all_menus.value.length === 0) {
-            $.ajax({
-                url: CFG_GLPI.root_doc + '/ajax/fuzzysearch.php',
-                method: 'GET',
-                dataType: 'json'
-            }).then((response) => {
-                all_menus.value = response;
+            ajaxGet('/ajax/fuzzysearch.php', {
+                params: {
+                    method: 'GET',
+                    dataType: 'json'
+                }
+            }).then(({data: menus}) => {
+                all_menus.value = menus;
             });
         }
-        const fuzzy_search = $('#fuzzysearch');
-        if (!fuzzy_search.parent().is('body')) {
-            fuzzy_search.detach().appendTo('body');
-        }
-        fuzzy_search.modal('show');
+        bs_modal.value.show();
         input_text.value = '';
-        $('#fuzzysearch input').focus();
+        search_input.value.focus();
     };
     const hideModal = () => {
-        $('#fuzzysearch').modal('hide');
+        bs_modal.value.hide();
     };
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
-    $(document).on('click', '.trigger-fuzzy', trigger_fuzzy);
-    $(document).on('keydown', (e) => {
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('.trigger-fuzzy')) {
+            trigger_fuzzy();
+        }
+    });
+    document.addEventListener('keydown', (e) => {
         if (e.key === 'g') {
             if ((e.ctrlKey || e.metaKey) && e.altKey) {
                 e.preventDefault();
@@ -95,31 +112,33 @@
 </script>
 
 <template>
-    <div id="fuzzysearch" class="modal" tabindex="-1" @keydown.esc="hideModal" @keyup="navigate_results">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="ti ti-arrow-big-right me-2"></i>
-                        {{ header_message }}
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="alert alert-info d-flex" role="alert">
-                        <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
-                        <p v-html="shortcut_message"></p>
+    <Teleport to="body">
+        <div ref="ref_modal" id="fuzzysearch" class="modal" tabindex="-1" @keydown.esc="hideModal" @keyup="navigate_results">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="ti ti-arrow-big-right me-2"></i>
+                            {{ header_message }}
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <input type="text" class="form-control" :placeholder="placeholder" v-model="input_text">
-                    <ul class="results list-group mt-2">
-                        <li v-for="result in results" :key="result.index" class="list-group-item">
-                            <a :href="result.original.url" v-html="result.string"></a>
-                        </li>
-                    </ul>
+                    <div class="modal-body">
+                        <div class="alert alert-info d-flex" role="alert">
+                            <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
+                            <p v-html="shortcut_message"></p>
+                        </div>
+                        <input ref="ref_search" type="text" class="form-control" :placeholder="placeholder" v-model="input_text">
+                        <ul ref="ref_results" class="results list-group mt-2">
+                            <li v-for="result in results" :key="result.index" class="list-group-item">
+                                <a :href="result.original.url" v-html="result.string"></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </Teleport>
 </template>
 
 <style scoped>
