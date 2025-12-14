@@ -51,4 +51,22 @@ describe('Page layout', () => {
 
         cy.get('header.navbar').injectAndCheckA11y();
     });
+
+    it('See About info', () => {
+        const cannot_see = ['Self-Service', 'Observer', 'Technician', 'Hotliner', 'Admin'];
+        const can_see = ['Super-Admin'];
+
+        for (const profile of cannot_see) {
+            cy.changeProfile(profile);
+            cy.visit('/');
+            cy.findByRole('link', {name: 'User menu'}).click();
+            cy.findByRole('link', { name: /About/ }).should('not.exist');
+        }
+        for (const profile of can_see) {
+            cy.changeProfile(profile);
+            cy.visit('/');
+            cy.findByRole('link', {name: 'User menu'}).click();
+            cy.findByRole('link', {name: /About/}).should('exist');
+        }
+    });
 });

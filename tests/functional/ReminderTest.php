@@ -112,4 +112,18 @@ class ReminderTest extends DbTestCase
             trim(preg_replace('/\s+/', ' ', $str))
         );
     }
+
+    public function testGetListCriteriaIsValid(): void
+    {
+        global $DB;
+        $this->login('post-only', 'postonly');
+        $criteria = \Reminder::getListCriteria();
+        $this->assertFalse($DB->request($criteria['public'])->isFailed(), 'Public criteria is not valid for post-only user');
+        $this->assertFalse($DB->request($criteria['personal'])->isFailed(), 'Personal criteria is not valid for post-only user');
+
+        $this->login();
+        $criteria = \Reminder::getListCriteria();
+        $this->assertFalse($DB->request($criteria['public'])->isFailed(), 'Public criteria is not valid for TU_USER user');
+        $this->assertFalse($DB->request($criteria['personal'])->isFailed(), 'Personal criteria is not valid for TU_USER user');
+    }
 }
