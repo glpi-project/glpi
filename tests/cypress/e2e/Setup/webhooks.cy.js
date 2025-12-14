@@ -65,4 +65,27 @@ describe('Webhooks', () => {
             cy.get('#payload .monaco-editor').invoke('outerHeight').should('be.gte', 100);
         });
     });
+
+    it('has secret', () => {
+        // primarily used to test the copy/disclose buttons for password fields
+        cy.visit(`/front/webhook.form.php?id=${webhook_id}`);
+        cy.findByRole('tab', { name: 'Security' }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.findByLabelText(/^Secret/).should('have.attr', 'type', 'password');
+            cy.findByLabelText(/^Secret/).next().trigger('mousedown');
+            cy.findByLabelText(/^Secret/).should('have.attr', 'type', 'text');
+            cy.findByLabelText(/^Secret/).next().trigger('mouseup');
+            cy.findByLabelText(/^Secret/).should('have.attr', 'type', 'password');
+            cy.findByLabelText(/^Secret/).next().next().click();
+            cy.findByLabelText(/^Secret/).invoke('val').then((secretValue) => {
+                cy.wrap(secretValue).should('have.length.greaterThan', 0);
+                // should be copied to clipboard
+                cy.window().then((win) => {
+                    win.navigator.clipboard.readText().then((clipText) => {
+                        expect(clipText).to.eq(secretValue);
+                    });
+                });
+            });
+        });
+    });
 });

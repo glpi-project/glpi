@@ -405,6 +405,7 @@ class RequestTest extends TestCase
         } catch (RequestException $e) {
             $response = $e->getResponse();
             $this->assertInstanceOf(Response::class, $response);
+            $this->assertEquals('Basic realm="basic"', $response->getHeaderLine('www-authenticate'));
             $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
         }
 
@@ -452,6 +453,7 @@ class RequestTest extends TestCase
         } catch (RequestException $e) {
             $response = $e->getResponse();
             $this->assertInstanceOf(Response::class, $response);
+            $this->assertEquals('Basic realm="basic"', $response->getHeaderLine('www-authenticate'));
             $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
         }
 
@@ -475,6 +477,7 @@ class RequestTest extends TestCase
         } catch (RequestException $e) {
             $response = $e->getResponse();
             $this->assertInstanceOf(Response::class, $response);
+            $this->assertEquals('Basic realm="basic"', $response->getHeaderLine('www-authenticate'));
             $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
         }
 

@@ -749,6 +749,15 @@ class AuthLdapTest extends DbTestCase
         );
         $this->assertTrue(AuthLDAP::testLDAPConnection($ldap->getID()));
         $this->checkLdapConnection($ldap->connect());
+
+        $this->assertTrue(
+            $ldap->update([
+                'id' => $ldap->getID(),
+                'is_active' => 0,
+            ])
+        );
+        $this->assertTrue(AuthLDAP::testLDAPConnection($ldap->getID()));
+        $this->assertFalse($ldap->connect());
     }
 
     /**
