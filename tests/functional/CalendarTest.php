@@ -253,7 +253,6 @@ class CalendarTest extends DbTestCase
             '2019-07-01'   => false,
             '2019-07-12'   => true,
             ''             => false,
-            null           => false,
             '2020-07-05'   => false,
             '2020-08-15'   => false,
             '2020-09-15'   => false,
@@ -321,6 +320,7 @@ class CalendarTest extends DbTestCase
         foreach ($dates as $date => $expected) {
             $this->assertSame($expected, $calendar->isHoliday($date), "$date was expected to be " . ($expected ? "a holiday" : "not a holiday"));
         }
+        $this->assertFalse($calendar->isHoliday(null));
     }
 
     public function testClone()
