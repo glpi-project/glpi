@@ -2049,7 +2049,7 @@ JAVASCRIPT;
         string $bgcolor = "",
         int $nb_series = 1,
         bool $revert = true
-    ) {
+    ): array {
         if ($nb_series == 0) {
             return [
                 'names'  => [],

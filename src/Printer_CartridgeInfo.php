@@ -53,7 +53,7 @@ class Printer_CartridgeInfo extends CommonDBChild
      *
      * @return array
      */
-    public function getInfoForPrinter(Printer $printer)
+    public function getInfoForPrinter(Printer $printer): array
     {
         global $DB;
 
@@ -77,7 +77,7 @@ class Printer_CartridgeInfo extends CommonDBChild
      *
      * @return void
      */
-    public function showForPrinter(Printer $printer)
+    public function showForPrinter(Printer $printer): void
     {
         $info = $this->getInfoForPrinter($printer);
 
@@ -160,7 +160,7 @@ HTML;
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 

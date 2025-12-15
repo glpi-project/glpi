@@ -326,7 +326,7 @@ class SoftwareTest extends DbTestCase
      *
      * @return \Software
      */
-    private function createSoft()
+    private function createSoft(): \Software
     {
         $software     = new \Software();
         $softwares_id = $software->add([

@@ -59,7 +59,7 @@ class CustomFieldDefinitionTest extends DbTestCase
      * Ensure custom fields are removed from assets when the custom field definition is removed
      * @return void
      */
-    public function testCleanDBOnPurge()
+    public function testCleanDBOnPurge(): void
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [

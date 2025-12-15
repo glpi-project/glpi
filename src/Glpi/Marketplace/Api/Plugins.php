@@ -98,7 +98,7 @@ class Plugins
         string $endpoint = '',
         array $options = [],
         string $method = 'GET'
-    ) {
+    ): ResponseInterface|bool {
         if (!GLPINetwork::isRegistered()) {
             // Simulate empty response if registration key is not valid
             return new Response(200, [], '[]');
@@ -196,7 +196,7 @@ class Plugins
         string $tag_filter = "",
         string $string_filter = "",
         string $sort = 'sort-alpha-asc'
-    ) {
+    ): array {
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey('marketplace_all_plugins');
@@ -305,7 +305,7 @@ class Plugins
         int $nb_per_page = 15,
         string $sort = 'sort-alpha-asc',
         int &$total = 0
-    ) {
+    ): array {
         $plugins = $this->getAllPlugins($force_refresh, $tag_filter, $string_filter, $sort);
 
         $total = count($plugins);
@@ -322,7 +322,7 @@ class Plugins
      *
      * @return int number of plugins
      */
-    public function getNbPlugins(string $tag_filter = "")
+    public function getNbPlugins(string $tag_filter = ""): int
     {
         $plugins = $this->getAllPlugins(false, $tag_filter);
 
@@ -355,7 +355,7 @@ class Plugins
      *
      * @return void we don't wait for a response, this a fire and forget request
      */
-    public function incrementPluginDownload(string $key, string $version)
+    public function incrementPluginDownload(string $key, string $version): void
     {
         $this->request(
             "plugin/{$key}/download/{$version}",

@@ -54,7 +54,7 @@ class Group_RSSFeed extends CommonDBRelation
      *
      * @return array of groups linked to a rssfeed
      **/
-    public static function getGroups($rssfeeds_id)
+    public static function getGroups(int $rssfeeds_id): array
     {
         global $DB;
 

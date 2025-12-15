@@ -249,7 +249,7 @@ class Application extends BaseApplication
      *
      * @return OutputInterface
      */
-    public function getOutput()
+    public function getOutput(): OutputInterface
     {
         return $this->output;
     }
@@ -358,7 +358,7 @@ class Application extends BaseApplication
      *
      * @throws RuntimeException
      */
-    private function computeAndLoadOutputLang()
+    private function computeAndLoadOutputLang(): void
     {
 
         // 1. Check in command line arguments
@@ -397,7 +397,7 @@ class Application extends BaseApplication
      *
      * @return bool
      */
-    private function isLanguageValid($language)
+    private function isLanguageValid(string $language): bool
     {
         return is_array($this->config)
          && array_key_exists('languages', $this->config)

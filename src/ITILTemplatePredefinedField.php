@@ -172,7 +172,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      *
      * @return array of predefined fields
      **/
-    public function getPredefinedFields($ID, $withtypeandcategory = false)
+    public function getPredefinedFields(int $ID, bool $withtypeandcategory = false): array
     {
         global $DB;
 
@@ -248,7 +248,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      *
      * @return array the excluded fields (keys and values are equals)
      */
-    public static function getExcludedFields()
+    public static function getExcludedFields(): array
     {
         return [
             -2 => -2, // validation request

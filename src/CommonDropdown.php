@@ -88,7 +88,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return bool true if translation is available, false otherwise
      **/
-    public function maybeTranslated()
+    public function maybeTranslated(): bool
     {
         return $this->can_be_translated;
     }
@@ -160,7 +160,7 @@ abstract class CommonDropdown extends CommonDBTM
      * Possible 'type' can be found in templates/dropdown_form.html.twig, @see showForm()
      * @return array Additional fields
      **/
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         global $DB;
 
@@ -387,7 +387,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @since 10.0.0 $options param added
      */
-    public function displaySpecificTypeField($ID, $field = [], array $options = []) {}
+    public function displaySpecificTypeField(int $ID, array $field = [], array $options = []): void {}
 
 
     public function pre_deleteItem()
@@ -531,7 +531,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return bool : is the value used ?
      */
-    public function isUsed()
+    public function isUsed(): bool
     {
         global $DB;
 
@@ -600,7 +600,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return bool
      **/
-    public function haveChildren()
+    public function haveChildren(): bool
     {
         return false;
     }
@@ -614,7 +614,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return bool
      */
-    public function showDeleteConfirmForm()
+    public function showDeleteConfirmForm(): bool
     {
 
         if ($this->haveChildren()) {
@@ -695,7 +695,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return int the ID of the new (or -1 if not found)
      **/
-    public function findID(array &$input)
+    public function findID(array &$input): int
     {
         global $DB;
 
@@ -737,7 +737,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return int|bool the ID of the new or existing dropdown (-1 or false on failure)
      **/
-    public function import(array $input)
+    public function import(array $input): int|bool
     {
 
         if (!isset($input['name'])) {
@@ -776,12 +776,12 @@ abstract class CommonDropdown extends CommonDBTM
      * @return int Dropdown id
      **/
     public function importExternal(
-        $value,
-        $entities_id = -1,
-        $external_params = [],
-        $comment = "",
-        $add = true
-    ) {
+        string $value,
+        int $entities_id = -1,
+        array $external_params = [],
+        string $comment = "",
+        bool $add = true
+    ): int {
 
         $value = trim($value);
         if (strlen($value) == 0) {
@@ -930,7 +930,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @return string
      */
-    public function getLinks($withname = false)
+    public function getLinks(bool $withname = false): string
     {
         global $CFG_GLPI;
 

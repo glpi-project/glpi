@@ -102,7 +102,7 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
      * @return bool true if displayed  false if item not found or not right to display
      *
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -209,7 +209,7 @@ TWIG, $twig_params);
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function dropdownForOneSoftware($options = [])
+    public static function dropdownForOneSoftware(array $options = []): int|string
     {
         global $DB;
 
@@ -276,7 +276,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function showForSoftware(Software $soft)
+    public static function showForSoftware(Software $soft): void
     {
         global $DB;
 

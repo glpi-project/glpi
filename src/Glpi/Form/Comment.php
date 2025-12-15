@@ -312,7 +312,7 @@ final class Comment extends CommonDBChild implements
      *
      * @return void
      */
-    protected function logUpdateInParentForm($history = true): void
+    protected function logUpdateInParentForm(bool $history = true): void
     {
         if ($this->input['_no_history'] ?? false) {
             return;

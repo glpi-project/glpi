@@ -60,7 +60,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function getTelemetryInfos(bool $hide_sensitive_data = false)
+    public static function getTelemetryInfos(bool $hide_sensitive_data = false): array
     {
         $data = [
             'glpi'   => self::grabGlpiInfos($hide_sensitive_data),
@@ -80,7 +80,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabGlpiInfos(bool $hide_sensitive_data = false)
+    public static function grabGlpiInfos(bool $hide_sensitive_data = false): array
     {
         global $CFG_GLPI;
 
@@ -130,7 +130,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabDbInfos(bool $hide_sensitive_data = false)
+    public static function grabDbInfos(bool $hide_sensitive_data = false): array
     {
         global $DB;
 
@@ -165,7 +165,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabWebserverInfos(bool $hide_sensitive_data = false)
+    public static function grabWebserverInfos(bool $hide_sensitive_data = false): array
     {
         global $CFG_GLPI;
 
@@ -215,7 +215,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabPhpInfos(bool $hide_sensitive_data = false)
+    public static function grabPhpInfos(bool $hide_sensitive_data = false): array
     {
         $php = [
             'version'   => $hide_sensitive_data ? 'x.y.z' : str_replace(PHP_EXTRA_VERSION, '', PHP_VERSION),
@@ -237,7 +237,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function grabOsInfos(bool $hide_sensitive_data = false)
+    public static function grabOsInfos(bool $hide_sensitive_data = false): array
     {
         $distro = false;
         if (file_exists('/etc/redhat-release')) {
@@ -259,7 +259,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    public static function getAverage($itemtype)
+    public static function getAverage(string $itemtype): string
     {
         $count = (int) countElementsInTable(getTableForItemType($itemtype));
 
@@ -288,7 +288,7 @@ class Telemetry extends CommonGLPI
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'telemetry':
@@ -302,7 +302,7 @@ class Telemetry extends CommonGLPI
      *
      * @param CronTask $task CronTask instance
      */
-    public static function cronTelemetry($task): ?int
+    public static function cronTelemetry(CronTask $task): ?int
     {
         $data = self::getTelemetryInfos();
         $infos = json_encode(['data' => $data]);
@@ -334,7 +334,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    final public static function getInstanceUuid()
+    final public static function getInstanceUuid(): string
     {
         return Config::getUuid('instance');
     }
@@ -344,7 +344,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    final public static function getRegistrationUuid()
+    final public static function getRegistrationUuid(): string
     {
         return Config::getUuid('registration');
     }
@@ -354,7 +354,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    final public static function generateInstanceUuid()
+    final public static function generateInstanceUuid(): string
     {
         return Config::generateUuid('instance');
     }
@@ -364,7 +364,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    final public static function generateRegistrationUuid()
+    final public static function generateRegistrationUuid(): string
     {
         return Config::generateUuid('registration');
     }
@@ -375,7 +375,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    public static function getViewLink()
+    public static function getViewLink(): string
     {
         global $CFG_GLPI;
 
@@ -400,7 +400,7 @@ class Telemetry extends CommonGLPI
      *
      * @return void
      */
-    public static function enable()
+    public static function enable(): void
     {
         global $DB;
         $DB->update(
@@ -430,7 +430,7 @@ class Telemetry extends CommonGLPI
      *
      * @return bool
      */
-    public static function isEnabled()
+    public static function isEnabled(): bool
     {
         global $DB;
         $iterator = $DB->request([
@@ -451,7 +451,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    public static function showTelemetry()
+    public static function showTelemetry(): string
     {
         $out = "<div class='form-check'>
          <input type='checkbox' class='form-check-input' checked='checked' value='1' name='send_stats' id='send_stats'/>
@@ -473,7 +473,7 @@ class Telemetry extends CommonGLPI
      *
      * @return string
      */
-    public static function showReference()
+    public static function showReference(): string
     {
         $out = "<h3>" . __s('Reference your GLPI') . "</h3>";
         $out .= sprintf(

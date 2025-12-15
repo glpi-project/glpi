@@ -89,7 +89,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 
@@ -175,7 +175,7 @@ class PDU_Rack extends CommonDBRelation
      * @param  int $side The side of rack to check
      * @return array   [position -> racks_id | 0]
      */
-    public static function getFilled(Rack $rack, $side = 0)
+    public static function getFilled(Rack $rack, int $side = 0): array
     {
         $pdu    = new PDU();
         $model  = new PDUModel();
@@ -308,7 +308,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @return void
      */
-    public static function showListForRack(Rack $rack)
+    public static function showListForRack(Rack $rack): void
     {
         global $DB;
 
@@ -364,7 +364,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @return void
      */
-    public static function showStatsForRack(Rack $rack)
+    public static function showStatsForRack(Rack $rack): void
     {
         global $CFG_GLPI, $DB;
 
@@ -474,7 +474,7 @@ class PDU_Rack extends CommonDBRelation
      *
      * @return void
      */
-    public static function showFirstForm($racks_id = 0)
+    public static function showFirstForm(int $racks_id = 0): void
     {
 
         $rand = mt_rand();
@@ -519,7 +519,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public static function showVizForRack(Rack $rack, $side)
+    public static function showVizForRack(Rack $rack, int|array $side): void
     {
         global $CFG_GLPI;
 
@@ -661,7 +661,7 @@ JAVASCRIPT;
      * Return all possible side in a rack where a pdu can be placed
      * @return array (int => label)
      */
-    public static function getSides()
+    public static function getSides(): array
     {
         return [
             self::SIDE_LEFT   => __('Left'),
@@ -676,7 +676,7 @@ JAVASCRIPT;
      * @param  int $side See class constants and above `getSides`` method
      * @return string        the side name
      */
-    public static function getSideName($side)
+    public static function getSideName(int $side): string
     {
         return self::getSides()[$side];
     }
@@ -687,7 +687,7 @@ JAVASCRIPT;
      * @param  int|array $side Side to target, use an array for multiple sides
      * @return DBmysqlIterator
      */
-    public static function getForRackSide(Rack $rack, $side)
+    public static function getForRackSide(Rack $rack, int|array $side): DBmysqlIterator
     {
         global $DB;
 
@@ -707,7 +707,7 @@ JAVASCRIPT;
      * @param array $fields_requested Fields to request
      * @return DBmysqlIterator
      */
-    public static function getUsed($fields_requested = ['*'])
+    public static function getUsed(array $fields_requested = ['*']): DBmysqlIterator
     {
         global $DB;
 
@@ -722,7 +722,7 @@ JAVASCRIPT;
      * @param  int $side
      * @return false|int       the opposite side
      */
-    public static function getOtherSide($side)
+    public static function getOtherSide(int $side): bool|int
     {
         switch ($side) {
             case self::SIDE_TOP:

@@ -47,7 +47,7 @@ interface ProviderInterface
      * @return string
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getAuthorizationUrl()
      */
-    public function getAuthorizationUrl(array $options = []);
+    public function getAuthorizationUrl(array $options = []): string;
 
     /**
      * @param string $grant
@@ -56,7 +56,7 @@ interface ProviderInterface
      * @return AccessTokenInterface
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getAccessToken()
      */
-    public function getAccessToken($grant, array $options = []);
+    public function getAccessToken(string $grant, array $options = []): AccessTokenInterface;
 
     /**
      * Requests and returns the resource owner of given access token.
@@ -65,7 +65,7 @@ interface ProviderInterface
      * @return ResourceOwnerInterface
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getResourceOwner()
      */
-    public function getResourceOwner(AccessToken $token);
+    public function getResourceOwner(AccessToken $token): ResourceOwnerInterface;
 
     /**
      * Returns provider name.

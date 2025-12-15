@@ -80,7 +80,7 @@ class CleanSoftwareCommand extends AbstractCommand
      * @return void
      * @throws InvalidArgumentException
      */
-    private function validateInput(InputInterface $input)
+    private function validateInput(InputInterface $input): void
     {
         $max = $input->getOption('max');
         if (!is_numeric($max)) {

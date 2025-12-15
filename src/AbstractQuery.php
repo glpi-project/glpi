@@ -46,7 +46,7 @@ abstract class AbstractQuery
      *
      * @param string $alias Alias for the whole subquery
      */
-    public function __construct($alias = null)
+    public function __construct(?string $alias = null)
     {
         $this->alias = $alias;
     }
@@ -56,7 +56,7 @@ abstract class AbstractQuery
      *
      * @return string|null
      */
-    public function getAlias()
+    public function getAlias(): ?string
     {
         return $this->alias;
     }
@@ -69,7 +69,7 @@ abstract class AbstractQuery
      *
      * @psalm-taint-escape sql
      */
-    abstract public function getQuery();
+    abstract public function getQuery(): string;
 
     public function __toString()
     {

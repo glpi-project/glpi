@@ -47,7 +47,7 @@ final class RequestException extends Exception
      * @param int $code
      * @param Exception $previous
      */
-    public function __construct($http_code, $message, $code = 0, $previous = null)
+    public function __construct(int $http_code, string $message, int $code = 0, ?Exception $previous = null)
     {
         $this->http_code = $http_code;
         parent::__construct($message, $code, $previous);

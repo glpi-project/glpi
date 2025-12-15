@@ -85,7 +85,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -241,7 +241,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return void
      **/
-    public function showItemtype()
+    public function showItemtype(): void
     {
         global $CFG_GLPI;
 
@@ -285,7 +285,7 @@ class Fieldblacklist extends CommonDropdown
     /**
      * @return void
      */
-    public function selectCriterias()
+    public function selectCriterias(): void
     {
         global $CFG_GLPI;
 
@@ -330,7 +330,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return string|int|false
      */
-    public static function dropdownField($itemtype, $options = [])
+    public static function dropdownField(string $itemtype, array $options = []): string|int|bool
     {
         global $DB;
 
@@ -375,7 +375,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return void
      **/
-    public function selectValues($field = '')
+    public function selectValues(string $field = ''): void
     {
         if ($field == '') {
             $field = $this->fields['field'];
@@ -406,7 +406,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return bool true is value if blacklisted, false otherwise
      **/
-    public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value)
+    public static function isFieldBlacklisted(string $itemtype, int $entities_id, string $field, string $value): bool
     {
         global $DB;
 

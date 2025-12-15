@@ -108,7 +108,7 @@ class SoftwareLicenseTest extends DbTestCase
      *
      * @return \Software
      */
-    private function createSoft()
+    private function createSoft(): \Software
     {
         $softwares_id = $this->createItem(\Software::class, [
             'name' => 'Software ' . $this->getUniqueString(),

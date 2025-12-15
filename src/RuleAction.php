@@ -293,7 +293,7 @@ class RuleAction extends CommonDBChild
      *
      * @return array of RuleAction objects
      **/
-    public function getRuleActions($ID)
+    public function getRuleActions(int $ID): array
     {
         global $DB;
 
@@ -322,7 +322,7 @@ class RuleAction extends CommonDBChild
      *
      * @return void
      */
-    public function addActionByAttributes($action, $ruleid, $field, $value)
+    public function addActionByAttributes(string $action, int $ruleid, string $field, mixed $value): void
     {
         $input = [
             'action_type'     => $action,
@@ -347,7 +347,7 @@ class RuleAction extends CommonDBChild
      * </ul>
      * @return string|int|false Returns the dropdown HTML if display is false, otherwise the random number used to create the dropdown is returned.
      **/
-    public static function dropdownActions($options)
+    public static function dropdownActions(array $options): string|int|bool
     {
         $p = array_replace([
             'subtype'     => '',
@@ -389,7 +389,7 @@ class RuleAction extends CommonDBChild
     /**
      * @return array<string, string>
      */
-    public static function getActions()
+    public static function getActions(): array
     {
         return [
             'assign'              => __('Assign'),
@@ -415,7 +415,7 @@ class RuleAction extends CommonDBChild
      * @param string $ID
      * @return string
      */
-    public static function getActionByID($ID)
+    public static function getActionByID(string $ID): string
     {
         $actions = self::getActions();
         return $actions[$ID] ?? '';
@@ -426,7 +426,7 @@ class RuleAction extends CommonDBChild
      * @param array $regex_result
      * @return string
      **/
-    public static function getRegexResultById($action, $regex_result)
+    public static function getRegexResultById(string $action, array $regex_result): string
     {
         $results = [];
 
@@ -450,7 +450,7 @@ class RuleAction extends CommonDBChild
      *
      * @return array
      */
-    public function getAlreadyUsedForRuleID($rules_id, $sub_type)
+    public function getAlreadyUsedForRuleID(int $rules_id, $sub_type): array
     {
         global $DB;
 
@@ -485,7 +485,7 @@ class RuleAction extends CommonDBChild
      *
      * FIXME: should return a string, since method result is used... Or remove usage.
      */
-    public function displayActionSelectPattern($options = [])
+    public function displayActionSelectPattern(array $options = [])
     {
 
         $display = false;

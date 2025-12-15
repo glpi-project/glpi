@@ -143,7 +143,7 @@ class Notepad extends CommonDBChild
      *
      * @return number
      **/
-    public static function countForItem(CommonDBTM $item)
+    public static function countForItem(CommonDBTM $item): number
     {
 
         return countElementsInTable(
@@ -161,7 +161,7 @@ class Notepad extends CommonDBChild
      *
      * @return array
      **/
-    public static function getAllForItem(CommonDBTM $item, $target = null)
+    public static function getAllForItem(CommonDBTM $item, $target = null): array
     {
         global $DB;
 
@@ -223,7 +223,7 @@ class Notepad extends CommonDBChild
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
         $name = _n('Note', 'Notes', Session::getPluralNumber());
@@ -321,7 +321,7 @@ class Notepad extends CommonDBChild
      *
      * @return bool
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool
     {
         if (!Session::haveRight($item::$rightname, READNOTE)) {
             return false;

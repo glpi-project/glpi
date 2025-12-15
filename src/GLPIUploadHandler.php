@@ -47,7 +47,7 @@ class GLPIUploadHandler extends UploadHandler
      *
      * @return mixed
      */
-    public static function uploadFiles($params = [])
+    public static function uploadFiles(array $params = []): mixed
     {
         $default_params = [
             'name'           => '',
@@ -96,7 +96,7 @@ class GLPIUploadHandler extends UploadHandler
      *
      * @return bool
      */
-    protected function validate($uploaded_file, $file, $error, $index, $content_range)
+    protected function validate(string $uploaded_file, stdClass $file, int $error, int $index, ?array $content_range): bool
     {
         if (
             !empty(GLPI_DISALLOWED_UPLOADS_PATTERN)

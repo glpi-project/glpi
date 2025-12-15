@@ -513,7 +513,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @return bool
      */
-    public function sendById($ID)
+    public function sendById(int $ID): bool
     {
         if ($this->getFromDB($ID)) {
             $mode = $this->getField('mode');
@@ -536,7 +536,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @return array{queuednotification?: array{description: string, parameter?:string}}
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return match ($name) {
             'queuednotification' => [
@@ -564,7 +564,7 @@ class QueuedNotification extends CommonDBTM
      *
      * @return array
      */
-    public static function getPendings($send_time = null, $limit = 20, $limit_modes = null, $extra_where = [])
+    public static function getPendings(?string $send_time = null, int $limit = 20, ?array $limit_modes = null, array $extra_where = []): array
     {
         global $CFG_GLPI, $DB;
 
@@ -624,7 +624,7 @@ class QueuedNotification extends CommonDBTM
      * @return int either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotification($task = null)
+    public static function cronQueuedNotification(?CronTask $task = null): int
     {
         if (!Notification_NotificationTemplate::hasActiveMode()) {
             return 0;
@@ -666,7 +666,7 @@ class QueuedNotification extends CommonDBTM
      * @return int either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotificationClean(?CronTask $task = null)
+    public static function cronQueuedNotificationClean(?CronTask $task = null): int
     {
         global $DB;
 
@@ -698,7 +698,7 @@ class QueuedNotification extends CommonDBTM
      * @return int either 0 or 1
      * @used-by CronTask
      **/
-    public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null)
+    public static function cronQueuedNotificationCleanStaleAjax(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -764,7 +764,7 @@ class QueuedNotification extends CommonDBTM
      * @param string $string
      * @return string
      */
-    public static function cleanHtml($string)
+    public static function cleanHtml(string $string): string
     {
         $begin_strip     = -1;
         $end_strip       = -1;

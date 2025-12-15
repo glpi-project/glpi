@@ -53,7 +53,7 @@ interface SearchInputInterface
      *
      * @return void
      **/
-    public static function showGenericSearch(string $itemtype, array $params);
+    public static function showGenericSearch(string $itemtype, array $params): void;
 
     public static function cleanParams(array $params): array;
 
@@ -68,5 +68,5 @@ interface SearchInputInterface
      *
      * @return array parsed params
      **/
-    public static function manageParams($itemtype, $params = [], $usesession = true, $forcebookmark = false): array;
+    public static function manageParams($itemtype, array $params = [], bool $usesession = true, bool $forcebookmark = false): array;
 }

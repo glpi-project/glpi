@@ -182,7 +182,7 @@ class Provider
      *
      * @return array|void
      */
-    public static function __callStatic(string $name = "", array $arguments = [])
+    public static function __callStatic(string $name = "", array $arguments = []): array|void
     {
         if (str_contains($name, 'bigNumber')) {
             $itemtype = str_replace('bigNumber', '', $name);
@@ -1588,7 +1588,7 @@ class Provider
      *
      * @return array
      */
-    public static function averageTicketTimes(array $params = [])
+    public static function averageTicketTimes(array $params = []): array
     {
         $DBread = DBConnection::getReadConnection();
         $default_params = [
@@ -1669,7 +1669,7 @@ class Provider
      *
      * @return array
      */
-    public static function getTicketSummary(array $params = [])
+    public static function getTicketSummary(array $params = []): array
     {
         $default_params = [
             'label'         => "",
@@ -1749,7 +1749,7 @@ class Provider
      *
      * @FIXME Remove `criteria` key encapsulation. It cannot be done in 10.0 as some plugins are relying on current signature.
      */
-    final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [], bool $default_criteria_on_empty = false)
+    final public static function getSearchFiltersCriteria(string $table = "", array $apply_filters = [], bool $default_criteria_on_empty = false): array
     {
         $s_criteria = [];
         Profiler::getInstance()->start(__METHOD__);
@@ -1778,7 +1778,7 @@ class Provider
      *
      * @return array
      */
-    public static function getFiltersCriteria(string $table = "", array $apply_filters = [])
+    public static function getFiltersCriteria(string $table = "", array $apply_filters = []): array
     {
         $where = [];
         $join  = [];

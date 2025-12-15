@@ -290,7 +290,7 @@ class ComputerTest extends DbTestCase
      *
      * @return void
      */
-    public function testCreateLinks()
+    public function testCreateLinks(): void
     {
         $this->login();
 
@@ -703,7 +703,7 @@ class ComputerTest extends DbTestCase
      * Test cloning a computer template to a new template
      * @return void
      */
-    public function testCloneTemplate()
+    public function testCloneTemplate(): void
     {
         $this->login();
         $this->setEntity('_test_root_entity', true);
@@ -728,7 +728,7 @@ class ComputerTest extends DbTestCase
      * Test creating a template from an item using the clone feature
      * @return void
      */
-    public function testCreateTemplateFromItem()
+    public function testCreateTemplateFromItem(): void
     {
         $this->login();
         $this->setEntity('_test_root_entity', true);

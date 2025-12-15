@@ -97,7 +97,7 @@ final class RecordSet
      * @param $row
      * @return array
      */
-    private function getHydratedPartsOfMainRecord($row)
+    private function getHydratedPartsOfMainRecord($row): array
     {
         $hydrated_row = [];
         $context = $this->search->getContext();

@@ -279,7 +279,7 @@ class Agent extends CommonDBTM
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -367,7 +367,7 @@ class Agent extends CommonDBTM
      *
      * @return bool
      */
-    public function showForm($id, array $options = [])
+    public function showForm(int $id, array $options = []): bool
     {
         global $CFG_GLPI;
 
@@ -398,7 +398,7 @@ class Agent extends CommonDBTM
      *
      * @return int
      */
-    public function handleAgent($metadata)
+    public function handleAgent(array $metadata): int
     {
         global $CFG_GLPI;
 
@@ -504,7 +504,7 @@ class Agent extends CommonDBTM
      *
      * @return array|false
      */
-    public function prepareInputs(array $input)
+    public function prepareInputs(array $input): array|bool
     {
         if ($this->isNewItem() && empty($input['deviceid'])) {
             Session::addMessageAfterRedirect(__s('"deviceid" is mandatory!'), false, ERROR);
@@ -692,7 +692,7 @@ class Agent extends CommonDBTM
      *
      * @return Response
      */
-    public function requestAgent($endpoint): Response
+    public function requestAgent(string $endpoint): Response
     {
         if (self::$found_address !== false) {
             $addresses = [self::$found_address];
@@ -731,7 +731,7 @@ class Agent extends CommonDBTM
      *
      * @return array
      */
-    public function requestStatus()
+    public function requestStatus(): array
     {
         // must return json
         try {
@@ -752,7 +752,7 @@ class Agent extends CommonDBTM
      *
      * @return array
      */
-    public function requestInventory()
+    public function requestInventory(): array
     {
         // must return json
         try {
@@ -776,7 +776,7 @@ class Agent extends CommonDBTM
      *
      * @return array
      */
-    private function handleAgentResponse(Response $response, $request): array
+    private function handleAgentResponse(Response $response, string $request): array
     {
         $data = [];
 
@@ -815,7 +815,7 @@ class Agent extends CommonDBTM
      *
      * @copyright 2010-2022 by the FusionInventory Development Team.
      */
-    public static function cronCleanoldagents($task = null)
+    public static function cronCleanoldagents(?object $task = null): int
     {
         global $DB, $PLUGIN_HOOKS;
 

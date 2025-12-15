@@ -195,7 +195,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    protected function handleImportError($message, ?ProgressBar $progress_bar = null, bool $prevent_exit = false): void
+    protected function handleImportError(string $message, ?ProgressBar $progress_bar = null, bool $prevent_exit = false): void
     {
         $skip_errors = $this->input->getOption('skip-errors');
 

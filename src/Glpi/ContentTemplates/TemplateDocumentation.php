@@ -109,7 +109,7 @@ class TemplateDocumentation
         string $title,
         array $parameters,
         ?string $fields_prefix = null
-    ) {
+    ): void {
         // Check if this section is already defined, needed as some parameters
         // might have the same references
         if (isset($this->sections[$title])) {

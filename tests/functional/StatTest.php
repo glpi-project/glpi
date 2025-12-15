@@ -433,7 +433,7 @@ class StatTest extends DbTestCase
      * @param mixed $value2 Secondary parameter value
      * @return \Ticket $ticket
      */
-    private function createTestDataForStatistics($param, $value)
+    private function createTestDataForStatistics(string $param, mixed $value): \Ticket
     {
         $ticketData = [
             'name' => "Test ticket",
@@ -612,7 +612,7 @@ class StatTest extends DbTestCase
      * Helper method to create test groups and assign them to tickets
      * @return int The ID of the created group
      */
-    private function createTestGroup($tickets_id, $param)
+    private function createTestGroup($tickets_id, $param): int
     {
         $group = $this->createItem(\Group::class, [
             'name' => 'testgroup_' . $param,
@@ -644,7 +644,7 @@ class StatTest extends DbTestCase
      * Helper method to create test suppliers and assign them to tickets
      * @return int The ID of the created supplier
      */
-    private function createTestSupplier($tickets_id)
+    private function createTestSupplier($tickets_id): int
     {
         $supplier = $this->createItem(\Supplier::class, [
             'name' => 'testsupplier',
@@ -670,7 +670,7 @@ class StatTest extends DbTestCase
      * Helper method to update ticket category
      * @return int The ID of the created category
      */
-    private function updateTicketCategory($tickets_id)
+    private function updateTicketCategory($tickets_id): int
     {
         $category = $this->createItem(\ITILCategory::class, [
             'name' => 'Test category',
@@ -694,7 +694,7 @@ class StatTest extends DbTestCase
      * Helper method to add ticket location
      * @return int The ID of the created location
      */
-    private function addTicketLocation($tickets_id)
+    private function addTicketLocation($tickets_id): int
     {
         $location = $this->createItem(\Location::class, [
             'name' => 'Test location',

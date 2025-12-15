@@ -122,7 +122,7 @@ class Contact extends CommonDBTM
      *
      * @return array|null Address related fields.
      */
-    public function getAddress()
+    public function getAddress(): ?array
     {
         global $DB;
 
@@ -159,7 +159,7 @@ class Contact extends CommonDBTM
      *
      *@return string containing the website
      **/
-    public function getWebsite()
+    public function getWebsite(): string
     {
         global $DB;
 
@@ -463,7 +463,7 @@ HTML;
      *
      * @return void
      */
-    public function generateVcard()
+    public function generateVcard(): void
     {
 
         if (!$this->can($this->fields['id'], READ)) {

@@ -77,7 +77,7 @@ class CalDAV extends Plugin
      *
      * @return void
      */
-    public function propFind(PropFind $propFind, INode $node)
+    public function propFind(PropFind $propFind, INode $node): void
     {
 
         // Return any requested property as long as it is defined in node.

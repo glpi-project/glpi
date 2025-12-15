@@ -113,7 +113,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
      *
      * @return array of mandatory fields
      **/
-    public function getMandatoryFields($ID, $withtypeandcategory = true)
+    public function getMandatoryFields(int $ID, bool $withtypeandcategory = true): array
     {
         global $DB;
 
@@ -143,7 +143,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
      *
      * @return array the excluded fields (keys and values are equals)
      */
-    public static function getExcludedFields()
+    public static function getExcludedFields(): array
     {
         return [
             52  => 52, // global_validation

@@ -49,7 +49,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return int
      */
-    public static function cronPurgeLogs($task)
+    public static function cronPurgeLogs(CronTask $task): int
     {
         $cron_status = 0;
 
@@ -80,7 +80,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __("Purge history")];
     }
@@ -90,7 +90,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeSoftware()
+    public static function purgeSoftware(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -164,7 +164,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeInfocom()
+    public static function purgeInfocom(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -195,7 +195,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeUserinfos()
+    public static function purgeUserinfos(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -264,7 +264,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeDevices()
+    public static function purgeDevices(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -294,7 +294,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeRelations()
+    public static function purgeRelations(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -322,7 +322,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeItems()
+    public static function purgeItems(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -353,7 +353,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeRefusedLogs()
+    public static function purgeRefusedLogs(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -378,7 +378,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeOthers()
+    public static function purgeOthers(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -405,7 +405,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgePlugins()
+    public static function purgePlugins(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -426,7 +426,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return void
      */
-    public static function purgeAll()
+    public static function purgeAll(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -446,7 +446,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return array|false
      */
-    public static function getDateModRestriction($month)
+    public static function getDateModRestriction(int $month): array|bool
     {
         if ($month > 0) {
             return ['date_mod' => ['<=', QueryFunction::dateSub(QueryFunction::now(), $month, 'MONTH')]];
@@ -464,7 +464,7 @@ class PurgeLogs extends CommonDBTM
      *
      * @return int
      */
-    public static function getLogsCount()
+    public static function getLogsCount(): int
     {
         return countElementsInTable('glpi_logs');
     }

@@ -162,7 +162,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return bool
      */
-    public function canComment()
+    public function canComment(): bool
     {
         return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
     }
@@ -198,7 +198,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      * @param bool $full  path or relative one
      * @return string
      **/
-    public static function getFormURLWithParam($params = [], $full = true): string
+    public static function getFormURLWithParam(array $params = [], bool $full = true): string
     {
         $url = self::getFormURL($full) . '?';
 
@@ -278,7 +278,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      *@return void
      **/
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         if (
             Session::haveRight(self::$rightname, self::PUBLISHFAQ)
@@ -420,7 +420,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return bool
      **/
-    public function isPubliclyVisible()
+    public function isPubliclyVisible(): bool
     {
         global $CFG_GLPI;
 
@@ -497,7 +497,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return array LEFT JOIN clause
      */
-    private static function getVisibilityCriteriaCommonJoin(bool $forceall = false)
+    private static function getVisibilityCriteriaCommonJoin(bool $forceall = false): array
     {
         global $CFG_GLPI;
 
@@ -844,7 +844,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return void
      */
-    public function updateCounter()
+    public function updateCounter(): void
     {
         global $DB;
 
@@ -867,7 +867,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return bool|string
      **/
-    public function showFull($options = [])
+    public function showFull(array $options = []): bool|string
     {
         global $CFG_GLPI, $DB;
 
@@ -963,7 +963,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
      *
      * @return void
      */
-    public function searchForm($options)
+    public function searchForm(array $options): void
     {
         global $CFG_GLPI;
 
@@ -1019,7 +1019,7 @@ TWIG, $twig_params);
      *
      * @return array : SQL request
      **/
-    public static function getListRequest(array $params, $type = 'search')
+    public static function getListRequest(array $params, string $type = 'search'): array
     {
         global $DB;
 
@@ -1357,7 +1357,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showList($options, $type = 'search')
+    public static function showList(array $options, string $type = 'search'): void
     {
         global $CFG_GLPI;
 
@@ -1620,7 +1620,7 @@ TWIG, $twig_params);
      *
      * @return void|string
      **/
-    public static function showRecentPopular(string $type = "", bool $display = true)
+    public static function showRecentPopular(string $type = "", bool $display = true): void|string
     {
         global $DB;
 
@@ -1993,7 +1993,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public function getAnswer()
+    public function getAnswer(): string
     {
         $answer = KnowbaseItemTranslation::getTranslatedValue($this, 'answer');
         $answer = RichText::getEnhancedHtml($answer, [
@@ -2029,7 +2029,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    protected function getShowVisibilityDropdownParams()
+    protected function getShowVisibilityDropdownParams(): array
     {
         $params = parent::getShowVisibilityDropdownParams();
         $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
@@ -2044,7 +2044,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function revertTo($revid)
+    public function revertTo(int $revid): bool
     {
         $revision = new KnowbaseItem_Revision();
         $revision->getFromDB($revid);
@@ -2078,7 +2078,7 @@ TWIG, $twig_params);
      *
      * @return array        Array of ids
      */
-    public static function getForCategory($category_id, $kbi = null)
+    public static function getForCategory(int $category_id, ?KnowbaseItem $kbi = null): array
     {
         global $DB;
 
@@ -2128,7 +2128,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function getAdditionalSearchCriteria($params)
+    public static function getAdditionalSearchCriteria(array $params): array
     {
         if (!self::canView()) {
             $params['criteria'][] = [

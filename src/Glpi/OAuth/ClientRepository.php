@@ -49,7 +49,7 @@ class ClientRepository implements ClientRepositoryInterface
      *
      * @return ?ClientEntityInterface
      */
-    public function getClientEntity($clientIdentifier): ?ClientEntityInterface
+    public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
     {
         global $DB;
 
@@ -79,7 +79,7 @@ class ClientRepository implements ClientRepositoryInterface
      * @return bool
      * @throws OAuthServerException If the requested grant type is not allowed for the client
      */
-    public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
+    public function validateClient(string $clientIdentifier, string $clientSecret, string $grantType): bool
     {
         $client = new OAuthClient();
         $client->getFromDBByCrit([

@@ -60,7 +60,7 @@ trait CalDAVUriUtilTrait
      *
      * @return string|null
      */
-    protected function getPrincipalUri(CommonDBTM $item)
+    protected function getPrincipalUri(CommonDBTM $item): ?string
     {
 
         $principal_uri = null;
@@ -84,7 +84,7 @@ trait CalDAVUriUtilTrait
      *
      * @return string
      */
-    protected function getGroupPrincipalUri($group_id)
+    protected function getGroupPrincipalUri(int $group_id): string
     {
         return Principal::PREFIX_GROUPS . '/' . $group_id;
     }
@@ -96,7 +96,7 @@ trait CalDAVUriUtilTrait
      *
      * @return string|null
      */
-    protected function getUserPrincipalUri($username)
+    protected function getUserPrincipalUri(string $username): ?string
     {
         return Principal::PREFIX_USERS . '/' . $username;
         ;
@@ -109,7 +109,7 @@ trait CalDAVUriUtilTrait
      *
      * @return CommonDBTM|null
      */
-    protected function getPrincipalItemFromUri($uri)
+    protected function getPrincipalItemFromUri(string $uri): ?CommonDBTM
     {
         $principal_itemtype = $this->getPrincipalItemtypeFromUri($uri);
 
@@ -143,7 +143,7 @@ trait CalDAVUriUtilTrait
      *
      * @return string|null
      */
-    protected function getPrincipalItemtypeFromUri($uri)
+    protected function getPrincipalItemtypeFromUri(string $uri): ?string
     {
         $uri_parts = split($uri);
         $prefix = $uri_parts[0];
@@ -169,7 +169,7 @@ trait CalDAVUriUtilTrait
      *
      * @return int|null
      */
-    protected function getGroupIdFromPrincipalUri($uri)
+    protected function getGroupIdFromPrincipalUri(string $uri): ?int
     {
         $uri_parts = split($uri);
         return Group::class === $this->getPrincipalItemtypeFromUri($uri) && is_numeric($uri_parts[1]) ? (int) $uri_parts[1] : null;
@@ -182,7 +182,7 @@ trait CalDAVUriUtilTrait
      *
      * @return string|null
      */
-    protected function getUsernameFromPrincipalUri($uri)
+    protected function getUsernameFromPrincipalUri(string $uri): ?string
     {
         $uri_parts = split($uri);
         return User::class === $this->getPrincipalItemtypeFromUri($uri) ? $uri_parts[1] : null;
@@ -195,7 +195,7 @@ trait CalDAVUriUtilTrait
      *
      * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */
-    protected function getCalendarItemForUid($uid)
+    protected function getCalendarItemForUid(string $uid)
     {
 
         global $CFG_GLPI, $DB;
@@ -278,7 +278,7 @@ trait CalDAVUriUtilTrait
      *
      * @return (CalDAVCompatibleItemInterface&CommonDBTM)|null
      */
-    protected function getCalendarItemForPath($path)
+    protected function getCalendarItemForPath(string $path)
     {
         return $this->getCalendarItemForUid(preg_replace('/\.ics$/', '', $path));
     }

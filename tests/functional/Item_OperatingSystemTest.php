@@ -91,7 +91,7 @@ class Item_OperatingSystemTest extends DbTestCase
      *
      * @return array
      */
-    private function createDdObjects()
+    private function createDdObjects(): array
     {
         $objects = [];
         foreach (['', 'Architecture', 'Version', 'Edition', 'KernelVersion'] as $object) {

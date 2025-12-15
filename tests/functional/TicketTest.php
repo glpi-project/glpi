@@ -1594,11 +1594,11 @@ class TicketTest extends DbTestCase
      */
     private function checkFormOutput(
         Ticket $ticket,
-        $name = true,
-        $textarea = true,
-        $priority = true,
-        $save = true,
-        $assign = true,
+        bool $name = true,
+        bool $textarea = true,
+        bool $priority = true,
+        bool $save = true,
+        bool $assign = true,
         $openDate = true,
         $timeOwnResolve = true,
         $type = true,
@@ -1610,7 +1610,7 @@ class TicketTest extends DbTestCase
         $location = true,
         $itil_form = true,
         $cancel_ticket = false,
-    ) {
+    ): void {
         ob_start();
         $ticket->showForm($ticket->getID());
         $output = ob_get_contents();
@@ -7697,7 +7697,7 @@ HTML,
      * @return void
      * @see https://github.com/glpi-project/glpi/issues/15761
      */
-    public function testGetTimelineItemsSameDate()
+    public function testGetTimelineItemsSameDate(): void
     {
         $this->login();
 
@@ -8046,7 +8046,7 @@ HTML,
      *
      * @return void
      */
-    public function testActorsMagicProperties()
+    public function testActorsMagicProperties(): void
     {
         $provider = $this->testActorsMagicPropertiesProvider();
         foreach ($provider as $row) {

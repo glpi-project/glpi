@@ -926,7 +926,7 @@ class SearchTest extends DbTestCase
      *
      * @return void
      */
-    public function testSearchOptions()
+    public function testSearchOptions(): void
     {
         $classes = $this->getSearchableClasses();
         foreach ($classes as $class) {
@@ -976,7 +976,7 @@ class SearchTest extends DbTestCase
      *
      * @return void
      */
-    public function testSearchAllMeta()
+    public function testSearchAllMeta(): void
     {
 
         $classes = $this->getSearchableClasses();
@@ -1208,7 +1208,7 @@ class SearchTest extends DbTestCase
      *
      * @return void
      */
-    public function testGetSearchOptionsWException()
+    public function testGetSearchOptionsWException(): void
     {
         $error = 'Duplicate key `12` (`One search option`/`Any option`) in `tests\units\DupSearchOpt` search options.';
 
@@ -2951,7 +2951,7 @@ class SearchTest extends DbTestCase
      *
      * @param array $result
      */
-    private function checkSearchResult($result)
+    private function checkSearchResult(array $result)
     {
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('count', $result['data']);

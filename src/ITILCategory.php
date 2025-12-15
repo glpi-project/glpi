@@ -337,7 +337,7 @@ class ITILCategory extends CommonTreeDropdown
      * @since 9.5.0
      *
      */
-    public static function getITILCategoryIDByCode($value)
+    public static function getITILCategoryIDByCode(string $value): int
     {
         return self::getITILCategoryIDByField("code", $value);
     }
@@ -349,7 +349,7 @@ class ITILCategory extends CommonTreeDropdown
      * @param mixed  $value
      * @return int
      **/
-    private static function getITILCategoryIDByField($field, $value)
+    private static function getITILCategoryIDByField(string $field, mixed $value): int
     {
         global $DB;
 
@@ -411,7 +411,7 @@ class ITILCategory extends CommonTreeDropdown
      *
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         // The code must be unique so we cannot clone it
         unset($input['code']);
@@ -445,7 +445,7 @@ class ITILCategory extends CommonTreeDropdown
      * @param int $withtemplate (default 0)
      * @return false|void
      */
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
+    public static function showForITILTemplate(ITILTemplate $tt, int $withtemplate = 0): bool|void
     {
         global $CFG_GLPI, $DB;
 

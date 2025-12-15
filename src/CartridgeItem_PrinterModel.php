@@ -96,7 +96,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
      *
      * @return bool|void
      **/
-    public static function showForCartridgeItem(CartridgeItem $item)
+    public static function showForCartridgeItem(CartridgeItem $item): bool|void
     {
         $instID = $item->getID();
 

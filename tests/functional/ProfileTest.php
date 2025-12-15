@@ -48,7 +48,7 @@ class ProfileTest extends DbTestCase
      *
      * @return array
      */
-    public static function haveUserRightProvider()
+    public static function haveUserRightProvider(): array
     {
 
         return [

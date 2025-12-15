@@ -221,7 +221,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.84
      **/
-    public function loadActors()
+    public function loadActors(): void
     {
         // Might not be 100% needed to clear cache here but let's be safe
         // This way, any direct call to loadActors is assured to return accurate data
@@ -252,7 +252,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param string $property_name
      * @return mixed
      */
-    public function __get(string $property_name)
+    public function __get(string $property_name): mixed
     {
         switch ($property_name) {
             case 'users':
@@ -586,7 +586,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @see restoreInput()
      * @see restoreSavedValues()
      */
-    protected function restoreInputAndDefaults($ID, array &$options, ?array $overriden_defaults = null, bool $force_set_defaults = false): void
+    protected function restoreInputAndDefaults(int $ID, array &$options, ?array $overriden_defaults = null, bool $force_set_defaults = false): void
     {
         $default_values = $overriden_defaults ?? static::getDefaultValues();
 
@@ -881,7 +881,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param array $params posted data by an itil object
      * @return array of possible entities_id
      */
-    public function getEntitiesForRequesters(array $params = [])
+    public function getEntitiesForRequesters(array $params = []): array
     {
         $requesters = [];
         if (array_key_exists('_users_id_requester', $params) && !empty($params["_users_id_requester"])) {
@@ -919,7 +919,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool true if succeed else false
      **/
-    public function getFromDBwithData($ID)
+    public function getFromDBwithData(int $ID): bool
     {
 
         if ($this->getFromDB($ID)) {
@@ -933,7 +933,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return void
      */
-    public function getAdditionalDatas() {}
+    public function getAdditionalDatas(): void {}
 
 
     /**
@@ -941,7 +941,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canAdminActors()
+    public function canAdminActors(): bool
     {
         if (isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1) {
             return false;
@@ -955,7 +955,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canAssign()
+    public function canAssign(): bool
     {
         if ($this->isDeleted() || (!$this->isNewItem() && $this->isClosed())) {
             return false;
@@ -970,7 +970,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canAssignToMe()
+    public function canAssignToMe(): bool
     {
         if (
             isset($this->fields['is_deleted']) && $this->fields['is_deleted'] == 1
@@ -989,7 +989,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canApprove()
+    public function canApprove(): bool
     {
 
         return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
@@ -1005,7 +1005,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canAddFollowups()
+    public function canAddFollowups(): bool
     {
         return (
             (
@@ -1054,7 +1054,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return bool
      */
-    public function canAddTasks()
+    public function canAddTasks(): bool
     {
         return (
             (
@@ -1122,7 +1122,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canReopen()
+    public function canReopen(): bool
     {
         return true;
     }
@@ -1194,7 +1194,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public function canSolve()
+    public function canSolve(): bool
     {
 
         return ((Session::haveRight(static::$rightname, UPDATE)
@@ -1211,7 +1211,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public function maySolve()
+    public function maySolve(): bool
     {
 
         return ((Session::haveRight(static::$rightname, UPDATE)
@@ -1229,7 +1229,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      */
-    public static function getReopenableStatusArray()
+    public static function getReopenableStatusArray(): array
     {
         return [self::CLOSED, self::SOLVED, self::WAITING, self::OBSERVED];
     }
@@ -1243,7 +1243,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public function isUser($type, $users_id)
+    public function isUser(int $type, int $users_id): bool
     {
 
         if (isset($this->users[$type])) {
@@ -1267,7 +1267,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return bool
      **/
     // FIXME add params typehint in GLPI 11.0
-    public function isGroup($type, $groups_id): bool
+    public function isGroup(int $type, int $groups_id): bool
     {
         if (isset($this->groups[$type])) {
             foreach ($this->groups[$type] as $data) {
@@ -1290,7 +1290,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public function isSupplier($type, $suppliers_id)
+    public function isSupplier(int $type, int $suppliers_id): bool
     {
 
         if (isset($this->suppliers[$type])) {
@@ -1311,7 +1311,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public function getUsers($type)
+    public function getUsers(int $type): array
     {
 
         return $this->users[$type] ?? [];
@@ -1325,7 +1325,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public function getGroups($type)
+    public function getGroups(int $type): array
     {
 
         return $this->groups[$type] ?? [];
@@ -1341,7 +1341,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public function getAllUsers($type)
+    public function getAllUsers(int $type): array
     {
 
         $users = [];
@@ -1369,7 +1369,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public function getSuppliers($type)
+    public function getSuppliers(int $type): array
     {
 
         return $this->suppliers[$type] ?? [];
@@ -1383,7 +1383,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countUsers($type = 0)
+    public function countUsers(int $type = 0): int
     {
 
         if ($type > 0) {
@@ -1410,7 +1410,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countGroups($type = 0)
+    public function countGroups(int $type = 0): int
     {
 
         if ($type > 0) {
@@ -1439,7 +1439,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countSuppliers($type = 0)
+    public function countSuppliers(int $type = 0): int
     {
 
         if ($type > 0) {
@@ -1467,7 +1467,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public function haveAGroup($type, array $groups)
+    public function haveAGroup(int $type, array $groups): bool
     {
 
         if (count($groups) && isset($this->groups[$type])) {
@@ -1490,7 +1490,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function getDefaultActor($type)
+    public function getDefaultActor(int $type): int
     {
 
         /// TODO own_ticket -> own_itilobject
@@ -1521,7 +1521,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string
      **/
-    public function getDefaultActorRightSearch($type)
+    public function getDefaultActorRightSearch(int $type): string
     {
 
         if ($type == CommonITILActor::ASSIGN) {
@@ -1542,7 +1542,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    private function countActiveObjectsFor(CommonITILActor $linkclass, $id, $role)
+    private function countActiveObjectsFor(CommonITILActor $linkclass, int $id, int $role): int
     {
 
         $itemtable = $this->getTable();
@@ -1579,7 +1579,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countActiveObjectsForUser($users_id)
+    public function countActiveObjectsForUser(int $users_id): int
     {
         $linkclass = $this->getActorObjectForItem(User::class);
         return $this->countActiveObjectsFor(
@@ -1617,7 +1617,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countActiveObjectsForTech($users_id)
+    public function countActiveObjectsForTech(int $users_id): int
     {
         $linkclass = $this->getActorObjectForItem(User::class);
         return $this->countActiveObjectsFor(
@@ -1673,7 +1673,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countActiveObjectsForTechGroup($groups_id)
+    public function countActiveObjectsForTechGroup(int $groups_id): int
     {
         $linkclass = $this->getActorObjectForItem(Group::class);
         return $this->countActiveObjectsFor(
@@ -1693,7 +1693,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function countActiveObjectsForSupplier($suppliers_id)
+    public function countActiveObjectsForSupplier(int $suppliers_id): int
     {
         $linkclass = $this->getActorObjectForItem(Supplier::class);
         return $this->countActiveObjectsFor(
@@ -1714,7 +1714,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public function getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days)
+    public function getActiveOrSolvedLastDaysForItem($itemtype, int $items_id, int $days): array
     {
         global $DB;
 
@@ -1797,7 +1797,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return false|array
      */
-    protected function handleTemplateFields(array $input, bool $show_error_message = true)
+    protected function handleTemplateFields(array $input, bool $show_error_message = true): bool|array
     {
         //// check mandatory fields
 
@@ -1939,7 +1939,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param array $input
      * @return void
      */
-    protected function manageITILObjectLinkInput($input)
+    protected function manageITILObjectLinkInput(array $input): void
     {
         if (isset($input['_link'])) {
             $link = $input['_link'];
@@ -3146,7 +3146,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public function computeDefaultValuesForAdd($input)
+    public function computeDefaultValuesForAdd(array $input): array
     {
 
         if (!isset($input["status"])) {
@@ -3243,7 +3243,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param mixed $history Not used
      * @return void
      */
-    public function post_clone($source, $history)
+    public function post_clone(CommonDBTM $source, mixed $history): void
     {
         global $DB;
         $update = [];
@@ -3290,7 +3290,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int from 1 to 5 (priority)
      **/
-    public static function computePriority($urgency, $impact)
+    public static function computePriority(int $urgency, int $impact): int
     {
         global $CFG_GLPI;
         // Failback to trivial
@@ -3312,7 +3312,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string id of the select
      **/
-    public static function dropdownPriority(array $options = [])
+    public static function dropdownPriority(array $options = []): string
     {
         global $CFG_GLPI;
 
@@ -3450,7 +3450,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $value priority ID
      * @return string
      **/
-    public static function getPriorityName($value)
+    public static function getPriorityName(int $value): string
     {
 
         switch ($value) {
@@ -3506,7 +3506,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string id of the select
      **/
-    public static function dropdownUrgency(array $options = [])
+    public static function dropdownUrgency(array $options = []): string
     {
         global $CFG_GLPI;
 
@@ -3582,7 +3582,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $value urgency ID
      * @return string
      **/
-    public static function getUrgencyName($value)
+    public static function getUrgencyName(int $value): string
     {
 
         switch ($value) {
@@ -3636,7 +3636,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * \
      * @return string id of the select
      **/
-    public static function dropdownImpact(array $options = [])
+    public static function dropdownImpact(array $options = []): string
     {
         global $CFG_GLPI;
 
@@ -3705,7 +3705,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $value impact ID
      * @return string
      **/
-    public static function getImpactName($value)
+    public static function getImpactName(int $value): string
     {
 
         switch ($value) {
@@ -3752,7 +3752,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getAllStatusArray($withmetaforsearch = false)
+    public static function getAllStatusArray(bool $withmetaforsearch = false): array
     {
 
         // To be overridden by class
@@ -3767,7 +3767,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getClosedStatusArray()
+    public static function getClosedStatusArray(): array
     {
 
         // To be overridden by class
@@ -3782,7 +3782,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getSolvedStatusArray()
+    public static function getSolvedStatusArray(): array
     {
 
         // To be overridden by class
@@ -3796,7 +3796,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getNotSolvedStatusArray()
+    public static function getNotSolvedStatusArray(): array
     {
         $all = static::getAllStatusArray();
         foreach (static::getSolvedStatusArray() as $status) {
@@ -3822,7 +3822,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getNewStatusArray()
+    public static function getNewStatusArray(): array
     {
 
         // To be overridden by class
@@ -3832,7 +3832,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return array
      */
-    public static function getProcessStatusArray()
+    public static function getProcessStatusArray(): array
     {
         // To be overridden by class
         return [];
@@ -3845,7 +3845,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getProcessStatus()
+    public static function getProcessStatus(): array
     {
 
         // To be overridden by class
@@ -3863,7 +3863,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public static function isAllowedStatus($old, $new)
+    public static function isAllowedStatus(int $old, int $new): bool
     {
 
         if (
@@ -3894,7 +3894,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function isNotSolved()
+    public function isNotSolved(): bool
     {
         return !in_array(
             $this->fields['status'],
@@ -3914,7 +3914,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function isSolved(bool $include_closed = false)
+    public function isSolved(bool $include_closed = false): bool
     {
         $status = static::getSolvedStatusArray();
         if ($include_closed) {
@@ -3934,7 +3934,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function isClosed()
+    public function isClosed(): bool
     {
         return in_array(
             $this->fields['status'] ?? null,
@@ -3952,7 +3952,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      **/
-    public static function getAllowedStatusArray($current)
+    public static function getAllowedStatusArray(?int $current): array
     {
 
         $tab = static::getAllStatusArray();
@@ -3980,7 +3980,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      **/
-    public static function isStatusExists($status)
+    public static function isStatusExists(int $status): bool
     {
 
         $tab = static::getAllStatusArray();
@@ -4003,7 +4003,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return string|int Output string if display option is set to false,
      *                        otherwise random part of dropdown id
      **/
-    public static function dropdownStatus(array $options = [])
+    public static function dropdownStatus(array $options = []): string|int
     {
 
         $p = [
@@ -4067,7 +4067,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $value status ID
      * @return string|int
      **/
-    public static function getStatus($value)
+    public static function getStatus(int $value): string|int
     {
         $tab  = static::getAllStatusArray(true);
         // Return $value if not defined
@@ -4084,7 +4084,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string|bool Field part or false if not applicable
      **/
-    public static function getActorFieldNameType($type)
+    public static function getActorFieldNameType(int $type): string|bool
     {
 
         return match ((int) $type) {
@@ -4351,7 +4351,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.85
      **/
-    public function getSearchOptionsMain()
+    public function getSearchOptionsMain(): array
     {
         $tab = [];
 
@@ -4660,7 +4660,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.85
      **/
-    public function getSearchOptionsSolution()
+    public function getSearchOptionsSolution(): array
     {
         global $DB;
         $tab = [];
@@ -4768,7 +4768,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return array
      */
-    public function getSearchOptionsStats()
+    public function getSearchOptionsStats(): array
     {
         $tab = [];
 
@@ -4814,7 +4814,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return array
      */
-    public function getSearchOptionsActors()
+    public function getSearchOptionsActors(): array
     {
         $tab = [];
 
@@ -5127,7 +5127,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param string $table
      * @return QueryExpression|void
      */
-    public static function generateSLAOLAComputation($type, $table = "TABLE")
+    public static function generateSLAOLAComputation(string $type, string $table = "TABLE"): QueryExpression|void
     {
         global $DB;
 
@@ -5197,7 +5197,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 9.3
      */
-    public static function getStatusIcon($status)
+    public static function getStatusIcon(int $status): string
     {
         $class = htmlescape(static::getStatusClass($status));
         $label = htmlescape(static::getStatus($status));
@@ -5212,7 +5212,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 9.3
      */
-    public static function getStatusClass($status)
+    public static function getStatusClass(int $status): string
     {
         $class = match ($status) {
             self::INCOMING, self::WAITING, self::CLOSED => 'circle-filled',
@@ -5238,7 +5238,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 9.3
      */
-    public static function getStatusKey($status)
+    public static function getStatusKey(int $status): string
     {
         $key = '';
         switch ($status) {
@@ -5299,13 +5299,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      **/
     public function showActorAddForm(
         $type,
-        $rand_type,
-        $entities_id,
-        $is_hidden = [],
-        $withgroup = true,
-        $withsupplier = false,
-        $inobject = true
-    ) {
+        int $rand_type,
+        int $entities_id,
+        array $is_hidden = [],
+        bool $withgroup = true,
+        bool $withsupplier = false,
+        bool $inobject = true
+    ): void|bool {
         global $CFG_GLPI;
 
         $types = ['user'  => User::getTypeName(1)];
@@ -5393,7 +5393,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int|float $actiontime
      * @return string
      **/
-    public static function getActionTime($actiontime)
+    public static function getActionTime(int|float $actiontime): string
     {
         return Html::timestampToString($actiontime, false);
     }
@@ -5408,7 +5408,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return void
      *
      **/
-    public static function showMassiveSolutionForm(CommonITILObject $item)
+    public static function showMassiveSolutionForm(CommonITILObject $item): void
     {
         $solution = new ITILSolution();
         $solution->showForm(
@@ -5431,7 +5431,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $users_id_lastupdater    to force last_update id (default 0 = not used)
      * @return void
      **/
-    public function updateDateMod($ID, $no_stat_computation = false, $users_id_lastupdater = 0)
+    public function updateDateMod(int $ID, bool $no_stat_computation = false, int $users_id_lastupdater = 0): void
     {
         global $DB;
 
@@ -5462,7 +5462,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool : success
      **/
-    public function updateActionTime($ID)
+    public function updateActionTime(int $ID): bool
     {
         global $DB;
 
@@ -5496,7 +5496,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Get all available types to which an ITIL object can be assigned
      * @return array
      **/
-    public static function getAllTypesForHelpdesk()
+    public static function getAllTypesForHelpdesk(): array
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -5550,7 +5550,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool true if ticket can be assigned to this type, false if not
      **/
-    public static function isPossibleToAssignType($itemtype)
+    public static function isPossibleToAssignType(string $itemtype): bool
     {
 
         if (in_array($itemtype, $_SESSION["glpiactiveprofile"]["helpdesk_item_type"])) {
@@ -5565,7 +5565,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      */
-    public function computeSolveDelayStat()
+    public function computeSolveDelayStat(): int
     {
 
         if (
@@ -5608,7 +5608,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function computeCloseDelayStat()
+    public function computeCloseDelayStat(): int
     {
 
         if (
@@ -5646,7 +5646,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return void
      */
-    public function showStats()
+    public function showStats(): void
     {
 
         if (
@@ -5664,7 +5664,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return void
      */
-    public function showStatsDates()
+    public function showStatsDates(): void
     {
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr><th colspan='2'>" . _sn('Date', 'Dates', Session::getPluralNumber()) . "</th></tr>";
@@ -5690,7 +5690,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @return void
      */
-    public function showStatsTimes()
+    public function showStatsTimes(): void
     {
         echo "<div class='dates_timelines'>";
         echo "<table class='tab_cadre_fixe'>";
@@ -5747,7 +5747,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct users_ids which have itil object
      **/
-    public function getUsedAuthorBetween($date1 = '', $date2 = '')
+    public function getUsedAuthorBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -5826,7 +5826,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct recipients which have ITIL object
      **/
-    public function getUsedRecipientBetween($date1 = '', $date2 = '')
+    public function getUsedRecipientBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -5892,7 +5892,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct groups of tickets
      **/
-    public function getUsedGroupBetween($date1 = '', $date2 = '')
+    public function getUsedGroupBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -5964,7 +5964,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct recipents which have tickets
      **/
-    public function getUsedUserTitleOrTypeBetween($date1 = '', $date2 = '', $title = true)
+    public function getUsedUserTitleOrTypeBetween(string $date1 = '', string $date2 = '', bool $title = true): array
     {
         global $DB;
 
@@ -6042,7 +6042,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct priorities of tickets
      **/
-    public function getUsedPriorityBetween($date1 = '', $date2 = '')
+    public function getUsedPriorityBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6086,7 +6086,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct priorities of tickets
      **/
-    public function getUsedUrgencyBetween($date1 = '', $date2 = '')
+    public function getUsedUrgencyBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6131,7 +6131,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct priorities of tickets
      **/
-    public function getUsedImpactBetween($date1 = '', $date2 = '')
+    public function getUsedImpactBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6176,7 +6176,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct request types of tickets
      **/
-    public function getUsedRequestTypeBetween($date1 = '', $date2 = '')
+    public function getUsedRequestTypeBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6220,7 +6220,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct request types of tickets
      **/
-    public function getUsedSolutionTypeBetween($date1 = '', $date2 = '')
+    public function getUsedSolutionTypeBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6272,7 +6272,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct users which have any intervention assigned to.
      **/
-    public function getUsedTechBetween($date1 = '', $date2 = '')
+    public function getUsedTechBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6345,7 +6345,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct users which have any followup assigned to.
      **/
-    public function getUsedTechTaskBetween($date1 = '', $date2 = '')
+    public function getUsedTechTaskBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6436,7 +6436,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct enterprises which have any tickets assigned to.
      **/
-    public function getUsedSupplierBetween($date1 = '', $date2 = '')
+    public function getUsedSupplierBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6504,7 +6504,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array contains the distinct groups assigned to a tickets
      **/
-    public function getUsedAssignGroupBetween($date1 = '', $date2 = '')
+    public function getUsedAssignGroupBetween(string $date1 = '', string $date2 = ''): array
     {
         global $DB;
 
@@ -6579,7 +6579,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 10.0.0 "followups" option has been dropped
      */
-    public static function showShort($id, $options = [])
+    public static function showShort(int $id, array $options = []): void
     {
         global $DB;
 
@@ -6921,10 +6921,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return void
      */
     public static function commonListHeader(
-        $output_type = Search::HTML_OUTPUT,
-        $mass_id = '',
+        int $output_type = Search::HTML_OUTPUT,
+        string $mass_id = '',
         array $params = []
-    ) {
+    ): void {
         if ($output_type !== Search::HTML_OUTPUT) {
             Toolbox::deprecated('Only HTML output is allowed');
         }
@@ -7036,7 +7036,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return array The data with the other required fields added
      * @see CommonITILObject::getCommonDatatableColumns()
      */
-    public static function getDatatableEntries(array $data, $params = []): array
+    public static function getDatatableEntries(array $data, array $params = []): array
     {
         $params = array_replace([
             'ticket_stats' => false,
@@ -7308,7 +7308,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.90.4
      **/
-    public function getCalendar()
+    public function getCalendar(): int|mixed|null
     {
         return Entity::getUsedConfig(
             'calendars_strategy',
@@ -7330,7 +7330,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 9.2
      */
-    public static function getTimelinePosition($items_id, $sub_type, $users_id)
+    public static function getTimelinePosition(int $items_id, string $sub_type, int $users_id): int
     {
         $itilobject = new static();
         $itilobject->fields['id'] = $items_id;
@@ -7551,7 +7551,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *     object: mixed
      * }> Timeline items
      */
-    public function getTimelineItems(array $options = [])
+    public function getTimelineItems(array $options = []): array
     {
         $params = [
             'with_documents'     => true,
@@ -7998,7 +7998,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return void
      */
-    public static function showSubForm(CommonDBTM $item, $id, $params)
+    public static function showSubForm(CommonDBTM $item, int $id, array $params): void
     {
 
         if ($item instanceof Document_Item) {
@@ -8014,7 +8014,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param CommonITILObject $item
      * @return void
      */
-    public static function showEditDescriptionForm(CommonITILObject $item)
+    public static function showEditDescriptionForm(CommonITILObject $item): void
     {
         $can_requester = $item->canRequesterUpdateItem();
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/simple_form.html.twig', [
@@ -8033,7 +8033,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array[] of array[] of users and roles
      */
-    public function getITILActors()
+    public function getITILActors(): array
     {
         global $DB;
 
@@ -8121,7 +8121,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int followup count
      **/
-    public function numberOfFollowups($with_private = true)
+    public function numberOfFollowups(bool $with_private = true): int
     {
         global $DB;
 
@@ -8150,7 +8150,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      **/
-    public function numberOfTasks($with_private = true)
+    public function numberOfTasks(bool $with_private = true): int
     {
         global $DB;
 
@@ -8180,7 +8180,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function isTakeIntoAccountComputationBlocked($input)
+    public function isTakeIntoAccountComputationBlocked(array $input): bool
     {
         return array_key_exists('_do_not_compute_takeintoaccount', $input)
          && $input['_do_not_compute_takeintoaccount'];
@@ -8194,7 +8194,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function isStatusComputationBlocked(array $input)
+    public function isStatusComputationBlocked(array $input): bool
     {
         return array_key_exists('_do_not_compute_status', $input)
          && $input['_do_not_compute_status'];
@@ -8264,11 +8264,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @since 9.5.0
      **/
     public function getITILTemplateToUse(
-        $force_template = 0,
-        $type = null,
-        $itilcategories_id = 0,
-        $entities_id = -1
-    ) {
+        int $force_template = 0,
+        ?int $type = null,
+        int $itilcategories_id = 0,
+        int $entities_id = -1
+    ): ITILTemplate {
         if (!$type && $this->getType() != Ticket::getType()) {
             $type = true;
         }
@@ -8410,7 +8410,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string
      */
-    public function getTemplateFieldName($type = null): string
+    public function getTemplateFieldName(?int $type = null): string
     {
         $field = strtolower(static::getType()) . 'templates_id';
         if (static::getType() === Ticket::getType()) {
@@ -8443,7 +8443,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param int $entity entities_id usefull if function called by cron (default 0)
      * @return array
      **/
-    abstract public static function getDefaultValues($entity = 0);
+    abstract public static function getDefaultValues(int $entity = 0): array;
 
     /**
      * Get template class name.
@@ -8464,7 +8464,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string
      */
-    public static function getTemplateFormFieldName()
+    public static function getTemplateFormFieldName(): string
     {
         return '_' . strtolower(static::getType()) . 'template';
     }
@@ -8476,7 +8476,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      */
-    public static function getCommonCriteria()
+    public static function getCommonCriteria(): array
     {
         $fk = self::getForeignKeyField();
         $gtable = str_replace('glpi_', 'glpi_groups_', static::getTable());
@@ -8576,7 +8576,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      */
-    public function getAssociatedDocumentsCriteria($bypass_rights = false, ?User $user = null): array
+    public function getAssociatedDocumentsCriteria(bool $bypass_rights = false, ?User $user = null): array
     {
         global $DB; // Used to get subquery results - better performance
 
@@ -8717,7 +8717,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    protected function isNew()
+    protected function isNew(): bool
     {
         if (isset($this->input['status'])) {
             $status = $this->input['status'];
@@ -8737,7 +8737,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return string
      */
-    public static function getItemsTable()
+    public static function getItemsTable(): string
     {
         switch (static::getType()) {
             case 'Change':
@@ -8781,7 +8781,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    protected function hasImpactTab()
+    protected function hasImpactTab(): bool
     {
         foreach (array_keys($this->getLinkedItems()) as $itemtype) {
             $class = $itemtype;
@@ -8839,7 +8839,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * Handle "_tasktemplates_id" special input
      * @return void
      */
-    public function handleTaskTemplateInput()
+    public function handleTaskTemplateInput(): void
     {
         // Check input is valid
         if (
@@ -8990,7 +8990,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function manageValidationAdd($input)
+    public function manageValidationAdd(array $input): bool
     {
         $validation = static::getValidationClassInstance();
 
@@ -9260,7 +9260,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return void
      */
-    protected function updateActors(bool $disable_notifications = false)
+    protected function updateActors(bool $disable_notifications = false): void
     {
         // Reload actors to be able to categorize users as added/updated/deleted.
         $this->loadActors();
@@ -9595,7 +9595,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param array $input
      * @return array
      */
-    protected function setTechAndGroupFromItilCategory($input)
+    protected function setTechAndGroupFromItilCategory(array $input): array
     {
         $cat = new ITILCategory();
         $has_user_assigned  = $this->hasValidActorInInput($input, User::class, CommonITILActor::ASSIGN);
@@ -9623,7 +9623,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param CommonDBTM|null $item
      * @return array
      */
-    protected function setTechAndGroupFromHardware($input, $item)
+    protected function setTechAndGroupFromHardware(array $input, ?CommonDBTM $item): array
     {
         global $CFG_GLPI;
 
@@ -9660,7 +9660,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return array
      */
-    protected function assign(array $input)
+    protected function assign(array $input): array
     {
         // FIXME Deprecate this method in GLPI 11.0.
         if (!in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
@@ -10583,7 +10583,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int
      */
-    public function countOpenChildrenOfSameType()
+    public function countOpenChildrenOfSameType(): int
     {
         $itemtype = $this->getType();
         $link_class = CommonITILObject_CommonITILObject::getLinkClass($itemtype, $itemtype);
@@ -10615,7 +10615,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param array $output
      * @return array updated output var (unset `entities_id`, `items_id`, `itemtype`)
      */
-    public static function showPreviewAssignAction($output)
+    public static function showPreviewAssignAction(array $output): array
     {
         //If ticket is assign to an object, display this information first
         if (isset($output["entities_id"], $output["items_id"], $output["itemtype"])) {
@@ -10642,7 +10642,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return void
      */
-    protected function fillInputForBusinessRules(array &$input)
+    protected function fillInputForBusinessRules(array &$input): void
     {
         global $DB;
 
@@ -10726,7 +10726,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param string $name
      * @return array{description: string, parameter?: string}
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return match ($name) {
             'createinquest' => ['description' => __('Generation of satisfaction surveys')],
@@ -10741,7 +10741,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return int (0 : nothing done - 1 : done)
      **/
-    public static function cronCreateInquest($task)
+    public static function cronCreateInquest(CronTask $task): int
     {
         global $DB;
 
@@ -11143,7 +11143,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param array $input
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         unset($input['actiontime']);
         return $input;
@@ -11419,7 +11419,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @return bool
      */
-    public function canRequesterUpdateItem()
+    public function canRequesterUpdateItem(): bool
     {
         return true;
     }

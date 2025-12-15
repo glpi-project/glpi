@@ -86,7 +86,7 @@ class AuthTest extends DbTestCase
      *
      * @return array
      */
-    public static function lockStrategyProvider()
+    public static function lockStrategyProvider(): array
     {
         $tests = [];
 

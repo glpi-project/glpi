@@ -203,7 +203,7 @@ class Printer extends NetworkEquipment
      *
      * @return void
      */
-    public function handleMetrics()
+    public function handleMetrics(): void
     {
         if (!isset($this->counters)) {
             return;

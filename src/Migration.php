@@ -81,7 +81,7 @@ class Migration
     /**
      * @param string $ver Version number
      **/
-    public function __construct($ver, ?AbstractProgressIndicator $progress_indicator = null)
+    public function __construct(string $ver, ?AbstractProgressIndicator $progress_indicator = null)
     {
         global $DB;
         $this->db = $DB;
@@ -98,7 +98,7 @@ class Migration
      *
      * @return void
      **/
-    public function setVersion($ver)
+    public function setVersion(string $ver): void
     {
         $this->version = (string) $ver;
     }
@@ -110,7 +110,7 @@ class Migration
      *
      * @return void
      **/
-    public function flushLogDisplayMessage()
+    public function flushLogDisplayMessage(): void
     {
         if (isset($this->lastMessage)) {
             $tps = Html::timestampToString(time() - $this->lastMessage['time']);
@@ -126,7 +126,7 @@ class Migration
      *
      * @return void
      **/
-    public function displayMessage($msg)
+    public function displayMessage(string $msg): void
     {
         $this->flushLogDisplayMessage();
 
@@ -148,7 +148,7 @@ class Migration
      *
      * @return void
      **/
-    public function log($message, $warning)
+    public function log(string $message, bool $warning): void
     {
         if ($warning) {
             $log_file_name = 'warning_during_migration_to_' . $this->version;
@@ -226,7 +226,7 @@ class Migration
      *
      * @return string
      **/
-    private function fieldFormat($type, $default_value, $nodefault = false): string
+    private function fieldFormat(string $type, string $default_value, bool $nodefault = false): string
     {
 
         $format = '';
@@ -373,7 +373,7 @@ class Migration
      *
      * @return bool
      **/
-    public function addField($table, $field, $type, $options = [])
+    public function addField(string $table, string $field, string $type, array $options = []): bool
     {
         $params['update']    = '';
         $params['condition'] = '';
@@ -437,7 +437,7 @@ class Migration
      *
      * @return bool
      **/
-    public function changeField($table, $oldfield, $newfield, $type, $options = [])
+    public function changeField(string $table, string $oldfield, string $newfield, string $type, array $options = []): bool
     {
         $params['value']     = null;
         $params['nodefault'] = false;
@@ -496,7 +496,7 @@ class Migration
      *
      * @return void
      **/
-    public function dropField($table, $field)
+    public function dropField(string $table, string $field): void
     {
         if ($this->db->fieldExists($table, $field, false)) {
             $this->change[$table][] = $this->db->buildDrop($field, 'FIELD');
@@ -510,7 +510,7 @@ class Migration
      *
      * @return void
      **/
-    public function dropTable($table)
+    public function dropTable(string $table): void
     {
         if ($this->db->tableExists($table)) {
             $this->db->dropTable($table);
@@ -530,7 +530,7 @@ class Migration
      *
      * @return void
      **/
-    public function addKey($table, $fields, $indexname = '', $type = 'INDEX', $len = 0)
+    public function addKey(string $table, string|array $fields, string $indexname = '', string $type = 'INDEX', int $len = 0): void
     {
         // if no index name, we take that of the field(s)
         if (!$indexname) {
@@ -572,7 +572,7 @@ class Migration
      * @see isIndex()
      * @note Could be removed when using dependency injection or some other refactoring
      */
-    protected function hasKey($table, $indexname): bool
+    protected function hasKey(string $table, string $indexname): bool
     {
         return isIndex($table, $indexname);
     }
@@ -585,7 +585,7 @@ class Migration
      *
      * @return void
      **/
-    public function dropKey($table, $indexname)
+    public function dropKey(string $table, string $indexname): void
     {
         if ($this->hasKey($table, $indexname)) {
             $this->change[$table][] = $this->db->buildDrop($indexname, 'INDEX');
@@ -600,7 +600,7 @@ class Migration
      *
      * @return void
      **/
-    public function dropForeignKeyContraint($table, $keyname)
+    public function dropForeignKeyContraint(string $table, string $keyname): void
     {
         if (isForeignKeyContraint($table, $keyname)) {
             $this->change[$table][] = $this->db->buildDrop($keyname, 'FOREIGN KEY');
@@ -615,7 +615,7 @@ class Migration
      *
      * @return void
      **/
-    public function renameTable($oldtable, $newtable)
+    public function renameTable(string $oldtable, string $newtable): void
     {
         if (!$this->db->tableExists("$newtable") && $this->db->tableExists("$oldtable")) {
             $query = "RENAME TABLE `$oldtable` TO `$newtable`";
@@ -670,7 +670,7 @@ class Migration
      *
      * @return void
      **/
-    public function copyTable($oldtable, $newtable, bool $insert = true)
+    public function copyTable(string $oldtable, string $newtable, bool $insert = true): void
     {
         if (
             !$this->db->tableExists($newtable)
@@ -701,7 +701,7 @@ class Migration
      *
      * @return int|null id of the last item inserted by mysql
      **/
-    public function insertInTable($table, array $input)
+    public function insertInTable(string $table, array $input): ?int
     {
         if (
             $this->db->tableExists("$table")
@@ -729,7 +729,7 @@ class Migration
      *
      * @return void
      **/
-    public function migrationOneTable($table)
+    public function migrationOneTable(string $table): void
     {
         if (isset($this->change[$table])) {
             $query = "ALTER TABLE `$table` " . implode(" ,\n", $this->change[$table]) . " ";
@@ -762,7 +762,7 @@ class Migration
      *
      * @return void
      **/
-    public function executeMigration()
+    public function executeMigration(): void
     {
         foreach ($this->queries[self::PRE_QUERY] as $query) {
             $this->db->doQuery($query['query']);
@@ -801,7 +801,7 @@ class Migration
      *
      * @return int new rule id
      **/
-    public function createRule(array $rule, array $criteria, array $actions)
+    public function createRule(array $rule, array $criteria, array $actions): int
     {
         // Avoid duplicate - Need to be improved using a rule uuid of other
         if (countElementsInTable('glpi_rules', ['name' => $rule['name']])) {
@@ -860,7 +860,7 @@ class Migration
      *
      * @return void
      **/
-    public function updateDisplayPrefs($toadd = [], $todel = [], bool $only_default = false)
+    public function updateDisplayPrefs(array $toadd = [], array $todel = [], bool $only_default = false): void
     {
         //TRANS: %s is the table or item to migrate
         $this->addDebugMessage(sprintf(__('Data migration - %s'), 'glpi_displaypreferences'));
@@ -958,7 +958,7 @@ class Migration
      *
      * @return Migration
      */
-    private function addQuery($type, $query, $message = null)
+    private function addQuery(string $type, string $query, ?string $message = null): Migration
     {
         $this->queries[$type][] =  [
             'query'     => $query,
@@ -975,7 +975,7 @@ class Migration
      *
      * @return Migration
      */
-    public function addPreQuery($query, $message = null)
+    public function addPreQuery(string $query, ?string $message = null): Migration
     {
         return $this->addQuery(self::PRE_QUERY, $query, $message);
     }
@@ -988,7 +988,7 @@ class Migration
      *
      * @return Migration
      */
-    public function addPostQuery($query, $message = null)
+    public function addPostQuery(string $query, ?string $message = null): Migration
     {
         return $this->addQuery(self::POST_QUERY, $query, $message);
     }
@@ -1000,7 +1000,7 @@ class Migration
      *
      * @return bool
      */
-    public function backupTables($tables)
+    public function backupTables(array $tables): bool
     {
         $backup_tables = false;
         foreach ($tables as $table) {
@@ -1032,7 +1032,7 @@ class Migration
      *
      * @return Migration
      */
-    public function addConfig($values, $context = null)
+    public function addConfig(array $values, ?string $context = null): Migration
     {
         $context ??= $this->context;
         if (!isset($this->configs[$context])) {
@@ -1052,7 +1052,7 @@ class Migration
      *
      * @return Migration
      */
-    public function removeConfig(array $values, ?string $context = null)
+    public function removeConfig(array $values, ?string $context = null): Migration
     {
         if ($values === []) {
             return $this;
@@ -1076,7 +1076,7 @@ class Migration
      *
      * @return void
      */
-    private function storeConfig()
+    private function storeConfig(): void
     {
         foreach ($this->configs as $context => $config) {
             if (count($config)) {
@@ -1125,7 +1125,7 @@ class Migration
      *
      * @return void
      */
-    public function addRight($name, $rights = ALLSTANDARDRIGHT, $requiredrights = ['config' => READ | UPDATE])
+    public function addRight(string $name, int $rights = ALLSTANDARDRIGHT, array $requiredrights = ['config' => READ | UPDATE]): void
     {
         // Get all profiles where new rights has not been added yet
         $prof_iterator = $this->db->request(
@@ -1207,7 +1207,7 @@ class Migration
      *
      * @return void
      */
-    public function addRightByInterface($name, $right, $interface = 'central')
+    public function addRightByInterface(string $name, int $right, string $interface = 'central'): void
     {
         $prof_iterator = $this->db->request([
             'SELECT'    => [
@@ -1272,7 +1272,7 @@ class Migration
      *
      * @return void
      */
-    public function replaceRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    public function replaceRight(string $name, int $rights, array $requiredrights = ['config' => READ | UPDATE]): void
     {
         // Get all profiles with required rights
         $join = [];
@@ -1337,7 +1337,7 @@ class Migration
      *
      * @return void
      */
-    public function giveRight($name, $rights, $requiredrights = ['config' => READ | UPDATE])
+    public function giveRight(string $name, int $rights, array $requiredrights = ['config' => READ | UPDATE]): void
     {
         // Build JOIN clause to get all profiles with required rights
         $join = [];
@@ -1462,7 +1462,7 @@ class Migration
      *
      * @since 9.5.0
      */
-    public function renameItemtype($old_itemtype, $new_itemtype, $update_structure = true)
+    public function renameItemtype(string $old_itemtype, string $new_itemtype, bool $update_structure = true): void
     {
         if ($old_itemtype == $new_itemtype) {
             // Do nothing if new value is same as old one
@@ -1600,7 +1600,7 @@ class Migration
      * @return void
      * @since 9.5.6
      */
-    public function changeSearchOption(string $itemtype, int $old_search_opt, int $new_search_opt)
+    public function changeSearchOption(string $itemtype, int $old_search_opt, int $new_search_opt): void
     {
         if (!isset($this->search_opts[$itemtype])) {
             $this->search_opts[$itemtype] = [];
@@ -1619,7 +1619,7 @@ class Migration
      * @param int $search_opt The search option ID to remove
      * @return void
      */
-    public function removeSearchOption(string $itemtype, int $search_opt)
+    public function removeSearchOption(string $itemtype, int $search_opt): void
     {
         if (!isset($this->search_opts[$itemtype])) {
             $this->search_opts[$itemtype] = [];
@@ -1636,7 +1636,7 @@ class Migration
      * @return void
      * @since 9.5.6
      */
-    private function migrateSearchOptions()
+    private function migrateSearchOptions(): void
     {
         if ($this->search_opts === []) {
             return;
@@ -1796,7 +1796,7 @@ class Migration
         string $table,
         string $class_1,
         string $class_2
-    ) {
+    ): void {
         if ($this->db->tableExists($table)) {
             return;
         }

@@ -68,7 +68,7 @@ class RuleMatchedLog extends CommonDBTM
      *
      * @return int
      */
-    public static function countForItem(CommonDBTM $item)
+    public static function countForItem(CommonDBTM $item): int
     {
         return countElementsInTable(
             self::getTable(),
@@ -139,7 +139,7 @@ class RuleMatchedLog extends CommonDBTM
      *
      * @return void
      */
-    public function cleanOlddata($items_id, $itemtype)
+    public function cleanOlddata(int $items_id, string $itemtype): void
     {
         global $DB;
 

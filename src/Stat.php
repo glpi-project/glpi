@@ -77,7 +77,7 @@ class Stat extends CommonGLPI
      * @param int $parent (default 0)
      * @return array
      */
-    public static function getItems($itemtype, $date1, $date2, $type, $parent = 0)
+    public static function getItems($itemtype, string $date1, string $date2, string $type, int $parent = 0): array
     {
         global $DB;
 
@@ -377,7 +377,7 @@ class Stat extends CommonGLPI
      * @param string $value2 (default '')
      * @return array|mixed
      */
-    public static function getData($itemtype, $type, $date1, $date2, $start, array $value, $value2 = "")
+    public static function getData($itemtype, string $type, string $date1, string $date2, int $start, array $value, string $value2 = ""): array|mixed|null
     {
         $hash = md5(serialize(func_get_args()));
 
@@ -439,7 +439,7 @@ class Stat extends CommonGLPI
      *
      * @since 0.85 (before show with same parameters)
      **/
-    public static function showTable($itemtype, $type, $date1, $date2, $start, array $value, $value2 = '')
+    public static function showTable($itemtype, string $type, string $date1, string $date2, int $start, array $value, int|string $value2 = ''): void
     {
         $numrows = count($value);
         // Set display type for export if define
@@ -939,14 +939,14 @@ class Stat extends CommonGLPI
      */
     public static function constructEntryValues(
         $itemtype,
-        $type,
-        $begin = "",
-        $end = "",
-        $param = "",
-        $value = "",
-        $value2 = "",
+        string $type,
+        string $begin = "",
+        string $end = "",
+        string $param = "",
+        string|array $value = "",
+        string $value2 = "",
         array $add_criteria = []
-    ) {
+    ): array|void {
         global $CFG_GLPI;
         $DB = DBConnection::getReadConnection();
 
@@ -1535,7 +1535,7 @@ class Stat extends CommonGLPI
      * @param class-string<CommonITILObject> $itil_type
      * @return array
      */
-    public static function getAssetsWithITIL($start_date, $end_date, $itil_type = 'Ticket'): array
+    public static function getAssetsWithITIL(DateTime|string $start_date, DateTime|string $end_date, $itil_type = 'Ticket'): array
     {
         global $DB;
 
@@ -1607,7 +1607,7 @@ class Stat extends CommonGLPI
      *
      * @return void
      */
-    public static function showItems($target, $date1, $date2, $start, $itemtype = null)
+    public static function showItems(string $target, string $date1, string $date2, int $start, $itemtype = null): void
     {
         $view_entities = Session::isMultiEntitiesMode();
 
@@ -1717,7 +1717,7 @@ class Stat extends CommonGLPI
     /**
      * @return array
      */
-    public static function getAvailableStatistics()
+    public static function getAvailableStatistics(): array
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -1869,7 +1869,7 @@ class Stat extends CommonGLPI
     /**
      * @return void
      */
-    public static function title()
+    public static function title(): void
     {
         $values = self::getAvailableStatistics();
         $selected = -1;
@@ -1895,7 +1895,7 @@ class Stat extends CommonGLPI
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
         $values[READ] = __('Read');
         return $values;
@@ -1908,7 +1908,7 @@ class Stat extends CommonGLPI
      *
      * @return void
      */
-    public function displayLineGraphFromData(StatData $stat_data)
+    public function displayLineGraphFromData(StatData $stat_data): void
     {
         if ($stat_data->isEmpty()) {
             return;
@@ -1942,13 +1942,13 @@ class Stat extends CommonGLPI
      * @phpstan-return ($display is true ? void : string)
      */
     public function displayLineGraph(
-        $title,
-        $labels,
-        $series,
-        $options = null,
-        $display = true,
+        string $title,
+        array $labels,
+        array $series,
+        ?array $options = null,
+        bool $display = true,
         ?string $csv_link = null
-    ) {
+    ): string|void {
         $param = [
             'width'   => 800,
             'height'  => 300,
@@ -2084,7 +2084,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function displayPieGraphFromData(StatData $stat_data)
+    public function displayPieGraphFromData(StatData $stat_data): void
     {
         if ($stat_data->isEmpty()) {
             return;
@@ -2118,13 +2118,13 @@ TWIG, $twig_params);
      * @phpstan-return ($display is true ? void : string)
      */
     public function displayPieGraph(
-        $title,
-        $labels,
-        $series,
-        $options = [],
-        $display = true,
+        string $title,
+        array $labels,
+        array $series,
+        array $options = [],
+        bool $display = true,
         ?string $csv_link = null
-    ) {
+    ): string|void {
         $param = [
             'csv'     => true,
         ];
@@ -2247,7 +2247,7 @@ TWIG, $twig_params);
      * @return void|string
      * @phpstan-return ($display is true ? void : string)
      */
-    public function displaySearchForm($itemtype, $date1, $date2, $display = true)
+    public function displaySearchForm(string $itemtype, string $date1, string $date2, bool $display = true): void|string
     {
         $out = TemplateRenderer::getInstance()->render('pages/assistance/stats/global_form.html.twig', [
             'itemtype' => $itemtype,
@@ -2269,7 +2269,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    private function checkEmptyLabels(&$labels)
+    private function checkEmptyLabels(array &$labels): void
     {
         foreach ($labels as &$label) {
             if (empty($label)) {
@@ -2281,7 +2281,7 @@ TWIG, $twig_params);
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-chart-pie";
     }

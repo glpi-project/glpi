@@ -58,7 +58,7 @@ class SNMPCredential extends CommonDBTM
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 

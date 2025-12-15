@@ -59,7 +59,7 @@ class ConfigExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function config(string $key)
+    public function config(string $key): mixed
     {
         global $CFG_GLPI;
 
@@ -76,7 +76,7 @@ class ConfigExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function getEntityConfig(string $key, int $entity_id, $default_value = -2, ?string $inheritence_key = null)
+    public function getEntityConfig(string $key, int $entity_id, mixed $default_value = -2, ?string $inheritence_key = null): mixed
     {
         if ($inheritence_key === null) {
             $inheritence_key = $key;

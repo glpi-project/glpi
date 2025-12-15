@@ -300,7 +300,7 @@ class Reservation extends CommonDBChild
      *
      * @return int
      */
-    public function getUniqueGroupFor($reservationitems_id): int
+    public function getUniqueGroupFor(int $reservationitems_id): int
     {
         global $DB;
 
@@ -326,7 +326,7 @@ class Reservation extends CommonDBChild
      *
      *@return bool
      **/
-    public function is_reserved()
+    public function is_reserved(): bool
     {
         global $DB;
 
@@ -360,7 +360,7 @@ class Reservation extends CommonDBChild
      *
      * @return bool
      **/
-    public function test_valid_date()
+    public function test_valid_date(): bool
     {
         return (!empty($this->fields["begin"])
               && !empty($this->fields["end"])
@@ -516,7 +516,7 @@ class Reservation extends CommonDBChild
      *
      * @return void
      */
-    public static function showCalendar(int $ID = 0)
+    public static function showCalendar(int $ID = 0): void
     {
         global $CFG_GLPI;
 
@@ -703,7 +703,7 @@ class Reservation extends CommonDBChild
     /**
      * @return array
      */
-    public static function getResources()
+    public static function getResources(): array
     {
         global $DB;
 
@@ -778,7 +778,7 @@ class Reservation extends CommonDBChild
      *      <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
      *  </ul>
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -883,7 +883,7 @@ class Reservation extends CommonDBChild
      *
      * @return array
      **/
-    public static function computePeriodicities($begin, $end, $options)
+    public static function computePeriodicities(string $begin, string $end, array $options): array
     {
         $toadd = [];
         if (!isset($options['type'], $options['end'])) {
@@ -1001,7 +1001,7 @@ class Reservation extends CommonDBChild
      * @param int $withtemplate
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         if (!Session::haveRight("reservation", READ)) {
             return;
@@ -1229,7 +1229,7 @@ JAVASCRIPT;
      * @param int $ID ID of the user
      * @return void
      **/
-    public static function showForUser($ID)
+    public static function showForUser(int $ID): void
     {
         if (!Session::haveRight("reservation", READ)) {
             return;

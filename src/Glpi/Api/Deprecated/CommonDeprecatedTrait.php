@@ -81,7 +81,7 @@ trait CommonDeprecatedTrait
      * @param array $soptions
      * @return self Return self to allow method chaining
      */
-    public function updateSearchOptionsUids(array &$soptions)
+    public function updateSearchOptionsUids(array &$soptions): self
     {
         $soptions = array_map(function ($soption) {
             if (isset($soption['uid'])) {
@@ -105,7 +105,7 @@ trait CommonDeprecatedTrait
      * @param array $soptions
      * @return self Return self to allow method chaining
      */
-    public function updateSearchOptionsTables(array &$soptions)
+    public function updateSearchOptionsTables(array &$soptions): self
     {
         $soptions = array_map(function ($soption) {
             if (isset($soption['table'])) {
@@ -131,7 +131,7 @@ trait CommonDeprecatedTrait
      * @param string $value
      * @return self Return self to allow method chaining
      */
-    public function addField(&$fields, string $name, string $value)
+    public function addField(array|object &$fields, string $name, string $value): self
     {
         if (is_object($fields)) {
             if (!isset($fields->$name)) {
@@ -154,7 +154,7 @@ trait CommonDeprecatedTrait
      * @param string $new
      * @return self Return self to allow method chaining
      */
-    public function renameField(&$fields, string $old, string $new)
+    public function renameField(array|object &$fields, string $old, string $new): self
     {
         if (is_object($fields)) {
             if (isset($fields->$old)) {
@@ -178,7 +178,7 @@ trait CommonDeprecatedTrait
      * @param string $name
      * @return self Return self to allow method chaining
      */
-    public function deleteField(&$fields, string $name)
+    public function deleteField(array|object &$fields, string $name): self
     {
         if (is_object($fields)) {
             if (isset($fields->$name)) {
@@ -205,7 +205,7 @@ trait CommonDeprecatedTrait
         array &$soptions,
         string $key,
         array $values
-    ) {
+    ): self {
         $soptions[$key] = $values;
 
         return $this;
@@ -223,7 +223,7 @@ trait CommonDeprecatedTrait
         array &$soptions,
         string $key,
         array $values
-    ) {
+    ): self {
         foreach ($values as $v_key => $v_value) {
             $soptions[$key][$v_key] = $v_value;
         }
@@ -238,7 +238,7 @@ trait CommonDeprecatedTrait
      * @param string $key
      * @return self Return self to allow method chaining
      */
-    public function deleteSearchOption(array &$soptions, string $key)
+    public function deleteSearchOption(array &$soptions, string $key): self
     {
         if (isset($soptions[$key])) {
             unset($soptions[$key]);

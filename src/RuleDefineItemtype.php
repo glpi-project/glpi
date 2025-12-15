@@ -221,7 +221,7 @@ TWIG, $twig_params);
      * @global array $CFG_GLPI
      * @return array
      */
-    public static function getItemTypesForRules()
+    public static function getItemTypesForRules(): array
     {
         global $CFG_GLPI;
 

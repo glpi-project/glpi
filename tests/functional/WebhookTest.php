@@ -46,7 +46,7 @@ class WebhookTest extends DbTestCase
      * Make sure all webhook item types have an ID search option so that the criteria filters can be applied properly
      * @return void
      */
-    public function testWebhookTypesHaveIDOpt()
+    public function testWebhookTypesHaveIDOpt(): void
     {
         $supported = Webhook::getItemtypesDropdownValues();
         $itemtypes = [];

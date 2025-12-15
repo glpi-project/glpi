@@ -199,7 +199,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param string $meta_type Meta item type
      * @return array|QueryExpression
      */
-    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
+    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = ''): array|QueryExpression
     {
         global $CFG_GLPI, $DB;
 
@@ -1152,7 +1152,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return ?array
      */
-    public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = false): ?array
+    public static function getWhereCriteria(bool $nott, $itemtype, int $ID, string $searchtype, string|int $val, bool $meta = false): ?array
     {
         global $DB;
 
@@ -3727,7 +3727,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param array $joinparams
      * @return string
      */
-    public static function computeComplexJoinID(array $joinparams)
+    public static function computeComplexJoinID(array $joinparams): string
     {
         $complexjoin = '';
 
@@ -3787,7 +3787,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return array
      */
-    public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
+    public static function getDropdownTranslationJoinCriteria(string $alias, string $table, $itemtype, string $field): array
     {
         global $DB;
 
@@ -4666,7 +4666,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string             the sql sub string
      */
-    public static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false): string
+    public static function constructCriteriaSQL(array $criteria = [], array $data = [], array $searchopt = [], bool $is_having = false): string
     {
         $sql = "";
 
@@ -4868,12 +4868,12 @@ final class SQLProvider implements SearchProviderInterface
      * @return void
      */
     public static function constructAdditionalSqlForMetacriteria(
-        $criteria = [],
-        &$SELECT = "",
-        &$FROM = "",
-        &$already_link_tables = [],
-        &$data = []
-    ) {
+        array $criteria = [],
+        string &$SELECT = "",
+        string &$FROM = "",
+        array &$already_link_tables = [],
+        array &$data = []
+    ): void {
         $data['meta_toview'] = [];
         foreach ($criteria as $criterion) {
             // manage sub criteria
@@ -5264,7 +5264,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string Search SQL string
      **/
-    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND')
+    public static function makeTextCriteria(string $field, string $val, bool $not = false, string $link = 'AND'): string
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
@@ -5311,7 +5311,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string|null
      **/
-    public static function makeTextSearchValue($val)
+    public static function makeTextSearchValue(string $val): ?string
     {
         // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
         // https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html
@@ -5366,7 +5366,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string Search string
      **/
-    public static function makeTextSearch($val, $not = false): string
+    public static function makeTextSearch(string $val, bool $not = false): string
     {
         $NOT = "";
         if ($not) {
@@ -5397,13 +5397,13 @@ final class SQLProvider implements SearchProviderInterface
      * @return string String to print
      **/
     public static function giveItem(
-        $itemtype,
-        $ID,
+        string $itemtype,
+        int $ID,
         array $data,
-        $meta = false,
+        bool $meta = false,
         array $addobjectparams = [],
-        $orig_itemtype = null
-    ) {
+        ?string $orig_itemtype = null
+    ): string {
         global $CFG_GLPI;
 
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
@@ -6862,7 +6862,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param string $subject
      * @return array<string|null>
      **/
-    public static function explodeWithID($pattern, $subject): array
+    public static function explodeWithID(string $pattern, string $subject): array
     {
 
         $tab = explode($pattern, $subject);

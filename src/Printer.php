@@ -162,7 +162,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return bool
      **/
-    public function canUnrecurs()
+    public function canUnrecurs(): bool
     {
         global $DB;
 
@@ -312,7 +312,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/printer.html.twig', [
@@ -329,7 +329,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
-    public function getLinkedItems()
+    public function getLinkedItems(): array
     {
         global $DB;
 
@@ -729,7 +729,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 
@@ -769,7 +769,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return int
      **/
-    public function addOrRestoreFromTrash($name, $manufacturer, $entity, $comment = '')
+    public function addOrRestoreFromTrash(string $name, string $manufacturer, int $entity, string $comment = ''): int
     {
         global $DB;
 
@@ -814,7 +814,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return int the printer's ID
      **/
-    public function addPrinter($name, $manufacturer, $entity, $comment = '')
+    public function addPrinter(string $name, string $manufacturer, int $entity, string $comment = ''): int
     {
         global $DB;
 
@@ -853,7 +853,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return bool
      **/
-    public function removeFromTrash($ID)
+    public function removeFromTrash(int $ID): bool
     {
         return $this->restore(["id" => $ID]);
     }

@@ -40,7 +40,7 @@ use function Safe\scandir;
  *
  * @return bool for success (will die for most error)
  **/
-function update10017to10018()
+function update10017to10018(): bool
 {
     /**
      * @var DBmysql $DB

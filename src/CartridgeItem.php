@@ -167,7 +167,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @since 9.2 add $id parameter
      **/
-    public static function getCount($id)
+    public static function getCount(int $id): number
     {
         global $DB;
 
@@ -187,7 +187,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return bool : true for success
      **/
-    public static function addCompatibleType($cartridgeitems_id, $printermodels_id)
+    public static function addCompatibleType(int $cartridgeitems_id, int $printermodels_id): bool
     {
         global $DB;
 
@@ -395,7 +395,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Send alarms on cartridges')];
     }
@@ -408,7 +408,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      * @return int
      * @used-by CronTask
      */
-    public static function cronCartridge($task = null)
+    public static function cronCartridge(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -536,7 +536,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return string|bool
      **/
-    public static function dropdownForPrinter(Printer $printer)
+    public static function dropdownForPrinter(Printer $printer): string|bool
     {
         global $DB;
 
@@ -598,7 +598,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return ['alert' => __('Send alarms on cartridges')];
     }

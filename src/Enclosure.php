@@ -113,7 +113,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/enclosure.html.twig', [
@@ -279,7 +279,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
      *               orientation will not be available if depth is > 0.5; hpos will not be available
      *               if width is = 1
      */
-    public function getFilled($itemtype = null, $items_id = null)
+    public function getFilled(?string $itemtype = null, ?int $items_id = null): array
     {
         global $DB;
 

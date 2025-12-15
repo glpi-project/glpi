@@ -183,7 +183,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    protected function prepareForHardware($val)
+    protected function prepareForHardware(stdClass $val): void
     {
         $hardware = (object) $this->extra_data['hardware'];
 
@@ -254,7 +254,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    protected function prepareForUsers($val)
+    protected function prepareForUsers(stdClass $val): void
     {
         global $DB;
 
@@ -369,7 +369,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    protected function prepareForBios($val)
+    protected function prepareForBios(stdClass $val): void
     {
         $bios = (object) $this->extra_data['bios'];
 
@@ -635,7 +635,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    protected function addRefused(array $input)
+    protected function addRefused(array $input): void
     {
         $refused_input = [
             'name'         => $input['name'],
@@ -694,7 +694,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed(int $items_id, string $itemtype, ?int $rules_id, int|array $ports_id = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1004,7 +1004,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return stdClass
      */
-    public function getHardware()
+    public function getHardware(): stdClass
     {
         return $this->hardware;
     }
@@ -1014,7 +1014,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return int
      */
-    public function getEntityID()
+    public function getEntityID(): int
     {
         return $this->entities_id;
     }
@@ -1024,7 +1024,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return int
      */
-    public function getEntityRecursive()
+    public function getEntityRecursive(): int
     {
         return $this->is_recursive;
     }
@@ -1032,7 +1032,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * @return void
      */
-    public function handleAssets()
+    public function handleAssets(): void
     {
         $key = $this->current_key;
         $val = $this->data[$key];
@@ -1155,7 +1155,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return bool
      */
-    protected function isAccessPoint($object): bool
+    protected function isAccessPoint(stdClass $object): bool
     {
         return property_exists($object, 'is_ap') && $object->is_ap == true;
     }

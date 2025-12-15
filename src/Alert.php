@@ -65,7 +65,7 @@ class Alert extends CommonDBTM
      *
      * @return bool
      */
-    public function clear($itemtype, $ID, $alert_type)
+    public function clear(string $itemtype, string $ID, int $alert_type): bool
     {
 
         return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], true);
@@ -82,7 +82,7 @@ class Alert extends CommonDBTM
      *
      * @return bool
      */
-    public function cleanDBonItemDelete($itemtype, $ID)
+    public function cleanDBonItemDelete(string $itemtype, int $ID): bool
     {
 
         return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], true);
@@ -139,7 +139,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownYesNo($options = [])
+    public static function dropdownYesNo(array $options = []): void|string
     {
 
         $p = [
@@ -177,7 +177,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownIntegerNever($name, $value, $options = [])
+    public static function dropdownIntegerNever(string $name, string $value, array $options = []): void|string
     {
 
         $p = [
@@ -221,7 +221,7 @@ class Alert extends CommonDBTM
      *
      * @return int|bool
      */
-    public static function alertExists($itemtype, $items_id, $type)
+    public static function alertExists(string $itemtype, int $items_id, int $type): int|bool
     {
         global $DB;
 
@@ -248,7 +248,7 @@ class Alert extends CommonDBTM
      *
      * @return mixed|bool
      */
-    public static function getAlertDate($itemtype, $items_id, $type)
+    public static function getAlertDate(string $itemtype, int $items_id, int $type): mixed|bool|null
     {
         global $DB;
 
@@ -271,7 +271,7 @@ class Alert extends CommonDBTM
      *
      * @return void
      */
-    public static function displayLastAlert($itemtype, $items_id)
+    public static function displayLastAlert(string $itemtype, int $items_id): void
     {
         global $DB;
 

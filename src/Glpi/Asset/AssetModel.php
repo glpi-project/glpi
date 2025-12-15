@@ -102,7 +102,7 @@ abstract class AssetModel extends CommonDCModelDropdown
      * @return self|false
      */
 
-    public static function getById(?int $id)
+    public static function getById(?int $id): self|bool
     {
         if ($id === null) {
             return false;

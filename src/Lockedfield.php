@@ -214,7 +214,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return bool
      */
-    public function isHandled(CommonGLPI $item)
+    public function isHandled(CommonGLPI $item): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -229,7 +229,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getLockedNames($itemtype, $items_id)
+    public function getLockedNames($itemtype, int $items_id): array
     {
         return $this->getLocks($itemtype, $items_id, true);
     }
@@ -240,7 +240,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getLockedValues($itemtype, $items_id)
+    public function getLockedValues($itemtype, int $items_id): array
     {
         return $this->getLocks($itemtype, $items_id, false);
     }
@@ -254,7 +254,7 @@ class Lockedfield extends CommonDBTM
      *
      * return array
      */
-    final public function getFullLockedFields($itemtype, $items_id): array
+    final public function getFullLockedFields(string $itemtype, int $items_id): array
     {
         global $DB;
 
@@ -287,7 +287,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    public function getLocks($itemtype, $items_id, bool $fields_only = true)
+    public function getLocks(string $itemtype, int $items_id, bool $fields_only = true): array
     {
         global $DB;
 
@@ -320,7 +320,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return bool
      */
-    public function itemDeleted()
+    public function itemDeleted(): bool
     {
         global $DB;
         return $DB->delete(
@@ -342,7 +342,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return bool
      */
-    public function setLastValue($itemtype, $items_id, $field, $value)
+    public function setLastValue($itemtype, int $items_id, string $field, mixed $value): bool
     {
         global $DB;
         return $DB->update(
@@ -400,7 +400,7 @@ class Lockedfield extends CommonDBTM
      *
      * @return array
      */
-    protected function prepareInput($input)
+    protected function prepareInput(array $input): array
     {
         if (isset($input['item'])) {
             [$itemtype, $field] = explode(' - ', $input['item']);

@@ -57,55 +57,55 @@ interface AssignableItemInterface
      * @return array
      * @phpstan-return array<integer, string|array>
      */
-    public function getRights($interface = 'central');
+    public function getRights(string $interface = 'central'): array;
 
     /**
      * @param array $input
      *
      * @return false|array
      */
-    public function prepareGroupFields(array $input);
+    public function prepareGroupFields(array $input): bool|array;
 
     /**
      * @param array $input
      *
      * @return false|array
      */
-    public function prepareInputForAdd($input);
+    public function prepareInputForAdd(array $input): bool|array;
 
     /**
      * @param array $input
      *
      * @return false|array
      */
-    public function prepareInputForUpdate($input);
+    public function prepareInputForUpdate(array $input): bool|array;
 
     /**
      * @return void
      */
-    public function post_addItem();
+    public function post_addItem(): void;
 
     /**
      * @param bool $history
      *
      * @return void
      */
-    public function post_updateItem($history = true);
+    public function post_updateItem(bool $history = true): void;
 
     /**
      * @return bool
      */
-    public function getEmpty();
+    public function getEmpty(): bool;
 
     /**
      * @return void
      */
-    public function post_getFromDB();
+    public function post_getFromDB(): void;
 
     /**
      * Update the values in the 'glpi_groups_items' link table as needed based on the groups set in the 'groups_id' and 'groups_id_tech' fields.
      *
      * @return void
      */
-    public function updateGroupFields();
+    public function updateGroupFields(): void;
 }

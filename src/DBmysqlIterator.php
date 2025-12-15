@@ -103,7 +103,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return void
      */
-    public function __construct($dbconnexion)
+    public function __construct(?DBmysql $dbconnexion)
     {
         $this->conn = $dbconnexion;
     }
@@ -117,7 +117,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function execute($criteria): self
+    public function execute(array $criteria): self
     {
         $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
 
@@ -137,7 +137,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @since 11.0.0 The `$log` parameter has been removed.
      */
-    public function buildQuery($criteria): void
+    public function buildQuery(array $criteria): void
     {
         $criteria = $this->convertOldRequestArgsToCriteria(func_get_args(), __METHOD__);
 
@@ -343,7 +343,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function handleOrderClause($clause)
+    public function handleOrderClause(string|array $clause): string
     {
         if (!is_array($clause)) {
             $clause = [$clause];
@@ -382,7 +382,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function handleLimits($limit, $offset = null)
+    public function handleLimits(int $limit, ?int $offset = null): string
     {
         $limits = '';
         if (is_numeric($limit) && ($limit > 0)) {
@@ -402,7 +402,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function handleFields($t, $f)
+    private function handleFields(int|string $t, array|string $f): string
     {
         if (is_numeric($t)) {
             if ($f instanceof AbstractQuery) {
@@ -464,7 +464,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function handleFieldsAlias($t, $f, $suffix = '')
+    private function handleFieldsAlias(string $t, string $f, string $suffix = ''): string
     {
         $names = preg_split('/\s+AS\s+/i', $f);
         $expr  = "$t(" . $this->handleFields(0, $names[0]) . "$suffix)";
@@ -482,7 +482,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function getSql()
+    public function getSql(): string
     {
         return preg_replace('/ +/', ' ', $this->sql);
     }
@@ -507,7 +507,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function analyseCrit($crit, $bool = "AND")
+    public function analyseCrit(array|string $crit, string $bool = "AND"): string
     {
         if (is_string($crit)) {
             Toolbox::deprecated(
@@ -590,7 +590,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function analyseCriterion($value)
+    private function analyseCriterion(mixed $value): string
     {
         $criterion = null;
 
@@ -638,7 +638,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function getCriterionValue($value)
+    private function getCriterionValue(mixed $value): string
     {
         return match (true) {
             $value instanceof AbstractQuery => $value->getQuery(),
@@ -653,7 +653,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return mixed
      */
-    private function analyseCriterionValue($value)
+    private function analyseCriterionValue(mixed $value): mixed
     {
         $crit_value = null;
         if (is_array($value)) {
@@ -678,7 +678,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function analyseJoins(array $joinarray)
+    public function analyseJoins(array $joinarray): string
     {
         $query = '';
         foreach ($joinarray as $jointype => $jointables) {
@@ -728,7 +728,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function analyseFkey($values)
+    private function analyseFkey(mixed $values): string
     {
         if (is_array($values)) {
             $keys = array_keys($values);
@@ -838,7 +838,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return int
      */
-    public function numrows()
+    public function numrows(): int
     {
         return $this->count;
     }
@@ -903,7 +903,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return bool
      */
-    public function isOperator($value)
+    public function isOperator(string $value): bool
     {
         return in_array($value, $this->allowed_operators, true);
     }

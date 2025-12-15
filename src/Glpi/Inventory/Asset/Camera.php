@@ -76,7 +76,7 @@ class Camera extends Device
      *
      * @return void
      */
-    protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
+    protected function itemdeviceAdded(Item_Devices $itemdevice, stdClass $val): void
     {
 
         //handle resolutions

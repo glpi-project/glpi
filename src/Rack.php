@@ -103,7 +103,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         return [
             [
@@ -153,7 +153,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/rack.html.twig', [
@@ -573,7 +573,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         if (!array_key_exists('dcrooms_id', $input) || $input['dcrooms_id'] == 0) {
             // Position is not set if room not selected
@@ -622,7 +622,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *
      * @return array [x => [left => [depth, depth, depth, depth]], [right => [depth, depth, depth, depth]]]
      */
-    public function getFilled($itemtype = null, $items_id = null)
+    public function getFilled(?string $itemtype = null, ?int $items_id = null): array
     {
         global $DB;
 

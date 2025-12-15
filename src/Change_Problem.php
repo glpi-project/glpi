@@ -104,7 +104,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * @param Problem $problem
      * @return void
      **/
-    public static function showForProblem(Problem $problem)
+    public static function showForProblem(Problem $problem): void
     {
         global $DB;
 
@@ -196,7 +196,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * @param Change $change object
      * @return void
      **/
-    public static function showForChange(Change $change)
+    public static function showForChange(Change $change): void
     {
         global $DB;
 

@@ -45,7 +45,7 @@ interface TreeBrowseInterface
      *
      * @return void
      */
-    public static function showBrowseView(string $itemtype, array $params, $update = false);
+    public static function showBrowseView(string $itemtype, array $params, bool $update = false): void;
 
     /**
      * Get list of document categories in fancytree format.

@@ -339,7 +339,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return array (filtered input)
      **/
-    private function checkRightDatas($input): array
+    private function checkRightDatas(array $input): array
     {
         $tmp = [];
 
@@ -750,7 +750,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return int ID of the entity
      **/
-    public function getEntityID()
+    public function getEntityID(): int
     {
         return $this->fields["id"] ?? -1;
     }
@@ -1625,7 +1625,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return void
      */
-    public function executeAddRule($input)
+    public function executeAddRule(array $input): void
     {
         $this->check($_POST["affectentity"], UPDATE);
 
@@ -1684,7 +1684,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return array<int, string> Array of id => value
      **/
-    public static function getEntitiesToNotify($field)
+    public static function getEntitiesToNotify(string $field): array
     {
         global $DB;
 
@@ -2005,7 +2005,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return string
      */
-    public function getCustomCssTag()
+    public function getCustomCssTag(): string
     {
         $enable_custom_css = self::getUsedConfig(
             'enable_custom_css',
@@ -2056,7 +2056,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return int
      */
-    public static function getEntityIDByDN($value)
+    public static function getEntityIDByDN(string $value): int
     {
         return self::getEntityIDByField("ldap_dn", $value);
     }
@@ -2066,7 +2066,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return int
      */
-    public static function getEntityIDByCompletename($value)
+    public static function getEntityIDByCompletename(string $value): int
     {
         return self::getEntityIDByField("completename", $value);
     }
@@ -2076,7 +2076,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return int
      */
-    public static function getEntityIDByTag($value)
+    public static function getEntityIDByTag(string $value): int
     {
         return self::getEntityIDByField("tag", $value);
     }
@@ -2086,7 +2086,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return int
      */
-    public static function getEntityIDByDomain($value)
+    public static function getEntityIDByDomain(string $value): int
     {
         return self::getEntityIDByField("mail_domain", $value);
     }
@@ -2098,7 +2098,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return bool
      */
-    public static function isEntityDirectoryConfigured($entities_id)
+    public static function isEntityDirectoryConfigured(int $entities_id): bool
     {
         $entity = new self();
 
@@ -2184,7 +2184,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return mixed
      */
-    public static function getUsedConfig($fieldref, $entities_id, $fieldval = '', $default_value = -2)
+    public static function getUsedConfig(string $fieldref, int $entities_id, string $fieldval = '', mixed $default_value = -2): mixed
     {
         global $DB, $GLPI_CACHE;
 
@@ -2269,7 +2269,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return string Url contents
      **/
-    public static function generateLinkSatisfaction($item)
+    public static function generateLinkSatisfaction(CommonITILObject $item): string
     {
         $config_suffix = $item::getType() === 'Ticket' ? '' : ('_' . strtolower($item::getType()));
         $url = self::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_URL' . $config_suffix);
@@ -2930,7 +2930,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return string
      */
-    public static function inheritedValue($value = "", bool $inline = false, bool $display = true): string
+    public static function inheritedValue(string $value = "", bool $inline = false, bool $display = true): string
     {
         if (trim($value) === '') {
             return "";
@@ -3023,7 +3023,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return mixed
      */
-    public static function getAnonymizeConfig(?int $entities_id = null)
+    public static function getAnonymizeConfig(?int $entities_id = null): mixed
     {
         if ($entities_id === null) {
             $entities_id = Session::getActiveEntity();

@@ -125,7 +125,7 @@ class Item_Disk extends CommonDBChild
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {
@@ -179,7 +179,7 @@ class Item_Disk extends CommonDBChild
      *
      * @return DBmysqlIterator
      */
-    public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
+    public static function getFromItem(CommonDBTM $item, ?string $sort = null, ?string $order = null): DBmysqlIterator
     {
         global $DB;
 
@@ -213,7 +213,7 @@ class Item_Disk extends CommonDBChild
      *
      * @return bool
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool
     {
         $ID = $item->getID();
         $rand = mt_rand();
@@ -389,7 +389,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         global $DB;
         $tab = [];
@@ -572,7 +572,7 @@ TWIG, $twig_params);
      *
      * @return array The list of possible values
      */
-    public static function getAllEncryptionStatus()
+    public static function getAllEncryptionStatus(): array
     {
         return [
             self::ENCRYPTION_STATUS_NO          => __('Not encrypted'),
@@ -588,7 +588,7 @@ TWIG, $twig_params);
      * @phpstan-param self::ENCRYPTION_STATUS_* $status
      * @return string The appropriate label
      */
-    public static function getEncryptionStatus($status)
+    public static function getEncryptionStatus(int $status): string
     {
         if ($status === "") {
             return NOT_AVAILABLE;
@@ -617,7 +617,7 @@ TWIG, $twig_params);
      *
      * @return string the string to display
      */
-    public static function getEncryptionStatusDropdown($value = self::ENCRYPTION_STATUS_NO, $options = [])
+    public static function getEncryptionStatusDropdown(int $value = self::ENCRYPTION_STATUS_NO, array $options = []): string
     {
         $name = $options['name'] ?? 'encryption_status';
         $values = self::getAllEncryptionStatus();
@@ -642,7 +642,7 @@ TWIG, $twig_params);
      *
      * @return string the string to display
      */
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', string|array $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -667,7 +667,7 @@ TWIG, $twig_params);
      *
      * @return string the string to display
      **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, string|array $values, array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];

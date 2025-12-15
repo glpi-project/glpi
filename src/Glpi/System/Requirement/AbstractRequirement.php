@@ -118,14 +118,14 @@ abstract class AbstractRequirement implements RequirementInterface
      *
      * @return void
      */
-    abstract protected function check();
+    abstract protected function check(): void;
 
     /**
      * Run requirement check once.
      *
      * @return void
      */
-    private function doCheck()
+    private function doCheck(): void
     {
         if (!$this->has_been_checked) {
             $this->check();

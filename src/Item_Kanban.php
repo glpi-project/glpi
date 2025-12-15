@@ -73,7 +73,7 @@ class Item_Kanban extends CommonDBRelation
      * @param array $columns Array of columns to save state for. If empty, all columns are saved.
      * @return bool
      */
-    public static function saveStateForItem($itemtype, $items_id, $state, array $columns = [])
+    public static function saveStateForItem(string $itemtype, int $items_id, array $state, array $columns = []): bool
     {
         global $DB;
 
@@ -150,7 +150,7 @@ class Item_Kanban extends CommonDBRelation
      *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
      *       An empty array is returned if the state is not in the DB.
      */
-    public static function loadStateForItem($itemtype, $items_id, $timestamp = null)
+    public static function loadStateForItem(string $itemtype, int $items_id, ?string $timestamp = null): ?array
     {
         global $DB;
 
@@ -192,7 +192,7 @@ class Item_Kanban extends CommonDBRelation
      * @param int $items_id ID of the item.
      * @return bool True if successful
      */
-    public static function clearStateForItem(string $itemtype, int $items_id)
+    public static function clearStateForItem(string $itemtype, int $items_id): bool
     {
         global $DB;
 
@@ -219,7 +219,7 @@ class Item_Kanban extends CommonDBRelation
      * @param int $position
      * @return void
      */
-    public static function moveCard($itemtype, $items_id, $card, $column, $position)
+    public static function moveCard($itemtype, int $items_id, array $card, string $column, int $position): void
     {
         $state = self::loadStateForItem($itemtype, $items_id);
 
@@ -264,7 +264,7 @@ class Item_Kanban extends CommonDBRelation
      *
      * @return array
      */
-    public static function getAllShownColumns($itemtype, $items_id)
+    public static function getAllShownColumns($itemtype, int $items_id): array
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         return array_column($state, 'column');
@@ -276,7 +276,7 @@ class Item_Kanban extends CommonDBRelation
      * @param string $column
      * @return void
      */
-    public static function showColumn($itemtype, $items_id, $column)
+    public static function showColumn($itemtype, int $items_id, string $column): void
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         $found = false;
@@ -306,7 +306,7 @@ class Item_Kanban extends CommonDBRelation
      *
      * @return void
      */
-    public static function hideColumn($itemtype, $items_id, $column)
+    public static function hideColumn($itemtype, int $items_id, string $column): void
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         foreach ($state as $column_index => &$col) {
@@ -325,7 +325,7 @@ class Item_Kanban extends CommonDBRelation
      *
      * @return void
      */
-    public static function collapseColumn($itemtype, $items_id, $column)
+    public static function collapseColumn($itemtype, int $items_id, string $column): void
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         foreach ($state as $column_index => &$col) {
@@ -343,7 +343,7 @@ class Item_Kanban extends CommonDBRelation
      * @param string $column
      * @return void
      */
-    public static function expandColumn($itemtype, $items_id, $column)
+    public static function expandColumn($itemtype, int $items_id, string $column): void
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         foreach ($state as &$col) {
@@ -363,7 +363,7 @@ class Item_Kanban extends CommonDBRelation
      *
      * @return void
      */
-    public static function moveColumn($itemtype, $items_id, $column, $position)
+    public static function moveColumn($itemtype, int $items_id, string $column, int $position): void
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         $existing_pos = array_search($column, array_column($state, 'column'));

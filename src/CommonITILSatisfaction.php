@@ -147,7 +147,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @return void
      **/
-    public function showSatisfactionForm($item, bool $add_form_header = true)
+    public function showSatisfactionForm(CommonITILObject $item, bool $add_form_header = true): void
     {
         $options             = [];
         $options['colspan']  = 1;
@@ -240,7 +240,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @return void
      */
-    public function post_UpdateItem($history = true)
+    public function post_UpdateItem(bool $history = true): void
     {
         global $CFG_GLPI;
 
@@ -266,7 +266,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @return string
      */
-    public static function displaySatisfaction($value, $entities_id)
+    public static function displaySatisfaction(int|float $value, int $entities_id): string
     {
         if (!is_numeric($value)) {
             return "";
@@ -309,7 +309,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @return string
      */
-    public static function getTypeInquestName($value)
+    public static function getTypeInquestName(int $value): string
     {
 
         switch ($value) {
@@ -373,7 +373,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         global $DB;
 

@@ -171,7 +171,7 @@ class EntityTest extends DbTestCase
      *
      * @return void
      */
-    private function runChangeEntityParent($cache = false, $hit = false)
+    private function runChangeEntityParent(bool $cache = false, bool $hit = false): void
     {
         global $GLPI_CACHE;
 

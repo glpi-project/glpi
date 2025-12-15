@@ -148,7 +148,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      * @param int $type type of linked users
      * @return void
      */
-    public function addLinkedUserByType($type)
+    public function addLinkedUserByType(int $type): void
     {
         global $CFG_GLPI, $DB;
 
@@ -241,7 +241,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addLinkedGroupByType($type)
+    public function addLinkedGroupByType(int $type): void
     {
         global $DB;
 
@@ -275,7 +275,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addLinkedGroupWithoutSupervisorByType($type)
+    public function addLinkedGroupWithoutSupervisorByType(int $type): void
     {
         global $DB;
 
@@ -305,7 +305,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addLinkedGroupSupervisorByType($type)
+    public function addLinkedGroupSupervisorByType(int $type): void
     {
         global $DB;
 
@@ -338,7 +338,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addOldAssignTechnician()
+    public function addOldAssignTechnician(): void
     {
         global $CFG_GLPI;
 
@@ -382,7 +382,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * @return void
      */
-    public function addRecipientAddress()
+    public function addRecipientAddress(): void
     {
         $this->addUserByField("users_id_recipient");
     }
@@ -394,7 +394,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addSupplier($sendprivate = false)
+    public function addSupplier(bool $sendprivate = false): void
     {
         global $DB;
 
@@ -442,7 +442,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addValidationApprover($options = [])
+    public function addValidationApprover(array $options = []): void
     {
         global $DB;
 
@@ -477,7 +477,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addValidationRequester($options = [])
+    public function addValidationRequester(array $options = []): void
     {
         global $DB;
 
@@ -512,7 +512,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addValidationTarget($options = [])
+    public function addValidationTarget(array $options = []): void
     {
         global $DB;
 
@@ -560,7 +560,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addValidationTargetSubstitutes($options = [])
+    public function addValidationTargetSubstitutes(array $options = []): void
     {
         global $DB;
 
@@ -626,7 +626,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addFollowupAuthor($options = [])
+    public function addFollowupAuthor(array $options = []): void
     {
         global $DB;
 
@@ -662,7 +662,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addTaskAuthor($options = [])
+    public function addTaskAuthor(array $options = []): void
     {
         global $DB;
 
@@ -709,7 +709,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addTaskAssignUser($options = [])
+    public function addTaskAssignUser(array $options = []): void
     {
         global $DB;
 
@@ -758,7 +758,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addTaskAssignGroup($options = [])
+    public function addTaskAssignGroup(array $options = []): void
     {
         global $DB;
 
@@ -793,7 +793,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      */
-    public function addAdditionnalInfosForTarget()
+    public function addAdditionnalInfosForTarget(): void
     {
         global $DB;
 
@@ -838,7 +838,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return bool
      */
-    protected function getShowPrivateInfo(array $data)
+    protected function getShowPrivateInfo(array $data): bool
     {
         global $DB;
 
@@ -866,7 +866,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return bool
      */
-    protected function getIsSelfServiceInfo(array $data)
+    protected function getIsSelfServiceInfo(array $data): bool
     {
         global $DB;
 
@@ -934,7 +934,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      **/
-    public function addAdditionalTargets($event = '')
+    public function addAdditionalTargets(string $event = ''): void
     {
 
         if ($event === 'user_mention') {
@@ -1012,7 +1012,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return void
      **/
-    public function addSpecificTargets($data, $options)
+    public function addSpecificTargets(array $data, array $options): void
     {
 
         //Look for all targets whose type is Notification::ITEM_USER
@@ -1217,7 +1217,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return array
      **/
-    public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
+    public function getDataForObject(CommonITILObject $item, array $options, bool $simple = false): array
     {
         global $CFG_GLPI, $DB;
 

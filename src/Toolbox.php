@@ -128,7 +128,7 @@ class Toolbox
      *
      * @return int
      **/
-    public static function get_max_input_vars()
+    public static function get_max_input_vars(): int
     {
 
         $max = ini_get('max_input_vars');  // Security limit since PHP 5.3.9
@@ -149,7 +149,7 @@ class Toolbox
      *
      * @return string
      **/
-    public static function ucfirst($str)
+    public static function ucfirst(string $str): string
     {
         $first_letter = mb_strtoupper(mb_substr($str, 0, 1));
         $str_end = mb_substr($str, 1, mb_strlen($str));
@@ -167,7 +167,7 @@ class Toolbox
      *
      * @return string
      **/
-    public static function shortcut($str, $shortcut)
+    public static function shortcut(string $str, string $shortcut): string
     {
 
         $pos = self::strpos(self::strtolower($str), self::strtolower($shortcut));
@@ -189,7 +189,7 @@ class Toolbox
      *
      * @return int|false
      **/
-    public static function strpos($str, $tofound, $offset = 0)
+    public static function strpos(string $str, string $tofound, int $offset = 0): int|bool
     {
         return mb_strpos($str, $tofound, $offset, "UTF-8");
     }
@@ -207,7 +207,7 @@ class Toolbox
      *
      * @return string
      **/
-    public static function str_pad($input, $pad_length, $pad_string = " ", $pad_type = STR_PAD_RIGHT)
+    public static function str_pad(string $input, int $pad_length, string $pad_string = " ", int $pad_type = STR_PAD_RIGHT): string
     {
 
         $diff = (strlen($input) - self::strlen($input));
@@ -222,7 +222,7 @@ class Toolbox
      *
      * @return int  length of the string
      **/
-    public static function strlen($str)
+    public static function strlen(string $str): int
     {
         return mb_strlen($str, "UTF-8");
     }
@@ -237,7 +237,7 @@ class Toolbox
      *
      * @return string
      **/
-    public static function substr($str, $start, $length = -1)
+    public static function substr(string $str, int $start, int $length = -1): string
     {
 
         if ($length == -1) {
@@ -254,7 +254,7 @@ class Toolbox
      *
      * @return string  lower case string
      **/
-    public static function strtolower($str)
+    public static function strtolower(string $str): string
     {
         return mb_strtolower($str, "UTF-8");
     }
@@ -267,7 +267,7 @@ class Toolbox
      *
      * @return string  upper case string
      **/
-    public static function strtoupper($str)
+    public static function strtoupper(string $str): string
     {
         return mb_strtoupper($str, "UTF-8");
     }
@@ -281,7 +281,7 @@ class Toolbox
      *
      * @return string  utf8 string
      **/
-    public static function encodeInUtf8($string, $from_charset = "ISO-8859-1")
+    public static function encodeInUtf8(string $string, string $from_charset = "ISO-8859-1"): string
     {
 
         if (strcmp($from_charset, "auto") == 0) {
@@ -299,7 +299,7 @@ class Toolbox
      *
      * @return string  converted string
      **/
-    public static function decodeFromUtf8($string, $to_charset = "ISO-8859-1")
+    public static function decodeFromUtf8(string $string, string $to_charset = "ISO-8859-1"): string
     {
         return mb_convert_encoding($string, $to_charset, "UTF-8");
     }
@@ -312,7 +312,7 @@ class Toolbox
      *
      * @return void
      **/
-    private static function log($level = LogLevel::WARNING, $args = null)
+    private static function log(mixed $level = LogLevel::WARNING, ?array $args = null): void
     {
         /** @var Logger $PHPLOGGER */
         global $PHPLOGGER;
@@ -374,7 +374,7 @@ class Toolbox
      *
      * @return void
      */
-    public static function logDebug()
+    public static function logDebug(): void
     {
         self::log(LogLevel::DEBUG, func_get_args());
     }
@@ -384,7 +384,7 @@ class Toolbox
      *
      * @return void
      */
-    public static function logInfo()
+    public static function logInfo(): void
     {
         self::log(LogLevel::INFO, func_get_args());
     }
@@ -401,7 +401,7 @@ class Toolbox
      *
      * @since 0.85
      **/
-    public static function backtrace($log = 'php-errors', $hide = '', array $skip = [])
+    public static function backtrace(string $log = 'php-errors', string $hide = '', array $skip = []): string
     {
 
         if (function_exists("debug_backtrace")) {
@@ -447,7 +447,7 @@ class Toolbox
      * @param  string|null $version The version to start the deprecation alert. If null, it is considered deprecated in the current version.
      * @return void
      */
-    public static function deprecated($message = "Called method is deprecated", $strict = true, ?string $version = null)
+    public static function deprecated(string $message = "Called method is deprecated", bool $strict = true, ?string $version = null): void
     {
         if (
             $version !== null
@@ -477,7 +477,7 @@ class Toolbox
      *
      * @return bool
      **/
-    public static function logInFile($name, $text, $force = false, bool $output = true)
+    public static function logInFile(string $name, string $text, bool $force = false, bool $output = true): bool
     {
         global $CFG_GLPI;
         $text = self::cleanPaths($text);
@@ -531,7 +531,7 @@ class Toolbox
      *
      * @since 0.84
      **/
-    public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
+    public static function setDebugMode(?int $mode = null, ?bool $removed_param = null, ?bool $removed_param_2 = null, ?bool $log_in_files = null): void
     {
         global $CFG_GLPI;
 
@@ -662,7 +662,7 @@ class Toolbox
      *
      * @return string  Query string to append to a URL.
      **/
-    public static function append_params($array, $separator = '&', $parent = '')
+    public static function append_params(array $array, string $separator = '&', string $parent = ''): string
     {
 
         $params = [];
@@ -694,7 +694,7 @@ class Toolbox
      *
      * @return int|string memory limit
      **/
-    public static function getMemoryLimit($ininame = 'memory_limit')
+    public static function getMemoryLimit(string $ininame = 'memory_limit'): int|string
     {
 
         $mem = ini_get($ininame);
@@ -739,7 +739,7 @@ class Toolbox
      *   2 insufficient memory for GLPI,
      *   3 enough memory for GLPI
      **/
-    public static function checkMemoryLimit()
+    public static function checkMemoryLimit(): int
     {
 
         $mem = self::getMemoryLimit();
@@ -762,7 +762,7 @@ class Toolbox
      *
      * @return string  formatted size
      **/
-    public static function getSize($size)
+    public static function getSize(int $size): string
     {
 
         //TRANS: list of unit (o for octet)
@@ -796,7 +796,7 @@ class Toolbox
      *
      * @return void
      **/
-    public static function deleteDir($dir)
+    public static function deleteDir(string $dir): void
     {
 
         if (file_exists($dir)) {
@@ -841,16 +841,16 @@ class Toolbox
      * @return bool
      **/
     public static function resizePicture(
-        $source_path,
-        $dest_path,
-        $new_width = 71,
-        $new_height = 71,
-        $img_y = 0,
-        $img_x = 0,
-        $img_width = 0,
-        $img_height = 0,
-        $max_size = 500
-    ) {
+        string $source_path,
+        string $dest_path,
+        int $new_width = 71,
+        int $new_height = 71,
+        int $img_y = 0,
+        int $img_x = 0,
+        int $img_width = 0,
+        int $img_height = 0,
+        int $max_size = 500
+    ): bool {
 
         //get img information (dimensions and extension)
         $img_infos  = getimagesize($source_path);
@@ -960,7 +960,7 @@ class Toolbox
      *
      * @return string
      **/
-    public static function checkNewVersionAvailable()
+    public static function checkNewVersionAvailable(): string
     {
         //parse github releases (get last version number)
         $error = "";
@@ -998,7 +998,7 @@ class Toolbox
      *
      * @return bool
      **/
-    public static function canUseLdap()
+    public static function canUseLdap(): bool
     {
         return extension_loaded('ldap');
     }
@@ -1014,7 +1014,7 @@ class Toolbox
      *   1: delete error,
      *   2: creation error
      **/
-    public static function testWriteAccessToDirectory($dir)
+    public static function testWriteAccessToDirectory(string $dir): int
     {
 
         $rand = random_int(0, mt_getrandmax());
@@ -1062,7 +1062,7 @@ class Toolbox
      *
      * @return string itemtype Form URL
      */
-    public static function getItemTypeFormURL($itemtype, $full = true)
+    public static function getItemTypeFormURL(string $itemtype, bool $full = true): string
     {
         global $CFG_GLPI;
 
@@ -1090,7 +1090,7 @@ class Toolbox
      *
      * @return string itemtype search URL
      */
-    public static function getItemTypeSearchURL($itemtype, $full = true)
+    public static function getItemTypeSearchURL(string $itemtype, bool $full = true): string
     {
         global $CFG_GLPI;
 
@@ -1124,7 +1124,7 @@ class Toolbox
      *
      * @return string itemtype tabs URL
      */
-    public static function getItemTypeTabsURL($itemtype, $full = true)
+    public static function getItemTypeTabsURL(string $itemtype, bool $full = true): string
     {
         global $CFG_GLPI;
 
@@ -1143,7 +1143,7 @@ class Toolbox
      *
      * @see https://stackoverflow.com/questions/4356289/php-random-string-generator/31107425#31107425
      **/
-    public static function getRandomString($length)
+    public static function getRandomString(int $length): string
     {
         $keyspace = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $str = '';
@@ -1162,7 +1162,7 @@ class Toolbox
      *
      * @return array
      **/
-    public static function getTimestampTimeUnits($time)
+    public static function getTimestampTimeUnits(int|float $time): array
     {
 
         $out = [];
@@ -1233,7 +1233,7 @@ class Toolbox
      *
      * @return string content of the page (or empty)
      **/
-    public static function getURLContent($url, &$msgerr = null, $rec = 0)
+    public static function getURLContent(string $url, ?string &$msgerr = null, int $rec = 0): string
     {
         $curl_error = null;
         $content = self::callCurl($url, [], $msgerr, $curl_error, true);
@@ -1277,13 +1277,13 @@ class Toolbox
      * @return string
      */
     public static function callCurl(
-        $url,
+        string $url,
         array $eopts = [],
-        &$msgerr = null,
-        &$curl_error = null,
+        ?string &$msgerr = null,
+        ?string &$curl_error = null,
         bool $check_url_safeness = false,
         ?array &$curl_info = null
-    ) {
+    ): string {
         global $CFG_GLPI, $PHPLOGGER;
 
         try {
@@ -1328,10 +1328,10 @@ class Toolbox
      * @throws EmptyCurlContentException|UrlException
      */
     private static function doCallCurl(
-        $url,
+        string $url,
         array $eopts = [],
-        &$msgerr = null,
-        &$curl_error = null,
+        ?string &$msgerr = null,
+        ?string &$curl_error = null,
         bool $check_url_safeness = false,
         ?array &$curl_info = null
     ): string {
@@ -1414,7 +1414,7 @@ class Toolbox
      *
      * @return bool whether this is an AJAX (XMLHttpRequest) request.
      */
-    public static function isAjax()
+    public static function isAjax(): bool
     {
         return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
     }
@@ -1426,7 +1426,7 @@ class Toolbox
      *
      * @return bool
      */
-    public static function key_exists_deep($need, $tab)
+    public static function key_exists_deep(string|int $need, array $tab): bool
     {
 
         foreach ($tab as $key => $value) {
@@ -1453,7 +1453,7 @@ class Toolbox
      *
      * @return void
      **/
-    public static function manageBeginAndEndPlanDates(&$data)
+    public static function manageBeginAndEndPlanDates(array &$data): void
     {
 
         if (!isset($data['end']) && !empty($data['begin']) && isset($data['_duration'])) {
@@ -1470,7 +1470,7 @@ class Toolbox
      *
      * @return void
      **/
-    public static function manageRedirect($where)
+    public static function manageRedirect(string $where): void
     {
         global $CFG_GLPI;
 
@@ -1642,7 +1642,7 @@ class Toolbox
      *
      * @return int $val
      **/
-    public static function return_bytes_from_ini_vars($val)
+    public static function return_bytes_from_ini_vars(string $val): int
     {
 
         $val  = trim($val);
@@ -1693,7 +1693,7 @@ class Toolbox
      *                norsh, secure and debug) : options are empty if not set
      *                and options have boolean values if set
      **/
-    public static function parseMailServerConnectString($value, $forceport = false, bool $allow_plugins_protocols = true)
+    public static function parseMailServerConnectString(string $value, bool $forceport = false, bool $allow_plugins_protocols = true): array
     {
 
         $tab = [];
@@ -1772,7 +1772,7 @@ class Toolbox
      *
      * @return string
      **/
-    public static function constructMailServerConfig($input)
+    public static function constructMailServerConfig(array $input): string
     {
 
         $out = "";
@@ -1893,7 +1893,7 @@ class Toolbox
      *
      * @return null|ProtocolInterface|Imap|Pop3
      */
-    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true)
+    public static function getMailServerProtocolInstance(string $protocol_type, bool $allow_plugins_protocols = true): ProtocolInterface|Imap|Pop3|null
     {
         $protocols = self::getMailServerProtocols($allow_plugins_protocols);
         if (array_key_exists($protocol_type, $protocols)) {
@@ -1950,7 +1950,7 @@ class Toolbox
     /**
      * @return string[]
      */
-    public static function getDaysOfWeekArray()
+    public static function getDaysOfWeekArray(): array
     {
 
         $tab = [];
@@ -1969,7 +1969,7 @@ class Toolbox
     /**
      * @return string[]
      */
-    public static function getMonthsOfYearArray()
+    public static function getMonthsOfYearArray(): array
     {
 
         $tab = [];
@@ -2001,7 +2001,7 @@ class Toolbox
      *
      * @return bool  string found ?
      **/
-    public static function inArrayCaseCompare($string, $data = [])
+    public static function inArrayCaseCompare(string $string, array $data = []): bool
     {
 
         if (count($data)) {
@@ -2024,7 +2024,7 @@ class Toolbox
      *
      * @return string  clean integer
      **/
-    public static function cleanInteger($integer)
+    public static function cleanInteger(string $integer): string
     {
         return preg_replace("/[^0-9-]/", "", (string) $integer);
     }
@@ -2039,7 +2039,7 @@ class Toolbox
      *
      * @return string  clean decimal
      **/
-    public static function cleanDecimal($decimal)
+    public static function cleanDecimal(string $decimal): string
     {
         return preg_replace("/[^0-9\.-]/", "", $decimal);
     }
@@ -2054,7 +2054,7 @@ class Toolbox
      *
      * @return string  clean string
      **/
-    public static function cleanNewLines($string)
+    public static function cleanNewLines(string $string): string
     {
 
         $string = preg_replace("/\r\n/", " ", $string);
@@ -2079,7 +2079,7 @@ class Toolbox
      * @since 9.4.7 Added the `$database` parameter.
      * @since 11.0.0 Added the `$progress_indicator` parameter.
      */
-    public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
+    public static function createSchema(string $lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null): void
     {
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
@@ -2225,7 +2225,7 @@ class Toolbox
      *
      * @return bool
      **/
-    public static function writeConfig($name, $content, string $config_dir = GLPI_CONFIG_DIR)
+    public static function writeConfig(string $name, string $content, string $config_dir = GLPI_CONFIG_DIR): bool
     {
 
         $name = $config_dir . '/' . $name;
@@ -2252,7 +2252,7 @@ class Toolbox
      *
      * @since 0.83.91
      **/
-    public static function prepareArrayForInput(array $value)
+    public static function prepareArrayForInput(array $value): string
     {
         $json = json_encode($value);
         $compressed = gzcompress($json);
@@ -2269,7 +2269,7 @@ class Toolbox
      *
      * @since 0.83.91
      **/
-    public static function decodeArrayFromInput($value)
+    public static function decodeArrayFromInput(string $value): array
     {
 
         if ($dec = base64_decode($value)) {
@@ -2293,7 +2293,7 @@ class Toolbox
      * @return bool|string (if $type not given) else boolean
      *
      **/
-    public static function getMime($file, $type = false)
+    public static function getMime(string $file, bool|string $type = false): bool|string
     {
 
         static $finfo = null;
@@ -2321,7 +2321,7 @@ class Toolbox
      *              check the types of the needle in the haystack.
      * @return bool
      */
-    public static function in_array_recursive($needle, $haystack, $strict = false)
+    public static function in_array_recursive(mixed $needle, array $haystack, bool $strict = false): bool
     {
 
         $it = new RecursiveIteratorIterator(new RecursiveArrayIterator($haystack));
@@ -2406,7 +2406,7 @@ class Toolbox
      *
      * @return string                the $content_text param after parsing
      **/
-    public static function convertTagToImage($content_text, CommonDBTM $item, $doc_data = [], bool $add_link = true)
+    public static function convertTagToImage(string $content_text, CommonDBTM $item, array $doc_data = [], bool $add_link = true): string
     {
         global $CFG_GLPI;
 
@@ -2543,7 +2543,7 @@ class Toolbox
      *
      * @return string  html content
      **/
-    public static function cleanTagOrImage($content, array $tags)
+    public static function cleanTagOrImage(string $content, array $tags): string
     {
         foreach ($tags as $tag) {
             $content = preg_replace("/<img.*alt=['|\"]" . $tag . "['|\"][^>]*\>/", "<p></p>", $content);
@@ -2560,7 +2560,7 @@ class Toolbox
      *
      * @return mixed
      */
-    public static function jsonDecode($encoded, $assoc = false)
+    public static function jsonDecode(string $encoded, bool $assoc = false): mixed
     {
         if (!is_string($encoded)) {
             self::log(LogLevel::NOTICE, ['Only strings can be json to decode!']);
@@ -2590,7 +2590,7 @@ class Toolbox
      *
      * @return bool
      */
-    public static function isJSON($json): bool
+    public static function isJSON(mixed $json): bool
     {
         // Numeric strings are always valid JSON.
         if (is_numeric($json)) {
@@ -2654,7 +2654,7 @@ class Toolbox
      *
      * @return string the IP address
      */
-    public static function getRemoteIpAddress()
+    public static function getRemoteIpAddress(): string
     {
         return $_SERVER["REMOTE_ADDR"];
     }
@@ -2668,7 +2668,7 @@ class Toolbox
      *
      * @return array
      */
-    public static function getDateFormats($type)
+    public static function getDateFormats(string $type): array
     {
         $formats = [];
         switch ($type) {
@@ -2701,7 +2701,7 @@ class Toolbox
      *
      * @return string
      */
-    public static function getDateFormat($type)
+    public static function getDateFormat(string $type): string
     {
         $formats = self::getDateFormats($type);
         $format = $formats[$_SESSION["glpidate_format"] ?? 0];
@@ -2715,7 +2715,7 @@ class Toolbox
      *
      * @return string
      */
-    public static function phpDateFormat()
+    public static function phpDateFormat(): string
     {
         return self::getDateFormat('php');
     }
@@ -2727,7 +2727,7 @@ class Toolbox
      *
      * @return array
      */
-    public static function phpDateFormats()
+    public static function phpDateFormats(): array
     {
         return self::getDateFormats('php');
     }
@@ -2739,7 +2739,7 @@ class Toolbox
      *
      * @return string
      */
-    public static function jsDateFormat()
+    public static function jsDateFormat(): string
     {
         return self::getDateFormat('js');
     }
@@ -2751,7 +2751,7 @@ class Toolbox
      *
      * @return array
      */
-    public static function jsDateFormats()
+    public static function jsDateFormats(): array
     {
         return self::getDateFormats('js');
     }
@@ -2763,7 +2763,7 @@ class Toolbox
      *
      * @return string formatted link.
      **/
-    public static function formatOutputWebLink($link)
+    public static function formatOutputWebLink(string $link): string
     {
         if (!preg_match("/^https?/", $link)) {
             return "http://" . $link;
@@ -2777,7 +2777,7 @@ class Toolbox
      * @param  int $index the numeric index
      * @return string         excel like string index
      */
-    public static function getBijectiveIndex($index = 0)
+    public static function getBijectiveIndex(int $index = 0): string
     {
         $bij_str = "";
         while ((int) $index > 0) {
@@ -2816,7 +2816,7 @@ class Toolbox
      *
      * @since 9.5.0
      */
-    public static function savePicture($src, $uniq_prefix = '', $keep_src = false)
+    public static function savePicture(?string $src, string $uniq_prefix = '', bool $keep_src = false): bool|string
     {
 
         if (!Document::isImage($src)) {
@@ -2872,7 +2872,7 @@ class Toolbox
      *
      * @since 9.5.0
      */
-    public static function deletePicture($path)
+    public static function deletePicture(string $path): bool
     {
 
         $fullpath = GLPI_PICTURE_DIR . '/' . $path;
@@ -2906,7 +2906,7 @@ class Toolbox
      *
      * @since 9.5.0
      */
-    public static function getPictureUrl($path, $full = true)
+    public static function getPictureUrl(string $path, bool $full = true): ?string
     {
         global $CFG_GLPI;
 
@@ -2926,7 +2926,7 @@ class Toolbox
      *
      * @return string shortened number
      */
-    public static function shortenNumber($number = 0, $precision = 1, bool $html = true): string
+    public static function shortenNumber(int $number = 0, int $precision = 1, bool $html = true): string
     {
 
         $suffix = "";
@@ -3090,7 +3090,7 @@ class Toolbox
      *
      * @return mixed The header value or null if not found
      */
-    public static function getHeader(string $name)
+    public static function getHeader(string $name): mixed
     {
         // Format expected header name
         $name = "HTTP_" . str_replace("-", "_", strtoupper($name));
@@ -3134,7 +3134,7 @@ class Toolbox
      *
      * @return bool
      */
-    public static function isValidWebUrl($url): bool
+    public static function isValidWebUrl(string $url): bool
     {
         // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
         $pattern = '~^
@@ -3172,7 +3172,7 @@ class Toolbox
      * @param class-string $trait The trait
      * @return bool True if the class or its parents have the specified trait
      */
-    public static function hasTrait($class, string $trait): bool
+    public static function hasTrait(string|object $class, string $trait): bool
     {
         // Get traits of all parent classes
         do {
@@ -3192,7 +3192,7 @@ class Toolbox
      *
      * @return string
      */
-    public static function filename($filename): string
+    public static function filename(string $filename): string
     {
         //remove extension
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
@@ -3245,7 +3245,7 @@ class Toolbox
      *
      * @return array
      */
-    public static function getAvailablesTabs(string $itemtype, $id = null): array
+    public static function getAvailablesTabs(string $itemtype, int|string|null $id = null): array
     {
         $item = getItemForItemtype($itemtype);
 
@@ -3279,7 +3279,7 @@ class Toolbox
      *
      * @return bool
      */
-    public static function isFloat($value): bool
+    public static function isFloat(mixed $value): bool
     {
         if ($value === null || $value === '') {
             return false;
@@ -3305,7 +3305,7 @@ class Toolbox
      *
      * @return int
      */
-    public static function getDecimalNumbers($value): int
+    public static function getDecimalNumbers(mixed $value): int
     {
         if (!is_numeric($value)) {
             $type = gettype($value);
@@ -3332,7 +3332,7 @@ class Toolbox
      * @return mixed The Mio value as an integer if we were able to parse the
      * input, else the unchanged input string
      */
-    public static function getMioSizeFromString(string $size)
+    public static function getMioSizeFromString(string $size): mixed
     {
         if (is_numeric($size)) {
             // Already a numeric value, no work to be done
@@ -3366,7 +3366,7 @@ class Toolbox
      *
      * @return string
      */
-    final public static function getNormalizedItemtype(string $itemtype)
+    final public static function getNormalizedItemtype(string $itemtype): string
     {
         return strtolower(str_replace('\\', '', $itemtype));
     }

@@ -706,7 +706,7 @@ class RuleTest extends DbTestCase
      * {@link \RuleCollection::moveRule()} to handle the ranking.
      * @return void
      */
-    public function testUpdateRanking()
+    public function testUpdateRanking(): void
     {
         global $DB;
 

@@ -45,7 +45,7 @@ class Item_ClusterTest extends DbTestCase
      *
      * @return array
      */
-    public static function computersProvider()
+    public static function computersProvider(): array
     {
         return [
             [
@@ -61,7 +61,7 @@ class Item_ClusterTest extends DbTestCase
      *
      * @return void
      */
-    protected function createComputers()
+    protected function createComputers(): void
     {
         $computer = new \Computer();
         foreach ($this->computersProvider() as $row) {
@@ -75,7 +75,7 @@ class Item_ClusterTest extends DbTestCase
      *
      * @return void
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $this->createComputers();
 

@@ -45,7 +45,7 @@ trait MapGeolocation
      *
      * @return void
      */
-    public function showMap()
+    public function showMap(): void
     {
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG

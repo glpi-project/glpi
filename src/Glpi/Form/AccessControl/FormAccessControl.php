@@ -344,7 +344,7 @@ final class FormAccessControl extends CommonDBChild
      *
      * @return array
      */
-    protected function prepareConfigInput(array $input)
+    protected function prepareConfigInput(array $input): array
     {
         $config = $input['_config'] ?? null;
         if ($config !== null) {

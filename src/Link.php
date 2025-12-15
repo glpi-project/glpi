@@ -78,7 +78,7 @@ class Link extends CommonDBTM
      *
      * @return void
      */
-    public static function registerTag($tag)
+    public static function registerTag(string $tag): void
     {
         if (!in_array($tag, self::$tags)) {
             if (preg_match('/\[.+\]/', $tag)) {
@@ -423,7 +423,7 @@ class Link extends CommonDBTM
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
      */
-    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $custom_vars = [])
+    public static function generateLinkContents(string $link, CommonDBTM $item, bool $safe_url = true, array $custom_vars = []): array
     {
         global $CFG_GLPI, $DB;
 
@@ -542,7 +542,7 @@ class Link extends CommonDBTM
      * @param 'ManualLink'|'Link'|null $restrict_type Restrict to a specific type of link
      * @return void
      */
-    public static function showAllLinksForItem(CommonDBTM $item, ?string $restrict_type = null)
+    public static function showAllLinksForItem(CommonDBTM $item, ?string $restrict_type = null): void
     {
         if ($item->isNewID($item->getID())) {
             return;
@@ -654,7 +654,7 @@ TWIG, $buttons_params);
      *
      * @return array
      */
-    public static function getAllLinksFor($item, $params)
+    public static function getAllLinksFor(CommonDBTM $item, array $params): array
     {
         global $CFG_GLPI;
 
@@ -731,7 +731,7 @@ TWIG, $buttons_params);
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 
@@ -765,7 +765,7 @@ TWIG, $buttons_params);
      *
      * @return array|int|string
      */
-    public static function getEntityRestrictForItem(CommonGLPI $item)
+    public static function getEntityRestrictForItem(CommonGLPI $item): array|int|string
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -784,7 +784,7 @@ TWIG, $buttons_params);
      *
      * @return DBmysqlIterator
      */
-    public static function getLinksDataForItem(CommonDBTM $item)
+    public static function getLinksDataForItem(CommonDBTM $item): DBmysqlIterator
     {
         global $DB;
 

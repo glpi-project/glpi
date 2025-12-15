@@ -152,7 +152,7 @@ class Conf extends CommonGLPI
      *
      * @return void
      */
-    public function showUploadForm()
+    public function showUploadForm(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_form.html.twig', [
             'inventory_extensions' => $this->knownInventoryExtensions(),
@@ -180,7 +180,7 @@ class Conf extends CommonGLPI
      *
      * @return array [filename => [success => bool, message => string, asset => CommonDBTM]]
      */
-    public function importFiles($files): array
+    public function importFiles(array $files): array
     {
         $result = [];
 
@@ -218,7 +218,7 @@ class Conf extends CommonGLPI
      *
      * @return bool
      */
-    public function isInventoryFile($name): bool
+    public function isInventoryFile(string $name): bool
     {
         return (bool) preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
     }
@@ -231,7 +231,7 @@ class Conf extends CommonGLPI
      *
      * @return array [success => bool, message => ?string, items => CommonDBTM[], request => Glpi\Inventory\Request]
      */
-    protected function importContentFile($path, $contents): array
+    protected function importContentFile(?string $path, string $contents): array
     {
         $inventory_request = new Request();
         $result = [
@@ -344,7 +344,7 @@ class Conf extends CommonGLPI
      * @return true (Always true)
      * @copyright 2010-2022 by the FusionInventory Development Team. (Agent cleanup section)
      **/
-    public function showConfigForm()
+    public function showConfigForm(): bool
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -1106,7 +1106,7 @@ class Conf extends CommonGLPI
      *
      * @return bool
      */
-    public function saveConf(array $values)
+    public function saveConf(array $values): bool
     {
         if (!Config::canUpdate()) {
             return false;
@@ -1190,7 +1190,7 @@ class Conf extends CommonGLPI
      *
      * @return mixed
      */
-    public function __get($name)
+    public function __get(string $name): mixed
     {
         if (!count($this->currents)) {
             $config = Config::getConfigurationValues('inventory');
@@ -1220,7 +1220,7 @@ class Conf extends CommonGLPI
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
         $values = [ READ => __('Read')];
         $values[self::IMPORTFROMFILE] = ['short' => __('Import'),
@@ -1242,7 +1242,7 @@ class Conf extends CommonGLPI
      *
      * @return string
      */
-    public function buildInventoryFileName($itemtype, $items_id, $ext): string
+    public function buildInventoryFileName(string $itemtype, int $items_id, string $ext): string
     {
         $files_per_dir = 1000;
 
@@ -1306,7 +1306,7 @@ class Conf extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-adjustments";
     }

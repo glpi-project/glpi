@@ -159,7 +159,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      *
      * @return string|false
      */
-    public function getManufacturer($vendorid): false|string
+    public function getManufacturer(string $vendorid): false|string
     {
         $pciids = self::getList();
 
@@ -174,7 +174,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      *
      * @return string|false
      */
-    public function getProductName($vendorid, $deviceid): false|string
+    public function getProductName(string $vendorid, string $deviceid): false|string
     {
         $pciids = self::getList();
 

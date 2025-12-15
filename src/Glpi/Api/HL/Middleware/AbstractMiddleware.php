@@ -42,7 +42,7 @@ abstract class AbstractMiddleware
      * @param callable $next
      * @return mixed
      */
-    public function __invoke(MiddlewareInput $input, callable $next)
+    public function __invoke(MiddlewareInput $input, callable $next): mixed
     {
         if (method_exists($this, 'process')) {
             return $this->process($input, $next);

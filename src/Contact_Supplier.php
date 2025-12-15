@@ -109,7 +109,7 @@ class Contact_Supplier extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForContact(Contact $contact)
+    public static function showForContact(Contact $contact): void
     {
         $instID = (int) $contact->fields['id'];
 
@@ -215,7 +215,7 @@ class Contact_Supplier extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForSupplier(Supplier $supplier)
+    public static function showForSupplier(Supplier $supplier): void
     {
         $instID = $supplier->fields['id'];
         if (!$supplier->can($instID, READ)) {

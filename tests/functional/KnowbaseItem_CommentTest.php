@@ -90,7 +90,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
      *
      * @return void
      */
-    private function addComments(\KnowbaseItem $kb, string $lang = 'NULL')
+    private function addComments(\KnowbaseItem $kb, string $lang = 'NULL'): void
     {
         $this->login();
         $kbcom = new \KnowbaseItem_Comment();

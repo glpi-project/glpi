@@ -49,7 +49,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      *
      * @return AccessTokenEntityInterface
      */
-    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
+    public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, ?string $userIdentifier = null): AccessTokenEntityInterface
     {
         $token = new AccessToken();
         $token->setClient($clientEntity);
@@ -80,7 +80,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      *
      * @return void
      */
-    public function revokeAccessToken($tokenId): void
+    public function revokeAccessToken(string $tokenId): void
     {
         global $DB;
 
@@ -92,7 +92,7 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
      *
      * @return bool
      */
-    public function isAccessTokenRevoked($tokenId): bool
+    public function isAccessTokenRevoked(string $tokenId): bool
     {
         global $DB;
 

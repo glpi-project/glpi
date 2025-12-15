@@ -209,7 +209,7 @@ class ParserTest extends GLPITestCase
      * When a filter references a property that does not exist, it should be ignored to avoid invalid SQL being generated.
      * @return void
      */
-    public function testIgnoreInvalidProperties()
+    public function testIgnoreInvalidProperties(): void
     {
         $parser = $this->getParserInstance([
             'properties' => [

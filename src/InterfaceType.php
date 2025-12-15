@@ -60,7 +60,7 @@ class InterfaceType extends CommonDropdown
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
 
@@ -85,7 +85,7 @@ class InterfaceType extends CommonDropdown
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
         $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {

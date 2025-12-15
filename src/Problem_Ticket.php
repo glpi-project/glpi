@@ -193,7 +193,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * @param Problem $problem
      * @return void
      **/
-    public static function showForProblem(Problem $problem)
+    public static function showForProblem(Problem $problem): void
     {
         $ID = $problem->getField('id');
 
@@ -268,7 +268,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      * @param Ticket $ticket object
      * @return void
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket): void
     {
 
         $ID = $ticket->getField('id');
@@ -341,7 +341,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      *
      * @return array
      */
-    private static function getTicketProblemsData($tickets_id): array
+    private static function getTicketProblemsData(int $tickets_id): array
     {
         $ticket = new Ticket();
         $ticket->fields['id'] = $tickets_id;
@@ -367,7 +367,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      *
      * @return array
      */
-    private static function getProblemTicketsData($problems_id): array
+    private static function getProblemTicketsData(int $problems_id): array
     {
         $problem = new Problem();
         $problem->fields['id'] = $problems_id;

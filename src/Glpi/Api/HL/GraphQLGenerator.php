@@ -62,7 +62,7 @@ final class GraphQLGenerator
     /**
      * @return string
      */
-    public function getSchema()
+    public function getSchema(): string
     {
         Profiler::getInstance()->start('GraphQLGenerator::loadTypes', Profiler::CATEGORY_HLAPI);
         $this->loadTypes();
@@ -188,7 +188,7 @@ final class GraphQLGenerator
      *
      * @return Type|ListOfType<Type|Closure>|Closure|null
      */
-    private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = '')
+    private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = ''): Type|ListOfType|Closure|null
     {
         $type = $property['type'] ?? 'string';
         $graphql_type = match ($type) {

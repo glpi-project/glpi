@@ -91,7 +91,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/unmanaged.html.twig', [

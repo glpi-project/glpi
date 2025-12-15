@@ -73,7 +73,7 @@ class DomainRelation extends CommonDropdown
     /**
      * @return array
      */
-    public static function getDefaults()
+    public static function getDefaults(): array
     {
         return array_map(
             function ($e) {

@@ -79,7 +79,7 @@ class DocumentType extends CommonDropdown
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -170,7 +170,7 @@ class DocumentType extends CommonDropdown
      *
      * @return void|string
      */
-    public static function showAvailableTypesLink($options = [])
+    public static function showAvailableTypesLink(array $options = []): void|string
     {
         global $CFG_GLPI;
 

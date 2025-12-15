@@ -41,7 +41,7 @@
  *
  * @return bool
  **/
-function update930to931()
+function update930to931(): bool
 {
     /**
      * @var Migration $migration

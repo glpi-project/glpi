@@ -86,7 +86,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @param array $options
      */
-    protected function insertTabs($options = []): array
+    protected function insertTabs(array $options = []): array
     {
         return [];
     }
@@ -130,7 +130,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return string
      **/
-    public static function getCompleteNameFromParents($parentCompleteName, $thisName)
+    public static function getCompleteNameFromParents(string $parentCompleteName, string $thisName): string
     {
         return $parentCompleteName . " > " . $thisName;
     }
@@ -141,7 +141,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return array
      **/
-    public function adaptTreeFieldsFromUpdateOrAdd($input)
+    public function adaptTreeFieldsFromUpdateOrAdd(array $input): array
     {
         $parent = clone $this;
 
@@ -251,7 +251,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return void
      */
-    public function regenerateTreeUnderID($ID, $updateName, $changeParent)
+    public function regenerateTreeUnderID(int $ID, bool $updateName, bool $changeParent): void
     {
         global $DB, $GLPI_CACHE;
 
@@ -324,7 +324,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return void
      */
-    protected function cleanParentsSons($id = null, $cache = true)
+    protected function cleanParentsSons(?int $id = null, bool $cache = true): void
     {
         global $DB, $GLPI_CACHE;
 
@@ -359,7 +359,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return void
      */
-    protected function addSonInParents()
+    protected function addSonInParents(): void
     {
         global $GLPI_CACHE;
 
@@ -500,7 +500,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return string
      **/
-    public function getTreeLink()
+    public function getTreeLink(): string
     {
 
         $link = '';
@@ -881,7 +881,7 @@ TWIG, $twig_params);
     /**
      * @return bool
      */
-    public function haveChildren()
+    public function haveChildren(): bool
     {
         return $this->countChildren() > 0;
     }
@@ -903,7 +903,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function cleanTreeText($value)
+    public static function cleanTreeText(string $value): string
     {
 
         $tmp = explode('>', $value);

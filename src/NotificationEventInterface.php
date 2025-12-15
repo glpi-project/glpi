@@ -58,17 +58,17 @@ interface NotificationEventInterface
      * @since 11.0.0 Param `$trigger` has been added.
      */
     public static function raise(
-        $event,
+        string $event,
         CommonGLPI $item,
         array $options,
-        $label,
+        string $label,
         array $data,
         NotificationTarget $notificationtarget,
         NotificationTemplate $template,
-        $notify_me,
-        $emitter = null,
+        bool $notify_me,
+        mixed $emitter = null,
         ?CommonDBTM $trigger = null
-    );
+    ): void;
 
 
     /**
@@ -76,7 +76,7 @@ interface NotificationEventInterface
      *
      * @return string
      */
-    public static function getTargetFieldName();
+    public static function getTargetFieldName(): string;
 
     /**
      * Get (and populate if needed) target field for notification
@@ -85,21 +85,21 @@ interface NotificationEventInterface
      *
      * @return string
      */
-    public static function getTargetField(&$data);
+    public static function getTargetField(array &$data): string;
 
     /**
      * Whether notifications can be handled by a crontab
      *
      * @return bool
      */
-    public static function canCron();
+    public static function canCron(): bool;
 
     /**
      * Get admin data
      *
      * @return array
      */
-    public static function getAdminData();
+    public static function getAdminData(): array;
 
     /**
      * Get entity admin data
@@ -108,7 +108,7 @@ interface NotificationEventInterface
      *
      * @return array
      */
-    public static function getEntityAdminsData($entity);
+    public static function getEntityAdminsData(int $entity): array;
 
     /**
      * Send notification
@@ -117,5 +117,5 @@ interface NotificationEventInterface
      *
      * @return false|int False if something went wrong, number of send notifications otherwise
      */
-    public static function send(array $data);
+    public static function send(array $data): bool|int;
 }

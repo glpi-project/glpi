@@ -57,7 +57,7 @@ class IPAddress_IPNetwork extends CommonDBRelation
      *
      * @return void
      */
-    public static function linkIPAddressFromIPNetwork(IPNetwork $network)
+    public static function linkIPAddressFromIPNetwork(IPNetwork $network): void
     {
         global $DB;
 
@@ -96,7 +96,7 @@ class IPAddress_IPNetwork extends CommonDBRelation
      *
      * @return void
      */
-    public static function addIPAddress(IPAddress $ipaddress)
+    public static function addIPAddress(IPAddress $ipaddress): void
     {
 
         $linkObject = new self();

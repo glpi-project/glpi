@@ -91,7 +91,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return bool
      */
-    public function getFromDBWithData($ID, $withtypeandcategory = true)
+    public function getFromDBWithData(int $ID, bool $withtypeandcategory = true): bool
     {
         if ($this->getFromDB($ID)) {
             $itiltype = static::getITILObjectClass();
@@ -246,7 +246,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return array
      */
-    public static function getAllowedFields($withtypeandcategory = false, $withitemtype = false)
+    public static function getAllowedFields(bool $withtypeandcategory = false, bool $withitemtype = false): array
     {
 
         static $allowed_fields = [];
@@ -402,7 +402,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @see self::getAllowedFields()
      */
-    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
+    public static function getExtraAllowedFields(bool $withtypeandcategory = false, bool $withitemtype = false): array
     {
         return [];
     }
@@ -414,7 +414,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return array
      */
-    public function getAllowedFieldsNames($withtypeandcategory = false, $with_items_id = false)
+    public function getAllowedFieldsNames(bool $withtypeandcategory = false, bool $with_items_id = false): array
     {
 
         $itiltype = static::getITILObjectClass();
@@ -493,7 +493,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return string to display
      */
-    public function getMandatoryMark($field, $force = false)
+    public function getMandatoryMark(string $field, bool $force = false): string
     {
 
         if ($force || $this->isMandatoryField($field)) {
@@ -510,7 +510,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return bool
      */
-    public function isHiddenField($field)
+    public function isHiddenField(string $field): bool
     {
 
         if (isset($this->hidden[$field])) {
@@ -527,7 +527,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return bool
      */
-    public function isPredefinedField($field)
+    public function isPredefinedField(string $field): bool
     {
 
         if (isset($this->predefined[$field])) {
@@ -544,7 +544,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return bool
      **/
-    public function isMandatoryField($field)
+    public function isMandatoryField(string $field): bool
     {
 
         if (isset($this->mandatory[$field])) {
@@ -563,7 +563,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return bool
      */
-    public function isReadonlyField($field)
+    public function isReadonlyField(string $field): bool
     {
 
         if (isset($this->readonly[$field])) {
@@ -682,7 +682,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return void
      */
-    public function mergeTemplateFields($target_id, $source_id)
+    public function mergeTemplateFields(int $target_id, int $source_id): void
     {
         global $DB;
 
@@ -739,7 +739,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return void
      */
-    public function mergeTemplateITILCategories($target_id, $source_id)
+    public function mergeTemplateITILCategories(int $target_id, int $source_id): void
     {
         global $DB;
 
@@ -796,7 +796,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return array
      */
-    public function formatFieldsToMerge($data)
+    public function formatFieldsToMerge(array $data): array
     {
 
         $output = [];
@@ -817,7 +817,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return int|bool true in case of success, -1 otherwise
      **/
-    public function import(array $input)
+    public function import(array $input): int|bool
     {
 
         if (!isset($input['name'])) {

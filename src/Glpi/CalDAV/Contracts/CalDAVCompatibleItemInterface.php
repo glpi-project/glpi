@@ -51,7 +51,7 @@ interface CalDAVCompatibleItemInterface
      *
      * @return VCalendar[]
      */
-    public static function getGroupItemsAsVCalendars($groups_id);
+    public static function getGroupItemsAsVCalendars(int $groups_id): array;
 
     /**
      * Get user items as VCalendar documents.
@@ -60,7 +60,7 @@ interface CalDAVCompatibleItemInterface
      *
      * @return VCalendar[]
      */
-    public static function getUserItemsAsVCalendars($users_id);
+    public static function getUserItemsAsVCalendars(int $users_id): array;
 
     /**
      * Get current item as a VCalendar document.
@@ -69,7 +69,7 @@ interface CalDAVCompatibleItemInterface
      *
      * @see https://tools.ietf.org/html/rfc2445
      */
-    public function getAsVCalendar();
+    public function getAsVCalendar(): ?VCalendar;
 
     /**
      * Get input array from a VCalendar object.
@@ -80,5 +80,5 @@ interface CalDAVCompatibleItemInterface
      *
      * @see https://tools.ietf.org/html/rfc2445
      */
-    public function getInputFromVCalendar(VCalendar $vcalendar);
+    public function getInputFromVCalendar(VCalendar $vcalendar): array;
 }

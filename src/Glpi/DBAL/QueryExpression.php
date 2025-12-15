@@ -52,7 +52,7 @@ class QueryExpression
      * @param string $expression The query expression
      * @param ?string $alias     The query expression alias
      */
-    public function __construct($expression, ?string $alias = null)
+    public function __construct(string $expression, ?string $alias = null)
     {
         if ($expression === null || $expression === '' || $expression === false) {
             throw new RuntimeException('Cannot build an empty expression');
@@ -68,7 +68,7 @@ class QueryExpression
      *
      * @psalm-taint-escape sql
      */
-    public function getValue()
+    public function getValue(): string
     {
         global $DB;
         $sql = $this->expression;

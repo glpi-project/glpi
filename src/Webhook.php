@@ -320,7 +320,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      * @param string $event_name
      * @return string
      */
-    public static function getDefaultEventsListLabel($event_name): string
+    public static function getDefaultEventsListLabel(string $event_name): string
     {
         $events = static::getDefaultEventsList();
         return $events[$event_name] ?? NOT_AVAILABLE;
@@ -349,7 +349,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     *
     * @return string
     */
-    public static function getStatusIcon($status): string
+    public static function getStatusIcon(string $status): string
     {
         if ($status) {
             return '<i class="ti ti-alert-triangle icon-pulse fs-2" style="color: #ff0000;"></i>';
@@ -1062,7 +1062,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      *
      * @return string
      */
-    public static function getSignature($data, $secret): string
+    public static function getSignature(string $data, string $secret): string
     {
         return hash_hmac('sha256', $data, $secret);
     }
@@ -1291,7 +1291,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     /**
      * @return string
      */
-    public static function generateRandomSecret()
+    public static function generateRandomSecret(): string
     {
         return Toolbox::getRandomString(40);
     }
@@ -1301,7 +1301,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
      *
      * @return false|array
      */
-    public function handleInput($input)
+    public function handleInput(array $input): bool|array
     {
         $valid_input = true;
 

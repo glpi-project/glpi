@@ -71,7 +71,7 @@ class PlanningRecall extends CommonDBChild
     /**
      * @return int
      */
-    public static function isAvailable()
+    public static function isAvailable(): int
     {
         global $CFG_GLPI;
 
@@ -110,7 +110,7 @@ class PlanningRecall extends CommonDBChild
      *
      * @return bool true if succeed else false
      **/
-    public function getFromDBForItemAndUser($itemtype, $items_id, $users_id)
+    public function getFromDBForItemAndUser(string $itemtype, int $items_id, int $users_id): bool
     {
         return $this->getFromDBByCrit([
             static::getTable() . '.itemtype'  => $itemtype,
@@ -134,7 +134,7 @@ class PlanningRecall extends CommonDBChild
      *
      * @return void|false
      */
-    public static function manageDatas(array $data)
+    public static function manageDatas(array $data): void|bool
     {
         // Check data information
         if (
@@ -215,7 +215,7 @@ class PlanningRecall extends CommonDBChild
      *
      * @return bool true if succeed else false
      **/
-    public static function managePlanningUpdates($itemtype, $items_id, $begin)
+    public static function managePlanningUpdates(string $itemtype, int $items_id, string $begin): bool
     {
         global $DB;
 
@@ -272,7 +272,7 @@ class PlanningRecall extends CommonDBChild
      *
      * @return void|false print out an HTML select box or return false if mandatory fields are not ok
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = []): void|bool
     {
         // Default values
         $p['itemtype'] = '';
@@ -344,7 +344,7 @@ TWIG, $p);
      * @return array of information
      * @used-by CronTask
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'planningrecall':
@@ -361,7 +361,7 @@ TWIG, $p);
      *
      * @return int
      */
-    public static function cronPlanningRecall($task = null)
+    public static function cronPlanningRecall(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 

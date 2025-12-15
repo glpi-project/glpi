@@ -109,7 +109,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return void
      **/
-    public function setEntity($entity = 0)
+    public function setEntity(int $entity = 0): void
     {
         $this->entity = $entity;
     }
@@ -117,7 +117,7 @@ class RuleCollection extends CommonDBTM
     /**
      * @return bool
      */
-    public function canList()
+    public function canList(): bool
     {
         return static::canView();
     }
@@ -137,10 +137,10 @@ class RuleCollection extends CommonDBTM
      * @return int number of rules
      **/
     public function getCollectionSize(
-        $recursive = true,
-        $condition = 0,
-        $children = 0
-    ) {
+        bool $recursive = true,
+        int $condition = 0,
+        int $children = 0
+    ): int {
         global $DB;
 
         $restrict = $this->getRuleListCriteria([
@@ -161,7 +161,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return array
      **/
-    public function getRuleListCriteria($options = [])
+    public function getRuleListCriteria(array $options = []): array
     {
         $p['active']    = true;
         $p['start']     = 0;
@@ -250,7 +250,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return void
      **/
-    public function getCollectionPart($options = [])
+    public function getCollectionPart(array $options = []): void
     {
         global $DB;
 
@@ -291,7 +291,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return void
      **/
-    public function getCollectionDatas($retrieve_criteria = 0, $retrieve_action = 0, $condition = 0)
+    public function getCollectionDatas(int $retrieve_criteria = 0, int $retrieve_action = 0, int $condition = 0): void
     {
         global $DB;
 
@@ -352,7 +352,7 @@ class RuleCollection extends CommonDBTM
      * Get a instance of the class to manipulate rule of this collection
      * @return Rule|null
      **/
-    public function getRuleClass()
+    public function getRuleClass(): ?Rule
     {
         $name = static::getRuleClassName();
         if ($name !==  '' && is_a($name, Rule::class, true)) {
@@ -369,7 +369,7 @@ class RuleCollection extends CommonDBTM
      *
      * since 11.0.0 The `$target` parameter has been removed and its value is automatically computed.
      */
-    public function warningBeforeReplayRulesOnExistingDB()
+    public function warningBeforeReplayRulesOnExistingDB(): bool
     {
         return false;
     }
@@ -394,7 +394,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return int|false -1 if all rows done, else offset for next run, or false on error
      **/
-    public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
+    public function replayRulesOnExistingDB(int $offset = 0, int $maxtime = 0, array $items = [], array $params = []): int|bool
     {
         return false;
     }
@@ -404,7 +404,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return string Title of the rule collection
      **/
-    public function getTitle()
+    public function getTitle(): string
     {
         return __('Rules list');
     }
@@ -414,7 +414,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return bool
      **/
-    public function isRuleEntityAssigned()
+    public function isRuleEntityAssigned(): bool
     {
         $rule = $this->getRuleClass();
         return $rule->isEntityAssign();
@@ -425,7 +425,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return bool
      **/
-    public function isRuleRecursive()
+    public function isRuleRecursive(): bool
     {
         $rule = $this->getRuleClass();
         return $rule->maybeRecursive();
@@ -437,7 +437,7 @@ class RuleCollection extends CommonDBTM
      * @return bool
      * @used-by templates/pages/admin/rules/engine_summary.html.twig
      **/
-    public function isRuleUseConditions()
+    public function isRuleUseConditions(): bool
     {
         $rule = $this->getRuleClass();
         return $rule->useConditions();
@@ -448,7 +448,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return int
      **/
-    public function getDefaultRuleConditionForList()
+    public function getDefaultRuleConditionForList(): int
     {
         $rule = $this->getRuleClass();
         $cond = $rule::getConditionsArray();
@@ -462,7 +462,7 @@ class RuleCollection extends CommonDBTM
     /**
      * @return void
      */
-    public function showEngineSummary()
+    public function showEngineSummary(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/rules/engine_summary.html.twig', [
             'collection' => $this,
@@ -501,7 +501,7 @@ class RuleCollection extends CommonDBTM
      *
      * @return void
      **/
-    public function showListRules($target, $options = [])
+    public function showListRules(string $target, array $options = []): void
     {
         global $CFG_GLPI;
 
@@ -712,7 +712,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function showAdditionalInformationsInForm($target) {}
+    public function showAdditionalInformationsInForm(string $target): void {}
 
     /**
      * Modify rule's ranking and automatically reorder all rules
@@ -723,7 +723,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public function changeRuleOrder($ID, $action, $condition = 0)
+    public function changeRuleOrder(int $ID, string $action, int $condition = 0): bool
     {
         global $DB;
 
@@ -843,7 +843,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public function deleteRuleOrder($ranking)
+    public function deleteRuleOrder(int $ranking): bool
     {
         global $DB;
 
@@ -870,7 +870,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public function moveRule($ID, $ref_ID, $type = self::MOVE_AFTER, $new_rule = false)
+    public function moveRule(int $ID, int $ref_ID, string|int $type = self::MOVE_AFTER, bool $new_rule = false): bool
     {
         global $DB;
 
@@ -979,7 +979,7 @@ TWIG, $twig_params);
      * @return void
      * @todo Not used in GLPI core. Used by glpiinventory plugin
      **/
-    public static function titleBackup()
+    public static function titleBackup(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/rules/backup_header.html.twig');
     }
@@ -993,7 +993,7 @@ TWIG, $twig_params);
      *
      * @return void send attachment to browser
      **/
-    public static function exportRulesToXML($items = [])
+    public static function exportRulesToXML(array $items = []): void
     {
         // get rules XML file
         $xml = self::getRulesXMLFile($items);
@@ -1015,7 +1015,7 @@ TWIG, $twig_params);
      *
      * @return ?string
      */
-    public static function getRulesXMLFile($items = [])
+    public static function getRulesXMLFile(array $items = []): ?string
     {
         if (!count($items)) {
             return null;
@@ -1131,7 +1131,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function displayImportRulesForm()
+    public static function displayImportRulesForm(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/rules/import.html.twig');
     }
@@ -1148,7 +1148,7 @@ TWIG, $twig_params);
      *
      * @return bool true if a criterion is a dropdown, false otherwise
      **/
-    public static function isCriteraADropdown($available_criteria, $condition, $criterion)
+    public static function isCriteraADropdown(array $available_criteria, int $condition, string $criterion): bool
     {
         $type = $available_criteria[$criterion]['type'] ?? false;
         return (in_array($condition, [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT, Rule::PATTERN_UNDER], true)
@@ -1162,7 +1162,7 @@ TWIG, $twig_params);
      *
      * @return bool true if all ok
      **/
-    public static function previewImportRules()
+    public static function previewImportRules(): bool
     {
         global $DB;
 
@@ -1368,7 +1368,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public static function processImportRules()
+    public static function processImportRules(): bool
     {
         global $DB;
         $ruleCriteria = new RuleCriteria();
@@ -1509,7 +1509,7 @@ TWIG, $twig_params);
      *
      * @return array The output array updated by actions
      **/
-    public function processAllRules($input = [], $output = [], $params = [], $options = [])
+    public function processAllRules(array $input = [], array $output = [], array $params = [], array $options = []): array
     {
         $p['condition']     = 0;
         $p['only_criteria'] = null;
@@ -1571,7 +1571,7 @@ TWIG, $twig_params);
      *
      * @since 11.0.0 The `$target` parameter has been removed.
      */
-    public function showRulesEnginePreviewCriteriasForm(array $values, $condition = 0)
+    public function showRulesEnginePreviewCriteriasForm(array $values, int $condition = 0): array
     {
         $input = $this->prepareInputDataForTestProcess($condition);
         $rule      = $this->getRuleClass();
@@ -1621,7 +1621,7 @@ TWIG, $twig_params);
      *
      * @return array the output array updated by actions
      **/
-    public function testAllRules($input = [], $output = [], $params = [], $condition = 0)
+    public function testAllRules(array $input = [], array $output = [], array $params = [], int $condition = 0): array
     {
 
         // Get Collection data
@@ -1670,7 +1670,7 @@ TWIG, $twig_params);
      *
      * @return array The updated input data
      **/
-    public function prepareInputDataForProcess($input, $params)
+    public function prepareInputDataForProcess(array $input, array $params): array
     {
         return $input;
     }
@@ -1685,7 +1685,7 @@ TWIG, $twig_params);
      *
      * @return array The updated input data
      **/
-    public function prepareInputDataForProcessWithPlugins($input, $params)
+    public function prepareInputDataForProcessWithPlugins(array $input, array $params): array
     {
         global $PLUGIN_HOOKS;
 
@@ -1723,7 +1723,7 @@ TWIG, $twig_params);
      *
      * @return array the updated input data
      **/
-    public function prepareInputDataForTestProcess($condition = 0)
+    public function prepareInputDataForTestProcess(int $condition = 0): array
     {
         global $DB;
 
@@ -1767,7 +1767,7 @@ TWIG, $twig_params);
      *
      * @since 11.0.0 The `$target` parameter has been removed.
      */
-    public function showRulesEnginePreviewResultsForm(array $input, $condition = 0)
+    public function showRulesEnginePreviewResultsForm(array $input, int $condition = 0): void
     {
         global $DB;
         $output = [];
@@ -1834,7 +1834,7 @@ TWIG, $twig_params);
      *
      * @return array cleaned array
      **/
-    public function cleanTestOutputCriterias(array $output)
+    public function cleanTestOutputCriterias(array $output): array
     {
         $rule   = $this->getRuleClass();
         if ($rule === null) {
@@ -1856,7 +1856,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public function preProcessPreviewResults($output)
+    public function preProcessPreviewResults(array $output): array
     {
         global $PLUGIN_HOOKS;
 
@@ -1890,7 +1890,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function title() {}
+    public function title(): void {}
 
     /**
      * Get rulecollection classname by giving his itemtype
@@ -1901,7 +1901,7 @@ TWIG, $twig_params);
      *
      * @return RuleCollection|null
      */
-    public static function getClassByType($itemtype, $check_dictionnary_type = false)
+    public static function getClassByType(string $itemtype, bool $check_dictionnary_type = false): ?RuleCollection
     {
         global $CFG_GLPI;
 
@@ -1930,7 +1930,7 @@ TWIG, $twig_params);
     /**
      * @return bool
      */
-    public function showInheritedTab()
+    public function showInheritedTab(): bool
     {
         return false;
     }
@@ -1938,7 +1938,7 @@ TWIG, $twig_params);
     /**
      * @return bool
      */
-    public function showChildrensTab()
+    public function showChildrensTab(): bool
     {
         return false;
     }
@@ -1948,7 +1948,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public function getFieldsToLookFor()
+    public function getFieldsToLookFor(): array
     {
         global $DB;
 
@@ -1997,7 +1997,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public function getMainTabLabel()
+    public function getMainTabLabel(): string
     {
         return _n('Rule', 'Rules', Session::getPluralNumber());
     }

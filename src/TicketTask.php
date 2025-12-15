@@ -51,7 +51,7 @@ class TicketTask extends CommonITILTask
      *
      * @return array of planning item
      **/
-    public static function populatePlanning($options = []): array
+    public static function populatePlanning(array $options = []): array
     {
         return parent::genericPopulatePlanning(self::class, $options);
     }
@@ -68,7 +68,7 @@ class TicketTask extends CommonITILTask
      *
      * @return array of planning item
      **/
-    public static function populateNotPlanned($options = []): array
+    public static function populateNotPlanned(array $options = []): array
     {
         return parent::genericPopulateNotPlanned(self::class, $options);
     }
@@ -84,7 +84,7 @@ class TicketTask extends CommonITILTask
      *
      * @return string
      */
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    public static function displayPlanningItem(array $val, int $who, string $type = "", int|bool $complete = 0): string
     {
         return parent::genericDisplayPlanningItem(self::class, $val, $who, $type, $complete);
     }
@@ -94,7 +94,7 @@ class TicketTask extends CommonITILTask
      *
      * @return string
      */
-    public static function buildParentCondition()
+    public static function buildParentCondition(): string
     {
         return "(0 = 1 " . Ticket::buildCanViewCondition("tickets_id") . ") ";
     }

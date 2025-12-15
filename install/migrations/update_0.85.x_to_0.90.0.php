@@ -38,7 +38,7 @@
  *
  * @return bool
  **/
-function update085xto0900()
+function update085xto0900(): bool
 {
     /**
      * @var DBmysql $DB

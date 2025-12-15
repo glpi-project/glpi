@@ -289,7 +289,7 @@ class Item_Enclosure extends CommonDBRelation
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 

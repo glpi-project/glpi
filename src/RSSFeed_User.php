@@ -54,7 +54,7 @@ class RSSFeed_User extends CommonDBRelation
      *
      * @return array of users linked to a rssfeed
      */
-    public static function getUsers($rssfeeds_id)
+    public static function getUsers(int $rssfeeds_id): array
     {
         global $DB;
 

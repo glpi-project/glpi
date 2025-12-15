@@ -64,7 +64,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      *
      * @return void
      */
-    public function revokeRefreshToken($tokenId): void
+    public function revokeRefreshToken(string $tokenId): void
     {
         global $DB;
 
@@ -78,7 +78,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      *
      * @return bool
      */
-    public function isRefreshTokenRevoked($tokenId): bool
+    public function isRefreshTokenRevoked(string $tokenId): bool
     {
         global $DB;
 

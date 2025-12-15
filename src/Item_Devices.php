@@ -120,7 +120,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return string
      */
-    public static function getDeviceTypeName($nb = 0)
+    public static function getDeviceTypeName(int $nb = 0): string
     {
         $device_type = static::getDeviceType();
         //TRANS: %s is the type of the component
@@ -279,7 +279,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         global $CFG_GLPI;
 
@@ -388,7 +388,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return array Array of the specificities: index is the field name and the values are the attributes of the specificity
      **/
-    public static function getSpecificities($specif = '')
+    public static function getSpecificities(string $specif = ''): array
     {
 
         return match ($specif) {
@@ -443,7 +443,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return array of the itemtype that can have this Item_Device
      **/
-    public static function itemAffinity()
+    public static function itemAffinity(): array
     {
         global $CFG_GLPI;
 
@@ -459,7 +459,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @return array
      * @phpstan-return class-string<Item_Devices>[]
      **/
-    public static function getDeviceTypes()
+    public static function getDeviceTypes(): array
     {
         $types = [];
 
@@ -481,7 +481,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return class-string<Item_Devices>[]
      **/
-    public static function getItemAffinities($itemtype)
+    public static function getItemAffinities(string $itemtype): array
     {
         global $CFG_GLPI;
 
@@ -515,7 +515,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return array of the available items
      **/
-    public static function getConcernedItems()
+    public static function getConcernedItems(): array
     {
         global $CFG_GLPI;
 
@@ -564,7 +564,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return array the items associated to the given one (empty if none was found)
      **/
-    public static function getItemsAssociatedTo($itemtype, $items_id)
+    public static function getItemsAssociatedTo(string $itemtype, string $items_id): array
     {
         global $DB;
 
@@ -646,7 +646,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param int $withtemplate
      * @return false|void
      */
-    public static function showForItem(CommonGLPI $item, $withtemplate = 0)
+    public static function showForItem(CommonGLPI $item, int $withtemplate = 0): bool|void
     {
         global $CFG_GLPI;
 
@@ -817,7 +817,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * @return string
      */
-    public static function getDeviceForeignKey()
+    public static function getDeviceForeignKey(): string
     {
         return getForeignKeyFieldForTable(getTableForItemType(static::getDeviceType()));
     }
@@ -827,7 +827,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param class-string<CommonDBTM>|null $peer_type
      * @return array
      */
-    public function getTableGroupCriteria($item, $peer_type = null)
+    public function getTableGroupCriteria(CommonDBTM $item, $peer_type = null): array
     {
         $is_device = ($item instanceof CommonDevice);
         $ctable = $this->getTable();
@@ -908,8 +908,8 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         HTMLTableSuperHeader $common_column,
         HTMLTableSuperHeader $specific_column,
         ?HTMLTableSuperHeader $delete_column,
-        $dynamic_column
-    ) {
+        ?HTMLTableSuperHeader $dynamic_column
+    ): void {
         global $DB;
 
         $is_device = ($item instanceof CommonDevice);
@@ -1198,7 +1198,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param array $input Array to complete (permit to define values)
      * @return void
      **/
-    public function addDevices($numberToAdd, $itemtype, $items_id, $devices_id, $input = [])
+    public function addDevices($numberToAdd, $itemtype, int $items_id, int $devices_id, array $input = []): void
     {
         if ($numberToAdd == 0) {
             return;
@@ -1233,7 +1233,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @return void
      * @since 0.85
      **/
-    public static function addDevicesFromPOST($input)
+    public static function addDevicesFromPOST(array $input): void
     {
         if (isset($input['devicetype']) && !$input['devicetype']) {
             Session::addMessageAfterRedirect(
@@ -1308,7 +1308,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param array $input Array of input: should be $_POST
      * @return void
      **/
-    public static function updateAll($input)
+    public static function updateAll(array $input): void
     {
 
         if (
@@ -1403,7 +1403,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      *
      * @return bool
      **/
-    public static function affectItem_Device($item_devices_id, $items_id, $itemtype)
+    public static function affectItem_Device($item_devices_id, $items_id, $itemtype): bool
     {
 
         $link = new static();
@@ -1420,7 +1420,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
      * @param bool $unaffect
      * @return void
      **/
-    public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, $unaffect)
+    public static function cleanItemDeviceDBOnItemDelete($itemtype, $items_id, bool $unaffect): void
     {
         global $DB;
 

@@ -138,7 +138,7 @@ class Item_DevicesTest extends DbTestCase
      * Test that the default search result columns for Item_Device* include an itemlink to the device
      * @return void
      */
-    public function testDeviceSearchHasItemlinkByDefault()
+    public function testDeviceSearchHasItemlinkByDefault(): void
     {
         foreach (Item_Devices::getDeviceTypes() as $device_type) {
             $search_options = SearchOption::getOptionsForItemtype($device_type);

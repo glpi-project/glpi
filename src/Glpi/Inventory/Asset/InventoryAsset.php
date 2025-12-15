@@ -129,7 +129,7 @@ abstract class InventoryAsset
     /**
      * @return bool
      */
-    public function maybeRecursive()
+    public function maybeRecursive(): bool
     {
         return true;
     }
@@ -161,7 +161,7 @@ abstract class InventoryAsset
      *
      * @return void
      */
-    abstract public function handle();
+    abstract public function handle(): void;
 
     /**
      * Set extra sub parts of interest
@@ -171,7 +171,7 @@ abstract class InventoryAsset
      *
      * @return InventoryAsset
      */
-    public function setExtraData($data): InventoryAsset
+    public function setExtraData(array $data): InventoryAsset
     {
         foreach (array_keys($this->extra_data) as $extra) {
             if (isset($data[$extra])) {
@@ -188,7 +188,7 @@ abstract class InventoryAsset
      *
      * @return array
      */
-    public function getIgnored($type): array
+    public function getIgnored(string $type): array
     {
         return $this->ignored[$type] ?? [];
     }
@@ -207,7 +207,7 @@ abstract class InventoryAsset
      *
      * @return array
      */
-    public function handleLinks()
+    public function handleLinks(): array
     {
         $foreignkey_itemtype = [];
 
@@ -358,7 +358,7 @@ abstract class InventoryAsset
      *
      * @return $this
      */
-    public function setEntityID($id): InventoryAsset
+    public function setEntityID(int $id): InventoryAsset
     {
         $this->entities_id = $id;
         return $this;
@@ -371,7 +371,7 @@ abstract class InventoryAsset
      *
      * @return $this
      */
-    public function setEntityRecursive($is_recursive): InventoryAsset
+    public function setEntityRecursive(int $is_recursive): InventoryAsset
     {
         $this->is_recursive = $is_recursive;
         return $this;
@@ -384,7 +384,7 @@ abstract class InventoryAsset
      *
      * @return $this
      */
-    public function setRequestQuery($query = Request::INVENT_QUERY): InventoryAsset
+    public function setRequestQuery(string $query = Request::INVENT_QUERY): InventoryAsset
     {
         $this->request_query = $query;
         return $this;

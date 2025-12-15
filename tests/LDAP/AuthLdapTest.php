@@ -2317,7 +2317,7 @@ class AuthLdapTest extends DbTestCase
      *
      * @return void
      */
-    public function testRuleRight()
+    public function testRuleRight(): void
     {
         //prepare rules
         $rules = new RuleRight();
@@ -2402,7 +2402,7 @@ class AuthLdapTest extends DbTestCase
      *
      * @return void
      */
-    public function testGroupRuleRight()
+    public function testGroupRuleRight(): void
     {
         $this->updateItem(
             AuthLDAP::class,
@@ -2549,7 +2549,7 @@ class AuthLdapTest extends DbTestCase
      *
      * @return void
      */
-    public function testRuleRightGroupCriteria()
+    public function testRuleRightGroupCriteria(): void
     {
 
         // create manual group

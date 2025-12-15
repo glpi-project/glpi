@@ -87,7 +87,7 @@ class NetworkPortInstantiation extends CommonDBChild
      *
      * @return void
      */
-    public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
+    public function showInstantiationForm(NetworkPort $netport, array $options, array $recursiveItems): void
     {
         echo "<div class='alert alert-info'>" . __s('No options available for this port type.') . "</div>";
     }
@@ -97,7 +97,7 @@ class NetworkPortInstantiation extends CommonDBChild
      *
      * @return array
      */
-    public function prepareInput($input)
+    public function prepareInput(array $input): array
     {
         // Try to get mac address from the instantiation ...
         if (!empty($input['mac'])) {
@@ -129,7 +129,7 @@ class NetworkPortInstantiation extends CommonDBChild
     /**
      * @return void
      */
-    public function manageSocket()
+    public function manageSocket(): void
     {
         // add link to define
         if (isset($this->input['sockets_id']) && $this->input['sockets_id'] > 0) {
@@ -167,7 +167,7 @@ class NetworkPortInstantiation extends CommonDBChild
      * @return array  each value of the array (corresponding to one NetworkPort) is an array of the
      *                items from the master item to the NetworkPort
      **/
-    public static function getItemsByMac($mac, $wildcard_search = false)
+    public static function getItemsByMac(string $mac, bool $wildcard_search = false): array
     {
         global $DB;
 
@@ -214,7 +214,7 @@ class NetworkPortInstantiation extends CommonDBChild
      * @return array containing the object ID
      *         or an empty array is no value of serverals ID where found
      **/
-    public static function getUniqueItemByMac($value, $entity)
+    public static function getUniqueItemByMac(string $value, int $entity): array
     {
 
         $macs_with_items = self::getItemsByMac($value);
@@ -255,7 +255,7 @@ class NetworkPortInstantiation extends CommonDBChild
      *
      * @return array Array with SQL field (for instance : device.type) => form field (type)
      **/
-    public function getNetworkCardInterestingFields()
+    public function getNetworkCardInterestingFields(): array
     {
         return [];
     }
@@ -272,7 +272,7 @@ class NetworkPortInstantiation extends CommonDBChild
      *
      * @return void
      */
-    public function showNetworkCardField(NetworkPort $netport, $options = [], $recursiveItems = [])
+    public function showNetworkCardField(NetworkPort $netport, array $options = [], array $recursiveItems = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -390,7 +390,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function showMacField(NetworkPort $netport, $options = [])
+    public function showMacField(NetworkPort $netport, array $options = []): void
     {
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -409,7 +409,7 @@ TWIG, ['label' => __('MAC'), 'mac' => $netport->fields['mac']]);
      *
      * @return void
      */
-    public function showSocketField(NetworkPort $netport, $options = [], $recursiveItems = [])
+    public function showSocketField(NetworkPort $netport, array $options = [], array $recursiveItems = []): void
     {
         $socket_id = 0;
         if (count($recursiveItems) > 0) {
@@ -451,7 +451,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function showNetworkPortSelector($recursiveItems, $origin)
+    public function showNetworkPortSelector(array $recursiveItems, $origin): void
     {
         global $DB;
 
@@ -588,7 +588,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {}
+    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams): void {}
 
 
     /**
@@ -599,7 +599,7 @@ TWIG, $twig_params);
      *
      * @return void|false
      */
-    public static function showConnection($netport, $edit = false)
+    public static function showConnection(NetworkPort $netport, bool $edit = false): void|bool
     {
         $ID = $netport->getID();
         if (static::isNewID($ID)) {
@@ -696,7 +696,7 @@ TWIG, $twig_params);
      *
      * @return int random part of elements id
      **/
-    public static function dropdownConnect($ID, $options = [])
+    public static function dropdownConnect(int $ID, array $options = []): int
     {
         global $CFG_GLPI;
 

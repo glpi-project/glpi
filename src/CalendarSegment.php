@@ -123,7 +123,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return array
      **/
-    public static function getSegmentsBetween($calendars_id, $begin_day, $begin_time, $end_day, $end_time)
+    public static function getSegmentsBetween(int $calendars_id, int $begin_day, string $begin_time, int $end_day, string $end_time): array
     {
 
         // Do not check hour if day before the end day of after the begin day
@@ -157,7 +157,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return int Time in seconds
      **/
-    public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time)
+    public static function getActiveTimeBetween(int $calendars_id, int $day, string $begin_time, string $end_time): int
     {
         global $DB;
 
@@ -199,12 +199,12 @@ class CalendarSegment extends CommonDBChild
      * @return string|false Ending timestamp (HH:mm:dd) of delay or false if not applicable.
      **/
     public static function addDelayInDay(
-        $calendars_id,
-        $day,
-        $begin_time,
-        $delay,
+        int $calendars_id,
+        int $day,
+        string $begin_time,
+        int $delay,
         bool $negative_delay = false
-    ) {
+    ): string|bool {
         // TODO: unit test this method with complex calendars using multiple
         // disconnected segments per day
         global $DB;
@@ -283,7 +283,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return string Timestamp (HH:mm:dd) of first working hour
      **/
-    public static function getFirstWorkingHour($calendars_id, $day)
+    public static function getFirstWorkingHour(int $calendars_id, int $day): string
     {
         global $DB;
 
@@ -307,7 +307,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return string Timestamp (HH:mm:dd) of last working hour
      **/
-    public static function getLastWorkingHour($calendars_id, $day)
+    public static function getLastWorkingHour(int $calendars_id, int $day): string
     {
         global $DB;
 
@@ -332,7 +332,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return bool
      **/
-    public static function isAWorkingHour($calendars_id, $day, $hour)
+    public static function isAWorkingHour(int $calendars_id, int $day, string $hour): bool
     {
         global $DB;
 
@@ -357,7 +357,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForCalendar(Calendar $calendar)
+    public static function showForCalendar(Calendar $calendar): void
     {
         global $DB;
 

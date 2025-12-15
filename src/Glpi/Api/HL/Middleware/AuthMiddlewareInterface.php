@@ -46,5 +46,5 @@ interface AuthMiddlewareInterface
      * @param callable $next
      * @return ?Response
      */
-    public function __invoke(MiddlewareInput $input, callable $next);
+    public function __invoke(MiddlewareInput $input, callable $next): ?Response;
 }

@@ -209,7 +209,7 @@ class RuleBuilder
     public function addAction(
         string $action_type,
         string $field,
-        $value
+        mixed $value
     ): self {
         $this->actions[] = [
             'action_type' => $action_type,

@@ -219,7 +219,7 @@ class Planning extends CommonGLPI
      *
      * @return string
      */
-    public static function getState($value)
+    public static function getState(int $value): string
     {
         return match ($value) {
             static::INFO => _n('Information', 'Information', 1),
@@ -236,7 +236,7 @@ class Planning extends CommonGLPI
      * @return string
      * @since 10.0.9
      */
-    public static function getStatusIcon($status): string
+    public static function getStatusIcon(int $status): string
     {
         $label = htmlescape(self::getState($status));
         if (empty($label)) {
@@ -254,7 +254,7 @@ class Planning extends CommonGLPI
      * @return string
      * @since 10.0.9
      */
-    public static function getStatusClass($status): string
+    public static function getStatusClass(int $status): string
     {
         return match ($status) {
             static::INFO => 'ti ti-info-square-filled',
@@ -271,7 +271,7 @@ class Planning extends CommonGLPI
      * @return string
      * @since 10.0.9
      */
-    public static function getStatusColor($status): string
+    public static function getStatusColor(int $status): string
     {
         return match ($status) {
             static::INFO => 'text-info',
@@ -291,7 +291,7 @@ class Planning extends CommonGLPI
      *
      * @return int|string
      */
-    public static function dropdownState($name, $value = '', $display = true, $options = [])
+    public static function dropdownState(string $name, string $value = '', bool $display = true, array $options = []): int|string
     {
         $js = <<<JAVASCRIPT
         templateTaskStatus = function(option) {
@@ -344,7 +344,7 @@ JAVASCRIPT;
      *
      * @return bool
      */
-    public static function checkAlreadyPlanned($users_id, $begin, $end, $except = [])
+    public static function checkAlreadyPlanned(int $users_id, string $begin, string $end, array $except = []): bool
     {
         global $CFG_GLPI;
 
@@ -423,7 +423,7 @@ JAVASCRIPT;
      *
      * @return void
      **/
-    public static function checkAvailability($params = [])
+    public static function checkAvailability(array $params = []): void
     {
         global $CFG_GLPI;
 
@@ -508,7 +508,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public static function showPlanning($fullview = true)
+    public static function showPlanning(bool $fullview = true): void
     {
         if (!static::canView()) {
             return;
@@ -551,7 +551,7 @@ JAVASCRIPT;
     /**
      * @return array
      */
-    public static function getTimelineResources()
+    public static function getTimelineResources(): array
     {
         $resources = [];
         foreach ($_SESSION['glpi_plannings']['plannings'] as $planning_id => $planning) {
@@ -623,7 +623,7 @@ JAVASCRIPT;
      *
      * @since  9.1.1
      */
-    public static function getPalette($palette_name = 'bg')
+    public static function getPalette(string $palette_name = 'bg'): mixed
     {
         if (in_array($palette_name, ['bg', 'fg', 'ev'])) {
             return self::${"palette_$palette_name"};
@@ -640,7 +640,7 @@ JAVASCRIPT;
      *
      * @since  9.1.1
      */
-    public static function getPaletteColor($palette_name = 'bg', $color_index = 0)
+    public static function getPaletteColor(string $palette_name = 'bg', int $color_index = 0): mixed
     {
         if ($palette = self::getPalette($palette_name)) {
             if ($color_index >= count($palette)) {
@@ -656,7 +656,7 @@ JAVASCRIPT;
     /**
      * @return array
      */
-    public static function getPlanningTypes()
+    public static function getPlanningTypes(): array
     {
         global $CFG_GLPI;
 
@@ -677,7 +677,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public static function initSessionForCurrentUser()
+    public static function initSessionForCurrentUser(): void
     {
         // new user in planning, init session
         if (!isset($_SESSION['glpi_plannings']['filters'])) {
@@ -724,7 +724,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public static function showPlanningFilter()
+    public static function showPlanningFilter(): void
     {
         TemplateRenderer::getInstance()->display('pages/assistance/planning/filters.html.twig');
     }
@@ -743,7 +743,7 @@ JAVASCRIPT;
      * @used-by templates/pages/assistance/planning/filters.html.twig
      * @used-by templates/pages/assistance/planning/single_filter.html.twig
      */
-    public static function showSingleLinePlanningFilter($filter_key, $filter_data, $options = [])
+    public static function showSingleLinePlanningFilter(string $filter_key, array $filter_data, array $options = []): void
     {
         global $CFG_GLPI;
 
@@ -868,7 +868,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public static function showAddPlanningForm()
+    public static function showAddPlanningForm(): void
     {
         $planning_types = ['user' => User::getTypeName(1)];
         if (Session::haveRightsOr('planning', [self::READGROUP, self::READALL])) {
@@ -914,7 +914,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddUserForm()
+    public static function showAddUserForm(): void
     {
         $used = [];
         foreach (array_keys($_SESSION['glpi_plannings']) as $actor) {
@@ -965,7 +965,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function sendAddUserForm($params = [])
+    public static function sendAddUserForm(array $params = []): void
     {
         if (!isset($params['users_id']) || (int) $params['users_id'] <= 0) {
             Session::addMessageAfterRedirect(__s('A user selection is required'), false, ERROR);
@@ -986,7 +986,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddGroupUsersForm()
+    public static function showAddGroupUsersForm(): void
     {
         $condition = [];
         // filter groups
@@ -1021,7 +1021,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function sendAddGroupUsersForm($params = [])
+    public static function sendAddGroupUsersForm(array $params = []): void
     {
         if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
             Session::addMessageAfterRedirect(__s('A group selection is required'), false, ERROR);
@@ -1066,7 +1066,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function editEventForm($params = [])
+    public static function editEventForm(array $params = []): void
     {
         $item = getItemForItemtype($params['itemtype']);
         if ($item instanceof CommonDBTM) {
@@ -1108,7 +1108,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddGroupForm()
+    public static function showAddGroupForm(): void
     {
         $condition = ['is_task' => 1];
         // filter groups
@@ -1143,7 +1143,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function sendAddGroupForm($params = [])
+    public static function sendAddGroupForm(array $params = []): void
     {
         if (!isset($params['groups_id']) || (int) $params['groups_id'] <= 0) {
             Session::addMessageAfterRedirect(__s('A group selection is required'), false, ERROR);
@@ -1169,7 +1169,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddExternalForm()
+    public static function showAddExternalForm(): void
     {
         $twig_params = [
             'add_msg' => _x('button', 'Add'),
@@ -1197,7 +1197,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function sendAddExternalForm($params = [])
+    public static function sendAddExternalForm(array $params = []): void
     {
         if (empty($params['url'])) {
             Session::addMessageAfterRedirect(__s('A url is required'), false, ERROR);
@@ -1229,7 +1229,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddEventForm($params = [])
+    public static function showAddEventForm(array $params = []): void
     {
         global $CFG_GLPI;
 
@@ -1287,7 +1287,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddEventSubForm($params = [])
+    public static function showAddEventSubForm(array $params = []): void
     {
         $rand   = mt_rand();
         $params = self::cleanDates($params);
@@ -1327,7 +1327,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showAddEventClassicForm($params = [])
+    public static function showAddEventClassicForm(array $params = []): void
     {
         global $CFG_GLPI;
 
@@ -1417,7 +1417,7 @@ TWIG, $twig_params);
      *
      * @return int|false the id (integer) or false if it failed
      */
-    public static function cloneEvent(array $event = [])
+    public static function cloneEvent(array $event = []): int|bool
     {
         $item = getItemForItemtype($event['old_itemtype']);
         $item->getFromDB((int) $event['old_items_id']);
@@ -1505,7 +1505,7 @@ TWIG, $twig_params);
      *  - display : boolean value to set to his line
      * @return void
      */
-    public static function toggleFilter($options = [])
+    public static function toggleFilter(array $options = []): void
     {
         $key = 'filters';
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
@@ -1533,7 +1533,7 @@ TWIG, $twig_params);
      *  - color : rgb color (preceded by '#'' char)
      * @return void
      */
-    public static function colorFilter($options = [])
+    public static function colorFilter(array $options = []): void
     {
         $key = 'filters';
         if (in_array($options['type'], ['user', 'group', 'group_users', 'external'])) {
@@ -1558,7 +1558,7 @@ TWIG, $twig_params);
      *  - filter : contains a string with type and id concatened with a '_' char (ex user_41).
      * @return void
      */
-    public static function deleteFilter($options = [])
+    public static function deleteFilter(array $options = []): void
     {
         $current = $_SESSION['glpi_plannings']['plannings'][$options['filter']];
         if ($current['type'] === 'group_users') {
@@ -1574,7 +1574,7 @@ TWIG, $twig_params);
     /**
      * @return void
      */
-    public static function savePlanningsInDB()
+    public static function savePlanningsInDB(): void
     {
         $user = new User();
         $user->update(['id' => $_SESSION['glpiID'],
@@ -1596,7 +1596,7 @@ TWIG, $twig_params);
      *  - force_all_events: even if the range is big, don't reduce the returned set
      * @return array $events : array with events in fullcalendar.io format
      */
-    public static function constructEventsArray($options = [])
+    public static function constructEventsArray(array $options = []): array
     {
         global $CFG_GLPI;
 
@@ -1861,7 +1861,7 @@ TWIG, $twig_params);
      * @param array  $not_planned (passed by references) not planned events array in construction
      * @return void
      */
-    public static function constructEventsArraySingleLine($actor, $params = [], &$raw_events = [], &$not_planned = [])
+    public static function constructEventsArraySingleLine(string $actor, array $params = [], array &$raw_events = [], array &$not_planned = []): void
     {
         if ($params['display']) {
             $actor_array = explode("_", $actor);
@@ -2023,7 +2023,7 @@ TWIG, $twig_params);
      *       (should be an ISO_8601 date, but could be anything wo can be parsed by strtotime)
      * @return bool
      */
-    public static function updateEventTimes($params = [])
+    public static function updateEventTimes(array $params = []): bool
     {
         if ($item = getItemForItemtype($params['itemtype'])) {
             $params = self::cleanDates($params);
@@ -2180,7 +2180,7 @@ TWIG, $twig_params);
      *
      * @return string
      **/
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
+    public static function displayPlanningItem(array $val, int $who, $type = "", bool $complete = false): string
     {
         $html = "";
 
@@ -2208,7 +2208,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function showCentral($who)
+    public static function showCentral(int $who): void
     {
         if (
             !Session::haveRight(self::$rightname, self::READMY)
@@ -2249,7 +2249,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return void Outputs ical contents
      **/
-    public static function generateIcal($who, $whogroup, $limititemtype = '')
+    public static function generateIcal(int $who, int $whogroup, string $limititemtype = ''): void
     {
         global $CFG_GLPI;
 
@@ -2394,7 +2394,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
         $values[self::READMY]    = __('See personal planning');
         $values[self::READGROUP] = __('See schedule of people in my groups');
@@ -2411,7 +2411,7 @@ TWIG, ['msg' => __('Your planning')]);
      * @param string $view_name
      * @return void
      */
-    public static function viewChanged($view_name = "ListView")
+    public static function viewChanged(string $view_name = "ListView"): void
     {
         $_SESSION['glpi_plannings']['lastview'] = $view_name;
     }
@@ -2423,7 +2423,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return string|null
      */
-    public static function getActorTypeFromPlanningKey($key)
+    public static function getActorTypeFromPlanningKey(string $key): ?string
     {
         if (preg_match('/group_\d+_users/', $key)) {
             return Group_User::getType();
@@ -2439,7 +2439,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return int|null
      */
-    public static function getActorIdFromPlanningKey($key)
+    public static function getActorIdFromPlanningKey(string $key): ?int
     {
         $items_id = preg_replace('/^[a-z]+_(\d+)(?:_[a-z]+)?$/', '$1', $key);
         return is_numeric($items_id) ? (int) $items_id : null;
@@ -2453,7 +2453,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return string
      */
-    public static function getPlanningKeyForActor($itemtype, $items_id)
+    public static function getPlanningKeyForActor(string $itemtype, int $items_id): string
     {
         if ('Group_User' === $itemtype) {
             return 'group_' . $items_id . '_users';
@@ -2469,7 +2469,7 @@ TWIG, ['msg' => __('Your planning')]);
      *
      * @return string|null
      */
-    private static function getCaldavBaseCalendarUrl(CommonDBTM $item)
+    private static function getCaldavBaseCalendarUrl(CommonDBTM $item): ?string
     {
         $calendar_uri = null;
 
@@ -2492,7 +2492,7 @@ TWIG, ['msg' => __('Your planning')]);
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-calendar-time";
     }

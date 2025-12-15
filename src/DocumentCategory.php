@@ -79,7 +79,7 @@ class DocumentCategory extends CommonTreeDropdown
      *
      * @return bool
      */
-    private function isUsedAsDefaultCategoryForTickets()
+    private function isUsedAsDefaultCategoryForTickets(): bool
     {
 
         $config_values = Config::getConfigurationValues('core', ['documentcategories_id_forticket']);

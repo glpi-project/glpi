@@ -298,7 +298,7 @@ class VirtualMachine extends InventoryAsset
      *
      * @return void
      */
-    protected function createVmComputer()
+    protected function createVmComputer(): void
     {
         global $DB;
 

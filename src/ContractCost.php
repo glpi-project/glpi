@@ -226,7 +226,7 @@ class ContractCost extends CommonDBChild
      * @param int $contracts_id ID of the contract
      * @return array
      **/
-    public function getLastCostForContract($contracts_id)
+    public function getLastCostForContract(int $contracts_id): array
     {
         global $DB;
 
@@ -274,7 +274,7 @@ class ContractCost extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForContract(Contract $contract, $withtemplate = 0)
+    public static function showForContract(Contract $contract, int $withtemplate = 0): void
     {
         global $DB;
 

@@ -80,7 +80,7 @@ class AuthLdapReplicate extends CommonDBTM
      *
      * @return void
      */
-    public static function addNewReplicateForm($target, $master_id)
+    public static function addNewReplicateForm(string $target, int $master_id): void
     {
         TemplateRenderer::getInstance()->display('pages/setup/authentication/ldap_replicate.html.twig', [
             'target' => $target,

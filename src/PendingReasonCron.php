@@ -55,7 +55,7 @@ class PendingReasonCron extends CommonDBTM
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return [
             'description' => self::getTaskDescription(),
@@ -69,7 +69,7 @@ class PendingReasonCron extends CommonDBTM
      *
      * @return int
      */
-    public static function cronPendingreason_autobump_autosolve(CronTask $task)
+    public static function cronPendingreason_autobump_autosolve(CronTask $task): int
     {
         global $DB;
 

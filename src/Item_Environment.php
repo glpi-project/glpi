@@ -96,7 +96,7 @@ final class Item_Environment extends CommonDBChild
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $DB;
 

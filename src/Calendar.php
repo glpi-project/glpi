@@ -232,7 +232,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      **/
-    public function isHoliday($date)
+    public function isHoliday(string $date): bool
     {
         $calendar_holiday = new Calendar_Holiday();
         $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
@@ -272,7 +272,7 @@ class Calendar extends CommonDropdown
      *
      * @FIXME Remove `$include_inactive_time` parameter in GLPI 11.0. It does not seems to be used and makes no sense.
      */
-    public function getActiveTimeBetween($start, $end, $include_inactive_time = false)
+    public function getActiveTimeBetween(string $start, string $end, bool $include_inactive_time = false): int
     {
 
         if (!isset($this->fields['id'])) {
@@ -345,7 +345,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      */
-    public function isAWorkingDay($time)
+    public function isAWorkingDay(int $time): bool
     {
 
         $cache_duration   = $this->getDurationsCache();
@@ -362,7 +362,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      */
-    public function hasAWorkingDay()
+    public function hasAWorkingDay(): bool
     {
 
         $durations = $this->getDurationsCache();
@@ -380,7 +380,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      */
-    public function isAWorkingHour($time)
+    public function isAWorkingHour(int $time): bool
     {
 
         if ($this->isAWorkingDay($time)) {
@@ -409,7 +409,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool|string end date
      **/
-    public function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
+    public function computeEndDate(string $start, int $delay, int $additional_delay = 0, bool $work_in_days = false, bool $end_of_working_day = false): bool|string
     {
         // TODO 11.0: parameter $work_in_day make calculation for duration exprimed
         // in days (e.g "+ 5 days") but we don't have anything for month.
@@ -626,7 +626,7 @@ class Calendar extends CommonDropdown
      *
      * @return int
      */
-    public static function getActualTime($current_time, $number = 0, $negative = false)
+    public static function getActualTime(int $current_time, int $number = 0, bool $negative = false): int
     {
         if ($negative) {
             return $current_time - $number;
@@ -641,7 +641,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool|array
      **/
-    public function getDurationsCache()
+    public function getDurationsCache(): bool|array
     {
 
         if (!isset($this->fields['id'])) {
@@ -664,7 +664,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool|array
      **/
-    public function getDaysDurations()
+    public function getDaysDurations(): bool|array
     {
 
         if (!isset($this->fields['id'])) {
@@ -691,7 +691,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool True if successful in updating the cache, otherwise returns false.
      */
-    public function updateDurationCache($calendars_id)
+    public function updateDurationCache(int $calendars_id): bool
     {
 
         if ($this->getFromDB($calendars_id)) {
@@ -712,7 +712,7 @@ class Calendar extends CommonDropdown
      *
      * @return int
      */
-    public static function getDayNumberInWeek($date)
+    public static function getDayNumberInWeek(int $date): int
     {
         return (int) date('w', $date);
     }

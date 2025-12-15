@@ -238,7 +238,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
      *
      * @return void
      */
-    public function testImportSmartphoneWOS()
+    public function testImportSmartphoneWOS(): void
     {
         //create Smartphone generic asset
         $asset = $this->inventorySmartphone([new Capacity(name: HasOperatingSystemCapacity::class)]);
@@ -265,7 +265,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
      *
      * @return void
      */
-    public function testImportSmartphoneWVolumes()
+    public function testImportSmartphoneWVolumes(): void
     {
         //create Smartphone generic asset
         $asset = $this->inventorySmartphone([new Capacity(name: HasVolumesCapacity::class)]);

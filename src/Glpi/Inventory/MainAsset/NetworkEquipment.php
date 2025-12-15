@@ -204,7 +204,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed(int $items_id, string $itemtype, int $rules_id, int|array $ports_id = []): void
     {
         if (property_exists($this->data[$this->current_key], 'is_ap')) {
             $bkp_assets = $this->assets;
@@ -263,7 +263,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return void
      */
-    protected function portCreated(stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id): void
     {
         if (property_exists($port, 'is_internal') && $port->is_internal) {
             return;
@@ -290,7 +290,7 @@ class NetworkEquipment extends MainAsset
     /**
      * @return array
      */
-    public function getManagementPorts()
+    public function getManagementPorts(): array
     {
         return $this->management_ports;
     }
@@ -309,7 +309,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return bool
      */
-    public function isStackedSwitch($parent_index = 0): bool
+    public function isStackedSwitch(int $parent_index = 0): bool
     {
         $components = $this->extra_data['network_components'] ?? [];
         if (!count($components)) {
@@ -455,7 +455,7 @@ class NetworkEquipment extends MainAsset
     /**
      * @return string
      */
-    public function getStackId()
+    public function getStackId(): string
     {
         if (count($this->data) != 1) {
             throw new RuntimeException('Exactly one entry in data is expected.');
@@ -479,7 +479,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return bool
      */
-    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
+    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, stdClass $val): bool
     {
         if (property_exists($val, 'ips')) {
             foreach ($val->ips as $ip) {

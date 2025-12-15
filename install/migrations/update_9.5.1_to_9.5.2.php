@@ -39,7 +39,7 @@ use function Safe\preg_match_all;
  *
  * @return bool
  **/
-function update951to952()
+function update951to952(): bool
 {
     /**
      * @var DBmysql $DB

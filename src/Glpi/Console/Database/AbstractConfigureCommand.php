@@ -192,7 +192,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
         InputInterface $input,
         OutputInterface $output,
         bool $compute_flags_from_db = true
-    ) {
+    ): void {
 
         $db_pass     = $input->getOption('db-password');
         $db_host     = $input->getOption('db-host');
@@ -271,7 +271,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
                  * @param string $dbpassword
                  * @param string $dbdefault
                  */
-                public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
+                public function __construct(string $dbhost, string $dbuser, string $dbpassword, string $dbdefault)
                 {
                     $this->dbhost     = $dbhost;
                     $this->dbuser     = $dbuser;
@@ -344,15 +344,15 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param bool $allow_signed_keys
              */
             public function __construct(
-                $dbhost,
-                $dbuser,
-                $dbpassword,
-                $dbdefault,
-                $use_timezones,
-                $log_deprecation_warnings,
-                $use_utf8mb4,
-                $allow_datetime,
-                $allow_signed_keys
+                string $dbhost,
+                string $dbuser,
+                string $dbpassword,
+                string $dbdefault,
+                bool $use_timezones,
+                bool $log_deprecation_warnings,
+                bool $use_utf8mb4,
+                bool $allow_datetime,
+                bool $allow_signed_keys
             ) {
                 $this->dbhost     = $dbhost;
                 $this->dbuser     = $dbuser;
@@ -376,7 +376,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      *
      * @return bool
      */
-    protected function isDbAlreadyConfigured()
+    protected function isDbAlreadyConfigured(): bool
     {
 
         return file_exists(GLPI_CONFIG_DIR . '/config_db.php');
@@ -390,7 +390,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      * @return void
      * @throws InvalidArgumentException
      */
-    protected function validateConfigInput(InputInterface $input)
+    protected function validateConfigInput(InputInterface $input): void
     {
 
         $db_name = $input->getOption('db-name');
@@ -431,10 +431,10 @@ abstract class AbstractConfigureCommand extends AbstractCommand
     protected function askForDbConfigConfirmation(
         InputInterface $input,
         OutputInterface $output,
-        $db_hostport,
-        $db_name,
-        $db_user
-    ) {
+        string $db_hostport,
+        string $db_name,
+        string $db_user
+    ): void {
 
         $informations = new Table($output);
         $informations->addRow([__('Database host'), $db_hostport]);
@@ -459,7 +459,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             /**
              * @param mysqli $dbh
              */
-            public function __construct($dbh)
+            public function __construct(mysqli $dbh)
             {
                 $this->dbh = $dbh;
             }

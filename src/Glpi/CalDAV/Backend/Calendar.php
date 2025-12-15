@@ -175,7 +175,7 @@ class Calendar extends AbstractBackend
      *
      * @return void
      */
-    public function deleteCalendar($calendarId)
+    public function deleteCalendar(string $calendarId): void
     {
         throw new NotImplemented('Calendar deletion is not implemented');
     }
@@ -268,7 +268,7 @@ class Calendar extends AbstractBackend
      *
      * @return void
      */
-    public function deleteCalendarObject($calendarId, $objectPath)
+    public function deleteCalendarObject(string $calendarId, string $objectPath): void
     {
 
         $item = $this->getCalendarItemForPath($objectPath);
@@ -292,7 +292,7 @@ class Calendar extends AbstractBackend
      *
      * @return array
      */
-    private function convertVCalendarToCalendarObject(VCalendar $vcalendar)
+    private function convertVCalendarToCalendarObject(VCalendar $vcalendar): array
     {
 
         $vcalendar->PRODID = '-//glpi-project.org//GLPI CalDAV server//EN';
@@ -322,7 +322,7 @@ class Calendar extends AbstractBackend
      *
      * @return bool
      */
-    private function storeCalendarObject($calendarId, $calendarData, (CalDAVCompatibleItemInterface&CommonDBTM)|null $item = null)
+    private function storeCalendarObject(string $calendarId, string $calendarData, (CalDAVCompatibleItemInterface&CommonDBTM)|null $item = null): bool
     {
 
         global $CFG_GLPI;
@@ -409,7 +409,7 @@ class Calendar extends AbstractBackend
      *
      * @return bool
      */
-    private function storeVCalendarData($calendarData, $items_id, $itemtype)
+    private function storeVCalendarData(string $calendarData, int $items_id, string $itemtype): bool
     {
 
         $vobject = new VObject();

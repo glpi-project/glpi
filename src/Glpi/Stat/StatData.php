@@ -79,7 +79,7 @@ abstract class StatData
      *
      * @return ?array
      */
-    public function getDataByType(array $params, string $type)
+    public function getDataByType(array $params, string $type): ?array
     {
         return Stat::constructEntryValues(
             $params['itemtype'],

@@ -71,7 +71,7 @@ class CleanSoftwareCron extends CommonDBTM
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return [
             'description' => self::getTaskDescription(),
@@ -115,7 +115,7 @@ class CleanSoftwareCron extends CommonDBTM
      *
      * @return int
      */
-    public static function cronCleanSoftware(CronTask $task)
+    public static function cronCleanSoftware(CronTask $task): int
     {
         $max = $task->fields['param'];
         $total = self::run($max);

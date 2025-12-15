@@ -63,7 +63,7 @@ class Calendar_Holiday extends CommonDBRelation
      *
      * @return void|bool (HTML display) False if there is a rights error.
      */
-    public static function showForCalendar(Calendar $calendar)
+    public static function showForCalendar(Calendar $calendar): void|bool
     {
         global $DB;
 

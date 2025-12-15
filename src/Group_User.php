@@ -61,7 +61,7 @@ class Group_User extends CommonDBRelation
      *
      * @return bool true if the user belongs to the group
      */
-    public static function isUserInGroup($users_id, $groups_id): bool
+    public static function isUserInGroup(int $users_id, int $groups_id): bool
     {
         return countElementsInTable(
             'glpi_groups_users',
@@ -80,7 +80,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getUserGroups($users_id, $condition = []): array
+    public static function getUserGroups(int $users_id, array $condition = []): array
     {
         global $DB;
 
@@ -121,7 +121,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array
      **/
-    public static function getGroupUsers($groups_id, $condition = [])
+    public static function getGroupUsers(int $groups_id, array $condition = []): array
     {
         global $DB;
 
@@ -159,7 +159,7 @@ class Group_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForUser(User $user)
+    public static function showForUser(User $user): void
     {
         $ID = $user->fields['id'];
         if (
@@ -280,12 +280,12 @@ class Group_User extends CommonDBRelation
      **/
     public static function getDataForGroup(
         Group $group,
-        &$members,
-        &$ids,
-        $crit = '',
-        $tree = 0,
+        array &$members,
+        array &$ids,
+        string|array $crit = '',
+        bool|int $tree = 0,
         bool $check_entities = true
-    ) {
+    ): array|int {
         global $DB;
 
         // Entity restriction for this group, according to user allowed entities
@@ -395,7 +395,7 @@ class Group_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForGroup(Group $group)
+    public static function showForGroup(Group $group): void
     {
         $ID = $group->getID();
         if (
@@ -576,7 +576,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -646,7 +646,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
         $name = _n('User', 'Users', Session::getPluralNumber());
@@ -679,7 +679,7 @@ class Group_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function deleteGroups($user_ID, $only_dynamic = false)
+    public static function deleteGroups(int $user_ID, bool $only_dynamic = false): void
     {
         $crit['users_id'] = $user_ID;
         if ($only_dynamic) {
@@ -766,7 +766,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array
      */
-    protected static function getListForItemParams(CommonDBTM $item, $noent = false)
+    protected static function getListForItemParams(CommonDBTM $item, bool $noent = false): array
     {
         $params = parent::getListForItemParams($item, $noent);
         $params['SELECT'][] = self::getTable() . '.is_manager';
@@ -919,7 +919,7 @@ class Group_User extends CommonDBRelation
      *               self::getDataForGroup ('id', 'linkid', 'groups_id',
      *               'is_dynamic', 'is_manager' and 'is_userdelegate')
      */
-    protected static function getParentsMembers(Group $group, $crit): array
+    protected static function getParentsMembers(Group $group, mixed $crit): array
     {
         // No more parents, end recursion
         if (!$group->fields['groups_id']) {

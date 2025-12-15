@@ -85,7 +85,7 @@ class SoftwareCategory extends CommonTreeDropdown
      *
      * @return bool
      */
-    private function isUsedAsCategoryOnSoftwareDeletion()
+    private function isUsedAsCategoryOnSoftwareDeletion(): bool
     {
 
         $config_values = Config::getConfigurationValues('core', ['softwarecategories_id_ondelete']);

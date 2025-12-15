@@ -180,7 +180,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -856,7 +856,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|void Return generated content if `display` parameter is true.
      **/
-    public static function showCentral(bool $display = true)
+    public static function showCentral(bool $display = true): string|void
     {
         global $CFG_GLPI, $DB;
 
@@ -1038,7 +1038,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string The name(s) of the suppliers for this contract (HTML content)
      **/
-    public function getSuppliersNames()
+    public function getSuppliersNames(): string
     {
         global $DB;
 
@@ -1067,7 +1067,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Send alarms on contracts')];
     }
@@ -1080,7 +1080,7 @@ class Contract extends CommonDBTM implements StateInterface
      * @return int
      * @used-by CronTask
      **/
-    public static function cronContract(?CronTask $task = null)
+    public static function cronContract(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -1395,7 +1395,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|int HTML output, or random part of dropdown ID.
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = []): string|int
     {
         global $DB;
 
@@ -1522,7 +1522,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|int HTML output, or random part of dropdown ID.
      **/
-    public static function dropdownContractRenewal($name, $value = 0, $display = true)
+    public static function dropdownContractRenewal(string $name, int $value = 0, bool $display = true): string|int
     {
         $values = [
             self::RENEWAL_NEVER => __('Never'),
@@ -1556,7 +1556,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|int HTML output, or random part of dropdown ID.
      **/
-    public static function dropdownAlert(array $options)
+    public static function dropdownAlert(array $options): string|int
     {
         $p = array_replace([
             'name'           => 'alert',
@@ -1584,7 +1584,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|string[]
      **/
-    public static function getAlertName($val = null)
+    public static function getAlertName(string|int|null $val = null): string|array
     {
         $names = [
             0                                                  => Dropdown::EMPTY_VALUE,
@@ -1645,7 +1645,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-writing-sign";
     }
@@ -1653,7 +1653,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * @return array
      */
-    public static function getNotExpiredCriteria()
+    public static function getNotExpiredCriteria(): array
     {
         global $DB;
         return [

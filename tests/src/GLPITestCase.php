@@ -227,7 +227,7 @@ class GLPITestCase extends TestCase
      *
      * @return mixed
      */
-    protected function callPrivateMethod($instance, string $methodName, ...$args)
+    protected function callPrivateMethod(mixed $instance, string $methodName, ...$args): mixed
     {
         $method = new ReflectionMethod($instance, $methodName);
 
@@ -243,7 +243,7 @@ class GLPITestCase extends TestCase
      *
      * @return T
      */
-    protected function callPrivateConstructor(string $classname, array $args = [])
+    protected function callPrivateConstructor(string $classname, array $args = []): T
     {
         $class = new ReflectionClass($classname);
         $instance = $class->newInstanceWithoutConstructor();
@@ -261,7 +261,7 @@ class GLPITestCase extends TestCase
      * @param string    $propertyName   Property name
      * @param mixed     $default        Default value if property is not set
      */
-    protected function setPrivateProperty($instance, string $propertyName, $value)
+    protected function setPrivateProperty(mixed $instance, string $propertyName, $value)
     {
         $property = new ReflectionProperty($instance, $propertyName);
         $property->setValue($instance, $value);
@@ -463,7 +463,7 @@ class GLPITestCase extends TestCase
      *
      * @return Entity|int
      */
-    protected function getTestRootEntity(bool $only_id = false)
+    protected function getTestRootEntity(bool $only_id = false): Entity|int
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
     }

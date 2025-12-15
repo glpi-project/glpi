@@ -44,7 +44,7 @@ interface ProtocolInterface
      *
      * @return self
      */
-    public function setNoValidateCert(bool $novalidatecert);
+    public function setNoValidateCert(bool $novalidatecert): self;
 
     /**
      * Open connection to server.
@@ -55,7 +55,7 @@ interface ProtocolInterface
      *
      * @return void
      */
-    public function connect($host, $port = null, $ssl = false);
+    public function connect(string $host, ?int $port = null, string|bool $ssl = false): void;
 
     /**
      * Login to server.
@@ -65,5 +65,5 @@ interface ProtocolInterface
      *
      * @return bool
      */
-    public function login($user, $password);
+    public function login(string $user, string $password): bool;
 }

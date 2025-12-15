@@ -68,7 +68,7 @@ class Variables
      *
      * @return string[]
      */
-    public static function getDataDirectories()
+    public static function getDataDirectories(): array
     {
         return array_map(
             fn(string $constant) => constant($constant),

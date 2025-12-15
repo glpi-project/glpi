@@ -261,7 +261,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
      *
      * @return string
      */
-    public function handleInventoryRequest(Request $request)
+    public function handleInventoryRequest(Request $request): string
     {
         $status = $request->getInventoryStatus();
 

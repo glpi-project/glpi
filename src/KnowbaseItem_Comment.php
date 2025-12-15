@@ -97,7 +97,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         $kbitem_id = $item::class === KnowbaseItem::class ? $item->getID() : $item->fields['knowbaseitems_id'];
         $lang = $item::class === KnowbaseItem::class ? null : $item->fields['language'];
@@ -123,7 +123,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      *
      * @return array
      */
-    public static function getCommentsForKbItem($kbitem_id, $lang, $parent = null, &$user_data_cache = [])
+    public static function getCommentsForKbItem(int $kbitem_id, string $lang, ?int $parent = null, array &$user_data_cache = []): array
     {
         global $DB;
 
@@ -177,7 +177,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      * @param false|int $answer    Comment id to answer to, or false
      * @return string
      */
-    public static function getCommentForm($kbitem_id, $lang = null, $edit = false, $answer = false)
+    public static function getCommentForm(int $kbitem_id, ?string $lang = null, bool|int $edit = false, bool|int $answer = false): string
     {
         $content = '';
         if ($edit !== false) {

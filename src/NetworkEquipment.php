@@ -183,7 +183,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
      *
      * @return bool
      **/
-    public function canUnrecurs()
+    public function canUnrecurs(): bool
     {
         global $DB;
 

@@ -167,7 +167,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @param bool $full
      * @return string
      */
-    public static function getMyTasksURL(bool $full)
+    public static function getMyTasksURL(bool $full): string
     {
         return self::getSearchURL($full) . '?' . Toolbox::append_params([
             'criteria' => [
@@ -413,7 +413,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return bool
      **/
-    public function isInTheTeam()
+    public function isInTheTeam(): bool
     {
         if (isset($this->team['User']) && count($this->team['User'])) {
             foreach ($this->team['User'] as $data) {
@@ -443,7 +443,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return int
      */
-    public function getTeamCount()
+    public function getTeamCount(): int
     {
         $nb = 0;
         if (is_array($this->team) && count($this->team)) {
@@ -649,7 +649,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      * @return int the effective duration
      * @throws Exception if the start or end date is not valid dates
      */
-    public function autoSetEffectiveDuration($startdate, $enddate): int
+    public function autoSetEffectiveDuration(string $startdate, string $enddate): int
     {
         if (empty($startdate) || empty($enddate)) {
             return 0;
@@ -680,7 +680,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return array of tasks ordered by dates
      **/
-    public static function getAllForProject($ID)
+    public static function getAllForProject(int $ID): array
     {
         global $DB;
 
@@ -706,7 +706,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return array of tasks ordered by dates
      **/
-    public static function getAllForProjectTask($ID)
+    public static function getAllForProjectTask(int $ID): array
     {
         global $DB;
 
@@ -732,7 +732,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return array of tickets
      **/
-    public static function getAllTicketsForProject($ID)
+    public static function getAllTicketsForProject(int $ID): array
     {
         global $DB;
 
@@ -769,7 +769,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return bool True if displayed, false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -825,7 +825,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return int total effective duration
      **/
-    public static function getTotalEffectiveDuration($projecttasks_id)
+    public static function getTotalEffectiveDuration(int $projecttasks_id): int
     {
         global $DB;
 
@@ -874,7 +874,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return int total effective duration
      **/
-    public static function getTotalEffectiveDurationForProject($projects_id)
+    public static function getTotalEffectiveDurationForProject(int $projects_id): int
     {
         global $DB;
 
@@ -897,7 +897,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return int total effective duration
      **/
-    public static function getTotalPlannedDurationForProject($projects_id)
+    public static function getTotalPlannedDurationForProject(int $projects_id): int
     {
         global $DB;
 
@@ -1211,7 +1211,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void|false
      **/
-    public static function showFor($item)
+    public static function showFor(Project|ProjectTask $item): void|bool
     {
         global $DB;
 
@@ -1459,7 +1459,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public function showTeam(ProjectTask $task)
+    public function showTeam(ProjectTask $task): bool
     {
         // TODO : permit to simple add member of project team ?
 
@@ -1803,7 +1803,7 @@ TWIG, $twig_params);
      *
      * @return array of planning item
      **/
-    public static function populatePlanning($options = []): array
+    public static function populatePlanning(array $options = []): array
     {
         global $CFG_GLPI, $DB;
 
@@ -2013,7 +2013,7 @@ TWIG, $twig_params);
      * @return array of planning item
      * @used-by Planning
      **/
-    public static function populateNotPlanned($options = []): array
+    public static function populateNotPlanned(array $options = []): array
     {
         $options['not_planned'] = true;
         return self::populatePlanning($options);
@@ -2032,7 +2032,7 @@ TWIG, $twig_params);
      *
      * @return string
      **/
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = 0)
+    public static function displayPlanningItem(array $val, int $who, string $type = "", int $complete = 0): string
     {
         global $CFG_GLPI;
 
@@ -2111,7 +2111,7 @@ TWIG, $twig_params);
      * @since 9.5.0
      * @return bool False if the specified project task is not set to automatically update the percent done.
      */
-    public static function recalculatePercentDone($ID)
+    public static function recalculatePercentDone(int $ID): bool
     {
         global $DB;
 
@@ -2204,7 +2204,7 @@ TWIG, $twig_params);
      *
      * @return VCalendar[]
      */
-    private static function getItemsAsVCalendars(array $criteria)
+    private static function getItemsAsVCalendars(array $criteria): array
     {
         global $DB;
 

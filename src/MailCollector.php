@@ -216,7 +216,7 @@ class MailCollector extends CommonDBTM
      *
      * @return array|false
      */
-    public function prepareInput(array $input, $mode = 'add')
+    public function prepareInput(array $input, string $mode = 'add'): array|bool
     {
         $missing_fields = [];
         if (($mode === 'add' || array_key_exists('mail_server', $input)) && empty($input['mail_server'])) {
@@ -300,7 +300,7 @@ class MailCollector extends CommonDBTM
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         // warning and no form if can't read keyfile
         $glpi_encryption_key = new GLPIKey();
@@ -331,7 +331,7 @@ class MailCollector extends CommonDBTM
      *
      * @return void
      */
-    public function displayFoldersList($input_id = "")
+    public function displayFoldersList(string $input_id = ""): void
     {
         $connected = false;
         $folders = [];
@@ -489,7 +489,7 @@ class MailCollector extends CommonDBTM
      *
      * @return void
      */
-    public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
+    public function deleteOrImportSeveralEmails(array $emails_ids = [], int $action = 0, int $entity = 0): void
     {
         global $DB;
 
@@ -615,7 +615,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string|void
      **/
-    public function collect($mailgateID, $display = false)
+    public function collect(int $mailgateID, bool $display = false): string|void
     {
         global $CFG_GLPI;
 
@@ -950,7 +950,7 @@ class MailCollector extends CommonDBTM
      *
      * @return array ticket fields
      */
-    public function buildTicket($uid, Message $message, $options = [])
+    public function buildTicket(string $uid, Message $message, array $options = []): array
     {
         global $CFG_GLPI, $DB;
 
@@ -1239,7 +1239,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string cleaned text
      **/
-    public function cleanContent($string)
+    public function cleanContent(string $string): string
     {
         global $DB;
 
@@ -1285,7 +1285,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string clean text
      **/
-    public function cleanSubject($text)
+    public function cleanSubject(string $text): string
     {
         $text = str_replace("=20", "\n", $text);
         return $text;
@@ -1297,7 +1297,7 @@ class MailCollector extends CommonDBTM
      *
      * @return void
      */
-    public function connect()
+    public function connect(): void
     {
         $config = Toolbox::parseMailServerConnectString($this->fields['host']);
 
@@ -1354,7 +1354,7 @@ class MailCollector extends CommonDBTM
      *
      * @return array
      **/
-    public function getAdditionnalHeaders(Message $message)
+    public function getAdditionnalHeaders(Message $message): array
     {
         $head   = [];
         $headers = $message->getHeaders();
@@ -1395,7 +1395,7 @@ class MailCollector extends CommonDBTM
      *                from      => From address of mail
      *                fromName  => Form Name of Mail
      **/
-    public function getHeaders(Message $message)
+    public function getHeaders(Message $message): array
     {
 
         $sender_email = $this->getEmailFromHeader($message, 'from');
@@ -1498,7 +1498,7 @@ class MailCollector extends CommonDBTM
      *
      * @return int
      **/
-    public function getTotalMails()
+    public function getTotalMails(): int
     {
         return $this->storage->countMessages();
     }
@@ -1516,7 +1516,7 @@ class MailCollector extends CommonDBTM
      *
      * @return void
      **/
-    private function getRecursiveAttached(Part $part, $path, $maxsize, $subject, $subpart = "")
+    private function getRecursiveAttached(Part $part, string $path, int $maxsize, string $subject, string $subpart = ""): void
     {
         if ($part->isMultipart()) {
             $index = 0;
@@ -1679,7 +1679,7 @@ class MailCollector extends CommonDBTM
      *
      * @return array containing extracted filenames in file/_tmp
      **/
-    public function getAttached(Message $message, $path, $maxsize)
+    public function getAttached(Message $message, string $path, int $maxsize): array
     {
         $this->files     = [];
         $this->altfiles  = [];
@@ -1704,7 +1704,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string
      **/
-    public function getBody(Message $message)
+    public function getBody(Message $message): string
     {
         $content = null;
 
@@ -1798,7 +1798,7 @@ class MailCollector extends CommonDBTM
      *
      * @return bool
      **/
-    public function deleteMails($uid, $folder = '')
+    public function deleteMails(string $uid, string $folder = ''): bool
     {
 
         // Disable move support, POP protocol only has the INBOX folder
@@ -1839,7 +1839,7 @@ class MailCollector extends CommonDBTM
      *
      * @return int -1 : done but not finish 1 : done with success
      **/
-    public static function cronMailgate($task)
+    public static function cronMailgate(CronTask $task): int
     {
         global $DB;
 
@@ -1888,7 +1888,7 @@ class MailCollector extends CommonDBTM
      *
      * @return array|void
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array|void
     {
 
         switch ($name) {
@@ -1911,7 +1911,7 @@ class MailCollector extends CommonDBTM
      *
      * @return int
      */
-    public static function cronMailgateError($task)
+    public static function cronMailgateError(CronTask $task): int
     {
         global $CFG_GLPI, $DB;
 
@@ -1950,7 +1950,7 @@ class MailCollector extends CommonDBTM
      * @return array
      * @phpstan-return array{label: string, content: string}
      */
-    public function getSystemInformation()
+    public function getSystemInformation(): array
     {
         global $CFG_GLPI, $DB;
 
@@ -1999,7 +1999,7 @@ class MailCollector extends CommonDBTM
      *
      * @return void
      */
-    public function sendMailRefusedResponse($to = '', $subject = '')
+    public function sendMailRefusedResponse(string $to = '', string $subject = ''): void
     {
         global $CFG_GLPI;
 
@@ -2021,7 +2021,7 @@ class MailCollector extends CommonDBTM
      * @return void
      * @used-by templates/components/search/controls.html.twig
      */
-    public static function showSearchStatusArea()
+    public static function showSearchStatusArea(): void
     {
         $errors  = getAllDataFromTable(self::getTable(), ['errors' => ['>', 0]]);
         $collector = new self();
@@ -2058,7 +2058,7 @@ class MailCollector extends CommonDBTM
      *
      * @return int
      */
-    public static function countCollectors($active = false)
+    public static function countCollectors(bool $active = false): int
     {
         global $DB;
 
@@ -2081,7 +2081,7 @@ class MailCollector extends CommonDBTM
      *
      * @return int
      */
-    public static function countActiveCollectors()
+    public static function countActiveCollectors(): int
     {
         return self::countCollectors(true);
     }
@@ -2330,7 +2330,7 @@ class MailCollector extends CommonDBTM
      *
      * @return void
      **/
-    public static function showMaxFilesize($name, $value = 0, $rand = null)
+    public static function showMaxFilesize(string $name, int $value = 0, ?int $rand = null): void
     {
 
         $sizes[0] = __('No import');
@@ -2405,7 +2405,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string
      */
-    public function getDecodedContent(Part $part)
+    public function getDecodedContent(Part $part): string
     {
         $contents = $part->getContent();
 

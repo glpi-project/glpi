@@ -111,7 +111,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
     /**
      * @return array
      */
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [
@@ -178,7 +178,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         // Checks that the itemtype is not already in use
         $criteria = [

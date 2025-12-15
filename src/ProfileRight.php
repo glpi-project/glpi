@@ -89,7 +89,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return array
      */
-    public static function getAllPossibleRights()
+    public static function getAllPossibleRights(): array
     {
         global $DB, $GLPI_CACHE;
 
@@ -115,7 +115,7 @@ class ProfileRight extends CommonDBChild
     /**
      * @return void
      */
-    public static function cleanAllPossibleRights()
+    public static function cleanAllPossibleRights(): void
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('all_possible_rights');
@@ -127,7 +127,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return array
      */
-    public static function getProfileRights($profiles_id, array $rights = [])
+    public static function getProfileRights(int $profiles_id, array $rights = []): array
     {
         global $DB;
 
@@ -152,7 +152,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return bool
      **/
-    public static function addProfileRights(array $rights)
+    public static function addProfileRights(array $rights): bool
     {
         global $DB, $GLPI_CACHE;
 
@@ -188,7 +188,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return bool
      **/
-    public static function deleteProfileRights(array $rights)
+    public static function deleteProfileRights(array $rights): bool
     {
         global $DB, $GLPI_CACHE;
 
@@ -213,7 +213,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return void
      */
-    public static function fillProfileRights($profiles_id)
+    public static function fillProfileRights(int $profiles_id): void
     {
         global $DB;
 
@@ -262,7 +262,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return void
      */
-    public static function updateProfileRights($profiles_id, array $rights = [])
+    public static function updateProfileRights(int $profiles_id, array $rights = []): void
     {
 
         $me = new self();
@@ -297,7 +297,7 @@ class ProfileRight extends CommonDBChild
      *
      * @return void
      */
-    public function post_addItem($history = true)
+    public function post_addItem(bool $history = true): void
     {
         // Refresh session rights to avoid log out and login when rights change
         $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);

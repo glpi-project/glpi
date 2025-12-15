@@ -115,7 +115,7 @@ class Socket extends CommonDBChild
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         $itemtype = null;
         if (!empty($options['_add_fromitem'])) {
@@ -171,7 +171,7 @@ class Socket extends CommonDBChild
      *
      * @return array
      */
-    public function retrievedataFromNetworkPort($input)
+    public function retrievedataFromNetworkPort(array $input): array
     {
         // get position from networkport if needed
         if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0) && $input["position"] == 'auto') {
@@ -194,7 +194,7 @@ class Socket extends CommonDBChild
      * Get possible itemtype
      * @return array Array of types
      **/
-    public static function getSocketLinkTypes()
+    public static function getSocketLinkTypes(): array
     {
         global $CFG_GLPI;
         $values = [];
@@ -276,7 +276,7 @@ class Socket extends CommonDBChild
      *    - display
      * @return string ID of the select
      **/
-    public static function dropdownWiringSide($name, $options = [], bool $full = false)
+    public static function dropdownWiringSide(string $name, array $options = [], bool $full = false): string
     {
         $params = [
             'value'     => 0,
@@ -296,7 +296,7 @@ class Socket extends CommonDBChild
      * Get sides
      * @return array Array of types
      **/
-    public static function getSides(bool $full = false)
+    public static function getSides(bool $full = false): array
     {
         $data =  [
             self::REAR   => __('Rear'),
@@ -325,7 +325,7 @@ class Socket extends CommonDBChild
      *
      * @return int
      */
-    public static function getWiringSideName($value)
+    public static function getWiringSideName(int $value): int
     {
         $tab  = static::getSides();
         // Return $value if not defined
@@ -412,7 +412,7 @@ class Socket extends CommonDBChild
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -472,7 +472,7 @@ class Socket extends CommonDBChild
      *
      * @return string
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -531,7 +531,7 @@ class Socket extends CommonDBChild
      *
      * @return int the ID of the new (or -1 if not found)
      **/
-    public function findID(array &$input)
+    public function findID(array &$input): int
     {
         global $DB;
 
@@ -575,7 +575,7 @@ class Socket extends CommonDBChild
     /**
      * @return void
      */
-    public function cleanIfStealNetworkPort()
+    public function cleanIfStealNetworkPort(): void
     {
         global $DB;
         // find other socket with same networkport and reset it
@@ -658,7 +658,7 @@ class Socket extends CommonDBChild
      *
      * @return bool
      **/
-    public static function showListForItem($item): bool
+    public static function showListForItem(CommonDBTM $item): bool
     {
 
         global $DB;
@@ -936,8 +936,8 @@ class Socket extends CommonDBChild
         ?HTMLTableRow $row = null,
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
-        $options = []
-    ) {
+        array $options = []
+    ): void {
 
         $column_name = self::class;
 

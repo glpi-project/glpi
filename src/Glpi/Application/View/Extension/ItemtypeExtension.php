@@ -93,7 +93,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getItemtypeDropdown($itemtype, array $options = []): ?string
+    public function getItemtypeDropdown(string $itemtype, array $options = []): ?string
     {
         $options['display'] = false;
         return is_a($itemtype, CommonDBTM::class, true) ? $itemtype::dropdown($options) : null;
@@ -136,7 +136,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getItemtypeName(string $itemtype, $count = 1): ?string
+    public function getItemtypeName(string $itemtype, number $count = 1): ?string
     {
         return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getTypeName($count) : null;
     }
@@ -161,7 +161,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return CommonDBTM|null
      */
-    public function getItem($itemtype, int $id): ?CommonDBTM
+    public function getItem(string $itemtype, int $id): ?CommonDBTM
     {
         if (is_a($itemtype, CommonDBTM::class, true) && ($item = $itemtype::getById($id)) !== false) {
             return $item;
@@ -178,7 +178,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getItemName($item, ?int $id = null): ?string
+    public function getItemName(CommonDBTM|string $item, ?int $id = null): ?string
     {
         if (is_a($item, CommonDropdown::class, true)) {
             $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
@@ -202,7 +202,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getItemComment($item, ?int $id = null): ?string
+    public function getItemComment(CommonDBTM|string $item, ?int $id = null): ?string
     {
         if (is_a($item, CommonDropdown::class, true)) {
             $items_id = $item instanceof CommonDBTM ? $item->fields[$item->getIndexName()] : $id;
@@ -228,7 +228,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getItemLink($item, ?int $id = null, array $options = []): ?string
+    public function getItemLink(CommonDBTM|string $item, ?int $id = null, array $options = []): ?string
     {
         if (($instance = $this->getItemInstance($item, $id)) === null) {
             return null;
@@ -269,7 +269,7 @@ class ItemtypeExtension extends AbstractExtension
      *
      * @return CommonDBTM|null
      */
-    private function getItemInstance($item, ?int $id = null): ?CommonDBTM
+    private function getItemInstance(CommonDBTM|string $item, ?int $id = null): ?CommonDBTM
     {
         if (!is_a($item, CommonDBTM::class, true)) {
             return null;

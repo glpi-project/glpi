@@ -801,7 +801,7 @@ class LogTest extends DbTestCase
      * `Log::getHistoryData` should return `date_mod` properties as-is without formatting them based on the current user's preference.
      * @return void
      */
-    public function testGetHistoryDataRawTimestamp()
+    public function testGetHistoryDataRawTimestamp(): void
     {
         $this->login();
         $_SESSION['glpi_currenttime'] = '2023-11-01 00:00:00';

@@ -139,7 +139,7 @@ class DeviceProcessor extends CommonDevice
      *
      * @return array
      **/
-    public function prepareInputForAddOrUpdate($input)
+    public function prepareInputForAddOrUpdate(array $input): array
     {
         foreach (
             ['frequence', 'frequency_default', 'nbcores_default',
@@ -218,7 +218,7 @@ class DeviceProcessor extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, array $main_joinparams): array
     {
         $tab = [];
 

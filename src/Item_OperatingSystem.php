@@ -86,7 +86,7 @@ class Item_OperatingSystem extends CommonDBRelation
      *
      * @return DBmysqlIterator
      */
-    public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
+    public static function getFromItem(CommonDBTM $item, ?string $sort = null, ?string $order = null): DBmysqlIterator
     {
         global $DB;
 
@@ -151,7 +151,7 @@ class Item_OperatingSystem extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $DB;
 
@@ -358,7 +358,7 @@ class Item_OperatingSystem extends CommonDBRelation
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         $tab = [];
         $tab[] = [
@@ -576,7 +576,7 @@ class Item_OperatingSystem extends CommonDBRelation
      *
      * @return void
      */
-    public static function showFormMassiveUpdate($ma)
+    public static function showFormMassiveUpdate(MassiveAction $ma): void
     {
         global $CFG_GLPI;
 

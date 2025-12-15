@@ -39,7 +39,7 @@ use function Safe\preg_replace;
  *
  * @return bool
  **/
-function update942to943()
+function update942to943(): bool
 {
     /**
      * @var DBmysql $DB

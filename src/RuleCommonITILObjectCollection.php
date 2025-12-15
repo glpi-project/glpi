@@ -43,7 +43,7 @@ abstract class RuleCommonITILObjectCollection extends RuleCollection
     /**
      * @param int $entity (default 0)
      **/
-    public function __construct($entity = 0)
+    public function __construct(int $entity = 0)
     {
         parent::__construct();
         $this->entity = $entity;

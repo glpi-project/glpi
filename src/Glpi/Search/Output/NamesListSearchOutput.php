@@ -131,7 +131,7 @@ final class NamesListSearchOutput extends ExportSearchOutput
      *
      * @return string
      */
-    public static function showHeader($rows, $cols, $fixed = false): string
+    public static function showHeader(int $rows, int $cols, bool $fixed = false): string
     {
         if (!headers_sent()) {
             header("Content-disposition: filename=glpi.txt");
@@ -148,7 +148,7 @@ final class NamesListSearchOutput extends ExportSearchOutput
      *
      * @return string
      */
-    public static function showItem($value, &$num, $row, $extraparam = ''): string
+    public static function showItem(string $value, int &$num, int $row, string $extraparam = ''): string
     {
         // We only want to display one column (the name of the item).
         // The name field is always the first column expect for tickets

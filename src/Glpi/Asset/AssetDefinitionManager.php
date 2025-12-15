@@ -345,7 +345,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
      * @param bool $flatten If true, returns a flat array of itemtypes rather than separated by category.
      * @return array<string, array<class-string<CommonDBTM>, string>>
      */
-    public function getAllowedDropdownItemtypes($flatten = false): array
+    public function getAllowedDropdownItemtypes(bool $flatten = false): array
     {
         global $CFG_GLPI;
 

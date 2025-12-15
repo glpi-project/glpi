@@ -42,7 +42,7 @@ class QueryParam
      *
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return '?';
     }

@@ -50,7 +50,7 @@ class UserRepository implements UserRepositoryInterface
      *
      * @return ?UserEntityInterface
      */
-    public function getUserEntityByUserCredentials($username, $password, $grantType, ClientEntityInterface $clientEntity): ?UserEntityInterface
+    public function getUserEntityByUserCredentials(string $username, string $password, string $grantType, ClientEntityInterface $clientEntity): ?UserEntityInterface
     {
         $auth = new Auth();
         $valid_login = $auth->validateLogin($username, $password, true);

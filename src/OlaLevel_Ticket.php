@@ -57,7 +57,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @return bool
      **/
-    public function getFromDBForTicket($ID, $olaType)
+    public function getFromDBForTicket(int $ID, $olaType): bool
     {
         global $DB;
 
@@ -101,7 +101,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @return void
      **/
-    public function deleteForTicket($tickets_id, $olaType)
+    public function deleteForTicket(int $tickets_id, $olaType): void
     {
         global $DB;
 
@@ -141,7 +141,7 @@ class OlaLevel_Ticket extends CommonDBTM
      * @return array
      * @used-by CronTask
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'olaticket':
@@ -158,7 +158,7 @@ class OlaLevel_Ticket extends CommonDBTM
      * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
-    public static function cronOlaTicket(CronTask $task)
+    public static function cronOlaTicket(CronTask $task): int
     {
         global $DB;
 
@@ -209,7 +209,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @return void
      **/
-    public static function doLevelForTicket(array $data, $olaType)
+    public static function doLevelForTicket(array $data, $olaType): void
     {
         $ticket         = new Ticket();
         $olalevelticket = new self();
@@ -316,7 +316,7 @@ class OlaLevel_Ticket extends CommonDBTM
      *
      * @return void
      */
-    public static function replayForTicket($tickets_id, $olaType)
+    public static function replayForTicket(int $tickets_id, $olaType): void
     {
         global $DB;
 

@@ -124,7 +124,7 @@ class ProjectTeam extends CommonDBRelation
      * @return array The array of team members with additional information
      * @since 10.0.0
      */
-    public static function expandTeamData(array $team)
+    public static function expandTeamData(array $team): array
     {
         global $DB;
         $subqueries = [];
@@ -221,7 +221,7 @@ class ProjectTeam extends CommonDBRelation
      * @param bool $expand If true, the team member data is expanded to include specific properties like firstname, realname, ...
      * @return array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>>
      */
-    public static function getTeamFor($projects_id, bool $expand = false)
+    public static function getTeamFor(int $projects_id, bool $expand = false): array
     {
         global $DB;
 

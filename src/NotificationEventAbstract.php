@@ -159,7 +159,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
      *
      * @return void
      */
-    protected static function extraRaise($params)
+    protected static function extraRaise($params): void
     {
         //does nothing; designed to be overriden
     }

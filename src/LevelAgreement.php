@@ -68,7 +68,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * @return void
      */
-    abstract public function showFormWarning();
+    abstract public function showFormWarning(): void;
 
     /**
      * Return the text needed for a confirmation of adding level agreement to a ticket
@@ -84,7 +84,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * @return array of 'date' and 'sla' field names
      */
-    public static function getFieldNames($subtype)
+    public static function getFieldNames(int $subtype): array
     {
         $dateField = null;
         $laField  = null;
@@ -126,7 +126,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * @return void
      */
-    public function setTicketCalendar($calendars_id)
+    public function setTicketCalendar(int $calendars_id): void
     {
         if ($this->fields['use_ticket_calendar']) {
             $this->fields['calendars_id'] = $calendars_id;
@@ -288,7 +288,7 @@ JAVASCRIPT
      * @return false|LevelAgreementLevel
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
-    public function getLevelFromAction($nextaction)
+    public function getLevelFromAction(mixed $nextaction): bool|LevelAgreementLevel
     {
         if ($nextaction === false) {
             return false;
@@ -314,7 +314,7 @@ JAVASCRIPT
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
-    public function getNextActionForTicket(Ticket $ticket, int $type)
+    public function getNextActionForTicket(Ticket $ticket, int $type): bool|OlaLevel_Ticket|SlaLevel_Ticket
     {
         /** @var OlaLevel_Ticket|SlaLevel_Ticket $nextaction */
         $nextaction = getItemForItemtype(static::$levelticketclass);
@@ -332,7 +332,7 @@ JAVASCRIPT
      *
      * @return void
      */
-    public static function showForSLM(SLM $slm)
+    public static function showForSLM(SLM $slm): void
     {
         if (!$slm->can($slm->fields['id'], READ)) {
             return;
@@ -433,7 +433,7 @@ TWIG, $twig_params);
      * Display a list of rule for the current sla/ola
      * @return void
      */
-    public function showRulesList()
+    public function showRulesList(): void
     {
         global $DB;
 
@@ -527,7 +527,7 @@ TWIG, $twig_params);
      * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
-    public function getDataForTicket($tickets_id, $type)
+    public function getDataForTicket(int $tickets_id, int $type): bool|iterable
     {
         global $DB;
 
@@ -672,7 +672,7 @@ TWIG, $twig_params);
      *
      * @return int own/resolution time (default 0)
      **/
-    public function getTime()
+    public function getTime(): int
     {
         if (isset($this->fields['id'])) {
             return match ($this->fields['definition_time']) {
@@ -694,7 +694,7 @@ TWIG, $twig_params);
      *
      * @return int elapsed time in seconds
      **/
-    public function getActiveTimeBetween($start, $end)
+    public function getActiveTimeBetween(string $start, string $end): int
     {
         if ($end < $start) {
             return 0;
@@ -725,7 +725,7 @@ TWIG, $twig_params);
      *
      * @return string|null  due datetime 'Y-m-d H:i:s' (NULL if sla/ola not exists)
      **/
-    public function computeDate($start_date, $additional_delay = 0)
+    public function computeDate(string $start_date, int $additional_delay = 0): ?string
     {
         if (isset($this->fields['id'])) {
             $delay = $this->getTime();
@@ -779,7 +779,7 @@ TWIG, $twig_params);
      *
      * @return string|null  execution date time (NULL if ola/sla not exists)
      **/
-    public function computeExecutionDate($start_date, $levels_id, $additional_delay = 0)
+    public function computeExecutionDate(string $start_date, int $levels_id, int $additional_delay = 0): ?string
     {
         if (isset($this->fields['id'])) {
             $level = getItemForItemtype(static::$levelclass);
@@ -835,7 +835,7 @@ TWIG, $twig_params);
      *
      * @return array array of types
      **/
-    public static function getTypes()
+    public static function getTypes(): array
     {
         return [
             SLM::TTO => __('Time to own'),
@@ -849,7 +849,7 @@ TWIG, $twig_params);
      * @param  int $type
      * @return string  name
      **/
-    public static function getOneTypeName($type)
+    public static function getOneTypeName(int $type): string
     {
         $types = self::getTypes();
         return $types[$type] ?? null;
@@ -862,7 +862,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function getTypeDropdown($options)
+    public static function getTypeDropdown(array $options): string
     {
         return Dropdown::showFromArray($options['name'] ?? 'type', self::getTypes(), $options);
     }
@@ -920,7 +920,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function addLevelToDo(Ticket $ticket, $levels_id = 0)
+    public function addLevelToDo(Ticket $ticket, int $levels_id = 0): void
     {
         $pre = static::$prefix;
 
@@ -977,7 +977,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function deleteLevelsToDo(Ticket $ticket)
+    public static function deleteLevelsToDo(Ticket $ticket): void
     {
         global $DB;
 

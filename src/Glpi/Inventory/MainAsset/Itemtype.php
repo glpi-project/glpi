@@ -55,7 +55,7 @@ class Itemtype extends MainAsset
     /**
      * @param stdClass $data
      */
-    public function __construct($data)
+    public function __construct(stdClass $data)
     {
         $namespaced = explode('\\', static::class);
         $this->itemtype = array_pop($namespaced);
@@ -78,7 +78,7 @@ class Itemtype extends MainAsset
      *
      * @return array
      */
-    public function defineItemtype($original_itemtype): array
+    public function defineItemtype(string $original_itemtype): array
     {
         $blacklist = new Blacklist();
 

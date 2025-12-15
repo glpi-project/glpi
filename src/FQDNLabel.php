@@ -52,7 +52,7 @@ abstract class FQDNLabel extends CommonDBChild
     /**
      * @return string
      */
-    public function getInternetName()
+    public function getInternetName(): string
     {
 
         // get the full computer name of the current object (for instance : forge.indepnet.net)
@@ -75,7 +75,7 @@ abstract class FQDNLabel extends CommonDBChild
      *
      * @return string  result the full internet name
      **/
-    public static function getInternetNameFromLabelAndDomainID($label, $domain)
+    public static function getInternetNameFromLabelAndDomainID(string $label, int $domain): string
     {
 
         $domainName = FQDN::getFQDNFromID($domain);
@@ -95,7 +95,7 @@ abstract class FQDNLabel extends CommonDBChild
      *
      * @return bool
      */
-    public static function checkFQDNLabel($label)
+    public static function checkFQDNLabel(string $label): bool
     {
         try {
             if (strlen($label) == 1) {
@@ -124,7 +124,7 @@ abstract class FQDNLabel extends CommonDBChild
      *
      * @return array|false
      **/
-    public function prepareLabelInput($input)
+    public function prepareLabelInput(array $input): array|bool
     {
         if (isset($input['name']) && !empty($input['name'])) {
             // Empty names are allowed
@@ -149,7 +149,7 @@ abstract class FQDNLabel extends CommonDBChild
      *
      * @return array
      */
-    public function prepareIPNetworkFromInput($input)
+    public function prepareIPNetworkFromInput(array $input): array
     {
 
         //getIPNetwork from IPV4 if not set
@@ -199,7 +199,7 @@ abstract class FQDNLabel extends CommonDBChild
      *
      * @return array two arrays (NetworkName and NetworkAlias) of the IDs
      */
-    public static function getIDsByLabelAndFQDNID($label, $fqdns_id, $wildcard_search = false)
+    public static function getIDsByLabelAndFQDNID(string $label, array|int $fqdns_id, bool $wildcard_search = false): array
     {
         global $DB;
 
@@ -253,7 +253,7 @@ abstract class FQDNLabel extends CommonDBChild
      *    each value of the array (corresponding to one NetworkPort) is an array of the
      *    items from the master item to the NetworkPort
      **/
-    public static function getItemsByFQDN($fqdn, $wildcard_search = false)
+    public static function getItemsByFQDN(string $fqdn, bool $wildcard_search = false): array
     {
 
         $FQNDs_with_Items = [];
@@ -307,7 +307,7 @@ abstract class FQDNLabel extends CommonDBChild
      * @return array  an array containing the object ID
      *    or an empty array is no value of serverals ID where found
      **/
-    public static function getUniqueItemByFQDN($value, $entity)
+    public static function getUniqueItemByFQDN(string $value, int $entity): array
     {
 
         $labels_with_items = self::getItemsByFQDN($value);

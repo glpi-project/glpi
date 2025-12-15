@@ -223,7 +223,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function replayDictionnaryOnSoftwaresByID(array $IDs, $res_rule = [])
+    public function replayDictionnaryOnSoftwaresByID(array $IDs, array $res_rule = []): void
     {
         global $DB;
 
@@ -287,12 +287,12 @@ TWIG, $twig_params);
     public function replayDictionnaryOnOneSoftware(
         array &$new_softs,
         array $res_rule,
-        $ID,
-        $entity,
-        $name,
-        $manufacturer,
+        int $ID,
+        int $entity,
+        string $name,
+        string $manufacturer,
         array &$soft_ids
-    ) {
+    ): void {
         global $DB;
 
         $input["name"]         = $name;
@@ -403,7 +403,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function putOldSoftsInTrash(array $soft_ids)
+    public function putOldSoftsInTrash(array $soft_ids): void
     {
         global $DB;
 
@@ -450,7 +450,7 @@ TWIG, $twig_params);
      * @param int $entity                entity ID
      * @return void
      */
-    public function moveVersions($ID, $new_software_id, $version_id, $old_version, $new_version, $entity)
+    public function moveVersions(int $ID, int $new_software_id, int $version_id, string $old_version, string $new_version, int $entity): void
     {
         global $DB;
 
@@ -550,7 +550,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function moveLicenses($old_software_id, $new_software_id)
+    public function moveLicenses(int $old_software_id, int $new_software_id): bool
     {
         global $DB;
 
@@ -585,7 +585,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function versionExists($software_id, $version)
+    public function versionExists(int $software_id, string $version): bool
     {
         global $DB;
 

@@ -176,7 +176,7 @@ class NetworkName extends FQDNLabel
      *
      * @return void
      **/
-    public static function rawSearchOptionsToAdd(array &$tab, array $joinparams)
+    public static function rawSearchOptionsToAdd(array &$tab, array $joinparams): void
     {
         $tab[] = [
             'id'                  => '126',
@@ -228,7 +228,7 @@ class NetworkName extends FQDNLabel
      *
      * @return void
      **/
-    public function post_workOnItem()
+    public function post_workOnItem(): void
     {
         if (
             (isset($this->input['_ipaddresses']))
@@ -317,7 +317,7 @@ class NetworkName extends FQDNLabel
      *
      * @return void
      **/
-    public static function unaffectAddressesOfItem($items_id, $itemtype)
+    public static function unaffectAddressesOfItem(int $items_id, string $itemtype): void
     {
         global $DB;
 
@@ -344,7 +344,7 @@ class NetworkName extends FQDNLabel
      *
      * @return bool
      **/
-    public static function unaffectAddressByID($networkNameID)
+    public static function unaffectAddressByID(int $networkNameID): bool
     {
         return self::affectAddress($networkNameID, 0, '');
     }
@@ -355,7 +355,7 @@ class NetworkName extends FQDNLabel
      * @param string $itemtype
      * @return bool
      */
-    public static function affectAddress($networkNameID, $items_id, $itemtype)
+    public static function affectAddress(int $networkNameID, int $items_id, string $itemtype): bool
     {
         $networkName = new self();
         return $networkName->update([
@@ -371,7 +371,7 @@ class NetworkName extends FQDNLabel
      *
      * @return void
      */
-    public static function showFormForNetworkPort($networkPortID)
+    public static function showFormForNetworkPort(int $networkPortID): void
     {
         global $DB;
 
@@ -434,7 +434,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
         if (
@@ -488,7 +488,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
         global $DB;
 
         $column_name = self::class;
@@ -669,7 +669,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * @return false|void
      * @throws Exception
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool|void
     {
         $ID = $item->getID();
         if (!$item->can($ID, READ)) {

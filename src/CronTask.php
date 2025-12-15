@@ -138,7 +138,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool true if succeed else false
      **/
-    public function getFromDBbyName($itemtype, $name)
+    public function getFromDBbyName(string $itemtype, string $name): bool
     {
         $table = self::getTable();
         return $this->getFromDBByCrit([
@@ -158,7 +158,7 @@ class CronTask extends CommonDBTM
      *    <li>3: Task belongs to a disabled plugin</li>
      * </ul>
      **/
-    public function isDisabled()
+    public function isDisabled(): int
     {
         if ($this->fields['state'] == self::STATE_DISABLE) {
             return 1;
@@ -189,7 +189,7 @@ class CronTask extends CommonDBTM
      *
      * @return string[]
      **/
-    public static function getUsedItemtypes()
+    public static function getUsedItemtypes(): array
     {
         global $DB;
 
@@ -214,7 +214,7 @@ class CronTask extends CommonDBTM
      *
      * @return void
      */
-    public function signal($signo)
+    public function signal(int $signo): void
     {
         if ($signo == SIGTERM) {
             pcntl_signal(SIGTERM, SIG_DFL);
@@ -235,7 +235,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool : true if ok (not start by another)
      **/
-    public function start()
+    public function start(): bool
     {
         global $DB;
 
@@ -295,7 +295,7 @@ class CronTask extends CommonDBTM
      *
      * @return void
      */
-    public function setVolume($volume)
+    public function setVolume(int $volume): void
     {
         $this->volume = $volume;
     }
@@ -307,7 +307,7 @@ class CronTask extends CommonDBTM
      *
      * @return void
      */
-    public function addVolume($volume)
+    public function addVolume(int $volume): void
     {
         $this->volume += $volume;
     }
@@ -327,7 +327,7 @@ class CronTask extends CommonDBTM
      *
      * @since 9.5.5 Added parameter $log_state.
      **/
-    public function end($retcode, int $log_state = CronTaskLog::STATE_STOP)
+    public function end(?int $retcode, int $log_state = CronTaskLog::STATE_STOP): bool
     {
         global $DB;
 
@@ -387,7 +387,7 @@ class CronTask extends CommonDBTM
      *
      * @return false|int
      **/
-    public function log($content)
+    public function log(string $content): bool|int
     {
         if (!isset($this->fields['id'])) {
             return false;
@@ -413,7 +413,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool false if no task to run
      **/
-    public function getNeedToRun($mode = 0, $name = '')
+    public function getNeedToRun(int $mode = 0, string $name = ''): bool
     {
         global $DB;
 
@@ -605,7 +605,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         if (!Config::canView() || !$this->getFromDB($ID)) {
             return false;
@@ -671,7 +671,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool
      **/
-    public function resetDate()
+    public function resetDate(): bool
     {
         if (!isset($this->fields['id'])) {
             return false;
@@ -687,7 +687,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool
      **/
-    public function resetState()
+    public function resetState(): bool
     {
         if (!isset($this->fields['id'])) {
             return false;
@@ -705,7 +705,7 @@ class CronTask extends CommonDBTM
      *
      * @return string
      **/
-    public function getDescription($id)
+    public function getDescription(int $id): string
     {
         if (!isset($this->fields['id']) || ($this->fields['id'] != $id)) {
             $this->getFromDB($id);
@@ -726,7 +726,7 @@ class CronTask extends CommonDBTM
      *
      * @return string
      **/
-    public function getParameterDescription()
+    public function getParameterDescription(): string
     {
         $hook = [$this->fields['itemtype'], 'cronInfo'];
 
@@ -747,7 +747,7 @@ class CronTask extends CommonDBTM
      *
      * @return string
      **/
-    public static function getStateName($state)
+    public static function getStateName(int $state): string
     {
         return match ($state) {
             self::STATE_RUNNING => __('Running'),
@@ -766,7 +766,7 @@ class CronTask extends CommonDBTM
      *
      * @return string|int HTML output, or random part of dropdown ID.
      **/
-    public static function dropdownState($name, $value = 0, $display = true)
+    public static function dropdownState(string $name, int $value = 0, bool $display = true): string|int
     {
         return Dropdown::showFromArray(
             $name,
@@ -787,7 +787,7 @@ class CronTask extends CommonDBTM
      *
      * @return string
      **/
-    public static function getModeName($mode)
+    public static function getModeName(int $mode): string
     {
         return match ($mode) {
             self::MODE_INTERNAL => __('GLPI'),
@@ -801,7 +801,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool
      **/
-    private static function get_lock()
+    private static function get_lock(): bool
     {
         global $DB;
 
@@ -838,7 +838,7 @@ class CronTask extends CommonDBTM
      *
      * @return string|bool the name of last task launched, or false if execution not available
      **/
-    public static function launch($mode, $max = 1, $name = '')
+    public static function launch(int $mode, int $max = 1, string $name = ''): string|bool
     {
         global $CFG_GLPI;
 
@@ -973,7 +973,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool
      **/
-    public static function register($itemtype, $name, $frequency, $options = [])
+    public static function register(string $itemtype, string $name, int $frequency, array $options = []): bool
     {
         // Check that hook exists
         if (!isPluginItemType($itemtype) && !class_exists($itemtype)) {
@@ -1016,7 +1016,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool for success
      **/
-    public static function unregister($plugin)
+    public static function unregister(string $plugin): bool
     {
         global $DB;
 
@@ -1050,7 +1050,7 @@ class CronTask extends CommonDBTM
      *
      * @return void
      **/
-    public function showStatistics()
+    public function showStatistics(): void
     {
         global $DB;
 
@@ -1142,7 +1142,7 @@ class CronTask extends CommonDBTM
      *
      * @return void
      **/
-    public function showHistory()
+    public function showHistory(): void
     {
         global $DB;
 
@@ -1214,7 +1214,7 @@ class CronTask extends CommonDBTM
      *
      * @return void
      **/
-    public function showHistoryDetail($logid)
+    public function showHistoryDetail(int $logid): void
     {
         global $DB;
 
@@ -1535,7 +1535,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronSession(CronTask $task)
+    public static function cronSession(CronTask $task): int
     {
         // max time to keep the file session
         $maxlifetime = ini_get('session.gc_maxlifetime');
@@ -1583,7 +1583,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronCircularlogs(CronTask $task)
+    public static function cronCircularlogs(CronTask $task): int
     {
         $actionCode = 0; // by default
         $error      = false;
@@ -1651,7 +1651,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronGraph(CronTask $task)
+    public static function cronGraph(CronTask $task): int
     {
         // max time to keep the file session
         $maxlifetime = HOUR_TIMESTAMP;
@@ -1695,7 +1695,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronTemp(CronTask $task)
+    public static function cronTemp(CronTask $task): int
     {
         // max time to keep the file session
         $maxlifetime = HOUR_TIMESTAMP;
@@ -1764,7 +1764,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronLogs($task)
+    public static function cronLogs(CronTask $task): int
     {
         global $DB;
 
@@ -1793,7 +1793,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronCheckUpdate($task)
+    public static function cronCheckUpdate(CronTask $task): int
     {
         $result = Toolbox::checkNewVersionAvailable();
         $task->log($result);
@@ -1831,7 +1831,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return int
      * @used-by self
      **/
-    public static function cronWatcher($task)
+    public static function cronWatcher(CronTask $task): int
     {
         // CronTasks running for more than 1 hour or 2 frequency
         $iterator = self::getZombieCrontasks();
@@ -1858,7 +1858,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @return array of string
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return match ($name) {
             'checkupdate' => [
@@ -1893,7 +1893,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @return bool : true if launched
      **/
-    public static function callCronForce()
+    public static function callCronForce(): bool
     {
         global $CFG_GLPI;
 
@@ -1925,7 +1925,7 @@ TWIG, ['msg' => __('Last run list')]);
      *
      * @return void
      **/
-    public static function callCron()
+    public static function callCron(): void
     {
         if (isset($_SESSION["glpicrontimer"])) {
             // call static function callcron() every 5min
@@ -1950,7 +1950,7 @@ TWIG, ['msg' => __('Last run list')]);
      * @return void
      * @used-by templates/components/search/controls.html.twig
      */
-    public static function showSearchStatusArea()
+    public static function showSearchStatusArea(): void
     {
         global $CFG_GLPI;
 

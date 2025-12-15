@@ -41,7 +41,7 @@ use Glpi\Search\SearchOption;
  *
  * @return bool
  **/
-function update090xto910()
+function update090xto910(): bool
 {
     /**
      * @var array $CFG_GLPI

@@ -58,7 +58,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
      *
      * @return void
      */
-    public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
+    public function showInstantiationForm(NetworkPort $netport, array $options, array $recursiveItems): void
     {
         if (!$options['several']) {
             echo "<tr class='tab_bg_1'>";
@@ -187,7 +187,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
      *
      * @return void
      */
-    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
+    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams): void
     {
         $tab[] = [
             'id'                 => '157',

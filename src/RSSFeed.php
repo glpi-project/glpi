@@ -567,7 +567,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param array $options Array of possible options:
      *     - target filename : where to go when done.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         // Test _rss cache directory. If permission trouble : unable to edit
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
@@ -601,7 +601,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      *
      * @return void
      */
-    public function setError($error = false)
+    public function setError(bool $error = false): void
     {
         if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
             return;
@@ -667,7 +667,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      *
      * @return SimplePie|false
      **/
-    public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
+    public static function getRSSFeed(string $url, int $cache_duration = DAY_TIMESTAMP): SimplePie|bool
     {
         global $GLPI_CACHE;
 
@@ -756,7 +756,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      *
      * @return false|void|string
      **/
-    public static function showListForCentral(bool $personal = true, bool $display = true)
+    public static function showListForCentral(bool $personal = true, bool $display = true): bool|void|string
     {
         global $CFG_GLPI, $DB;
 

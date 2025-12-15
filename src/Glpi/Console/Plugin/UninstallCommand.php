@@ -145,7 +145,7 @@ class UninstallCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunUninstallMethod($directory)
+    private function canRunUninstallMethod(string $directory): bool
     {
         $plugin = new Plugin();
 

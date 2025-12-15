@@ -119,7 +119,7 @@ class DeactivateCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunDeactivateMethod($directory)
+    private function canRunDeactivateMethod(string $directory): bool
     {
 
         $plugin = new Plugin();

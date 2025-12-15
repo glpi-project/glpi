@@ -867,7 +867,7 @@ class RuleCriteriaTest extends DbTestCase
      *
      * @return void
      */
-    private function updateDateMod($rules_id, $time)
+    private function updateDateMod(int $rules_id, string $time): void
     {
         global $DB;
 

@@ -403,12 +403,12 @@ abstract class CommonDevice extends CommonDropdown
      * @since 0.84
      */
     public static function getHTMLTableHeader(
-        $itemtype,
+        string $itemtype,
         HTMLTableBase $base,
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): HTMLTableHeader|void {
         if (isset($options['dont_display'][static::class])) {
             return $father;
         }
@@ -448,7 +448,7 @@ abstract class CommonDevice extends CommonDropdown
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?HTMLTableCell {
 
         if (isset($options['dont_display'][static::class])) {
             return $father;
@@ -500,7 +500,7 @@ abstract class CommonDevice extends CommonDropdown
      *
      * @return int ID of existing or new Device
      **/
-    public function import(array $input)
+    public function import(array $input): int
     {
         global $DB;
 
@@ -566,7 +566,7 @@ abstract class CommonDevice extends CommonDropdown
      * - 'delta:n': field must be within n of the value
      * @since 0.84
      **/
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'      => 'equal',
@@ -591,7 +591,7 @@ abstract class CommonDevice extends CommonDropdown
      * @return void
      * @since 0.85
      **/
-    public function post_workOnItem()
+    public function post_workOnItem(): void
     {
         if (
             (isset($this->input['_registeredID']))

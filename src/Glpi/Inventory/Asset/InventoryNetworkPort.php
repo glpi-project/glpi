@@ -91,7 +91,7 @@ trait InventoryNetworkPort
      *
      * @return $this
      */
-    public function addNetworkPorts($ports): self
+    public function addNetworkPorts(array $ports): self
     {
         $this->ports += $ports;
         return $this;
@@ -118,7 +118,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    public function handlePorts($itemtype = null, $items_id = null)
+    public function handlePorts(?string $itemtype = null, ?int $items_id = null): void
     {
         if (!$this->checkPortsConf($this->conf)) {
             return;
@@ -149,7 +149,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function cleanUnmanageds()
+    private function cleanUnmanageds(): void
     {
         global $DB;
 
@@ -201,7 +201,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleIpNetworks()
+    private function handleIpNetworks(): void
     {
         global $DB;
 
@@ -274,7 +274,7 @@ trait InventoryNetworkPort
      *
      * @return int
      */
-    private function addNetworkPort(stdClass $port)
+    private function addNetworkPort(stdClass $port): int
     {
         $networkport = new NetworkPort();
 
@@ -310,7 +310,7 @@ trait InventoryNetworkPort
      *
      * @return int
      */
-    protected function addNetworkName($items_id, $name = null)
+    protected function addNetworkName(int $items_id, ?string $name = null): int
     {
         $networkname = new NetworkName();
         $input = [
@@ -337,7 +337,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function addIPAddresses(array $ips, $items_id)
+    private function addIPAddresses(array $ips, int $items_id): void
     {
         $ipaddress = new IPAddress();
         $blacklist = new Blacklist();
@@ -359,7 +359,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleUpdates()
+    private function handleUpdates(): void
     {
         global $DB;
 
@@ -561,7 +561,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    protected function portUpdated(stdClass $port, int $netports_id)
+    protected function portUpdated(stdClass $port, int $netports_id): void
     {
         //does nothing
     }
@@ -576,7 +576,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleInstantiation($type, $data, $ports_id, $load)
+    private function handleInstantiation(string $type, stdClass $data, int $ports_id, bool $load): void
     {
         global $DB;
 
@@ -648,7 +648,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleCreates()
+    private function handleCreates(): void
     {
         $ports = $this->ports;
         if (method_exists($this, 'getManagementPorts')) {
@@ -687,7 +687,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    private function handleDeletesManagementPorts()
+    private function handleDeletesManagementPorts(): void
     {
         if (method_exists($this, 'getManagementPorts')) {
             if (empty($this->getManagementPorts())) {
@@ -709,7 +709,7 @@ trait InventoryNetworkPort
      *
      * @return void
      */
-    protected function portCreated(stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id): void
     {
         //does nothing
     }

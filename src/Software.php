@@ -193,7 +193,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return void
      **/
-    public static function updateValidityIndicator($ID)
+    public static function updateValidityIndicator(int $ID): void
     {
         $soft = new self();
         if ($soft->getFromDB($ID)) {
@@ -655,7 +655,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return int random part of elements id
      **/
-    public static function dropdownSoftwareToInstall($myname, $entity_restrict)
+    public static function dropdownSoftwareToInstall(string $myname, int|array $entity_restrict): int
     {
         global $CFG_GLPI;
 
@@ -693,7 +693,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return int random part of elements id
      **/
-    public static function dropdownLicenseToInstall($myname, $entity_restrict)
+    public static function dropdownLicenseToInstall(string $myname, int|array $entity_restrict): int
     {
         global $CFG_GLPI, $DB;
 
@@ -756,13 +756,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * @return int the software's ID
      **/
     public function addSoftware(
-        $name,
-        $manufacturer_id,
-        $entity,
-        $comment = '',
-        $is_recursive = false,
-        $is_helpdesk_visible = null
-    ) {
+        string $name,
+        int $manufacturer_id,
+        int $entity,
+        string $comment = '',
+        bool $is_recursive = false,
+        ?bool $is_helpdesk_visible = null
+    ): int {
         global $CFG_GLPI;
 
         $input["name"]                = $name;
@@ -807,13 +807,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * @return int
      */
     public function addOrRestoreFromTrash(
-        $name,
-        $manufacturer,
-        $entity,
-        $comment = '',
-        $is_recursive = false,
-        $is_helpdesk_visible = null
-    ) {
+        string $name,
+        string $manufacturer,
+        int $entity,
+        string $comment = '',
+        bool $is_recursive = false,
+        ?bool $is_helpdesk_visible = null
+    ): int {
         global $DB;
 
         // Look for the software by his name in GLPI for a specific entity
@@ -869,7 +869,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return bool (success)
      **/
-    public function putInTrash($ID, $comment = '')
+    public function putInTrash(int $ID, string $comment = ''): bool
     {
         global $CFG_GLPI;
 
@@ -898,7 +898,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return bool
      **/
-    public function removeFromTrash($ID)
+    public function removeFromTrash(int $ID): bool
     {
         $res         = $this->restore(["id" => $ID]);
         $softcatrule = new RuleSoftwareCategoryCollection();
@@ -922,7 +922,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return void
      **/
-    public function showMergeCandidates()
+    public function showMergeCandidates(): void
     {
         global $DB;
 
@@ -1004,7 +1004,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return bool about success
      */
-    private function merge($item): bool
+    private function merge(array $item): bool
     {
         global $DB;
 
@@ -1133,7 +1133,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return void
      */
-    public function handleCategoryRules(array &$input, bool $is_dynamic = false)
+    public function handleCategoryRules(array &$input, bool $is_dynamic = false): void
     {
         // If category was not set by user (when manually adding a user)
         if ($is_dynamic || !isset($input["softwarecategories_id"]) || !$input["softwarecategories_id"]) {
@@ -1169,7 +1169,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return [
             'description' => self::getPurgeTaskDescription(),
@@ -1182,7 +1182,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return int
      */
-    public static function cronPurgeSoftware(CronTask $task)
+    public static function cronPurgeSoftware(CronTask $task): int
     {
         $max = $task->fields['param'];
         $taskInstance = new PurgeSoftwareTask();

@@ -95,7 +95,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         $item_id = $item->getID();
 
@@ -194,7 +194,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      * @return string
      * @used-by 'templates/tools/kb/knowbaseitem_item.html.twig'
      */
-    public static function dropdownAllTypes(CommonDBTM $item, $name)
+    public static function dropdownAllTypes(CommonDBTM $item, string $name): string
     {
         global $CFG_GLPI;
 
@@ -221,7 +221,7 @@ class KnowbaseItem_Item extends CommonDBRelation
      *
      * @return array of linked items
      **/
-    public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
+    public static function getItems(CommonDBTM $item, int $start = 0, int $limit = 0, bool $used = false): array
     {
         global $DB;
 

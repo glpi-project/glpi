@@ -296,7 +296,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      *
      * @return void
      **/
-    private static function showForAsset(CommonDBTM $asset, $withtemplate = 0): void
+    private static function showForAsset(CommonDBTM $asset, int $withtemplate = 0): void
     {
         global $CFG_GLPI;
 
@@ -462,7 +462,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    private static function showForPeripheral(CommonDBTM $peripheral, $withtemplate = 0): void
+    private static function showForPeripheral(CommonDBTM $peripheral, int $withtemplate = 0): void
     {
         $ID      = $peripheral->fields['id'];
 
@@ -667,12 +667,12 @@ TWIG, $twig_params);
      * @return int Random generated number used for select box ID (select box HTML is printed)
      */
     public static function dropdownConnect(
-        $itemtype,
-        $fromtype,
-        $myname,
-        $entity_restrict = -1,
-        $onlyglobal = false,
-        $used = []
+        string $itemtype,
+        string $fromtype,
+        string $myname,
+        int|array $entity_restrict = -1,
+        bool $onlyglobal = false,
+        array $used = []
     ): int {
         global $CFG_GLPI;
 
@@ -757,7 +757,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function canUnrecursSpecif(CommonDBTM $item, $entities)
+    public static function canUnrecursSpecif(CommonDBTM $item, array $entities): bool
     {
         global $DB;
 
@@ -854,7 +854,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         global $CFG_GLPI;
 

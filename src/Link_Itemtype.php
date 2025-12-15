@@ -54,7 +54,7 @@ class Link_Itemtype extends CommonDBChild
      *
      * @return void
      */
-    public static function deleteForItemtype($itemtype)
+    public static function deleteForItemtype($itemtype): void
     {
         global $DB;
 

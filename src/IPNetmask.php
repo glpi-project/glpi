@@ -44,7 +44,7 @@ class IPNetmask extends IPAddress
      * @param string|array|IPNetmask $ipnetmask
      * @param int $version
      **/
-    public function __construct($ipnetmask = '', $version = 0)
+    public function __construct(string|array|IPNetmask $ipnetmask = '', int $version = 0)
     {
 
         // First, be sure that the parent is correctly initialised
@@ -85,7 +85,7 @@ class IPNetmask extends IPAddress
      *
      * @return bool false if the netmask is not valid or if it does not correspond to version
      */
-    public function setNetmaskFromString($netmask, $version)
+    public function setNetmaskFromString(string $netmask, int|string $version): bool
     {
         if (is_numeric($netmask)) {
             if ($netmask < 0) {

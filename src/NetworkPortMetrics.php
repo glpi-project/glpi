@@ -79,7 +79,7 @@ class NetworkPortMetrics extends CommonDBChild
      *
      * @return array
      */
-    public function getMetrics(NetworkPort $netport, $user_filters = []): array
+    public function getMetrics(NetworkPort $netport, array $user_filters = []): array
     {
         global $DB;
 
@@ -107,7 +107,7 @@ class NetworkPortMetrics extends CommonDBChild
      *
      * @return void
      */
-    public function showMetrics(NetworkPort $netport)
+    public function showMetrics(NetworkPort $netport): void
     {
         $raw_metrics = $this->getMetrics($netport);
 

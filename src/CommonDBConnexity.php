@@ -107,7 +107,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return array|null
      */
-    public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
+    public static function getSQLCriteriaToSearchForItem(string $itemtype, int $items_id): ?array
     {
         return null;
     }
@@ -121,7 +121,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param int $items_id  id of the item
      * @return void
      **/
-    public function cleanDBonItemDelete($itemtype, $items_id)
+    public function cleanDBonItemDelete(string $itemtype, int $items_id): void
     {
         global $DB;
 
@@ -155,12 +155,12 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @return CommonDBTM|false the item or false if we cannot load the item
      **/
     public function getConnexityItem(
-        $itemtype,
-        $items_id,
-        $getFromDB = true,
-        $getEmpty = true,
-        $getFromDBOrEmpty = false
-    ) {
+        string $itemtype,
+        string $items_id,
+        bool $getFromDB = true,
+        bool $getEmpty = true,
+        bool $getFromDBOrEmpty = false
+    ): CommonDBTM|bool {
 
         return static::getItemFromArray(
             $itemtype,
@@ -183,7 +183,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return array the items associated to the given one (empty if none was found)
      **/
-    public static function getItemsAssociatedTo($itemtype, $items_id)
+    public static function getItemsAssociatedTo(string $itemtype, int $items_id): array
     {
         $res = [];
         $iterator = static::getItemsAssociationRequest($itemtype, $items_id);
@@ -207,7 +207,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return DBmysqlIterator the items associated to the given one (empty if none was found)
      */
-    public static function getItemsAssociationRequest($itemtype, $items_id)
+    public static function getItemsAssociationRequest(string $itemtype, int $items_id): DBmysqlIterator
     {
         global $DB;
         return $DB->request(static::getSQLCriteriaToSearchForItem($itemtype, $items_id));
@@ -220,7 +220,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return string
      */
-    abstract public static function getItemField($itemtype): string;
+    abstract public static function getItemField(string $itemtype): string;
 
     /**
      * get associated item (defined by $itemtype and $items_id)
@@ -235,13 +235,13 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @return CommonDBTM|false the item or false if we cannot load the item
      **/
     public static function getItemFromArray(
-        $itemtype,
-        $items_id,
+        string $itemtype,
+        string $items_id,
         array $array,
-        $getFromDB = true,
-        $getEmpty = true,
-        $getFromDBOrEmpty = false
-    ) {
+        bool $getFromDB = true,
+        bool $getEmpty = true,
+        bool $getFromDBOrEmpty = false
+    ): CommonDBTM|bool {
 
         if (preg_match('/^itemtype/', $itemtype)) {
             if (isset($array[$itemtype])) {
@@ -295,7 +295,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return bool true if the attached item has changed, false if the attached items has not changed
      **/
-    public function checkAttachedItemChangesAllowed(array $input, array $fields)
+    public function checkAttachedItemChangesAllowed(array $input, array $fields): bool
     {
 
         // Merge both arrays to ensure all the fields are defined for the following checks
@@ -354,7 +354,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return bool
      **/
-    public function tryEntityForwarding()
+    public function tryEntityForwarding(): bool
     {
         return (!static::$disableAutoEntityForwarding && $this->isEntityAssign());
     }
@@ -379,7 +379,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @return bool true if we have absolute right to create the current connexity
      **/
-    public static function canConnexity($method, $item_right, $itemtype, $items_id)
+    public static function canConnexity(string $method, int $item_right, string $itemtype, string $items_id): bool
     {
 
         if (
@@ -413,13 +413,13 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @return bool true if we have absolute right to create the current connexity
      **/
     public function canConnexityItem(
-        $methodItem,
-        $methodNotItem,
-        $item_right,
-        $itemtype,
-        $items_id,
+        string $methodItem,
+        string $methodNotItem,
+        int $item_right,
+        string $itemtype,
+        string $items_id,
         ?CommonDBTM &$item = null
-    ) {
+    ): bool {
 
         // Do not get it twice
         $connexityItem = $item;
@@ -464,7 +464,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @return array as the third parameter of Log::history() method or false if we don't want to
      *         log for the given field
      **/
-    public function getHistoryChangeWhenUpdateField($field)
+    public function getHistoryChangeWhenUpdateField(string $field): array
     {
 
         return ['0', ($this->oldvalues[$field] ?? ''), ($this->fields[$field] ?? '')];
@@ -481,7 +481,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @return array containing "previous" (if exists) and "new". Beware that both can be equal
      *         to false
      **/
-    public function getItemsForLog($itemtype, $items_id)
+    public function getItemsForLog(string $itemtype, string $items_id): array
     {
 
         $newItemArray = [
@@ -523,7 +523,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *        'normalized' array('affect', 'unaffect') of arrays containing each action
      *        'button_labels'          array of the labels of the button indexed by the action name
      **/
-    public static function getConnexityMassiveActionsSpecificities()
+    public static function getConnexityMassiveActionsSpecificities(): array
     {
 
         return [
@@ -724,11 +724,11 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @return array containing the elements
      **/
     public static function getConnexityInputForProcessingOfMassiveActions(
-        $action,
+        string $action,
         CommonDBTM $item,
         array $ids,
         array $input
-    ) {
+    ): array {
         return [];
     }
 

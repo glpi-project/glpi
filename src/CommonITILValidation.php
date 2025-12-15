@@ -111,7 +111,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * @return int[]
      */
-    public static function getCreateRights()
+    public static function getCreateRights(): array
     {
         return [CREATE];
     }
@@ -120,7 +120,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * @return int[]
      */
-    public static function getPurgeRights()
+    public static function getPurgeRights(): array
     {
         return [PURGE];
     }
@@ -129,7 +129,7 @@ abstract class CommonITILValidation extends CommonDBChild
     /**
      * @return int[]
      */
-    public static function getValidateRights()
+    public static function getValidateRights(): array
     {
         return [static::VALIDATE];
     }
@@ -241,7 +241,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return bool
      */
-    public static function canValidate($items_id)
+    public static function canValidate(int $items_id): bool
     {
         global $DB;
 
@@ -638,7 +638,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return array
      */
-    public static function getAllStatusArray($withmetaforsearch = false, $global = false)
+    public static function getAllStatusArray(bool $withmetaforsearch = false, bool $global = false): array
     {
 
         $tab = [
@@ -674,7 +674,7 @@ abstract class CommonITILValidation extends CommonDBChild
      * @return string|int Output string if display option is set to false,
      *                        otherwise random part of dropdown id
      **/
-    public static function dropdownStatus($name, $options = [])
+    public static function dropdownStatus(string $name, array $options = []): string|int
     {
 
         $p = [
@@ -711,7 +711,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return string
      **/
-    public static function getStatus($value, bool $decorated = false)
+    public static function getStatus(int $value, bool $decorated = false): string
     {
         $statuses = self::getAllStatusArray(true, true);
 
@@ -745,7 +745,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return string
      **/
-    public static function getStatusColor($value)
+    public static function getStatusColor(int $value): string
     {
 
         switch ($value) {
@@ -774,7 +774,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return int
      **/
-    public static function getNumberToValidate($users_id)
+    public static function getNumberToValidate(int $users_id): int
     {
         global $DB;
 
@@ -900,7 +900,7 @@ abstract class CommonITILValidation extends CommonDBChild
      *
      * @return void
      **/
-    public static function showFormMassiveAction()
+    public static function showFormMassiveAction(): void
     {
 
         global $CFG_GLPI;
@@ -1430,7 +1430,7 @@ HTML;
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -1819,7 +1819,7 @@ HTML;
      *
      * @return string|int Output if $options['display'] is false, else return rand
      **/
-    public static function dropdownValidator(array $options = [])
+    public static function dropdownValidator(array $options = []): string|int
     {
         global $CFG_GLPI;
 
@@ -1916,7 +1916,7 @@ HTML;
      *
      * @return array
      **/
-    public static function getGroupUserHaveRights(array $options = [])
+    public static function getGroupUserHaveRights(array $options = []): array
     {
         $params = [
             'entity' => $_SESSION['glpiactive_entity'],
@@ -1970,7 +1970,7 @@ HTML;
      *
      * @return void
      */
-    public static function alertValidation(CommonITILObject $item, $type)
+    public static function alertValidation(CommonITILObject $item, string $type): void
     {
         // No alert for new item
         if ($item->isNewID($item->getID())) {
@@ -2048,7 +2048,7 @@ HTML;
      *
      * @return array
      **/
-    public static function getCanValidationStatusArray()
+    public static function getCanValidationStatusArray(): array
     {
         return [self::NONE, self::ACCEPTED];
     }
@@ -2061,7 +2061,7 @@ HTML;
      *
      * @return array
      **/
-    public static function getAllValidationStatusArray()
+    public static function getAllValidationStatusArray(): array
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
     }

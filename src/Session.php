@@ -90,7 +90,7 @@ class Session
      *
      * @return void
      **/
-    public static function destroy()
+    public static function destroy(): void
     {
 
         self::start();
@@ -105,7 +105,7 @@ class Session
      * Write and close session, but only if not in debug mode (allows proper use of the debug bar for AJAX calls).
      * @return void
      */
-    public static function writeClose()
+    public static function writeClose(): void
     {
         if ($_SESSION['glpi_use_mode'] !== self::DEBUG_MODE) {
             session_write_close();
@@ -119,7 +119,7 @@ class Session
      *
      * @return void
      **/
-    public static function init(Auth $auth)
+    public static function init(Auth $auth): void
     {
         global $CFG_GLPI;
 
@@ -245,7 +245,7 @@ class Session
      *
      * @return void
      **/
-    public static function setPath()
+    public static function setPath(): void
     {
 
         if (
@@ -262,7 +262,7 @@ class Session
      *
      * @return void
      **/
-    public static function start()
+    public static function start(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
             session_start();
@@ -303,7 +303,7 @@ class Session
      *
      * @return string
      **/
-    public function getRootEntityName()
+    public function getRootEntityName(): string
     {
 
         if (isset($_SESSION['glpirootentityname'])) {
@@ -325,7 +325,7 @@ class Session
      *
      * @return bool
      **/
-    public static function isMultiEntitiesMode()
+    public static function isMultiEntitiesMode(): bool
     {
 
         if (!isset($_SESSION['glpi_multientitiesmode'])) {
@@ -347,7 +347,7 @@ class Session
      *
      * @return bool
      **/
-    public static function canViewAllEntities()
+    public static function canViewAllEntities(): bool
     {
         // Command line can see all entities
         return (isCommandLine()
@@ -362,7 +362,7 @@ class Session
      *
      * @return void
      */
-    public static function addToNavigateListItems($itemtype, $ID)
+    public static function addToNavigateListItems(string $itemtype, int $ID): void
     {
         $_SESSION['glpilistitems'][$itemtype][] = $ID;
     }
@@ -376,7 +376,7 @@ class Session
      *
      * @return void
      */
-    public static function initNavigateListItems($itemtype, $title = "", $url = null)
+    public static function initNavigateListItems(string $itemtype, string $title = "", ?string $url = null): void
     {
         if (Request::createFromGlobals()->isXmlHttpRequest() && $url === null) {
             return;
@@ -451,7 +451,7 @@ class Session
      *
      * @return bool true on success, false on failure
      **/
-    public static function changeActiveEntities($ID = "all", $is_recursive = false)
+    public static function changeActiveEntities(int|string $ID = "all", bool $is_recursive = false): bool
     {
 
         $newentities = [];
@@ -582,7 +582,7 @@ class Session
      *
      * @return void
      **/
-    public static function changeProfile($ID)
+    public static function changeProfile(int $ID): void
     {
 
         if (
@@ -636,7 +636,7 @@ class Session
      *
      * @return void
      **/
-    public static function initEntityProfiles($userID)
+    public static function initEntityProfiles(int $userID): void
     {
         global $DB;
 
@@ -718,7 +718,7 @@ class Session
      *
      * @return void
      **/
-    public static function loadGroups()
+    public static function loadGroups(): void
     {
         global $DB;
 
@@ -809,7 +809,7 @@ class Session
      *
      * @return string
      **/
-    public static function loadLanguage($forcelang = '', $with_plugins = true)
+    public static function loadLanguage(string $forcelang = '', bool $with_plugins = true): string
     {
         global $CFG_GLPI, $TRANSLATE;
 
@@ -998,7 +998,7 @@ class Session
      *
      * @return int
      */
-    public static function getPluralNumber()
+    public static function getPluralNumber(): int
     {
         /** @var int $DEFAULT_PLURAL_NUMBER */
         global $DEFAULT_PLURAL_NUMBER;
@@ -1017,7 +1017,7 @@ class Session
      *
      * @return bool
      **/
-    public static function isCron()
+    public static function isCron(): bool
     {
         return (self::isInventory() || isset($_SESSION["glpicronuserrunning"]))
             && (
@@ -1050,7 +1050,7 @@ class Session
      * @return false|int|string false if user is not logged in
      *                          int for user id, string for cron jobs
      **/
-    public static function getLoginUserID($force_human = true)
+    public static function getLoginUserID(bool $force_human = true): bool|int|string
     {
         if (self::isInventory()) { // Check inventory
             return $_SESSION["glpiinventoryuserrunning"];
@@ -1074,7 +1074,7 @@ class Session
      *
      * @return void|true
      **/
-    public static function checkValidSessionId()
+    public static function checkValidSessionId(): void|bool
     {
         global $DB;
 
@@ -1149,7 +1149,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkCentralAccess()
+    public static function checkCentralAccess(): void
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "central") {
@@ -1163,7 +1163,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkFaqAccess()
+    public static function checkFaqAccess(): void
     {
         global $CFG_GLPI;
 
@@ -1181,7 +1181,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkHelpdeskAccess()
+    public static function checkHelpdeskAccess(): void
     {
         self::checkValidSessionId();
         if (Session::getCurrentInterface() != "helpdesk") {
@@ -1194,7 +1194,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkLoginUser()
+    public static function checkLoginUser(): void
     {
         self::checkValidSessionId();
         if (!isset($_SESSION["glpiname"])) {
@@ -1270,7 +1270,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkRight($module, $right)
+    public static function checkRight(string $module, int $right): void
     {
         self::checkValidSessionId();
         if (!self::haveRight($module, $right)) {
@@ -1287,7 +1287,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkRightsOr($module, $rights = [])
+    public static function checkRightsOr(string $module, array $rights = []): void
     {
         self::checkValidSessionId();
         if (!self::haveRightsOr($module, $rights)) {
@@ -1312,7 +1312,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkSeveralRightsOr($modules)
+    public static function checkSeveralRightsOr(array $modules): void
     {
         self::checkValidSessionId();
 
@@ -1351,7 +1351,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveAccessToAllOfEntities($tab)
+    public static function haveAccessToAllOfEntities(array $tab): bool
     {
 
         if (is_array($tab) && count($tab)) {
@@ -1373,7 +1373,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveAccessToEntity($ID, $is_recursive = false)
+    public static function haveAccessToEntity(int $ID, bool $is_recursive = false): bool
     {
 
         // Quick response when passing wrong ID : default value of getEntityID is -1
@@ -1406,7 +1406,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveAccessToOneOfEntities($tab, $is_recursive = false)
+    public static function haveAccessToOneOfEntities(array $tab, bool $is_recursive = false): bool
     {
 
         if (is_array($tab) && count($tab)) {
@@ -1427,7 +1427,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveRecursiveAccessToEntity($ID)
+    public static function haveRecursiveAccessToEntity(int $ID): bool
     {
 
         // Right by profile
@@ -1484,7 +1484,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveRightsAnd($module, $rights = [])
+    public static function haveRightsAnd(string $module, array $rights = []): bool
     {
 
         foreach ($rights as $right) {
@@ -1504,7 +1504,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveRightsOr($module, $rights = [])
+    public static function haveRightsOr(string $module, array $rights = []): bool
     {
 
         foreach ($rights as $right) {
@@ -1523,7 +1523,7 @@ class Session
      *
      * @return string
      **/
-    public static function getActiveTab($itemtype)
+    public static function getActiveTab(string $itemtype): string
     {
 
         return $_SESSION['glpi_tabs'][strtolower($itemtype)] ?? "";
@@ -1539,10 +1539,10 @@ class Session
      * @return void
      **/
     public static function addMessagesAfterRedirect(
-        $messages,
-        $check_once = false,
-        $message_type = INFO
-    ) {
+        array $messages,
+        bool $check_once = false,
+        int $message_type = INFO
+    ): void {
         foreach ($messages as $message) {
             self::addMessageAfterRedirect(
                 $message,
@@ -1567,11 +1567,11 @@ class Session
      * @psalm-taint-sink html $msg (message will be sent to output without being escaped)
      */
     public static function addMessageAfterRedirect(
-        $msg,
-        $check_once = false,
-        $message_type = INFO,
-        $reset = false
-    ) {
+        string $msg,
+        bool $check_once = false,
+        int $message_type = INFO,
+        bool $reset = false
+    ): void {
         if (!empty($msg)) {
             if (self::isCron()) {
                 // We are in cron mode
@@ -1636,7 +1636,7 @@ class Session
      *
      * @return void
      **/
-    public static function setActiveTab($itemtype, $tab)
+    public static function setActiveTab(string $itemtype, mixed $tab): void
     {
         $_SESSION['glpi_tabs'][strtolower($itemtype)] = $tab;
     }
@@ -1654,7 +1654,7 @@ class Session
      *
      * @return mixed
      **/
-    public static function getSavedOption($itemtype, $name, $defvalue)
+    public static function getSavedOption(string $itemtype, string $name, mixed $defvalue): mixed
     {
 
         if (isset($_REQUEST[$name])) {
@@ -1671,7 +1671,7 @@ class Session
      *
      * @return bool
      **/
-    public static function isReadOnlyAccount()
+    public static function isReadOnlyAccount(): bool
     {
 
         foreach ($_SESSION['glpiactiveprofile'] as $name => $val) {
@@ -1698,7 +1698,7 @@ class Session
      *
      * @return string
      **/
-    public static function getNewCSRFToken(bool $standalone = false)
+    public static function getNewCSRFToken(bool $standalone = false): string
     {
         /** @var string $CURRENTCSRFTOKEN */
         global $CURRENTCSRFTOKEN;
@@ -1731,7 +1731,7 @@ class Session
      *
      * @return void
      **/
-    public static function cleanCSRFTokens()
+    public static function cleanCSRFTokens(): void
     {
         if (
             isset($_SESSION['glpicsrftokens'])
@@ -1761,7 +1761,7 @@ class Session
      *
      * @return bool
      **/
-    public static function validateCSRF($data, bool $preserve_token = false)
+    public static function validateCSRF(array $data, bool $preserve_token = false): bool
     {
         Session::cleanCSRFTokens();
 
@@ -1790,7 +1790,7 @@ class Session
      *
      * @return void
      **/
-    public static function checkCSRF($data, bool $preserve_token = false)
+    public static function checkCSRF(array $data, bool $preserve_token = false): void
     {
         if (!Session::validateCSRF($data, $preserve_token)) {
             $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
@@ -1908,7 +1908,7 @@ class Session
      *
      * @return void
      **/
-    public static function cleanIDORTokens()
+    public static function cleanIDORTokens(): void
     {
         if (
             isset($_SESSION['glpiidortokens'])
@@ -1936,7 +1936,7 @@ class Session
      *
      * @return bool
      **/
-    public static function haveTranslations($itemtype, $field)
+    public static function haveTranslations(string $itemtype, string $field): bool
     {
         if (!is_a($itemtype, CommonDropdown::class, true)) {
             return false;
@@ -1954,7 +1954,7 @@ class Session
      * @return string|false Returns "helpdesk" or "central" if there is a session and the interface property is set.
      *                      Returns false if there is no session or the interface property is not set.
      */
-    public static function getCurrentInterface()
+    public static function getCurrentInterface(): string|bool
     {
         return $_SESSION['glpiactiveprofile']['interface'] ?? false;
     }
@@ -1966,7 +1966,7 @@ class Session
      *
      * @return bool
      */
-    public static function canImpersonate($user_id, ?string &$message = null)
+    public static function canImpersonate(int $user_id, ?string &$message = null): bool
     {
         global $DB;
 
@@ -2025,7 +2025,7 @@ class Session
      *
      * @return bool
      */
-    public static function startImpersonating($user_id)
+    public static function startImpersonating(int $user_id): bool
     {
 
         if (!self::canImpersonate($user_id)) {
@@ -2084,7 +2084,7 @@ class Session
      *
      * @return bool
      */
-    public static function stopImpersonating()
+    public static function stopImpersonating(): bool
     {
 
         if (!self::isImpersonateActive()) {
@@ -2129,7 +2129,7 @@ class Session
      *
      * @return bool
      */
-    public static function isImpersonateActive()
+    public static function isImpersonateActive(): bool
     {
 
         return array_key_exists('impersonator_id', $_SESSION);
@@ -2140,7 +2140,7 @@ class Session
      *
      * @return int|null
      */
-    public static function getImpersonatorId()
+    public static function getImpersonatorId(): ?int
     {
         return self::isImpersonateActive() ? (int) $_SESSION['impersonator_id'] : null;
     }
@@ -2150,7 +2150,7 @@ class Session
      *
      * @return bool
      */
-    public static function mustChangePassword()
+    public static function mustChangePassword(): bool
     {
         return array_key_exists('glpi_password_expired', $_SESSION);
     }
@@ -2162,7 +2162,7 @@ class Session
      *
      * @return int
      */
-    public static function getActiveEntity()
+    public static function getActiveEntity(): int
     {
         return $_SESSION['glpiactive_entity'] ?? 0;
     }
@@ -2186,7 +2186,7 @@ class Session
      *
      * @return int|int[]
      */
-    public static function getMatchingActiveEntities(/*int|array*/ $entities_ids)/*: int|array*/
+    public static function getMatchingActiveEntities(/*int|array*/ int|array $entities_ids): int|array/*: int|array*/
     {
         if (
             (int) $entities_ids === -1
@@ -2265,7 +2265,7 @@ class Session
         string $token_type,
         ?int $entities_id,
         ?bool $is_recursive
-    ) {
+    ): User|bool {
         $user = new User();
 
         // Try to load from token
@@ -2293,7 +2293,7 @@ class Session
      *
      * @return void
      */
-    public static function loadEntity($entities_id, $is_recursive): void
+    public static function loadEntity(int $entities_id, bool $is_recursive): void
     {
         $_SESSION["glpiactive_entity"]           = $entities_id;
         $_SESSION["glpiactive_entity_recursive"] = $is_recursive;
@@ -2313,7 +2313,7 @@ class Session
     *
     * @return void
     */
-    public static function cleanOnLogout()
+    public static function cleanOnLogout(): void
     {
         Session::destroy();
         //Remove cookie to allow new login
@@ -2431,7 +2431,7 @@ class Session
      * @return mixed|void The return value of the callable.
      * @throws Throwable Any throwable that was caught from the callable if any.
      */
-    public static function callAsSystem(callable $fn)
+    public static function callAsSystem(callable $fn): mixed|void|null
     {
         $caught_throwable = null;
         try {
@@ -2462,7 +2462,7 @@ class Session
      *
      * @return bool
      */
-    public static function isRTL($locale): bool
+    public static function isRTL(string $locale): bool
     {
         if (function_exists('locale_is_right_to_left')) {
             return locale_is_right_to_left($locale);

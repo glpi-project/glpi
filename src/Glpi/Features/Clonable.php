@@ -194,7 +194,7 @@ trait Clonable
      * @since 10.0.0
      *
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         if ($this instanceof AssignableItemInterface) {
             $input = $this->prepareGroupFields($input);
@@ -252,7 +252,7 @@ trait Clonable
      *
      * @return false|int The new ID of the clone (or false if fail)
      */
-    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true): bool|int
     {
         global $DB;
 
@@ -423,7 +423,7 @@ trait Clonable
      * @param bool $history
      * @return void
      */
-    public function post_clone($source, $history)
+    public function post_clone(T $source, bool $history): void
     {
         if ($this instanceof AssignableItemInterface) {
             $this->updateGroupFields();

@@ -246,7 +246,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool
      */
-    private function checkPlugin()
+    private function checkPlugin(): bool
     {
 
         $check_version = !$this->input->getOption('without-plugin');
@@ -459,7 +459,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return null|int Datacenter id, or null in case of failure
      */
-    private function createDatacenter()
+    private function createDatacenter(): ?int
     {
 
         $this->output->writeln(
@@ -494,7 +494,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importOtherElements()
+    private function importOtherElements(): bool
     {
 
         $has_errors = false;
@@ -692,7 +692,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importItemsSpecifications()
+    private function importItemsSpecifications(): bool
     {
 
         $has_errors = false;
@@ -786,7 +786,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importRackModels()
+    private function importRackModels(): bool
     {
 
         $has_errors = false;
@@ -865,7 +865,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importRackTypes()
+    private function importRackTypes(): bool
     {
 
         $has_errors = false;
@@ -946,7 +946,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importRackStates()
+    private function importRackStates(): bool
     {
 
         $has_errors = false;
@@ -1028,7 +1028,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importRooms()
+    private function importRooms(): bool
     {
 
         $has_errors = false;
@@ -1111,7 +1111,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importRacks()
+    private function importRacks(): bool
     {
 
         $has_errors = false;
@@ -1238,7 +1238,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return bool True in case of success, false in case of errors.
      */
-    private function importRackItems()
+    private function importRackItems(): bool
     {
 
         $has_errors = false;
@@ -1373,7 +1373,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    private function addElementToMapping($old_itemtype, $old_id, $new_itemtype, $new_id)
+    private function addElementToMapping(string $old_itemtype, int $old_id, string $new_itemtype, int $new_id): void
     {
 
         if (!array_key_exists($old_itemtype, $this->elements_mapping)) {
@@ -1394,7 +1394,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return null|CommonDBTM
      */
-    private function getCorrespondingItem($itemtype, $id)
+    private function getCorrespondingItem(string $itemtype, int $id): ?CommonDBTM
     {
 
         if (
@@ -1424,7 +1424,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return int
      */
-    private function getFallbackRoomId()
+    private function getFallbackRoomId(): int
     {
 
         if (null === $this->fallback_room_id) {
@@ -1461,7 +1461,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @return void
      */
-    private function outputImportError($message, ?ProgressBar $progress_bar = null)
+    private function outputImportError(string $message, ?ProgressBar $progress_bar = null): void
     {
 
         $skip_errors = $this->input->getOption('skip-errors');

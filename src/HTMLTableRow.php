@@ -52,7 +52,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @param HTMLTableGroup $group
      */
-    public function __construct($group)
+    public function __construct(HTMLTableGroup $group)
     {
         $this->group = $group;
     }
@@ -60,7 +60,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return HTMLTableGroup
      */
-    public function getGroup()
+    public function getGroup(): HTMLTableGroup
     {
         return $this->group;
     }
@@ -68,7 +68,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return bool
      */
-    public function notEmpty()
+    public function notEmpty(): bool
     {
         return !$this->empty;
     }
@@ -76,7 +76,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return int
      */
-    public function getNumberOfsubRows()
+    public function getNumberOfsubRows(): int
     {
         return $this->numberOfSubRows;
     }
@@ -84,7 +84,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return HTMLTableRow
      */
-    public function createAnotherRow()
+    public function createAnotherRow(): HTMLTableRow
     {
         return $this->group->createRow();
     }
@@ -95,7 +95,7 @@ class HTMLTableRow extends HTMLTableEntity
      *
      * @return void
      */
-    public function addAttributForLine($lineIndex, $attributs)
+    public function addAttributForLine(int $lineIndex, array $attributs): void
     {
         $this->linesWithAttributs[$lineIndex] = $attributs;
     }
@@ -110,10 +110,10 @@ class HTMLTableRow extends HTMLTableEntity
      */
     public function addCell(
         HTMLTableHeader $header,
-        $content,
+        string|array $content,
         ?HTMLTableCell $father = null,
         ?CommonDBTM $item = null
-    ) {
+    ): HTMLTableCell {
 
         if (!$this->group->haveHeader($header)) {
             throw new Exception('Unavailable header!');
@@ -137,7 +137,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return bool
      */
-    public function prepareDisplay()
+    public function prepareDisplay(): bool
     {
         if ($this->empty) {
             return false;
@@ -186,7 +186,7 @@ class HTMLTableRow extends HTMLTableEntity
      *
      * @return void
      */
-    public function displayRow($headers)
+    public function displayRow(array $headers): void
     {
         echo "\t<tbody";
         $this->displayEntityAttributs();
@@ -230,7 +230,7 @@ class HTMLTableRow extends HTMLTableEntity
      *
      * @return HTMLTableHeader
      */
-    public function getHeaderByName($name, $sub_name = null)
+    public function getHeaderByName(string $name, ?string $sub_name = null): HTMLTableHeader
     {
         return $this->group->getHeaderByName($name, $sub_name);
     }

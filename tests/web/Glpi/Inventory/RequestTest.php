@@ -79,7 +79,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    private function checkXmlResponse(Response $res, $reply, $code)
+    private function checkXmlResponse(Response $res, int $reply, $code): void
     {
         $this->assertSame($code, $res->getStatusCode());
         $this->assertSame(
@@ -101,7 +101,7 @@ class RequestTest extends TestCase
      *
      * @return void
      */
-    private function checkJsonResponse(Response $res, $reply, $code)
+    private function checkJsonResponse(Response $res, int $reply, $code): void
     {
         $this->assertSame($code, $res->getStatusCode());
         $this->assertSame('application/json', $res->getHeader('content-type')[0]);

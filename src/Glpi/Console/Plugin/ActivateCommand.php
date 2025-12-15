@@ -119,7 +119,7 @@ class ActivateCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunActivateMethod($directory)
+    private function canRunActivateMethod(string $directory): bool
     {
 
         $plugin = new Plugin();

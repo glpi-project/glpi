@@ -255,7 +255,7 @@ class InfocomTest extends DbTestCase
      * Test that alerts are raised for non-deleted items that have warranties that are about to expire.
      * @return void
      */
-    public function testExpireCronAlerts()
+    public function testExpireCronAlerts(): void
     {
         global $CFG_GLPI;
 
@@ -323,7 +323,7 @@ class InfocomTest extends DbTestCase
     /**
      * @return void
      */
-    public function testAutofill()
+    public function testAutofill(): void
     {
         global $CFG_GLPI;
 

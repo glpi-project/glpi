@@ -45,7 +45,7 @@ class Item_LineTest extends DbTestCase
      *
      * @return void
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $line = new \Line();
 

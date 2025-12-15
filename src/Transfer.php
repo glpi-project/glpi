@@ -107,7 +107,7 @@ final class Transfer extends CommonDBTM
     /**
      * @return int
      */
-    public function maxActionsCount()
+    public function maxActionsCount(): int
     {
         return 0;
     }
@@ -1901,7 +1901,7 @@ final class Transfer extends CommonDBTM
      * Delete old software that had already been transferred
      * @return void
      */
-    public function cleanSoftwares()
+    public function cleanSoftwares(): void
     {
         if (!isset($this->already_transfer[Software::class]) || (int) $this->options['clean_software'] === 0) {
             // Nothing to clean
@@ -2995,7 +2995,7 @@ final class Transfer extends CommonDBTM
      * @return array Updated ITIL Object data
      * @since 0.85 (before transferTicketAdditionalInformations)
      **/
-    private function transferHelpdeskAdditionalInformations($data): array
+    private function transferHelpdeskAdditionalInformations(array $data): array
     {
 
         $input               = [];

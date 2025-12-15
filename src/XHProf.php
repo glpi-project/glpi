@@ -65,7 +65,7 @@ class XHProf
     /**
      * @param string $msg (default '')
      **/
-    public function __construct($msg = '')
+    public function __construct(string $msg = '')
     {
         $this->start($msg);
     }
@@ -82,7 +82,7 @@ class XHProf
      *
      * @return void
      */
-    public function start($msg = '')
+    public function start(string $msg = ''): void
     {
 
         if (
@@ -106,7 +106,7 @@ class XHProf
     /**
      * @return void
      */
-    public function stop()
+    public function stop(): void
     {
         if (self::$run) {
             $incl = (defined('XHPROF_PATH') ? XHPROF_PATH : self::XHPROF_PATH);

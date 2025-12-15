@@ -76,7 +76,7 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @return bool
      **/
-    public function haveVisibilityAccess()
+    public function haveVisibilityAccess(): bool
     {
         // Author
         if ($this->fields['users_id'] == Session::getLoginUserID()) {
@@ -153,7 +153,7 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @return int
      */
-    public function countVisibilities()
+    public function countVisibilities(): int
     {
 
         return (count($this->entities)
@@ -331,7 +331,7 @@ abstract class CommonDBVisible extends CommonDBTM
      *
      * @return array
      */
-    protected function getShowVisibilityDropdownParams()
+    protected function getShowVisibilityDropdownParams(): array
     {
         $params = [
             'type'          => '__VALUE__',

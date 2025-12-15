@@ -208,7 +208,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * @param Change $change
      * @return void
      **/
-    public static function showForChange(Change $change)
+    public static function showForChange(Change $change): void
     {
         global $DB;
 
@@ -309,7 +309,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * @param Ticket $ticket object
      * @return void
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket): void
     {
         global $DB;
 

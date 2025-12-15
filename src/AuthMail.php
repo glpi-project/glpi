@@ -192,7 +192,7 @@ class AuthMail extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): void|bool
     {
         if (!$this->can($ID, UPDATE)) {
             return false;
@@ -213,7 +213,7 @@ class AuthMail extends CommonDBTM
     /**
      * @return void
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if ($this->fields["is_default"] === 1) {
             $this->removeDefaultFromOtherItems();
@@ -225,7 +225,7 @@ class AuthMail extends CommonDBTM
     /**
      * @return void
      */
-    public function post_addItem()
+    public function post_addItem(): void
     {
         if ($this->fields["is_default"] === 1) {
             $this->removeDefaultFromOtherItems();
@@ -239,7 +239,7 @@ class AuthMail extends CommonDBTM
      *
      * @return void
      */
-    public function showFormTestMail()
+    public function showFormTestMail(): void
     {
         $ID = $this->getField('id');
 
@@ -288,7 +288,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function useAuthMail()
+    public static function useAuthMail(): bool
     {
         return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
     }
@@ -302,7 +302,7 @@ TWIG, $twig_params);
      *
      * @return bool Authentication succeeded?
      */
-    public static function testAuth($connect_string, $login, $password)
+    public static function testAuth(string $connect_string, string $login, string $password): bool
     {
         $auth = new Auth();
         return $auth->connection_imap(
@@ -322,7 +322,7 @@ TWIG, $twig_params);
      *
      * @return object identification object
      */
-    public static function mailAuth($auth, $login, $password, $mail_method)
+    public static function mailAuth(object $auth, string $login, string $password, array $mail_method): object
     {
         if (!empty($mail_method["connect_string"])) {
             $auth->auth_succeded = $auth->connection_imap(
@@ -354,7 +354,7 @@ TWIG, $twig_params);
      *
      * @return object identification object
      */
-    public static function tryMailAuth($auth, $login, $password, $auths_id = 0, $break = true)
+    public static function tryMailAuth(object $auth, string $login, string $password, int $auths_id = 0, bool $break = true): object
     {
         if ($auths_id <= 0) {
             foreach ($auth->authtypes["mail"] as $mail_method) {

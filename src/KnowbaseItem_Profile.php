@@ -54,7 +54,7 @@ class KnowbaseItem_Profile extends CommonDBRelation
      *
      * @return array of profiles linked to a knowbaseitem
      **/
-    public static function getProfiles($knowbaseitems_id)
+    public static function getProfiles(int $knowbaseitems_id): array
     {
         global $DB;
 

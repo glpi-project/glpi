@@ -98,7 +98,7 @@ class Grid
      *
      * @return Dashboard
      */
-    public function getDashboard()
+    public function getDashboard(): Dashboard
     {
         return $this->dashboard;
     }
@@ -107,7 +107,7 @@ class Grid
      * Return the context used for this Grid instance
      * @return string
      */
-    public function getContext()
+    public function getContext(): string
     {
         return $this->context;
     }
@@ -144,7 +144,7 @@ class Grid
      *
      * @return void
      */
-    public function getCards()
+    public function getCards(): void
     {
         self::loadAllDashboards();
 
@@ -207,7 +207,7 @@ HTML;
      *
      * @return bool
      */
-    public static function canViewOneDashboard($context = null): bool
+    public static function canViewOneDashboard(?string $context = null): bool
     {
         if (Dashboard::canView()) {
             return true;
@@ -231,7 +231,7 @@ HTML;
      *
      * @return bool
      */
-    public static function canViewSpecificicDashboard($key, $canViewAll = false): bool
+    public static function canViewSpecificicDashboard(string $key, bool $canViewAll = false): bool
     {
         self::loadAllDashboards();
 
@@ -251,7 +251,7 @@ HTML;
      *
      * @return void display html of the grid
      */
-    public function show(bool $mini = false, ?string $token = null)
+    public function show(bool $mini = false, ?string $token = null): void
     {
         global $GLPI_CACHE;
 
@@ -500,7 +500,7 @@ TWIG, $twig_params);
     /**
      * @return void
      */
-    public function showDefault()
+    public function showDefault(): void
     {
         echo "<div class='card p-3'>";
         $this->show();
@@ -515,7 +515,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function initEmbedSession(array $params = [])
+    public function initEmbedSession(array $params = []): void
     {
         // load minimal session
         Session::start();
@@ -547,7 +547,7 @@ TWIG, $twig_params);
      *
      * @return void (display)
      */
-    public function initEmbed(array $params = [])
+    public function initEmbed(array $params = []): void
     {
         $defaults = [
             'dashboard'    => '',
@@ -574,7 +574,7 @@ TWIG, $twig_params);
      *
      * @return void (display)
      */
-    public function embed(array $params)
+    public function embed(array $params): void
     {
         Toolbox::deprecated(version: '12.0.0');
 
@@ -682,7 +682,7 @@ HTML;
         int $width = 2,
         int $height = 2,
         array $data_option = []
-    ) {
+    ): void {
 
         // let grid-stack to autoposition item
         $autoposition = 'gs-auto-position="true"';
@@ -732,7 +732,7 @@ HTML;
      *
      * @return void (display)
      */
-    public function displayAddDashboardForm()
+    public function displayAddDashboardForm(): void
     {
         $rand = mt_rand();
 
@@ -771,7 +771,7 @@ HTML;
      *
      * @return void
      */
-    public function displayWidgetForm(array $params = [])
+    public function displayWidgetForm(array $params = []): void
     {
         $gridstack_id = $params['gridstack_id'] ?? "";
         $old_id       = $gridstack_id;
@@ -839,7 +839,7 @@ HTML;
      *
      * @return void
      */
-    public function displayFilterForm(array $params = [])
+    public function displayFilterForm(array $params = []): void
     {
         $default_params = [
             'used'  => [],
@@ -877,7 +877,7 @@ HTML;
      *
      * @return void
      */
-    public function displayEmbedForm()
+    public function displayEmbedForm(): void
     {
         global $CFG_GLPI;
 
@@ -918,7 +918,7 @@ HTML;
      *
      * @return void
      */
-    public function displayEditRightsForm()
+    public function displayEditRightsForm(): void
     {
         self::loadAllDashboards();
         $rand   = mt_rand();
@@ -1125,7 +1125,7 @@ HTML;
      *
      * @return string the html
      */
-    public function getFilterHtml(string $filter_id = "", $filter_values = ""): string
+    public function getFilterHtml(string $filter_id = "", string|array $filter_values = ""): string
     {
         foreach (Filter::getRegisteredFilterClasses() as $filter) {
             if ($filter::getId() == $filter_id) {
@@ -1202,7 +1202,7 @@ HTML;
      *
      * @return array
      */
-    public function getAllDasboardCards($force = false): array
+    public function getAllDasboardCards(bool $force = false): array
     {
         global $CFG_GLPI, $GLPI_CACHE;
 
@@ -1490,7 +1490,7 @@ HTML;
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
         return [
             READ   => __('Read'),
@@ -1512,7 +1512,7 @@ HTML;
      *
      * @return void
      */
-    public function setLastDashboard(string $page = "", string $dashboard = "")
+    public function setLastDashboard(string $page = "", string $dashboard = ""): void
     {
         $_SESSION['last_dashboards'][$page] = $dashboard;
     }

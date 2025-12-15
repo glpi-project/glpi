@@ -239,7 +239,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
      * Ensure schemas do not change unexpectedly for API versions
      * @return void
      */
-    public function testSchemaSnapshot()
+    public function testSchemaSnapshot(): void
     {
         $this->login();
 

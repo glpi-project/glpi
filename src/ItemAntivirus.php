@@ -149,7 +149,7 @@ class ItemAntivirus extends CommonDBChild
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
         $name = _n('Antivirus', 'Antiviruses', Session::getPluralNumber());
@@ -259,7 +259,7 @@ class ItemAntivirus extends CommonDBChild
      *
      * @return bool TRUE if form is ok
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         if (isset($options['parent'])) {
             $options['itemtype'] = $options['parent']::class;
@@ -296,7 +296,7 @@ class ItemAntivirus extends CommonDBChild
      *
      * @return void
      **/
-    private static function showForItem(CommonDBTM $asset, $withtemplate = 0)
+    private static function showForItem(CommonDBTM $asset, int $withtemplate = 0): void
     {
         global $DB;
 

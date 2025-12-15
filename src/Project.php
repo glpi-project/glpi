@@ -430,7 +430,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @return bool
      **/
-    public function isInTheTeam()
+    public function isInTheTeam(): bool
     {
         if (isset($this->team['User']) && count($this->team['User'])) {
             foreach ($this->team['User'] as $data) {
@@ -460,7 +460,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @return bool
      **/
-    public function isInTheManagerGroup()
+    public function isInTheManagerGroup(): bool
     {
         if (
             isset($_SESSION['glpigroups']) && count($_SESSION['glpigroups'])
@@ -480,7 +480,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @return int
      **/
-    public function getTeamCount()
+    public function getTeamCount(): int
     {
         $nb = 0;
         if (is_array($this->team) && count($this->team)) {
@@ -1277,7 +1277,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      * @param array $input
      * @return array
      */
-    public static function checkPlanAndRealDates($input)
+    public static function checkPlanAndRealDates(array $input): array
     {
         if (
             !empty($input['plan_start_date']) && !empty($input['plan_end_date'])
@@ -1309,7 +1309,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
      *
      * @return void
      **/
-    public function showChildren()
+    public function showChildren(): void
     {
         global $DB;
 
@@ -1372,7 +1372,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         $plugin = new Plugin();
@@ -1421,7 +1421,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
      * @param Project $project
      * @return true
      **/
-    public function showTeam(Project $project)
+    public function showTeam(Project $project): bool
     {
         $ID      = $project->fields['id'];
         $canedit = $project->can($ID, UPDATE);
@@ -1957,7 +1957,7 @@ TWIG, $twig_params);
      * @param int $ID ID of the parent Project or 0 for a global view.
      * @return bool|void False if the Kanban cannot be shown.
      */
-    public static function showKanban($ID)
+    public static function showKanban(int $ID): bool|void
     {
         $project = new Project();
         if (
@@ -2504,7 +2504,7 @@ TWIG, $twig_params);
      * @since 9.5.0
      * @return bool False if the specified project is not set to automatically update the percent done.
      */
-    public static function recalculatePercentDone($ID)
+    public static function recalculatePercentDone(int $ID): bool
     {
         global $DB;
 
@@ -2563,7 +2563,7 @@ TWIG, $twig_params);
      * @param class-string<CommonDBTM>|null $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 

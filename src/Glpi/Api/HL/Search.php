@@ -325,7 +325,7 @@ final class Search
      * @param array $criteria The current search criteria. Used to get the SELECT criteria for the union search.
      * @return QueryUnion|string
      */
-    private function getFrom(array $criteria)
+    private function getFrom(array $criteria): QueryUnion|string
     {
         if ($this->context->isUnionSearchMode()) {
             $queries = [];

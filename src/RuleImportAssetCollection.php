@@ -87,7 +87,7 @@ class RuleImportAssetCollection extends RuleCollection
      *
      * @return array
      */
-    public function collectionFilter($criteria, $options = [])
+    public function collectionFilter(array $criteria, array $options = []): array
     {
         // current tab
         $active_tab = $options['_glpi_tab'] ?? Session::getActiveTab($this->getType());

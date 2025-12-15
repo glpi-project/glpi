@@ -114,7 +114,7 @@ class GLPIPDF extends TCPDF
      *
      * @return void
     */
-    public function Header()
+    public function Header(): void
     {
         // Title
         $this->Cell(0, $this->config['margin_bottom'], $this->title, 0, 0, 'C', false, '', 0, false, 'M', 'M');
@@ -128,7 +128,7 @@ class GLPIPDF extends TCPDF
      *
      * @return void
     */
-    public function Footer()
+    public function Footer(): void
     {
         // Position at 15 mm from bottom
         $this->SetY(-$this->config['margin_bottom']);
@@ -147,7 +147,7 @@ class GLPIPDF extends TCPDF
      *
      * @return array Array of "filename" => "font name"
      **/
-    public static function getFontList()
+    public static function getFontList(): array
     {
 
         $list = [];
@@ -203,7 +203,7 @@ class GLPIPDF extends TCPDF
      *
      * @return GLPIPDF
      */
-    public function setTotalCount($count)
+    public function setTotalCount(int $count): GLPIPDF
     {
         $this->total_count = $count;
         return $this;

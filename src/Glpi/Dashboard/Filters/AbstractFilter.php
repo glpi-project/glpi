@@ -56,7 +56,7 @@ abstract class AbstractFilter
      *
      * @return string
      */
-    abstract public static function getHtml($value): string;
+    abstract public static function getHtml(mixed $value): string;
 
     /**
     * Get the filter id
@@ -82,7 +82,7 @@ abstract class AbstractFilter
      *
      * @return array
      */
-    abstract public static function getCriteria(string $table, $value): array;
+    abstract public static function getCriteria(string $table, mixed $value): array;
 
     /**
      * Get the search filter criteria
@@ -100,7 +100,7 @@ abstract class AbstractFilter
      *
      * @return array
      */
-    abstract public static function getSearchCriteria(string $table, $value): array;
+    abstract public static function getSearchCriteria(string $table, mixed $value): array;
 
     protected static function getSearchOptionID(string $table, string $name, string $tableToSearch): int
     {

@@ -45,7 +45,7 @@ class Itil_ProjectTest extends DbTestCase
      *
      * @return void
      */
-    public function testLink()
+    public function testLink(): void
     {
 
         $this->login();

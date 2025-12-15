@@ -62,7 +62,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      *
      * @return bool
      */
-    public function unassignVlan($portID, $vlanID)
+    public function unassignVlan(int $portID, int $vlanID): bool
     {
 
         $this->getFromDBByCrit([
@@ -80,7 +80,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      *
      * @return int
      **/
-    public function assignVlan($port, $vlan)
+    public function assignVlan(int $port, int $vlan): int
     {
 
         $input = ['ipnetworks_id' => $port,
@@ -96,7 +96,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      *
      * @return void|false
      */
-    public static function showForIPNetwork(IPNetwork $port)
+    public static function showForIPNetwork(IPNetwork $port): void|bool
     {
         global $DB;
 
@@ -213,7 +213,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      *
      * @return array
      */
-    public static function getVlansForIPNetwork($portID)
+    public static function getVlansForIPNetwork(int $portID): array
     {
         global $DB;
 

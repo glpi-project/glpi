@@ -145,7 +145,7 @@ class Unmanaged extends MainAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed(int $items_id, string $itemtype, int $rules_id, int|array $ports_id = []): void
     {
         $key = $this->current_key;
         $val = &$this->data[$key];
@@ -324,7 +324,7 @@ class Unmanaged extends MainAsset
     /**
      * @return array
      */
-    public function getManagementPorts()
+    public function getManagementPorts(): array
     {
         return $this->management_ports;
     }

@@ -65,7 +65,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
      *
      * @return array
      */
-    public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
+    public static function getItems(CommonDBTM $item, int $start = 0, int $limit = 0, bool $used = false): array
     {
         global $DB;
 

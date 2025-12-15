@@ -307,7 +307,7 @@ class NetworkCard extends Device
      *
      * @return void
      */
-    public function handlePorts($itemtype = null, $items_id = null)
+    public function handlePorts(?string $itemtype = null, ?int $items_id = null): void
     {
         //ports are handled from main asset in NetworkCard case
         return;

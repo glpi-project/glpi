@@ -128,7 +128,7 @@ final class SearchEngine
      *
      * @return class-string<CommonDBTM>[] Array of available itemtype
      **/
-    public static function getMetaItemtypeAvailable($itemtype): array
+    public static function getMetaItemtypeAvailable(string $itemtype): array
     {
         global $CFG_GLPI;
 
@@ -298,7 +298,7 @@ final class SearchEngine
      *
      * @return array prepare to be used for a search (include criteria and others needed information)
      **/
-    public static function prepareDataForSearch($itemtype, array $params, array $forcedisplay = []): array
+    public static function prepareDataForSearch(string $itemtype, array $params, array $forcedisplay = []): array
     {
         global $CFG_GLPI;
 
@@ -533,7 +533,7 @@ final class SearchEngine
      * @param bool $only_not
      * @return array
      */
-    public static function getLogicalOperators($only_not = false): array
+    public static function getLogicalOperators(bool $only_not = false): array
     {
         if ($only_not) {
             return [

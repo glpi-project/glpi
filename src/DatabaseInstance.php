@@ -371,7 +371,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
      *
      * @return array
      */
-    public static function getTypes($all = false): array
+    public static function getTypes(bool $all = false): array
     {
         global $CFG_GLPI;
 
@@ -401,7 +401,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     /**
      * @return bool
      */
-    public function pre_purgeInventory()
+    public function pre_purgeInventory(): bool
     {
         return true;
     }
@@ -443,7 +443,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
      *
      * @return void
      */
-    public static function showInstances(CommonDBTM $item, $withtemplate)
+    public static function showInstances(CommonDBTM $item, int $withtemplate): void
     {
         global $DB;
 

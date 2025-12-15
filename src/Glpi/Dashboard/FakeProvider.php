@@ -78,7 +78,7 @@ final class FakeProvider extends Provider
      * @param string|null $itemtype
      * @return int|array|null
      */
-    private static function getItemCount(?string $itemtype = null)
+    private static function getItemCount(?string $itemtype = null): int|array|null
     {
         global $CFG_GLPI;
 

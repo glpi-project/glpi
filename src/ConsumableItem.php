@@ -322,7 +322,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Send alarms on consumables')];
     }
@@ -335,7 +335,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
-    public static function cronConsumable(?CronTask $task = null)
+    public static function cronConsumable(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -466,7 +466,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
     /**
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return ['alert' => __('Send alarms on consumables')];
     }

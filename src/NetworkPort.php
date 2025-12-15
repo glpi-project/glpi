@@ -88,7 +88,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return mixed
      */
-    public function __get(string $property)
+    public function __get(string $property): mixed
     {
         $value = null;
         switch ($property) {
@@ -120,7 +120,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return void
      */
-    public function __set(string $property, $value)
+    public function __set(string $property, mixed $value): void
     {
         switch ($property) {
             case 'input_for_instantiation':
@@ -161,7 +161,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return class-string<NetworkPortInstantiation>[] Array of available type of network ports
      **/
-    public static function getNetworkPortInstantiations()
+    public static function getNetworkPortInstantiations(): array
     {
         global $CFG_GLPI;
 
@@ -182,7 +182,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return NetworkPortInstantiation|false  the instantiation object or false if the type of instantiation is not known
      **/
-    public function getInstantiation()
+    public function getInstantiation(): NetworkPortInstantiation|bool
     {
         if (
             isset($this->fields['instantiation_type'])
@@ -213,7 +213,7 @@ class NetworkPort extends CommonDBChild
      * @return NetworkPortInstantiation|bool false on error, true if the previous instantiation is not available
      *                 (ie.: invalid instantiation type) or the object of the previous instantiation.
      **/
-    public function switchInstantiationType($new_instantiation_type)
+    public function switchInstantiationType($new_instantiation_type): NetworkPortInstantiation|bool
     {
         // First, check if the new instantiation is a valid one ...
         if (!in_array($new_instantiation_type, self::getNetworkPortInstantiations())) {
@@ -337,7 +337,7 @@ class NetworkPort extends CommonDBChild
      *
      * @see self::updateDependencies() for the update
      **/
-    public function splitInputForElements($input)
+    public function splitInputForElements(?array $input): array|void
     {
 
         if (
@@ -391,7 +391,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return void
      **/
-    public function updateDependencies($history = true)
+    public function updateDependencies(bool $history = true): void
     {
         $instantiation = $this->getInstantiation();
         if (
@@ -462,7 +462,7 @@ class NetworkPort extends CommonDBChild
     /**
      * @return void
      */
-    public function updateMetrics()
+    public function updateMetrics(): void
     {
         $unicity_input = [
             'networkports_id' => $this->fields['id'],
@@ -547,7 +547,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return int|false  ID of the NetworkPort found, false if not found
      **/
-    public function getContact($ID): bool|int
+    public function getContact(int $ID): bool|int
     {
         $wire = new NetworkPort_NetworkPort();
         if ($contact_id = $wire->getOppositeContact($ID)) {
@@ -579,7 +579,7 @@ class NetworkPort extends CommonDBChild
      * @param int $withtemplate
      * @return false|void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool|void
     {
         global $CFG_GLPI, $DB;
 
@@ -910,7 +910,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return string
      */
-    protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true)
+    protected function showPort(array $port, array $dprefs, array $so, bool $canedit, bool $agg, int $rand, bool $with_ma = true): string
     {
         global $DB, $CFG_GLPI;
 
@@ -1280,7 +1280,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return DBmysqlIterator
      */
-    protected function getIpsForPort($itemtype, $items_id)
+    protected function getIpsForPort($itemtype, int $items_id): DBmysqlIterator
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -1371,7 +1371,7 @@ class NetworkPort extends CommonDBChild
      * @param ?string $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd(?string $itemtype = null): array
     {
         $tab = [];
 
@@ -1840,7 +1840,7 @@ class NetworkPort extends CommonDBChild
      *
      * @return bool
      */
-    public function isHubConnected($networkports_id): bool
+    public function isHubConnected(int $networkports_id): bool
     {
         global $DB;
 

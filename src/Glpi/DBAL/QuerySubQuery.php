@@ -52,7 +52,7 @@ class QuerySubQuery extends AbstractQuery
      * @param array   $crit Array of query criteria. Any valid DBmysqlIterator parameters are valid.
      * @param ?string $alias Alias for the whole subquery
      */
-    public function __construct(array $crit, $alias = null)
+    public function __construct(array $crit, ?string $alias = null)
     {
         global $DB;
 
@@ -71,7 +71,7 @@ class QuerySubQuery extends AbstractQuery
      *
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         global $DB;
 

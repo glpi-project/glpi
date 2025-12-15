@@ -95,7 +95,7 @@ class QueuedWebhook extends CommonDBChild
      *
      * @return array
      */
-    public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null, bool $is_deleted = false): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -423,7 +423,7 @@ class QueuedWebhook extends CommonDBChild
      *
      * @return string
      */
-    public static function getStatusCodeBadge($value, ?int $id = null): string
+    public static function getStatusCodeBadge(int $value, ?int $id = null): string
     {
         $display_value = (int) $value;
         $badge_class = 'badge bg-orange';
@@ -514,7 +514,7 @@ JS);
      *
      * @return array Array of IDs of pending webhooks
      */
-    public static function getPendings($send_time = null, $limit = 20, $extra_where = [])
+    public static function getPendings(?string $send_time = null, int $limit = 20, array $extra_where = []): array
     {
         global $DB;
 
@@ -574,7 +574,7 @@ JS);
      *
      * @return int either 0 or 1
      **/
-    public static function cronQueuedWebhook(?CronTask $task = null)
+    public static function cronQueuedWebhook(?CronTask $task = null): int
     {
         $cron_status = 0;
 
@@ -600,7 +600,7 @@ JS);
      *
      * @return int either 0 or 1
      **/
-    public static function cronQueuedWebhookClean(?CronTask $task = null)
+    public static function cronQueuedWebhookClean(?CronTask $task = null): int
     {
         global $DB;
 

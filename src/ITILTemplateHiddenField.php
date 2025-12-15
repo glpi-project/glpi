@@ -121,7 +121,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
      *
      * @return array of hidden fields
      */
-    public function getHiddenFields($ID, $withtypeandcategory = false)
+    public function getHiddenFields(int $ID, bool $withtypeandcategory = false): array
     {
         global $DB;
 
@@ -151,7 +151,7 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
      *
      * @return array the excluded fields (keys and values are equals)
      */
-    public static function getExcludedFields()
+    public static function getExcludedFields(): array
     {
         return [
             175 => 175, // ticket's tasks (template)

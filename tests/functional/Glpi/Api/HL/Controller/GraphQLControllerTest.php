@@ -185,7 +185,7 @@ class GraphQLControllerTest extends HLAPITestCase
      * Tests a case where there are scalar joins inside an already-joined field (status in this case).
      * @return void
      */
-    public function testGetStateVisibilities()
+    public function testGetStateVisibilities(): void
     {
         $state = new \State();
         $this->assertGreaterThan(0, $states_id = $state->add([
@@ -424,7 +424,7 @@ GRAPHQL);
      * This makes sure that all fields are valid at least to the point they do not trigger an error like a SQL Unknown Column error.
      * @return void
      */
-    public function testSchemaFieldValidity()
+    public function testSchemaFieldValidity(): void
     {
         $this->login();
         $router = Router::getInstance();

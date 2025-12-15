@@ -164,7 +164,7 @@ class Search
      *
      * @return void
      **/
-    public static function show($itemtype)
+    public static function show(string $itemtype): void
     {
         SearchEngine::show($itemtype, []);
     }
@@ -183,9 +183,9 @@ class Search
      **/
     public static function showList(
         $itemtype,
-        $params,
+        array $params,
         array $forcedisplay = []
-    ) {
+    ): void {
         SearchEngine::showOutput($itemtype, $params, $forcedisplay);
     }
 
@@ -197,7 +197,7 @@ class Search
      *
      * @return void
      **/
-    public static function showMap($itemtype, $params)
+    public static function showMap($itemtype, array $params): void
     {
         $params = MapSearchOutput::prepareInputParams($itemtype, $params);
 
@@ -218,7 +218,7 @@ class Search
      *
      * @return array The data
      **/
-    public static function getDatas($itemtype, $params, array $forcedisplay = [])
+    public static function getDatas($itemtype, array $params, array $forcedisplay = []): array
     {
         return SearchEngine::getData($itemtype, $params, $forcedisplay);
     }
@@ -236,7 +236,7 @@ class Search
      *
      * @return array prepare to be used for a search (include criteria and others needed information)
      **/
-    public static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = [])
+    public static function prepareDatasForSearch($itemtype, array $params, array $forcedisplay = []): array
     {
         return SearchEngine::prepareDataForSearch($itemtype, $params, $forcedisplay);
     }
@@ -257,7 +257,7 @@ class Search
      *
      * @return void|false May return false if the search request data is invalid
      **/
-    public static function constructSQL(array &$data)
+    public static function constructSQL(array &$data): void|bool
     {
         return SQLProvider::constructSQL($data);
     }
@@ -280,7 +280,7 @@ class Search
      *
      * @return string             the sql sub string
      */
-    public static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false)
+    public static function constructCriteriaSQL(array $criteria = [], array $data = [], array $searchopt = [], bool $is_having = false): string
     {
         return SQLProvider::constructCriteriaSQL($criteria, $data, $searchopt, $is_having);
     }
@@ -299,12 +299,12 @@ class Search
      * @return void
      */
     public static function constructAdditionalSqlForMetacriteria(
-        $criteria = [],
-        &$SELECT = "",
-        &$FROM = "",
-        &$already_link_tables = [],
-        &$data = []
-    ) {
+        array $criteria = [],
+        string &$SELECT = "",
+        string &$FROM = "",
+        array &$already_link_tables = [],
+        array &$data = []
+    ): void {
         SQLProvider::constructAdditionalSqlForMetacriteria($criteria, $SELECT, $FROM, $already_link_tables, $data);
     }
 
@@ -323,7 +323,7 @@ class Search
      *
      * @return void|false May return false if the SQL data in $data is not valid
      **/
-    public static function constructData(array &$data, $onlycount = false)
+    public static function constructData(array &$data, bool $onlycount = false): void|bool
     {
         return SQLProvider::constructData($data, $onlycount);
     }
@@ -337,7 +337,7 @@ class Search
      *
      * @return bool
      **/
-    public static function displayData(array $data, array $params = [])
+    public static function displayData(array $data, array $params = []): bool
     {
         /** @var HTMLSearchOutput $output */
         $output = SearchEngine::getOutputForLegacyKey($data['display_type'], $data);
@@ -351,7 +351,7 @@ class Search
      *
      * @return array Array of available itemtype
      **/
-    public static function getMetaItemtypeAvailable($itemtype)
+    public static function getMetaItemtypeAvailable($itemtype): array
     {
         return SearchEngine::getMetaItemtypeAvailable($itemtype);
     }
@@ -367,7 +367,7 @@ class Search
      *
      * @return void
      **/
-    public static function showGenericSearch($itemtype, array $params)
+    public static function showGenericSearch($itemtype, array $params): void
     {
         QueryBuilder::showGenericSearch($itemtype, $params);
     }
@@ -384,7 +384,7 @@ class Search
      *
      * @return void
      */
-    public static function displayCriteria($request = [])
+    public static function displayCriteria(array $request = []): void
     {
         QueryBuilder::displayCriteria($request);
     }
@@ -399,7 +399,7 @@ class Search
      *
      * @return void
      */
-    public static function displayMetaCriteria($request = [])
+    public static function displayMetaCriteria(array $request = []): void
     {
         QueryBuilder::displayMetaCriteria($request);
     }
@@ -414,7 +414,7 @@ class Search
      *
      * @return void
      */
-    public static function displayCriteriaGroup($request = [])
+    public static function displayCriteriaGroup(array $request = []): void
     {
         QueryBuilder::displayCriteriaGroup($request);
     }
@@ -433,7 +433,7 @@ class Search
      *
      * @return void
      */
-    public static function displaySearchoption($request = [])
+    public static function displaySearchoption(array $request = []): void
     {
         QueryBuilder::displaySearchoption($request);
     }
@@ -449,7 +449,7 @@ class Search
      *
      * @return void|string
      */
-    public static function displaySearchoptionValue($request = [])
+    public static function displaySearchoptionValue(array $request = []): void|string
     {
         return QueryBuilder::displaySearchoptionValue($request);
     }
@@ -487,7 +487,7 @@ class Search
      *
      * @return string HAVING clause sub-string (Does not include the "HAVING" keyword).
      **/
-    public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
+    public static function addHaving(string $LINK, bool $NOT, string $itemtype, int $ID, string $searchtype, string $val): string
     {
         global $DB;
         $criteria = SQLProvider::getHavingCriteria($LINK, $NOT, $itemtype, $ID, $searchtype, $val);
@@ -528,7 +528,7 @@ class Search
      * @return string ORDER BY query string
      *
      **/
-    public static function addOrderBy($itemtype, $sort_fields)
+    public static function addOrderBy($itemtype, array $sort_fields): string
     {
         $order = SQLProvider::getOrderByCriteria($itemtype, $sort_fields);
         if ($order === []) {
@@ -546,7 +546,7 @@ class Search
      *
      * @return array Array of search option IDs to be shown in the results
      **/
-    public static function addDefaultToView($itemtype, $params)
+    public static function addDefaultToView($itemtype, array $params): array
     {
         return SearchOption::getDefaultToView($itemtype, $params);
     }
@@ -559,7 +559,7 @@ class Search
      *
      * @return string Select string
      **/
-    public static function addDefaultSelect($itemtype)
+    public static function addDefaultSelect($itemtype): string
     {
         $select_criteria = SQLProvider::getDefaultSelectCriteria($itemtype);
         $select_string = '';
@@ -586,7 +586,7 @@ class Search
      *
      * @return string Select string
      **/
-    public static function addSelect($itemtype, $ID, $meta = false, $meta_type = '')
+    public static function addSelect(string $itemtype, int $ID, bool $meta = false, string $meta_type = ''): string
     {
         if ($meta_type === 0) {
             $meta_type = '';
@@ -611,7 +611,7 @@ class Search
      *
      * @return string Where string
      **/
-    public static function addDefaultWhere($itemtype)
+    public static function addDefaultWhere($itemtype): string
     {
         global $DB;
         $criteria = SQLProvider::getDefaultWhereCriteria($itemtype);
@@ -641,7 +641,7 @@ class Search
      *
      * @return string|false Where string or false if an error occurred or if there was no valid WHERE string that could be created.
      **/
-    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = false)
+    public static function addWhere(string $link, bool $nott, $itemtype, int $ID, string $searchtype, string $val, bool $meta = false): string|bool
     {
         global $DB;
         $criteria = SQLProvider::getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta);
@@ -673,7 +673,7 @@ class Search
      *
      * @return string Left join string
      **/
-    public static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables)
+    public static function addDefaultJoin($itemtype, string $ref_table, array &$already_link_tables): string
     {
         global $DB;
         $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
@@ -705,16 +705,16 @@ class Search
      * @return string Left join string
      **/
     public static function addLeftJoin(
-        $itemtype,
-        $ref_table,
+        string $itemtype,
+        string $ref_table,
         array &$already_link_tables,
-        $new_table,
-        $linkfield,
-        $meta = false,
-        $meta_type = '',
-        $joinparams = [],
-        $field = ''
-    ) {
+        string $new_table,
+        string $linkfield,
+        bool $meta = false,
+        string $meta_type = '',
+        array $joinparams = [],
+        string $field = ''
+    ): string {
         global $DB;
         $criteria = SQLProvider::getLeftJoinCriteria(
             $itemtype,
@@ -750,11 +750,11 @@ class Search
      * @return string Meta Left join string
      */
     public static function addMetaLeftJoin(
-        $from_type,
-        $to_type,
+        string $from_type,
+        string $to_type,
         array &$already_link_tables2,
-        $joinparams = []
-    ) {
+        array $joinparams = []
+    ): string {
         global $DB;
         $joins = SQLProvider::getMetaLeftJoinCriteria($from_type, $to_type, $already_link_tables2, $joinparams);
         $iterator = new DBmysqlIterator($DB);
@@ -773,7 +773,7 @@ class Search
      *
      * @return string String to print
      **/
-    public static function displayConfigItem($itemtype, $ID, $data = [])
+    public static function displayConfigItem(string $itemtype, int $ID, array $data = []): string
     {
         return ExportSearchOutput::displayConfigItem($itemtype, $ID, $data);
     }
@@ -794,13 +794,13 @@ class Search
      * @return string String to print
      **/
     public static function giveItem(
-        $itemtype,
-        $ID,
+        string $itemtype,
+        int $ID,
         array $data,
-        $meta = false,
+        bool $meta = false,
         array $addobjectparams = [],
-        $orig_itemtype = null
-    ) {
+        ?string $orig_itemtype = null
+    ): string {
         return SQLProvider::giveItem($itemtype, $ID, $data, $meta, $addobjectparams, $orig_itemtype);
     }
 
@@ -810,7 +810,7 @@ class Search
      *
      * @return void
      **/
-    public static function resetSaveSearch()
+    public static function resetSaveSearch(): void
     {
         SearchEngine::resetSaveSearch();
     }
@@ -828,11 +828,11 @@ class Search
      * @return array parsed params
      **/
     public static function manageParams(
-        $itemtype,
-        $params = [],
-        $usesession = true,
-        $forcebookmark = false
-    ) {
+        string $itemtype,
+        array $params = [],
+        bool $usesession = true,
+        bool $forcebookmark = false
+    ): array {
         return QueryBuilder::manageParams($itemtype, $params, $usesession, $forcebookmark);
     }
 
@@ -847,7 +847,7 @@ class Search
      *
      * @return array Clean $SEARCH_OPTION array
      **/
-    public static function getCleanedOptions($itemtype, $action = READ, $withplugins = true)
+    public static function getCleanedOptions(string $itemtype, int $action = READ, bool $withplugins = true): array
     {
         return SearchOption::getCleanedOptions($itemtype, $action, $withplugins);
     }
@@ -862,7 +862,7 @@ class Search
      *
      * @return int
      **/
-    public static function getOptionNumber($itemtype, $field)
+    public static function getOptionNumber($itemtype, string $field): int
     {
 
         return SearchOption::getOptionNumber($itemtype, $field);
@@ -877,7 +877,7 @@ class Search
      *
      * @return array The array of search options for the given item type
      **/
-    public static function getOptions($itemtype, $withplugins = true)
+    public static function getOptions(string $itemtype, bool $withplugins = true): array
     {
         return SearchOption::getOptionsForItemtype($itemtype, $withplugins);
     }
@@ -890,7 +890,7 @@ class Search
      *
      * @return bool
      **/
-    public static function isInfocomOption($itemtype, $searchID)
+    public static function isInfocomOption(string $itemtype, int $searchID): bool
     {
         return SearchOption::isInfocomOption($itemtype, $searchID);
     }
@@ -902,7 +902,7 @@ class Search
      *
      * @return array
      */
-    public static function getActionsFor($itemtype, $field_num)
+    public static function getActionsFor(string $itemtype, int $field_num): array
     {
         return SearchOption::getActionsFor($itemtype, $field_num);
     }
@@ -922,14 +922,14 @@ class Search
      * @return string HTML to display
      **/
     public static function showHeaderItem(
-        $type,
-        $value,
-        &$num,
-        $linkto = "",
-        $issort = 0,
-        $order = "",
-        $options = ""
-    ) {
+        int $type,
+        string $value,
+        int &$num,
+        string $linkto = "",
+        bool|int $issort = 0,
+        string $order = "",
+        string $options = ""
+    ): string {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput) {
             return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
@@ -949,7 +949,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showItem($type, $value, &$num, $row, $extraparam = '')
+    public static function showItem(int $type, string $value, int &$num, int $row, string $extraparam = ''): string
     {
         // Handle null values
         if ($value === null) {
@@ -972,7 +972,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showError($type, $message = "")
+    public static function showError(int $type, string $message = ""): string
     {
         if (strlen($message) == 0) {
             $message = __('No results found');
@@ -995,7 +995,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showFooter($type, $title = "", $count = null)
+    public static function showFooter(int $type, string $title = "", ?int $count = null): string
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput) {
@@ -1015,7 +1015,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showHeader($type, $rows, $cols, $fixed = 0)
+    public static function showHeader(int $type, int $rows, int $cols, bool|int $fixed = 0): string
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if (($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) && !defined('TU_USER')) {
@@ -1034,7 +1034,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showBeginHeader($type)
+    public static function showBeginHeader(int $type): string
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput) {
@@ -1053,7 +1053,7 @@ class Search
      *
      * @return string to display
      **/
-    public static function showEndHeader($type)
+    public static function showEndHeader(int $type): string
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput) {
@@ -1072,7 +1072,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showNewLine($type, $odd = false, $is_deleted = false)
+    public static function showNewLine(int $type, bool $odd = false, bool $is_deleted = false): string
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput) {
@@ -1089,7 +1089,7 @@ class Search
      *
      * @return string HTML to display
      **/
-    public static function showEndLine($type, bool $is_header_line = false)
+    public static function showEndLine(int $type, bool $is_header_line = false): string
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
         if ($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) {
@@ -1103,7 +1103,7 @@ class Search
      *
      * @return string
      */
-    public static function computeComplexJoinID(array $joinparams)
+    public static function computeComplexJoinID(array $joinparams): string
     {
         return SQLProvider::computeComplexJoinID($joinparams);
     }
@@ -1118,7 +1118,7 @@ class Search
      *
      * @return string Search SQL string
      **/
-    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND')
+    public static function makeTextCriteria(string $field, string $val, bool $not = false, string $link = 'AND'): string
     {
         return SQLProvider::makeTextCriteria($field, $val, $not, $link);
     }
@@ -1132,7 +1132,7 @@ class Search
      *
      * @return string|null
      **/
-    public static function makeTextSearchValue($val)
+    public static function makeTextSearchValue(string $val): ?string
     {
         return SQLProvider::makeTextSearchValue($val);
     }
@@ -1145,7 +1145,7 @@ class Search
      *
      * @return string Search string
      **/
-    public static function makeTextSearch($val, $not = false)
+    public static function makeTextSearch(string $val, bool $not = false): string
     {
         return SQLProvider::makeTextSearch($val, $not);
     }
@@ -1157,7 +1157,7 @@ class Search
      * @param string $subject
      * @return string[]|false
      **/
-    public static function explodeWithID($pattern, $subject)
+    public static function explodeWithID(string $pattern, string $subject): array|bool
     {
         return SQLProvider::explodeWithID($pattern, $subject);
     }

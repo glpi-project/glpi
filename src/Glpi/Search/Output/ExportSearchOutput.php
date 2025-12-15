@@ -56,7 +56,7 @@ abstract class ExportSearchOutput extends AbstractSearchOutput
      *
      * @return string String to print
      **/
-    public static function displayConfigItem($itemtype, $ID, $data = [])
+    public static function displayConfigItem(string $itemtype, int $ID, array $data = []): string
     {
 
         SearchOption::getOptionsForItemtype($itemtype);

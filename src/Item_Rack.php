@@ -443,7 +443,7 @@ class Item_Rack extends CommonDBRelation
      * @param  Rack   $rack the current rack instance
      * @return void
      */
-    public static function showStats(Rack $rack)
+    public static function showStats(Rack $rack): void
     {
         global $DB;
 
@@ -762,7 +762,7 @@ class Item_Rack extends CommonDBRelation
      *
      * @return string
      */
-    private static function getCell($cell, $readonly = false)
+    private static function getCell(mixed $cell, bool $readonly = false): string
     {
         if ($cell) {
             $item        = $cell['item'];
@@ -888,7 +888,7 @@ class Item_Rack extends CommonDBRelation
      * @param  string $itemtype  A rackable itemtype
      * @return string           The i html tag
      */
-    private static function getItemIcon($itemtype = "")
+    private static function getItemIcon(string $itemtype = ""): string
     {
         $icon = "";
         switch ($itemtype) {
@@ -928,7 +928,7 @@ class Item_Rack extends CommonDBRelation
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 

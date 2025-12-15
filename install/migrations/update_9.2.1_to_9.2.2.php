@@ -41,7 +41,7 @@
  *
  * @return bool
  **/
-function update921to922()
+function update921to922(): bool
 {
     /**
      * @var DBmysql $DB

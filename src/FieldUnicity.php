@@ -148,7 +148,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public function showItemtype($ID, $value = 0)
+    public function showItemtype(int $ID, int $value = 0): void
     {
         global $CFG_GLPI;
 
@@ -192,7 +192,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return array an array of fields to check, or an empty array if no
      **/
-    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true)
+    public static function getUnicityFieldsConfig(string $itemtype, int $entities_id = 0, bool $check_active = true): array
     {
         global $DB;
 
@@ -233,7 +233,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public static function selectCriterias(CommonDBTM $unicity)
+    public static function selectCriterias(CommonDBTM $unicity): void
     {
         echo "<span id='span_fields'>";
 
@@ -266,7 +266,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return string|int|false
      */
-    public static function dropdownFields($itemtype, $options = [])
+    public static function dropdownFields($itemtype, array $options = []): string|int|bool
     {
         global $DB;
 
@@ -493,7 +493,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public static function deleteForItemtype($itemtype)
+    public static function deleteForItemtype(string $itemtype): void
     {
         global $DB;
 
@@ -512,7 +512,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public static function showDoubles(FieldUnicity $unicity)
+    public static function showDoubles(FieldUnicity $unicity): void
     {
         global $DB;
 

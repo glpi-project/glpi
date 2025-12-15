@@ -58,7 +58,7 @@ class NetworkPortEthernet extends NetworkPortInstantiation
      *
      * @return array
      */
-    public function prepareInput($input)
+    public function prepareInput(array $input): array
     {
         if (isset($input['speed']) && ($input['speed'] === 'speed_other_value')) {
             if (!isset($input['speed_other_value'])) {
@@ -179,7 +179,7 @@ TWIG, $twig_params);
      * @return array|string
      * @phpstan-return ($val is null ? array : string)
      **/
-    public static function getPortTypeName($val = null)
+    public static function getPortTypeName(?string $val = null): array|string
     {
         $tmp = [
             ''   => Dropdown::EMPTY_VALUE,
@@ -202,7 +202,7 @@ TWIG, $twig_params);
      *
      * @return false|int|string (regarding what is requested)
      **/
-    public static function transformPortSpeed($val, $to_string)
+    public static function transformPortSpeed(int|string $val, bool $to_string): bool|int|string
     {
         if ($to_string) {
             if (($val % 1000) === 0) {
@@ -246,7 +246,7 @@ TWIG, $twig_params);
      * @return array|string
      * @phpstan-return ($val is null ? array : false|integer|string)
      **/
-    public static function getPortSpeed($val = null)
+    public static function getPortSpeed(?int $val = null): array|string
     {
         $tmp = [
             0     => '',
@@ -300,7 +300,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
+    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams): void
     {
         $tab[] = [
             'id'                 => '22',

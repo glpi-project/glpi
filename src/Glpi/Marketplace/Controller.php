@@ -171,7 +171,7 @@ class Controller extends CommonGLPI
      * @param ?string $version Download a specific version of the plugin
      * @return bool
      */
-    public function downloadPlugin($auto_install = true, ?string $version = null): bool
+    public function downloadPlugin(bool $auto_install = true, ?string $version = null): bool
     {
         if (!self::hasWriteAccess()) {
             return false;
@@ -382,7 +382,7 @@ class Controller extends CommonGLPI
      *
      * @return string|false new version number
      */
-    public function checkUpdate(?Plugin $plugin_inst = null)
+    public function checkUpdate(?Plugin $plugin_inst = null): string|bool
     {
         $api          = self::getAPI();
         $api_plugin   = $api->getPlugin($this->plugin_key);
@@ -405,7 +405,7 @@ class Controller extends CommonGLPI
      *
      * @return array of [plugin_key => new_version_num]
      */
-    public static function getAllUpdates()
+    public static function getAllUpdates(): array
     {
         $plugin_inst = new Plugin();
         $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
@@ -432,7 +432,7 @@ class Controller extends CommonGLPI
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Check all plugin updates')];
     }
@@ -498,7 +498,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function canBeDownloaded(?string $version = null)
+    public function canBeDownloaded(?string $version = null): bool
     {
         $api        = self::getAPI();
         $api_plugin = $api->getPlugin($this->plugin_key);
@@ -520,7 +520,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function isAvailable()
+    public function isAvailable(): bool
     {
         $api          = self::getAPI();
         $api_plugin   = $api->getPlugin($this->plugin_key);
@@ -699,7 +699,7 @@ class Controller extends CommonGLPI
      *
      * @return int config status (self::MP_REPLACE_ASK, self::MP_REPLACE_YES, self::MP_REPLACE_NEVER)
      */
-    public static function getPluginPageConfig()
+    public static function getPluginPageConfig(): int
     {
         $config = Config::getConfigurationValues('core', ['marketplace_replace_plugins']);
 

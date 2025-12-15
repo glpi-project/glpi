@@ -119,7 +119,7 @@ class NotificationTemplate extends CommonDBTM
      *
      * @return void
      */
-    public function resetComputedTemplates()
+    public function resetComputedTemplates(): void
     {
         $this->templates_by_languages = [];
     }
@@ -186,7 +186,7 @@ class NotificationTemplate extends CommonDBTM
      *
      * @return void
      */
-    public static function dropdownTemplates($name, $itemtype, $value = 0)
+    public static function dropdownTemplates(string $name, $itemtype, int $value = 0): void
     {
         self::dropdown([
             'name'       => $name,
@@ -202,7 +202,7 @@ class NotificationTemplate extends CommonDBTM
      *
      * @return int
      */
-    public function getAdditionnalProcessOption($options)
+    public function getAdditionnalProcessOption(array $options)
     {
         //Additionnal option can be given for template processing
         //For the moment, only option to see private tasks & followups is available
@@ -225,10 +225,10 @@ class NotificationTemplate extends CommonDBTM
      **/
     public function getTemplateByLanguage(
         NotificationTarget $target,
-        $user_infos = [],
-        $event = '',
-        $options = []
-    ) {
+        array $user_infos = [],
+        string $event = '',
+        array $options = []
+    ): bool|string {
         global $CFG_GLPI, $DB;
 
         $lang     = [];
@@ -355,7 +355,7 @@ class NotificationTemplate extends CommonDBTM
      * @param array<string, mixed> $data
      * @return string
      **/
-    public static function process($string, $data, bool $html_context = false)
+    public static function process(string $string, array $data, bool $html_context = false): string
     {
         $cleandata = [];
         // clean data for strtr
@@ -456,7 +456,7 @@ class NotificationTemplate extends CommonDBTM
      * @param array  $data<string, string>
      * @return string
      **/
-    public static function processIf($string, $data)
+    public static function processIf(string $string, array $data): string
     {
         if (preg_match_all("/##IF([a-z-0-9\._]*)[=]?(.*?)##/i", $string, $out)) {
             foreach ($out[1] as $key => $tag_infos) {
@@ -571,7 +571,7 @@ class NotificationTemplate extends CommonDBTM
      *
      * @return void
      **/
-    public function setSignature($signature)
+    public function setSignature(string $signature): void
     {
         $this->signature = $signature;
     }
@@ -580,7 +580,7 @@ class NotificationTemplate extends CommonDBTM
      * @param string $language
      * @return false|array<string, mixed>
      **/
-    public function getByLanguage($language)
+    public function getByLanguage(string $language): bool|array
     {
         global $DB;
 
@@ -610,7 +610,7 @@ class NotificationTemplate extends CommonDBTM
      *
      * @return array
      **/
-    public function getDataToSend(NotificationTarget $target, $tid, $to, array $user_infos, array $options)
+    public function getDataToSend(NotificationTarget $target, string $tid, mixed $to, array $user_infos, array $options): array
     {
 
         $user_name  = $user_infos['username'];

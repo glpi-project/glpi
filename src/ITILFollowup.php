@@ -61,7 +61,7 @@ class ITILFollowup extends CommonDBChild
     /**
      * @return string
      */
-    public function getItilObjectItemType()
+    public function getItilObjectItemType(): string
     {
         return str_replace('Followup', '', $this->getType());
     }
@@ -82,7 +82,7 @@ class ITILFollowup extends CommonDBChild
      *
      * @return bool
      */
-    public function canReadITILItem()
+    public function canReadITILItem(): bool
     {
         if ($this->isParentAlreadyLoaded()) {
             $item = $this->item;
@@ -733,7 +733,7 @@ class ITILFollowup extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         global $DB;
 
@@ -939,7 +939,7 @@ class ITILFollowup extends CommonDBChild
     /**
      * @return void
      */
-    public static function showMassiveActionAddFollowupForm()
+    public static function showMassiveActionAddFollowupForm(): void
     {
         echo "<table class='tab_cadre_fixe'>";
         echo '<tr><th colspan=4>' . __s('Add a new followup') . '</th></tr>';
@@ -1042,11 +1042,11 @@ class ITILFollowup extends CommonDBChild
      * @throws InvalidArgumentException
      */
     public static function buildParentCondition(
-        $itemtype,
-        $target = "",
-        $user_table = "",
-        $group_table = ""
-    ) {
+        string $itemtype,
+        string $target = "",
+        string $user_table = "",
+        string $group_table = ""
+    ): string {
         $itilfup_table = static::getTable();
 
         // An ITILFollowup parent can only by a CommonItilObject
@@ -1119,7 +1119,7 @@ class ITILFollowup extends CommonDBChild
      *
      * @return bool
      */
-    public function isFromSupportAgent()
+    public function isFromSupportAgent(): bool
     {
         global $DB;
 

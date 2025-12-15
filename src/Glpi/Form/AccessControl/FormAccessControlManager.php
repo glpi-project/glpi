@@ -267,7 +267,7 @@ final class FormAccessControlManager
      * @param FormAccessControl[] $access_controls
      * @return ControlTypeInterface[]
      */
-    private function getDefinedStrategies(array $access_controls)
+    private function getDefinedStrategies(array $access_controls): array
     {
         return array_map(
             fn($control) => $control->getStrategy(),
@@ -279,7 +279,7 @@ final class FormAccessControlManager
      * @param ControlTypeInterface[] $defined_strategies
      * @return ControlTypeInterface[]
      */
-    private function getMissingStrategies(array $defined_strategies)
+    private function getMissingStrategies(array $defined_strategies): array
     {
         $defined_strategies_classes = array_map(
             fn($strategy) => $strategy::class,

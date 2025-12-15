@@ -167,7 +167,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
      * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
-    public function getLinkedItems()
+    public function getLinkedItems(): array
     {
         global $DB;
 
@@ -428,7 +428,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 

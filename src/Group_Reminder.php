@@ -54,7 +54,7 @@ class Group_Reminder extends CommonDBRelation
      *
      * @return array of groups linked to a reminder
      **/
-    public static function getGroups($reminders_id)
+    public static function getGroups(int $reminders_id): array
     {
         global $DB;
 

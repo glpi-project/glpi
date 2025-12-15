@@ -41,7 +41,7 @@ use function Safe\spl_autoload_register;
  * @param string $classname
  * @return void
  */
-function glpi_autoload($classname)
+function glpi_autoload(string $classname): void
 {
     if (!str_starts_with($classname, 'Plugin') && !str_starts_with($classname, NS_PLUG)) {
         return;

@@ -154,7 +154,7 @@ class NetworkPortType extends CommonDropdown
      *
      * @return false|string
      */
-    public static function getInstantiationType($type)
+    public static function getInstantiationType(mixed $type): bool|string
     {
         global $DB, $GLPI_CACHE;
 
@@ -210,7 +210,7 @@ class NetworkPortType extends CommonDropdown
     /**
      * @return void
      */
-    protected function invalidateCache()
+    protected function invalidateCache(): void
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('glpi_inventory_ports_types');

@@ -99,7 +99,7 @@ class SsoVariable extends CommonDropdown
      *
      * @return bool
      */
-    private function isUsedInAuth()
+    private function isUsedInAuth(): bool
     {
 
         $config_values = Config::getConfigurationValues('core', ['ssovariables_id']);

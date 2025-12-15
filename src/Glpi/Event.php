@@ -116,7 +116,7 @@ class Event extends CommonDBTM
      *
      * @return void
      */
-    public static function log($items_id, $type, $level, $service, $event)
+    public static function log(string|int $items_id, string $type, int $level, string $service, string $event): void
     {
         global $CFG_GLPI, $DB;
 
@@ -160,7 +160,7 @@ class Event extends CommonDBTM
      *
      * @return int number of events deleted
      **/
-    public static function cleanOld($day)
+    public static function cleanOld(int $day): int
     {
         global $DB;
 
@@ -180,7 +180,7 @@ class Event extends CommonDBTM
      *
      * @return array
      */
-    public static function logArray()
+    public static function logArray(): array
     {
 
         static $logItemtype = [];
@@ -227,7 +227,7 @@ class Event extends CommonDBTM
      *
      * @return void
      **/
-    public static function displayItemLogID($type, $items_id)
+    public static function displayItemLogID($type, int $items_id): void
     {
         global $CFG_GLPI;
 
@@ -290,7 +290,7 @@ class Event extends CommonDBTM
      *
      * @return void|string
      */
-    public static function showForUser(string $user = "", bool $display = true)
+    public static function showForUser(string $user = "", bool $display = true): void|string
     {
         global $CFG_GLPI, $DB;
 

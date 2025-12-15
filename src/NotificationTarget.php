@@ -160,7 +160,7 @@ class NotificationTarget extends CommonDBChild
      *      },
      *      sendprivate?: bool} $options
      **/
-    public function __construct($entity = null, $event = '', $object = null, $options = [])
+    public function __construct(?int $entity = null, string $event = '', ?CommonGLPI $object = null, array $options = [])
     {
         if ($entity === null) {
             $this->entity = ($_SESSION['glpiactive_entity'] ?? 0);
@@ -211,7 +211,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @since 0.85
      */
-    public function getFromDBForTarget($notifications_id, $type, $ID)
+    public function getFromDBForTarget(int $notifications_id, $type, int $ID): bool
     {
 
         if (
@@ -241,7 +241,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return bool
      **/
-    public function validateSendTo($event, array $infos, $notify_me = false, $emitter = null)
+    public function validateSendTo(string $event, array $infos, bool $notify_me = false, int|string|null $emitter = null): bool
     {
         $users_id = Session::getLoginUserID(false);
 
@@ -297,7 +297,7 @@ class NotificationTarget extends CommonDBChild
      * @param string $event
      * @return string
      */
-    public function getSubjectPrefix($event = '')
+    public function getSubjectPrefix(string $event = ''): string
     {
         $perso_tag = trim(Entity::getUsedConfig(
             'notification_subject_tag',
@@ -316,7 +316,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return string
      **/
-    public function getContentHeader()
+    public function getContentHeader(): string
     {
         return '';
     }
@@ -326,7 +326,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return string
      **/
-    public function getContentFooter()
+    public function getContentFooter(): string
     {
         return '';
     }
@@ -338,7 +338,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return string
      */
-    public function getMessageID()
+    public function getMessageID(): string
     {
         return self::getMessageIdForEvent(
             $this->obj instanceof CommonDBTM ? $this->obj->getType() : null,
@@ -411,7 +411,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return NotificationTarget<Item>|false
      */
-    public static function getInstance($item, $event = '', $options = [])
+    public static function getInstance(Item $item, ?string $event = '', array $options = []): NotificationTarget|bool
     {
         $name = self::getInstanceClass($item::class);
 
@@ -467,7 +467,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return NotificationTarget<Item>|false
      */
-    public static function getInstanceByType($itemtype, $event = '', $options = [])
+    public static function getInstanceByType($itemtype, ?string $event = '', array $options = []): NotificationTarget|bool
     {
         if (
             ($itemtype)
@@ -549,7 +549,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public static function updateTargets($input)
+    public static function updateTargets(array $input): void
     {
         $target = self::getInstanceByType($input['itemtype']);
 
@@ -621,12 +621,12 @@ class NotificationTarget extends CommonDBChild
     /**
      * @return void
      */
-    public function addAdditionnalInfosForTarget() {}
+    public function addAdditionnalInfosForTarget(): void {}
 
     /**
      * @return array
      **/
-    public function addAdditionnalUserInfo(array $data)
+    public function addAdditionnalUserInfo(array $data): array
     {
         return [];
     }
@@ -643,7 +643,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public function addToRecipientsList(array $data)
+    public function addToRecipientsList(array $data): void
     {
         global $CFG_GLPI;
         $new_lang = '';
@@ -776,7 +776,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @since 0.84
      */
-    public function formatURL($usertype, $redirect, ?string $anchor = null)
+    public function formatURL($usertype, string $redirect, ?string $anchor = null): string
     {
         if (urldecode($redirect) === $redirect) {
             // `redirect` parameter value have to be url-encoded.
@@ -811,7 +811,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addAdmin()
+    final public function addAdmin(): void
     {
         $eventclass = $this->event;
         $admin_data = $eventclass::getAdminData();
@@ -832,7 +832,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    public function addItemAuthor()
+    public function addItemAuthor(): void
     {
         if (!$this->obj instanceof CommonDBTM) {
             return;
@@ -857,7 +857,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addItemGroup()
+    final public function addItemGroup(): void
     {
         if ($this->target_object !== []) {
             foreach ($this->target_object as $target) {
@@ -879,7 +879,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addItemGroupSupervisor()
+    final public function addItemGroupSupervisor(): void
     {
         if ($this->target_object !== []) {
             foreach ($this->target_object as $target) {
@@ -901,7 +901,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addItemGroupWithoutSupervisor()
+    final public function addItemGroupWithoutSupervisor(): void
     {
         if ($this->target_object !== []) {
             foreach ($this->target_object as $target) {
@@ -921,7 +921,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addEntityAdmin()
+    final public function addEntityAdmin(): void
     {
         $eventclass = $this->event;
         $admins_data = $eventclass::getEntityAdminsData($this->entity);
@@ -946,7 +946,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    final public function addForGroup($manager, $group_id)
+    final public function addForGroup(int $manager, int $group_id): void
     {
         global $DB;
 
@@ -1009,7 +1009,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return array
      */
-    final public function getDistinctUserCriteria()
+    final public function getDistinctUserCriteria(): array
     {
         return [
             'FIELDS'          => [
@@ -1027,7 +1027,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return array<string, string> event name => event label
      **/
-    public function getEvents()
+    public function getEvents(): array
     {
         return [];
     }
@@ -1075,7 +1075,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return array<string, string> [event => event label, ...]
      **/
-    public function getAllEvents()
+    public function getAllEvents(): array
     {
         $this->events = $this->getEvents();
         //If plugin adds new events for an already defined type
@@ -1091,7 +1091,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    public function addTarget($target = null, $label = '', $type = Notification::USER_TYPE)
+    public function addTarget(?int $target = null, string $label = '', $type = Notification::USER_TYPE): void
     {
         $key                                               = ((string) $type) . '_' . $target;
         // Value used for sort
@@ -1103,7 +1103,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @return void
      */
-    public function addProfilesToTargets()
+    public function addProfilesToTargets(): void
     {
         global $DB;
 
@@ -1123,7 +1123,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addGroupsToTargets($entity)
+    final public function addGroupsToTargets($entity): void
     {
         global $DB;
 
@@ -1178,7 +1178,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public function addNotificationTargets($entity)
+    public function addNotificationTargets(int $entity): void
     {
         if (Session::haveRight("config", UPDATE)) {
             $this->addTarget(Notification::GLOBAL_ADMINISTRATOR, __('Administrator'));
@@ -1197,7 +1197,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    public function addAdditionalTargets($event = '') {}
+    public function addAdditionalTargets(string $event = ''): void {}
 
     /**
      * Add targets by a method not defined in NotificationTarget (specific to an itemtype)
@@ -1207,7 +1207,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public function addSpecificTargets($data, $options) {}
+    public function addSpecificTargets(array $data, array $options): void {}
 
     /**
      * Push $this->obj in $this->target_object array
@@ -1218,7 +1218,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    public function getObjectItem($event = '')
+    public function getObjectItem(string $event = ''): void
     {
         $this->target_object[] = $this->obj;
     }
@@ -1233,7 +1233,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    final public function addUserByField($field, $search_in_object = false)
+    final public function addUserByField(string $field, bool $search_in_object = false): void
     {
         global $DB;
 
@@ -1273,7 +1273,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    final public function addItemTechnicianInCharge()
+    final public function addItemTechnicianInCharge(): void
     {
         $this->addUserByField('users_id_tech', true);
     }
@@ -1283,7 +1283,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addItemGroupTechInCharge()
+    final public function addItemGroupTechInCharge(): void
     {
         if ($this->target_object !== []) {
             foreach ($this->target_object as $val) {
@@ -1303,7 +1303,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    final public function addItemOwner()
+    final public function addItemOwner(): void
     {
         $this->addUserByField('users_id', true);
     }
@@ -1315,7 +1315,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      */
-    final public function addForProfile($profiles_id)
+    final public function addForProfile(int $profiles_id): void
     {
         global $DB;
 
@@ -1372,7 +1372,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return string
      */
-    public function getUrlBase()
+    public function getUrlBase(): string
     {
         global $CFG_GLPI;
 
@@ -1392,7 +1392,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    final public function addForTarget($data, $options = [])
+    final public function addForTarget(array $data, array $options = []): void
     {
 
         //Look for all targets whose type is Notification::USER_TYPE
@@ -1475,12 +1475,12 @@ class NotificationTarget extends CommonDBChild
      * @param array<string, mixed> $options
      * @return void
      **/
-    public function addDataForTemplate($event, $options = []) {}
+    public function addDataForTemplate(string $event, array $options = []): void {}
 
     /**
      * @return array
      */
-    final public function getTargets()
+    final public function getTargets(): array
     {
         return $this->removeExcludedTargets($this->target);
     }
@@ -1561,7 +1561,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @return int
      */
-    public function getEntity()
+    public function getEntity(): int
     {
         return $this->entity;
     }
@@ -1569,7 +1569,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @return void
      */
-    public function clearAddressesList()
+    public function clearAddressesList(): void
     {
         $this->target = [];
     }
@@ -1580,7 +1580,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return array
      */
-    public function getProfileJoinCriteria()
+    public function getProfileJoinCriteria(): array
     {
         $criteria = [
             'INNER JOIN'   => [
@@ -1620,7 +1620,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return array<string, string|array<string>>
      **/
-    public function &getForTemplate($event, $options)
+    public function &getForTemplate(?string $event, array $options): array
     {
         $this->data = [];
         $this->addDataForTemplate($event, $options);
@@ -1662,7 +1662,7 @@ class NotificationTarget extends CommonDBChild
     /**
      * @return string[]|string[][]|void
      */
-    public function getTags()
+    public function getTags(): array|void
     {
         return $this->tag_descriptions;
     }
@@ -1680,7 +1680,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return void
      **/
-    public function addTagToList($options = [])
+    public function addTagToList(array $options = []): void
     {
         $p['tag']            = false;
         $p['value']          = true;
@@ -1767,7 +1767,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return int
      **/
-    public static function countForGroup(Group $group)
+    public static function countForGroup(Group $group): int
     {
         global $DB;
 
@@ -1893,7 +1893,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return static
      */
-    public function setMode($mode)
+    public function setMode(string $mode): static
     {
         $this->mode = $mode;
         return $this;
@@ -1904,7 +1904,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return string
      */
-    public function getMode()
+    public function getMode(): string
     {
         return $this->mode;
     }
@@ -1914,7 +1914,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return bool
      */
-    protected function isMailMode()
+    protected function isMailMode(): bool
     {
         return ($this->mode == Notification_NotificationTemplate::MODE_MAIL);
     }
@@ -1926,7 +1926,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return static
      */
-    public function setEvent($event)
+    public function setEvent(string $event): static
     {
         $this->event = $event;
         return $this;
@@ -1938,7 +1938,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return bool
      */
-    public function allowResponse()
+    public function allowResponse(): bool
     {
         return $this->allow_response;
     }
@@ -1950,7 +1950,7 @@ class NotificationTarget extends CommonDBChild
      *
      * @return static
      */
-    public function setAllowResponse($allow_response)
+    public function setAllowResponse(bool $allow_response): static
     {
         $this->allow_response = $allow_response;
 

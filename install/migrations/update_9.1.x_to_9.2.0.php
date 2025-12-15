@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryExpression;
  *
  * @return bool
  **/
-function update91xto920()
+function update91xto920(): bool
 {
     /**
      * @var DBmysql $DB

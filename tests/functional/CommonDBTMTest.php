@@ -203,7 +203,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return array
      */
-    public static function getTableProvider()
+    public static function getTableProvider(): array
     {
         return [
             [\Item_Devices::class, ''], // "static protected $notable = true;" case
@@ -230,7 +230,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return void
      */
-    public function testGetTableField()
+    public function testGetTableField(): void
     {
         // Base case
         $this->assertSame('glpi_computers.serial', Computer::getTableField('serial'));
@@ -246,7 +246,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return void
      */
-    public function testGetTableFieldEmpty()
+    public function testGetTableFieldEmpty(): void
     {
         // Exception if field argument is empty
         $this->expectExceptionMessage('Argument $field cannot be empty.');
@@ -258,7 +258,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return void
      */
-    public function testGetTableFieldNoTable()
+    public function testGetTableFieldNoTable(): void
     {
         // Exception if class has no table
         $this->expectExceptionMessage('Invalid table name.');
@@ -422,7 +422,7 @@ class CommonDBTMTest extends DbTestCase
      *
      * @return void
      */
-    public function testRecursiveObjectChecks()
+    public function testRecursiveObjectChecks(): void
     {
         $this->login();
 

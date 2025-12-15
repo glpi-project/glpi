@@ -108,7 +108,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/line.html.twig', [

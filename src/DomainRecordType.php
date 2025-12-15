@@ -292,7 +292,7 @@ class DomainRecordType extends CommonDropdown
      *
      * @return bool
      */
-    private function validateFieldsDescriptor($fields_str): bool
+    private function validateFieldsDescriptor(string $fields_str): bool
     {
         if (!is_string($fields_str)) {
             Session::addMessageAfterRedirect(__s('Invalid JSON used to define fields.'), true, ERROR);
@@ -358,7 +358,7 @@ class DomainRecordType extends CommonDropdown
     /**
      * @return array
      */
-    public static function getDefaults()
+    public static function getDefaults(): array
     {
         return array_map(
             static function ($e) {
@@ -378,7 +378,7 @@ class DomainRecordType extends CommonDropdown
      *
      * @return void
      */
-    public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
+    public function showDataAjaxForm(string $str_input_id, string $obj_input_id): void
     {
         $fields = json_decode($this->fields['fields'] ?? '[]', true);
         if (empty($fields)) {

@@ -257,7 +257,7 @@ class APIClient extends CommonDBTM
      *
      * @return array
      */
-    public static function getLogMethod()
+    public static function getLogMethod(): array
     {
 
         return [self::DOLOG_DISABLED   => __('Disabled'),
@@ -275,7 +275,7 @@ class APIClient extends CommonDBTM
      *
      * @return string app token
      */
-    public static function getUniqueAppToken()
+    public static function getUniqueAppToken(): string
     {
         do {
             $key = Toolbox::getRandomString(40);

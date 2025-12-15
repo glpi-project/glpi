@@ -118,7 +118,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         unset($input['last_login']);
         unset($input['password_forget_token']);
@@ -138,7 +138,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    public function post_clone($source, $history)
+    public function post_clone(CommonDBTM $source, bool $history): void
     {
         //FIXME? clone config
     }
@@ -293,7 +293,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    public function computePreferences()
+    public function computePreferences(): void
     {
         global $CFG_GLPI;
 
@@ -344,7 +344,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @deprecated 12.0.0
      */
-    public function loadMinimalSession($entities_id, $is_recursive)
+    public function loadMinimalSession(int $entities_id, bool $is_recursive): void
     {
         Toolbox::deprecated();
 
@@ -593,7 +593,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function getFromDBbyName($name)
+    public function getFromDBbyName(string $name): bool
     {
         return $this->getFromDBByCrit(['name' => (string) $name]);
     }
@@ -607,7 +607,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function getFromDBbyNameAndAuth($name, $authtype, $auths_id)
+    public function getFromDBbyNameAndAuth(string $name, int $authtype, int $auths_id): bool
     {
         return $this->getFromDBByCrit([
             'name'     => $name,
@@ -623,7 +623,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function getFromDBbySyncField($value)
+    public function getFromDBbySyncField(string $value): bool
     {
         return $this->getFromDBByCrit(['sync_field' => $value]);
     }
@@ -635,7 +635,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function getFromDBbyDn($user_dn)
+    public function getFromDBbyDn(string $user_dn): bool
     {
         /**
          * We use the 'user_dn_hash' field instead of 'user_dn' for performance reasons.
@@ -712,7 +712,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return int Number of users found
      */
-    public static function countUsersByEmail($email, $condition = []): int
+    public static function countUsersByEmail(string $email, array $condition = []): int
     {
         return count(self::getUsersIdByEmails($email, $condition));
     }
@@ -728,7 +728,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function getFromDBbyEmail($email, $condition = [])
+    public function getFromDBbyEmail(string $email, array $condition = []): bool
     {
         $ids = self::getUsersIdByEmails($email, $condition);
 
@@ -745,7 +745,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return string
      */
-    public function getDefaultEmail()
+    public function getDefaultEmail(): string
     {
 
         if ($this->isNewItem()) {
@@ -761,7 +761,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return string[]
      */
-    public function getAllEmails()
+    public function getAllEmails(): array
     {
 
         if (!isset($this->fields['id'])) {
@@ -778,7 +778,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function isEmail($email)
+    public function isEmail(string $email): bool
     {
 
         if (!isset($this->fields['id'])) {
@@ -796,7 +796,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function getFromDBbyToken($token, $field = 'personal_token')
+    public function getFromDBbyToken(string $token, string $field = 'personal_token'): bool
     {
         /** @var DBmysql $DB */
         global $DB;
@@ -1460,7 +1460,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * Force authorization assignment rules to be processed for this user
      * @return void
      */
-    public function reapplyRightRules()
+    public function reapplyRightRules(): void
     {
         $rules  = new RuleRightCollection();
         $this->applyRightRules();
@@ -1489,7 +1489,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool true if rules are applied, false otherwise
      */
-    public function applyRightRules()
+    public function applyRightRules(): bool
     {
 
         $return = false;
@@ -1649,7 +1649,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    public function syncLdapGroups()
+    public function syncLdapGroups(): void
     {
         global $DB;
 
@@ -1730,7 +1730,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return string|bool Filename to be stored in user picture field, false if no picture found
      */
-    public function syncLdapPhoto()
+    public function syncLdapPhoto(): string|bool
     {
 
         if (
@@ -1816,7 +1816,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    public function updateUserEmails()
+    public function updateUserEmails(): void
     {
         // Update emails  (use _useremails set from UI, not _emails set from LDAP)
 
@@ -1888,7 +1888,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    public function syncDynamicEmails()
+    public function syncDynamicEmails(): void
     {
         global $DB;
 
@@ -2032,7 +2032,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    private function getFromLDAPGroupVirtual($ldap_connection, array $ldap_method, $userdn, $login): void
+    private function getFromLDAPGroupVirtual(Connection $ldap_connection, array $ldap_method, string $userdn, string $login): void
     {
         global $DB;
 
@@ -2147,7 +2147,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool true if search is applicable, false otherwise
      */
-    private function getFromLDAPGroupDiscret($ldap_connection, array $ldap_method, $userdn, $login)
+    private function getFromLDAPGroupDiscret(Connection $ldap_connection, array $ldap_method, string $userdn, string $login): bool
     {
         global $DB;
 
@@ -2204,7 +2204,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool true if found / false if not
      */
-    public function getFromLDAP($ldap_connection, array $ldap_method, $userdn, $login, $import = true)
+    public function getFromLDAP(Connection $ldap_connection, array $ldap_method, string $userdn, string $login, bool $import = true): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -2474,14 +2474,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
      * @return array Groups of the user located in [0][$group_member_field] in returned array
      */
     public function ldap_get_user_groups(
-        $ds,
-        $ldap_base_dn,
-        $user_dn,
-        $group_condition,
-        $group_member_field,
-        $use_dn,
-        $login_field
-    ) {
+        Connection $ds,
+        string $ldap_base_dn,
+        string $user_dn,
+        string $group_condition,
+        string $group_member_field,
+        bool $use_dn,
+        string $login_field
+    ): array {
 
         $groups     = [];
         $listgroups = [];
@@ -2542,7 +2542,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool true if method is applicable, false otherwise
      */
-    public function getFromIMAP(array $mail_method, $name)
+    public function getFromIMAP(array $mail_method, string $name): bool
     {
         global $DB;
 
@@ -2599,7 +2599,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool true if method is applicable, false otherwise
      */
-    public function getFromSSO()
+    public function getFromSSO(): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -2709,7 +2709,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return void
      */
-    public function blankPassword()
+    public function blankPassword(): void
     {
         global $DB;
 
@@ -2733,7 +2733,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    public function currentUserHaveMoreRightThan($ID)
+    public function currentUserHaveMoreRightThan(int $ID): bool
     {
 
         $user_prof = Profile_User::getUserProfiles($ID);
@@ -2815,7 +2815,7 @@ HTML;
      *
      * @return bool true if user found, false otherwise
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         global $DB;
 
@@ -2902,7 +2902,7 @@ HTML;
      *
      * @return bool true if user found, false otherwise
      */
-    public function showMyForm($target, $ID)
+    public function showMyForm(string $target, int $ID): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -2947,7 +2947,7 @@ HTML;
      *
      * @return array
      */
-    public function getAuthMethodsByID()
+    public function getAuthMethodsByID(): array
     {
         return Auth::getMethodsByID($this->fields["authtype"], $this->fields["auths_id"]);
     }
@@ -3736,7 +3736,7 @@ HTML;
      *
      * @return int[]
      */
-    public static function getDelegateGroupsForUser($entities_id = '')
+    public static function getDelegateGroupsForUser(int|string $entities_id = ''): array
     {
         global $DB;
 
@@ -3772,7 +3772,7 @@ HTML;
      *
      * @return array<int, string> Array of user IDs mapped to their friendly names, sorted alphabetically, with "Myself" first.
      */
-    public static function getUsersFromDelegatedGroups($entities_id = ''): array
+    public static function getUsersFromDelegatedGroups(int|string $entities_id = ''): array
     {
         $groups_ids = self::getDelegateGroupsForUser($entities_id);
         $users_data = [];
@@ -3815,17 +3815,17 @@ HTML;
      * @return DBmysqlIterator
      */
     public static function getSqlSearchResult(
-        $count = true,
-        $right = "all",
-        $entity_restrict = -1,
-        $value = 0,
+        bool $count = true,
+        string|array $right = "all",
+        int|array $entity_restrict = -1,
+        int $value = 0,
         array $used = [],
-        $search = '',
-        $start = 0,
-        $limit = -1,
-        $inactive_deleted = false,
-        $with_no_right = false
-    ) {
+        string $search = '',
+        int $start = 0,
+        int $limit = -1,
+        bool $inactive_deleted = false,
+        bool $with_no_right = false
+    ): DBmysqlIterator {
         global $DB;
 
         // No entity define : use active ones
@@ -4230,7 +4230,7 @@ HTML;
      *
      * @return int|string Random value if displayed, string otherwise
      */
-    public static function dropdown($options = [])
+    public static function dropdown($options = []): int|string
     {
         global $CFG_GLPI;
         // Default values
@@ -4497,7 +4497,7 @@ HTML;
      * @return void|bool false if user does not have rights to import users from external sources,
      *    print form otherwise
      */
-    public static function showAddExtAuthForm()
+    public static function showAddExtAuthForm(): void|bool
     {
 
         if (!Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
@@ -4540,7 +4540,7 @@ HTML;
      *
      * @return bool
      */
-    public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
+    public static function changeAuthMethod(array $IDs = [], int $authtype = 1, int $server = 0): bool
     {
         global $DB;
 
@@ -4594,7 +4594,7 @@ HTML;
      *
      * @return void
      */
-    public function generateVcard()
+    public function generateVcard(): void
     {
 
         // prepare properties for the Vcard
@@ -4654,7 +4654,7 @@ HTML;
      *
      * @return void
      */
-    public function showItems($tech)
+    public function showItems(bool $tech): void
     {
         global $CFG_GLPI, $DB;
 
@@ -4827,7 +4827,7 @@ HTML;
      *
      * @return int ID of user, 0 if not found nor imported
      */
-    public static function getOrImportByEmail($email = '', bool $createuserfromemail = false)
+    public static function getOrImportByEmail(string $email = '', bool $createuserfromemail = false): int
     {
         global $CFG_GLPI, $DB;
 
@@ -4892,7 +4892,7 @@ HTML;
      *
      * @return void
      */
-    public static function manageDeletedUserInLdap($users_id)
+    public static function manageDeletedUserInLdap(int $users_id): void
     {
         global $CFG_GLPI;
 
@@ -4974,7 +4974,7 @@ HTML;
      *
      * @return void
      */
-    public static function manageRestoredUserInLdap($users_id): void
+    public static function manageRestoredUserInLdap(int $users_id): void
     {
         global $CFG_GLPI;
 
@@ -5028,7 +5028,7 @@ HTML;
      *
      * @return int
      */
-    public static function getIdByName($name)
+    public static function getIdByName(string $name): int
     {
         return self::getIdByField('name', $name);
     }
@@ -5045,7 +5045,7 @@ HTML;
      *
      * @return false|int
      */
-    public static function getIdByField($field, $value)
+    public static function getIdByField(string $field, string $value): bool|int
     {
         global $DB;
 
@@ -5070,7 +5070,7 @@ HTML;
      *
      * @return void
      */
-    public function showPasswordUpdateForm(array $error_messages = [])
+    public function showPasswordUpdateForm(array $error_messages = []): void
     {
         TemplateRenderer::getInstance()->display('updatepassword.html.twig', [
             'must_change_password' => Session::mustChangePassword(),
@@ -5086,7 +5086,7 @@ HTML;
      *
      * @return void
      */
-    public static function showPasswordForgetChangeForm($token)
+    public static function showPasswordForgetChangeForm(string $token): void
     {
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'token'    => $token,
@@ -5130,7 +5130,7 @@ HTML;
      *
      * @return void
      */
-    public static function showPasswordInitRequestForm()
+    public static function showPasswordInitRequestForm(): void
     {
         TemplateRenderer::getInstance()->display('forgotpassword.html.twig', [
             'title' => __('Password initialization'),
@@ -5148,7 +5148,7 @@ HTML;
      *
      * @return bool true if password successfully changed, false otherwise
      */
-    public function updateForgottenPassword(array $input)
+    public function updateForgottenPassword(array $input): bool
     {
         // Invalid token
         if (
@@ -5230,7 +5230,7 @@ HTML;
      *
      * @return void
      */
-    public function showUpdateForgottenPassword(array $input)
+    public function showUpdateForgottenPassword(array $input): void
     {
         try {
             if ($this->updateForgottenPassword($input)) {
@@ -5258,7 +5258,7 @@ HTML;
      *
      * @return void
      */
-    public function showForgetPassword($email)
+    public function showForgetPassword(string $email): void
     {
         try {
             $this->forgetPassword($email);
@@ -5506,7 +5506,7 @@ HTML;
      *
      * @return string
      */
-    public static function getUniqueToken($field = 'personal_token')
+    public static function getUniqueToken(string $field = 'personal_token'): string
     {
         global $DB;
 
@@ -5543,7 +5543,7 @@ HTML;
      *
      * @return string|bool User token, false if user does not exist
      */
-    public static function getToken($ID, $field = 'personal_token')
+    public static function getToken(int $ID, string $field = 'personal_token'): string|bool
     {
 
         $user = new self();
@@ -5564,7 +5564,7 @@ HTML;
      *
      * @return string|false token or false in case of error
      */
-    public function getAuthToken($field = 'personal_token', $force_new = false)
+    public function getAuthToken(string $field = 'personal_token', bool $force_new = false): string|bool
     {
         global $CFG_GLPI;
 
@@ -5616,7 +5616,7 @@ HTML;
      *
      * @return string[]
      */
-    public static function checkDefaultPasswords()
+    public static function checkDefaultPasswords(): array
     {
         global $DB;
 
@@ -5656,7 +5656,7 @@ HTML;
      *
      * @return string
      */
-    public static function getURLForPicture($picture, $full = true)
+    public static function getURLForPicture(string $picture, bool $full = true): string
     {
         global $CFG_GLPI;
 
@@ -5678,7 +5678,7 @@ HTML;
      *
      * @return string
      */
-    public static function getThumbnailURLForPicture(?string $picture = null)
+    public static function getThumbnailURLForPicture(?string $picture = null): string
     {
         global $CFG_GLPI;
 
@@ -5706,7 +5706,7 @@ HTML;
      *
      * @return void
      */
-    public static function dropPictureFiles($picture)
+    public static function dropPictureFiles(string $picture): void
     {
         if (!empty($picture)) {
             try {
@@ -5773,7 +5773,7 @@ HTML;
      *
      * @return string[]
      */
-    private static function getLdapFieldNames(array $map)
+    private static function getLdapFieldNames(array $map): array
     {
 
         $ret =  [];
@@ -5802,7 +5802,7 @@ HTML;
      *
      * @return string
      */
-    private static function getLdapFieldValue($map, array $res)
+    private static function getLdapFieldValue(string $map, array $res): string
     {
 
         $ret = preg_replace_callback(
@@ -5819,7 +5819,7 @@ HTML;
      *
      * @return string
      */
-    public static function showSwitchLangForm()
+    public static function showSwitchLangForm(): string
     {
         $params = [
             'value'     => $_SESSION["glpilanguage"],
@@ -5839,7 +5839,7 @@ HTML;
      *
      * @return int[]
      */
-    private function getEntities()
+    private function getEntities(): array
     {
         //get user entities
         if ($this->entities == null) {
@@ -5879,7 +5879,7 @@ HTML;
      *
      * @return int
      */
-    public static function cronPasswordExpiration(CronTask $task)
+    public static function cronPasswordExpiration(CronTask $task): int
     {
         global $CFG_GLPI, $DB;
 
@@ -6029,7 +6029,7 @@ HTML;
      *
      * @return null|int Password expiration time, or null if expiration mechanism is not active.
      */
-    public function getPasswordExpirationTime()
+    public function getPasswordExpirationTime(): ?int
     {
         global $CFG_GLPI;
 
@@ -6061,7 +6061,7 @@ HTML;
      *
      * @return bool
      */
-    public function shouldChangePassword()
+    public function shouldChangePassword(): bool
     {
         global $CFG_GLPI;
 
@@ -6089,7 +6089,7 @@ HTML;
      *
      * @return bool
      */
-    public function hasPasswordExpired()
+    public function hasPasswordExpired(): bool
     {
 
         $expiration_time = $this->getPasswordExpirationTime();
@@ -6189,7 +6189,7 @@ HTML;
      *
      * @return void
      */
-    public function applyGroupsRules()
+    public function applyGroupsRules(): void
     {
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
             if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
@@ -6289,7 +6289,7 @@ HTML;
      *
      * @return bool true
      */
-    public function showSystemUserForm($ID, array $options = []): bool
+    public function showSystemUserForm(int $ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
 
@@ -6450,7 +6450,7 @@ HTML;
      *
      * @return string
      */
-    public static function getInitialsForUserName($name, $firstname, $realname): string
+    public static function getInitialsForUserName(string $name, string $firstname, string $realname): string
     {
         $initials = mb_substr($firstname ?? '', 0, 1) . mb_substr($realname ?? '', 0, 1);
         if (empty($initials)) {
@@ -6836,7 +6836,7 @@ HTML;
      *
      * @return bool|int
      **/
-    public function hasRight($module, $right, $entities_id)
+    public function hasRight(string $module, int $right, int $entities_id): bool|int
     {
         if (!$this->isNewItem()) {
             $user_id = $this->getID();

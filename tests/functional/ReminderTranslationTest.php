@@ -91,7 +91,7 @@ class ReminderTranslationTest extends DbTestCase
      *
      * @return void
      */
-    private function addTranslation(\Reminder $reminder, $text, $lang = 'NULL')
+    private function addTranslation(\Reminder $reminder, $text, string $lang = 'NULL'): void
     {
         $this->login();
         $trans = new \ReminderTranslation();

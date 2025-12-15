@@ -43,7 +43,7 @@ interface NotificationInterface
      * @param array<mixed> $options
      * @return bool
      **/
-    public function sendNotification($options = []);
+    public function sendNotification(array $options = []): bool;
 
     /**
      * Check data
@@ -53,7 +53,7 @@ interface NotificationInterface
      *
      * @return bool
      **/
-    public static function check($value, $options = []);
+    public static function check(mixed $value, array $options = []): bool;
 
 
     /**
@@ -61,5 +61,5 @@ interface NotificationInterface
      *
      * @return mixed
      **/
-    public static function testNotification();
+    public static function testNotification(): mixed;
 }

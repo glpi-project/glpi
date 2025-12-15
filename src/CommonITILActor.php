@@ -51,7 +51,7 @@ abstract class CommonITILActor extends CommonDBRelation
     /**
      * @return ?string
      */
-    public function getActorForeignKey()
+    public function getActorForeignKey(): ?string
     {
         return static::$items_id_2;
     }
@@ -59,7 +59,7 @@ abstract class CommonITILActor extends CommonDBRelation
     /**
      * @return ?string
      */
-    public static function getItilObjectForeignKey()
+    public static function getItilObjectForeignKey(): ?string
     {
         return static::$items_id_1;
     }
@@ -155,7 +155,7 @@ abstract class CommonITILActor extends CommonDBRelation
      *
      * @return bool
      */
-    public function isAlternateEmailForITILObject($items_id, $email)
+    public function isAlternateEmailForITILObject(int $items_id, string $email): bool
     {
         global $DB;
 

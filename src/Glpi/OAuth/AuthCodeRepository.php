@@ -66,7 +66,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
      *
      * @return void
      */
-    public function revokeAuthCode($codeId): void
+    public function revokeAuthCode(string $codeId): void
     {
         global $DB;
 
@@ -78,7 +78,7 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
      *
      * @return bool
      */
-    public function isAuthCodeRevoked($codeId): bool
+    public function isAuthCodeRevoked(string $codeId): bool
     {
         global $DB;
 

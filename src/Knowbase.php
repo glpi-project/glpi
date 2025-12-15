@@ -87,7 +87,7 @@ class Knowbase extends CommonGLPI
      *
      * @return void
      */
-    public static function showSearchView()
+    public static function showSearchView(): void
     {
         global $CFG_GLPI;
 

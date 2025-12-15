@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryExpression;
  *
  * @return bool
  **/
-function update956to957()
+function update956to957(): bool
 {
     /**
      * @var array $CFG_GLPI

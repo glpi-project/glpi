@@ -168,7 +168,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/monitor.html.twig', [
@@ -185,7 +185,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
      * @return array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
-    public function getLinkedItems()
+    public function getLinkedItems(): array
     {
         global $DB;
 
@@ -519,7 +519,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 

@@ -590,7 +590,7 @@ class APIRestTest extends TestCase
      *
      * @return Computer
      */
-    protected function createComputer()
+    protected function createComputer(): Computer
     {
         $data = $this->query(
             'createItems',
@@ -623,7 +623,7 @@ class APIRestTest extends TestCase
      *
      * @return void
      */
-    protected function createNetworkPort($computers_id)
+    protected function createNetworkPort(int $computers_id): void
     {
         $data = $this->query(
             'createItems',
@@ -662,7 +662,7 @@ class APIRestTest extends TestCase
      *
      * @return void
      */
-    protected function createNote($computers_id)
+    protected function createNote(int $computers_id): void
     {
         $data = $this->query(
             'createItems',
@@ -1705,7 +1705,7 @@ class APIRestTest extends TestCase
      *
      * @return void
      */
-    protected function checkContentRange($data, $headers)
+    protected function checkContentRange(array $data, array $headers): void
     {
         $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
         $this->assertArrayHasKey('Content-Range', $headers);
@@ -1721,7 +1721,7 @@ class APIRestTest extends TestCase
      *
      * @return void
      */
-    protected function checkEmptyContentRange($data, $headers)
+    protected function checkEmptyContentRange(array $data, array $headers): void
     {
         $this->assertLessThanOrEqual($data['totalcount'], $data['count']);
         $this->assertEquals(0, $data['totalcount']);
@@ -3172,7 +3172,7 @@ class APIRestTest extends TestCase
      *
      * @return void
      */
-    public function testUpdateItemFormEncodedBody()
+    public function testUpdateItemFormEncodedBody(): void
     {
         $computer = $this->createComputer();
         $computers_id = $computer->getID();
@@ -3228,7 +3228,7 @@ class APIRestTest extends TestCase
      *
      * @return void
      */
-    public function testDeleteItemFormEncodedBody()
+    public function testDeleteItemFormEncodedBody(): void
     {
         $computer = $this->createComputer();
         $computers_id = $computer->getID();

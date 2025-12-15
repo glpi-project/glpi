@@ -388,7 +388,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public function computeNextCreationDate(
         ?string $begin_date,
         ?string $end_date,
-        $periodicity,
+        string|int $periodicity,
         ?int $create_before,
         ?int $calendars_id
     ): string {
@@ -526,7 +526,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      *
      * @return int|false
      */
-    public function getCreateTime()
+    public function getCreateTime(): int|bool
     {
         return strtotime($this->fields['next_creation_date']) + $this->fields['create_before'];
     }
@@ -576,7 +576,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      *
      * @return class-string<CommonDBTM>[]
      **/
-    public static function getAllTypesForHelpdesk()
+    public static function getAllTypesForHelpdesk(): array
     {
         return CommonITILObject::getAllTypesForHelpdesk();
     }
@@ -590,7 +590,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
      *
      * @return bool
      */
-    public function createItem(array $linked_items = [], ?CommonITILObject &$created_item = null)
+    public function createItem(array $linked_items = [], ?CommonITILObject &$created_item = null): bool
     {
         $result = false;
 

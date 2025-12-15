@@ -80,7 +80,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      *
      * @return int
      */
-    public static function countForDomain(Domain $item)
+    public static function countForDomain(Domain $item): int
     {
         return countElementsInTable(
             self::getTable(),
@@ -291,7 +291,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      *
      * @return array|false
      */
-    private function prepareInput($input, $add = false)
+    private function prepareInput(array $input, bool $add = false): array|bool
     {
         if (($add && empty($input['domains_id'])) || (isset($input['domains_id']) && empty($input['domains_id']))) {
             Session::addMessageAfterRedirect(
@@ -403,7 +403,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showForDomain(Domain $domain)
+    public static function showForDomain(Domain $domain): void|bool
     {
         global $DB;
 
@@ -539,7 +539,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function getDisplayName(Domain $domain, $name)
+    public static function getDisplayName(Domain $domain, string $name): string
     {
         $name_txt = rtrim(
             str_replace(

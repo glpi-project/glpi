@@ -172,7 +172,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return array
      */
-    private function prepareConnections(stdClass $port)
+    private function prepareConnections(stdClass $port): array
     {
         global $DB;
 
@@ -644,7 +644,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    protected function portUpdated(stdClass $port, int $netports_id)
+    protected function portUpdated(stdClass $port, int $netports_id): void
     {
         $this->portChanged($port, $netports_id);
     }
@@ -655,7 +655,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    protected function portCreated(stdClass $port, int $netports_id)
+    protected function portCreated(stdClass $port, int $netports_id): void
     {
         $this->portChanged($port, $netports_id);
     }
@@ -666,7 +666,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    protected function portChanged(stdClass $port, int $netports_id)
+    protected function portChanged(stdClass $port, int $netports_id): void
     {
         $this->handleConnections($port, $netports_id);
         $this->handleVlans($port, $netports_id);
@@ -684,7 +684,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed(int $items_id, string $itemtype, int $rules_id, int|array $ports_id = []): void
     {
         if (!is_array($ports_id)) {
             $ports_id = [$ports_id]; // Handle compatibility with previous signature.
@@ -789,7 +789,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return string|false
      */
-    public function getNameForMac($mac)
+    public function getNameForMac(string $mac): string|bool
     {
         global $GLPI_CACHE;
 
@@ -817,7 +817,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return bool
      */
-    protected function isLLDP($port): bool
+    protected function isLLDP(stdClass $port): bool
     {
         if (!property_exists($port, 'lldp') && !property_exists($port, 'cdp')) {
             return false;
@@ -831,7 +831,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    public function handlePorts($itemtype = null, $items_id = null)
+    public function handlePorts(?string $itemtype = null, ?int $items_id = null): void
     {
         $mainasset = $this->extra_data[$this->main_asset::class];
 
@@ -902,7 +902,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    public function handleHub($found_macs, $netports_id)
+    public function handleHub(array $found_macs, int $netports_id): void
     {
         $hubs_id = 0;
 
@@ -968,7 +968,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return array|void
      */
-    public function getPart($part)
+    public function getPart(string $part): array|void
     {
         if (!in_array($part, ['connections', 'aggregates', 'vlans', 'connection_ports'])) {
             return;

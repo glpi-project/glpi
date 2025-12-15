@@ -54,7 +54,7 @@ class ProjectTaskLink extends CommonDBRelation
      * @return DBmysqlIterator
      * @used-by gantt plugin
      */
-    public function getFromDBForItemIDs($projecttaskIds)
+    public function getFromDBForItemIDs(string $projecttaskIds): DBmysqlIterator
     {
         global $DB;
 
@@ -71,7 +71,7 @@ class ProjectTaskLink extends CommonDBRelation
      * @param array{projecttasks_id_source: int, projecttasks_id_target: int, type: int} $taskLink
      * @return bool
      */
-    public function checkIfExist($taskLink)
+    public function checkIfExist(array $taskLink): bool
     {
         global $DB;
         $iterator = $DB->request([

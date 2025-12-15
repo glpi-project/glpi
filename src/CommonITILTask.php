@@ -115,7 +115,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @return bool|int
      */
-    public function canViewPrivates()
+    public function canViewPrivates(): bool|int
     {
         return Session::haveRight(self::$rightname, self::SEEPRIVATE);
     }
@@ -124,7 +124,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     /**
      * @return bool
      */
-    public function canEditAll()
+    public function canEditAll(): bool
     {
         return Session::haveRightsOr(self::$rightname, [CREATE, DELETE, PURGE, self::UPDATEALL]);
     }
@@ -252,7 +252,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return false|CommonDBTM object of the concerned item or false on error
      **/
-    public function getItem()
+    public function getItem(): bool|CommonDBTM
     {
         $item = static::getItilObjectItemInstance();
         if ($item->getFromDB($this->fields[$item::getForeignKeyField()])) {
@@ -266,7 +266,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return bool
      **/
-    public function canReadITILItem()
+    public function canReadITILItem(): bool
     {
         $item = static::getItilObjectItemInstance();
         if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
@@ -282,7 +282,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return bool
      **/
-    public function canUpdateITILItem()
+    public function canUpdateITILItem(): bool
     {
         $item = static::getItilObjectItemInstance();
         if (!$item->can($this->getField($item->getForeignKeyField()), UPDATE)) {
@@ -341,7 +341,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return string
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -1007,7 +1007,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $task = new static();
         $tab = [];
@@ -1282,7 +1282,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return bool
      */
-    public function test_valid_date($input)
+    public function test_valid_date(array $input): bool
     {
 
         return (!empty($input["begin"])
@@ -1304,7 +1304,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return false|array of planning item
      **/
-    public static function genericPopulatePlanning($itemtype, $options = [])
+    public static function genericPopulatePlanning(string $itemtype, array $options = []): bool|array
     {
         global $CFG_GLPI, $DB;
 
@@ -1569,7 +1569,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return array of planning item
      **/
-    public static function genericPopulateNotPlanned($itemtype, $options = [])
+    public static function genericPopulateNotPlanned(string $itemtype, array $options = []): array
     {
         $options['not_planned'] = true;
         return self::genericPopulatePlanning($itemtype, $options);
@@ -1586,7 +1586,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return false|string Output
      **/
-    public static function genericDisplayPlanningItem($itemtype, array $val, $who, $type = "", $complete = 0)
+    public static function genericDisplayPlanningItem(string $itemtype, array $val, int $who, string $type = "", int|bool $complete = 0): bool|string
     {
         global $CFG_GLPI;
 
@@ -1678,7 +1678,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return true
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
             'item'               => $options['parent'],
@@ -1695,7 +1695,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return void
      */
-    public function showMassiveActionAddTaskForm()
+    public function showMassiveActionAddTaskForm(): void
     {
         $twig = TemplateRenderer::getInstance();
 
@@ -1728,7 +1728,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return DBmysqlIterator
      */
-    public static function getTaskList($status, $showgrouptickets, $start = null, $limit = null)
+    public static function getTaskList(string $status, bool $showgrouptickets, ?int $start = null, ?int $limit = null): DBmysqlIterator
     {
         global $DB;
 
@@ -1791,7 +1791,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return void
      */
-    public static function showCentralList($start, $status = 'todo', $showgrouptickets = true)
+    public static function showCentralList(int $start, string $status = 'todo', bool $showgrouptickets = true): void
     {
         $iterator = self::getTaskList($status, $showgrouptickets);
 
@@ -1944,7 +1944,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return void
      */
-    public static function showVeryShort($ID, $itemtype)
+    public static function showVeryShort(int $ID, string $itemtype): void
     {
         global $DB;
 
@@ -2022,7 +2022,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
      *
      * @return false|VCalendar[]
      */
-    private static function getItemsAsVCalendars(array $criteria)
+    private static function getItemsAsVCalendars(array $criteria): bool|array
     {
 
         global $DB;

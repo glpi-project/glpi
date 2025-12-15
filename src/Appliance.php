@@ -142,7 +142,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return bool item found
      */
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
@@ -361,7 +361,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd(string $itemtype)
+    public static function rawSearchOptionsToAdd(string $itemtype): array
     {
         $tab = [];
 
@@ -487,7 +487,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return array
      */
-    public static function getTypes($all = false): array
+    public static function getTypes(bool $all = false): array
     {
         global $CFG_GLPI;
 

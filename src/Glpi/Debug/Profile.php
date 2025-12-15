@@ -144,7 +144,7 @@ final class Profile
      *
      * @return void
      */
-    public function setData(string $widget, $data)
+    public function setData(string $widget, mixed $data): void
     {
         if ($this->disabled) {
             return;
@@ -164,7 +164,7 @@ final class Profile
      *
      * @return void
      */
-    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = ''): void
     {
         if ($this->disabled) {
             return;

@@ -72,7 +72,7 @@ class NetworkAlias extends FQDNLabel
      *
      * @return bool
      **/
-    public function showForm($ID, $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
 
         // Show only simple form to add / edit
@@ -141,7 +141,7 @@ class NetworkAlias extends FQDNLabel
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
         if (isset($options['dont_display'][$column_name])) {
@@ -173,7 +173,7 @@ class NetworkAlias extends FQDNLabel
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
         global $DB;
 
         if (empty($item)) {
@@ -231,7 +231,7 @@ class NetworkAlias extends FQDNLabel
      * @param int $withtemplate
      * @return false|void
      */
-    public static function showForNetworkName(NetworkName $item, $withtemplate = 0)
+    public static function showForNetworkName(NetworkName $item, int $withtemplate = 0): bool|void
     {
         global $CFG_GLPI, $DB;
 
@@ -370,7 +370,7 @@ class NetworkAlias extends FQDNLabel
      *
      * @return void
      */
-    public static function showForFQDN(FQDN $item, $withtemplate)
+    public static function showForFQDN(FQDN $item, int $withtemplate): void
     {
         global $DB;
 

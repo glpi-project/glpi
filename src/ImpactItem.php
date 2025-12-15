@@ -51,7 +51,7 @@ class ImpactItem extends CommonDBTM
     public static function findForItem(
         CommonDBTM $item,
         bool $create_if_missing = true
-    ) {
+    ): ImpactItem|bool {
         global $DB;
 
         $it = $DB->request([

@@ -88,7 +88,7 @@ class QueryFunction
      *
      * @return QueryExpression
      */
-    public static function __callStatic(string $name, array $arguments)
+    public static function __callStatic(string $name, array $arguments): QueryExpression
     {
         $args = array_values($arguments);
         $params = $args[0];

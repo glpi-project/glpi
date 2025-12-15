@@ -91,7 +91,7 @@ class RouterTest extends GLPITestCase
      * Ensure all schemas for CommonTreeDropdown itemtypes have the correct readonly properties such as completename and level
      * @return void
      */
-    public function testAllTreeSchemasHaveReadonlyProps()
+    public function testAllTreeSchemasHaveReadonlyProps(): void
     {
         $router = Router::getInstance();
         $controllers = $router->getControllers();
@@ -124,7 +124,7 @@ class RouterTest extends GLPITestCase
      * should use x-table instead to point to the table directly.
      * @return void
      */
-    public function testNoDuplicateItemtypeSchemas()
+    public function testNoDuplicateItemtypeSchemas(): void
     {
         $router = Router::getInstance();
         $controllers = $router->getControllers();

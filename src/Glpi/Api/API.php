@@ -131,7 +131,7 @@ abstract class API
      *
      * @see \CommonGLPI::getTypeName()
      */
-    abstract public static function getTypeName($nb = 0);
+    abstract public static function getTypeName(int $nb = 0): string;
 
     /**
      * First function used on api call
@@ -139,7 +139,7 @@ abstract class API
      *
      * @return void self::returnResponse called for output
      */
-    abstract public function call();
+    abstract public function call(): void;
 
     /**
      * Construct this->parameters from query string and http body
@@ -149,7 +149,7 @@ abstract class API
      *
      * @return void
      */
-    abstract protected function parseIncomingParams($is_inline_doc = false);
+    abstract protected function parseIncomingParams(bool $is_inline_doc = false): void;
 
     /**
      * Send response to client.
@@ -162,21 +162,21 @@ abstract class API
      *
      * @return void
      */
-    abstract protected function returnResponse($response, $httpcode = 200, $additionalheaders = []);
+    abstract protected function returnResponse(mixed $response, int $httpcode = 200, array $additionalheaders = []): void;
 
     /**
      * Upload and validate files from request and append to $this->parameters['input']
      *
      * @return void
      */
-    abstract protected function manageUploadedFiles();
+    abstract protected function manageUploadedFiles(): void;
 
     /**
      * Constructor
      *
      * @return void
      */
-    public function initApi()
+    public function initApi(): void
     {
         global $CFG_GLPI;
 
@@ -253,7 +253,7 @@ abstract class API
      *
      * @return void
      */
-    protected function cors()
+    protected function cors(): void
     {
         if (isset($_SERVER['HTTP_ORIGIN'])) {
             header("Access-Control-Allow-Origin: *");
@@ -287,7 +287,7 @@ abstract class API
      *
      * @return array|void array with session_token, or void when error response is send in case of error
      */
-    protected function initSession($params = [])
+    protected function initSession(array $params = []): array|void
     {
         global $CFG_GLPI;
 
@@ -368,7 +368,7 @@ abstract class API
      *
      * @return bool
      */
-    protected function killSession()
+    protected function killSession(): bool
     {
         Session::destroy();
         return true;
@@ -381,7 +381,7 @@ abstract class API
      *
      * @return void
      */
-    protected function retrieveSession()
+    protected function retrieveSession(): void
     {
 
         if (
@@ -418,7 +418,7 @@ abstract class API
      *
      * @return bool|void success status or void when error response is send in case of error
      */
-    protected function changeActiveEntities($params = [])
+    protected function changeActiveEntities(array $params = []): bool|void
     {
         if (!isset($params['entities_id'])) {
             $entities_id = 'all';
@@ -448,7 +448,7 @@ abstract class API
      *
      * @return array of entities (with id and name)
      */
-    protected function getMyEntities($params = [])
+    protected function getMyEntities(array $params = []): array
     {
         if (!isset($params['is_recursive'])) {
             $params['is_recursive'] = false;
@@ -490,7 +490,7 @@ abstract class API
      *  - active_entity_recursive : boolean, if we see sons of this entity
      *  - active_entities : array all active entities (active_entity and its sons)
      */
-    protected function getActiveEntities()
+    protected function getActiveEntities(): array
     {
         $actives_entities = [];
         foreach (array_values($_SESSION['glpiactiveentities']) as $active_entity) {
@@ -516,7 +516,7 @@ abstract class API
      *
      * @return bool|void success status, or void when error response is send in case of error
      */
-    protected function changeActiveProfile($params = [])
+    protected function changeActiveProfile(array $params = []): bool|void
     {
         if (!isset($params['profiles_id'])) {
             $this->returnError();
@@ -539,7 +539,7 @@ abstract class API
      *
      * @return array of profiles (with associated rights)
      */
-    protected function getMyProfiles()
+    protected function getMyProfiles(): array
     {
         $myprofiles = [];
         foreach ($_SESSION['glpiprofiles'] as $profiles_id => $profile) {
@@ -563,7 +563,7 @@ abstract class API
      *
      * @return array the profiles_id
      */
-    protected function getActiveProfile()
+    protected function getActiveProfile(): array
     {
         return ["active_profile" => $_SESSION['glpiactiveprofile']];
     }
@@ -576,7 +576,7 @@ abstract class API
      *
      * @return array
      */
-    protected function getFullSession()
+    protected function getFullSession(): array
     {
         return ['session' => $_SESSION];
     }
@@ -588,7 +588,7 @@ abstract class API
      *
      * @return array
      */
-    protected function getGlpiConfig()
+    protected function getGlpiConfig(): array
     {
         return ['cfg_glpi' => Config::getSafeConfig()];
     }
@@ -620,7 +620,7 @@ abstract class API
      *
      * @return array    fields of found object
      */
-    protected function getItem($itemtype, $id, $params = [])
+    protected function getItem(string $itemtype, int $id, array $params = []): array
     {
         global $CFG_GLPI, $DB;
 
@@ -1083,7 +1083,7 @@ abstract class API
      *
      * @return array
      */
-    protected function arrayRightError()
+    protected function arrayRightError(): array
     {
 
         return ['error'   => 401,
@@ -1116,7 +1116,7 @@ abstract class API
      *
      * @return array|void collection of fields, or void when error response is send in case of error
      */
-    protected function getItems($itemtype, $params = [], &$totalcount = 0)
+    protected function getItems($itemtype, array $params = [], int &$totalcount = 0): array|void
     {
         global $DB;
 
@@ -1420,7 +1420,7 @@ abstract class API
      *
      * @return array collection of glpi object's fields
      */
-    protected function getMultipleItems($params = [])
+    protected function getMultipleItems(array $params = []): array
     {
 
         if (!is_array($params['items'])) {
@@ -1453,10 +1453,10 @@ abstract class API
      * @return array all searchoptions of specified itemtype
      */
     protected function listSearchOptions(
-        $itemtype,
-        $params = [],
+        string $itemtype,
+        array $params = [],
         bool $check_depreciation = true
-    ) {
+    ): array {
         if ($check_depreciation) {
             $itemtype = $this->handleDepreciation($itemtype);
         }
@@ -1519,7 +1519,7 @@ abstract class API
      *
      * @return string the unique id
      */
-    private function getSearchOptionUniqID($itemtype, $option = [])
+    private function getSearchOptionUniqID($itemtype, array $option = []): string
     {
 
         $uid_parts = [$itemtype];
@@ -1563,7 +1563,7 @@ abstract class API
      *
      * @return array unique id parts
      */
-    private function getSearchOptionUniqIDJoins($option)
+    private function getSearchOptionUniqIDJoins(array $option): array
     {
 
         $uid_parts = [];
@@ -1613,7 +1613,7 @@ abstract class API
      *
      * @return array|void array of raw rows from Search class, or void when error response is sent in case of error
      */
-    protected function searchItems($itemtype, $params = [])
+    protected function searchItems(string $itemtype, array $params = []): array|void
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -1868,7 +1868,7 @@ abstract class API
      *
      * @return array|void array of id, or void when error response is send in case of error
      */
-    protected function createItems($itemtype, $params = [])
+    protected function createItems(string $itemtype, array $params = []): array|void
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -1972,7 +1972,7 @@ abstract class API
      *
      * @return array the cleaned input
      */
-    private function inputObjectToArray($input)
+    private function inputObjectToArray(mixed $input): array
     {
         if (is_object($input)) {
             $input = get_object_vars($input);
@@ -1999,7 +1999,7 @@ abstract class API
      *
      * @return array|void  array of boolean, or void when error response is send in case of error
      */
-    protected function updateItems($itemtype, $params = [])
+    protected function updateItems(string $itemtype, array $params = []): array|void
     {
         $itemtype = $this->handleDepreciation($itemtype);
         $input    = isset($params['input']) ? $params["input"] : null;
@@ -2119,7 +2119,7 @@ abstract class API
      *
      * @return array|void success status, or void when error response is send in case of error
      */
-    protected function deleteItems($itemtype, $params = [])
+    protected function deleteItems(string $itemtype, array $params = []): array|void
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -2233,7 +2233,7 @@ abstract class API
      *
      * @return array|void response array, or void when error response is send in case of error
      */
-    protected function lostPassword($params = [])
+    protected function lostPassword(array $params = []): array|void
     {
         global $CFG_GLPI;
 
@@ -2292,7 +2292,7 @@ abstract class API
      *
      * @return void
      */
-    protected function initEndpoint($unlock_session = true, $endpoint = "")
+    protected function initEndpoint(bool $unlock_session = true, string $endpoint = ""): void
     {
 
         if ($endpoint === "") {
@@ -2313,7 +2313,7 @@ abstract class API
      *
      * @return void
      */
-    private function checkAppToken()
+    private function checkAppToken(): void
     {
         // check app token (if needed)
         if (!isset($this->parameters['app_token'])) {
@@ -2349,7 +2349,7 @@ abstract class API
      *
      * @return void
      */
-    private function logEndpointUsage($endpoint = "")
+    private function logEndpointUsage(string $endpoint = ""): void
     {
 
         $username = "";
@@ -2389,7 +2389,7 @@ abstract class API
      *
      * @return void
      */
-    protected function checkSessionToken()
+    protected function checkSessionToken(): void
     {
 
         if (
@@ -2415,7 +2415,7 @@ abstract class API
      *
      * @return void
      */
-    private function unlockSessionIfPossible()
+    private function unlockSessionIfPossible(): void
     {
 
         if (!$this->session_write) {
@@ -2429,7 +2429,7 @@ abstract class API
      *
      * @return string Last message
      */
-    private function getGlpiLastMessage()
+    private function getGlpiLastMessage(): string
     {
         $all_messages             = [];
 
@@ -2469,7 +2469,7 @@ abstract class API
      *
      * @return void
      */
-    protected function header($html = false, $title = "")
+    protected function header(bool $html = false, string $title = ""): void
     {
 
         // Send UTF8 Headers
@@ -2503,7 +2503,7 @@ abstract class API
      *
      * @return void
      */
-    public function inlineDocumentation($file)
+    public function inlineDocumentation(string $file): void
     {
         $this->header(true, __("API Documentation"));
 
@@ -2551,7 +2551,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return array altered $fields
      */
-    protected static function parseDropdowns($fields, $params = [])
+    protected static function parseDropdowns(array $fields, array $params = []): array
     {
 
         // default params
@@ -2619,7 +2619,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return array child classes
      */
-    public static function getHatoasClasses($itemtype)
+    public static function getHatoasClasses(string $itemtype): array
     {
         global $CFG_GLPI;
 
@@ -2726,7 +2726,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageNotfoundError($return_error = true)
+    public function messageNotfoundError(bool $return_error = true): void
     {
 
         $this->returnError(
@@ -2746,7 +2746,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageBadArrayError($return_error = true)
+    public function messageBadArrayError(bool $return_error = true): void
     {
 
         $this->returnError(
@@ -2766,7 +2766,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageLostError($return_error = true)
+    public function messageLostError(bool $return_error = true): void
     {
 
         $this->returnError(
@@ -2786,7 +2786,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageRightError($return_error = true)
+    public function messageRightError(bool $return_error = true): void
     {
 
         $this->returnError(
@@ -2806,7 +2806,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageSessionError($return_error = true)
+    public function messageSessionError(bool $return_error = true): void
     {
         $this->returnError(
             __("session_token seems invalid"),
@@ -2825,7 +2825,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageSessionTokenMissing($return_error = true)
+    public function messageSessionTokenMissing(bool $return_error = true): void
     {
 
         $this->returnError(
@@ -2856,12 +2856,12 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      * @return array|void
      */
     public function returnError(
-        $message = "Bad Request",
-        $httpcode = 400,
-        $statuscode = "ERROR",
-        $docmessage = true,
-        $return_response = true
-    ) {
+        string|array $message = "Bad Request",
+        int $httpcode = 400,
+        string $statuscode = "ERROR",
+        bool $docmessage = true,
+        bool $return_response = true
+    ): array|void {
 
         if (empty($httpcode)) {
             $httpcode = 400;
@@ -2888,7 +2888,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return string
      */
-    protected function getHttpBody()
+    protected function getHttpBody(): string
     {
         return file_get_contents('php://input');
     }
@@ -2908,7 +2908,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         array $data,
         array $params,
         string $self_itemtype
-    ) {
+    ): array {
         $_names = [];
 
         foreach ($params['add_keys_names'] as $kn_fkey) {
@@ -3147,7 +3147,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    protected function userPicture($user_id)
+    protected function userPicture(int|bool $user_id): void
     {
         // Try to load target user
         $user = new User();
@@ -3220,7 +3220,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         string $itemtype,
         ?int $id = null,
         bool $is_deleted = false
-    ) {
+    ): array|void {
         if (is_null($id)) {
             // No id supplied, show massive actions for the given itemtype
             $actions = $this->getMassiveActionsForItemtype(
@@ -3323,7 +3323,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         string $itemtype,
         ?string $action_key,
         bool $is_deleted
-    ) {
+    ): array|void {
         if (is_null($action_key)) {
             return $this->returnError(
                 "Missing action key, run 'getMassiveActions' endpoint to see available keys",
@@ -3416,7 +3416,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         ?string $action_key,
         array $ids,
         array $params
-    ) {
+    ): void {
         if (is_null($action_key)) {
             $this->returnError(
                 "Missing action key, run 'getMassiveActions' endpoint to see available keys",

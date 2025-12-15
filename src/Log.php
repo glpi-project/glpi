@@ -136,7 +136,7 @@ class Log extends CommonDBTM
      *
      * @return bool for success (at least 1 log entry added)
      */
-    public static function constructHistory(CommonDBTM $item, $oldvalues, $values)
+    public static function constructHistory(CommonDBTM $item, array $oldvalues, array $values): bool
     {
 
         if (!count($oldvalues)) {
@@ -226,7 +226,7 @@ class Log extends CommonDBTM
      *
      * @return bool success
      */
-    public static function history($items_id, $itemtype, $changes, $itemtype_link = '', $linked_action = 0)
+    public static function history(int $items_id, $itemtype, array $changes, int|string $itemtype_link = '', int $linked_action = 0): bool
     {
         global $DB;
 
@@ -312,7 +312,7 @@ class Log extends CommonDBTM
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $CFG_GLPI;
 
@@ -378,7 +378,7 @@ class Log extends CommonDBTM
      *      - string field:         the name of the updated field
      *      - string change:        the description of the change (contains HTML)
      */
-    public static function getHistoryData(CommonDBTM $item, $start = 0, $limit = 0, array $sqlfilters = [])
+    public static function getHistoryData(CommonDBTM $item, int $start = 0, int $limit = 0, array $sqlfilters = []): array
     {
         $DBread = DBConnection::getReadConnection();
 
@@ -934,7 +934,7 @@ class Log extends CommonDBTM
      *
      * @since 9.3
      **/
-    public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item)
+    public static function getDistinctUserNamesValuesInItemLog(CommonDBTM $item): array
     {
         global $DB;
 
@@ -975,7 +975,7 @@ class Log extends CommonDBTM
      *
      * @since 9.3
      **/
-    public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item)
+    public static function getDistinctAffectedFieldValuesInItemLog(CommonDBTM $item): array
     {
         global $DB;
 
@@ -1149,7 +1149,7 @@ class Log extends CommonDBTM
      *
      * @since 9.3
      **/
-    public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item)
+    public static function getDistinctLinkedActionValuesInItemLog(CommonDBTM $item): array
     {
         global $DB;
 
@@ -1215,7 +1215,7 @@ class Log extends CommonDBTM
      *
      * @since 9.3
      **/
-    public static function getLinkedActionLabel($linked_action)
+    public static function getLinkedActionLabel(int $linked_action): string
     {
         $label = null;
 
@@ -1342,7 +1342,7 @@ class Log extends CommonDBTM
      *
      * @since 9.3
      **/
-    public static function convertFiltersValuesToSqlCriteria(array $filters)
+    public static function convertFiltersValuesToSqlCriteria(array $filters): array
     {
         $sql_filters = [];
 
@@ -1431,7 +1431,7 @@ class Log extends CommonDBTM
      *
      * @return void
      */
-    public static function queue($var): void
+    public static function queue(array $var): void
     {
         static::$queue[] = $var;
     }

@@ -571,7 +571,7 @@ class Notification extends CommonDBTM implements FilterableInterface
      *
      * @return void
      **/
-    public static function send($options)
+    public static function send(array $options): void
     {
         $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
 
@@ -589,7 +589,7 @@ class Notification extends CommonDBTM implements FilterableInterface
      * @param int $entity
      * @return string
      **/
-    public static function getMailingSignature($entity)
+    public static function getMailingSignature(int $entity): string
     {
         global $CFG_GLPI;
 
@@ -608,7 +608,7 @@ class Notification extends CommonDBTM implements FilterableInterface
      *
      * @return DBmysqlIterator
      **/
-    public static function getNotificationsByEventAndType($event, $itemtype, $entity)
+    public static function getNotificationsByEventAndType(string $event, string $itemtype, int $entity): DBmysqlIterator
     {
         global $CFG_GLPI, $DB;
 
@@ -693,7 +693,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     /**
      * @return bool
      */
-    public function allowResponse()
+    public function allowResponse(): bool
     {
         return (bool) $this->fields['allow_response'];
     }

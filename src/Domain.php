@@ -269,7 +269,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 
@@ -349,7 +349,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): array
     {
         if (isset($input['date_creation']) && empty($input['date_creation'])) {
             $input['date_creation'] = 'NULL';
@@ -393,7 +393,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return string|int string (rendered html) if $option['display'] is false, else int (rand value)
      * */
-    public static function dropdownDomains($options = [])
+    public static function dropdownDomains(array $options = []): string|int
     {
         global $DB;
 
@@ -621,7 +621,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'DomainsAlert':
@@ -639,7 +639,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function expiredDomainsCriteria($entities_id): array
+    public static function expiredDomainsCriteria(int $entities_id): array
     {
         global $DB;
 
@@ -663,7 +663,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function closeExpiriesDomainsCriteria($entities_id): array
+    public static function closeExpiriesDomainsCriteria(int $entities_id): array
     {
         global $DB;
 
@@ -688,7 +688,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return int
      */
-    public static function cronDomainsAlert($task = null)
+    public static function cronDomainsAlert(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -798,7 +798,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array of types
      */
-    public static function getTypes($all = false)
+    public static function getTypes(bool $all = false): array
     {
         global $CFG_GLPI;
 
@@ -839,7 +839,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function getUsed(array $used, $domaintype)
+    public static function getUsed(array $used, int $domaintype): array
     {
         global $DB;
 
@@ -862,7 +862,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * @return bool
      */
-    public static function canManageRecords()
+    public static function canManageRecords(): bool
     {
         return static::canView() && count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
     }
@@ -903,7 +903,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * @return string
      */
-    public function getCanonicalName()
+    public function getCanonicalName(): string
     {
         return rtrim($this->fields['name'], '.') . '.';
     }

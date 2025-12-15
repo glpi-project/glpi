@@ -61,7 +61,7 @@ class CommonITILValidationCron extends CommonDBTM
      *
      * @return int task status (0: no work to do, 1: work done)
      */
-    public static function cronApprovalReminder(CronTask $task)
+    public static function cronApprovalReminder(CronTask $task): int
     {
         global $CFG_GLPI, $DB;
 

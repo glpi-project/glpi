@@ -57,7 +57,7 @@ class ObjectLock extends CommonDBTM
      * @inheritDoc
      * @return int Always 0 (Root entity)
      **/
-    public function getEntityID()
+    public function getEntityID(): int
     {
         return 0;
     }
@@ -66,7 +66,7 @@ class ObjectLock extends CommonDBTM
      * @return array Array of lockable objects 'itemtype' => 'plural itemtype'
      * @used-by templates/pages/setup/general/general_setup.html.twig
      **/
-    public static function getLockableObjects()
+    public static function getLockableObjects(): array
     {
         global $CFG_GLPI;
 
@@ -84,7 +84,7 @@ class ObjectLock extends CommonDBTM
      *
      * @return bool
      **/
-    private function isAutolockReadonlyMode()
+    private function isAutolockReadonlyMode(): bool
     {
         if (isset($_POST['lockwrite'])) {
             // Edit mode is requested
@@ -103,7 +103,7 @@ class ObjectLock extends CommonDBTM
      * and read-only profile is set
      * @return bool True if locked
      **/
-    private function lockObject()
+    private function lockObject(): bool
     {
         global $CFG_GLPI;
 
@@ -170,7 +170,7 @@ class ObjectLock extends CommonDBTM
     /**
      * @return bool True if item is locked. If the object is locked, the fields of this {@link ObjectLock} are replaced with the data from the DB.
      **/
-    private function getLockedObjectInfo(string $itemtype, int $items_id)
+    private function getLockedObjectInfo(string $itemtype, int $items_id): bool
     {
         global $CFG_GLPI;
 
@@ -196,7 +196,7 @@ class ObjectLock extends CommonDBTM
      *
      * @return false|ObjectLock returns ObjectLock if locked, else false
      **/
-    public static function isLocked($itemtype, $items_id)
+    public static function isLocked(string $itemtype, int $items_id): bool|ObjectLock
     {
         $ol = new self();
         return ($ol->getLockedObjectInfo($itemtype, $items_id) ? $ol : false);
@@ -209,7 +209,7 @@ class ObjectLock extends CommonDBTM
      *
      * @return void
      */
-    public static function setReadOnlyProfile()
+    public static function setReadOnlyProfile(): void
     {
         global $CFG_GLPI;
 
@@ -244,7 +244,7 @@ class ObjectLock extends CommonDBTM
      *
      * @return void
      **/
-    public static function revertProfile()
+    public static function revertProfile(): void
     {
         if (isset($_SESSION['glpilocksavedprofile'])) {
             $_SESSION['glpiactiveprofile'] = $_SESSION['glpilocksavedprofile'];
@@ -260,7 +260,7 @@ class ObjectLock extends CommonDBTM
      *
      * @return void
      */
-    public static function manageObjectLock($itemtype, &$options)
+    public static function manageObjectLock(string $itemtype, array &$options): void
     {
         global $CFG_GLPI;
 
@@ -305,7 +305,7 @@ class ObjectLock extends CommonDBTM
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         global $CFG_GLPI;
         $tab = [];
@@ -400,7 +400,7 @@ TWIG;
      *
      * @return array empty array if itemtype is not lockable; else returns UNLOCK right
      **/
-    public static function getRightsToAdd($itemtype, $interface = 'central')
+    public static function getRightsToAdd(string $itemtype, string $interface = 'central'): array
     {
         global $CFG_GLPI;
 
@@ -423,7 +423,7 @@ TWIG;
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'unlockobject':
@@ -443,7 +443,7 @@ TWIG;
      * @return int  >0: done. -1: error, 0: nothing to do
      * @used-by CronTask
      **/
-    public static function cronUnlockObject($task)
+    public static function cronUnlockObject(CronTask $task): int
     {
         // here we have to delete old locks
         $actionCode = 0; // by default

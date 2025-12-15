@@ -175,7 +175,7 @@ class Contract_Item extends CommonDBRelation
      *
      * @return array of items linked to contracts
      **/
-    public static function getItemsForContract($contract_id, $entities_id)
+    public static function getItemsForContract(int $contract_id, int $entities_id): array
     {
         $items = [];
 
@@ -255,7 +255,7 @@ class Contract_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         $ID       = $item->fields['id'];
 
@@ -397,7 +397,7 @@ TWIG, $twig_params);
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showForContract(Contract $contract, $withtemplate = 0)
+    public static function showForContract(Contract $contract, int $withtemplate = 0): void|bool
     {
         global $DB, $CFG_GLPI;
 

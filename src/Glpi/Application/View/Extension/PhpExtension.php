@@ -74,7 +74,7 @@ class PhpExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function phpConfig(string $name)
+    public function phpConfig(string $name): mixed
     {
         return ini_get($name);
     }
@@ -87,7 +87,7 @@ class PhpExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function call(string|array $callable, array $parameters = [])
+    public function call(string|array $callable, array $parameters = []): mixed
     {
         if (!is_callable($callable)) {
             $callable_str = null;
@@ -113,7 +113,7 @@ class PhpExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function getStatic($class, string $property)
+    public function getStatic(mixed $class, string $property): mixed
     {
         if (!is_object($class) && !class_exists($class)) {
             \trigger_error(
@@ -148,7 +148,7 @@ class PhpExtension extends AbstractExtension
      *
      * @return bool
      */
-    public function isInstanceof($value, $classname): bool
+    public function isInstanceof(mixed $value, string $classname): bool
     {
         return $value instanceof $classname;
     }
@@ -161,7 +161,7 @@ class PhpExtension extends AbstractExtension
      *
      * @return bool
      */
-    public function isUsingTrait($value, $trait): bool
+    public function isUsingTrait(mixed $value, string $trait): bool
     {
         return is_object($value) && Toolbox::hasTrait($value, $trait);
     }

@@ -69,7 +69,7 @@ class Update
      *
      * @since 11.0.0 The `$args` parameter has been removed.
      */
-    public function __construct($DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
+    public function __construct(DBmysql $DB, string $migrations_directory = GLPI_ROOT . '/install/migrations/')
     {
         $this->DB = $DB;
         $this->migrations_directory = $migrations_directory;
@@ -80,7 +80,7 @@ class Update
      *
      * @return array
      */
-    public function getCurrents()
+    public function getCurrents(): array
     {
         $currents = [];
         $DB = $this->DB;
@@ -169,7 +169,7 @@ class Update
      * @return bool
      */
     public function doUpdates(
-        $current_version = null,
+        ?string $current_version = null,
         bool $force_latest = false,
         ?AbstractProgressIndicator $progress_indicator = null
     ): bool {
@@ -437,7 +437,7 @@ class Update
      *
      * @return Update
      */
-    public function setMigration(Migration $migration_instance)
+    public function setMigration(Migration $migration_instance): Update
     {
         /** @var Migration $migration */
         global $migration; // Migration scripts are using global `$migration`

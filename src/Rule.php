@@ -159,7 +159,7 @@ class Rule extends CommonDBTM
      *
      * @return ?Rule
      */
-    public static function getRuleObjectByID($rules_id)
+    public static function getRuleObjectByID(int $rules_id): ?Rule
     {
         $rule = new self();
         if ($rule->getFromDB($rules_id)) {
@@ -182,7 +182,7 @@ class Rule extends CommonDBTM
      *
      *  @return array of conditions
      **/
-    public static function getConditionsArray()
+    public static function getConditionsArray(): array
     {
         return [];
     }
@@ -192,7 +192,7 @@ class Rule extends CommonDBTM
      *
      * @return bool
      **/
-    public function useConditions()
+    public function useConditions(): bool
     {
         return (count(static::getConditionsArray()) > 0);
     }
@@ -206,7 +206,7 @@ class Rule extends CommonDBTM
      *
      * @return int|string|false
      **/
-    public static function dropdownConditions($options = [])
+    public static function dropdownConditions(array $options = []): int|string|bool
     {
         $p = array_replace([
             'name'      => 'condition',
@@ -230,7 +230,7 @@ class Rule extends CommonDBTM
      *
      * @return string
      **/
-    public static function getConditionName($value)
+    public static function getConditionName(int $value): string
     {
         $cond = static::getConditionsArray();
         return $cond[$value] ?? NOT_AVAILABLE;
@@ -602,7 +602,7 @@ class Rule extends CommonDBTM
     /**
      * @return string
      */
-    public function getRuleIdField()
+    public function getRuleIdField(): string
     {
         return $this->rules_id_field;
     }
@@ -622,7 +622,7 @@ class Rule extends CommonDBTM
      *
      * @return string Title of the rule
      **/
-    public function getTitle()
+    public function getTitle(): string
     {
         return __('Rules management');
     }
@@ -859,7 +859,7 @@ class Rule extends CommonDBTM
      *
      * @return string
      **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array $values, array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -888,7 +888,7 @@ class Rule extends CommonDBTM
      *
      * @return string
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', string|array $values = '', array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -987,7 +987,7 @@ class Rule extends CommonDBTM
      *
      * @return int|string
      **/
-    protected function dropdownRulesMatch($options = [])
+    protected function dropdownRulesMatch(array $options = []): int|string
     {
         $p = array_replace([
             'name'     => 'match',
@@ -1011,7 +1011,7 @@ class Rule extends CommonDBTM
      * @see {@link actions}
      * @see {@link criterias}
      **/
-    public function getRuleWithCriteriasAndActions($ID, $withcriterias = false, $withactions = false)
+    public function getRuleWithCriteriasAndActions(int $ID, bool $withcriterias = false, bool $withactions = false): bool
     {
         if (static::isNewID($ID)) {
             return $this->getEmpty();
@@ -1042,7 +1042,7 @@ class Rule extends CommonDBTM
      *
      * @return void
      **/
-    public function getTitleAction()
+    public function getTitleAction(): void
     {
         foreach ($this->getActions() as $val) {
             if (
@@ -1061,7 +1061,7 @@ class Rule extends CommonDBTM
      *
      * @return int the maximum number of actions
      **/
-    public function maxActionsCount()
+    public function maxActionsCount(): int
     {
         return count(array_filter($this->getAllActions(), static fn($action_obj) => !isset($action_obj['duplicatewith'])));
     }
@@ -1074,7 +1074,7 @@ class Rule extends CommonDBTM
      *
      * @return void
      **/
-    public function showActionsList($rules_id, $options = [])
+    public function showActionsList(int $rules_id, array $options = []): void
     {
         global $CFG_GLPI;
 
@@ -1204,7 +1204,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function showCriteriasList($rules_id, $options = [])
+    public function showCriteriasList(int $rules_id, array $options = []): void
     {
         $rules_id = (int) $rules_id;
         $rand = mt_rand();
@@ -1316,7 +1316,7 @@ TWIG, $twig_params);
      *
      * @return int|string the initial value (first)
      **/
-    public function dropdownCriteria($options = [])
+    public function dropdownCriteria(array $options = []): int|string
     {
         $p['name']                = 'criteria';
         $p['display']             = true;
@@ -1359,7 +1359,7 @@ TWIG, $twig_params);
      *
      * @return int|string the initial value (first non used)
      **/
-    public function dropdownActions($options = [])
+    public function dropdownActions(array $options = []): int|string
     {
         $p['name']                = 'field';
         $p['display']             = true;
@@ -1415,7 +1415,7 @@ TWIG, $twig_params);
      *
      * @return array the criteria array
      **/
-    public function getCriteria($ID)
+    public function getCriteria(string $ID): array
     {
         $criteria = $this->getAllCriteria();
         return $criteria[$ID] ?? [];
@@ -1428,7 +1428,7 @@ TWIG, $twig_params);
      *
      * @return array the action array
      **/
-    public function getAction($ID)
+    public function getAction(string $ID): array
     {
         $actions = $this->getAllActions();
         return $actions[$ID] ?? [];
@@ -1441,7 +1441,7 @@ TWIG, $twig_params);
      *
      * @return string the criteria's description
      **/
-    public function getCriteriaName($ID)
+    public function getCriteriaName(string $ID): string
     {
         $criteria = $this->getCriteria($ID);
         return $criteria['name'] ?? __('Unavailable');
@@ -1454,7 +1454,7 @@ TWIG, $twig_params);
      *
      * @return string the action's description
      **/
-    public function getActionName($ID)
+    public function getActionName(string $ID): string
     {
         $action = $this->getAction($ID);
         return $action['name'] ?? '';
@@ -1471,7 +1471,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function process(&$input, &$output, &$params, &$options = [])
+    public function process(array &$input, array &$output, array &$params, array &$options = []): void
     {
         if ($this->validateCriterias($options)) {
             $this->regex_results     = [];
@@ -1505,7 +1505,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function updateOnlyCriteria(&$options, $refoutput, $newoutput)
+    public function updateOnlyCriteria(array &$options, array $refoutput, array $newoutput): void
     {
         if (count($this->actions)) {
             if (
@@ -1551,7 +1551,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public function validateCriterias($options)
+    public function validateCriterias(array $options): bool
     {
         if (count($this->criterias)) {
             if (
@@ -1579,7 +1579,7 @@ TWIG, $twig_params);
      *
      * @return bool if criteria match
      **/
-    public function checkCriterias($input)
+    public function checkCriterias(array $input): bool
     {
         reset($this->criterias);
 
@@ -1627,7 +1627,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function testCriterias($input, &$check_results)
+    public function testCriterias(array $input, array &$check_results): void
     {
         reset($this->criterias);
 
@@ -1648,7 +1648,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public function checkCriteria($criteria, &$input)
+    public function checkCriteria(RuleCriteria $criteria, array &$input): bool
     {
         $partial_regex_result = [];
         // Undefine criteria field : set to blank
@@ -1738,7 +1738,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function findWithGlobalCriteria($input)
+    public function findWithGlobalCriteria(array $input): bool
     {
         return true;
     }
@@ -1751,7 +1751,7 @@ TWIG, $twig_params);
      *
      * @return array the updated input data
      **/
-    public function prepareInputDataForProcess($input, $params)
+    public function prepareInputDataForProcess(array $input, array $params): array
     {
         return $input;
     }
@@ -1765,7 +1765,7 @@ TWIG, $twig_params);
      *
      * @return array the updated input data
      **/
-    public function prepareAllInputDataForProcess($input, $params)
+    public function prepareAllInputDataForProcess(array $input, array $params): array
     {
         global $PLUGIN_HOOKS;
 
@@ -1807,7 +1807,7 @@ TWIG, $twig_params);
      *
      * @return array Updated output
      */
-    public function executePluginsActions($action, $output, $params, array $input = [])
+    public function executePluginsActions(RuleAction $action, array $output, array $params, array $input = []): array
     {
         global $PLUGIN_HOOKS;
 
@@ -1846,7 +1846,7 @@ TWIG, $twig_params);
      *
      * @return array Updated output
      **/
-    public function executeActions($output, $params, array $input = [])
+    public function executeActions(array $output, array $params, array $input = []): array
     {
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
@@ -2069,7 +2069,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    private function handleRankChange($new_rule = false)
+    private function handleRankChange(bool $new_rule = false): void
     {
         if (isset($this->input['_ranking'])) {
             if (isset($this->fields['ranking']) && (int) $this->input['_ranking'] === (int) $this->fields['ranking']) {
@@ -2094,7 +2094,7 @@ TWIG, $twig_params);
      *
      * @return int
      **/
-    public function getNextRanking(?string $sub_type = null)
+    public function getNextRanking(?string $sub_type = null): int
     {
         global $DB;
 
@@ -2121,7 +2121,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function showRulePreviewResultsForm($input, $params)
+    public function showRulePreviewResultsForm(array $input, array $params): void
     {
         $actions       = $this->getAllActions();
         $check_results = [];
@@ -2237,7 +2237,7 @@ TWIG, $twig_params);
      *
      * @return string
      **/
-    public function getMinimalCriteriaText($fields, $addtotd = '')
+    public function getMinimalCriteriaText(array $fields, string $addtotd = ''): string
     {
         $to_display = $this->getMinimalCriteria($fields);
         $text  = "<td $addtotd>" . htmlescape($to_display['criterion']) . "</td>";
@@ -2270,7 +2270,7 @@ TWIG, $twig_params);
      *
      * @return string
      **/
-    public function getMinimalActionText($fields, $addtotd = '')
+    public function getMinimalActionText(array $fields, string $addtotd = ''): string
     {
         $to_display = $this->getMinimalAction($fields);
         $text  = "<td $addtotd>" . htmlescape($to_display['field']) . "</td>";
@@ -2308,7 +2308,7 @@ TWIG, $twig_params);
      *
      * @return ?string
      **/
-    public function getCriteriaDisplayPattern($ID, $condition, $pattern)
+    public function getCriteriaDisplayPattern(string $ID, int $condition, string|int|null $pattern): ?string
     {
 
         if (
@@ -2419,7 +2419,7 @@ TWIG, $twig_params);
      *
      * @return mixed|false  A value associated with the criteria, or false otherwise
      **/
-    public function getAdditionalCriteriaDisplayPattern($ID, $condition, $pattern)
+    public function getAdditionalCriteriaDisplayPattern(string $ID, int $condition, string $pattern): mixed|bool|null
     {
         return false;
     }
@@ -2435,7 +2435,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function displayCriteriaSelectPattern($name, $ID, $condition, $value = "", $test = false)
+    public function displayCriteriaSelectPattern(string $name, string $ID, $condition, string $value = "", bool $test = false): void
     {
         global $CFG_GLPI;
 
@@ -2617,7 +2617,7 @@ TWIG, $twig_params);
      *
      * @return string|int
      **/
-    public function getActionValue($ID, $type, $value)
+    public function getActionValue(string $ID, string $type, int|string $value): string|int
     {
         $action = $this->getAction($ID);
         if (isset($action['type'])) {
@@ -2709,7 +2709,7 @@ TWIG, $twig_params);
      *
      * @return string
      **/
-    public function getCriteriaValue($ID, $condition, $value)
+    public function getCriteriaValue(string $ID, int $condition, string $value): string
     {
         $conditions = array_merge([
             self::PATTERN_DOES_NOT_EXISTS,
@@ -2742,7 +2742,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function showSpecificCriteriasForPreview($fields) {}
+    public function showSpecificCriteriasForPreview(array $fields): void {}
 
     /**
      * Function used to add specific params before rule processing
@@ -2751,7 +2751,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public function addSpecificParamsForPreview($params)
+    public function addSpecificParamsForPreview(array $params): array
     {
         return $params;
     }
@@ -2764,7 +2764,7 @@ TWIG, $twig_params);
      * @since 11.0.0 The `$target` parameter has been removed.
      * @return void
      */
-    public function showRulePreviewCriteriasForm($rules_id)
+    public function showRulePreviewCriteriasForm(int $rules_id): void
     {
         $criteria = $this->getAllCriteria();
         if (!$this->getRuleWithCriteriasAndActions($rules_id, true, false)) {
@@ -2803,7 +2803,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public function preProcessPreviewResults($output)
+    public function preProcessPreviewResults(array $output): array
     {
         global $PLUGIN_HOOKS;
 
@@ -2841,7 +2841,7 @@ TWIG, $twig_params);
      *    - sub_type : integer / sub_type of rule
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         $p = array_replace([
             'sub_type' => '',
@@ -2869,7 +2869,7 @@ TWIG, $twig_params);
     /**
      * @return array
      */
-    public function getAllCriteria()
+    public function getAllCriteria(): array
     {
         return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_CRITERIA, $this->getCriterias(), static::class);
     }
@@ -2877,7 +2877,7 @@ TWIG, $twig_params);
     /**
      * @return array
      */
-    public function getCriterias()
+    public function getCriterias(): array
     {
         return [];
     }
@@ -2886,7 +2886,7 @@ TWIG, $twig_params);
      * @since 0.84
      * @return array
      */
-    public function getAllActions()
+    public function getAllActions(): array
     {
         return self::doHookAndMergeResults(Hooks::AUTO_GET_RULE_ACTIONS, $this->getActions(), static::class);
     }
@@ -2894,7 +2894,7 @@ TWIG, $twig_params);
     /**
      * @return array
      */
-    public function getActions()
+    public function getActions(): array
     {
         $actions = [];
         $collection = $this->getCollectionClassInstance();
@@ -2918,7 +2918,7 @@ TWIG, $twig_params);
      *
      * @return array input parameters merged with hook parameters
      **/
-    public static function doHookAndMergeResults($hook, $params = [], $itemtype = '')
+    public static function doHookAndMergeResults(string $hook, array $params = [], string $itemtype = ''): array
     {
         global $PLUGIN_HOOKS;
 
@@ -2953,7 +2953,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public static function getActionsByType($sub_type)
+    public static function getActionsByType($sub_type): array
     {
         if ($rule = getItemForItemtype($sub_type)) {
             return $rule->getAllActions();
@@ -2968,7 +2968,7 @@ TWIG, $twig_params);
      *
      * @return array of Rule objects
      **/
-    public function getRulesForCriteria($crit)
+    public function getRulesForCriteria(array $crit): array
     {
         global $DB;
 
@@ -3009,7 +3009,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public function showAndAddRuleForm($item)
+    public function showAndAddRuleForm(CommonDBTM $item): void
     {
         $canedit = self::canUpdate();
 
@@ -3099,7 +3099,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return array
      **/
-    public static function addMoreCriteria($criterion = '')
+    public static function addMoreCriteria(string $criterion = ''): array
     {
         return [];
     }
@@ -3111,7 +3111,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return int|string
      **/
-    public function displayAdditionRuleActionValue($value)
+    public function displayAdditionRuleActionValue(int|string $value): int|string
     {
         return $value;
     }
@@ -3125,7 +3125,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return bool
      */
-    public function displayAdditionalRuleCondition($condition, $criteria, $name, $value, $test = false)
+    public function displayAdditionalRuleCondition($condition, array $criteria, string $name, string $value, bool $test = false): bool
     {
         return false;
     }
@@ -3136,7 +3136,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return bool
      **/
-    public function displayAdditionalRuleAction(array $action, $value = '')
+    public function displayAdditionalRuleAction(array $action, string $value = ''): bool
     {
         return false;
     }
@@ -3154,13 +3154,13 @@ TWIG, ['label' => $this->getTitle()]);
      * @return void
      **/
     private static function cleanForItemActionOrCriteria(
-        $item,
-        $field,
-        $ruleitem,
-        $table,
-        $valfield,
-        $fieldfield
-    ) {
+        CommonDBTM $item,
+        string $field,
+        Rule $ruleitem,
+        string $table,
+        string $valfield,
+        string $fieldfield
+    ): void {
         global $DB;
 
         $fieldid = getForeignKeyFieldForTable($ruleitem->getTable());
@@ -3213,7 +3213,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return void
      **/
-    public static function cleanForItemAction($item, $field = '')
+    public static function cleanForItemAction(object $item, string $field = ''): void
     {
         self::cleanForItemActionOrCriteria(
             $item,
@@ -3251,7 +3251,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return void
      */
-    public static function cleanForItemCriteria($item, $field = '')
+    public static function cleanForItemCriteria(object $item, string $field = ''): void
     {
         self::cleanForItemActionOrCriteria(
             $item,
@@ -3389,7 +3389,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return string uuid
      **/
-    public static function getUuid()
+    public static function getUuid(): string
     {
         // encode uname -a, ex Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686
         $serverSubSha1 = substr(sha1(php_uname('a')), 0, 8);
@@ -3419,7 +3419,7 @@ TWIG, ['label' => $this->getTitle()]);
      *
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         // get ranking
         $nextRanking = $this->getNextRanking();

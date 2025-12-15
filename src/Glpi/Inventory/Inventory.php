@@ -143,7 +143,7 @@ class Inventory
      * @param int $mode   One of self::*_MODE
      * @param int $format One of Request::*_MODE
      */
-    public function __construct($data = null, $mode = self::FULL_MODE, $format = Request::JSON_MODE)
+    public function __construct(mixed $data = null, int $mode = self::FULL_MODE, int $format = Request::JSON_MODE)
     {
         $this->mode = $mode;
         $this->conf = new Conf();
@@ -173,7 +173,7 @@ class Inventory
      *
      * @return bool
      */
-    public function setData($data, $format = Request::JSON_MODE): bool
+    public function setData(mixed $data, int $format = Request::JSON_MODE): bool
     {
 
         // Write inventory file
@@ -294,7 +294,7 @@ class Inventory
      *
      * @return void
      */
-    public function contact($data)
+    public function contact(stdClass $data): void
     {
         $this->raw_data = $data;
         $this->extractMetadata();
@@ -310,7 +310,7 @@ class Inventory
      *
      * @return array
      */
-    public function doInventory($test_rules = false)
+    public function doInventory(bool $test_rules = false): array
     {
         global $DB;
 
@@ -531,7 +531,7 @@ class Inventory
      *
      * @return void
      */
-    private function handleInventoryFile()
+    private function handleInventoryFile(): void
     {
         if (isset($this->mainasset)) {
             $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
@@ -585,7 +585,7 @@ class Inventory
     /**
      * @return array|false
      */
-    public static function getMenuContent()
+    public static function getMenuContent(): array|bool
     {
         if (!Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
             return false;
@@ -672,7 +672,7 @@ class Inventory
      *
      * @return string
      */
-    public function getMainClass()
+    public function getMainClass(): string
     {
         $class_ns = '\Glpi\Inventory\MainAsset\\';
         $main_class = $class_ns . $this->item::class;
@@ -698,7 +698,7 @@ class Inventory
      *
      * @return void
      */
-    final public function processInventoryData()
+    final public function processInventoryData(): void
     {
         //map existing keys in inventory format to their respective Inventory\Asset class if needed.
         foreach ($this->data as $key => &$value) {
@@ -845,7 +845,7 @@ class Inventory
      *
      * @return void
      */
-    public function handleItem()
+    public function handleItem(): void
     {
         if ($this->mainasset->checkConf($this->conf)) {
             //inject converted assets
@@ -864,7 +864,7 @@ class Inventory
      *
      * @return Agent
      */
-    public function getAgent()
+    public function getAgent(): Agent
     {
         return $this->agent;
     }
@@ -879,7 +879,7 @@ class Inventory
      *
      * @return void
      */
-    protected function addBench($asset, $type, $start, $extra = null)
+    protected function addBench(string $asset, string $type, float|int $start, ?string $extra = null): void
     {
         $exec_time = round(microtime(true) - $start, 5);
         $this->benchs[$asset][$type] = [
@@ -897,7 +897,7 @@ class Inventory
      *
      * @return void
      */
-    public function printBenchResults()
+    public function printBenchResults(): void
     {
         $output = '';
         foreach ($this->benchs as $asset => $types) {
@@ -957,7 +957,7 @@ class Inventory
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-cloud-download";
     }
@@ -970,7 +970,7 @@ class Inventory
     /**
      * @return InventoryAsset[]
      */
-    public function getAssets()
+    public function getAssets(): array
     {
         return $this->assets;
     }
@@ -990,7 +990,7 @@ class Inventory
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'cleantemp':
@@ -1009,7 +1009,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleantemp($task)
+    public static function cronCleantemp(CronTask $task): int
     {
         $conf = new Conf();
         $temp_files = glob(GLPI_INVENTORY_DIR . '/*.{' . implode(',', $conf->knownInventoryExtensions()) . '}', GLOB_BRACE);
@@ -1043,7 +1043,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleanorphans($task)
+    public static function cronCleanorphans(CronTask $task): int
     {
         global $DB;
 
@@ -1127,7 +1127,7 @@ class Inventory
      *
      * @return string
      */
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0): string
     {
         return __("Inventory");
     }

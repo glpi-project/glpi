@@ -97,7 +97,7 @@ class OlaLevel extends LevelAgreementLevel
      *
      * @return int id of the ola level : 0 if not exists
      **/
-    public static function getFirstOlaLevel($olas_id)
+    public static function getFirstOlaLevel(int $olas_id): int
     {
         global $DB;
 
@@ -127,7 +127,7 @@ class OlaLevel extends LevelAgreementLevel
      *
      * @return int id of the ola level : 0 if not exists
      **/
-    public static function getNextOlaLevel($olas_id, $olalevels_id)
+    public static function getNextOlaLevel(int $olas_id, int $olalevels_id): int
     {
         global $DB;
 

@@ -71,7 +71,7 @@ abstract class ItemTranslation extends CommonDBChild
      *
      * @return array
      */
-    public function prepapreInput($input): array
+    public function prepapreInput(array $input): array
     {
         if (isset($input['translations'])) {
             if (!is_string($input['translations'])) {

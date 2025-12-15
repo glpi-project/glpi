@@ -114,7 +114,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      *
      * @return void
      */
-    protected function initDbConnection()
+    protected function initDbConnection(): void
     {
 
         /** @var DBmysql|null $DB */
@@ -140,10 +140,10 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * @return void
      */
     protected function writelnOutputWithProgressBar(
-        $messages,
+        string|array $messages,
         ProgressBar $progress_bar,
-        $verbosity = OutputInterface::VERBOSITY_NORMAL
-    ) {
+        int $verbosity = OutputInterface::VERBOSITY_NORMAL
+    ): void {
 
         if ($verbosity > $this->output->getVerbosity()) {
             return; // Do nothing if message will not be output due to its too high verbosity
@@ -164,7 +164,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      *
      * @return void
      */
-    protected function outputSessionBufferedMessages($levels_to_output = [INFO, WARNING, ERROR])
+    protected function outputSessionBufferedMessages(array $levels_to_output = [INFO, WARNING, ERROR]): void
     {
 
         if (empty($_SESSION['MESSAGE_AFTER_REDIRECT'])) {
@@ -210,7 +210,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      *
      * @return void
      */
-    protected function outputWarningOnMissingOptionnalRequirements()
+    protected function outputWarningOnMissingOptionnalRequirements(): void
     {
         if ($this->output->isQuiet()) {
             return;

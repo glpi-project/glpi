@@ -48,7 +48,7 @@ class NotificationMailing implements NotificationInterface
      *
      * @return bool
      **/
-    public static function check($value, $options = [])
+    public static function check(mixed $value, array $options = []): bool
     {
         return self::isUserAddressValid($value, $options);
     }
@@ -62,7 +62,7 @@ class NotificationMailing implements NotificationInterface
      *
      * @return bool
      **/
-    public static function isUserAddressValid($address, $options = ['checkdns' => false])
+    public static function isUserAddressValid(string $address, array $options = ['checkdns' => false]): bool
     {
         //drop sanitize...
         $isValid = GLPIMailer::validateAddress($address);

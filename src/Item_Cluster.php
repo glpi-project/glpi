@@ -207,7 +207,7 @@ TWIG, $twig_params);
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 

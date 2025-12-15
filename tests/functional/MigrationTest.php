@@ -295,7 +295,7 @@ class MigrationTest extends DbTestCase
      * Test backupTables() when a backup table already exists
      * @return void
      */
-    public function testBackupExistantBackupTables()
+    public function testBackupExistantBackupTables(): void
     {
         $migration = $this->getMigrationMock(db_options: [
             '_mock_numrows' => 0,

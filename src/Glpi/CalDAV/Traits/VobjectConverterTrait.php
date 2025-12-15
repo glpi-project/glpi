@@ -75,7 +75,7 @@ trait VobjectConverterTrait
      *
      * @return VCalendar
      */
-    protected function getVCalendarForItem(CommonDBTM $item, $component_type): VCalendar
+    protected function getVCalendarForItem(CommonDBTM $item, string $component_type): VCalendar
     {
         global $CFG_GLPI;
 
@@ -203,7 +203,7 @@ trait VobjectConverterTrait
      *
      * @return string|null
      */
-    protected function getTargetCaldavComponent(bool $is_planned, bool $is_task)
+    protected function getTargetCaldavComponent(bool $is_planned, bool $is_task): ?string
     {
         global $CFG_GLPI;
 
@@ -234,7 +234,7 @@ trait VobjectConverterTrait
      *
      * @return array
      */
-    protected function getCommonInputFromVcomponent(Component $vcomponent, bool $is_new_item = true)
+    protected function getCommonInputFromVcomponent(Component $vcomponent, bool $is_new_item = true): array
     {
         if (
             !($vcomponent instanceof VEvent)
@@ -289,7 +289,7 @@ trait VobjectConverterTrait
      *
      * @return string|null
      */
-    private function getContentRichTextInputFromVComponent(Component $vcomponent)
+    private function getContentRichTextInputFromVComponent(Component $vcomponent): ?string
     {
         if (!($vcomponent->DESCRIPTION instanceof FlatText)) {
             return null;
@@ -311,7 +311,7 @@ trait VobjectConverterTrait
      *
      * @return int|null
      */
-    private function getStateInputFromVComponent(Component $vcomponent)
+    private function getStateInputFromVComponent(Component $vcomponent): ?int
     {
         if (!($vcomponent->STATUS instanceof FlatText)) {
             return null;
@@ -330,7 +330,7 @@ trait VobjectConverterTrait
      *
      * @return array|null
      */
-    private function getPlanInputFromVComponent(Component $vcomponent)
+    private function getPlanInputFromVComponent(Component $vcomponent): ?array
     {
         if (!($vcomponent->DTSTART instanceof DateTime)) {
             return null;
@@ -374,7 +374,7 @@ trait VobjectConverterTrait
      *
      * @return array|null
      */
-    private function getRRuleInputFromVComponent(Component $vcomponent)
+    private function getRRuleInputFromVComponent(Component $vcomponent): ?array
     {
         if (!($vcomponent->RRULE instanceof Recur)) {
             return null;

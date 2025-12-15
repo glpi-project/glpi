@@ -50,7 +50,7 @@ class UnmanagedTest extends DbTestCase
      *
      * @return void
      */
-    public function testUnmanagedToManaged()
+    public function testUnmanagedToManaged(): void
     {
         global $CFG_GLPI;
 
@@ -213,7 +213,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
      * Convert an Unmanaged device into a NetworkEquipment
      * @return void
      */
-    public function testConvert()
+    public function testConvert(): void
     {
         //Add Unmanaged network equipment, its network ports, name and IP.
         $unmanaged = new \Unmanaged();

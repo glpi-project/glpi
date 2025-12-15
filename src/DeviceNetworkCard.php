@@ -156,7 +156,7 @@ class DeviceNetworkCard extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
 
@@ -218,7 +218,7 @@ class DeviceNetworkCard extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, array $main_joinparams): array
     {
         $tab = [];
 

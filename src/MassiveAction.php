@@ -169,7 +169,7 @@ class MassiveAction
      * @param string    $stage      the current stage
      * @param int|null  $items_id   Get actions for a single item
      **/
-    public function __construct(array $POST, array $GET, $stage, ?int $items_id = null)
+    public function __construct(array $POST, array $GET, string $stage, ?int $items_id = null)
     {
         if (isset($GET['_single_item'])) {
             $item = getItemForItemtype($GET['_single_item']['itemtype']);
@@ -407,7 +407,7 @@ class MassiveAction
      *
      * @return array of the elements
      **/
-    public function getInput()
+    public function getInput(): array
     {
         return $this->POST;
     }
@@ -418,7 +418,7 @@ class MassiveAction
      *
      * @return string with the current action or NULL if we are at initial stage
      **/
-    public function getAction()
+    public function getAction(): string
     {
         return $this->action;
     }
@@ -449,7 +449,7 @@ class MassiveAction
      *
      * @return array of the items (empty if initial state)
      **/
-    public function getItems()
+    public function getItems(): array
     {
         return $this->items;
     }
@@ -460,7 +460,7 @@ class MassiveAction
      *
      * @return array of the remaining items (empty if not in process state)
      **/
-    public function getRemainings()
+    public function getRemainings(): array
     {
         return $this->remainings ?? [];
     }
@@ -488,7 +488,7 @@ class MassiveAction
      *
      * @return ?CommonDBTM
      */
-    public function getCheckItem($POST)
+    public function getCheckItem(array $POST): ?CommonDBTM
     {
 
         if ($this->check_item === null && isset($POST['check_itemtype'])) {
@@ -512,7 +512,7 @@ class MassiveAction
      *
      * @return void
      **/
-    public function addHiddenFields()
+    public function addHiddenFields(): void
     {
         $common_fields = ['action', 'processor', 'is_deleted', 'initial_items',
             'item_itemtype', 'item_items_id', 'items', 'action_name',
@@ -540,7 +540,7 @@ class MassiveAction
      *
      * @return string|bool  the itemtype, or true if the selector is displayed, or false if we cannot define the itemtype nor display the selector
      **/
-    public function getItemtype($display_selector)
+    public function getItemtype(bool $display_selector): string|bool
     {
 
         $keys = array_keys($this->items);
@@ -586,7 +586,7 @@ class MassiveAction
      *
      * @return void
      */
-    public static function getAddTransferList(array &$actions)
+    public static function getAddTransferList(array &$actions): void
     {
 
         if (
@@ -611,7 +611,7 @@ class MassiveAction
      *
      * @return array|false Array of massive actions or false if $item is not valid
      **/
-    public static function getAllMassiveActions($item, $is_deleted = false, ?CommonDBTM $checkitem = null, ?int $items_id = null)
+    public static function getAllMassiveActions(string|CommonDBTM $item, bool $is_deleted = false, ?CommonDBTM $checkitem = null, ?int $items_id = null): array|bool
     {
         global $PLUGIN_HOOKS;
 
@@ -807,7 +807,7 @@ class MassiveAction
      *
      * @return void
      **/
-    public function showSubForm()
+    public function showSubForm(): void
     {
         $processor = $this->processor;
 
@@ -824,7 +824,7 @@ class MassiveAction
      *
      * @return void
      **/
-    public function showDefaultSubForm()
+    public function showDefaultSubForm(): void
     {
         echo Html::submit(_x('button', 'Post'), [
             'name'  => 'massiveaction',
@@ -839,7 +839,7 @@ class MassiveAction
      *
      * @return bool
      */
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         global $DB;
 
@@ -1293,7 +1293,7 @@ class MassiveAction
      *
      * @return array of results (ok, ko, noright counts, redirect ...)
      **/
-    public function process()
+    public function process(): array
     {
 
         if (!empty($this->remainings)) {
@@ -1313,7 +1313,7 @@ class MassiveAction
      * Process the specific massive actions for severl itemtypes
      * @return void
      **/
-    public function processForSeveralItemtypes()
+    public function processForSeveralItemtypes(): void
     {
 
         $processor = $this->processor;
@@ -1336,7 +1336,7 @@ class MassiveAction
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): bool|void {
         global $CFG_GLPI;
 
         $action = $ma->getAction();
@@ -1733,7 +1733,7 @@ class MassiveAction
      *
      * @return void
      **/
-    public function setRedirect($redirect)
+    public function setRedirect(string $redirect): void
     {
         $this->redirect = (string) $redirect;
     }
@@ -1748,7 +1748,7 @@ class MassiveAction
      *
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      */
-    public function addMessage($message)
+    public function addMessage(string $message): void
     {
         $this->results['messages'][] = $message;
     }
@@ -1769,7 +1769,7 @@ class MassiveAction
      *
      * @return void
      **/
-    public function itemDone($itemtype, $id, $result)
+    public function itemDone(string $itemtype, int|array $id, int $result): void
     {
         $this->current_itemtype = (string) $itemtype;
 

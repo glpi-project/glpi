@@ -57,7 +57,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return HTMLTableBase the table owning the current header
      **/
-    abstract protected function getTable();
+    abstract protected function getTable(): HTMLTableBase;
 
     /**
      * get its name and subname : usefull for instance to create an index for arrays
@@ -67,14 +67,14 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      **/
-    abstract public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name);
+    abstract public function getHeaderAndSubHeaderName(string &$header_name, string &$subheader_name): void;
 
     /**
      * check to see if it is a super header or not
      *
      * @return bool
      */
-    abstract public function isSuperHeader();
+    abstract public function isSuperHeader(): bool;
 
     /**
      * @param class-string<CommonDBTM> $itemtype
@@ -82,7 +82,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      */
-    public function setItemType($itemtype, $title = '')
+    public function setItemType($itemtype, string $title = ''): void
     {
         $this->itemtypes[$itemtype] = $title;
     }
@@ -92,7 +92,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      * @param string               $content see HTMLTableEntity#__construct()
      * @param HTMLTableHeader|null $father  father of the current column (default NULL)
      */
-    public function __construct($name, $content, ?HTMLTableHeader $father = null)
+    public function __construct(string $name, string $content, ?HTMLTableHeader $father = null)
     {
         parent::__construct($content);
 
@@ -107,7 +107,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @throws Exception
      */
-    public function checkItemType(?CommonDBTM $item = null)
+    public function checkItemType(?CommonDBTM $item = null): void
     {
         if (($item === null) && (count($this->itemtypes) > 0)) {
             throw new Exception('Implementation error: header requires an item');
@@ -126,7 +126,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -136,7 +136,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      */
-    public function setColSpan($colSpan)
+    public function setColSpan(int $colSpan): void
     {
         $this->colSpan = $colSpan;
     }
@@ -144,7 +144,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @return void
      */
-    public function addCell()
+    public function addCell(): void
     {
         $this->numberCells++;
     }
@@ -152,7 +152,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @return bool
      */
-    public function hasToDisplay()
+    public function hasToDisplay(): bool
     {
         return ($this->numberCells > 0);
     }
@@ -160,7 +160,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @return int
      */
-    public function getColSpan()
+    public function getColSpan(): int
     {
         return $this->colSpan;
     }
@@ -171,7 +171,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      */
-    public function displayTableHeader($with_content, $main_header = true)
+    public function displayTableHeader(bool $with_content, bool $main_header = true): void
     {
         if ($main_header) {
             echo "<th";
@@ -194,7 +194,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @return ?HTMLTableHeader
      */
-    public function getFather()
+    public function getFather(): ?HTMLTableHeader
     {
         return $this->father;
     }

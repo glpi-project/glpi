@@ -86,7 +86,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
      *
      * @return void
      */
-    public function addTaskAssignGroup()
+    public function addTaskAssignGroup(): void
     {
         if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
             return;
@@ -104,7 +104,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
      *
      * @return void
      **/
-    public function addTaskAssignUser()
+    public function addTaskAssignUser(): void
     {
         if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
             return;
@@ -136,7 +136,7 @@ class NotificationTargetPlanningRecall extends NotificationTarget
      *
      * @return void
      **/
-    public function addGuests()
+    public function addGuests(): void
     {
         if (!($item = getItemForItemtype($this->obj->fields['itemtype']))) {
             return;

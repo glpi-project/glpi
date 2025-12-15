@@ -134,7 +134,7 @@ class ManualLink extends CommonDBChild
      *
      * @return array|false
      */
-    private function prepareInput(array $input)
+    private function prepareInput(array $input): array|bool
     {
         if (array_key_exists('url', $input) && !empty($input['url']) && !Toolbox::isValidWebUrl($input['url'])) {
             Session::addMessageAfterRedirect(
@@ -172,7 +172,7 @@ class ManualLink extends CommonDBChild
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 

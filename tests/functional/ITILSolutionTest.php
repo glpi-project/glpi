@@ -48,7 +48,7 @@ class ITILSolutionTest extends DbTestCase
      * @param bool   $as_object
      * @return int|\CommonDBTM
      */
-    private function getNewITILObject(string $itemtype, bool $as_object = false)
+    private function getNewITILObject(string $itemtype, bool $as_object = false): int|\CommonDBTM
     {
         //create reference ITILObject
         $itilobject = new $itemtype();

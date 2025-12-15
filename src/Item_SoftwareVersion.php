@@ -250,7 +250,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return bool
      */
-    public function updateDatasForItem($itemtype, $items_id)
+    public function updateDatasForItem($itemtype, int $items_id): bool
     {
         global $DB;
 
@@ -279,7 +279,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return int number of installations
      **/
-    public static function countForVersion($softwareversions_id, $entity = '')
+    public static function countForVersion(int $softwareversions_id, string|array $entity = ''): int
     {
         global $DB;
 
@@ -342,7 +342,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return number of installations
      **/
-    public static function countForSoftware($softwares_id)
+    public static function countForSoftware(int $softwares_id): number
     {
         global $DB;
 
@@ -425,7 +425,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForSoftware(Software $software)
+    public static function showForSoftware(Software $software): void
     {
         self::showInstallations($software->getField('id'), 'softwares_id');
     }
@@ -437,7 +437,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForVersion(SoftwareVersion $version)
+    public static function showForVersion(SoftwareVersion $version): void
     {
         self::showInstallations($version->getField('id'), 'id');
     }
@@ -450,7 +450,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    private static function showInstallations($searchID, $crit)
+    private static function showInstallations(int $searchID, string $crit): void
     {
         global $CFG_GLPI, $DB;
 
@@ -832,7 +832,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForVersionByEntity(SoftwareVersion $version)
+    public static function showForVersionByEntity(SoftwareVersion $version): void
     {
         global $DB;
 
@@ -885,7 +885,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return DBmysqlIterator
      */
-    public static function getFromItem(CommonDBTM $item, $sort = null, $order = null, array $filters = []): DBmysqlIterator
+    public static function getFromItem(CommonDBTM $item, ?string $sort = null, ?string $order = null, array $filters = []): DBmysqlIterator
     {
         global $DB;
 
@@ -985,7 +985,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $DB;
 
@@ -1375,13 +1375,13 @@ class Item_SoftwareVersion extends CommonDBRelation
      * @return int[] Found licenses ids
      **/
     private static function softwareByCategory(
-        $data,
-        $itemtype,
-        $items_id,
-        $withtemplate,
-        $canedit,
-        $display
-    ) {
+        array $data,
+        string $itemtype,
+        int $items_id,
+        int $withtemplate,
+        bool $canedit,
+        bool $display
+    ): array {
         global $DB;
 
         $ID    = $data["id"];
@@ -1500,7 +1500,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      */
-    private static function displaySoftwareByLicense($data, $withtemplate, $canedit)
+    private static function displaySoftwareByLicense(array $data, int $withtemplate, bool $canedit): void
     {
 
         $ID = $data['linkid'];
@@ -1562,7 +1562,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      *
      * @return void
      **/
-    public function upgrade($instID, $softwareversions_id, $dohistory = true)
+    public function upgrade(int $instID, int $softwareversions_id, bool $dohistory = true): void
     {
         if ($this->getFromDB($instID)) {
             $items_id = $this->fields['items_id'];

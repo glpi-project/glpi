@@ -266,7 +266,7 @@ class ITILControllerTest extends HLAPITestCase
      * Make sure users cannot change the parent of a timeline subitem
      * @return void
      */
-    public function testBlockOverridingParentItem()
+    public function testBlockOverridingParentItem(): void
     {
         $ticket = new Ticket();
         $this->assertGreaterThan(0, $tickets_id = $ticket->add([

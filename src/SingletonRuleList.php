@@ -52,7 +52,7 @@ class SingletonRuleList
      *
      * @return SingletonRuleList unique instance of an object
      **/
-    public static function &getInstance($type, $entity)
+    public static function &getInstance(string $type, int $entity): SingletonRuleList
     {
         //FIXME: can be removed when using phpunit 10 and process-isolation
         if (defined('TU_USER')) {

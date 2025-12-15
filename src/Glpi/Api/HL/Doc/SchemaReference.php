@@ -60,7 +60,7 @@ final class SchemaReference implements ArrayAccess
      * @param string $api_version The API version
      * @return array|null
      */
-    public static function resolveRef($ref, string $controller, array $attributes, string $api_version): ?array
+    public static function resolveRef(array|string $ref, string $controller, array $attributes, string $api_version): ?array
     {
         $known_schemas = OpenAPIGenerator::getComponentSchemas($api_version);
         if (!is_string($ref) && $ref !== null) {

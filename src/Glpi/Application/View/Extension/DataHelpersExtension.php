@@ -90,7 +90,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getFormattedDatetime($datetime, bool $with_seconds = false): ?string
+    public function getFormattedDatetime(mixed $datetime, bool $with_seconds = false): ?string
     {
         if (!is_string($datetime)) {
             return null;
@@ -105,7 +105,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getFormattedDate($date): ?string
+    public function getFormattedDate(mixed $date): ?string
     {
         if (!is_string($date)) {
             return null;
@@ -120,7 +120,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string|null
      */
-    public function getRelativeDatetime($datetime): ?string
+    public function getRelativeDatetime(mixed $datetime): ?string
     {
         if (!is_string($datetime)) {
             return null;
@@ -137,7 +137,7 @@ class DataHelpersExtension extends AbstractExtension
      * @return string|null
      */
     public function getFormattedDuration(
-        $duration,
+        mixed $duration,
         bool $display_seconds = true
     ): ?string {
         if (!is_numeric($duration)) {
@@ -153,7 +153,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string
      */
-    public function getFormattedInteger($number): string
+    public function getFormattedInteger(mixed $number): string
     {
         return Html::formatNumber($number, forcedecimal: 0);
     }
@@ -165,7 +165,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string
      */
-    public function getFormattedNumber($number): string
+    public function getFormattedNumber(mixed $number): string
     {
         return Html::formatNumber($number);
     }
@@ -177,7 +177,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string
      */
-    public function getFormattedSize($number): string
+    public function getFormattedSize(mixed $number): string
     {
         if (!is_numeric($number)) {
             return '';
@@ -192,7 +192,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return null|string
      */
-    public function getPictureUrl($path): ?string
+    public function getPictureUrl(mixed $path): ?string
     {
         if (!is_string($path)) {
             return null;
@@ -226,7 +226,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function getTextFromHtml($string, bool $keep_presentation = true, bool $compact = false)
+    public function getTextFromHtml(mixed $string, bool $keep_presentation = true, bool $compact = false): mixed
     {
         if (!is_string($string)) {
             return $string;
@@ -245,7 +245,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function getSafeHtml($string)
+    public function getSafeHtml(mixed $string): mixed
     {
         if (!is_string($string)) {
             return $string;
@@ -264,7 +264,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function getEnhancedHtml($string, array $params = [])
+    public function getEnhancedHtml(mixed $string, array $params = []): mixed
     {
         if (!is_string($string)) {
             return $string;
@@ -282,7 +282,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string truncated string
      */
-    public function truncateLeft(string $string = "", int $length = 30, string $separator = "...")
+    public function truncateLeft(string $string = "", int $length = 30, string $separator = "..."): string
     {
         if (mb_strlen($string) <= $length) {
             return $string;

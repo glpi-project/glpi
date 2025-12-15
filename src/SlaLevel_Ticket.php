@@ -55,7 +55,7 @@ class SlaLevel_Ticket extends CommonDBTM
      * @return bool
      * @used-by LevelAgreement::getNextActionForTicket()
      **/
-    public function getFromDBForTicket($ID, $slaType)
+    public function getFromDBForTicket(int $ID, $slaType): bool
     {
         global $DB;
 
@@ -99,7 +99,7 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      * @return void
      **/
-    public function deleteForTicket($tickets_id, $slaType)
+    public function deleteForTicket(int $tickets_id, $slaType): void
     {
         global $DB;
 
@@ -139,7 +139,7 @@ class SlaLevel_Ticket extends CommonDBTM
      * @return array of information
      * @used-by CronTask
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'slaticket':
@@ -156,7 +156,7 @@ class SlaLevel_Ticket extends CommonDBTM
      * @return int (0 : nothing done - 1 : done)
      * @used-by CronTask
      **/
-    public static function cronSlaTicket(CronTask $task)
+    public static function cronSlaTicket(CronTask $task): int
     {
         global $DB;
 
@@ -207,7 +207,7 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      * @return void
      **/
-    public static function doLevelForTicket(array $data, $slaType)
+    public static function doLevelForTicket(array $data, $slaType): void
     {
         $ticket         = new Ticket();
         $slalevelticket = new self();
@@ -322,7 +322,7 @@ class SlaLevel_Ticket extends CommonDBTM
      *
      * @return void
      */
-    public static function replayForTicket($tickets_id, $slaType)
+    public static function replayForTicket(int $tickets_id, $slaType): void
     {
         global $DB;
 

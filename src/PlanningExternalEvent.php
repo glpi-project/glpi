@@ -125,7 +125,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      *
      * @return bool
      */
-    public function canUpdateBGEvents()
+    public function canUpdateBGEvents(): bool
     {
         return !($this->fields["background"]
             && !Session::haveRight(self::$rightname, self::MANAGE_BG_EVENTS));
@@ -231,7 +231,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      *
      * @return VCalendar[]
      */
-    private static function getItemsAsVCalendars(array $criteria)
+    private static function getItemsAsVCalendars(array $criteria): array
     {
         global $DB;
 

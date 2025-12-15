@@ -63,7 +63,7 @@ abstract class HTMLTableEntity
      *
      * @psalm-taint-sink html $content (content will be sent to output without being escaped)
      */
-    public function __construct($content)
+    public function __construct(string $content)
     {
         $this->content = $content;
     }
@@ -73,7 +73,7 @@ abstract class HTMLTableEntity
      *
      * @return void
      */
-    public function copyAttributsFrom(HTMLTableEntity $origin)
+    public function copyAttributsFrom(HTMLTableEntity $origin): void
     {
         $this->html_id    = $origin->html_id;
         $this->html_style = $origin->html_style;
@@ -85,7 +85,7 @@ abstract class HTMLTableEntity
      *
      * @return void
      */
-    public function setHTMLID($html_id)
+    public function setHTMLID(string $html_id): void
     {
         $this->html_id = $html_id;
     }
@@ -97,7 +97,7 @@ abstract class HTMLTableEntity
      *
      * @return void
      */
-    public function setHTMLStyle($html_style)
+    public function setHTMLStyle(array|string $html_style): void
     {
         if (is_array($html_style)) {
             $this->html_style = array_merge($this->html_style, $html_style);
@@ -111,7 +111,7 @@ abstract class HTMLTableEntity
      *
      * @return void
      */
-    public function setHTMLClass($html_class)
+    public function setHTMLClass(array|string $html_class): void
     {
         if (is_array($html_class)) {
             $this->html_class = array_merge($this->html_class, $html_class);
@@ -125,7 +125,7 @@ abstract class HTMLTableEntity
      *
      * @return void
      */
-    public function displayEntityAttributs(array $options = [])
+    public function displayEntityAttributs(array $options = []): void
     {
         $id = $options['id'] ?? $this->html_id;
         if (!empty($id)) {
@@ -165,7 +165,7 @@ abstract class HTMLTableEntity
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $content (string will be added to HTML source)
      */
-    public function setContent($content)
+    public function setContent(string|array $content): void
     {
         $this->content = $content;
     }
@@ -173,7 +173,7 @@ abstract class HTMLTableEntity
     /**
      * @return void
      */
-    public function displayContent()
+    public function displayContent(): void
     {
         if (is_array($this->content)) {
             foreach ($this->content as $content) {

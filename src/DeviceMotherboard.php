@@ -138,7 +138,7 @@ class DeviceMotherboard extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, array $main_joinparams): array
     {
         $tab = [];
 

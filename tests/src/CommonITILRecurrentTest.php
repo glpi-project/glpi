@@ -541,7 +541,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
      *
      * @return string
      */
-    private function getNextWorkingDayDate(array $working_days, $reference_date, $format)
+    private function getNextWorkingDayDate(array $working_days, string $reference_date, string $format): string
     {
         $reference_date = date('Y-m-d H:i:s', strtotime($reference_date)); // normalize reference date
         $i = 0;

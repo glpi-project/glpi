@@ -62,7 +62,7 @@ class AllAssets extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-packages';
     }

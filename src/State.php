@@ -132,7 +132,7 @@ class State extends CommonTreeDropdown
      *
      * @return void
      */
-    public static function dropdownBehaviour($name, $lib = "", $value = 0, $is_inheritable = false)
+    public static function dropdownBehaviour(string $name, string $lib = "", int $value = 0, bool $is_inheritable = false): void
     {
         $elements = self::getBehaviours($lib, $is_inheritable);
         Dropdown::showFromArray($name, $elements, ['value' => $value]);
@@ -141,7 +141,7 @@ class State extends CommonTreeDropdown
     /**
      * @return void
      */
-    public static function showSummary()
+    public static function showSummary(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -758,7 +758,7 @@ class State extends CommonTreeDropdown
      * @param array $input Array of field names and values
      * @return bool True if the new/updated record will be unique
      */
-    public function isUnique($input)
+    public function isUnique(array $input): bool
     {
         global $DB;
 

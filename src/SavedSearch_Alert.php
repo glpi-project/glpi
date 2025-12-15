@@ -116,7 +116,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         $search = new SavedSearch();
         if ($ID > 0) {
@@ -156,7 +156,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForSavedSearch(SavedSearch $search, $withtemplate = 0)
+    public static function showForSavedSearch(SavedSearch $search, int $withtemplate = 0): void
     {
         global $DB;
 
@@ -245,7 +245,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return string|array
      */
-    public static function getOperators($id = null)
+    public static function getOperators(?int $id = null): string|array
     {
         $ops = [
             self::OP_LESS     => '<',
@@ -263,7 +263,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'send':
@@ -313,7 +313,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return int : <0 : need to run again, 0:nothing to do, >0:ok
      */
-    public static function cronSavedSearchesAlerts($task)
+    public static function cronSavedSearchesAlerts(CronTask $task): int
     {
         global $DB;
 

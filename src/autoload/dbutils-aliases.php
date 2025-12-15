@@ -42,7 +42,7 @@
  *      field name used for a foreign key to the parameter table,
  *      or an empty string if the table name does match the GLPI table name pattern
  */
-function getForeignKeyFieldForTable($table)
+function getForeignKeyFieldForTable(string $table)
 {
     $dbu = new DbUtils();
     return $dbu->getForeignKeyFieldForTable($table);
@@ -58,7 +58,7 @@ function getForeignKeyFieldForTable($table)
  *
  * @return bool
  */
-function isForeignKeyField($field)
+function isForeignKeyField(string $field): bool
 {
     $dbu = new DbUtils();
     return $dbu->isForeignKeyField($field);
@@ -72,7 +72,7 @@ function isForeignKeyField($field)
  *
  * @return string field name used for a foreign key to the parameter itemtype
  */
-function getForeignKeyFieldForItemType($itemtype)
+function getForeignKeyFieldForItemType($itemtype): string
 {
     return getForeignKeyFieldForTable(getTableForItemType($itemtype));
 }
@@ -87,7 +87,7 @@ function getForeignKeyFieldForItemType($itemtype)
  *      table name corresponding to a foreign key name
  *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
  */
-function getTableNameForForeignKeyField($fkname)
+function getTableNameForForeignKeyField(string $fkname)
 {
     $dbu = new DbUtils();
     return $dbu->getTableNameForForeignKeyField($fkname);
@@ -103,7 +103,7 @@ function getTableNameForForeignKeyField($fkname)
  *      itemtype corresponding to a table name parameter,
  *      or null if no valid itemtype is attached to the table
  */
-function getItemTypeForTable($table)
+function getItemTypeForTable(string $table)
 {
     $dbu = new DbUtils();
     return $dbu->getItemTypeForTable($table);
@@ -127,7 +127,7 @@ function getItemForTable(string $table): ?CommonDBTM
  *      Itemtype class for the fkname parameter,
  *      or null if no valid itemtype is attached to the foreign key field
  */
-function getItemtypeForForeignKeyField($fkname)
+function getItemtypeForForeignKeyField(string $fkname)
 {
     $dbu = new DbUtils();
     return $dbu->getItemtypeForForeignKeyField($fkname);
@@ -149,7 +149,7 @@ function getItemForForeignKeyField(string $fkname): ?CommonDBTM
  *
  * @return string table name corresponding to the itemtype parameter
  */
-function getTableForItemType($itemtype)
+function getTableForItemType($itemtype): string
 {
     $dbu = new DbUtils();
     return $dbu->getTableForItemType($itemtype);
@@ -179,7 +179,7 @@ function getItemForItemtype($itemtype)
  *
  * @return string plural of the parameter string
  */
-function getPlural($string)
+function getPlural(string $string): string
 {
     $dbu = new DbUtils();
     return $dbu->getPlural($string);
@@ -193,7 +193,7 @@ function getPlural($string)
  *
  * @return string singular of the parameter string
  */
-function getSingular($string)
+function getSingular(string $string): string
 {
     $dbu = new DbUtils();
     return $dbu->getSingular($string);
@@ -208,7 +208,7 @@ function getSingular($string)
  *
  * @return int Number of elements in table
  */
-function countElementsInTable($table, $condition = [])
+function countElementsInTable(string|array $table, string|array $condition = []): int
 {
     $dbu = new DbUtils();
     return $dbu->countElementsInTable($table, $condition);
@@ -223,7 +223,7 @@ function countElementsInTable($table, $condition = [])
  *
  * @return int nb of elements in table
  */
-function countDistinctElementsInTable($table, $field, $condition = [])
+function countDistinctElementsInTable(string|array $table, string $field, string|array $condition = []): int
 {
     $dbu = new DbUtils();
     return $dbu->countDistinctElementsInTable($table, $field, $condition);
@@ -239,7 +239,7 @@ function countDistinctElementsInTable($table, $field, $condition = [])
  *
  * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
-function countElementsInTableForMyEntities($table, $condition = [])
+function countElementsInTableForMyEntities(string|array $table, string|array $condition = []): int
 {
     $dbu = new DbUtils();
     return $dbu->countElementsInTableForMyEntities($table, $condition);
@@ -256,7 +256,7 @@ function countElementsInTableForMyEntities($table, $condition = [])
  *
  * @return int number of elements in table
  */
-function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
+function countElementsInTableForEntity(string|array $table, int $entity, string|array $condition = [], bool $recursive = true): int
 {
     $dbu = new DbUtils();
     return $dbu->countElementsInTableForEntity($table, $entity, $condition, $recursive);
@@ -275,7 +275,7 @@ function countElementsInTableForEntity($table, $entity, $condition = [], $recurs
  *
  * @since 9.5.0
  */
-function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
+function getAllDataFromTable(string $table, string|array $criteria = [], bool $usecache = false, string $order = ''): array
 {
     $dbu = new DbUtils();
     return $dbu->getAllDataFromTable($table, $criteria, $usecache, $order);
@@ -296,7 +296,7 @@ function getAllDataFromTable($table, $criteria = [], $usecache = false, $order =
  * @TODO Deprecate the `$withcomment` parameter, it is never used.
  * @TODO Deprecate the `$translate` parameter, it is never used.
  */
-function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
+function getTreeLeafValueName(string $table, int $ID, bool $withcomment = false, bool $translate = true)
 {
     $dbu = new DbUtils();
     return $dbu->getTreeLeafValueName($table, $ID, $withcomment, $translate);
@@ -319,7 +319,7 @@ function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = tr
  *
  * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
  */
-function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
+function getTreeValueCompleteName(string $table, int $ID, bool $withcomment = false, bool $translate = true, bool $tooltip = true, string $default = '&nbsp;')
 {
     if ($withcomment) {
         Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
@@ -342,7 +342,7 @@ function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate 
  *
  * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
-function getTreeValueName($table, $ID, $wholename = "", $level = 0)
+function getTreeValueName(string $table, int $ID, string $wholename = "", int $level = 0): array
 {
     $dbu = new DbUtils();
     return $dbu->getTreeValueName($table, $ID, $wholename, $level);
@@ -357,7 +357,7 @@ function getTreeValueName($table, $ID, $wholename = "", $level = 0)
  *
  * @return int[] IDs of the ancestors.
  */
-function getAncestorsOf($table, $items_id)
+function getAncestorsOf(string $table, int|array $items_id): array
 {
     $dbu = new DbUtils();
     return $dbu->getAncestorsOf($table, $items_id);
@@ -372,7 +372,7 @@ function getAncestorsOf($table, $items_id)
  *
  * @return int[] IDs of the sons
  */
-function getSonsOf($table, $IDf)
+function getSonsOf(string $table, int $IDf): array
 {
     $dbu = new DbUtils();
     return $dbu->getSonsOf($table, $IDf);
@@ -389,7 +389,7 @@ function getSonsOf($table, $IDf)
  *
  * @return int[] IDs of the sons and the ancestors
  */
-function getSonsAndAncestorsOf($table, $IDf)
+function getSonsAndAncestorsOf(string $table, int $IDf): array
 {
     $dbu = new DbUtils();
     return $dbu->getSonsAndAncestorsOf($table, $IDf);
@@ -406,7 +406,7 @@ function getSonsAndAncestorsOf($table, $IDf)
  *
  * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
-function getTreeForItem($table, $IDf)
+function getTreeForItem(string $table, int $IDf): array
 {
     $dbu = new DbUtils();
     return $dbu->getTreeForItem($table, $IDf);
@@ -423,7 +423,7 @@ function getTreeForItem($table, $IDf)
  *
  * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
-function contructTreeFromList($list, $root)
+function contructTreeFromList(array $list, int $root): array
 {
     $dbu = new DbUtils();
     return $dbu->constructTreeFromList($list, $root);
@@ -440,7 +440,7 @@ function contructTreeFromList($list, $root)
  *
  * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
-function contructListFromTree($tree, $parent = 0)
+function contructListFromTree(array $tree, int $parent = 0): array
 {
     $dbu = new DbUtils();
     return $dbu->constructListFromTree($tree, $parent);
@@ -463,7 +463,7 @@ function contructListFromTree($tree, $parent = 0)
  * @since 11.0 `$link` parameter is deprecated
  * @since 11.0 `$cut` parameter is ignored
  */
-function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
+function formatUserName(int $ID, ?string $login, ?string $realname, ?string $firstname, int $link = 0, int $cut = 0, bool $force_config = false): string
 {
     $dbu = new DbUtils();
 
@@ -489,7 +489,7 @@ function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0,
  *
  * @return string
  */
-function formatUserLink(int $id, ?string $login, ?string $realname, ?string $firstname)
+function formatUserLink(int $id, ?string $login, ?string $realname, ?string $firstname): string
 {
     $dbu = new DbUtils();
     return $dbu->formatUserLink($id, $login, $realname, $firstname);
@@ -510,7 +510,7 @@ function formatUserLink(int $id, ?string $login, ?string $realname, ?string $fir
  *
  * @since 11.0 `$link` parameter is deprecated.
  */
-function getUserName($ID, $link = 0, $disable_anon = false)
+function getUserName(int $ID, int $link = 0, bool $disable_anon = false)
 {
     if ($link != 0) {
         Toolbox::deprecated('Usage of `$link` parameter is deprecated. See `DbUtils::getUserName()`.');
@@ -541,7 +541,7 @@ function getUserLink(int $id): string
  *
  * @return bool
  */
-function isIndex($table, $field)
+function isIndex(string $table, string $field): bool
 {
     $dbu = new DbUtils();
     return $dbu->isIndex($table, $field);
@@ -556,7 +556,7 @@ function isIndex($table, $field)
  *
  * @return bool
  */
-function isForeignKeyContraint($table, $keyname)
+function isForeignKeyContraint(string $table, string $keyname): bool
 {
     $dbu = new DbUtils();
     return $dbu->isForeignKeyContraint($table, $keyname);
@@ -574,7 +574,7 @@ function isForeignKeyContraint($table, $keyname)
  *
  * @return string new auto string
  */
-function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
+function autoName(string $objectName, string $field, bool $isTemplate, string $itemtype, int $entities_id = -1): string
 {
     $dbu = new DbUtils();
     return $dbu->autoName($objectName, $field, $isTemplate, $itemtype, $entities_id);
@@ -589,7 +589,7 @@ function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1
  *
  * @return array
  */
-function getDateCriteria($field, $begin, $end)
+function getDateCriteria(string $field, string $begin, string $end): array
 {
     $dbu = new DbUtils();
     return $dbu->getDateCriteria($field, $begin, $end);
@@ -602,7 +602,7 @@ function getDateCriteria($field, $begin, $end)
  *
  * @return string containing encoded array
  */
-function exportArrayToDB($TAB)
+function exportArrayToDB($TAB): string
 {
     $dbu = new DbUtils();
     return $dbu->exportArrayToDB($TAB);
@@ -616,7 +616,7 @@ function exportArrayToDB($TAB)
  *
  * @return array containing datas
  */
-function importArrayFromDB($DATA)
+function importArrayFromDB(string $DATA): array
 {
     $dbu = new DbUtils();
     return $dbu->importArrayFromDB($DATA);
@@ -632,7 +632,7 @@ function importArrayFromDB($DATA)
  *
  * @TODO This method is not used, deprecate it in GLPI 12.0.
  */
-function get_hour_from_sql($time)
+function get_hour_from_sql(string $time): string
 {
     $dbu = new DbUtils();
     return $dbu->getHourFromSql($time);
@@ -645,7 +645,7 @@ function get_hour_from_sql($time)
  *
  * @return array<string, array<string, string|list<string|array{0: string, 1: string}>>>
  */
-function getDbRelations()
+function getDbRelations(): array
 {
     $dbu = new DbUtils();
     return $dbu->getDbRelations();
@@ -669,13 +669,13 @@ function getDbRelations()
  * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
  */
 function getEntitiesRestrictRequest(
-    $separator = "AND",
-    $table = "",
-    $field = "",
+    string $separator = "AND",
+    string $table = "",
+    string $field = "",
     $value = '',
-    $is_recursive = false,
-    $complete_request = false
-) {
+    bool $is_recursive = false,
+    bool $complete_request = false
+): string {
     $dbu = new DbUtils();
     return $dbu->getEntitiesRestrictRequest(
         $separator,
@@ -704,12 +704,12 @@ function getEntitiesRestrictRequest(
  * @return array<mixed, mixed>
  */
 function getEntitiesRestrictCriteria(
-    $table = '',
-    $field = '',
+    string $table = '',
+    string $field = '',
     $value = '',
     $is_recursive = false,
-    $complete_request = false
-) {
+    bool $complete_request = false
+): array {
     $dbu = new DbUtils();
     $res = $dbu->getEntitiesRestrictCriteria(
         $table,

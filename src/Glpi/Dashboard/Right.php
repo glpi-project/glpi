@@ -87,7 +87,7 @@ class Right extends CommonDBChild
      *
      * @return void
      */
-    public static function addForDashboard(int $dashboards_id = 0, array $rights = [])
+    public static function addForDashboard(int $dashboards_id = 0, array $rights = []): void
     {
         global $DB;
 

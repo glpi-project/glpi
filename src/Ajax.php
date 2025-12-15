@@ -61,7 +61,7 @@ class Ajax
      *
      * @return void|string (see $options['display'])
      */
-    public static function createModalWindow($name, $url, $options = [])
+    public static function createModalWindow(string $name, string $url, array $options = []): void|string
     {
         if (preg_match('/[^\w]+/', $name) === 1) {
             throw new InvalidArgumentException('Modal name is expected to be a valid javascript variable identifier.');
@@ -152,7 +152,7 @@ class Ajax
      *
      * @return void|string (see $options['display'])
      */
-    public static function createIframeModalWindow($domid, $url, $options = [])
+    public static function createIframeModalWindow(string $domid, string $url, array $options = []): void|string
     {
 
         $param = [
@@ -275,14 +275,14 @@ class Ajax
      * @return void
      */
     public static function createTabs(
-        $tabdiv_id = 'tabspanel',
-        $tabdivcontent_id = 'tabcontent',
-        $tabs = [],
-        $type = '',
-        $ID = 0,
-        $orientation = 'vertical',
-        $options = []
-    ) {
+        string $tabdiv_id = 'tabspanel',
+        string $tabdivcontent_id = 'tabcontent',
+        array $tabs = [],
+        string $type = '',
+        int $ID = 0,
+        string $orientation = 'vertical',
+        array $options = []
+    ): void {
         if (count($tabs) === 0) {
             return;
         }
@@ -530,16 +530,16 @@ JS;
      * @return void|string (see $display)
      */
     public static function updateItemOnEvent(
-        $toobserve,
-        $toupdate,
-        $url,
-        $parameters = [],
-        $events = ["change"],
-        $minsize = -1,
-        $buffertime = -1,
-        $forceloadfor = [],
-        $display = true
-    ) {
+        string|array $toobserve,
+        string $toupdate,
+        string $url,
+        array $parameters = [],
+        array $events = ["change"],
+        int $minsize = -1,
+        int $buffertime = -1,
+        array $forceloadfor = [],
+        bool $display = true
+    ): void|string {
 
         $js = "$(function() {";
         $js .= self::updateItemOnEventJsCode(
@@ -577,12 +577,12 @@ JS;
      * @return void|string (see $display)
      */
     public static function updateItemOnSelectEvent(
-        $toobserve,
-        $toupdate,
-        $url,
-        $parameters = [],
-        $display = true
-    ) {
+        string|array $toobserve,
+        string $toupdate,
+        string $url,
+        array $parameters = [],
+        bool $display = true
+    ): void|string {
 
         return self::updateItemOnEvent(
             $toobserve,
@@ -614,16 +614,16 @@ JS;
      * @return void|string (see $display)
      */
     public static function updateItemOnEventJsCode(
-        $toobserve,
-        $toupdate,
-        $url,
-        $parameters = [],
-        $events = ["change"],
-        $minsize = -1,
-        $buffertime = -1,
-        $forceloadfor = [],
-        $display = true
-    ) {
+        string|array $toobserve,
+        string $toupdate,
+        string $url,
+        array $parameters = [],
+        array $events = ["change"],
+        int $minsize = -1,
+        int $buffertime = -1,
+        array $forceloadfor = [],
+        bool $display = true
+    ): void|string {
         if ($buffertime !== -1) {
             trigger_error('$buffertime parameter has no effect anymore.', E_USER_WARNING);
         }
@@ -686,7 +686,7 @@ JS;
      *
      * @return void|string (see $display)
      */
-    public static function commonDropdownUpdateItem($options, $display = true)
+    public static function commonDropdownUpdateItem(array $options, bool $display = true): void|string
     {
 
         $field     = '';
@@ -762,12 +762,12 @@ JS;
      * @return void|string (see $display)
      */
     public static function updateItemJsCode(
-        $toupdate,
-        $url,
-        $parameters = [],
-        $toobserve = "",
-        $display = true
-    ) {
+        string $toupdate,
+        string $url,
+        array $parameters = [],
+        string|array $toobserve = "",
+        bool $display = true
+    ): void|string {
 
         $out = sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
         if (count($parameters)) {
@@ -817,7 +817,7 @@ JS;
      *
      * @return void|string (see $display)
      */
-    public static function updateItem($toupdate, $url, $parameters = [], $toobserve = "", $display = true)
+    public static function updateItem(string $toupdate, string $url, array $parameters = [], string $toobserve = "", bool $display = true): void|string
     {
 
         $js = "$(function() {";

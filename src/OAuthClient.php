@@ -111,7 +111,7 @@ final class OAuthClient extends CommonDBTM
      * @return string
      * @throws Exception
      */
-    public static function getNewIDOrSecret()
+    public static function getNewIDOrSecret(): string
     {
         return bin2hex(random_bytes(Server::ID_SECRET_LENGTH_BYTES));
     }
@@ -169,7 +169,7 @@ final class OAuthClient extends CommonDBTM
      * @param string|null $allowed_ips
      * @return bool
      */
-    private function validateAllowedIPs(?string $allowed_ips)
+    private function validateAllowedIPs(?string $allowed_ips): bool
     {
         if (empty($allowed_ips)) {
             return true;

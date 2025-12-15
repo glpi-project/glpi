@@ -370,7 +370,7 @@ class ConfigTest extends DbTestCase
      *
      * @return array
      */
-    public static function dbEngineProvider()
+    public static function dbEngineProvider(): array
     {
         return [
             [
@@ -448,7 +448,7 @@ class ConfigTest extends DbTestCase
      *
      * @return array
      */
-    public static function itemtypeLinkedToConfigurationProvider()
+    public static function itemtypeLinkedToConfigurationProvider(): array
     {
         return [
             [

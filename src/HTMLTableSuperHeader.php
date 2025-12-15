@@ -48,7 +48,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      * @param string                $content  see inc/HTMLTableEntity#__construct()
      * @param ?HTMLTableHeader      $father   HTMLTableHeader objet (default NULL)
      */
-    public function __construct(HTMLTableBase $table, $name, $content, ?HTMLTableHeader $father = null)
+    public function __construct(HTMLTableBase $table, string $name, string $content, ?HTMLTableHeader $father = null)
     {
         $this->table = $table;
         parent::__construct($name, $content, $father);
@@ -62,7 +62,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      *
      * @return int LCM of $first and $second
      */
-    private static function LCM($first, $second)
+    private static function LCM(int $first, int $second): int
     {
         $result = $first * $second;
         while ($first > 1) {
@@ -108,7 +108,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      *
      * @return void
      */
-    public function updateNumberOfSubHeader($number)
+    public function updateNumberOfSubHeader(int $number): void
     {
         $this->setColSpan(self::LCM($number, $this->getColSpan()));
     }
@@ -118,7 +118,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      *
      * @return true
      **/
-    public function hasToDisplay()
+    public function hasToDisplay(): bool
     {
         return true;
     }

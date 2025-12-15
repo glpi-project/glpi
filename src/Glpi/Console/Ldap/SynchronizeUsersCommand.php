@@ -479,7 +479,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      *
      * @throws InvalidArgumentException
      */
-    private function validateInput(InputInterface $input)
+    private function validateInput(InputInterface $input): void
     {
 
         $only_create = $input->getOption('only-create-new');

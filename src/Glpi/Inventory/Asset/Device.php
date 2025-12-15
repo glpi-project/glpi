@@ -51,7 +51,7 @@ abstract class Device extends InventoryAsset
      *
      * @return array
      */
-    protected function getExisting($itemdevicetable, $fk): array
+    protected function getExisting(string $itemdevicetable, string $fk): array
     {
         global $DB;
 
@@ -211,7 +211,7 @@ abstract class Device extends InventoryAsset
      *
      * @return void
      */
-    protected function itemdeviceAdded(Item_Devices $itemdevice, $val)
+    protected function itemdeviceAdded(Item_Devices $itemdevice, stdClass $val): void
     {
         //to be overridden
     }

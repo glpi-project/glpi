@@ -143,7 +143,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * @return bool
      */
-    public function canReopen()
+    public function canReopen(): bool
     {
         return Session::haveRight('followup', CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
@@ -659,7 +659,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd(string $itemtype)
+    public static function rawSearchOptionsToAdd(string $itemtype): array
     {
         global $CFG_GLPI;
 
@@ -821,7 +821,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void|false
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
     {
         if (!Session::haveRightsOr(self::$rightname, [self::READALL])) {
             return false;
@@ -856,7 +856,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param CommonDBTM $item
      * @return array
      */
-    public static function getListForItemRestrict(CommonDBTM $item)
+    public static function getListForItemRestrict(CommonDBTM $item): array
     {
         $restrict = [];
 
@@ -971,7 +971,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param int $items_id
      * @return DBmysqlIterator
      */
-    public function getActiveChangesForItem($itemtype, $items_id)
+    public function getActiveChangesForItem($itemtype, int $items_id): DBmysqlIterator
     {
         global $DB;
 
@@ -1043,7 +1043,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      **/
-    public static function showCentralList($start, $status = "process", $showgroupchanges = true)
+    public static function showCentralList(int $start, string $status = "process", bool $showgroupchanges = true): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1550,7 +1550,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param string $forcetab
      * @return void
      */
-    public static function showVeryShort($ID, $forcetab = '')
+    public static function showVeryShort(int $ID, string $forcetab = ''): void
     {
         // Prints a job in short form
         // Should be called in a <table>-segment

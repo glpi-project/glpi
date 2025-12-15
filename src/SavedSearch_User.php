@@ -95,7 +95,7 @@ class SavedSearch_User extends CommonDBRelation
      * @return array|bool same output than SavedSearch::getParameters()
      * @since 9.2
      */
-    public static function getDefault($users_id, $itemtype)
+    public static function getDefault(mixed $users_id, mixed $itemtype): array|bool
     {
         global $DB;
 

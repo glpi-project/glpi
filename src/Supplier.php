@@ -381,7 +381,7 @@ class Supplier extends CommonDBTM
      *
      * @return string
      */
-    public function getLinks($withname = false)
+    public function getLinks(bool $withname = false): string
     {
         $ret = $withname ? ('<span class="ms-3 me-1">' . htmlescape($this->fields["name"]) . '</span>') : '';
 
@@ -398,7 +398,7 @@ class Supplier extends CommonDBTM
      * @param class-string<CommonDBTM> $itemtype
      * @return array{linktype: class-string<CommonDBTM>, entities_id: int, name: string, id: int, serial: ?string, otherserial: ?string, is_deleted: 0|1}[]
      */
-    private function getInfocomsForItemtype(string $itemtype)
+    private function getInfocomsForItemtype(string $itemtype): array
     {
         global $DB;
         if (!($item = getItemForItemtype($itemtype)) || !$item::canView()) {
@@ -507,7 +507,7 @@ class Supplier extends CommonDBTM
      *
      * @return void|false
      **/
-    public function showInfocoms()
+    public function showInfocoms(): void|bool
     {
         $instID = $this->fields['id'];
         if (!$this->can($instID, READ)) {
@@ -616,7 +616,7 @@ class Supplier extends CommonDBTM
      *
      * @return DBmysqlIterator
      **/
-    public static function getSuppliersByEmail($email)
+    public static function getSuppliersByEmail(string $email): DBmysqlIterator
     {
         global $DB;
 

@@ -366,7 +366,7 @@ abstract class CommonITILCost extends CommonDBChild
      *
      * @return int
      **/
-    public function getTotalActionTimeForItem($items_id)
+    public function getTotalActionTimeForItem(int $items_id): int
     {
         global $DB;
 
@@ -386,7 +386,7 @@ abstract class CommonITILCost extends CommonDBChild
      *
      * @return array
      **/
-    public function getLastCostForItem($items_id)
+    public function getLastCostForItem(int $items_id): array
     {
         global $DB;
 
@@ -409,7 +409,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param int $ID ID of the item
      * @param array $options options used
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form
@@ -684,7 +684,7 @@ TWIG, $twig_params);
      * @return array of costs and actiontime
      * @used-by src/NotificationTargetCommonITILObject.php
      **/
-    public static function getCostsSummary($type, $ID)
+    public static function getCostsSummary(string $type, int $ID): array
     {
         global $DB;
 
@@ -743,7 +743,7 @@ TWIG, $twig_params);
      *
      * @return string total cost formatted string
      **/
-    public static function computeTotalCost($actiontime, $cost_time, $cost_fixed, $cost_material, $edit = true)
+    public static function computeTotalCost(float $actiontime, float $cost_time, float $cost_fixed, float $cost_material, bool $edit = true): string
     {
         $cost = ($actiontime * $cost_time / HOUR_TIMESTAMP) + $cost_fixed + $cost_material;
         return Html::formatNumber($cost, $edit);

@@ -82,7 +82,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return array|null
      **/
-    public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
+    public static function getSQLCriteriaToSearchForItem(string $itemtype, int $items_id): ?array
     {
         $table = static::getTable();
 
@@ -191,7 +191,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param string $method
      * @return bool
      **/
-    public static function canChild($method)
+    public static function canChild(string $method): bool
     {
 
         return static::canConnexity(
@@ -211,7 +211,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function canChildItem($methodItem, $methodNotItem)
+    public function canChildItem(string $methodItem, string $methodNotItem): bool
     {
 
         try {
@@ -238,7 +238,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return CommonDBTM|false object of the concerned item or false on error
      **/
-    public function getItem($getFromDB = true, $getEmpty = true)
+    public function getItem(bool $getFromDB = true, bool $getEmpty = true): CommonDBTM|bool
     {
         return $this->getConnexityItem(
             static::$itemtype,
@@ -257,7 +257,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param bool $display  display html or return html
      * @return bool|string
      **/
-    public static function displayRecursiveItems(array $recursiveItems, $elementToDisplay, bool $display = true)
+    public static function displayRecursiveItems(array $recursiveItems, string $elementToDisplay, bool $display = true): bool|string
     {
 
         if ($recursiveItems === []) {
@@ -308,7 +308,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return array
      **/
-    public function recursivelyGetItems()
+    public function recursivelyGetItems(): array
     {
 
         $item = $this->getItem();
@@ -327,7 +327,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return int ID of the entity
      **/
-    public function getEntityID()
+    public function getEntityID(): int
     {
 
         // Case of Duplicate Entity info to child
@@ -366,7 +366,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function maybeRecursive()
+    public function maybeRecursive(): bool
     {
 
         // Case of Duplicate Entity info to child
@@ -389,7 +389,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function isRecursive()
+    public function isRecursive(): bool
     {
 
         // Case of Duplicate Entity info to child
@@ -515,7 +515,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return string the name of the entry for the database (ie. : correctly slashed)
      **/
-    public function getHistoryNameForItem(CommonDBTM $item, $case)
+    public function getHistoryNameForItem(CommonDBTM $item, string $case): string
     {
 
         return $this->getNameID(['forceid'    => true,
@@ -529,7 +529,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         $item = $this->getItem();
@@ -569,7 +569,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_updateItem($history = true)
+    public function post_updateItem(int|bool $history = true): void
     {
 
         if (
@@ -653,7 +653,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
 
         if (
@@ -698,7 +698,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function cleanDBonMarkDeleted()
+    public function cleanDBonMarkDeleted(): void
     {
 
         if (
@@ -743,7 +743,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @return void
      **/
 
-    public function post_restoreItem()
+    public function post_restoreItem(): void
     {
         if (
             (isset($this->input['_no_history']) && $this->input['_no_history'])
@@ -795,7 +795,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return string
      **/
-    public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
+    public static function getJSCodeToAddForItemChild(string $field_name, string $child_count_js_var): string
     {
         $html = "<input type='text' size='40' name='" . htmlescape($field_name) . "[-__JS_PLACEHOLDER__]'>";
 
@@ -820,7 +820,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return string|void
      **/
-    public function showChildForItemForm($canedit, $field_name, $id, bool $display = true)
+    public function showChildForItemForm(bool $canedit, string $field_name, int $id, bool $display = true): string|void
     {
 
         if ($this->isNewID($this->getID())) {
@@ -864,10 +864,10 @@ abstract class CommonDBChild extends CommonDBConnexity
      **/
     public static function showAddChildButtonForItemForm(
         CommonDBTM $item,
-        $field_name,
-        $canedit = null,
-        $display = true
-    ) {
+        string $field_name,
+        ?bool $canedit = null,
+        bool $display = true
+    ): void|bool|string {
 
         $items_id = $item->getID();
 
@@ -927,7 +927,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void|bool|string (display) Returns false if there is a right error.
      **/
-    public static function showChildsForItemForm(CommonDBTM $item, $field_name, $canedit = null, bool $display = true)
+    public static function showChildsForItemForm(CommonDBTM $item, string $field_name, ?bool $canedit = null, bool $display = true): void|bool|string
     {
         global $DB;
 
@@ -1008,7 +1008,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return bool : true on success
      **/
-    public function affectChild($id, $items_id = 0, $itemtype = '')
+    public function affectChild(int $id, int $items_id = 0, $itemtype = ''): bool
     {
 
         $input = [static::getIndexName() => $id,
@@ -1042,7 +1042,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * @return void
      */
-    protected function autoinventoryInformation()
+    protected function autoinventoryInformation(): void
     {
         echo "<td>" . __s('Automatic inventory') . "</td>";
         echo "<td>";

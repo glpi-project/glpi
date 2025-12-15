@@ -55,7 +55,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return void
      */
-    public static function cleanForItem(CommonDBTM $item)
+    public static function cleanForItem(CommonDBTM $item): void
     {
         $temp = new self();
         $temp->deleteByCriteria(
@@ -114,7 +114,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return int
      */
-    public static function countForDomain(Domain $item)
+    public static function countForDomain(Domain $item): int
     {
         $types = $item->getTypes();
         if (count($types) === 0) {
@@ -153,7 +153,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return bool
      */
-    public function getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)
+    public function getFromDBbyDomainsAndItem(int $domains_id, int $items_id, $itemtype): bool
     {
         $criteria = ['domains_id' => $domains_id];
 
@@ -174,7 +174,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return false|int
      */
-    public function addItem($values)
+    public function addItem(array $values): bool|int
     {
         return $this->add([
             'domains_id'         => $values['domains_id'],
@@ -191,7 +191,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return bool
      */
-    public function deleteItemByDomainsAndItem($domains_id, $items_id, $itemtype)
+    public function deleteItemByDomainsAndItem(int $domains_id, int $items_id, $itemtype): bool
     {
         if ($this->getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)) {
             return $this->delete(['id' => $this->fields["id"]]);
@@ -206,7 +206,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showForDomain(Domain $domain)
+    public static function showForDomain(Domain $domain): void|bool
     {
         global $DB;
 
@@ -471,7 +471,7 @@ TWIG, $twig_params);
      *
      * @return void|false
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
     {
         global $DB;
 

@@ -128,7 +128,7 @@ class KnowbaseItemTranslation extends CommonDBChild
      *
      * @return void
      **/
-    public function showFull($options = [])
+    public function showFull(array $options = []): void
     {
         if (!$this->can($this->fields['id'], READ)) {
             return;
@@ -159,7 +159,7 @@ TWIG, $twig_params);
      *
      * @return true
      **/
-    public static function showTranslations(KnowbaseItem $item)
+    public static function showTranslations(KnowbaseItem $item): bool
     {
         $canedit = $item->can($item->getID(), UPDATE);
         $rand    = mt_rand();
@@ -245,7 +245,7 @@ TWIG, $twig_params);
      * @param int $ID
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm(int $ID = -1, array $options = [])
     {
         if (($ID <= 0 && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form
@@ -277,7 +277,7 @@ TWIG, $twig_params);
      *
      * @return string  the field translated if a translation is available, or the original field if not
      **/
-    public static function getTranslatedValue(KnowbaseItem $item, $field = "name")
+    public static function getTranslatedValue(KnowbaseItem $item, string $field = "name"): string
     {
         $obj   = new self();
         $found = $obj->find([
@@ -304,7 +304,7 @@ TWIG, $twig_params);
      *
      * @return int  the number of translations for this item
      **/
-    public static function getNumberOfTranslationsForItem($item)
+    public static function getNumberOfTranslationsForItem(KnowbaseItem $item): int
     {
         return countElementsInTable(
             getTableForItemType(self::class),
@@ -352,7 +352,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function revertTo($revid)
+    public function revertTo(int $revid): bool
     {
         $revision = new KnowbaseItem_Revision();
         $revision->getFromDB($revid);

@@ -238,7 +238,7 @@ class RuleImportAsset extends Rule
     /**
      * @return array
      */
-    public static function getRuleActionValues()
+    public static function getRuleActionValues(): array
     {
         return [
             self::RULE_ACTION_LINK_OR_IMPORT    => __('Link if possible'),
@@ -260,7 +260,7 @@ class RuleImportAsset extends Rule
      *
      * @return false
      */
-    public function manageSpecificCriteriaValues($criteria, $name, $value)
+    public function manageSpecificCriteriaValues(array $criteria, string $name, string $value): bool
     {
         switch ($criteria['type']) {
             case "state":
@@ -359,7 +359,7 @@ class RuleImportAsset extends Rule
      *
      * @return array
      */
-    public function getCriteriaByID($ID)
+    public function getCriteriaByID(string $ID): array
     {
         $criteria = [];
         foreach ($this->criterias as $criterion) {
@@ -600,7 +600,7 @@ class RuleImportAsset extends Rule
      *
      * @return void
      */
-    public function handleLinkCriteriaPort(CommonDBTM $item, array &$it_criteria)
+    public function handleLinkCriteriaPort(CommonDBTM $item, array &$it_criteria): void
     {
         $is_ip          = false;
         $is_networkport = false;
@@ -661,7 +661,7 @@ class RuleImportAsset extends Rule
      *
      * @return void
      */
-    public function handleOneJoinPerCriteria(CommonDBTM $item, array &$it_criteria)
+    public function handleOneJoinPerCriteria(CommonDBTM $item, array &$it_criteria): void
     {
         $itemtable      = $item->getTable();
         $itemtype       = $item->getType();
@@ -716,7 +716,7 @@ class RuleImportAsset extends Rule
      *
      * @return void
      */
-    public function handleFieldsCriteria(CommonDBTM $item, &$it_criteria, $input)
+    public function handleFieldsCriteria(CommonDBTM $item, array &$it_criteria, array $input): void
     {
         $itemtable      = $item->getTable();
         $itemtype       = $item->getType();
@@ -1099,7 +1099,7 @@ TWIG, $twig_params);
      * @global array $CFG_GLPI
      * @return array
      */
-    public static function getItemTypesForRules()
+    public static function getItemTypesForRules(): array
     {
         global $CFG_GLPI;
 
@@ -1125,7 +1125,7 @@ TWIG, $twig_params);
              *
              * @return void
              */
-            public function rulepassed($items_id, $itemtype, $rules_id) {}
+            public function rulepassed(int $items_id, $itemtype, int $rules_id): void {}
         };
         return $params + ['class' => $class];
     }
@@ -1196,7 +1196,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function isNetPort($criterion): bool
+    public function isNetPort(string $criterion): bool
     {
         return in_array($criterion, $this->getNetportCriteria());
     }

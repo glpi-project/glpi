@@ -79,7 +79,7 @@ class Manufacturer extends CommonDropdown
     /**
      * @return void
      */
-    public function post_workOnItem()
+    public function post_workOnItem(): void
     {
 
         if (
@@ -140,7 +140,7 @@ class Manufacturer extends CommonDropdown
      *
      * @return null|string new name
      **/
-    public static function processName($old_name)
+    public static function processName(?string $old_name): ?string
     {
 
         if ($old_name == null) {
@@ -180,7 +180,7 @@ class Manufacturer extends CommonDropdown
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
 
@@ -205,7 +205,7 @@ class Manufacturer extends CommonDropdown
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
 

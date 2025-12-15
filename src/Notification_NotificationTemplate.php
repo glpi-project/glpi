@@ -114,7 +114,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
      *
      * @return bool
      **/
-    public static function showForNotification(Notification $notif, $withtemplate = 0): bool
+    public static function showForNotification(Notification $notif, int $withtemplate = 0): bool
     {
         global $DB;
 
@@ -217,7 +217,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function showForNotificationTemplate(NotificationTemplate $template, $withtemplate = 0): bool
+    public static function showForNotificationTemplate(NotificationTemplate $template, int $withtemplate = 0): bool
     {
         global $DB;
 
@@ -290,7 +290,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showFormMassiveAction()
+    public static function showFormMassiveAction(): void
     {
         echo __s('Mode') . "<br>";
         self::dropdownMode(['name' => 'mode']);
@@ -345,7 +345,7 @@ TWIG, $twig_params);
      *
      * @return array|string The mode data if found, otherwise {@link NOT_AVAILABLE}.
      **/
-    public static function getMode($mode)
+    public static function getMode(string $mode): array|string
     {
         $tab = self::getModes();
         return $tab[$mode] ?? NOT_AVAILABLE;
@@ -360,7 +360,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function registerMode($mode, $label, $from)
+    public static function registerMode(string $mode, string $label, string $from): void
     {
         global $CFG_GLPI;
 
@@ -376,7 +376,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public static function getModes()
+    public static function getModes(): array
     {
         global $CFG_GLPI;
 
@@ -458,7 +458,7 @@ TWIG, $twig_params);
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      */
-    public static function dropdownMode($options)
+    public static function dropdownMode(array $options): int|string
     {
         $p['name']     = 'modes';
         $p['display']  = true;
@@ -494,7 +494,7 @@ TWIG, $twig_params);
      *          )
      *      )
      */
-    public static function getModeClass($mode, $extratype = '')
+    public static function getModeClass(string $mode, $extratype = '')
     {
         if ($extratype === 'event') {
             $classname = 'NotificationEvent' . ucfirst($mode);
@@ -538,7 +538,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function hasActiveMode()
+    public static function hasActiveMode(): bool
     {
         global $CFG_GLPI;
         foreach (array_keys(self::getModes()) as $mode) {

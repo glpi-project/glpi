@@ -104,7 +104,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $DB;
 
@@ -245,7 +245,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      *
      * @return int|false ID of the revision created, or false on error
      */
-    public function createNew(KnowbaseItem|KnowbaseItemTranslation $item)
+    public function createNew(KnowbaseItem|KnowbaseItemTranslation $item): int|bool
     {
         $this->getEmpty();
         unset($this->fields['id']);
@@ -267,7 +267,7 @@ class KnowbaseItem_Revision extends CommonDBTM
      *
      * @return int
      */
-    private function getNewRevision()
+    private function getNewRevision(): int
     {
         global $DB;
 

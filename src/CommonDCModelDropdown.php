@@ -57,7 +57,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      *
      * @return array
      **/
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         global $DB;
 
@@ -307,7 +307,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      * @param array $input
      * @return array|false
      */
-    private function checkForRackIssues(array $input)
+    private function checkForRackIssues(array $input): array|bool
     {
         // Checks whether any fields that might be causing a problem have been modified
         if (
@@ -385,7 +385,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      *
      * @return void
      */
-    private function updateRackItemsHorizontalPosition()
+    private function updateRackItemsHorizontalPosition(): void
     {
         if (!$this->fields['is_half_rack']) {
             // If the model is not half rack, set the hpos to none for all rack items using this model
@@ -449,7 +449,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $soptions = [];
 

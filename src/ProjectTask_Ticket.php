@@ -123,7 +123,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      *
      * @return int total actiontime
      **/
-    public static function getTicketsTotalActionTime($projecttasks_id)
+    public static function getTicketsTotalActionTime(int $projecttasks_id): int
     {
         global $DB;
 
@@ -155,7 +155,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      * @param ProjectTask $projecttask object
      * @return void|false
      **/
-    public static function showForProjectTask(ProjectTask $projecttask)
+    public static function showForProjectTask(ProjectTask $projecttask): void|bool
     {
         $ID = $projecttask->getField('id');
         if (!$projecttask->can($ID, READ)) {
@@ -231,7 +231,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      * @param Ticket $ticket object
      * @return void|false
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket): void|bool
     {
         global $CFG_GLPI, $DB;
 

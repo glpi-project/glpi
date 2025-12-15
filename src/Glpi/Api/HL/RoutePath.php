@@ -229,7 +229,7 @@ final class RoutePath
      *
      * @return bool
      */
-    public function isValidPath($path): bool
+    public function isValidPath(string $path): bool
     {
         // Ensure no placeholders are left
         $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static fn($v, $k) => is_callable($v), ARRAY_FILTER_USE_BOTH);

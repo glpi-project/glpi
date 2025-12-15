@@ -46,7 +46,7 @@ class Item_RackTest extends DbTestCase
      *
      * @return array
      */
-    public static function modelsProvider()
+    public static function modelsProvider(): array
     {
         return [
             [
@@ -93,7 +93,7 @@ class Item_RackTest extends DbTestCase
      *
      * @return void
      */
-    protected function createModels()
+    protected function createModels(): void
     {
         $model = new \ComputerModel();
         foreach ($this->modelsProvider() as $row) {
@@ -109,7 +109,7 @@ class Item_RackTest extends DbTestCase
      *
      * @return array
      */
-    public static function computersProvider()
+    public static function computersProvider(): array
     {
         return [
             [
@@ -163,7 +163,7 @@ class Item_RackTest extends DbTestCase
      *
      * @return void
      */
-    protected function createComputers()
+    protected function createComputers(): void
     {
         $computer = new \Computer();
         foreach ($this->computersProvider() as $row) {
@@ -184,7 +184,7 @@ class Item_RackTest extends DbTestCase
      *
      * @return void
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $this->createModels();
         $this->createComputers();

@@ -219,7 +219,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return array
      **/
-    public static function getForTypeUser($itemtype, $user_id, string $interface = 'central')
+    public static function getForTypeUser(string $itemtype, int $user_id, string $interface = 'central'): array
     {
         global $DB;
 
@@ -257,7 +257,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void|false
      */
-    public function activatePerso(array $input)
+    public function activatePerso(array $input): void|bool
     {
         global $DB;
 
@@ -314,7 +314,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void
      */
-    public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central')
+    public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central'): void
     {
         global $DB;
 
@@ -366,7 +366,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void|false
      */
-    public function orderItem(array $input, $action)
+    public function orderItem(array $input, string $action): void|bool
     {
         global $DB;
 
@@ -443,7 +443,7 @@ class DisplayPreference extends CommonDBTM
      * @param bool $global True if global config, false if personal config
      * @return void|false
      */
-    private function showConfigForm(string $itemtype, bool $global, string $interface = 'central')
+    private function showConfigForm(string $itemtype, bool $global, string $interface = 'central'): void|bool
     {
         global $DB;
 
@@ -533,7 +533,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
-    public function showFormPerso($itemtype)
+    public function showFormPerso(string $itemtype): ?bool
     {
         return $this->showConfigForm($itemtype, false);
     }
@@ -575,7 +575,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
-    public function showFormGlobal($itemtype)
+    public function showFormGlobal($itemtype): ?bool
     {
         return $this->showConfigForm($itemtype, true);
     }
@@ -603,7 +603,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void
      */
-    public static function showForUser($users_id)
+    public static function showForUser(int $users_id): void
     {
         global $DB;
 

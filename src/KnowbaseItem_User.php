@@ -54,7 +54,7 @@ class KnowbaseItem_User extends CommonDBRelation
      *
      * @return array of users linked to a knowbaseitem
      **/
-    public static function getUsers($knowbaseitems_id)
+    public static function getUsers(int $knowbaseitems_id): array
     {
         global $DB;
 

@@ -518,7 +518,7 @@ final class Form extends CommonDBTM implements
      *
      * @return array Array of information
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return [
             'description' => __('Purge old form drafts'),
@@ -746,7 +746,7 @@ final class Form extends CommonDBTM implements
     }
 
     /** @param array $input */
-    public function prepareInputForClone($input): array
+    public function prepareInputForClone(array $input): array
     {
         $input = $this->parentPrepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareFormInputForClone($input);
@@ -756,7 +756,7 @@ final class Form extends CommonDBTM implements
      *  @param CommonDBTM $source
      *  @param bool $history
      */
-    public function post_clone($source, $history): void
+    public function post_clone(CommonDBTM $source, bool $history): void
     {
         FormCloneHelper::getInstance()->postFormClone($this);
     }

@@ -185,7 +185,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      */
-    public static function assignToMe($ticket_id, $user_id)
+    public static function assignToMe(int $ticket_id, int $user_id): void
     {
         $ticket = new Ticket();
         if ($ticket->getFromDB($ticket_id)) {
@@ -317,7 +317,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return bool
      **/
-    public function canApprove()
+    public function canApprove(): bool
     {
 
         return ((($this->fields["users_id_recipient"] === Session::getLoginUserID())
@@ -364,7 +364,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return bool
      */
-    public function canTakeIntoAccount()
+    public function canTakeIntoAccount(): bool
     {
 
         // Can take into account if user is assigned user
@@ -405,7 +405,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return bool
      */
-    public function isAlreadyTakenIntoAccount()
+    public function isAlreadyTakenIntoAccount(): bool
     {
 
         return array_key_exists('takeintoaccount_delay_stat', $this->fields)
@@ -424,7 +424,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array of datas to add in ticket
      **/
-    public function getDatasToAddSLA($slas_id, $entities_id, $date, $type)
+    public function getDatasToAddSLA(int $slas_id, int $entities_id, string $date, int $type): array
     {
 
         [$dateField, $slaField] = SLA::getFieldNames($type);
@@ -466,7 +466,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array of datas to add in ticket
      **/
-    public function getDatasToAddOLA($olas_id, $entities_id, $date, $type)
+    public function getDatasToAddOLA(int $olas_id, int $entities_id, string $date, int $type): array
     {
 
         [$dateField, $olaField] = OLA::getFieldNames($type);
@@ -512,7 +512,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return bool
      **/
-    public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
+    public function deleteLevelAgreement(string $laType, int $la_id, $subtype, bool $delete_date = false): bool
     {
         switch ($laType) {
             case "SLA":
@@ -621,7 +621,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return bool
      */
-    public function ownItem()
+    public function ownItem(): bool
     {
         return Session::haveRight(self::$rightname, self::OWN)
              && $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID());
@@ -642,7 +642,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      * @since  9.2
      * @return bool
      */
-    public function canReopen()
+    public function canReopen(): bool
     {
         return Session::haveRight('followup', CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
@@ -877,7 +877,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      **/
-    public function getAdditionalDatas()
+    public function getAdditionalDatas(): void
     {
 
         $this->hardwaredatas = [];
@@ -1083,7 +1083,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      */
-    public function slaAffect($type, &$input, $manual_slas_id)
+    public function slaAffect(int $type, array &$input, array $manual_slas_id): void
     {
 
         [$dateField, $slaField] = SLA::getFieldNames($type);
@@ -1177,7 +1177,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      */
-    public function olaAffect($type, &$input, $manual_olas_id)
+    public function olaAffect(int $type, array &$input, array $manual_olas_id): void
     {
 
         [$dateField, $olaField] = OLA::getFieldNames($type);
@@ -1266,7 +1266,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      **/
-    public function manageSlaLevel($slas_id)
+    public function manageSlaLevel(int $slas_id): void
     {
 
         // Add first level in working table
@@ -1296,7 +1296,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      */
-    public function manageOlaLevel($slas_id)
+    public function manageOlaLevel(int $slas_id): void
     {
 
         // Add first level in working table
@@ -1352,7 +1352,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return int
      */
-    public function computeTakeIntoAccountDelayStat()
+    public function computeTakeIntoAccountDelayStat(): int
     {
 
         if (
@@ -1831,7 +1831,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array
      */
-    public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, $items_id, $days)
+    public function getActiveOrSolvedLastDaysTicketsForItem($itemtype, int $items_id, int $days): array
     {
         return $this->getActiveOrSolvedLastDaysForItem($itemtype, $items_id, $days);
     }
@@ -1845,7 +1845,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return int
      */
-    public function countActiveTicketsForItem($itemtype, $items_id)
+    public function countActiveTicketsForItem($itemtype, int $items_id): int
     {
         global $DB;
 
@@ -1885,7 +1885,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return DBmysqlIterator
      */
-    public function getActiveTicketsForItem($itemtype, $items_id, $type)
+    public function getActiveTicketsForItem(string $itemtype, int $items_id, int $type): DBmysqlIterator
     {
         global $DB;
 
@@ -1930,7 +1930,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return int
      */
-    public function countSolvedTicketsForItemLastDays($itemtype, $items_id, $days)
+    public function countSolvedTicketsForItemLastDays($itemtype, int $items_id, int $days): int
     {
         global $DB;
 
@@ -2014,7 +2014,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return bool
      */
-    public function canUserAddFollowups($user_id)
+    public function canUserAddFollowups(int $user_id): bool
     {
 
         $entity_id = $this->fields['entities_id'];
@@ -3259,7 +3259,7 @@ JAVASCRIPT;
      *
      * @return string id of the select
      **/
-    public static function dropdownType($name, $options = [])
+    public static function dropdownType(string $name, array $options = []): string
     {
 
         $params = [
@@ -3291,7 +3291,7 @@ JAVASCRIPT;
      *
      * @return array Array of types
      **/
-    public static function getTypes()
+    public static function getTypes(): array
     {
 
         $options = [
@@ -3310,7 +3310,7 @@ JAVASCRIPT;
      *
      * @return string|int
      */
-    public static function getTicketTypeName($value)
+    public static function getTicketTypeName(int $value): string|int
     {
 
         switch ($value) {
@@ -3357,7 +3357,7 @@ JAVASCRIPT;
      *
      * @return array
      **/
-    public static function getClosedStatusArray()
+    public static function getClosedStatusArray(): array
     {
         return [self::CLOSED];
     }
@@ -3370,7 +3370,7 @@ JAVASCRIPT;
      *
      * @return array
      **/
-    public static function getSolvedStatusArray()
+    public static function getSolvedStatusArray(): array
     {
         return [self::SOLVED];
     }
@@ -3382,7 +3382,7 @@ JAVASCRIPT;
      *
      * @return array
      **/
-    public static function getNewStatusArray()
+    public static function getNewStatusArray(): array
     {
         return [self::INCOMING];
     }
@@ -3394,7 +3394,7 @@ JAVASCRIPT;
      *
      * @return array
      **/
-    public static function getProcessStatusArray()
+    public static function getProcessStatusArray(): array
     {
         return [self::ASSIGNED, self::PLANNED];
     }
@@ -3407,7 +3407,7 @@ JAVASCRIPT;
      *
      *@return float
      **/
-    public static function computeTco(CommonDBTM $item)
+    public static function computeTco(CommonDBTM $item): float
     {
         global $DB;
 
@@ -3822,7 +3822,7 @@ JAVASCRIPT;
      *
      * @return void|string|false
      */
-    public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
+    public static function showCentralList(int $start, string $status = "process", bool $showgrouptickets = true, bool $display = true): void|string|bool
     {
         global $DB;
 
@@ -4640,7 +4640,7 @@ JAVASCRIPT;
      *
      * @return string|false|void
      */
-    public static function showCentralCount(bool $foruser = false, bool $display = true)
+    public static function showCentralCount(bool $foruser = false, bool $display = true): string|bool|void
     {
         global $CFG_GLPI, $DB;
 
@@ -4772,7 +4772,7 @@ JAVASCRIPT;
     /**
      * @return void
      */
-    public static function showCentralNewList()
+    public static function showCentralNewList(): void
     {
         global $DB;
 
@@ -4833,7 +4833,7 @@ JAVASCRIPT;
      *
      * @return void|false (display a table)
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
     {
         if (
             !Session::haveRightsOr(
@@ -4875,7 +4875,7 @@ JAVASCRIPT;
      *
      * @return void
      */
-    public static function showVeryShort($ID, $forcetab = '')
+    public static function showVeryShort(int $ID, string $forcetab = ''): void
     {
         // Prints a job in short form
         // Should be called in a <table>-segment
@@ -5050,7 +5050,7 @@ JAVASCRIPT;
      *
      * @return array Array of information
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
 
         switch ($name) {
@@ -5077,7 +5077,7 @@ JAVASCRIPT;
      *
      * @return int (0 : nothing done - 1 : done)
      **/
-    public static function cronCloseTicket($task)
+    public static function cronCloseTicket(CronTask $task): int
     {
         global $DB;
 
@@ -5162,7 +5162,7 @@ JAVASCRIPT;
      *
      * @return int (0 : nothing done - 1 : done)
      **/
-    public static function cronAlertNotClosed($task)
+    public static function cronAlertNotClosed(CronTask $task): int
     {
         global $CFG_GLPI, $DB;
 
@@ -5229,7 +5229,7 @@ JAVASCRIPT;
      *
      * @return int (0 : nothing done - 1 : done)
      **/
-    public static function cronPurgeTicket(CronTask $task)
+    public static function cronPurgeTicket(CronTask $task): int
     {
         global $DB;
 
@@ -5355,7 +5355,7 @@ JAVASCRIPT;
      *
      * @return string html content
      **/
-    public static function convertContentForTicket($html, $files, $tags)
+    public static function convertContentForTicket(string $html, array $files, array $tags): string
     {
         $src_patterns = [
             'src\s*=\s*"[^"]+"',    // src="image.png"
@@ -5584,7 +5584,7 @@ JAVASCRIPT;
      *
      * @return string
      */
-    public static function buildCanViewCondition($fieldID)
+    public static function buildCanViewCondition(string $fieldID): string
     {
 
         $condition = "";
@@ -5722,7 +5722,7 @@ JAVASCRIPT;
      *                      Otherwise, true if any ticket was successfully merged.
      * @since 9.5.0
      */
-    public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = [])
+    public static function merge(int $merge_target_id, array $ticket_ids, array &$status, array $params = []): bool
     {
         global $DB;
         $p = [
@@ -6038,7 +6038,7 @@ JAVASCRIPT;
      *
      * @return array criteria to apply to an iterator query
      */
-    public static function getCriteriaFromProfile()
+    public static function getCriteriaFromProfile(): array
     {
         if (Session::haveRight("ticket", Ticket::READALL)) {
             return [];
@@ -6229,7 +6229,7 @@ JAVASCRIPT;
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         global $CFG_GLPI;
 
@@ -6264,7 +6264,7 @@ JAVASCRIPT;
      *
      * @return array
      */
-    public static function getListForItemRestrict(CommonDBTM $item)
+    public static function getListForItemRestrict(CommonDBTM $item): array
     {
         $restrict = [];
 

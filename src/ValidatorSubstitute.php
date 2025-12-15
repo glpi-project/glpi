@@ -173,7 +173,7 @@ final class ValidatorSubstitute extends CommonDBTM
      * @param array $input
      * @return bool
      */
-    public function updateSubstitutes($input): bool
+    public function updateSubstitutes(array $input): bool
     {
         $validator_substitute = new self();
 

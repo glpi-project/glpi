@@ -214,7 +214,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return void
      */
-    public function preconfig($type)
+    public function preconfig(string $type): void
     {
         switch ($type) {
             case 'AD':
@@ -444,7 +444,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): void|bool
     {
         if (!Config::canUpdate()) {
             return false;
@@ -515,7 +515,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function showFormAdvancedConfig()
+    public function showFormAdvancedConfig(): void
     {
         // warning and no form if can't read keyfile
         $glpi_encryption_key = new GLPIKey();
@@ -541,7 +541,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function showFormReplicatesConfig()
+    public function showFormReplicatesConfig(): void
     {
         global $DB;
 
@@ -636,7 +636,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return string
      */
-    public static function dropdownGroupSearchType(array $options)
+    public static function dropdownGroupSearchType(array $options): string
     {
         $p = array_replace([
             'name'    => 'group_search_type',
@@ -657,7 +657,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return array|string
      */
-    public static function getGroupSearchTypeName($val = null)
+    public static function getGroupSearchTypeName(?int $val = null): array|string
     {
         $tmp = [
             self::GROUP_SEARCH_USER    => __('In users'),
@@ -676,7 +676,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return void
      */
-    public function showFormGroupsConfig()
+    public function showFormGroupsConfig(): void
     {
         TemplateRenderer::getInstance()->display('pages/setup/ldap/group_config.html.twig', [
             'item' => $this,
@@ -692,7 +692,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return void
      */
-    public function showFormTestLDAP()
+    public function showFormTestLDAP(): void
     {
         $tests = $this->testLDAPServer();
 
@@ -771,7 +771,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return void
      */
-    public function showFormUserConfig()
+    public function showFormUserConfig(): void
     {
         TemplateRenderer::getInstance()->display('pages/setup/ldap/user_config_form.html.twig', [
             'item' => $this,
@@ -1187,7 +1187,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return array of "user table field name" => "config value"
      */
-    public static function getSyncFields(array $authtype_array)
+    public static function getSyncFields(array $authtype_array): array
     {
         $ret    = [];
         $fields = [
@@ -1230,7 +1230,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return int|'' unix timestamp or an empty string if the LDAP timestamp is invalid
      */
-    public static function ldapStamp2UnixStamp($ldapstamp, $ldap_time_offset = 0)
+    public static function ldapStamp2UnixStamp(string $ldapstamp, int $ldap_time_offset = 0)
     {
         global $CFG_GLPI;
 
@@ -1258,7 +1258,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return string ldap timestamp
      */
-    public static function date2ldapTimeStamp($date)
+    public static function date2ldapTimeStamp(string $date): string
     {
         try {
             $strdate = strtotime($date);
@@ -1275,7 +1275,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return string the ldap field to use for user synchronization
      */
-    public function getLdapIdentifierToUse()
+    public function getLdapIdentifierToUse(): string
     {
         if (!empty($this->fields['sync_field'])) {
             return $this->fields['sync_field'];
@@ -1289,7 +1289,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return string the database field to use for user synchronization
      */
-    public function getDatabaseIdentifierToUse()
+    public function getDatabaseIdentifierToUse(): string
     {
         if (!empty($this->fields['sync_field'])) {
             return 'sync_field';
@@ -1303,7 +1303,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return bool true if the sync_field is enabled (the field is filled)
      */
-    public function isSyncFieldEnabled()
+    public function isSyncFieldEnabled(): bool
     {
         return (!empty($this->fields['sync_field']));
     }
@@ -1316,7 +1316,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return bool true if configured, false if not configured
      */
-    public static function isSyncFieldConfigured($authldaps_id)
+    public static function isSyncFieldConfigured(int $authldaps_id): bool
     {
         $authldap = new self();
         $authldap->getFromDB($authldaps_id);
@@ -1332,7 +1332,7 @@ TWIG, ['authldaps_id' => $ID]);
      * @return bool connection succeeded?
      * @throws SodiumException
      */
-    public static function testLDAPConnection($auths_id, $replicate_id = -1)
+    public static function testLDAPConnection(int $auths_id, int $replicate_id = -1): bool
     {
 
         $config_ldap = new self();
@@ -1572,7 +1572,7 @@ TWIG, ['authldaps_id' => $ID]);
      *
      * @return void
      */
-    public static function displaySizeLimitWarning($limitexceeded = false)
+    public static function displaySizeLimitWarning(bool $limitexceeded = false): void
     {
         if ($limitexceeded) {
             $twig_params = [
@@ -1596,7 +1596,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showLdapUsers()
+    public static function showLdapUsers(): void
     {
         $values = array_replace([
             'order' => 'DESC',
@@ -1710,15 +1710,15 @@ TWIG, $twig_params);
      * @return bool
      */
     public static function searchForUsers(
-        $ds,
-        $values,
-        $filter,
-        $attrs,
-        &$limitexceeded,
-        &$user_infos,
-        &$ldap_users,
-        $config_ldap
-    ) {
+        Connection $ds,
+        array $values,
+        string $filter,
+        array $attrs,
+        bool &$limitexceeded,
+        array &$user_infos,
+        array &$ldap_users,
+        object $config_ldap
+    ): bool {
 
         // If paged results cannot be used (PHP < 5.4)
         $cookie   = ''; // Cookie used to perform query using pages
@@ -1865,7 +1865,7 @@ TWIG, $twig_params);
      *
      * @return false|array
      */
-    public static function getAllUsers(array $options, &$results, &$limitexceeded)
+    public static function getAllUsers(array $options, array &$results, bool &$limitexceeded): bool|array
     {
         global $DB;
 
@@ -2060,7 +2060,7 @@ TWIG, $twig_params);
      *
      * @return false|array false if the user dn doesn't exist, user ldap infos otherwise
      */
-    public static function dnExistsInLdap($ldap_infos, $user_dn)
+    public static function dnExistsInLdap(array $ldap_infos, string $user_dn): bool|array
     {
         $found = false;
         foreach ($ldap_infos as $ldap_info) {
@@ -2086,12 +2086,12 @@ TWIG, $twig_params);
      * @since 11.0.0 The `$target` and the `$order` parameters have been removed.
      */
     public static function showLdapGroups(
-        $start,
-        $sync = 0,
-        $filter = '',
-        $filter2 = '',
-        $entity = 0
-    ) {
+        int $start,
+        int $sync = 0,
+        string $filter = '',
+        string $filter2 = '',
+        int $entity = 0
+    ): void {
         $limitexceeded = false;
         $ldap_groups   = self::getAllGroups(
             $_REQUEST['authldaps_id'],
@@ -2226,12 +2226,12 @@ TWIG, $twig_params);
      * @since 11.0.0 $order parameter has been removed.
      */
     public static function getAllGroups(
-        $auths_id,
-        $filter,
-        $filter2,
-        $entity,
-        &$limitexceeded
-    ) {
+        int $auths_id,
+        string $filter,
+        string $filter2,
+        int $entity,
+        bool &$limitexceeded
+    ): array {
         global $DB;
 
         $config_ldap = new self();
@@ -2333,7 +2333,7 @@ TWIG, $twig_params);
      *
      * @return false|string the group cn
      */
-    public static function getGroupCNByDn($ldap_connection, $group_dn)
+    public static function getGroupCNByDn(Connection $ldap_connection, string $group_dn): bool|string
     {
         $sr = @ldap_read($ldap_connection, $group_dn, "objectClass=*", ["cn"]);
         if ($sr === false) {
@@ -2374,13 +2374,13 @@ TWIG, $twig_params);
      * @return array
      */
     public static function getGroupsFromLDAP(
-        $ldap_connection,
-        $config_ldap,
-        $filter,
-        &$limitexceeded,
-        $search_in_groups = true,
-        $groups = []
-    ) {
+        Connection $ldap_connection,
+        object $config_ldap,
+        string $filter,
+        bool &$limitexceeded,
+        bool $search_in_groups = true,
+        array $groups = []
+    ): array {
         global $DB;
 
         //First look for groups in group objects
@@ -2542,7 +2542,7 @@ TWIG, $twig_params);
      *
      * @return array|bool  with state, else false
      */
-    public static function forceOneUserSynchronization(User $user, $clean_ldap_fields = false, $display = true)
+    public static function forceOneUserSynchronization(User $user, bool $clean_ldap_fields = false, bool $display = true): array|bool
     {
         $authldap = new AuthLDAP();
 
@@ -2591,10 +2591,10 @@ TWIG, $twig_params);
      */
     public static function ldapImportUserByServerId(
         array $params,
-        $action,
-        $ldap_server,
-        $display = false
-    ) {
+        int $action,
+        int $ldap_server,
+        bool $display = false
+    ): array|bool {
         global $DB;
 
         $config_ldap = new self();
@@ -2750,7 +2750,7 @@ TWIG, $twig_params);
      * @return int|false
      * @throws SodiumException
      */
-    public static function ldapImportGroup($group_dn, $options = [])
+    public static function ldapImportGroup(string $group_dn, array $options = []): int|bool
     {
         $config_ldap = new self();
         $res         = $config_ldap->getFromDB($options['authldaps_id']);
@@ -2788,7 +2788,7 @@ TWIG, $twig_params);
      * @return bool|Connection
      * @throws SodiumException
      */
-    public function connect()
+    public function connect(): bool|Connection
     {
         if ($this->fields['is_active'] != 1) {
             return false;
@@ -2828,19 +2828,19 @@ TWIG, $twig_params);
      * @return false|Connection link to the LDAP server : false if connection failed
      */
     public static function connectToServer(
-        $host,
-        $port,
-        $login = "",
-        $password = "",
-        $use_tls = false,
-        $deref_options = 0,
-        $tls_certfile = "",
-        $tls_keyfile = "",
-        $use_bind = true,
-        $timeout = 0,
-        $tls_version = "",
+        string $host,
+        string $port,
+        string $login = "",
+        string $password = "",
+        bool $use_tls = false,
+        int $deref_options = 0,
+        string $tls_certfile = "",
+        string $tls_keyfile = "",
+        bool $use_bind = true,
+        int $timeout = 0,
+        string $tls_version = "",
         bool $silent_bind_errors = false
-    ) {
+    ): bool|Connection {
         self::$last_errno = null;
         self::$last_error = null;
 
@@ -3008,7 +3008,7 @@ TWIG, $twig_params);
      * @return Connection|bool link to the LDAP server : false if connection failed
      * @throws SodiumException
      */
-    public static function tryToConnectToServer($ldap_method, $login, $password)
+    public static function tryToConnectToServer(array $ldap_method, string $login, string $password): Connection|bool
     {
         if (!function_exists('ldap_connect')) {
             trigger_error("ldap_connect function is missing. Did you miss install php-ldap extension?", E_USER_WARNING);
@@ -3104,7 +3104,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function getLdapServers(bool $active_only = false)
+    public static function getLdapServers(bool $active_only = false): array
     {
         $criteria = [
             'ORDER' => 'is_default DESC',
@@ -3120,7 +3120,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function useAuthLdap()
+    public static function useAuthLdap(): bool
     {
         return (countElementsInTable('glpi_authldaps', ['is_active' => 1]) > 0);
     }
@@ -3135,7 +3135,7 @@ TWIG, $twig_params);
      * @return array|bool false if fail
      * @throws SodiumException
      */
-    public static function importUserFromServers($options = [])
+    public static function importUserFromServers(array $options = []): array|bool
     {
         $auth   = new Auth();
         $params = [];
@@ -3188,7 +3188,7 @@ TWIG, $twig_params);
      *
      * @return object identification object
      */
-    public static function ldapAuth($auth, $login, $password, $ldap_method, $user_dn, bool &$error = false)
+    public static function ldapAuth(Auth $auth, string $login, string $password, array $ldap_method, bool $user_dn, bool &$error = false): object
     {
         $auth->auth_succeded = false;
         $auth->extauth       = 1;
@@ -3260,7 +3260,7 @@ TWIG, $twig_params);
      *
      * @return object identification object
      */
-    public static function tryLdapAuth($auth, $login, $password, $auths_id = 0, $user_dn = false, $break = true)
+    public static function tryLdapAuth(Auth $auth, string $login, string $password, int $auths_id = 0, bool $user_dn = false, bool $break = true): object
     {
         global $DB;
 
@@ -3350,7 +3350,7 @@ TWIG, $twig_params);
      * @return array|bool dn of the user, else false
      * @throws RuntimeException
      */
-    public static function searchUserDn($ds, $options = [], ?bool &$error = null)
+    public static function searchUserDn(Connection $ds, array $options = [], ?bool &$error = null): array|bool
     {
         $values = [
             'basedn'            => '',
@@ -3456,7 +3456,7 @@ TWIG, $twig_params);
      *
      * @return array|bool false if failed
      */
-    public static function getObjectByDn($ds, $condition, $dn, $attrs = [], $clean = true, ?bool &$error = null)
+    public static function getObjectByDn(Connection $ds, string $condition, string $dn, array $attrs = [], bool $clean = true, ?bool &$error = null): array|bool
     {
         if (!$clean) {
             Toolbox::deprecated('Use of $clean = false is deprecated');
@@ -3502,7 +3502,7 @@ TWIG, $twig_params);
      *
      * @return array|bool false if failed
      */
-    public static function getUserByDn($ds, $user_dn, $attrs, $clean = true, ?bool &$error = null)
+    public static function getUserByDn(Connection $ds, string $user_dn, array $attrs, bool $clean = true, ?bool &$error = null): array|bool
     {
         if (!$clean) {
             Toolbox::deprecated('Use of $clean = false is deprecated');
@@ -3519,7 +3519,7 @@ TWIG, $twig_params);
      *
      * @return array|bool group infos if found, else false
      */
-    public static function getGroupByDn($ds, $group_dn)
+    public static function getGroupByDn(Connection $ds, string $group_dn): array|bool
     {
         return self::getObjectByDn($ds, "objectClass=*", $group_dn, ["cn"]);
     }
@@ -3699,7 +3699,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showUserImportForm(AuthLDAP $authldap)
+    public static function showUserImportForm(AuthLDAP $authldap): void
     {
         // Get data related to entity (directory and ldap filter)
         $authldap->getFromDB($_REQUEST['authldaps_id']);
@@ -3718,7 +3718,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showGroupImportForm(AuthLDAP $authldap)
+    public static function showGroupImportForm(AuthLDAP $authldap): void
     {
         // Get data related to entity (directory and ldap filter)
         $authldap->getFromDB($_REQUEST['authldaps_id']);
@@ -3734,7 +3734,7 @@ TWIG, $twig_params);
      *
      * @return int
      */
-    public static function getNumberOfServers()
+    public static function getNumberOfServers(): int
     {
         return countElementsInTable('glpi_authldaps', ['is_active' => 1]);
     }
@@ -3746,7 +3746,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function buildLdapFilter(AuthLDAP $authldap)
+    public static function buildLdapFilter(AuthLDAP $authldap): string
     {
         // Build search filter
         $filter  = '';
@@ -3795,7 +3795,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function addTimestampRestrictions($begin_date, $end_date)
+    public static function addTimestampRestrictions(string $begin_date, string $end_date): string
     {
         $condition = '';
         // If begin date
@@ -3819,7 +3819,7 @@ TWIG, $twig_params);
      * @return void
      * @throws SodiumException
      */
-    public static function searchUser(AuthLDAP $authldap)
+    public static function searchUser(AuthLDAP $authldap): void
     {
         if (
             self::connectToServer(
@@ -3854,7 +3854,7 @@ TWIG, $twig_params);
     /**
      * @return void
      */
-    public function post_addItem()
+    public function post_addItem(): void
     {
         if ($this->fields["is_default"]) {
             $this->removeDefaultFromOtherItems();
@@ -3926,7 +3926,7 @@ TWIG, $twig_params);
      * @since 10.0.0
      * @return array
      */
-    public static function getLdapRestoredUserActionOptions()
+    public static function getLdapRestoredUserActionOptions(): array
     {
         return [
             self::RESTORED_USER_PRESERVE  => __('Do nothing'),
@@ -3940,7 +3940,7 @@ TWIG, $twig_params);
      *
      * @return array of LDAP server's ID
      */
-    public static function getServersWithImportByEmailActive()
+    public static function getServersWithImportByEmailActive(): array
     {
         global $DB;
 
@@ -4023,7 +4023,7 @@ TWIG, $twig_params);
      *
      * @return array which contains ldap query results
      */
-    public static function get_entries_clean($link, $result, ?bool &$error = null)
+    public static function get_entries_clean(Connection $link, Result $result, ?bool &$error = null): array
     {
         try {
             $entries = @ldap_get_entries($link, $result);
@@ -4048,7 +4048,7 @@ TWIG, $twig_params);
      *
      * @return array of the replicate servers
      */
-    public static function getAllReplicateForAMaster($master_id)
+    public static function getAllReplicateForAMaster(int $master_id): array
     {
         global $DB;
 
@@ -4079,7 +4079,7 @@ TWIG, $twig_params);
      *
      * @return bool true if maxPageSize can be used, false otherwise
      */
-    public static function isLdapPageSizeAvailable($config_ldap, $check_config_value = true)
+    public static function isLdapPageSizeAvailable($config_ldap, bool $check_config_value = true): bool
     {
         return (
             extension_loaded('ldap')
@@ -4099,7 +4099,7 @@ TWIG, $twig_params);
      *
      * @return false|User
      */
-    public function getLdapExistingUser($name, $authldaps_id, $sync = null)
+    public function getLdapExistingUser(string $name, int $authldaps_id, ?string $sync = null): bool|User
     {
         global $DB;
         $user = new User();
@@ -4120,7 +4120,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function isSyncFieldUsed()
+    public function isSyncFieldUsed(): bool
     {
         if ($this->getID() <= 0) {
             return false;
@@ -4143,7 +4143,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function getFieldValue($infos, $field)
+    public static function getFieldValue(array $infos, string $field): string
     {
         $value = null;
         if (array_key_exists($field, $infos)) {
@@ -4182,7 +4182,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function guidToHex($guid_str)
+    public static function guidToHex(string $guid_str): string
     {
         $str_g = explode('-', $guid_str);
 
@@ -4218,7 +4218,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function guidToString($guid_bin)
+    public static function guidToString(mixed $guid_bin): string
     {
         $guid_hex = unpack("H*hex", $guid_bin);
         $hex = $guid_hex["hex"];
@@ -4240,7 +4240,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function isValidGuid($guid_str)
+    public static function isValidGuid(string $guid_str): bool
     {
         return (bool) preg_match('/^([0-9a-fA-F]){8}(-([0-9a-fA-F]){4}){3}-([0-9a-fA-F]){12}$/', $guid_str);
     }
@@ -4263,7 +4263,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function getUsers($values, &$results, &$limitexceeded)
+    public static function getUsers(array $values, array &$results, bool &$limitexceeded): array
     {
         $users = [];
         $ldap_users    = self::getAllUsers($values, $results, $limitexceeded);
@@ -4328,7 +4328,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function checkFilesExist(&$input)
+    public function checkFilesExist(array &$input): bool
     {
         if (
             isset($input['tls_certfile'])
@@ -4399,7 +4399,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    final public static function buildError($ds, string $message): string
+    final public static function buildError(Connection $ds, string $message): string
     {
         $diag_message = '';
         $err_message  = '';

@@ -51,8 +51,8 @@ class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableIn
      **/
     public function __construct(
         HTMLTableSuperHeader $header,
-        $name,
-        $content,
+        string $name,
+        string $content,
         ?HTMLTableHeader $father = null
     ) {
 
@@ -86,7 +86,7 @@ class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableIn
     /**
      * @return HTMLTableSuperHeader
      */
-    public function getHeader()
+    public function getHeader(): HTMLTableSuperHeader
     {
         return $this->header;
     }
@@ -96,7 +96,7 @@ class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableIn
      *
      * @return void
      */
-    public function updateColSpan($numberOfSubHeaders)
+    public function updateColSpan(int $numberOfSubHeaders): void
     {
         $this->setColSpan($this->header->getColSpan() / $numberOfSubHeaders);
     }

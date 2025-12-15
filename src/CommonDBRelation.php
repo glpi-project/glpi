@@ -126,7 +126,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return array|null
      **/
-    public static function getSQLCriteriaToSearchForItem($itemtype, $items_id)
+    public static function getSQLCriteriaToSearchForItem(string $itemtype, int $items_id): ?array
     {
         $table = static::getTable();
 
@@ -207,7 +207,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param int|null $relations_id (default NULL)
      * @return CommonDBTM|false
      **/
-    public static function getOpposite(CommonDBTM $item, &$relations_id = null)
+    public static function getOpposite(CommonDBTM $item, ?int &$relations_id = null): CommonDBTM|bool
     {
         return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
     }
@@ -221,7 +221,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param int|null $relations_id
      * @return CommonDBTM|false
      **/
-    public static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null)
+    public static function getOppositeByTypeAndID(string $itemtype, int $items_id, ?int &$relations_id = null): CommonDBTM|bool
     {
         global $DB;
 
@@ -287,7 +287,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return CommonDBTM|false
      **/
-    public function getOnePeer($number)
+    public function getOnePeer(int $number): CommonDBTM|bool
     {
 
         if ($number == 0) {
@@ -313,7 +313,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2)
+    public function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2): bool
     {
 
         // Check items ID
@@ -347,7 +347,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -404,7 +404,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function isAttach2Valid(array &$input)
+    public function isAttach2Valid(array &$input): bool
     {
         return false;
     }
@@ -419,7 +419,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function isAttach1Valid(array &$input)
+    public function isAttach1Valid(array &$input): bool
     {
         return false;
     }
@@ -433,7 +433,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return bool
      **/
-    public static function canRelation($method, $forceCheckBoth = false)
+    public static function canRelation(string $method, bool $forceCheckBoth = false): bool
     {
 
         $can1 = static::canConnexity(
@@ -501,7 +501,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false)
+    public function canRelationItem(string $method, string $methodNotItem, bool $check_entity = true, bool $forceCheckBoth = false): bool
     {
 
         $OneWriteIsEnough = (!$forceCheckBoth
@@ -798,7 +798,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return string The name of the entry for the database (ie. : correctly slashed)
      **/
-    public function getHistoryNameForItem1(CommonDBTM $item, $case)
+    public function getHistoryNameForItem1(CommonDBTM $item, string $case): string
     {
 
         return $item->getNameID(['forceid'    => true,
@@ -821,7 +821,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return string the name of the entry for the database (ie. : correctly slashed)
      **/
-    public function getHistoryNameForItem2(CommonDBTM $item, $case)
+    public function getHistoryNameForItem2(CommonDBTM $item, string $case): string
     {
 
         return $item->getNameID(['forceid'    => true,
@@ -1205,12 +1205,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @return void
      **/
     public static function getHTMLTableHeader(
-        $itemtype,
+        string $itemtype,
         HTMLTableBase $base,
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         if (isset($options[static::class . '_side'])) {
             $side = $options[static::class . '_side'];
@@ -1253,7 +1253,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
         global $DB;
 
         if (empty($item)) {
@@ -1299,7 +1299,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return bool : true on success
      **/
-    public function affectRelation($id, $peer, $items_id = 0, $itemtype = '')
+    public function affectRelation(int $id, int $peer, int $items_id = 0, string $itemtype = ''): bool
     {
 
         $input = [static::getIndexName() => $id];
@@ -1341,7 +1341,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *        'update_id_different'    Do we update the link if it already exists (not used in case
      *                                 of 'can_link_several_times')
      **/
-    public static function getRelationMassiveActionsSpecificities()
+    public static function getRelationMassiveActionsSpecificities(): array
     {
 
         return ['select_items_options_1'        => [],
@@ -1375,7 +1375,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return void
      **/
-    public static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {}
+    public static function showRelationMassiveActionsSubForm(MassiveAction $ma, int $peer_number): void {}
 
 
     /**
@@ -1387,7 +1387,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return int number of the peer
      **/
-    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
+    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma): int
     {
 
         $items = $ma->getItems();
@@ -1506,11 +1506,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @return array containing the elements
      **/
     public static function getRelationInputForProcessingOfMassiveActions(
-        $action,
+        string $action,
         CommonDBTM $item,
         array $ids,
         array $input
-    ) {
+    ): array {
         return [];
     }
 
@@ -1802,7 +1802,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return array
      */
-    protected static function getListForItemParams(CommonDBTM $item, $noent = false)
+    protected static function getListForItemParams(CommonDBTM $item, bool $noent = false): array
     {
         global $DB;
 
@@ -1893,7 +1893,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return DBmysqlIterator
      */
-    public static function getListForItem(CommonDBTM $item, int $start = 0, int $limit = 0, array $order = [])
+    public static function getListForItem(CommonDBTM $item, int $start = 0, int $limit = 0, array $order = []): DBmysqlIterator
     {
         global $DB;
 
@@ -1918,7 +1918,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return array
      */
-    protected static function getDistinctTypesParams($items_id, $extra_where = [])
+    protected static function getDistinctTypesParams(int $items_id, array $extra_where = []): array
     {
         $params = [
             'SELECT'          => static::$itemtype_2,
@@ -1942,7 +1942,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return DBmysqlIterator
      */
-    public static function getDistinctTypes($items_id, $extra_where = [])
+    public static function getDistinctTypes(int $items_id, array $extra_where = []): DBmysqlIterator
     {
         global $DB;
 
@@ -1978,7 +1978,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return array
      */
-    protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = [])
+    protected static function getTypeItemsQueryParams(int $items_id, string $itemtype, bool $noent = false, array $where = []): array
     {
         global $DB;
 
@@ -2049,7 +2049,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return DBmysqlIterator
      */
-    public static function getTypeItems($items_id, $itemtype)
+    public static function getTypeItems(int $items_id, string $itemtype): DBmysqlIterator
     {
         global $DB;
 
@@ -2066,7 +2066,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return int
      */
-    public static function countForItem(CommonDBTM $item)
+    public static function countForItem(CommonDBTM $item): int
     {
         global $DB;
 
@@ -2091,7 +2091,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return int
      **/
-    public static function countForMainItem(CommonDBTM $item, $extra_types_where = [])
+    public static function countForMainItem(CommonDBTM $item, array $extra_types_where = []): int
     {
         global $DB;
 

@@ -145,7 +145,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      * @param  array $input the form input
      * @return array        the altered input
      */
-    public function manageBlueprint($input)
+    public function manageBlueprint(array $input): array
     {
         if (
             isset($input["_blank_blueprint"])
@@ -264,7 +264,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -341,7 +341,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showForDatacenter(Datacenter $datacenter)
+    public static function showForDatacenter(Datacenter $datacenter): void|bool
     {
         global $DB;
 
@@ -411,7 +411,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @return array [x => [pos_x], y => [pos_y]]]
      */
-    public function getFilled($current = null)
+    public function getFilled(?string $current = null): array
     {
         global $DB;
 
@@ -442,7 +442,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @return array
      */
-    public function getAllPositions()
+    public function getAllPositions(): array
     {
         $positions = [];
         for ($x = 1; $x < (int) $this->fields['vis_cols'] + 1; ++$x) {

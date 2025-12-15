@@ -161,11 +161,11 @@ class PendingReason extends CommonDropdown
      * @return int|string
      */
     public static function displayFollowupFrequencyfield(
-        $value = null,
-        $name = "",
-        $options = [],
-        $long_label = true
-    ) {
+        ?string $value = null,
+        string $name = "",
+        array $options = [],
+        bool $long_label = true
+    ): int|string {
         $values = self::getFollowupFrequencyValues();
 
         // Short label for forms with input labels
@@ -227,11 +227,11 @@ class PendingReason extends CommonDropdown
      * @return int|string
      */
     public static function displayFollowupsNumberBeforeResolutionField(
-        $value = null,
-        $name = "",
-        $options = [],
-        $long_label = true
-    ) {
+        ?string $value = null,
+        string $name = "",
+        array $options = [],
+        bool $long_label = true
+    ): int|string {
         $values = self::getFollowupsBeforeResolutionValues();
 
         // Short label for forms with input labels
@@ -364,7 +364,7 @@ class PendingReason extends CommonDropdown
     /**
      * @return bool
      */
-    public static function isDefaultPending()
+    public static function isDefaultPending(): bool
     {
         $default_pending = self::getDefault();
 
@@ -374,7 +374,7 @@ class PendingReason extends CommonDropdown
     /**
      * @return void
      */
-    public function updateDefaultPendingReason()
+    public function updateDefaultPendingReason(): void
     {
         if (isset($this->input['is_default']) && $this->input['is_default']) {
             $previous_default = self::getDefault();
@@ -399,7 +399,7 @@ class PendingReason extends CommonDropdown
      *
      * @return array
      */
-    public function prepareInput($input)
+    public function prepareInput(array $input): array
     {
         $input['is_pending_per_default'] = isset($input['is_default']) && $input['is_default']
             ? ($input['is_pending_per_default'] ?? 0) : 0;

@@ -104,7 +104,7 @@ final class StatusChecker
      *    One of {@link STATUS_NO_DATA}, {@link STATUS_OK}, {@link STATUS_WARNING}, or {@link STATUS_PROBLEM}.
      * @since 10.0.0
      */
-    public static function calculateGlobalStatus(array $status)
+    public static function calculateGlobalStatus(array $status): string
     {
         $statuses = array_column($status, 'status');
         $global_status = self::STATUS_OK;
@@ -125,7 +125,7 @@ final class StatusChecker
      * @return array An array with the status information
      * @since 10.0.0
      */
-    public static function getServiceStatus(?string $service, $public_only = true): array
+    public static function getServiceStatus(?string $service, bool $public_only = true): array
     {
         $services = self::getServices();
         if ($service === 'all' || $service === null) {

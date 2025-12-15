@@ -413,7 +413,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @return void
      **/
-    public static function dropdownLinks($myname, $value = self::LINK_TO)
+    public static function dropdownLinks(string $myname, int $value = self::LINK_TO): void
     {
         $link_options = array_map(static fn($link) => $link['name'], self::getITILLinkTypes());
         Dropdown::showFromArray($myname, $link_options, ['value' => $value]);
@@ -428,7 +428,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @return string
      **/
-    public static function getLinkName($value, bool $inverted = false, bool $with_icon = false): string
+    public static function getLinkName(int $value, bool $inverted = false, bool $with_icon = false): string
     {
         $link_types = static::getITILLinkTypes();
 
@@ -598,7 +598,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @return void
      */
-    public static function manageLinksOnChange($itemtype, $items_id, $changes): void
+    public static function manageLinksOnChange($itemtype, int $items_id, array $changes): void
     {
         if ($itemtype === Ticket::class) {
             $ticket = new Ticket();

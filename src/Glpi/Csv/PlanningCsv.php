@@ -53,7 +53,7 @@ class PlanningCsv implements ExportToCsvInterface
      * @param int     $whogroup       group ID
      * @param string  $limititemtype  itemtype only display this itemtype (default '')
      */
-    public function __construct($who, $whogroup = null, $limititemtype = '')
+    public function __construct(int $who, ?int $whogroup = null, string $limititemtype = '')
     {
         $this->users_id      = $who;
         $this->groups_id     = $whogroup;

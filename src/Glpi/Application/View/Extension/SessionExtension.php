@@ -118,7 +118,7 @@ class SessionExtension extends AbstractExtension
      *
      * @return null|mixed
      */
-    public function userPref(string $name, bool $decode = false)
+    public function userPref(string $name, bool $decode = false): mixed
     {
         global $CFG_GLPI;
 
@@ -137,7 +137,7 @@ class SessionExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function session(string $name)
+    public function session(string $name): mixed
     {
 
         return $_SESSION[$name] ?? null;

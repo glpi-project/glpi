@@ -184,7 +184,7 @@ final class HLAPIHelper
      * @param string $api_version
      * @return HLAPIHelper
      */
-    public function withVersion(string $api_version)
+    public function withVersion(string $api_version): HLAPIHelper
     {
         return new HLAPIHelper($this->router, $this->test, $api_version);
     }
@@ -793,7 +793,7 @@ final class HLAPIHelper
      * @param class-string<AssignableItemInterface> $itemtype
      * @return void
      */
-    public function autoTestAssignableItemRights(string $endpoint, string $itemtype)
+    public function autoTestAssignableItemRights(string $endpoint, string $itemtype): void
     {
         $this->test->loginWeb();
         $this->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());

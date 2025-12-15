@@ -343,7 +343,7 @@ trait AssignableItem
      *
      * @return void
      */
-    public function post_addItem()
+    public function post_addItem(): void
     {
         parent::post_addItem();
         $this->updateGroupFields();
@@ -356,7 +356,7 @@ trait AssignableItem
      *
      *@return void
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true): void
     {
         parent::post_updateItem($history);
         $this->updateGroupFields();
@@ -367,7 +367,7 @@ trait AssignableItem
      *
      * @return bool
      */
-    public function getEmpty()
+    public function getEmpty(): bool
     {
         if (!parent::getEmpty()) {
             return false;
@@ -408,7 +408,7 @@ trait AssignableItem
      *
      * @return void
      */
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         $this->loadGroupFields();
     }

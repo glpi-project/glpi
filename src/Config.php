@@ -465,7 +465,7 @@ class Config extends CommonDBTM
      *
      * @return void
      **/
-    public function showFormDisplay()
+    public function showFormDisplay(): void
     {
         global $CFG_GLPI;
 
@@ -485,7 +485,7 @@ class Config extends CommonDBTM
      *
      * @return void
      **/
-    public function showFormInventory()
+    public function showFormInventory(): void
     {
         global $CFG_GLPI;
 
@@ -512,7 +512,7 @@ class Config extends CommonDBTM
      *
      * @return void
      **/
-    public function showFormAuthentication()
+    public function showFormAuthentication(): void
     {
         if (!Config::canUpdate()) {
             return;
@@ -535,7 +535,7 @@ class Config extends CommonDBTM
      *
      * @return void
      **/
-    public function showFormDBSlave()
+    public function showFormDBSlave(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -575,7 +575,7 @@ class Config extends CommonDBTM
      * @since 9.1
      * @return void
      **/
-    public function showFormAPI()
+    public function showFormAPI(): void
     {
         global $CFG_GLPI;
 
@@ -613,7 +613,7 @@ class Config extends CommonDBTM
      *
      * @return void
      **/
-    public function showFormHelpdesk()
+    public function showFormHelpdesk(): void
     {
         global $CFG_GLPI;
 
@@ -654,7 +654,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public function showFormUserPrefs($data = [])
+    public function showFormUserPrefs(array $data = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -719,7 +719,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public static function displayPasswordSecurityChecks($field = 'password')
+    public static function displayPasswordSecurityChecks(string $field = 'password'): void
     {
         TemplateRenderer::getInstance()->display('components/user/password_security_checks.html.twig', [
             'field' => $field,
@@ -737,7 +737,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public function showPerformanceInformations()
+    public function showPerformanceInformations(): void
     {
         if (!Config::canUpdate()) {
             return;
@@ -770,7 +770,7 @@ class Config extends CommonDBTM
     /**
      * @return void
      */
-    public static function showSystemInfoTable()
+    public static function showSystemInfoTable(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -859,7 +859,7 @@ class Config extends CommonDBTM
      *
      * @return void
      **/
-    public function showSystemInformations()
+    public function showSystemInformations(): void
     {
         global $CFG_GLPI;
 
@@ -884,7 +884,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public static function dropdownGlobalManagement($name, $value, $rand = null)
+    public static function dropdownGlobalManagement(string $name, string $value, ?int $rand = null): void
     {
         $choices = [
             self::UNIT_MANAGEMENT => __('Yes - Restrict to unit management'),
@@ -903,7 +903,7 @@ class Config extends CommonDBTM
      *
      * @return string locale's php page in GLPI or '' is no language associated with the value
      **/
-    public static function getLanguage($lang)
+    public static function getLanguage(string $lang): string
     {
         global $CFG_GLPI;
 
@@ -946,7 +946,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public function showFormFieldUnicity()
+    public function showFormFieldUnicity(): void
     {
         Toolbox::deprecated(
             message: "This method will be removed in the next version",
@@ -1087,7 +1087,7 @@ class Config extends CommonDBTM
      *
      * @return int 2: missing extension,  1: missing optional extension, 0: OK,
      **/
-    public static function displayCheckDbEngine($fordebug = false, $version = null)
+    public static function displayCheckDbEngine(bool $fordebug = false, ?string $version = null): int
     {
         global $CFG_GLPI;
 
@@ -1136,7 +1136,7 @@ class Config extends CommonDBTM
      *
      * @return array
      **/
-    public static function checkDbEngine($raw = null)
+    public static function checkDbEngine(?string $raw = null): array
     {
         if ($raw === null) {
             global $DB;
@@ -1169,7 +1169,7 @@ class Config extends CommonDBTM
      *                'may'       => [ext => message]
      *               ]
      **/
-    public static function checkExtensions($list = null)
+    public static function checkExtensions(?array $list = null): array
     {
         if ($list === null) {
             $extensions_to_check = [
@@ -1287,7 +1287,7 @@ class Config extends CommonDBTM
      *
      * @return array of config values
      **/
-    public static function getConfigurationValues($context, array $names = [])
+    public static function getConfigurationValues(string $context, array $names = []): array
     {
         global $DB;
 
@@ -1321,7 +1321,7 @@ class Config extends CommonDBTM
      *
      * @since 10.0.0
      */
-    public static function getConfigurationValue(string $context, string $name)
+    public static function getConfigurationValue(string $context, string $name): mixed
     {
         return self::getConfigurationValues($context, [$name])[$name] ?? null;
     }
@@ -1333,7 +1333,7 @@ class Config extends CommonDBTM
      *
      * @since 10.0.0 Parameter $older_to_latest is no longer used.
      */
-    public static function loadLegacyConfiguration()
+    public static function loadLegacyConfiguration(): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -1441,7 +1441,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public static function setConfigurationValues($context, array $values = [])
+    public static function setConfigurationValues(string $context, array $values = []): void
     {
 
         $glpikey = new GLPIKey();
@@ -1497,7 +1497,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public static function deleteConfigurationValues($context, array $values = [])
+    public static function deleteConfigurationValues(string $context, array $values = []): void
     {
 
         $config = new self();
@@ -1534,7 +1534,7 @@ class Config extends CommonDBTM
      *
      * @return string
      */
-    public static function agreeUnstableMessage(bool $is_dev)
+    public static function agreeUnstableMessage(bool $is_dev): string
     {
         return TemplateRenderer::getInstance()->render('install/agree_unstable.html.twig', [
             'is_dev' => $is_dev,
@@ -1548,7 +1548,7 @@ class Config extends CommonDBTM
      * @return array
      * @phpstan-return ($expanded_info is true ? array<string, array{name: string, dark: boolean}> : array<string, string>)
      */
-    public function getPalettes(bool $expanded_info = false)
+    public function getPalettes(bool $expanded_info = false): array
     {
         $all_themes = ThemeManager::getInstance()->getAllThemes();
         $themes = [];
@@ -1572,7 +1572,7 @@ class Config extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showFormLogs()
+    public function showFormLogs(): void|bool
     {
         global $CFG_GLPI;
 
@@ -1596,7 +1596,7 @@ class Config extends CommonDBTM
      *
      * @return void
      */
-    public static function showLogsInterval($name, $value, $options = [])
+    public static function showLogsInterval(string $name, mixed $value, array $options = []): void
     {
 
         $values = [
@@ -1633,7 +1633,7 @@ class Config extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showFormSecurity()
+    public function showFormSecurity(): void|bool
     {
         global $CFG_GLPI;
 
@@ -1654,7 +1654,7 @@ class Config extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showFormManagement()
+    public function showFormManagement(): void|bool
     {
         global $CFG_GLPI;
 
@@ -1809,7 +1809,7 @@ class Config extends CommonDBTM
      *
      * @since 9.5
      */
-    public static function getSafeConfig($safer = false)
+    public static function getSafeConfig(bool $safer = false): array
     {
         global $CFG_GLPI;
 
@@ -1842,7 +1842,7 @@ class Config extends CommonDBTM
      *
      * @return string
      */
-    final public static function getUuid($type)
+    final public static function getUuid(string $type): string
     {
         $conf = self::getConfigurationValues('core', [$type . '_uuid']);
         $uuid = null;
@@ -1861,7 +1861,7 @@ class Config extends CommonDBTM
      *
      * @return string
      */
-    final public static function generateUuid($type)
+    final public static function generateUuid(string $type): string
     {
         $uuid = Toolbox::getRandomString(40);
         self::setConfigurationValues('core', [$type . '_uuid' => $uuid]);
@@ -2054,7 +2054,7 @@ class Config extends CommonDBTM
      * @return ?int
      * @internal
      */
-    public static function getConfigIDForContext(string $context)
+    public static function getConfigIDForContext(string $context): ?int
     {
         global $DB;
         $iterator = $DB->request([

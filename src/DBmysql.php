@@ -227,7 +227,7 @@ class DBmysql
      *
      * @return void
      */
-    public function __construct($choice = null)
+    public function __construct(?int $choice = null)
     {
         $this->connect($choice);
     }
@@ -240,7 +240,7 @@ class DBmysql
      *
      * @return void
      */
-    public function connect($choice = null)
+    public function connect(?int $choice = null): void
     {
         $this->connected = false;
 
@@ -306,7 +306,7 @@ class DBmysql
      *
      * @since 9.5.0
      */
-    public function guessTimezone()
+    public function guessTimezone(): string
     {
         if ($this->use_timezones) {
             if (isset($_SESSION['glpi_tz'])) {
@@ -345,7 +345,7 @@ class DBmysql
      *
      * @return string escaped string
      */
-    public function escape($string)
+    public function escape(string $string): string
     {
         return $this->dbh->real_escape_string((string) $string);
     }
@@ -359,7 +359,7 @@ class DBmysql
      *
      * @return mysqli_result|bool Query result handler
      */
-    public function doQuery($query)
+    public function doQuery(string $query): mysqli_result|bool
     {
         $debug_data = [
             'query' => $query,
@@ -436,7 +436,7 @@ class DBmysql
      *
      * @return mysqli_stmt
      */
-    public function prepare($query)
+    public function prepare(string $query): mysqli_stmt
     {
         $res = $this->dbh->prepare($query);
         if (!$res) {
@@ -462,7 +462,7 @@ class DBmysql
      *
      * @return mixed Value of the Row $i and the Field $field of the Mysql $result
      */
-    public function result($result, $i, $field)
+    public function result(mysqli_result $result, int $i, string|int $field): mixed
     {
         if (
             $result && ($result->data_seek($i))
@@ -481,7 +481,7 @@ class DBmysql
      *
      * @return int number of rows
      */
-    public function numrows($result)
+    public function numrows(mysqli_result $result): int
     {
         return $result->num_rows;
     }
@@ -494,7 +494,7 @@ class DBmysql
      *
      * @return string[]|null array results
      */
-    public function fetchArray($result)
+    public function fetchArray(mysqli_result $result): ?array
     {
         return $this->decodeFetchResult($result->fetch_array());
     }
@@ -506,7 +506,7 @@ class DBmysql
      *
      * @return mixed|null result row
      */
-    public function fetchRow($result)
+    public function fetchRow(mysqli_result $result): mixed
     {
         return $this->decodeFetchResult($result->fetch_row());
     }
@@ -518,7 +518,7 @@ class DBmysql
      *
      * @return string[]|null result associative array
      */
-    public function fetchAssoc($result)
+    public function fetchAssoc(mysqli_result $result): ?array
     {
         return $this->decodeFetchResult($result->fetch_assoc());
     }
@@ -530,7 +530,7 @@ class DBmysql
      *
      * @return object|null
      */
-    public function fetchObject($result)
+    public function fetchObject(mysqli_result $result): ?object
     {
         return $this->decodeFetchResult($result->fetch_object());
     }
@@ -543,7 +543,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function dataSeek($result, $num)
+    public function dataSeek(mysqli_result $result, int $num): bool
     {
         return $result->data_seek($num);
     }
@@ -553,7 +553,7 @@ class DBmysql
      *
      * @return mixed
      */
-    public function insertId()
+    public function insertId(): mixed
     {
         $insert_id = $this->dbh->insert_id;
 
@@ -573,7 +573,7 @@ class DBmysql
      *
      * @return int number of fields
      */
-    public function numFields($result)
+    public function numFields(mysqli_result $result): int
     {
         return $result->field_count;
     }
@@ -586,7 +586,7 @@ class DBmysql
      *
      * @return string name of the field
      */
-    public function fieldName($result, $nb)
+    public function fieldName(mysqli_result $result, int $nb): string
     {
         $finfo = $result->fetch_fields();
         return $finfo[$nb]->name;
@@ -601,7 +601,7 @@ class DBmysql
      *
      * @return DBmysqlIterator
      */
-    public function listTables($table = 'glpi\_%', array $where = [])
+    public function listTables(string $table = 'glpi\_%', array $where = []): DBmysqlIterator
     {
         $iterator = $this->request([
             'SELECT' => 'table_name as TABLE_NAME',
@@ -762,7 +762,7 @@ class DBmysql
      *
      * @since 9.5.7
      */
-    public function getSignedKeysColumns(bool $exclude_plugins = false)
+    public function getSignedKeysColumns(bool $exclude_plugins = false): DBmysqlIterator
     {
         $query = [
             'SELECT'       => [
@@ -822,7 +822,7 @@ class DBmysql
      *
      * @since 9.5.7
      */
-    public function getForeignKeysContraints()
+    public function getForeignKeysContraints(): DBmysqlIterator
     {
         $query = [
             'SELECT' => [
@@ -855,7 +855,7 @@ class DBmysql
      *
      * @return mixed list of fields
      */
-    public function listFields($table, $usecache = true)
+    public function listFields(string $table, bool $usecache = true): mixed
     {
 
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
@@ -884,7 +884,7 @@ class DBmysql
      *
      * @return array|null Field characteristics
      */
-    public function getField(string $table, string $field, $usecache = true): ?array
+    public function getField(string $table, string $field, bool $usecache = true): ?array
     {
 
         $fields = $this->listFields($table, $usecache);
@@ -896,7 +896,7 @@ class DBmysql
      *
      * @return int number of affected rows on success, and -1 if the last query failed.
      */
-    public function affectedRows()
+    public function affectedRows(): int
     {
         return $this->dbh->affected_rows;
     }
@@ -908,7 +908,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function freeResult($result)
+    public function freeResult(mysqli_result $result): bool
     {
         $result->free();
         return true;
@@ -919,7 +919,7 @@ class DBmysql
      *
      * @return int error number from the last MySQL function, or 0 (zero) if no error occurred.
      */
-    public function errno()
+    public function errno(): int
     {
         return $this->dbh->errno;
     }
@@ -929,7 +929,7 @@ class DBmysql
      *
      * @return string error text from the last MySQL function, or '' (empty string) if no error occurred.
      */
-    public function error()
+    public function error(): string
     {
         return $this->dbh->error;
     }
@@ -939,7 +939,7 @@ class DBmysql
      *
      * @return bool TRUE on success or FALSE on failure.
      */
-    public function close()
+    public function close(): bool
     {
         if ($this->connected && $this->dbh) {
             return $this->dbh->close();
@@ -952,7 +952,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function isSlave()
+    public function isSlave(): bool
     {
         return $this->slave;
     }
@@ -964,7 +964,7 @@ class DBmysql
      *
      * @return bool true if all query are successfull
      */
-    public function runFile($path)
+    public function runFile(string $path): bool
     {
         $queries = $this->getQueriesFromFile($path);
 
@@ -1006,7 +1006,7 @@ class DBmysql
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function request($criteria)
+    public function request(array|QueryUnion $criteria): DBmysqlIterator
     {
         $iterator = new DBmysqlIterator($this);
         $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
@@ -1021,7 +1021,7 @@ class DBmysql
      *
      * @return string[] Array of label / value
      */
-    public function getInfo()
+    public function getInfo(): array
     {
         // No translation, used in sysinfo
         $ret = [];
@@ -1057,7 +1057,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function getLock($name)
+    public function getLock(string $name): bool
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
@@ -1076,7 +1076,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function releaseLock($name)
+    public function releaseLock(string $name): bool
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
@@ -1098,7 +1098,7 @@ class DBmysql
      *
      * @return bool
      **/
-    public function tableExists($tablename, $usecache = true)
+    public function tableExists(string $tablename, bool $usecache = true): bool
     {
 
         if (!$this->cache_disabled && $usecache && in_array($tablename, $this->table_cache)) {
@@ -1137,7 +1137,7 @@ class DBmysql
      *
      * @return bool
      **/
-    public function fieldExists($table, $field, $usecache = true)
+    public function fieldExists(string $table, string $field, bool $usecache = true): bool
     {
         if (!$this->tableExists($table, $usecache)) {
             trigger_error("Table $table does not exists", E_USER_WARNING);
@@ -1158,7 +1158,7 @@ class DBmysql
      *
      * @return void
      */
-    public function disableTableCaching()
+    public function disableTableCaching(): void
     {
         $this->cache_disabled = true;
     }
@@ -1174,7 +1174,7 @@ class DBmysql
      *
      * @psalm-taint-escape sql
      */
-    public static function quoteName($name)
+    public static function quoteName(string $name): string
     {
         //handle verbatim names
         if ($name instanceof QueryExpression) {
@@ -1224,7 +1224,7 @@ class DBmysql
      *
      * @psalm-taint-escape sql
      */
-    public static function quoteValue($value)
+    public static function quoteValue(mixed $value): mixed
     {
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
             //no quote for query parameters nor expressions
@@ -1255,7 +1255,7 @@ class DBmysql
      *
      * @return string
      */
-    public function buildInsert($table, $params)
+    public function buildInsert(string $table, QuerySubQuery|array $params): string
     {
         $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
@@ -1296,7 +1296,7 @@ class DBmysql
      *
      * @return mysqli_result|bool Query result handler
      */
-    public function insert($table, $params)
+    public function insert(string $table, QuerySubQuery|array $params): mysqli_result|bool
     {
         $result = $this->doQuery(
             $this->buildInsert($table, $params)
@@ -1317,7 +1317,7 @@ class DBmysql
      * @since 9.4.0 $joins parameter added
      * @return string
      */
-    public function buildUpdate($table, $params, $clauses, array $joins = [])
+    public function buildUpdate(string $table, array $params, array $clauses, array $joins = []): string
     {
         //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
@@ -1394,7 +1394,7 @@ class DBmysql
      * @since 9.4.0 $joins parameter added
      * @return mysqli_result|bool Query result handler
      */
-    public function update($table, $params, $where, array $joins = [])
+    public function update(string $table, array $params, array $where, array $joins = []): mysqli_result|bool
     {
         $query = $this->buildUpdate($table, $params, $where, $joins);
         $result = $this->doQuery($query);
@@ -1413,7 +1413,7 @@ class DBmysql
      *
      * @return mysqli_result|bool Query result handler
      */
-    public function updateOrInsert($table, $params, $where, $onlyone = true)
+    public function updateOrInsert(string $table, array $params, array $where, bool $onlyone = true): mysqli_result|bool
     {
         $query = $this->buildUpdateOrInsert($table, $params, $where, $onlyone);
         return $this->doQuery($query);
@@ -1427,7 +1427,7 @@ class DBmysql
      *
      * @return string
      */
-    public function buildUpdateOrInsert($table, $params, $where, $onlyone = true): string
+    public function buildUpdateOrInsert(string $table, array $params, array $where, bool $onlyone = true): string
     {
         $req = $this->request(array_merge(['FROM' => $table], $where));
         $data = array_merge($where, $params);
@@ -1452,7 +1452,7 @@ class DBmysql
      * @since 9.4.0 $joins parameter added
      * @return string
      */
-    public function buildDelete($table, $where, array $joins = [])
+    public function buildDelete(string $table, array $where, array $joins = []): string
     {
 
         if (!count($where)) {
@@ -1480,7 +1480,7 @@ class DBmysql
      * @since 9.4.0 $joins parameter added
      * @return mysqli_result|bool Query result handler
      */
-    public function delete($table, $where, array $joins = [])
+    public function delete(string $table, array $where, array $joins = []): mysqli_result|bool
     {
         $query = $this->buildDelete($table, $where, $joins);
         $result = $this->doQuery($query);
@@ -1495,7 +1495,7 @@ class DBmysql
      *
      * @return bool|mysqli_result
      */
-    public function dropTable(string $name, bool $exists = false)
+    public function dropTable(string $name, bool $exists = false): bool|mysqli_result
     {
         $res = $this->doQuery(
             $this->buildDrop(
@@ -1515,7 +1515,7 @@ class DBmysql
      *
      * @return bool|mysqli_result
      */
-    public function dropView(string $name, bool $exists = false)
+    public function dropView(string $name, bool $exists = false): bool|mysqli_result
     {
         $res = $this->doQuery(
             $this->buildDrop(
@@ -1566,7 +1566,7 @@ class DBmysql
      *
      * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         $res = $this->doQuery('SELECT version()');
         $req = $res->fetch_array();
@@ -1705,7 +1705,7 @@ class DBmysql
      *
      * @return DBmysql
      */
-    public function setTimezone($timezone)
+    public function setTimezone(string $timezone): DBmysql
     {
         //setup timezone
         if ($this->use_timezones) {
@@ -1723,7 +1723,7 @@ class DBmysql
      *
      * @since 9.5.0
      */
-    public function getTimezones()
+    public function getTimezones(): array
     {
         $list = [];
 
@@ -1765,7 +1765,7 @@ class DBmysql
      *
      * @return void
      */
-    public function clearSchemaCache()
+    public function clearSchemaCache(): void
     {
         $this->table_cache = [];
         $this->field_cache = [];
@@ -1783,7 +1783,7 @@ class DBmysql
      *
      * @since 9.5.0
      */
-    public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
+    public function quote(mixed $value, int $type = 2/*\PDO::PARAM_STR*/): mixed
     {
         return "'" . $this->escape($value) . "'";
         //return $this->dbh->quote($value, $type);
@@ -1810,7 +1810,7 @@ class DBmysql
      *
      * @since 9.5.0
      */
-    public static function isNameQuoted($value): bool
+    public static function isNameQuoted(string|QueryExpression $value): bool
     {
         $quote = static::getQuoteNameChar();
         return is_string($value) && trim($value, $quote) != $value;
@@ -1824,7 +1824,7 @@ class DBmysql
      *
      * @return string
      */
-    public function removeSqlComments($output)
+    public function removeSqlComments(string $output): string
     {
         $lines = explode("\n", $output);
         $output = "";
@@ -1860,7 +1860,7 @@ class DBmysql
      *
      * @return string
      */
-    public function removeSqlRemarks($sql)
+    public function removeSqlRemarks(string $sql): string
     {
         $lines = explode("\n", $sql);
 

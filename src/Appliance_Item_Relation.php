@@ -57,7 +57,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return array
      */
-    public static function getTypes($all = false): array
+    public static function getTypes(bool $all = false): array
     {
         global $CFG_GLPI;
 
@@ -106,7 +106,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 
@@ -152,7 +152,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return int number of relations
      */
-    public static function countForMainItem(CommonDBTM $item, $extra_types_where = [])
+    public static function countForMainItem(CommonDBTM $item, array $extra_types_where = []): int
     {
         $types = self::getTypes();
         $clause = [];
@@ -175,7 +175,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return array array of string with icons and names
      */
-    public static function getForApplianceItem(int $appliances_items_id = 0)
+    public static function getForApplianceItem(int $appliances_items_id = 0): array
     {
         global $DB;
 
@@ -212,7 +212,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return string the html for the list
      */
-    public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true)
+    public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true): string
     {
         $relations_str = "";
         foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
@@ -245,7 +245,7 @@ class Appliance_Item_Relation extends CommonDBRelation
     public static function getListJSForApplianceItem(
         ?CommonDBTM $item = null,
         bool $canedit = true
-    ) {
+    ): string {
         if ($canedit) {
             $form_url  = Appliance_Item_Relation::getFormURL();
             $modal_html = "<form action='" . htmlescape($form_url) . "' method='POST'>"

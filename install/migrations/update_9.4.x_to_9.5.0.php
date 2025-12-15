@@ -46,7 +46,7 @@ use function Safe\preg_replace;
  *
  * @return bool
  **/
-function update94xto950()
+function update94xto950(): bool
 {
     /**
      * @var array $CFG_GLPI

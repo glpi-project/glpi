@@ -54,7 +54,7 @@ class HTMLTableGroup extends HTMLTableBase
      * @param string $name
      * @param string $content
      */
-    public function __construct(HTMLTableMain $table, $name, $content)
+    public function __construct(HTMLTableMain $table, string $name, string $content)
     {
         parent::__construct(false);
         $this->table      = $table;
@@ -65,7 +65,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return string
      */
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
@@ -73,7 +73,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return HTMLTableMain
      */
-    public function getTable()
+    public function getTable(): HTMLTableMain
     {
         return $this->table;
     }
@@ -83,7 +83,7 @@ class HTMLTableGroup extends HTMLTableBase
      *
      * @return bool
      */
-    public function haveHeader(HTMLTableHeader $header)
+    public function haveHeader(HTMLTableHeader $header): bool
     {
         $header_name    = '';
         $subheader_name = '';
@@ -110,7 +110,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return HTMLTableRow
      */
-    public function createRow()
+    public function createRow(): HTMLTableRow
     {
         $new_row      = new HTMLTableRow($this);
         $this->rows[] = $new_row;
@@ -120,7 +120,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return void
      */
-    public function prepareDisplay()
+    public function prepareDisplay(): void
     {
         foreach ($this->table->getHeaderOrder() as $super_header_name) {
             $super_header = $this->table->getSuperHeaderByName($super_header_name);
@@ -174,7 +174,7 @@ class HTMLTableGroup extends HTMLTableBase
      *
      * @return void
      **/
-    public function displayGroup($totalNumberOfColumn, array $params)
+    public function displayGroup(int $totalNumberOfColumn, array $params): void
     {
         $p = array_replace([
             'display_header_for_each_group'         => true,
@@ -251,7 +251,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return int
      */
-    public function getNumberOfRows()
+    public function getNumberOfRows(): int
     {
         return count(array_filter($this->rows, static fn($r) => $r->notEmpty()));
     }
@@ -261,7 +261,7 @@ class HTMLTableGroup extends HTMLTableBase
      *
      * @return HTMLTableHeader
      */
-    public function getSuperHeaderByName($name)
+    public function getSuperHeaderByName(string $name): HTMLTableHeader
     {
         try {
             return $this->getHeaderByName($name, '');

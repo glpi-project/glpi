@@ -62,7 +62,7 @@ class CronTaskLog extends CommonDBChild
      *
      * @return int number of events deleted
      **/
-    public static function cleanOld($id, $days)
+    public static function cleanOld(int $id, int $days): int
     {
         global $DB;
 

@@ -188,7 +188,7 @@ class Auth extends CommonGLPI
      *
      * @return int {@link Auth::USER_DOESNT_EXIST}, {@link Auth::USER_EXISTS_WITHOUT_PWD} or {@link Auth::USER_EXISTS_WITH_PWD}
      */
-    public function userExists($options = [])
+    public function userExists(array $options = []): int
     {
         global $DB;
 
@@ -233,7 +233,7 @@ class Auth extends CommonGLPI
      *
      * @return bool connection success
      */
-    public function connection_imap($host, $login, $pass)
+    public function connection_imap(string $host, string $login, string $pass): bool
     {
         // we prevent some delay...
         if (empty($host)) {
@@ -283,7 +283,7 @@ class Auth extends CommonGLPI
      *
      * @return false|array
      */
-    public function connection_ldap($ldap_method, $login, $password, bool &$error = false)
+    public function connection_ldap(array $ldap_method, string $login, string $password, bool &$error = false): bool|array
     {
         $error = false;
 
@@ -374,7 +374,7 @@ class Auth extends CommonGLPI
      *
      * @return bool
      */
-    public static function checkPassword($pass, $hash)
+    public static function checkPassword(string $pass, string $hash): bool
     {
         $tmp = password_get_info($hash);
 
@@ -401,7 +401,7 @@ class Auth extends CommonGLPI
      *
      * @return bool
      */
-    public static function needRehash($hash)
+    public static function needRehash(string $hash): bool
     {
         return password_needs_rehash($hash, PASSWORD_DEFAULT);
     }
@@ -415,7 +415,7 @@ class Auth extends CommonGLPI
      *
      * @return string
      */
-    public static function getPasswordHash($pass)
+    public static function getPasswordHash(string $pass): string
     {
         return password_hash($pass, PASSWORD_DEFAULT);
     }
@@ -435,7 +435,7 @@ class Auth extends CommonGLPI
      *
      * @return bool user in GLPI DB with the right password
      */
-    public function connection_db($name, $password)
+    public function connection_db(string $name, string $password): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -541,7 +541,7 @@ class Auth extends CommonGLPI
      *
      * @return bool user login success
      */
-    public function getAlternateAuthSystemsUserLogin($authtype = 0)
+    public function getAlternateAuthSystemsUserLogin(int $authtype = 0): bool
     {
         global $CFG_GLPI;
 
@@ -709,7 +709,7 @@ class Auth extends CommonGLPI
      *
      * @return array
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -719,7 +719,7 @@ class Auth extends CommonGLPI
      *
      * @return object current user
      */
-    public function getUser()
+    public function getUser(): object
     {
         return $this->user;
     }
@@ -730,7 +730,7 @@ class Auth extends CommonGLPI
      *
      * @return void
      */
-    public function getAuthMethods()
+    public function getAuthMethods(): void
     {
 
         //Return all the authentication methods in an array
@@ -747,7 +747,7 @@ class Auth extends CommonGLPI
      *
      * @return void
      */
-    public function addToError($message)
+    public function addToError(string $message): void
     {
         if (!in_array($message, $this->errors, true)) {
             $this->errors[] = $message;
@@ -1015,7 +1015,7 @@ class Auth extends CommonGLPI
      *
      * @return bool (success)
      */
-    public function login($login_name, $login_password, $noauto = false, $remember_me = false, $login_auth = '')
+    public function login(string $login_name, string $login_password, bool $noauto = false, bool $remember_me = false, string $login_auth = ''): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -1179,7 +1179,7 @@ class Auth extends CommonGLPI
      *
      * @return void|string (Based on 'display' option)
      */
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = []): void|string
     {
         global $DB;
 
@@ -1236,7 +1236,7 @@ class Auth extends CommonGLPI
      * @return string
      * @used-by templates/pages/setup/authentication/other_ext_setup.html.twig
      */
-    public static function dropdownCasVersion($value = 'CAS_VERSION_2_0', array $params = [])
+    public static function dropdownCasVersion(string $value = 'CAS_VERSION_2_0', array $params = []): string
     {
         $options['CAS_VERSION_1_0'] = __('Version 1');
         $options['CAS_VERSION_2_0'] = __('Version 2');
@@ -1293,7 +1293,7 @@ class Auth extends CommonGLPI
      *
      * @return string
      */
-    public static function getMethodName($authtype, $auths_id)
+    public static function getMethodName(int $authtype, int $auths_id): string
     {
         $auth = match ($authtype) {
             self::LDAP => new AuthLDAP(),
@@ -1356,7 +1356,7 @@ class Auth extends CommonGLPI
      *
      * @return mixed
      */
-    public static function getMethodsByID($authtype, $auths_id)
+    public static function getMethodsByID(int $authtype, int $auths_id): mixed
     {
         switch ($authtype) {
             case self::X509:
@@ -1406,7 +1406,7 @@ class Auth extends CommonGLPI
      *
      * @return bool
      */
-    public static function useAuthExt()
+    public static function useAuthExt(): bool
     {
         global $CFG_GLPI;
 
@@ -1448,7 +1448,7 @@ class Auth extends CommonGLPI
      *
      * @return bool
      */
-    public static function isAlternateAuth($authtype)
+    public static function isAlternateAuth(int $authtype): bool
     {
         return in_array($authtype, [self::X509, self::CAS, self::EXTERNAL, self::API, self::COOKIE]);
     }
@@ -1462,7 +1462,7 @@ class Auth extends CommonGLPI
      *
      * @return false|int nothing if redirect is true, else Auth system ID
      */
-    public static function checkAlternateAuthSystems($redirect = false, $redirect_string = '')
+    public static function checkAlternateAuthSystems(bool $redirect = false, string $redirect_string = ''): bool|int
     {
         global $CFG_GLPI;
 
@@ -1533,7 +1533,7 @@ class Auth extends CommonGLPI
      *
      * @return void|bool nothing if redirect is true, else false
      */
-    public static function redirectIfAuthenticated($redirect = null)
+    public static function redirectIfAuthenticated(?string $redirect = null): void|bool
     {
         global $CFG_GLPI;
 
@@ -1580,7 +1580,7 @@ class Auth extends CommonGLPI
      *
      * @return void
      */
-    public static function showSynchronizationForm(User $user)
+    public static function showSynchronizationForm(User $user): void
     {
         if (Session::haveRight("user", User::UPDATEAUTHENT)) {
             TemplateRenderer::getInstance()->display('pages/setup/authentication/sync.html.twig', [
@@ -1596,7 +1596,7 @@ class Auth extends CommonGLPI
      *
      * @return bool
      */
-    public static function isValidLogin($login)
+    public static function isValidLogin(string $login): bool
     {
         return $login !== null && (
             preg_match("/^[[:alnum:]'@.\-_ ]+$/iu", $login)
@@ -1631,7 +1631,7 @@ class Auth extends CommonGLPI
      *
      * @return void|bool False if the form is not shown due to right error. Form is directly printed.
      */
-    public static function showOtherAuthList()
+    public static function showOtherAuthList(): void|bool
     {
         global $CFG_GLPI;
 
@@ -1648,7 +1648,7 @@ class Auth extends CommonGLPI
      *
      * @return array
      */
-    public static function getLoginAuthMethods()
+    public static function getLoginAuthMethods(): array
     {
         global $DB;
 
@@ -1700,7 +1700,7 @@ class Auth extends CommonGLPI
      *
      * @return string
      */
-    public static function dropdownLogin(bool $display = true, $rand = 1)
+    public static function dropdownLogin(bool $display = true, int $rand = 1): string
     {
         $out = "";
         $elements = self::getLoginAuthMethods();
@@ -1725,7 +1725,7 @@ class Auth extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-login";
     }

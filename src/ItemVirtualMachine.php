@@ -142,7 +142,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @return bool TRUE if form is ok
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         if (isset($options['parent'])) {
             $options['itemtype'] = $options['parent']::class;
@@ -188,7 +188,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForVirtualMachine(CommonDBTM $asset)
+    public static function showForVirtualMachine(CommonDBTM $asset): void
     {
         global $CFG_GLPI;
 
@@ -257,7 +257,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showForAsset(CommonDBTM $asset)
+    public static function showForAsset(CommonDBTM $asset): void|bool
     {
 
         $ID = $asset->fields['id'];
@@ -353,7 +353,7 @@ class ItemVirtualMachine extends CommonDBChild
      * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
      * uuid with 3 first block flipped
      **/
-    public static function getUUIDRestrictCriteria($uuid)
+    public static function getUUIDRestrictCriteria(string $uuid): array
     {
         //More infos about uuid, please see wikipedia :
         //http://en.wikipedia.org/wiki/Universally_unique_identifier
@@ -395,7 +395,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @return int|bool ID of the asset that have this uuid or false otherwise
      **/
-    public static function findVirtualMachine($fields = [])
+    public static function findVirtualMachine(array $fields = []): int|bool
     {
         global $DB;
 
@@ -511,7 +511,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         $tab = [];
 

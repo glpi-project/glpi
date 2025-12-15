@@ -99,7 +99,7 @@ class ReminderTranslation extends CommonDBChild
      *
      * @return true
      **/
-    public static function showTranslations(Reminder $item)
+    public static function showTranslations(Reminder $item): bool
     {
         $canedit = $item->can($item->getID(), UPDATE);
         $rand    = mt_rand();
@@ -199,7 +199,7 @@ TWIG, $twig_params);
      * @param int $ID
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm(int $ID = -1, array $options = [])
     {
         if ($this->getID() > 0) {
             $this->check($ID, READ);
@@ -229,7 +229,7 @@ TWIG, $twig_params);
      *
      * @return string  the field translated if a translation is available, or the original field if not
      **/
-    public static function getTranslatedValue(Reminder $item, $field = "name")
+    public static function getTranslatedValue(Reminder $item, string $field = "name"): string
     {
         $obj   = new self();
         $found = $obj->find([
@@ -256,7 +256,7 @@ TWIG, $twig_params);
      *
      * @return int  the number of translations for this item
      **/
-    public static function getNumberOfTranslationsForItem($item)
+    public static function getNumberOfTranslationsForItem(Reminder $item): int
     {
         return countElementsInTable(
             getTableForItemType(self::class),
@@ -271,7 +271,7 @@ TWIG, $twig_params);
      *
      * @return array of already translated languages
      **/
-    public static function getAlreadyTranslatedForItem($item)
+    public static function getAlreadyTranslatedForItem(Reminder $item): array
     {
         global $DB;
 

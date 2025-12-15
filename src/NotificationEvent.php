@@ -54,7 +54,7 @@ class NotificationEvent extends CommonDBTM
      *
      * @return string
      */
-    public static function dropdownEvents($itemtype, $options = [])
+    public static function dropdownEvents($itemtype, array $options = []): string
     {
 
         $p['name']                = 'event';
@@ -87,7 +87,7 @@ class NotificationEvent extends CommonDBTM
      *
      * @return string
      */
-    public static function getEventName($itemtype, $event)
+    public static function getEventName($itemtype, string $event): string
     {
 
         $events = [];
@@ -115,7 +115,7 @@ class NotificationEvent extends CommonDBTM
      *
      * @since 11.0.0 Param `$trigger` has been added.
      **/
-    public static function raiseEvent($event, $item, $options = [], ?CommonDBTM $trigger = null, $label = '')
+    public static function raiseEvent(string $event, CommonGLPI $item, array $options = [], ?CommonDBTM $trigger = null, string $label = ''): bool
     {
         global $CFG_GLPI;
 

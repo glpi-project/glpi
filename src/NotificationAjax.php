@@ -49,7 +49,7 @@ class NotificationAjax implements NotificationInterface
      *
      * @return bool
      **/
-    public static function check($value, $options = [])
+    public static function check(mixed $value, array $options = []): bool
     {
         //waiting for a user ID
         $value = (int) $value;
@@ -115,7 +115,7 @@ class NotificationAjax implements NotificationInterface
      *
      * @return array|false
      */
-    public static function getMyNotifications()
+    public static function getMyNotifications(): array|bool
     {
         global $CFG_GLPI, $DB;
 
@@ -167,7 +167,7 @@ class NotificationAjax implements NotificationInterface
      *
      * @return void
      */
-    public static function raisedNotification($id)
+    public static function raisedNotification(int $id): void
     {
         global $DB;
 

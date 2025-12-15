@@ -130,7 +130,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      */
-    public function backToStock(array $input, $history = true)
+    public function backToStock(array $input, bool $history = true): bool
     {
         global $DB;
 
@@ -169,7 +169,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      **/
-    public function out($ID, $itemtype = '', $items_id = 0)
+    public function out(int $ID, string $itemtype = '', int $items_id = 0): bool
     {
         global $DB;
 
@@ -312,7 +312,7 @@ class Consumable extends CommonDBChild
      *
      * @return int number of consumable counted.
      **/
-    public static function getTotalNumber($tID)
+    public static function getTotalNumber(int $tID): int
     {
         global $DB;
 
@@ -331,7 +331,7 @@ class Consumable extends CommonDBChild
      *
      * @return int number of old consumable counted.
      **/
-    public static function getOldNumber($tID)
+    public static function getOldNumber(int $tID): int
     {
         global $DB;
 
@@ -353,7 +353,7 @@ class Consumable extends CommonDBChild
      *
      * @return int number of consumable unused counted.
      **/
-    public static function getUnusedNumber($tID)
+    public static function getUnusedNumber(int $tID): int
     {
         global $DB;
 
@@ -425,7 +425,7 @@ class Consumable extends CommonDBChild
      *
      * @return string to display
      **/
-    public static function getCount($tID, $alarm_threshold, $nohtml = false)
+    public static function getCount(int $tID, int $alarm_threshold, bool $nohtml = false): string
     {
         // Get total
         $total = self::getTotalNumber($tID);
@@ -462,7 +462,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      **/
-    public static function isNew($cID)
+    public static function isNew(int $cID): bool
     {
         global $DB;
 
@@ -484,7 +484,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      **/
-    public static function isOld($cID)
+    public static function isOld(int $cID): bool
     {
         global $DB;
 
@@ -506,7 +506,7 @@ class Consumable extends CommonDBChild
      *
      * @return string
      **/
-    public static function getStatus($cID)
+    public static function getStatus(int $cID): string
     {
         if (self::isNew($cID)) {
             return _nx('consumable', 'New', 'New', 1);
@@ -577,7 +577,7 @@ class Consumable extends CommonDBChild
      *
      * @return void
      */
-    public static function showForUser(User $user)
+    public static function showForUser(User $user): void
     {
         global $DB;
 
@@ -681,7 +681,7 @@ class Consumable extends CommonDBChild
      *
      * @return void
      **/
-    public static function showSummary()
+    public static function showSummary(): void
     {
         global $DB;
 
@@ -839,7 +839,7 @@ class Consumable extends CommonDBChild
      *
      * @return int
      **/
-    public static function countForConsumableItem(ConsumableItem $item)
+    public static function countForConsumableItem(ConsumableItem $item): int
     {
         return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
     }
@@ -849,7 +849,7 @@ class Consumable extends CommonDBChild
      *
      * @return int
      **/
-    public static function countForUser(User $item)
+    public static function countForUser(User $item): int
     {
         return countElementsInTable(['glpi_consumables'], [
             'glpi_consumables.itemtype' => 'User',

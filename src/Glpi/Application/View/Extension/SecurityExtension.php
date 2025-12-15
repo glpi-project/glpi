@@ -65,7 +65,7 @@ class SecurityExtension extends AbstractExtension
      * @param string|null $value
      * @return string
      */
-    public function decrypt($value): string
+    public function decrypt(?string $value): string
     {
         if ($value === null) {
             return '';

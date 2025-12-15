@@ -493,7 +493,7 @@ class Group extends CommonTreeDropdown
      * Show the LDAP options form for this group
      * @return void
      */
-    public function showLDAPForm()
+    public function showLDAPForm(): void
     {
         if (
             !$this->fields['is_usergroup']
@@ -517,7 +517,7 @@ class Group extends CommonTreeDropdown
      *
      * @return void
      **/
-    public function showSecurityForm($ID)
+    public function showSecurityForm(int $ID): void
     {
         $canedit = self::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
@@ -691,7 +691,7 @@ class Group extends CommonTreeDropdown
      *
      * @return void
      */
-    public function showItems($tech)
+    public function showItems(bool $tech): void
     {
         global $CFG_GLPI;
 
@@ -861,7 +861,7 @@ class Group extends CommonTreeDropdown
      *
      * @return bool
      */
-    private function isUsedInConsumables()
+    private function isUsedInConsumables(): bool
     {
         return countElementsInTable(
             Consumable::getTable(),
@@ -977,7 +977,7 @@ class Group extends CommonTreeDropdown
      *
      * @return void
      */
-    public static function updateLastGroupChange()
+    public static function updateLastGroupChange(): void
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);

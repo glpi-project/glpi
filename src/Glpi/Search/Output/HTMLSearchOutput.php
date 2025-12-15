@@ -281,7 +281,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      *
      * @return string
      */
-    public static function showNewLine($odd = false, $is_deleted = false): string
+    public static function showNewLine(bool $odd = false, bool $is_deleted = false): string
     {
         $class = " class='tab_bg_2" . ($is_deleted ? '_2' : '') . "' ";
         if ($odd) {
@@ -306,7 +306,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      * @param bool $fixed
      * @return string
      */
-    public static function showHeader($rows, $cols, $fixed = false): string
+    public static function showHeader(int $rows, int $cols, bool $fixed = false): string
     {
         if ($fixed) {
             return "<div class='text-center'><table class='table'>";
@@ -325,7 +325,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      *
      * @return string
      */
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = false, $order = "", $options = ""): string
+    public static function showHeaderItem(string $value, int &$num, string $linkto = "", bool $issort = false, string $order = "", string $options = ""): string
     {
         $class = "";
         if ($issort) {
@@ -357,7 +357,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      *
      * @return string
      */
-    public static function showItem($value, &$num, $row, $extraparam = ''): string
+    public static function showItem(string $value, int &$num, int $row, string $extraparam = ''): string
     {
         global $CFG_GLPI;
         $out = "<td $extraparam valign='top'>";
@@ -406,7 +406,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      *
      * @return string
      */
-    public static function showFooter($title = "", $count = null): string
+    public static function showFooter(string $title = "", ?int $count = null): string
     {
         return "</table></div>\n";
     }
@@ -416,7 +416,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      *
      * @return string
      */
-    public static function showError($message = ''): string
+    public static function showError(string $message = ''): string
     {
         return "<div class='center b'>" . \htmlescape($message) . "</div>";
     }

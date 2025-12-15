@@ -94,7 +94,7 @@ class UserEmail extends CommonDBChild
      *
      * @return string default email, empty if no email set
      **/
-    public static function getDefaultForUser($users_id)
+    public static function getDefaultForUser(int $users_id): string
     {
         global $DB;
 
@@ -123,7 +123,7 @@ class UserEmail extends CommonDBChild
      *
      * @return array of emails
      **/
-    public static function getAllForUser($users_id)
+    public static function getAllForUser(int $users_id): array
     {
         global $DB;
 
@@ -152,7 +152,7 @@ class UserEmail extends CommonDBChild
      *
      * @return bool is this email set for the user ?
      **/
-    public static function isEmailForUser($users_id, $email)
+    public static function isEmailForUser(int $users_id, string $email): bool
     {
         global $DB;
 
@@ -239,7 +239,7 @@ class UserEmail extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForUser(User $user)
+    public static function showForUser(User $user): void
     {
 
         $users_id = $user->getID();
@@ -270,7 +270,7 @@ class UserEmail extends CommonDBChild
      *
      * @return void
      **/
-    public static function showAddEmailButton(User $user)
+    public static function showAddEmailButton(User $user): void
     {
 
         $users_id = $user->getID();
@@ -335,7 +335,7 @@ class UserEmail extends CommonDBChild
      *
      * @return string
      **/
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'email';
     }

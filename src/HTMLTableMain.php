@@ -83,7 +83,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      **/
-    public function setTitle($name)
+    public function setTitle(string $name): void
     {
         $this->title = $name;
     }
@@ -105,7 +105,7 @@ class HTMLTableMain extends HTMLTableBase
      * @return bool|HTMLTableGroup
      * @see HTMLTableEntity::content
      **/
-    public function createGroup($name, $content)
+    public function createGroup(string $name, mixed $content): bool|HTMLTableGroup
     {
         if (!empty($name) && !isset($this->groups[$name])) {
             $this->groups[$name] = new HTMLTableGroup($this, $name, $content);
@@ -119,7 +119,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      */
-    public function addItemType($itemtype, $title)
+    public function addItemType($itemtype, string $title): void
     {
         $this->itemtypes[$itemtype] = $title;
     }
@@ -131,7 +131,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return bool|HTMLTableGroup
      **/
-    public function getGroup($group_name)
+    public function getGroup(string $group_name): bool|HTMLTableGroup
     {
         return $this->groups[$group_name] ?? false;
     }
@@ -141,7 +141,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      */
-    public function displaySuperHeader()
+    public function displaySuperHeader(): void
     {
         echo "\t\t<tr class='noHover'>\n";
         foreach ($this->getHeaderOrder() as $header_name) {
@@ -160,7 +160,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return int the total number of rows
      **/
-    public function getNumberOfRows()
+    public function getNumberOfRows(): int
     {
         $numberOfRow = 0;
         foreach ($this->groups as $group) {
@@ -183,7 +183,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      **/
-    public function display(array $params)
+    public function display(array $params): void
     {
         $p = array_replace([
             'html_id' => '',

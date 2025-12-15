@@ -57,7 +57,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
      *
      * @return int the id of the current object ancestor
      **/
-    public function getNewAncestor()
+    public function getNewAncestor(): int
     {
         return 0; // By default, we rattach to the root element
     }
@@ -69,7 +69,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
      *
      * @return array of IDs of the potential sons
      **/
-    public function getPotentialSons()
+    public function getPotentialSons(): array
     {
         return []; // By default, we don't have any son
     }
@@ -118,7 +118,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
      *
      * @return false
      **/
-    public function haveChildren()
+    public function haveChildren(): bool
     {
         return false;
     }

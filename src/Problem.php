@@ -141,7 +141,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      * @since 9.4.0
      * @return bool
      */
-    public function canReopen()
+    public function canReopen(): bool
     {
         return Session::haveRight('followup', CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
@@ -592,7 +592,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd(string $itemtype)
+    public static function rawSearchOptionsToAdd(string $itemtype): array
     {
         global $CFG_GLPI;
 
@@ -749,7 +749,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array
      **/
-    public static function getClosedStatusArray()
+    public static function getClosedStatusArray(): array
     {
 
         // To be overridden by class
@@ -765,7 +765,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array
      **/
-    public static function getSolvedStatusArray()
+    public static function getSolvedStatusArray(): array
     {
         // To be overridden by class
         $tab = [self::OBSERVED, self::SOLVED];
@@ -779,7 +779,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array
      **/
-    public static function getNewStatusArray()
+    public static function getNewStatusArray(): array
     {
         return [self::INCOMING, self::ACCEPTED];
     }
@@ -791,7 +791,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return array
      **/
-    public static function getProcessStatusArray()
+    public static function getProcessStatusArray(): array
     {
 
         // To be overridden by class
@@ -810,7 +810,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      **/
-    public static function showCentralList($start, $status = "process", $showgroupproblems = true)
+    public static function showCentralList(int $start, string $status = "process", bool $showgroupproblems = true): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1251,7 +1251,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      * @param string $forcetab
      * @return void
      */
-    public static function showVeryShort($ID, $forcetab = '')
+    public static function showVeryShort(int $ID, string $forcetab = ''): void
     {
         // Prints a job in short form
         // Should be called in a <table>-segment
@@ -1352,7 +1352,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void|false
      **/
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
     {
         if (!Session::haveRightsOr(self::$rightname, [self::READALL])) {
             return false;
@@ -1387,7 +1387,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      * @param CommonDBTM $item
      * @return array
      */
-    public static function getListForItemRestrict(CommonDBTM $item)
+    public static function getListForItemRestrict(CommonDBTM $item): array
     {
         $restrict = [];
 
@@ -1514,7 +1514,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return DBmysqlIterator
      */
-    public function getActiveProblemsForItem($itemtype, $items_id)
+    public function getActiveProblemsForItem(string $itemtype, int $items_id): DBmysqlIterator
     {
         global $DB;
 

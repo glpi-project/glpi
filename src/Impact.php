@@ -81,7 +81,7 @@ class Impact extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-affiliate';
     }
@@ -527,7 +527,7 @@ TWIG, $twig_params);
      * @param string  $type
      * @param string  $node_id
      */
-    private static function displayListNumber($itil_objects, $type, $node_id): void
+    private static function displayListNumber(array $itil_objects, string $type, string $node_id): void
     {
         $user = new User();
         $user->getFromDB(Session::getLoginUserID());
@@ -666,7 +666,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function filterGraph(array $graph, int $direction)
+    public static function filterGraph(array $graph, int $direction): array
     {
         $new_graph = [
             'edges' => [],
@@ -776,7 +776,7 @@ TWIG, $twig_params);
         string $graph,
         string $params,
         bool $readonly
-    ) {
+    ): void {
         echo '<div class="impact-header">';
         echo "<h2>" . __s("Impact analysis") . "</h2>";
         echo "<div id='switchview'>";
@@ -998,7 +998,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function printImpactNetworkContainer()
+    public static function printImpactNetworkContainer(): void
     {
         global $CFG_GLPI;
 

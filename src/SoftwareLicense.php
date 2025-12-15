@@ -154,7 +154,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return int validity indicator
      **/
-    public static function computeValidityIndicator($ID, $number = -1)
+    public static function computeValidityIndicator(int $ID, int $number = -1): int
     {
         if (
             ($number >= 0)
@@ -174,7 +174,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return void
      **/
-    public static function updateValidityIndicator($ID)
+    public static function updateValidityIndicator(int $ID): void
     {
         $lic = new self();
         if ($lic->getFromDB($ID)) {
@@ -293,7 +293,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return bool
      **/
-    public function maybeRecursive()
+    public function maybeRecursive(): bool
     {
         $soft = new Software();
         if (
@@ -311,7 +311,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return bool
      **/
-    public function isRecursive()
+    public function isRecursive(): bool
     {
         $soft = new Software();
         if (
@@ -614,7 +614,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     /**
      * @return array<int,array<string,mixed>>
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
         $name = static::getTypeName(Session::getPluralNumber());
@@ -748,7 +748,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      * @return array of information
      * @used-by CronTask
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Send alarms on expired licenses')];
     }
@@ -761,7 +761,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
-    public static function cronSoftware($task = null)
+    public static function cronSoftware(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -884,7 +884,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return int number of installations
      */
-    public static function countForVersion($softwareversions_id, $entity = '')
+    public static function countForVersion(int $softwareversions_id, $entity = ''): int
     {
         global $DB;
 
@@ -906,7 +906,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return int number of licenses
      **/
-    public static function countForSoftware($softwares_id)
+    public static function countForSoftware(int $softwares_id): int
     {
         global $DB;
 
@@ -984,7 +984,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
      *
      * @return void
      **/
-    public static function showForSoftware(Software $software)
+    public static function showForSoftware(Software $software): void
     {
         global $DB;
 
@@ -1182,7 +1182,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public function getUnicityFieldsToDisplayInErrorMessage()
+    public function getUnicityFieldsToDisplayInErrorMessage(): array
     {
         return [
             'id'           => __('ID'),

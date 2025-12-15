@@ -54,7 +54,7 @@ $DEFAULT_PLURAL_NUMBER = 2;
  * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
  * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
-function __($str, $domain = 'glpi')
+function __(string $str, string $domain = 'glpi'): string
 {
     global $TRANSLATE;
 
@@ -86,7 +86,7 @@ function __($str, $domain = 'glpi')
  *
  * @return string
  */
-function __s($str, $domain = 'glpi')
+function __s(string $str, string $domain = 'glpi'): string
 {
     return htmlspecialchars(__($str, $domain));
 }
@@ -103,7 +103,7 @@ function __s($str, $domain = 'glpi')
  *
  * @return string
  */
-function _sx($ctx, $str, $domain = 'glpi')
+function _sx(string $ctx, string $str, string $domain = 'glpi'): string
 {
     return htmlspecialchars(_x($ctx, $str, $domain));
 }
@@ -124,7 +124,7 @@ function _sx($ctx, $str, $domain = 'glpi')
  * @psalm-taint-source html (translated message can contain unexpected HTML special chars)
  * @psalm-taint-source has_quotes (translated message can contain quotes not present in the translation key)
  */
-function _n($sing, $plural, $nb, $domain = 'glpi')
+function _n(string $sing, string $plural, int $nb, string $domain = 'glpi'): string
 {
     /** @var TranslatorInterface $TRANSLATE */
     global $TRANSLATE;
@@ -154,7 +154,7 @@ function _n($sing, $plural, $nb, $domain = 'glpi')
  *
  * @return string
  */
-function _sn($sing, $plural, $nb, $domain = 'glpi')
+function _sn(string $sing, string $plural, int $nb, string $domain = 'glpi'): string
 {
     return htmlspecialchars(_n($sing, $plural, $nb, $domain));
 }
@@ -171,7 +171,7 @@ function _sn($sing, $plural, $nb, $domain = 'glpi')
  *
  * @return string
  */
-function _x($ctx, $str, $domain = 'glpi')
+function _x(string $ctx, string $str, string $domain = 'glpi'): string
 {
 
     // simulate pgettext
@@ -199,7 +199,7 @@ function _x($ctx, $str, $domain = 'glpi')
  *
  * @return string
  */
-function _nx($ctx, $sing, $plural, $nb, $domain = 'glpi')
+function _nx(string $ctx, string $sing, string $plural, int $nb, string $domain = 'glpi'): string
 {
 
     // simulate pgettext

@@ -228,7 +228,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
      *
      * @return array
      */
-    public function prepareInput($input): array
+    public function prepareInput(array $input): array
     {
         // Validate forms fk
         if (

@@ -66,7 +66,7 @@ class NetworkPortConnectionLog extends CommonDBRelation
      *
      * @return array
      */
-    public function getCriteria(NetworkPort $netport)
+    public function getCriteria(NetworkPort $netport): array
     {
         return [
             'OR' => [
@@ -92,7 +92,7 @@ class NetworkPortConnectionLog extends CommonDBRelation
      *
      * @return void
      */
-    public function showForItem(NetworkPort $netport, $user_filters = [])
+    public function showForItem(NetworkPort $netport, array $user_filters = []): void
     {
         global $DB;
 

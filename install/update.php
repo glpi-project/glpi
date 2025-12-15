@@ -66,7 +66,7 @@ function test_connect()
  *
  * @return void
  */
-function showSecurityKeyCheckForm()
+function showSecurityKeyCheckForm(): void
 {
     global $DB;
 

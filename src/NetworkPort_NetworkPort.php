@@ -56,7 +56,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return bool  true if succeed else false
      **/
-    public function getFromDBForNetworkPort($ID)
+    public function getFromDBForNetworkPort(int $ID): bool
     {
 
         return $this->getFromDBByCrit([
@@ -74,7 +74,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return int|false  ID of opposite port. false if not found
      **/
-    public function getOppositeContact($ID)
+    public function getOppositeContact(int $ID): int|bool
     {
         if ($this->getFromDBForNetworkPort($ID)) {
             if ($this->fields['networkports_id_1'] == $ID) {
@@ -95,7 +95,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return int
      */
-    public function createHub($netports_id, $entities_id = 0)
+    public function createHub(int $netports_id, int $entities_id = 0): int
     {
         $netport = new NetworkPort();
 
@@ -129,7 +129,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return int
      */
-    public function connectToHub($ports_id, $hubs_id)
+    public function connectToHub(int $ports_id, int $hubs_id): int
     {
 
         global $DB;
@@ -181,7 +181,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return bool
      */
-    public function disconnectFrom($ports_id)
+    public function disconnectFrom(int $ports_id): bool
     {
         return $this->deleteByCriteria([
             'OR'  => [
@@ -197,7 +197,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return void
      */
-    public function cleanHubPorts()
+    public function cleanHubPorts(): void
     {
         $netport = new NetworkPort();
         $unmanaged = new Unmanaged();
@@ -299,7 +299,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
      *
      * @return void
      */
-    public function storeConnectionLog($action)
+    public function storeConnectionLog(string $action): void
     {
         $netports_id = null;
 

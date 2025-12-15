@@ -149,7 +149,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    public static function getOptionsForItemtype($itemtype, $withplugins = true): array
+    public static function getOptionsForItemtype($itemtype, bool $withplugins = true): array
     {
         global $CFG_GLPI;
 
@@ -413,7 +413,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return bool
      **/
-    public static function isInfocomOption($itemtype, $searchID): bool
+    public static function isInfocomOption($itemtype, int $searchID): bool
     {
         if (!Infocom::canApplyOn($itemtype)) {
             return false;
@@ -431,7 +431,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array
      **/
-    public static function getActionsFor($itemtype, $field_num)
+    public static function getActionsFor($itemtype, int $field_num): array
     {
 
         $searchopt = self::getOptionsForItemtype($itemtype);
@@ -616,7 +616,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return int
      **/
-    public static function getOptionNumber($itemtype, $field, $meta_itemtype = null): int
+    public static function getOptionNumber($itemtype, string $field, $meta_itemtype = null): int
     {
         $meta_itemtype ??= $itemtype;
         $table = $meta_itemtype::getTable();
@@ -644,7 +644,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array Clean $SEARCH_OPTION array
      **/
-    public static function getCleanedOptions($itemtype, $action = READ, $withplugins = true): array
+    public static function getCleanedOptions($itemtype, int $action = READ, bool $withplugins = true): array
     {
         global $CFG_GLPI;
 

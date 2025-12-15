@@ -116,7 +116,7 @@ class Contract_Supplier extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForSupplier(Supplier $supplier)
+    public static function showForSupplier(Supplier $supplier): void
     {
         $ID = $supplier->fields['id'];
         if (
@@ -236,7 +236,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function showForContract(Contract $contract)
+    public static function showForContract(Contract $contract): void
     {
         $instID = $contract->fields['id'];
 

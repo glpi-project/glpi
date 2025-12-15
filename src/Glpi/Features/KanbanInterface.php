@@ -46,7 +46,7 @@ interface KanbanInterface
      * @return array Array of the data.
      *       This can be in any format as long as the getKanbanColumns function in this class can interpret it.
      **/
-    public static function getDataToDisplayOnKanban($ID, $criteria = []);
+    public static function getDataToDisplayOnKanban(int $ID, array $criteria = []): array;
 
     /**
      * Get Kanban columns data for the specified item to pass to the Kanban JS component.
@@ -59,7 +59,7 @@ interface KanbanInterface
      * @param bool $get_default If true, the default columns are returned in addition to the requested ones in $column_ids.
      * @return array Array of constructed columns data for the Kanban
      **/
-    public static function getKanbanColumns($ID, $column_field = null, $column_ids = [], $get_default = false);
+    public static function getKanbanColumns(int $ID, ?string $column_field = null, array $column_ids = [], bool $get_default = false): array;
 
     /**
      * Show Kanban for a single item, or a global view for the itemtype.
@@ -67,7 +67,7 @@ interface KanbanInterface
      * @param int $ID ID of the item or -1 for a global view.
      * @return void|bool
      **/
-    public static function showKanban($ID);
+    public static function showKanban(int $ID): void|bool;
 
     /**
      * Get a list of all items to be included in the 'switch board' dropdown.
@@ -78,7 +78,7 @@ interface KanbanInterface
      * @return array Array of items that can have a Kanban view.
      *       Array format must be item_id => item_name.
      */
-    public static function getAllForKanban($active = true, $current_id = -1);
+    public static function getAllForKanban(bool $active = true, int $current_id = -1): array;
 
 
     /**
@@ -90,14 +90,14 @@ interface KanbanInterface
      * @param bool $get_default If true, the default columns are returned in addition to the requested ones in $column_ids.
      * @return array<int, array{id: int|string, name: string, header_color: string, header_fg_color?: string, color_class?: string, drop_only?: bool}> Array of columns.
      */
-    public static function getAllKanbanColumns($column_field = null, $column_ids = [], $get_default = false);
+    public static function getAllKanbanColumns(?string $column_field = null, array $column_ids = [], bool $get_default = false): array;
 
     /**
      * Check if the current user can modify the global Kanban state.
      * @since 9.5.0
      * @return bool
      */
-    public function canModifyGlobalState();
+    public function canModifyGlobalState(): bool;
 
     /**
      * Force the current user to use the global state when loading and saving (if they are allowed).
@@ -105,7 +105,7 @@ interface KanbanInterface
      * @return bool
      * @see Kanban::canModifyGlobalState()
      */
-    public function forceGlobalState();
+    public function forceGlobalState(): bool;
 
     /**
      * Modify the state before it gets saved to the DB.
@@ -115,7 +115,7 @@ interface KanbanInterface
      * @param int $users_id The ID of the user this state is for. If 0, it is the global/default state.
      * @return mixed The modified state or false/null to deny the save.
      */
-    public function prepareKanbanStateForUpdate($oldstate, $newstate, $users_id);
+    public function prepareKanbanStateForUpdate(array $oldstate, array $newstate, int $users_id): mixed;
 
     /**
      * Check if the current user can move Kanban cards inside the same column.
@@ -123,21 +123,21 @@ interface KanbanInterface
      * @param int $ID Item's ID
      * @return bool
      */
-    public function canOrderKanbanCard($ID);
+    public function canOrderKanbanCard(int $ID): bool;
 
     /**
      * @param class-string<\CommonDBTM> $itemtype
      *
      * @return array
      */
-    public static function getKanbanPluginFilters($itemtype);
+    public static function getKanbanPluginFilters($itemtype): array;
 
     /**
      * @param bool $full
      *
      * @return string
      */
-    public static function getGlobalKanbanUrl(bool $full = true);
+    public static function getGlobalKanbanUrl(bool $full = true): string;
 
     /**
      * @param int $items_id
@@ -145,5 +145,5 @@ interface KanbanInterface
      *
      * @return string
      */
-    public function getKanbanUrlWithID(int $items_id, bool $full = true);
+    public function getKanbanUrlWithID(int $items_id, bool $full = true): string;
 }

@@ -74,7 +74,7 @@ class Extension extends AbstractRequirement
      *
      * @return void
      */
-    protected function buildValidationMessage()
+    protected function buildValidationMessage(): void
     {
         if ($this->validated) {
             $this->validation_messages[] = sprintf(__('%s extension is installed'), $this->name);

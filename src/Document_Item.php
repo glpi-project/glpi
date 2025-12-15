@@ -493,7 +493,7 @@ TWIG, $twig_params);
      *
      * @return bool
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool
     {
         $ID = $item->getField('id');
 
@@ -528,7 +528,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
+    public static function showAddFormForItem(CommonDBTM $item, int $withtemplate = 0, array $options = []): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -614,7 +614,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0, array $options = []): void
     {
         global $DB;
 
@@ -769,7 +769,7 @@ TWIG, $twig_params);
      *
      * @return array Criteria to use in a request
      */
-    protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = [])
+    protected static function getTypeItemsQueryParams(int $items_id, $itemtype, bool $noent = false, array $where = []): array
     {
         $commonwhere = ['OR'  => [
             static::getTable() . '.' . static::$items_id_1  => $items_id,
@@ -812,7 +812,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    protected static function getListForItemParams(CommonDBTM $item, $noent = false)
+    protected static function getListForItemParams(CommonDBTM $item, bool $noent = false): array
     {
         if (Session::getLoginUserID()) {
             $params = parent::getListForItemParams($item);
@@ -835,7 +835,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function getDistinctTypesParams($items_id, $extra_where = [])
+    public static function getDistinctTypesParams(int $items_id, array $extra_where = []): array
     {
         $commonwhere = ['OR'  => [
             static::getTable() . '.' . static::$items_id_1  => $items_id,
@@ -860,7 +860,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function isFromSupportAgent()
+    public function isFromSupportAgent(): bool
     {
         // If not a CommonITILObject
         if (!is_a($this->fields['itemtype'], CommonITILObject::class, true)) {

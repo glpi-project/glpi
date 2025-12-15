@@ -496,7 +496,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return array clean query array
      **/
-    protected function prepareQueryToStore($type, $query_tab)
+    protected function prepareQueryToStore(int $type, array $query_tab): array
     {
         switch ($type) {
             case self::SEARCH:
@@ -525,7 +525,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void
      **/
-    public function load($ID)
+    public function load(int $ID): void
     {
         if (($params = $this->getParameters($ID)) === false) {
             return;
@@ -556,7 +556,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return array|false
      **/
-    public function getParameters($ID)
+    public function getParameters(int $ID): array|bool
     {
         if ($this->getFromDB($ID) === false) {
             return false;
@@ -579,7 +579,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void
      **/
-    public function markDefault($ID)
+    public function markDefault(int $ID): void
     {
         global $DB;
 
@@ -622,7 +622,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void
      **/
-    public function unmarkDefault($ID)
+    public function unmarkDefault(int $ID): void
     {
         global $DB;
 
@@ -657,7 +657,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return bool
      **/
-    public function unmarkDefaults(array $ids)
+    public function unmarkDefaults(array $ids): bool
     {
         global $DB;
 
@@ -798,7 +798,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void
      */
-    public function displayMine(?string $itemtype = null, bool $inverse = false)
+    public function displayMine(?string $itemtype = null, bool $inverse = false): void
     {
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches_list.html.twig', [
             'active'         => $_SESSION['glpi_loaded_savedsearch'] ?? "",
@@ -813,7 +813,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return bool
      */
-    public function saveOrder(array $items)
+    public function saveOrder(array $items): bool
     {
         if (count($items)) {
             $user               = new User();
@@ -835,7 +835,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return string
      **/
-    protected function getPersonalOrderField()
+    protected function getPersonalOrderField(): string
     {
         return 'privatebookmarkorder';
     }
@@ -845,7 +845,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return array of itemtypes
      **/
-    public static function getUsedItemtypes()
+    public static function getUsedItemtypes(): array
     {
         global $DB;
 
@@ -869,7 +869,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void
      **/
-    public static function updateExecutionTime($id, $time)
+    public static function updateExecutionTime(int $id, int $time): void
     {
         global $DB;
 
@@ -936,7 +936,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void|string
      **/
-    public static function dropdownDoCount(array $options = [])
+    public static function dropdownDoCount(array $options = []): void|string
     {
         $p['name']      = 'do_count';
         $p['value']     = self::COUNT_AUTO;
@@ -964,7 +964,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return bool
      */
-    public function setDoCount(array $ids, $do_count)
+    public function setDoCount(array $ids, int $do_count): bool
     {
         global $DB;
 
@@ -989,7 +989,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return bool
      */
-    public function setEntityRecur(array $ids, $eid, $recur)
+    public function setEntityRecur(array $ids, int $eid, bool $recur): bool
     {
         global $DB;
 
@@ -1011,7 +1011,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         switch ($name) {
             case 'countAll':
@@ -1027,7 +1027,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return int
      **/
-    public static function croncountAll($task)
+    public static function croncountAll(CronTask $task): int
     {
         global $CFG_GLPI, $DB;
 
@@ -1108,7 +1108,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return array|null
      **/
-    public function execute($force = false)
+    public function execute(bool $force = false): ?array
     {
         global $CFG_GLPI;
 
@@ -1151,7 +1151,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return void
      */
-    public function createNotif()
+    public function createNotif(): void
     {
         $notif = new Notification();
         $notif->getFromDBByCrit(['event' => 'alert_' . $this->getID()]);
@@ -1175,7 +1175,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *
      * @return string restrict to add
      **/
-    public static function addVisibilityRestrict()
+    public static function addVisibilityRestrict(): string
     {
         //not deprecated because used in Search
         if (Session::haveRight('config', UPDATE)) {

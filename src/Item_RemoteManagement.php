@@ -92,7 +92,7 @@ class Item_RemoteManagement extends CommonDBChild
      *
      * @return DBmysqlIterator
      */
-    public static function getFromItem(CommonDBTM $item, $sort = null, $order = null): DBmysqlIterator
+    public static function getFromItem(CommonDBTM $item, ?string $sort = null, ?string $order = null): DBmysqlIterator
     {
         global $DB;
 
@@ -115,7 +115,7 @@ class Item_RemoteManagement extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         $ID = $item->fields['id'];
         $itemtype = $item->getType();
@@ -225,7 +225,7 @@ class Item_RemoteManagement extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         $tab = [];
 

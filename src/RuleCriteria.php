@@ -309,7 +309,7 @@ class RuleCriteria extends CommonDBChild
      *
      * @return array of RuleCriteria objects
      **/
-    public function getRuleCriterias($rules_id)
+    public function getRuleCriterias(int $rules_id): array
     {
         global $DB;
 
@@ -337,7 +337,7 @@ class RuleCriteria extends CommonDBChild
      *
      * @return bool
      **/
-    public static function match(RuleCriteria &$criterion, $field, &$criterias_results, &$regex_result)
+    public static function match(RuleCriteria &$criterion, ?string $field, array &$criterias_results, array &$regex_result): bool
     {
         $field ??= '';
 
@@ -566,7 +566,7 @@ class RuleCriteria extends CommonDBChild
      *
      * @return string condition's label
      **/
-    public static function getConditionByID($ID, $itemtype, $criterion = '')
+    public static function getConditionByID(int $ID, string $itemtype, string $criterion = ''): string
     {
         $conditions = self::getConditions($itemtype, $criterion);
         return $conditions[$ID] ?? "";
@@ -578,7 +578,7 @@ class RuleCriteria extends CommonDBChild
      *
      * @return array<int, string> array of criteria
      **/
-    public static function getConditions($itemtype, $criterion = '')
+    public static function getConditions($itemtype, string $criterion = ''): array
     {
         $criteria =  [
             Rule::PATTERN_IS                => __('is'),
@@ -639,7 +639,7 @@ class RuleCriteria extends CommonDBChild
      *
      * @return int|string
      */
-    public static function dropdownConditions($itemtype, $params = [])
+    public static function dropdownConditions(string $itemtype, array $params = []): int|string
     {
         $p['name']             = 'condition';
         $p['criterion']        = '';

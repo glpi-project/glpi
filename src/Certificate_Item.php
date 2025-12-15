@@ -66,7 +66,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @return void
      */
-    public static function cleanForItem(CommonDBTM $item)
+    public static function cleanForItem(CommonDBTM $item): void
     {
         $temp = new self();
         $temp->deleteByCriteria(['itemtype' => $item->getType(),
@@ -129,7 +129,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @return bool
      */
-    public function getFromDBbyCertificatesAndItem($certificates_id, $items_id, $itemtype)
+    public function getFromDBbyCertificatesAndItem(int $certificates_id, int $items_id, $itemtype): bool
     {
 
         $certificate  = new self();
@@ -156,7 +156,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @return void
      */
-    public function addItem($values)
+    public function addItem(array $values): void
     {
 
         $this->add(['certificates_id' => $values["certificates_id"],
@@ -176,7 +176,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @return bool
      */
-    public function deleteItemByCertificatesAndItem($certificates_id, $items_id, $itemtype)
+    public function deleteItemByCertificatesAndItem(int $certificates_id, int $items_id, string $itemtype): bool
     {
 
         if (
@@ -200,7 +200,7 @@ class Certificate_Item extends CommonDBRelation
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showForCertificate(Certificate $certificate)
+    public static function showForCertificate(Certificate $certificate): void|bool
     {
         $instID = $certificate->fields['id'];
         if (!$certificate->can($instID, READ)) {
@@ -321,7 +321,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool
     {
 
         $ID = $item->getField('id');

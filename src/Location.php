@@ -141,7 +141,7 @@ class Location extends CommonTreeDropdown
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 

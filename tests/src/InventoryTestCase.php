@@ -134,7 +134,7 @@ class InventoryTestCase extends DbTestCase
      *
      * @return Inventory
      */
-    protected function doInventory($source, bool $is_xml = false)
+    protected function doInventory(mixed $source, bool $is_xml = false): Inventory
     {
         if ($is_xml === true) {
             $converter = new Converter();

@@ -1671,7 +1671,7 @@ HTML;
      *
      * @return void
      */
-    public function testGetDropdownValuePaginate()
+    public function testGetDropdownValuePaginate(): void
     {
         //let's add some content in Locations
         $location = new Location();
@@ -2580,7 +2580,7 @@ HTML;
      * Test that `getDropdownActors` for suppliers only returns active suppliers by default.
      * @return void
      */
-    public function testSupplierActorDropdownOnlyActive()
+    public function testSupplierActorDropdownOnlyActive(): void
     {
         $this->login();
         $this->createItem(Supplier::class, [

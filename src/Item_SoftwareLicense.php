@@ -366,7 +366,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @return int number of installations
      **/
-    public static function countForLicense($softwarelicenses_id, $entity = '', $itemtype = null)
+    public static function countForLicense(int $softwarelicenses_id, int|string $entity = '', ?string $itemtype = null): int
     {
         global $DB;
 
@@ -436,7 +436,7 @@ class Item_SoftwareLicense extends CommonDBRelation
      *
      * @return int number of installations
      **/
-    public static function countForSoftware($softwares_id)
+    public static function countForSoftware(int $softwares_id): int
     {
         global $DB;
 
@@ -1074,7 +1074,7 @@ JAVASCRIPT;
      *
      * @return void
      **/
-    public function upgrade($licID, $softwarelicenses_id)
+    public function upgrade(int $licID, int $softwarelicenses_id): void
     {
         if ($this->getFromDB($licID)) {
             $items_id = $this->fields['items_id'];
@@ -1097,7 +1097,7 @@ JAVASCRIPT;
      *
      * @return array
      **/
-    public static function getLicenseForInstallation($itemtype, $items_id, $softwareversions_id)
+    public static function getLicenseForInstallation(string $itemtype, int $items_id, int $softwareversions_id): array
     {
         global $DB;
 
@@ -1189,7 +1189,7 @@ JAVASCRIPT;
      *
      * @return int
      **/
-    public static function countLicenses($softwares_id)
+    public static function countLicenses(int $softwares_id): int
     {
         global $DB;
 

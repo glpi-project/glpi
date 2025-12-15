@@ -112,7 +112,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
      *
      * @return int|bool current offset or -1 on completion or false on failure
      **/
-    public function replayRulesOnExistingDBForModel($offset = 0, $maxtime = 0)
+    public function replayRulesOnExistingDBForModel(int $offset = 0, int $maxtime = 0): int|bool
     {
         global $DB;
 

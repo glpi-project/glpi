@@ -86,7 +86,7 @@ abstract class ITILTemplateField extends CommonDBChild
      *
      * @return array
      */
-    public function getAllFields(ITILTemplate $tt)
+    public function getAllFields(ITILTemplate $tt): array
     {
         $this->all_fields = $tt->getAllowedFieldsNames(true);
         $this->all_fields = array_diff_key($this->all_fields, static::getExcludedFields());
@@ -118,7 +118,7 @@ abstract class ITILTemplateField extends CommonDBChild
      *
      * @return array the excluded fields (keys and values are equals)
      */
-    abstract public static function getExcludedFields();
+    abstract public static function getExcludedFields(): array;
 
 
     /**
@@ -132,7 +132,7 @@ abstract class ITILTemplateField extends CommonDBChild
      *
      * @return bool
      */
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0, $withtypeandcategory = true): bool
+    public static function showForITILTemplate(ITILTemplate $tt, int $withtemplate = 0, bool $withtypeandcategory = true): bool
     {
         global $DB, $CFG_GLPI;
 
@@ -312,7 +312,7 @@ TWIG, $twig_params);
      *
      * @return int|false
      */
-    public function getFieldNum(ITILTemplate $tt, $name)
+    public function getFieldNum(ITILTemplate $tt, string $name): int|bool
     {
         if (!isset($this->all_fields)) {
             $this->getAllFields($tt);

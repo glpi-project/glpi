@@ -238,7 +238,7 @@ class RequestType extends CommonDropdown
      *
      * @return int requesttypes_id
      */
-    public static function getDefault($source)
+    public static function getDefault(string $source): int
     {
         global $DB;
 
@@ -294,7 +294,7 @@ class RequestType extends CommonDropdown
      *
      * @return bool
      */
-    private function isUsedAsDefaultRequestType()
+    private function isUsedAsDefaultRequestType(): bool
     {
 
         $config_values = Config::getConfigurationValues('core', ['default_requesttypes_id']);

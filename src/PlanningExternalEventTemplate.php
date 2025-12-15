@@ -171,7 +171,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
      *
      * @return array
      */
-    public function prepareInputForupdate($input)
+    public function prepareInputForupdate(array $input): array
     {
         $saved_input = $input;
         $input = $this->prepareInputForupdateTrait($input);
@@ -185,7 +185,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
      *
      * @return array
      */
-    public function parseExtraInput(array $orig_input = [], array $input = [])
+    public function parseExtraInput(array $orig_input = [], array $input = []): array
     {
         if (
             isset($orig_input['plan'])

@@ -111,7 +111,7 @@ class Appliance_Item extends CommonDBRelation
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public static function showItems(Appliance $appliance)
+    public static function showItems(Appliance $appliance): void|bool
     {
         global $DB;
 
@@ -227,7 +227,7 @@ class Appliance_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         $ID = $item->getID();
 
@@ -327,7 +327,7 @@ class Appliance_Item extends CommonDBRelation
      *
      * @return false|array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 

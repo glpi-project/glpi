@@ -54,7 +54,7 @@ final class TicketTaskTest extends CommonITILTaskTestCase
      *
      * @return int|\Ticket
      */
-    private function getNewTicket($as_object = false)
+    private function getNewTicket(bool $as_object = false): int|\Ticket
     {
         //create reference ticket
         $ticket = new \Ticket();
@@ -438,7 +438,7 @@ final class TicketTaskTest extends CommonITILTaskTestCase
      *
      * @return void
      */
-    public function testDePlanifiedUpdateParentStatus()
+    public function testDePlanifiedUpdateParentStatus(): void
     {
         $this->login();
         $ticket_id = $this->getNewTicket();
@@ -766,7 +766,7 @@ final class TicketTaskTest extends CommonITILTaskTestCase
      *
      * @return void
      */
-    public function testTaskDurationUpdate()
+    public function testTaskDurationUpdate(): void
     {
         $this->login();
         $ticketId = $this->getNewTicket();

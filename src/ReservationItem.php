@@ -104,7 +104,7 @@ class ReservationItem extends CommonDBChild
      *
      * @return bool true if succeed else false
      **/
-    public function getFromDBbyItem($itemtype, $ID)
+    public function getFromDBbyItem($itemtype, int $ID): bool
     {
         return $this->getFromDBByCrit([
             static::getTable() . '.itemtype'  => $itemtype,
@@ -273,7 +273,7 @@ class ReservationItem extends CommonDBChild
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         return [
             [
@@ -294,7 +294,7 @@ class ReservationItem extends CommonDBChild
      * @param CommonDBTM $item
      * @return false|void
      */
-    public static function showActivationFormForItem(CommonDBTM $item)
+    public static function showActivationFormForItem(CommonDBTM $item): bool|void
     {
         if (!self::canUpdate()) {
             return false;
@@ -389,7 +389,7 @@ TWIG, $twig_params);
     /**
      * @return void
      */
-    public static function showListSimple()
+    public static function showListSimple(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -699,7 +699,7 @@ TWIG, $twig_params);
      * @return array
      * @used-by CronTask
      **/
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Alerts on reservations')];
     }
@@ -712,7 +712,7 @@ TWIG, $twig_params);
      * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
-    public static function cronReservation($task = null)
+    public static function cronReservation(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -911,7 +911,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function ajaxDropdown(array $post)
+    public static function ajaxDropdown(array $post): void
     {
         if ($post['idtable'] && class_exists($post['idtable'])) {
             $result = self::getAvailableItems($post['idtable']);

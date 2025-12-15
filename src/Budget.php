@@ -133,7 +133,7 @@ class Budget extends CommonDropdown
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): void|bool
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [
             'item' => $this,

@@ -105,7 +105,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return mixed
      */
-    public function __get(string $property)
+    public function __get(string $property): mixed
     {
         $value = null;
         switch ($property) {
@@ -130,7 +130,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return void
      */
-    public function __set(string $property, $value)
+    public function __set(string $property, mixed $value): void
     {
         switch ($property) {
             case 'profileRight':
@@ -514,7 +514,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return bool
      **/
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         if (
             ($this->fields['profile'] & DELETE)
@@ -592,7 +592,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         $input_arrays = ['helpdesk_item_type', 'managed_domainrecordtypes', 'ticket_status', 'problem_status', 'change_status'];
         foreach ($input_arrays as $array_field) {
@@ -608,7 +608,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return void
      */
-    public function cleanProfile()
+    public function cleanProfile(): void
     {
         if (isset($this->fields['interface']) && $this->fields["interface"] === "helpdesk") {
             foreach ($this->fields as $key => $val) {
@@ -673,7 +673,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return array
      **/
-    public static function getUnderActiveProfileRestrictCriteria()
+    public static function getUnderActiveProfileRestrictCriteria(): array
     {
         global $DB;
 
@@ -737,7 +737,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return bool true if have more right
      **/
-    public static function currentUserHaveMoreRightThan($IDs = [])
+    public static function currentUserHaveMoreRightThan(array $IDs = []): bool
     {
         global $DB;
 
@@ -775,7 +775,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * @return void
      */
-    public function showLegend()
+    public function showLegend(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/profile/legend.html.twig');
     }
@@ -1277,7 +1277,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @return void
      * @used-by templates/pages/admin/profile/base_tab.html.twig
      **/
-    public function displayLifeCycleMatrix($title, $html_field, $db_field, $statuses, $canedit)
+    public function displayLifeCycleMatrix(string $title, string $html_field, string $db_field, array $statuses, bool $canedit): void
     {
         $columns  = [];
         $rows     = [];
@@ -1340,7 +1340,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @return void
      * @used-by templates/pages/admin/profile/lifecycle_simple.html.twig
      **/
-    public function displayLifeCycleMatrixTicketHelpdesk($title, $html_field, $db_field, $canedit)
+    public function displayLifeCycleMatrixTicketHelpdesk(string $title, string $html_field, string $db_field, bool $canedit): void
     {
         $columns     = [];
         $rows        = [];
@@ -3174,7 +3174,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return int|string
      */
-    public static function dropdownRights(array $values, $name, $current, $options = [])
+    public static function dropdownRights(array $values, string $name, int $current, array $options = []): int|string
     {
         foreach ($values as $key => $value) {
             if (is_array($value)) {
@@ -3226,7 +3226,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function dropdownRight($name, $options = [])
+    public static function dropdownRight(string $name, array $options = []): int|string
     {
         $param['value']   = '';
         $param['display'] = true;
@@ -3271,7 +3271,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @return void
      *
      **/
-    public static function dropdownUnder($options = [])
+    public static function dropdownUnder(array $options = []): void
     {
         global $DB;
 
@@ -3313,7 +3313,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return int profiles_id
      **/
-    public static function getDefault()
+    public static function getDefault(): int
     {
         global $DB;
 
@@ -3342,7 +3342,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return string
      */
-    public static function getInterfaceName($value): string
+    public static function getInterfaceName(string $value): string
     {
         return self::getInterfaces()[$value] ?? NOT_AVAILABLE;
     }
@@ -3352,7 +3352,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return array<int, string>
      **/
-    public static function getHelpdeskHardwareTypes($rights = false)
+    public static function getHelpdeskHardwareTypes(bool $rights = false): array
     {
         if ($rights) {
             return [
@@ -3374,7 +3374,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return string
      */
-    public static function getHelpdeskHardwareTypeName($value)
+    public static function getHelpdeskHardwareTypeName(int $value): string
     {
         return self::getHelpdeskHardwareTypes()[$value] ?? NOT_AVAILABLE;
     }
@@ -3382,7 +3382,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     /**
      * @return array
      */
-    public static function getHelpdeskItemtypes()
+    public static function getHelpdeskItemtypes(): array
     {
         global $CFG_GLPI;
 
@@ -3403,7 +3403,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @return array
      * @used-by templates/pages/admin/profile/management.html.twig
      */
-    public function getDomainRecordTypes()
+    public function getDomainRecordTypes(): array
     {
         global $DB;
 
@@ -3428,7 +3428,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return int|string
      */
-    public static function dropdownHelpdeskItemtypes($options)
+    public static function dropdownHelpdeskItemtypes(array $options): int|string
     {
         $p['name']    = 'helpdesk_item_type';
         $p['values']  = [];
@@ -3459,7 +3459,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return bool
      */
-    public static function haveUserRight($user_id, $rightname, $rightvalue, $entity_id)
+    public static function haveUserRight(int $user_id, string $rightname, int $rightvalue, int $entity_id): bool
     {
         global $DB;
 
@@ -3508,7 +3508,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return array
      **/
-    public static function getRightsFor($itemtype, $interface = 'central')
+    public static function getRightsFor($itemtype, string $interface = 'central'): array
     {
         if (class_exists($itemtype) && $item = getItemForItemtype($itemtype)) {
             return $item->getRights($interface);
@@ -3535,7 +3535,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @return int random value used to generate the ids
      **/
-    public function displayRightsChoiceMatrix(array $rights, array $options = [])
+    public function displayRightsChoiceMatrix(array $rights, array $options = []): int
     {
         $param = [
             'title' => '',
@@ -3683,7 +3683,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @used-by templates/pages/admin/profile/assistance.html.twig
      * @used-by templates/pages/admin/profile/assistance_simple.html.twig
      **/
-    public static function getLinearRightChoice(array $elements, array $options = [])
+    public static function getLinearRightChoice(array $elements, array $options = []): string|void
     {
 
         $param = [

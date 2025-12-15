@@ -135,7 +135,7 @@ class Report extends CommonGLPI
      *
      * @return void
      */
-    public static function title()
+    public static function title(): void
     {
         $twig_params = [
             'title' => __('Select the report you want to generate'),
@@ -1904,7 +1904,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
         return [ READ => __('Read')];
     }
@@ -1912,7 +1912,7 @@ TWIG, $twig_params);
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-report";
     }

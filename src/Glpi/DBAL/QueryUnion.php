@@ -56,7 +56,7 @@ class QueryUnion extends AbstractQuery
      * @param string $alias Union ALIAS. Defaults to null.
      * @see addQuery
      */
-    public function __construct(array $queries = [], private $distinct = false, $alias = null)
+    public function __construct(array $queries = [], private $distinct = false, ?string $alias = null)
     {
         parent::__construct($alias);
 
@@ -73,7 +73,7 @@ class QueryUnion extends AbstractQuery
      *
      * @return void
      */
-    public function addQuery($query)
+    public function addQuery(QuerySubQuery|array $query): void
     {
         if (!$query instanceof QuerySubQuery) {
             $query = new QuerySubQuery($query);
@@ -87,7 +87,7 @@ class QueryUnion extends AbstractQuery
      *
      * @return array
      */
-    public function getQueries()
+    public function getQueries(): array
     {
         return $this->queries;
     }
@@ -98,7 +98,7 @@ class QueryUnion extends AbstractQuery
      *
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         $union_queries = $this->getQueries();
         if (

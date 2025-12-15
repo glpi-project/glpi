@@ -71,7 +71,7 @@ namespace tests\units {
          * @return string a randomized plugin directory name composed only of lowercase letters
          * @throws RandomException
          */
-        private function getRandomPluginName()
+        private function getRandomPluginName(): string
         {
             $name = '';
             for ($i = 0; $i < 15; $i++) {
@@ -87,7 +87,7 @@ namespace tests\units {
          *
          * @return string
          */
-        private function getTestPluginPath($directory)
+        private function getTestPluginPath(string $directory): string
         {
             return vfsStream::url('glpi/plugins/' . $directory);
         }
@@ -1004,7 +1004,7 @@ PHP
          *
          * @return void
          */
-        private function doTestCheckPluginState($initial_data, $setup_informations, $expected_data, $expected_warning = null, $plugin_directory = null)
+        private function doTestCheckPluginState(?array $initial_data, ?array $setup_informations, ?array $expected_data, ?string $expected_warning = null, $plugin_directory = null): void
         {
             $plugin_directory ??= $this->test_plugin_directory;
             $test_plugin_path = $this->getTestPluginPath($plugin_directory);
@@ -1065,7 +1065,7 @@ PHP
          *
          * @return void
          */
-        private function createTestPluginFiles($withsetup = true, array $informations = [], $directory = null)
+        private function createTestPluginFiles(bool $withsetup = true, array $informations = [], ?string $directory = null): void
         {
             $directory ??= $this->test_plugin_directory;
             $plugin_path = $this->getTestPluginPath($directory);

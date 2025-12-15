@@ -345,7 +345,7 @@ trait PlanningEvent
      *
      * @return bool
      */
-    public function addInstanceException(int $id = 0, string $day = "")
+    public function addInstanceException(int $id = 0, string $day = ""): bool
     {
         $this->getFromDB($id);
         $rrule = json_decode($this->fields['rrule'], true) ?? [];
@@ -371,7 +371,7 @@ trait PlanningEvent
      *
      * @return object the new object
      */
-    public function createInstanceClone(int $id = 0, string $start = "")
+    public function createInstanceClone(int $id = 0, string $start = ""): object
     {
         $this->getFromDB($id);
         $fields = $this->fields;
@@ -689,7 +689,7 @@ trait PlanningEvent
      *
      * @return string
      */
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
+    public static function displayPlanningItem(array $val, int $who, string $type = "", bool $complete = false): string
     {
         global $CFG_GLPI;
 
@@ -914,7 +914,7 @@ trait PlanningEvent
      *
      * @return string
      **/
-    public function getAlreadyPlannedInformation(array $val)
+    public function getAlreadyPlannedInformation(array $val): string
     {
         $itemtype = $this->getType();
         if ($item = getItemForItemtype($itemtype)) {
@@ -947,7 +947,7 @@ trait PlanningEvent
      *
      * @return RSet
      */
-    public static function getRsetFromRRuleField(array $rrule, $dtstart): RSet
+    public static function getRsetFromRRuleField(array $rrule, string $dtstart): RSet
     {
         $dtstart_datetime  = new DateTime($dtstart);
         $rrule['dtstart']  = $dtstart_datetime->format('Y-m-d\TH:i:s\Z');

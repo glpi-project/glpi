@@ -110,7 +110,7 @@ class Principal extends AbstractBackend
      *
      * @return void
      */
-    public function updatePrincipal($path, PropPatch $propPatch)
+    public function updatePrincipal(string $path, PropPatch $propPatch): void
     {
         throw new NotImplemented('Principal update is not implemented');
     }
@@ -244,7 +244,7 @@ class Principal extends AbstractBackend
      *
      * @return void
      */
-    public function setGroupMemberSet($path, array $members)
+    public function setGroupMemberSet(string $path, array $members): void
     {
         throw new NotImplemented('Group member set update is not implemented');
     }
@@ -256,7 +256,7 @@ class Principal extends AbstractBackend
      *
      * @return null|array
      */
-    private function getPrincipalFromItem(CommonDBTM $item)
+    private function getPrincipalFromItem(CommonDBTM $item): ?array
     {
 
         $principal = null;
@@ -280,7 +280,7 @@ class Principal extends AbstractBackend
      *
      * @return array
      */
-    private function getPrincipalFromUserFields(array $user_fields)
+    private function getPrincipalFromUserFields(array $user_fields): array
     {
         return [
             'id'                    => $user_fields['id'],
@@ -304,7 +304,7 @@ class Principal extends AbstractBackend
      *
      * @return array
      */
-    private function getPrincipalFromGroupFields(array $group_fields)
+    private function getPrincipalFromGroupFields(array $group_fields): array
     {
         return [
             'id'                    => $group_fields['id'],

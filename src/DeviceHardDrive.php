@@ -148,7 +148,7 @@ class DeviceHardDrive extends CommonDevice
      *
      * @return array
      **/
-    public function prepareInputForAddOrUpdate($input)
+    public function prepareInputForAddOrUpdate(array $input): array
     {
         foreach (['capacity_default'] as $field) {
             if (isset($input[$field]) && !is_numeric($input[$field])) {
@@ -248,7 +248,7 @@ class DeviceHardDrive extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, array $main_joinparams): array
     {
         $tab = [];
 

@@ -514,7 +514,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    public function getOsForKey($val)
+    public function getOsForKey(stdClass $val): string
     {
         if ($val->operatingsystems_id > 0) {
             return $val->operatingsystems_id;
@@ -531,7 +531,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    protected function getSoftwareKey($name, $manufacturers_id): string
+    protected function getSoftwareKey(string $name, int $manufacturers_id): string
     {
         return $this->getNormalizedComparisonKey([
             'name'             => $name,
@@ -547,7 +547,7 @@ class Software extends InventoryAsset
      *
      * @return string
      */
-    protected function getVersionKey($val, $softwares_id): string
+    protected function getVersionKey(stdClass $val, int $softwares_id): string
     {
         return $this->getNormalizedComparisonKey([
             'version'      => strtolower($val->version),
@@ -617,7 +617,7 @@ class Software extends InventoryAsset
      *
      * @return  void
      */
-    private function populateSoftware()
+    private function populateSoftware(): void
     {
         global $DB;
 
@@ -676,7 +676,7 @@ class Software extends InventoryAsset
      *
      * @return  void
      */
-    private function populateVersions()
+    private function populateVersions(): void
     {
         global $DB;
 
@@ -754,7 +754,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeSoftware()
+    private function storeSoftware(): void
     {
         global $DB;
 
@@ -812,7 +812,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeVersions()
+    private function storeVersions(): void
     {
         global $DB;
 
@@ -882,7 +882,7 @@ class Software extends InventoryAsset
      *
      * @return array
      */
-    private function cleanInputToPrepare(array $input, array $known_fields)
+    private function cleanInputToPrepare(array $input, array $known_fields): array
     {
         foreach (array_keys($input) as $column) {
             if (!isset($known_fields[$column])) {
@@ -903,7 +903,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeAssetLink()
+    private function storeAssetLink(): void
     {
         global $DB;
 
@@ -992,7 +992,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    public function logSoftwares()
+    public function logSoftwares(): void
     {
         foreach ($this->added_versions as $software_data) {
             Log::history(

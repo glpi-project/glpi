@@ -86,7 +86,7 @@ class Dashboard extends CommonDBTM
      *
      * @return false|int Id of the loaded dashboard, or false on failure
      */
-    public function load(bool $force = false)
+    public function load(bool $force = false): bool|int
     {
         Profiler::getInstance()->start(__METHOD__);
         $loaded = true;
@@ -294,7 +294,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function save(bool $skip_child = false)
+    public function save(bool $skip_child = false): void
     {
         global $DB, $GLPI_CACHE;
 
@@ -349,7 +349,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function saveItems(array $items = [])
+    public function saveItems(array $items = []): void
     {
         $this->load();
         $this->items   = $items;
@@ -368,7 +368,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function saveTitle(string $title = "")
+    public function saveTitle(string $title = ""): void
     {
         if (!strlen($title)) {
             return;
@@ -391,7 +391,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function saveRights(array $rights = [])
+    public function saveRights(array $rights = []): void
     {
         $this->load();
         $this->rights = $rights;
@@ -607,7 +607,7 @@ class Dashboard extends CommonDBTM
      *
      * @return bool
      */
-    public static function importFromJson($import = null)
+    public static function importFromJson(string|array|null $import = null): bool
     {
         if (!is_array($import)) {
             if (!Toolbox::isJSON($import)) {
@@ -634,7 +634,7 @@ class Dashboard extends CommonDBTM
      *
      * @return bool
      */
-    public function setPrivate($is_private)
+    public function setPrivate(bool $is_private): bool
     {
         $this->load();
 
@@ -648,7 +648,7 @@ class Dashboard extends CommonDBTM
     /**
      * @return string (int as string... should be a boolean.)
      */
-    public function getPrivate()
+    public function getPrivate(): string
     {
         $this->load();
         if (!isset($this->fields['users_id'])) {

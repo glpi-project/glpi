@@ -42,7 +42,7 @@ use function Safe\preg_match;
  *
  * @return bool
  */
-function isCommandLine()
+function isCommandLine(): bool
 {
     return (PHP_SAPI == 'cli');
 }
@@ -52,7 +52,7 @@ function isCommandLine()
  *
  * @return bool
  */
-function isAPI()
+function isAPI(): bool
 {
     $script = $_SERVER['REQUEST_URI'] ?? '';
     if (str_contains($script, 'api.php')) {
@@ -72,7 +72,7 @@ function isAPI()
  *
  * @return bool|array False or an array containing plugin name and class name
  */
-function isPluginItemType($classname)
+function isPluginItemType(string $classname): bool|array
 {
     $matches = [];
     if (preg_match("/^Plugin([A-Z][a-z0-9]+)([A-Z]\w+)$/", $classname, $matches)) {

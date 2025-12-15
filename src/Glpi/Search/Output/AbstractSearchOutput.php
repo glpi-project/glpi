@@ -65,7 +65,7 @@ abstract class AbstractSearchOutput
      *
      * @return void|false
      **/
-    abstract public function displayData(array $data, array $params = []);
+    abstract public function displayData(array $data, array $params = []): void|bool;
 
     public function canDisplayResultsContainerWithoutExecutingSearch(): bool
     {

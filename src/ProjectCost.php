@@ -212,7 +212,7 @@ class ProjectCost extends CommonDBChild
      * @param int $projects_id ID of the project
      * @return array
      **/
-    public function getLastCostForProject($projects_id)
+    public function getLastCostForProject(int $projects_id): array
     {
         global $DB;
 
@@ -235,7 +235,7 @@ class ProjectCost extends CommonDBChild
      * @param int $ID ID of the item
      * @param array $options options used
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -293,7 +293,7 @@ class ProjectCost extends CommonDBChild
      *
      * @return bool
      **/
-    public static function showForProject(Project $project, $withtemplate = 0): bool
+    public static function showForProject(Project $project, int $withtemplate = 0): bool
     {
         global $CFG_GLPI, $DB;
 

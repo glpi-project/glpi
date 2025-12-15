@@ -62,7 +62,7 @@ final class DbUtils
      *      field name used for a foreign key to the parameter table,
      *      or an empty string if the table name does match the GLPI table name pattern
      */
-    public function getForeignKeyFieldForTable($table)
+    public function getForeignKeyFieldForTable(string $table)
     {
         if (!str_starts_with($table, 'glpi_')) {
             return "";
@@ -78,7 +78,7 @@ final class DbUtils
      *
      * @return bool
      */
-    public function isForeignKeyField($field)
+    public function isForeignKeyField(string $field): bool
     {
         //check empty, then strpos, then regexp; for performances
         return !empty($field) && str_contains(substr($field, 1), '_id') && preg_match("/._id(_.+)?$/", $field);
@@ -94,7 +94,7 @@ final class DbUtils
      *      table name corresponding to a foreign key name
      *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
      */
-    public function getTableNameForForeignKeyField($fkname)
+    public function getTableNameForForeignKeyField(string $fkname)
     {
         if (!$this->isForeignKeyField($fkname)) {
             return '';
@@ -115,7 +115,7 @@ final class DbUtils
      *
      * @return string plural of the parameter string
      */
-    public function getPlural($string)
+    public function getPlural(string $string): string
     {
         $rules = [
             //'singular'         => 'plural'
@@ -158,7 +158,7 @@ final class DbUtils
      *
      * @return string singular of the parameter string
      */
-    public function getSingular($string)
+    public function getSingular(string $string): string
     {
 
         $rules = [
@@ -200,7 +200,7 @@ final class DbUtils
      *
      * @return string table name corresponding to the itemtype parameter
      */
-    public function getTableForItemType($itemtype)
+    public function getTableForItemType($itemtype): string
     {
         global $CFG_GLPI;
 
@@ -279,7 +279,7 @@ final class DbUtils
      *      itemtype corresponding to a table name parameter,
      *      or null if no valid itemtype is attached to the table
      */
-    public function getItemTypeForTable($table)
+    public function getItemTypeForTable(string $table)
     {
         global $CFG_GLPI;
 
@@ -396,7 +396,7 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
+    public function fixItemtypeCase(string $itemtype, string $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES): string
     {
         global $GLPI_CACHE;
 
@@ -581,7 +581,7 @@ final class DbUtils
      *
      * @return int Number of elements in table
      */
-    public function countElementsInTable($table, $condition = [])
+    public function countElementsInTable(string|array $table, string|array $condition = []): int
     {
         global $DB;
 
@@ -617,7 +617,7 @@ final class DbUtils
      *
      * @return int nb of elements in table
      */
-    public function countDistinctElementsInTable($table, $field, $condition = [])
+    public function countDistinctElementsInTable(string|array $table, string $field, string|array $condition = []): int
     {
 
         if (!is_array($condition)) {
@@ -643,7 +643,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function countElementsInTableForMyEntities($table, $condition = [])
+    public function countElementsInTableForMyEntities(string|array $table, string|array $condition = []): int
     {
 
         /// TODO clean it / maybe include when review of SQL requests
@@ -665,7 +665,7 @@ final class DbUtils
      *
      * @return int number of elements in table
      */
-    public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
+    public function countElementsInTableForEntity(string|array $table, int $entity, string|array $condition = [], bool $recursive = true): int
     {
 
         /// TODO clean it / maybe include when review of SQL requests
@@ -691,7 +691,7 @@ final class DbUtils
      *
      * @return array containing all the data
      */
-    public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
+    public function getAllDataFromTable(string $table, string|array $criteria = [], bool $usecache = false, string $order = ''): array
     {
         global $DB;
 
@@ -735,7 +735,7 @@ final class DbUtils
      *
      * @return bool
      */
-    public function isIndex($table, $field)
+    public function isIndex(string $table, string $field): bool
     {
         global $DB;
 
@@ -764,7 +764,7 @@ final class DbUtils
      *
      * @return bool
      */
-    public function isForeignKeyContraint($table, $keyname)
+    public function isForeignKeyContraint(string $table, string $keyname): bool
     {
         global $DB;
 
@@ -799,13 +799,13 @@ final class DbUtils
      * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
      */
     public function getEntitiesRestrictRequest(
-        $separator = "AND",
-        $table = "",
-        $field = "",
+        string $separator = "AND",
+        string $table = "",
+        string $field = "",
         $value = '',
-        $is_recursive = false,
-        $complete_request = false
-    ) {
+        bool $is_recursive = false,
+        bool $complete_request = false
+    ): string {
         global $DB;
 
         $query = $separator . " ( ";
@@ -903,12 +903,12 @@ final class DbUtils
      * @return array<mixed, mixed>
      */
     public function getEntitiesRestrictCriteria(
-        $table = '',
-        $field = '',
+        string $table = '',
+        string $field = '',
         $value = '',
         $is_recursive = false,
-        $complete_request = false
-    ) {
+        bool $complete_request = false
+    ): array {
 
         // !='0' needed because consider as empty
         if (
@@ -990,7 +990,7 @@ final class DbUtils
      *
      * @return int[] IDs of the sons
      */
-    public function getSonsOf($table, $IDf)
+    public function getSonsOf(string $table, int $IDf): array
     {
         global $DB, $GLPI_CACHE;
 
@@ -1100,7 +1100,7 @@ final class DbUtils
      *
      * @TODO Cache and only array values, keys are useless.
      */
-    public function getAncestorsOf($table, $items_id)
+    public function getAncestorsOf(string $table, int|array $items_id): array
     {
         global $DB, $GLPI_CACHE;
 
@@ -1282,7 +1282,7 @@ final class DbUtils
      *
      * @return int[] IDs of the sons and the ancestors
      */
-    public function getSonsAndAncestorsOf($table, $IDf)
+    public function getSonsAndAncestorsOf(string $table, int $IDf): array
     {
         return $this->getAncestorsOf($table, $IDf) + $this->getSonsOf($table, $IDf);
     }
@@ -1302,7 +1302,7 @@ final class DbUtils
      * @TODO Deprecate the `$withcomment` parameter, it is never used.
      * @TODO Deprecate the `$translate` parameter, it is never used.
      */
-    public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
+    public function getTreeLeafValueName(string $table, int $ID, bool $withcomment = false, bool $translate = true)
     {
         global $DB;
 
@@ -1406,7 +1406,7 @@ final class DbUtils
      *
      * @since 11.0.0 Usage of the `$withcomment` parameter is deprecated.
      */
-    public function getTreeValueCompleteName($table, $ID, $withcomment = false, $translate = true, $tooltip = true, string $default = '&nbsp;')
+    public function getTreeValueCompleteName(string $table, int $ID, bool $withcomment = false, bool $translate = true, bool $tooltip = true, string $default = '&nbsp;')
     {
         if ($withcomment) {
             Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
@@ -1513,7 +1513,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
+    public function getTreeValueName(string $table, int $ID, string $wholename = "", int $level = 0): array
     {
         global $DB;
 
@@ -1553,7 +1553,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function getTreeForItem($table, $IDf)
+    public function getTreeForItem(string $table, int $IDf): array
     {
         global $DB;
 
@@ -1617,7 +1617,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function constructTreeFromList($list, $root)
+    public function constructTreeFromList(array $list, int $root): array
     {
 
         $tree = [];
@@ -1641,7 +1641,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function constructListFromTree($tree, $parent = 0)
+    public function constructListFromTree(array $tree, int $parent = 0): array
     {
         $list = [];
         foreach ($tree as $root => $data) {
@@ -1677,7 +1677,7 @@ final class DbUtils
      * @since 11.0 `$link` parameter is deprecated
      * @since 11.0 `$cut` parameter is ignored
      */
-    public function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
+    public function formatUserName(int $ID, ?string $login, ?string $realname, ?string $firstname, int $link = 0, int $cut = 0, bool $force_config = false): string
     {
         if ((bool) $cut) {
             trigger_error('`$cut` parameter is now ignored.', E_USER_WARNING);
@@ -1772,7 +1772,7 @@ final class DbUtils
      *
      * @since 11.0 `$link` parameter is deprecated.
      */
-    public function getUserName($ID, $link = 0, $disable_anon = false)
+    public function getUserName(int $ID, int $link = 0, bool $disable_anon = false)
     {
         $username   = "";
         $user       = new User();
@@ -1846,7 +1846,7 @@ final class DbUtils
      *
      * @return string new auto string
      */
-    public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
+    public function autoName(string $objectName, string $field, bool $isTemplate, string $itemtype, int $entities_id = -1): string
     {
         global $CFG_GLPI, $DB;
 
@@ -2007,7 +2007,7 @@ final class DbUtils
      *
      * @return array
      */
-    public function getDateCriteria($field, $begin, $end)
+    public function getDateCriteria(string $field, string $begin, string $end): array
     {
         global $DB;
 
@@ -2044,7 +2044,7 @@ final class DbUtils
      *
      * @return string containing encoded array
      */
-    public function exportArrayToDB($array)
+    public function exportArrayToDB($array): string
     {
         return json_encode($array);
     }
@@ -2056,7 +2056,7 @@ final class DbUtils
      *
      * @return array containing datas
      */
-    public function importArrayFromDB($data)
+    public function importArrayFromDB(string $data): array
     {
         if ($data === null) {
             return [];
@@ -2090,7 +2090,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function getHourFromSql($time)
+    public function getHourFromSql(string $time): string
     {
         $t = explode(" ", $time);
         $p = explode(":", $t[1]);
@@ -2103,7 +2103,7 @@ final class DbUtils
      *
      * @return array<string, array<string, string|list<string|array{0: string, 1: string}>>>
      */
-    public function getDbRelations()
+    public function getDbRelations(): array
     {
         $RELATION = []; // Redefined inside /inc/relation.constant.php
 
@@ -2299,7 +2299,7 @@ final class DbUtils
      *      Itemtype class for the fkname parameter,
      *      or null if no valid itemtype is attached to the foreign key field
      */
-    public function getItemtypeForForeignKeyField($fkname)
+    public function getItemtypeForForeignKeyField(string $fkname)
     {
         $table = $this->getTableNameForForeignKeyField($fkname);
         return $this->getItemTypeForTable($table);

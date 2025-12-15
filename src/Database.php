@@ -249,7 +249,7 @@ class Database extends CommonDBChild
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
         $name = self::getTypeName(Session::getPluralNumber());
@@ -385,7 +385,7 @@ class Database extends CommonDBChild
      *
      * @return void|bool
      **/
-    public static function showForInstance(DatabaseInstance $instance)
+    public static function showForInstance(DatabaseInstance $instance): void|bool
     {
 
         $ID = $instance->getID();

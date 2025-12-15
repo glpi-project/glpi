@@ -161,7 +161,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      *
      * @return string|false
      */
-    public function getManufacturer($vendorid): false|string
+    public function getManufacturer(string $vendorid): false|string
     {
         $usbids = self::getList();
 
@@ -185,7 +185,7 @@ class USBVendor extends CommonDropdown implements CacheableListInterface
      *
      * @return string|false
      */
-    public function getProductName($vendorid, $deviceid): false|string
+    public function getProductName(string $vendorid, string $deviceid): false|string
     {
         $usbids = self::getList();
 

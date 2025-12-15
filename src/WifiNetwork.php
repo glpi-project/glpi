@@ -52,7 +52,7 @@ class WifiNetwork extends CommonDropdown
     /**
      * @return array<string,string>
      */
-    public static function getWifiCardVersion()
+    public static function getWifiCardVersion(): array
     {
         return [
             ''          => '',
@@ -73,7 +73,7 @@ class WifiNetwork extends CommonDropdown
     /**
      * @return array<string,string>
      */
-    public static function getWifiCardModes()
+    public static function getWifiCardModes(): array
     {
 
         return [
@@ -92,7 +92,7 @@ class WifiNetwork extends CommonDropdown
     /**
      * @return array<string,string>
      */
-    public static function getWifiNetworkModes()
+    public static function getWifiNetworkModes(): array
     {
 
         return [''               => Dropdown::EMPTY_VALUE,

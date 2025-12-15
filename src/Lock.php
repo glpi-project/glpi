@@ -68,7 +68,7 @@ class Lock extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-lock";
     }
@@ -80,7 +80,7 @@ class Lock extends CommonGLPI
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item)
+    public static function showForItem(CommonDBTM $item): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1122,7 +1122,7 @@ TWIG);
      *     <li>'type' refers to the class of the item to look for locked fields.</li>
      * </ul>
      **/
-    private static function getLocksQueryInfosByItemType($itemtype, $baseitemtype)
+    private static function getLocksQueryInfosByItemType($itemtype, $baseitemtype): array
     {
         $criteria = [];
         $field     = '';
@@ -1296,9 +1296,9 @@ TWIG);
     public static function getMassiveActionsForItemtype(
         array &$actions,
         $itemtype,
-        $is_deleted = false,
+        bool $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         global $CFG_GLPI;
 
         if (!is_subclass_of($itemtype, CommonDBTM::class)) {
@@ -1322,7 +1322,7 @@ TWIG);
      *
      * @return bool
      */
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         switch ($ma->getAction()) {
             case 'unlock_component':
@@ -1385,7 +1385,7 @@ TWIG);
         MassiveAction $ma,
         CommonDBTM $baseitem,
         array $ids
-    ) {
+    ): void {
         global $DB;
 
         switch ($ma->getAction()) {

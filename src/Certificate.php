@@ -393,7 +393,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd(?string $itemtype = null): array
     {
         $tab = [];
         $name = static::getTypeName(Session::getPluralNumber());
@@ -541,7 +541,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
 
@@ -620,7 +620,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         $certif_item = new Certificate_Item();
 
@@ -686,7 +686,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return array of types
      **/
-    public static function getTypes($all = false)
+    public static function getTypes(bool $all = false): array
     {
         global $CFG_GLPI;
 
@@ -710,7 +710,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Send alarms on expired certificate')];
     }
@@ -722,7 +722,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return int 0 : nothing to do 1 : done with success
      */
-    public static function cronCertificate($task = null)
+    public static function cronCertificate(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 

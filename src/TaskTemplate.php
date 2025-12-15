@@ -349,7 +349,7 @@ class TaskTemplate extends AbstractITILChildTemplate
      *
      * @return false|string
      */
-    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val)
+    public static function addWhere(string $link, int $nott, $itemtype, int $ID, string $searchtype, int|string $val): bool|string
     {
         if ($itemtype !== self::class) {
             return false;

@@ -48,7 +48,7 @@ trait AssetImage
      * @param  array $input the form input
      * @return array        the altered input
      */
-    public function managePictures($input)
+    public function managePictures(array $input): array
     {
         foreach (['picture_front', 'picture_rear', 'picture'] as $name) {
             if (

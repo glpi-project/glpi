@@ -50,7 +50,7 @@ class NetworkPortAlias extends NetworkPortInstantiation
      *
      * @return array
      */
-    public function prepareInput($input)
+    public function prepareInput(array $input): array
     {
         // Try to get mac address from the instantiation ...
         if (

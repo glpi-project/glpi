@@ -61,6 +61,8 @@ return (new PhpCsFixer\Config())
         'new_expression_parentheses' => false, // breaks compatibility with PHP < 8.4
         'phpdoc_scalar' => true, // Normalize scalar types identifiers in PHPDoc
         'phpdoc_types' => true, // Fixes types case in PHPDoc
+        'phpdoc_to_param_type' => true,
+        'phpdoc_to_return_type' => true
     ])
     ->setFinder($finder)
 ;

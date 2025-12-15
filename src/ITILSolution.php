@@ -150,7 +150,7 @@ class ITILSolution extends CommonDBChild
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($this->isNewItem()) {
             $this->getEmpty();
@@ -173,7 +173,7 @@ class ITILSolution extends CommonDBChild
      *
      * @return int
      */
-    public static function countFor($itemtype, $items_id)
+    public static function countFor(string $itemtype, int $items_id): int
     {
         return countElementsInTable(
             self::getTable(),
@@ -435,7 +435,7 @@ class ITILSolution extends CommonDBChild
      *
      * @return string[]
      */
-    public static function getStatuses()
+    public static function getStatuses(): array
     {
         return [
             CommonITILValidation::WAITING  => __('Waiting for approval'),

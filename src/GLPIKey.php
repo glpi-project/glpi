@@ -128,7 +128,7 @@ class GLPIKey
      *
      * @return bool
      */
-    public function keyExists()
+    public function keyExists(): bool
     {
         return file_exists($this->keyfile);
     }
@@ -383,7 +383,7 @@ class GLPIKey
      *
      * @return bool
      */
-    protected function migrateConfigsInDb($sodium_key): bool
+    protected function migrateConfigsInDb(?string $sodium_key): bool
     {
         global $DB;
 

@@ -94,7 +94,7 @@ class Item extends CommonDBChild
      *
      * @return void
      */
-    public static function addForDashboard(int $dashboards_id = 0, array $items = [])
+    public static function addForDashboard(int $dashboards_id = 0, array $items = []): void
     {
         global $DB;
 

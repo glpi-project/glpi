@@ -216,7 +216,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function isAlreadyInstalled($directory)
+    private function isAlreadyInstalled(string $directory): bool
     {
 
         $plugin = new Plugin();
@@ -238,7 +238,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunInstallMethod($directory, $allow_reinstall)
+    private function canRunInstallMethod(string $directory, bool $allow_reinstall): bool
     {
 
         $plugin = new Plugin();
@@ -298,7 +298,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @return array
      */
-    private function getAdditionnalParameters(InputInterface $input)
+    private function getAdditionnalParameters(InputInterface $input): array
     {
 
         $input_params = $input->getOption('param');

@@ -143,7 +143,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return void
      */
-    protected function logOut()
+    protected function logOut(): void
     {
         Session::destroy();
         Session::start();
@@ -157,7 +157,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return void
      */
-    protected function setEntity($entityname, $subtree)
+    protected function setEntity(int|string $entityname, bool $subtree): void
     {
         $entity_id = is_int($entityname) ? $entityname : getItemByTypeName('Entity', $entityname, true);
         $res = Session::changeActiveEntities($entity_id, $subtree);
@@ -173,7 +173,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return void
      */
-    protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
+    protected function checkInput(CommonDBTM $object, int $id = 0, array $input = []): void
     {
         $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int) $id);
         $this->assertTrue($object->getFromDB($id));
@@ -213,7 +213,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return array<int, class-string>
      */
-    protected static function getClasses($function = false, array $excludes = [])
+    protected static function getClasses(string|bool $function = false, array $excludes = []): array
     {
         $files_iterator = new RecursiveIteratorIterator(
             new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
@@ -270,7 +270,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return T
      */
-    protected function createItem($itemtype, $input, $skip_fields = []): CommonDBTM
+    protected function createItem($itemtype, array $input, array $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $item->add($input);
@@ -298,7 +298,7 @@ class DbTestCase extends GLPITestCase
      * @param array $skip_fields Fields that wont be checked after creation
      * @return T The updated item
      */
-    protected function updateItem($itemtype, $id, $input, $skip_fields = []): CommonDBTM
+    protected function updateItem($itemtype, $id, array $input, array $skip_fields = []): CommonDBTM
     {
         $item = new $itemtype();
         $input['id'] = $id;
@@ -323,7 +323,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return array created items
      */
-    protected function createItems($itemtype, $inputs): array
+    protected function createItems(string $itemtype, array $inputs): array
     {
         $items = [];
         foreach ($inputs as $input) {
@@ -342,7 +342,7 @@ class DbTestCase extends GLPITestCase
      *
      * @return void
      */
-    protected function deleteItem($itemtype, $id, bool $purge = false): void
+    protected function deleteItem(string $itemtype, int $id, bool $purge = false): void
     {
         /** @var CommonDBTM $item */
         $item = new $itemtype();
@@ -679,7 +679,7 @@ class DbTestCase extends GLPITestCase
      * @param array $expected The expected array
      * @param array $actual The actual array to compare against
      */
-    protected function assertArraysEqualRecursive($expected, $actual): void
+    protected function assertArraysEqualRecursive(array $expected, array $actual): void
     {
         $this->assertEquals(count($expected), count($actual), 'Arrays must have the same number of elements');
 

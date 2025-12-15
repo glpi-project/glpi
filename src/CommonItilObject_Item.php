@@ -188,7 +188,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return void|false
      */
-    protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = [])
+    protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = []): void|bool
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;
@@ -334,7 +334,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return string
      **/
-    public static function showItemToAdd($object_id, $itemtype, $items_id, $options)
+    public static function showItemToAdd(int $object_id, $itemtype, int $items_id, array $options): string
     {
         $params = [
             'rand'      => mt_rand(),
@@ -377,7 +377,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @return bool|void
      **/
-    protected static function showForObject(CommonITILObject|CommonITILRecurrent $obj)
+    protected static function showForObject(CommonITILObject|CommonITILRecurrent $obj): bool|void
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;
@@ -569,7 +569,7 @@ TWIG, $twig_params);
      * @see Asset_PeripheralAsset
      * @see static::getLinkedItems()
      */
-    public static function countForItemAndLinked(CommonDBTM $item)
+    public static function countForItemAndLinked(CommonDBTM $item): int
     {
         // Direct links
         $nb = parent::countForItem($item);
@@ -665,7 +665,7 @@ TWIG, $twig_params);
      *
      * @return bool|void (display a table)
      */
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0, array $options = []): bool|void
     {
         global $DB;
 
@@ -785,7 +785,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
+    public static function dropdownMyDevices(int $userID = 0, int $entity_restrict = -1, string $itemtype = '', int $items_id = 0, array $options = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1259,7 +1259,7 @@ TWIG, $twig_params);
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         global $DB;
 
@@ -1322,7 +1322,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function getUsedItems($items_id)
+    public static function getUsedItems(int $items_id): array
     {
 
         $data = getAllDataFromTable(static::getTable(), [static::$items_id_1 => $items_id]);
@@ -1343,7 +1343,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function showFormMassiveAction($ma)
+    public static function showFormMassiveAction(MassiveAction $ma): void
     {
         global $CFG_GLPI;
 
@@ -1634,14 +1634,14 @@ TWIG, $twig_params);
      * @return int
      */
     public static function dropdownAllDevices(
-        $myname,
-        $itemtype,
-        $items_id = 0,
-        $admin = 0,
-        $users_id = 0,
-        $entity_restrict = -1,
-        $options = []
-    ) {
+        string $myname,
+        string $itemtype,
+        int $items_id = 0,
+        int $admin = 0,
+        int $users_id = 0,
+        int $entity_restrict = -1,
+        array $options = []
+    ): int {
         global $CFG_GLPI;
 
         $params = [static::$items_id_1 => 0,
@@ -1790,7 +1790,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, $options = [])
+    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, array $options = []): void
     {
         if (!(is_a($object, static::$itemtype_1))) {
             return;

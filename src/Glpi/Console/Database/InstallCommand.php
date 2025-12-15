@@ -267,7 +267,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             /**
              * @param mysqli $dbh
              */
-            public function __construct($dbh)
+            public function __construct(mysqli $dbh)
             {
                 $this->dbh = $dbh;
             }
@@ -366,7 +366,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
      *
      * @return bool
      */
-    private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output)
+    private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output): bool
     {
 
         $config_options = [

@@ -56,7 +56,7 @@ trait Inventoriable
     /**
      * @return bool
      */
-    public function pre_purgeInventory()
+    public function pre_purgeInventory(): bool
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {
@@ -110,7 +110,7 @@ trait Inventoriable
      *
      * @deprecated 12.0.0
      */
-    protected function showInventoryInfo()
+    protected function showInventoryInfo(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -192,7 +192,7 @@ HTML;
      *
      * @return void
      */
-    protected function displayAgentInformation()
+    protected function displayAgentInformation(): void
     {
         global $CFG_GLPI;
 

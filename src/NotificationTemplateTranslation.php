@@ -130,7 +130,7 @@ class NotificationTemplateTranslation extends CommonDBChild
      *
      * @return void
      */
-    public function showSummary(NotificationTemplate $template, $options = [])
+    public function showSummary(NotificationTemplate $template, array $options = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -193,7 +193,7 @@ TWIG, $twig_params);
      * @param array $input
      * @return array
      */
-    public static function cleanContentHtml(array $input)
+    public static function cleanContentHtml(array $input): array
     {
         // Get as text plain text
         $txt = RichText::getTextFromHtml($input['content_html'], true, false, false, true);
@@ -302,7 +302,7 @@ TWIG, $twig_params);
      * @param array<string> $language_id
      * @return array
      */
-    public static function getAllUsedLanguages($language_id)
+    public static function getAllUsedLanguages(array $language_id): array
     {
         global $DB;
 
@@ -326,7 +326,7 @@ TWIG, $twig_params);
      * @param class-string<CommonDBTM> $itemtype
      * @return void
      **/
-    public static function showAvailableTags($itemtype)
+    public static function showAvailableTags($itemtype): void
     {
         $target = NotificationTarget::getInstanceByType($itemtype);
         $target->getTags();

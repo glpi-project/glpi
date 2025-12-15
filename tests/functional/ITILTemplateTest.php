@@ -181,7 +181,7 @@ class ITILTemplateTest extends DbTestCase
      *
      * @return void
      */
-    private function checkField($itiltype, $field)
+    private function checkField(string $itiltype, string $field): void
     {
         global $DB;
 

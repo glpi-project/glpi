@@ -72,7 +72,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      *
      * @return void
      */
-    abstract public function showForParent(LevelAgreement $la);
+    abstract public function showForParent(LevelAgreement $la): void;
 
     public static function getConditionsArray()
     {
@@ -233,7 +233,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      *
      * @return array
      */
-    public static function getExecutionTimes($options = [])
+    public static function getExecutionTimes(array $options = []): array
     {
         $p = [
             'value'    => '',
@@ -312,7 +312,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function dropdownExecutionTime($name, $options = [])
+    public static function dropdownExecutionTime(string $name, array $options = []): int|string
     {
         $p = [
             'value'    => '',
@@ -343,7 +343,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      *
      * @return array of already used execution times
      **/
-    public static function getAlreadyUsedExecutionTime($las_id)
+    public static function getAlreadyUsedExecutionTime(int $las_id): array
     {
         global $DB;
 

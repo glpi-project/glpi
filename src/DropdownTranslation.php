@@ -176,7 +176,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return int the number of translations for this field
      **/
-    public static function getNumberOfTranslations($itemtype, $items_id, $field, $language): int
+    public static function getNumberOfTranslations(string $itemtype, int $items_id, string $field, string $language): int
     {
         return countElementsInTable(
             getTableForItemType(self::class),
@@ -196,7 +196,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return int the number of translations for this item
      **/
-    public static function getNumberOfTranslationsForItem($item)
+    public static function getNumberOfTranslationsForItem(CommonDBTM $item): int
     {
         return countElementsInTable(
             getTableForItemType(self::class),
@@ -216,7 +216,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return bool true if translation can be added/update, false otherwise
      **/
-    public function checkBeforeAddorUpdate($input, $add = true)
+    public function checkBeforeAddorUpdate(array $input, bool $add = true): bool
     {
         $number = self::getNumberOfTranslations(
             $input['itemtype'],
@@ -238,7 +238,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return void
      **/
-    public function generateCompletename($input, $add = true)
+    public function generateCompletename(array $input, bool $add = true): void
     {
         global $DB;
 
@@ -337,7 +337,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return void
      */
-    public static function showTranslations(CommonDropdown $item)
+    public static function showTranslations(CommonDropdown $item): void
     {
         global $DB;
 
@@ -439,7 +439,7 @@ TWIG, $twig_params);
      * @param int $ID       field (default -1)
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm(int $ID = -1, array $options = [])
     {
         if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {
             // parent is mandatory
@@ -476,7 +476,7 @@ TWIG, $twig_params);
      *
      * @return int the dropdown's random identifier
      **/
-    public static function dropdownFields(CommonDBTM $item, $language = '', $value = '')
+    public static function dropdownFields(CommonDBTM $item, string $language = '', string $value = ''): int
     {
         global $DB;
 
@@ -525,7 +525,7 @@ TWIG, $twig_params);
      *
      * @return string the translated value of the value in the default language
      **/
-    public static function getTranslatedValue($ID, $itemtype, $field = 'name', $language = '', $value = '')
+    public static function getTranslatedValue(int $ID, string $itemtype, string $field = 'name', string $language = '', string $value = ''): string
     {
         global $DB;
 
@@ -604,7 +604,7 @@ TWIG, $twig_params);
      *
      * @return int the row id or 0 if not translation found
      **/
-    public static function getTranslationID($ID, $itemtype, $field, $language)
+    public static function getTranslationID(int $ID, string $itemtype, string $field, string $language): int
     {
         global $DB;
 
@@ -631,7 +631,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public static function getTranslationsForAnItem($itemtype, $items_id, $field)
+    public static function getTranslationsForAnItem(string $itemtype, int $items_id, string $field): array
     {
         global $DB;
 
@@ -659,7 +659,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id)
+    public static function regenerateAllCompletenameTranslationsFor(string $itemtype, int $items_id): void
     {
         foreach (self::getTranslationsForAnItem($itemtype, $items_id, 'completename') as $data) {
             $dt = new DropdownTranslation();
@@ -674,7 +674,7 @@ TWIG, $twig_params);
      *
      * @return bool true if there's at least one translation, otherwise false
      **/
-    public static function hasItemtypeATranslation($itemtype)
+    public static function hasItemtypeATranslation(string $itemtype): bool
     {
         return countElementsInTable(self::getTable(), ['itemtype' => $itemtype ]) > 0;
     }
@@ -686,7 +686,7 @@ TWIG, $twig_params);
      *
      * @return array Array of table / field translated items
      **/
-    public static function getAvailableTranslations($language)
+    public static function getAvailableTranslations(string $language): array
     {
         global $DB;
 

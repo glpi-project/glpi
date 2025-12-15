@@ -171,7 +171,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      * @param array $input
      * @return bool
      **/
-    public static function somethingHasChanged(array $res_rule, array $input)
+    public static function somethingHasChanged(array $res_rule, array $input): bool
     {
 
         if (
@@ -192,7 +192,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      *
      * @return void
      **/
-    public function replayDictionnaryOnPrintersByID(array $IDs, $res_rule = [])
+    public function replayDictionnaryOnPrintersByID(array $IDs, array $res_rule = []): void
     {
         global $DB;
 
@@ -236,7 +236,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      *
      * @return void
      */
-    public function putOldPrintersInTrash($IDS = [])
+    public function putOldPrintersInTrash(array $IDS = []): void
     {
         $printer = new Printer();
         foreach ($IDS as $id) {
@@ -259,7 +259,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         array $res_rule,
         array $params,
         array &$printers_ids
-    ) {
+    ): void {
         $p['id']           = 0;
         $p['name']         = '';
         $p['manufacturer'] = '';
@@ -336,7 +336,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
      *
      * @return void
      **/
-    public function moveDirectConnections($ID, $new_printers_id)
+    public function moveDirectConnections(int $ID, int $new_printers_id): void
     {
         $conn = new Asset_PeripheralAsset();
 

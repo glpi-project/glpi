@@ -89,7 +89,7 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @return void
      */
-    protected function addAssetRule($name, array $criteria, array $action, $afterRuleName = null): int
+    protected function addAssetRule(string $name, array $criteria, array $action, ?string $afterRuleName = null): int
     {
         global $DB;
 
@@ -355,7 +355,7 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @return void
      */
-    private function addComputerIPRules()
+    private function addComputerIPRules(): void
     {
         // Create rules
         $this->addAssetRule(
@@ -485,7 +485,7 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @return void
      */
-    private function addComputerIPLinkOnlyRules()
+    private function addComputerIPLinkOnlyRules(): void
     {
         // Create rules
         $this->addAssetRule(
@@ -1107,7 +1107,7 @@ class RuleImportAssetTest extends DbTestCase
      *
      * @return void
      */
-    private function updateComputerAgentTagRules()
+    private function updateComputerAgentTagRules(): void
     {
         // Create rules
         $this->addAssetRule(

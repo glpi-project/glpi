@@ -139,7 +139,7 @@ class NotificationTargetProject extends NotificationTarget
      *
      * @return void
      **/
-    public function addTeamUsers()
+    public function addTeamUsers(): void
     {
         global $DB;
 
@@ -168,7 +168,7 @@ class NotificationTargetProject extends NotificationTarget
      *
      * @return void
      **/
-    public function addTeamGroups($manager)
+    public function addTeamGroups(int $manager): void
     {
         global $DB;
 
@@ -191,7 +191,7 @@ class NotificationTargetProject extends NotificationTarget
      *
      * @return void
      **/
-    public function addTeamContacts()
+    public function addTeamContacts(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -221,7 +221,7 @@ class NotificationTargetProject extends NotificationTarget
      *
      * @return void
      **/
-    public function addTeamSuppliers()
+    public function addTeamSuppliers(): void
     {
         global $CFG_GLPI, $DB;
 

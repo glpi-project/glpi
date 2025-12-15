@@ -58,7 +58,7 @@ class PendingReason_Item extends CommonDBRelation
      *
      * @return false|PendingReason_Item
      */
-    public static function getForItem(CommonDBTM $item, bool $get_empty = false)
+    public static function getForItem(CommonDBTM $item, bool $get_empty = false): bool|PendingReason_Item
     {
         $em = new self();
         $find = $em->find([
@@ -187,7 +187,7 @@ class PendingReason_Item extends CommonDBRelation
      *
      * @return string|bool date (Y-m-d H:i:s) or false
      */
-    public function getNextFollowupDate()
+    public function getNextFollowupDate(): string|bool
     {
         if (empty($this->fields['followup_frequency'])) {
             return false;
@@ -226,7 +226,7 @@ class PendingReason_Item extends CommonDBRelation
      *
      * @return string|bool date (Y-m-d H:i:s) or false
      */
-    public function getAutoResolvedate()
+    public function getAutoResolvedate(): string|bool
     {
         if (empty($this->fields['followup_frequency']) || empty($this->fields['followups_before_resolution'])) {
             return false;
@@ -263,7 +263,7 @@ class PendingReason_Item extends CommonDBRelation
      * @param CommonITILObject $item
      * @return CommonDBTM|false
      */
-    public static function getLastPendingTimelineItemDataForItem(CommonITILObject $item)
+    public static function getLastPendingTimelineItemDataForItem(CommonITILObject $item): CommonDBTM|bool
     {
         global $DB;
 

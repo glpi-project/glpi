@@ -37,7 +37,7 @@
  *
  * @return bool
  **/
-function update910to911()
+function update910to911(): bool
 {
     /**
      * @var DBmysql $DB

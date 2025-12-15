@@ -51,7 +51,7 @@ abstract class HTMLTableBase
     /**
      * @param bool $super
      */
-    public function __construct($super)
+    public function __construct(bool $super)
     {
         $this->super = $super;
     }
@@ -64,7 +64,7 @@ abstract class HTMLTableBase
      *
      * @return T
      */
-    public function appendHeader(HTMLTableHeader $header_object, $allow_super_header = false)
+    public function appendHeader(HTMLTableHeader $header_object, bool $allow_super_header = false): T
     {
         $header_name    = '';
         $subHeader_name = '';
@@ -109,7 +109,7 @@ abstract class HTMLTableBase
      * Does not actually add the header.
      * @return void
      **/
-    abstract public function tryAddHeader();
+    abstract public function tryAddHeader(): void;
 
     /**
      * create a new HTMLTableHeader
@@ -133,8 +133,8 @@ abstract class HTMLTableBase
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      */
     public function addHeader(
-        $name,
-        $content,
+        string $name,
+        string|array $content,
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null
     ) {
@@ -162,7 +162,7 @@ abstract class HTMLTableBase
      *
      * @return HTMLTableHeader
      */
-    public function getSuperHeaderByName($name)
+    public function getSuperHeaderByName(string $name): HTMLTableHeader
     {
         return $this->getHeaderByName($name, '');
     }
@@ -175,7 +175,7 @@ abstract class HTMLTableBase
      *
      * @throws HTMLTableUnknownHeader
      */
-    public function getHeaderByName($name, $sub_name = null)
+    public function getHeaderByName(string $name, ?string $sub_name = null): HTMLTableHeader
     {
         if (is_string($sub_name)) {
             if (isset($this->headers[$name][$sub_name])) {
@@ -197,7 +197,7 @@ abstract class HTMLTableBase
      *
      * @return ($header_name is '' ? array<string, array<string, HTMLTableHeader>> : array<string, HTMLTableHeader>)
      */
-    public function getHeaders($header_name = '')
+    public function getHeaders(string $header_name = '')
     {
         if (empty($header_name)) {
             return $this->headers;
@@ -213,7 +213,7 @@ abstract class HTMLTableBase
      *
      * @return string[]
      */
-    public function getHeaderOrder($header_name = '')
+    public function getHeaderOrder(string $header_name = ''): array
     {
         if (empty($header_name)) {
             return $this->headers_order;

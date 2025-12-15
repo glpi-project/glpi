@@ -144,7 +144,7 @@ class CacheManager
      *
      * @return bool
      */
-    public function setConfiguration(string $context, $dsn, array $options = []): bool
+    public function setConfiguration(string $context, string|array $dsn, array $options = []): bool
     {
         if (!$this->isContextValid($context, true)) {
             throw new InvalidArgumentException(sprintf('Invalid or non configurable context: "%s".', $context));
@@ -189,7 +189,7 @@ class CacheManager
      *
      * @return void
      */
-    public function testConnection($dsn, array $options = []): void
+    public function testConnection(string|array $dsn, array $options = []): void
     {
         switch ($this->extractScheme($dsn)) {
             case self::SCHEME_MEMCACHED:
@@ -393,7 +393,7 @@ class CacheManager
      *
      * @return string|null
      */
-    public function extractScheme($dsn): ?string
+    public function extractScheme(string|array $dsn): ?string
     {
         if (is_array($dsn)) {
             if (count($dsn) === 0) {
@@ -512,7 +512,7 @@ PHP;
      *
      * @return bool
      */
-    public function isDsnValid($dsn): bool
+    public function isDsnValid(string|array $dsn): bool
     {
         if (is_array($dsn)) {
             if (count($dsn) === 0) {

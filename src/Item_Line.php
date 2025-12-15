@@ -131,7 +131,7 @@ class Item_Line extends CommonDBRelation
      * @param CommonDBTM $item
      * @return int
      */
-    protected static function countSimcardLinesForItem(CommonDBTM $item)
+    protected static function countSimcardLinesForItem(CommonDBTM $item): int
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
             'items_id' => $item->getID(),
@@ -148,7 +148,7 @@ class Item_Line extends CommonDBRelation
      * @param Line $line
      * @return int
      */
-    protected static function countSimcardItemsForLine(Line $line)
+    protected static function countSimcardItemsForLine(Line $line): int
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
             'lines_id' => $line->getID(),
@@ -163,7 +163,7 @@ class Item_Line extends CommonDBRelation
      *
      * @return void|false False if the line is not valid or the user does not have the right to view the line
      **/
-    public static function showItemsForLine(Line $line)
+    public static function showItemsForLine(Line $line): void|bool
     {
         global $DB;
 
@@ -293,7 +293,7 @@ class Item_Line extends CommonDBRelation
      * @param CommonDBTM $item
      * @return void|false False if the item is not valid or the user does not have the right to view the item
      **/
-    public static function showLinesForItem(CommonDBTM $item)
+    public static function showLinesForItem(CommonDBTM $item): void|bool
     {
         global $DB;
 
@@ -440,7 +440,7 @@ class Item_Line extends CommonDBRelation
      *
      * @return false|array<string, mixed> the modified $input array
      */
-    private function prepareInput($input)
+    private function prepareInput(array $input): bool|array
     {
         $error_detected = [];
 

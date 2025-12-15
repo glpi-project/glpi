@@ -98,7 +98,7 @@ class SlaLevel extends LevelAgreementLevel
      *
      * @return int id of the sla level : 0 if not exists
      **/
-    public static function getFirstSlaLevel($slas_id)
+    public static function getFirstSlaLevel(int $slas_id): int
     {
         global $DB;
 
@@ -127,7 +127,7 @@ class SlaLevel extends LevelAgreementLevel
      *
      * @return int id of the sla level : 0 if not exists
      **/
-    public static function getNextSlaLevel($slas_id, $slalevels_id)
+    public static function getNextSlaLevel(int $slas_id, int $slalevels_id): int
     {
         global $DB;
 

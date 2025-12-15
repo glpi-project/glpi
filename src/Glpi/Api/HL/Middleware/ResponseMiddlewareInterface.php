@@ -44,5 +44,5 @@ interface ResponseMiddlewareInterface
      * @param callable $next
      * @return void
      */
-    public function __invoke(MiddlewareInput $input, callable $next);
+    public function __invoke(MiddlewareInput $input, callable $next): void;
 }

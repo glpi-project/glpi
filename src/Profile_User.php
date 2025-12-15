@@ -123,7 +123,7 @@ class Profile_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForUser(User $user)
+    public static function showForUser(User $user): void
     {
         $ID = $user->getField('id');
         if (!$user->can($ID, READ)) {
@@ -241,7 +241,7 @@ class Profile_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForEntity(Entity $entity)
+    public static function showForEntity(Entity $entity): void
     {
         global $DB;
 
@@ -433,7 +433,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return void
      */
-    public static function showForProfile(Profile $prof)
+    public static function showForProfile(Profile $prof): void
     {
         global $DB;
 
@@ -629,7 +629,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array
      */
-    public static function getUserEntities($user_ID, $is_recursive = true, $default_first = false)
+    public static function getUserEntities(int $user_ID, bool $is_recursive = true, bool $default_first = false): array
     {
         global $DB;
 
@@ -682,7 +682,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array of entities ID
      **/
-    public static function getUserEntitiesForRight($user_ID, $rightname, $rights, $is_recursive = true)
+    public static function getUserEntitiesForRight(int $user_ID, string $rightname, int $rights, bool $is_recursive = true): array
     {
         global $DB;
 
@@ -746,7 +746,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array of the IDs of the profiles
      **/
-    public static function getUserProfiles($user_ID, $sqlfilter = [])
+    public static function getUserProfiles(int $user_ID, array $sqlfilter = []): array
     {
         global $DB;
 
@@ -782,7 +782,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array
      **/
-    public static function getEntitiesForProfileByUser($users_id, $profiles_id, $child = false)
+    public static function getEntitiesForProfileByUser(int $users_id, int $profiles_id, bool $child = false): array
     {
         global $DB;
 
@@ -821,7 +821,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array
      */
-    public static function getEntitiesForUser($users_id, $child = false)
+    public static function getEntitiesForUser(int $users_id, bool $child = false): array
     {
         global $DB;
 
@@ -856,7 +856,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array of entities ID
      **/
-    public static function getForUser($user_ID, $only_dynamic = false)
+    public static function getForUser(int $user_ID, bool $only_dynamic = false): array
     {
         $condition = ['users_id' => (int) $user_ID];
 
@@ -874,7 +874,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return int
      */
-    public static function haveUniqueRight($user_ID, $profile_id)
+    public static function haveUniqueRight(int $user_ID, int $profile_id): int
     {
         global $DB;
 
@@ -896,7 +896,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return void
      */
-    public static function deleteRights($user_ID, $only_dynamic = false)
+    public static function deleteRights(int $user_ID, bool $only_dynamic = false): void
     {
 
         $crit = [
@@ -1151,7 +1151,7 @@ TWIG, $avatar_params) . $username;
      *
      * @return array
      */
-    protected static function getListForItemParams(CommonDBTM $item, $noent = false)
+    protected static function getListForItemParams(CommonDBTM $item, bool $noent = false): array
     {
         $params = parent::getListForItemParams($item, $noent);
         $params['SELECT'][] = self::getTable() . '.entities_id';

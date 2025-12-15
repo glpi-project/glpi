@@ -88,7 +88,7 @@ class CommandLoader implements CommandLoaderInterface
      * @param string        $rootdir         Root directory path of application.
      * @param Plugin|null   $plugin          Needed for units test as we lack DI.
      */
-    public function __construct($include_plugins = true, $rootdir = GLPI_ROOT, ?Plugin $plugin = null)
+    public function __construct(bool $include_plugins = true, string $rootdir = GLPI_ROOT, ?Plugin $plugin = null)
     {
         $this->include_plugins = $include_plugins;
         $this->rootdir         = $rootdir;
@@ -127,7 +127,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return void
      */
-    public function setIncludePlugins(bool $include_plugins)
+    public function setIncludePlugins(bool $include_plugins): void
     {
         $this->include_plugins = $include_plugins;
 
@@ -139,7 +139,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return Command[]
      */
-    private function getCommands()
+    private function getCommands(): array
     {
         if ($this->commands === null) {
             $this->findCoreCommands();
@@ -212,7 +212,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return void
      */
-    private function findPluginCommands()
+    private function findPluginCommands(): void
     {
 
         if ($this->plugin === null) {
@@ -371,7 +371,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return void
      */
-    private function registerCommand(Command $command)
+    private function registerCommand(Command $command): void
     {
 
         $this->commands[$command->getName()] = $command;
@@ -391,7 +391,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return null|Command
      */
-    private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
+    private function getCommandFromFile(SplFileInfo $file, string $basedir, array $prefixes = []): ?Command
     {
 
         // Check if file is readable
@@ -448,7 +448,7 @@ class CommandLoader implements CommandLoaderInterface
      * @param string $filepath
      * @return string
      */
-    private function getRelativePath($basedir, $filepath)
+    private function getRelativePath(string $basedir, string $filepath): string
     {
 
         // Strip (multiple) ending directory separator to normalize input

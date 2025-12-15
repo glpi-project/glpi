@@ -120,7 +120,7 @@ abstract class AbstractPluginCommand extends AbstractCommand
      *
      * @return void
      */
-    protected function normalizeInput(InputInterface $input)
+    protected function normalizeInput(InputInterface $input): void
     {
 
         if ($input->getArgument('directory') === [self::DIRECTORY_ALL]) {
@@ -133,7 +133,7 @@ abstract class AbstractPluginCommand extends AbstractCommand
      *
      * @return string
      */
-    abstract protected function getDirectoryChoiceQuestion();
+    abstract protected function getDirectoryChoiceQuestion(): string;
 
 
     /**
@@ -142,5 +142,5 @@ abstract class AbstractPluginCommand extends AbstractCommand
      *
      * @return string[]
      */
-    abstract protected function getDirectoryChoiceChoices();
+    abstract protected function getDirectoryChoiceChoices(): array;
 }

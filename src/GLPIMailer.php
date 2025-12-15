@@ -174,7 +174,7 @@ class GLPIMailer
      *
      * @return bool
      */
-    public static function validateAddress($address)
+    public static function validateAddress(string $address): bool
     {
         if (empty($address)) {
             return false;
@@ -199,7 +199,7 @@ class GLPIMailer
      *
      * @return bool
      */
-    public function send()
+    public function send(): bool
     {
         $text_body = $this->email->getTextBody();
         if (is_string($text_body)) {
@@ -275,7 +275,7 @@ class GLPIMailer
      *
      * @return mixed
      */
-    public function __get(string $property)
+    public function __get(string $property): mixed
     {
         $value = null;
         $deprecation = true;
@@ -329,7 +329,7 @@ class GLPIMailer
      *
      * @return void
      */
-    public function __set(string $property, $value)
+    public function __set(string $property, mixed $value): void
     {
         $deprecation = true;
         switch ($property) {
@@ -389,7 +389,7 @@ class GLPIMailer
      *
      * @return void
      */
-    public function __call(string $method, array $arguments)
+    public function __call(string $method, array $arguments): void
     {
         $lcmethod = strtolower($method); // PHP methods are not case sensitive
 
@@ -490,7 +490,7 @@ class GLPIMailer
      *
      * @return mixed
      */
-    public static function __callstatic(string $method, array $arguments)
+    public static function __callstatic(string $method, array $arguments): mixed
     {
         // Trigger fatal error to block execution.
         // As we cannot know which return value type is expected, it is safer to ensure

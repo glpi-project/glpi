@@ -75,7 +75,7 @@ class Infocom extends CommonDBChild
      * @return bool true if $object is an object that can have Infocom
      *
      **/
-    public static function canApplyOn($item)
+    public static function canApplyOn(string|object $item): bool
     {
         global $CFG_GLPI;
 
@@ -104,7 +104,7 @@ class Infocom extends CommonDBChild
      *
      * @return array of the itemtypes
      **/
-    public static function getItemtypesThatCanHave()
+    public static function getItemtypesThatCanHave(): array
     {
         global $CFG_GLPI;
 
@@ -198,7 +198,7 @@ class Infocom extends CommonDBChild
      *
      * @return int
      */
-    public static function countForSupplier(Supplier $item)
+    public static function countForSupplier(Supplier $item): int
     {
 
         return countElementsInTable(
@@ -263,7 +263,7 @@ class Infocom extends CommonDBChild
      *
      * @return bool true if succeed else false
      **/
-    public function getFromDBforDevice($itemtype, $ID)
+    public function getFromDBforDevice(string $itemtype, int $ID): bool
     {
 
         if (
@@ -449,7 +449,7 @@ class Infocom extends CommonDBChild
      *
      * @return void
      **/
-    public static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true)
+    public static function manageDateOnStatusChange(CommonDBTM $item, bool $action_add = true): void
     {
         $itemtype = get_class($item);
         $changes  = $item->fields;
@@ -499,7 +499,7 @@ class Infocom extends CommonDBChild
      *
      * @return void
      **/
-    public static function autofillDates(&$infocoms = [], $field = '', $action = 0, $params = [])
+    public static function autofillDates(array &$infocoms = [], string $field = '', int $action = 0, array $params = []): void
     {
         if (isset($infocoms[$field]) || is_null($infocoms[$field])) {
             switch ($action) {
@@ -540,7 +540,7 @@ class Infocom extends CommonDBChild
      *
      * @return array with all dates (configuration field & real field)
      **/
-    public static function getAutoManagemendDatesFields()
+    public static function getAutoManagemendDatesFields(): array
     {
 
         return [
@@ -632,7 +632,7 @@ class Infocom extends CommonDBChild
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo(string $name): array
     {
         return ['description' => __('Send alarms on financial and administrative information')];
     }
@@ -645,7 +645,7 @@ class Infocom extends CommonDBChild
      *
      * @return int 0 : nothing to do 1 : done with success
      **/
-    public static function cronInfocom($task = null)
+    public static function cronInfocom(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -799,7 +799,7 @@ class Infocom extends CommonDBChild
      *
      * @return array|string
      **/
-    public static function getAlertName($val = null)
+    public static function getAlertName(int|string|null $val = null): array|string
     {
 
         $tmp[0]                  = Dropdown::EMPTY_VALUE;
@@ -827,7 +827,7 @@ class Infocom extends CommonDBChild
      *
      * @return int|string
      */
-    public static function dropdownAlert($options)
+    public static function dropdownAlert(array $options): int|string
     {
 
         $p['name']           = 'alert';
@@ -861,7 +861,7 @@ class Infocom extends CommonDBChild
      *
      * @return int|string
      **/
-    public static function dropdownAmortType($name, $value = 0, $display = true)
+    public static function dropdownAmortType(string $name, int $value = 0, bool $display = true): int|string
     {
 
         $values = [
@@ -885,7 +885,7 @@ class Infocom extends CommonDBChild
      *
      * @return  string
      */
-    public static function getAmortTypeName($value)
+    public static function getAmortTypeName(int $value): string
     {
 
         switch ($value) {
@@ -951,7 +951,7 @@ class Infocom extends CommonDBChild
      *
      * @return string
      **/
-    public static function showTco($ticket_tco, $value, $date_achat = "")
+    public static function showTco(string|number $ticket_tco, number $value, string $date_achat = ""): string
     {
         if ($ticket_tco == NOT_AVAILABLE) {
             return '-';
@@ -989,7 +989,7 @@ class Infocom extends CommonDBChild
      *
      * @return void|string
      **/
-    public static function showDisplayLink($itemtype, $device_id, bool $display = true)
+    public static function showDisplayLink($itemtype, int $device_id, bool $display = true): void|string
     {
         global $CFG_GLPI, $DB;
 
@@ -1078,7 +1078,7 @@ HTML;
      *
      * @return array|bool
      */
-    public static function linearAmortise($value, $duration, $fiscaldate, $buydate = '', $usedate = '')
+    public static function linearAmortise(number $value, number $duration, string $fiscaldate, string $buydate = '', string $usedate = ''): array|bool
     {
         //Set timezone to UTC; see https://stackoverflow.com/a/40358744
         $TZ = 'UTC';
@@ -1173,7 +1173,7 @@ HTML;
      *
      * @return array|float
      */
-    public static function mapOldAmortiseFormat($values, $current = true)
+    public static function mapOldAmortiseFormat(array $values, bool $current = true): array|float
     {
 
         if ($current === true) {
@@ -1211,15 +1211,15 @@ HTML;
      * @return float|array|string Depreciation value or array of values. If an error occurs, return '-'.
      **/
     public static function Amort(
-        $type_amort,
-        $va,
-        $duree,
-        $coef,
-        $date_achat,
-        $date_use,
-        $date_tax,
-        $view = "n"
-    ) {
+        int $type_amort,
+        number $va,
+        number $duree,
+        number $coef,
+        ?string $date_achat,
+        ?string $date_use,
+        ?string $date_tax,
+        string $view = "n"
+    ): float|array|string {
         // By Jean-Mathieu Doleans qui s'est un peu pris le chou :p
 
         // Attention date mise en service/dateachat ->amort lineaire  et $prorata en jour !!
@@ -1379,7 +1379,7 @@ HTML;
      *
      * @return void
      */
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         // Show Infocom or blank form
         if (!self::canView()) {
@@ -1417,7 +1417,7 @@ HTML;
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $specific_itemtype = '';
         $beforejoin        = [];
@@ -1990,7 +1990,7 @@ HTML;
      * @return string Expiration date automatically converted to the user's preferred date format.
      *                The returned value is a safe HTML string.
      **/
-    public static function getWarrantyExpir($from, $addwarranty, $deletenotice = 0, $color = false, $auto_renew = false, $periodicity = 0)
+    public static function getWarrantyExpir(string $from, int $addwarranty, int $deletenotice = 0, bool $color = false, bool $auto_renew = false, int $periodicity = 0): string
     {
 
         // Life warranty
@@ -2120,7 +2120,7 @@ HTML;
      *
      * @return DBmysqlIterator
      */
-    public static function getTypes($where)
+    public static function getTypes(array $where): DBmysqlIterator
     {
         global $DB;
 
@@ -2144,7 +2144,7 @@ HTML;
      *
      * @return array
      */
-    public static function getExcludedTypes()
+    public static function getExcludedTypes(): array
     {
         return ['ConsumableItem', 'CartridgeItem'];
     }

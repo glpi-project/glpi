@@ -48,7 +48,7 @@ class GLPINetwork extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-headset';
     }
@@ -64,7 +64,7 @@ class GLPINetwork extends CommonGLPI
     /**
      * @return void
      */
-    public static function showForConfig()
+    public static function showForConfig(): void
     {
         if (!Config::canView()) {
             return;
@@ -148,7 +148,7 @@ class GLPINetwork extends CommonGLPI
      *    - owner (array):               owner attributes;
      *    - subscription (array):        subscription attributes.
      */
-    public static function getRegistrationInformations(bool $force_refresh = false)
+    public static function getRegistrationInformations(bool $force_refresh = false): array
     {
         global $GLPI_CACHE;
 
@@ -281,7 +281,7 @@ class GLPINetwork extends CommonGLPI
      *
      * @return bool
      */
-    public static function isServicesAvailable(&$curl_error = null): bool
+    public static function isServicesAvailable(?string &$curl_error = null): bool
     {
         $error_msg = null;
         $content = Toolbox::callCurl(rtrim(GLPI_NETWORK_API_URL, '/') . '/ping', [], $error_msg, $curl_error);

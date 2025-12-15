@@ -159,7 +159,7 @@ class Reminder extends CommonDBVisible implements
      *
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         // regenerate uuid
         $input['uuid'] = Uuid::uuid4();
@@ -190,7 +190,7 @@ class Reminder extends CommonDBVisible implements
      *
      * @return string restrict to add
      **/
-    public static function addVisibilityRestrict()
+    public static function addVisibilityRestrict(): string
     {
         //not deprecated because used in Search
 
@@ -528,7 +528,7 @@ class Reminder extends CommonDBVisible implements
      *     - target filename : where to go when done.
      *     - from_planning_ajax : set to disable planning form part
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $rand = mt_rand();
@@ -560,7 +560,7 @@ class Reminder extends CommonDBVisible implements
      *
      * @return string
      */
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
+    public static function displayPlanningItem(array $val, int $who, string $type = "", bool $complete = false): string
     {
         global $CFG_GLPI;
 
@@ -702,7 +702,7 @@ class Reminder extends CommonDBVisible implements
      * @return string|void
      * @phpstan-return ($display is true ? void : string)
      **/
-    public static function showListForCentral(bool $personal = true, bool $display = true)
+    public static function showListForCentral(bool $personal = true, bool $display = true): string|void
     {
         global $CFG_GLPI, $DB;
 
@@ -881,7 +881,7 @@ class Reminder extends CommonDBVisible implements
      *
      * @return VCalendar[]
      */
-    private static function getItemsAsVCalendars(array $query)
+    private static function getItemsAsVCalendars(array $query): array
     {
         global $DB;
 

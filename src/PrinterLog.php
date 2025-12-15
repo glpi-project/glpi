@@ -197,7 +197,7 @@ class PrinterLog extends CommonDBChild
      *
      * @return void
      */
-    public function showMetrics(Printer|Asset $printer)
+    public function showMetrics(Printer|Asset $printer): void
     {
         $printers = array_map(
             fn($id) => Printer::getById($id),
@@ -363,7 +363,7 @@ class PrinterLog extends CommonDBChild
      *
      * @return null|string null if the key didn't match any valid field
      */
-    public static function getLabelFor($key): ?string
+    public static function getLabelFor(string $key): ?string
     {
         switch ($key) {
             case 'total_pages':

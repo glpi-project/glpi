@@ -236,7 +236,7 @@ class Cartridge extends CommonDBRelation
      * @param bool $history
      * @return bool
      */
-    public function backToStock(array $input, $history = true)
+    public function backToStock(array $input, bool $history = true): bool
     {
         global $DB;
 
@@ -266,7 +266,7 @@ class Cartridge extends CommonDBRelation
      *
      * @return bool True if successful
      **/
-    public function install($pID, $tID)
+    public function install(int $pID, int $tID): bool
     {
         global $DB;
 
@@ -318,7 +318,7 @@ class Cartridge extends CommonDBRelation
      *
      * @return bool
      **/
-    public function uninstall($ID)
+    public function uninstall(int $ID): bool
     {
         global $DB;
 
@@ -372,7 +372,7 @@ class Cartridge extends CommonDBRelation
      *
      * @return string String to display
      **/
-    public static function getCount($tID, $alarm_threshold, $nohtml = 0)
+    public static function getCount(int $tID, int $alarm_threshold, int|bool $nohtml = 0): string
     {
         // Get total
         $total = self::getTotalNumber($tID);
@@ -454,7 +454,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return string String to display
      **/
-    public static function getCountForPrinter($pID, $nohtml = 0)
+    public static function getCountForPrinter(int $pID, int|bool $nohtml = 0): string
     {
         // Get total
         $total = self::getTotalNumberForPrinter($pID);
@@ -518,7 +518,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of cartridges counted.
      **/
-    public static function getTotalNumber($tID)
+    public static function getTotalNumber(int $tID): int
     {
         global $DB;
 
@@ -539,7 +539,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of cartridges counted.
      **/
-    public static function getTotalNumberForPrinter($pID)
+    public static function getTotalNumberForPrinter(int $pID): int
     {
         global $DB;
 
@@ -558,7 +558,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of used cartridges counted.
      **/
-    public static function getUsedNumber($tID)
+    public static function getUsedNumber(int $tID): int
     {
         global $DB;
 
@@ -586,7 +586,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of used cartridge counted.
      **/
-    public static function getUsedNumberForPrinter($pID)
+    public static function getUsedNumberForPrinter(int $pID): int
     {
         global $DB;
 
@@ -609,7 +609,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of old cartridges counted.
      **/
-    public static function getOldNumber($tID)
+    public static function getOldNumber(int $tID): int
     {
         global $DB;
 
@@ -633,7 +633,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int : number of old cartridge counted.
      **/
-    public static function getOldNumberForPrinter($pID)
+    public static function getOldNumberForPrinter(int $pID): int
     {
         global $DB;
 
@@ -655,7 +655,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int : number of cartridge unused counted.
      **/
-    public static function getUnusedNumber($tID)
+    public static function getUnusedNumber(int $tID): int
     {
         global $DB;
 
@@ -722,7 +722,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return string : Translated value for the cartridge status.
      **/
-    public static function getStatus($date_use, $date_out)
+    public static function getStatus(string $date_use, string $date_out): string
     {
         if (empty($date_use)) {
             return _nx('cartridge', 'New', 'New', 1);
@@ -741,7 +741,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return bool|void
      **/
-    public static function showForCartridgeItem(CartridgeItem $cartitem, $show_old = 0)
+    public static function showForCartridgeItem(CartridgeItem $cartitem, bool|int $show_old = 0): bool|void
     {
         global $DB;
 
@@ -937,7 +937,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return bool|void
      **/
-    public static function showAddForm(CartridgeItem $cartitem)
+    public static function showAddForm(CartridgeItem $cartitem): bool|void
     {
 
         $ID = $cartitem->getField('id');
@@ -987,7 +987,7 @@ TWIG, $twig_params);
      *
      * @return bool|void
      **/
-    public static function showForPrinter(Printer $printer, $old = 0)
+    public static function showForPrinter(Printer $printer, bool|int $old = 0): bool|void
     {
         global $DB;
 
@@ -1230,7 +1230,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      *
      * @return bool False if there was a rights issue. Otherwise, returns true.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = []): bool
     {
         $printer = new Printer();
         if (!empty($options['parent'])) {
@@ -1284,7 +1284,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      * @param CartridgeItem $item CartridgeItem object
      * @return int
      */
-    public static function countForCartridgeItem(CartridgeItem $item)
+    public static function countForCartridgeItem(CartridgeItem $item): int
     {
         return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.cartridgeitems_id' => $item->getField('id')]);
     }
@@ -1294,7 +1294,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      * @param Printer $item Printer object
      * @return int
      */
-    public static function countForPrinter(Printer $item)
+    public static function countForPrinter(Printer $item): int
     {
         return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);
     }

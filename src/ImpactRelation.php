@@ -104,7 +104,7 @@ class ImpactRelation extends CommonDBRelation
      *
      * @return bool false on failure
      */
-    public static function getIDFromInput(array $input)
+    public static function getIDFromInput(array $input): bool
     {
         global $DB;
 

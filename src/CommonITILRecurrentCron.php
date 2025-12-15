@@ -61,7 +61,7 @@ class CommonITILRecurrentCron extends CommonDBTM
      *
      * @return int task status (0: no work to do, 1: work done)
      */
-    public static function cronRecurrentItems(CronTask $task)
+    public static function cronRecurrentItems(CronTask $task): int
     {
         global $DB;
 

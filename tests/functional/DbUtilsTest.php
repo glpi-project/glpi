@@ -910,7 +910,7 @@ class DbUtilsTest extends DbTestCase
      *
      * @return void
      */
-    private function runGetAncestorsOf($cache = false, $hit = false)
+    private function runGetAncestorsOf(bool $cache = false, bool $hit = false): void
     {
         global $GLPI_CACHE;
 
@@ -1079,7 +1079,7 @@ class DbUtilsTest extends DbTestCase
      *
      * @return void
      */
-    private function runGetSonsOf($cache = false, $hit = false)
+    private function runGetSonsOf(bool $cache = false, bool $hit = false): void
     {
         global $GLPI_CACHE;
 
@@ -1500,7 +1500,7 @@ class DbUtilsTest extends DbTestCase
      *
      * @return void
      */
-    public function testGetDateCriteria()
+    public function testGetDateCriteria(): void
     {
         $instance = new \DbUtils();
 

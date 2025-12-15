@@ -111,7 +111,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
      *
      * @return array of Readonly fields
      */
-    public function getReadonlyFields($ID, $withtypeandcategory = false)
+    public function getReadonlyFields(int $ID, bool $withtypeandcategory = false): array
     {
         global $DB;
 
@@ -139,7 +139,7 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
      *
      * @return array the excluded fields (keys and values are equals)
      */
-    public static function getExcludedFields()
+    public static function getExcludedFields(): array
     {
         return [
             175 => 175, // ticket's tasks (template)

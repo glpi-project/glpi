@@ -40,7 +40,7 @@ use Glpi\DBAL\QuerySubQuery;
  *
  * @return bool
  **/
-function update955to956()
+function update955to956(): bool
 {
     /**
      * @var array $CFG_GLPI
