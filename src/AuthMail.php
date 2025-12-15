@@ -43,9 +43,9 @@ class AuthMail extends CommonDBTM
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Email server', 'Email servers', $nb);
     }
@@ -93,7 +93,7 @@ class AuthMail extends CommonDBTM
         return $input;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -378,7 +378,7 @@ TWIG, $twig_params);
         Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
@@ -390,7 +390,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         /** @var AuthMail $item */
         switch ($tabnum) {

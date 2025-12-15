@@ -48,9 +48,9 @@ class State extends CommonTreeDropdown
 
     public $can_be_translated       = true;
 
-    public static $rightname               = 'state';
+    public static string $rightname               = 'state';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Status of items', 'Statuses of items', $nb);
     }

@@ -142,7 +142,7 @@ class Conf extends CommonGLPI
 
     public const BASIC_AUTH = 'basic_auth';
 
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
     public const IMPORTFROMFILE     = 1024;
     public const UPDATECONFIG       = 2048;
@@ -296,7 +296,7 @@ class Conf extends CommonGLPI
         ];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -304,7 +304,7 @@ class Conf extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             $tabs = [];
@@ -319,7 +319,7 @@ class Conf extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item->getType() == self::class) {
             /** @var self $item */

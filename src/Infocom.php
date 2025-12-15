@@ -54,7 +54,7 @@ class Infocom extends CommonDBChild
     public $dohistory              = true;
     public $auto_message_on_action = false; // Link in message can't work'
     public static $logs_for_parent = false;
-    public static $rightname              = 'infocom';
+    public static string $rightname              = 'infocom';
 
     //Option to automatically fill dates
     public const ON_STATUS_CHANGE   = 'STATUS';
@@ -116,7 +116,7 @@ class Infocom extends CommonDBChild
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         //TRANS: Always plural
         return __('Financial and administrative information');
@@ -143,7 +143,7 @@ class Infocom extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         // Can exists on template
@@ -175,7 +175,7 @@ class Infocom extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

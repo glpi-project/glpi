@@ -130,7 +130,7 @@ class AuthLDAP extends CommonDBTM
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * connection caching stuff
@@ -153,7 +153,7 @@ class AuthLDAP extends CommonDBTM
      */
     private static ?int $last_errno = null;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('LDAP directory', 'LDAP directories', $nb);
     }
@@ -803,7 +803,7 @@ TWIG, ['authldaps_id' => $ID]);
         ]);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -3972,7 +3972,7 @@ TWIG, $twig_params);
         Rule::cleanForItemCriteria($this, 'LDAP_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (
@@ -3991,7 +3991,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         /** @var AuthLDAP $item */
         switch ($tabnum) {

@@ -47,7 +47,7 @@ class ITILFollowup extends CommonDBChild
 
     // From CommonDBTM
     public $auto_message_on_action = false;
-    public static $rightname              = 'followup';
+    public static string $rightname              = 'followup';
     private ?CommonITILObject $item = null;
 
     public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -67,7 +67,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Followup', 'Followups', $nb);
     }
@@ -909,7 +909,7 @@ class ITILFollowup extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         return Toolbox::getItemTypeFormURL("ITILFollowup", $full);
     }

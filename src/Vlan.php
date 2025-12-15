@@ -43,7 +43,7 @@ class Vlan extends CommonDropdown
     public $can_be_translated = false;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('VLAN', 'VLANs', $nb);
     }
@@ -176,7 +176,7 @@ class Vlan extends CommonDropdown
         }
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

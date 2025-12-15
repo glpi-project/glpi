@@ -68,9 +68,9 @@ abstract class CommonDropdown extends CommonDBTM
      */
     public $can_be_translated = true;
 
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Dropdown', 'Dropdowns', $nb);
     }
@@ -220,7 +220,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

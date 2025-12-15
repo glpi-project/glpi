@@ -46,14 +46,14 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public const DEFAULT_TTL = 3600;
 
-    public static $rightname              = 'domain';
+    public static string $rightname              = 'domain';
     // From CommonDBChild
     public static $itemtype        = 'Domain';
     public static $items_id        = 'domains_id';
     public $dohistory              = true;
     public static $mustBeAttached  = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Domain record', 'Domains records', $nb);
     }
@@ -63,7 +63,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return ['management', Domain::class, self::class];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
             $nb = 0;
@@ -90,7 +90,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         );
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === Domain::class) {
             self::showForDomain($item);
@@ -269,7 +269,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
          );
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

@@ -42,7 +42,7 @@ class NotificationEvent extends CommonDBTM
     protected static $notable = true;
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Event', 'Events', $nb);
     }

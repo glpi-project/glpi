@@ -70,7 +70,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
     protected $team             = [];
-    public static $rightname    = 'projecttask';
+    public static string $rightname    = 'projecttask';
     protected $usenotepad       = true;
 
     /** @var bool */
@@ -87,7 +87,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Project task', 'Project tasks', $nb);
     }
@@ -210,7 +210,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return $values;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -1416,7 +1416,7 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $nb = 0;
         switch ($item::class) {
@@ -1441,7 +1441,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case Project::class:

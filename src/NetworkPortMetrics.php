@@ -45,12 +45,12 @@ class NetworkPortMetrics extends CommonDBChild
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Network port metrics');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $array_ret = [];
 
@@ -61,7 +61,7 @@ class NetworkPortMetrics extends CommonDBChild
         return $array_ret;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === NetworkPort::class && $item->getID() > 0) {
             $metrics = new self();

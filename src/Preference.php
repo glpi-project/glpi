@@ -38,13 +38,13 @@ use Glpi\Security\TOTPManager;
 // class Preference for the current connected User
 class Preference extends CommonGLPI
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         // Always plural
         return __('Settings');
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];
@@ -61,12 +61,12 @@ class Preference extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         return self::createTabEntry(text: __('Two-factor authentication (2FA)'), icon: 'ti ti-shield-lock');
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         $totp = new TOTPManager();
         $regenerate_backup_codes = isset($_REQUEST['regenerate_backup_codes']) ? filter_var($_REQUEST['regenerate_backup_codes'], FILTER_VALIDATE_BOOLEAN) : false;
@@ -80,7 +80,7 @@ class Preference extends CommonGLPI
      * @FIXME Override the options inside the front controller.
      * @phpstan-ignore method.parentMethodFinalByPhpDoc (temporary solution to add the final tag)
      */
-    public function showTabsContent($options = [])
+    public function showTabsContent(array $options = [])
     {
         if (isset($_REQUEST['reset_2fa'])) {
             $options['reset_2fa'] = $_REQUEST['reset_2fa'];

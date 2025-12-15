@@ -42,7 +42,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
 {
     use FilterableTrait;
 
-    public static $rightname = 'defaultfilter';
+    public static string $rightname = 'defaultfilter';
 
     public function getItemtypeToFilter(): string
     {
@@ -64,7 +64,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return __("Default search filter, applied in addition to the user's search criteria.");
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Default filter', 'Default filters', $nb);
     }

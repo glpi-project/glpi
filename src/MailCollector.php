@@ -130,7 +130,7 @@ class MailCollector extends CommonDBTM
 
     public $dohistory       = true;
 
-    public static $rightname       = 'config';
+    public static string $rightname       = 'config';
 
     // Destination folder
     public const REFUSED_FOLDER  = 'refused';
@@ -149,7 +149,7 @@ class MailCollector extends CommonDBTM
         'last_collect_date',
     ];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Receiver', 'Receivers', $nb);
     }
@@ -279,7 +279,7 @@ class MailCollector extends CommonDBTM
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

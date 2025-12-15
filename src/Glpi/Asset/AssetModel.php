@@ -66,7 +66,7 @@ abstract class AssetModel extends CommonDCModelDropdown
         return $definition;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return sprintf(_n('%s model', '%s models', $nb), static::getDefinition()->getTranslatedName());
     }
@@ -84,12 +84,12 @@ abstract class AssetModel extends CommonDCModelDropdown
         return parent::getTable($classname);
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         return Toolbox::getItemTypeSearchURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         return Toolbox::getItemTypeFormURL(self::class, $full) . '?class=' . static::getDefinition()->fields['system_name'];
     }

@@ -61,7 +61,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
         'Item_OperatingSystem', 'Item_Disk',
     ];
 
-    public static $rightname                   = 'phone';
+    public static string $rightname                   = 'phone';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -91,7 +91,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         //TRANS: Test of comment for translation (mark : //TRANS)
         return _n('Phone', 'Phones', $nb);
@@ -118,7 +118,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

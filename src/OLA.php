@@ -51,7 +51,7 @@ class OLA extends LevelAgreement
     protected static $levelticketclass  = 'OlaLevel_Ticket';
     protected static $forward_entity_to = ['OlaLevel'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         // Acronym, no plural
         return __('OLA');

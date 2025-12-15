@@ -48,9 +48,9 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     // From CommonDBTM
     public $dohistory                   = true;
     protected $usenotepad               = true;
-    public static $rightname                   = 'datacenter';
+    public static string $rightname                   = 'datacenter';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Server room', 'Server rooms', $nb);
     }
@@ -60,7 +60,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return ['management', Datacenter::class, self::class];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this
@@ -300,7 +300,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         switch ($item::class) {
             case Datacenter::class:
@@ -324,7 +324,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof Datacenter) {
             return false;

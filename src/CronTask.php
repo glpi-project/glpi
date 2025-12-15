@@ -66,7 +66,7 @@ class CronTask extends CommonDBTM
     private float $timer           = 0.0;
     private int $startlog        = 0;
     private int $volume          = 0;
-    public static $rightname        = 'config';
+    public static string $rightname        = 'config';
 
     /** The automatic action is disabled */
     public const STATE_DISABLE = 0;
@@ -94,7 +94,7 @@ class CronTask extends CommonDBTM
         return $forbidden;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Automatic action', 'Automatic actions', $nb);
     }
@@ -104,7 +104,7 @@ class CronTask extends CommonDBTM
         return ['config', self::class];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

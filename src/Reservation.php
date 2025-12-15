@@ -48,15 +48,15 @@ class Reservation extends CommonDBChild
     public static $itemtype          = 'ReservationItem';
     public static $items_id          = 'reservationitems_id';
 
-    public static $rightname                = 'reservation';
+    public static string $rightname                = 'reservation';
     public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Reservation', 'Reservations', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             !$withtemplate
@@ -67,7 +67,7 @@ class Reservation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === User::class) {
             self::showForUser($_GET["id"]);

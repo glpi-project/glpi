@@ -42,7 +42,7 @@ class TicketValidation extends CommonITILValidation
     public static $itemtype           = 'Ticket';
     public static $items_id           = 'tickets_id';
 
-    public static $rightname                 = 'ticketvalidation';
+    public static string $rightname                 = 'ticketvalidation';
 
     public const CREATEREQUEST               = 1024;
     public const CREATEINCIDENT              = 2048;
@@ -56,7 +56,7 @@ class TicketValidation extends CommonITILValidation
         return [static::CREATEREQUEST, static::CREATEINCIDENT];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Ticket approval', 'Ticket approvals', $nb);
     }

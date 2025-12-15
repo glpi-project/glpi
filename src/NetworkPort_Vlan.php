@@ -289,7 +289,7 @@ TWIG, $twig_params);
         return $vlans;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -315,7 +315,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         return match ($item::class) {
             NetworkPort::class => self::showForNetworkPort($item),

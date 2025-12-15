@@ -50,7 +50,7 @@ abstract class ITILTemplate extends CommonDropdown
 
     public $display_dropdowntitle     = false;
 
-    public static $rightname                 = 'itiltemplate';
+    public static string $rightname                 = 'itiltemplate';
 
     public $can_be_translated            = false;
 
@@ -202,7 +202,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         $itiltype = static::getITILObjectClass();
         //TRANS %1$S is the ITIL type
@@ -441,7 +441,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong          = [];
         $this->addDefaultFormTab($ong);
@@ -458,7 +458,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof ITILTemplate && $tabnum === 1) {
             return $item->showCentralPreview($item);
@@ -467,7 +467,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (Session::haveRight(static::$rightname, READ)) {

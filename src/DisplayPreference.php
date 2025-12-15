@@ -40,16 +40,16 @@ use Glpi\Search\SearchOption;
 class DisplayPreference extends CommonDBTM
 {
     // From CommonGLPI
-    public $taborientation          = 'horizontal';
-    public $get_item_to_display_tab = false;
+    public string $taborientation          = 'horizontal';
+    public bool $get_item_to_display_tab = false;
 
     // From CommonDBTM
     public $auto_message_on_action  = false;
 
-    protected $displaylist          = false;
+    protected bool $displaylist          = false;
 
 
-    public static $rightname = 'search_config';
+    public static string $rightname = 'search_config';
 
     public const PERSONAL = 1024;
     public const GENERAL  = 2048;
@@ -126,7 +126,7 @@ class DisplayPreference extends CommonDBTM
         return $this->canCrudItem();
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Search result display');
     }
@@ -640,7 +640,7 @@ class DisplayPreference extends CommonDBTM
         ]);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -648,7 +648,7 @@ class DisplayPreference extends CommonDBTM
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Preference':
@@ -684,7 +684,7 @@ class DisplayPreference extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item->getType()) {
             case 'Preference':

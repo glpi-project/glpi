@@ -48,7 +48,7 @@ class TaskTemplate extends AbstractITILChildTemplate
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'tasktemplate';
+    public static string $rightname          = 'tasktemplate';
 
     public function post_getFromDB()
     {
@@ -57,7 +57,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         }
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Task template', 'Task templates', $nb);
     }

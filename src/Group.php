@@ -48,7 +48,7 @@ class Group extends CommonTreeDropdown
 
     public $dohistory       = true;
 
-    public static $rightname       = 'group';
+    public static string $rightname       = 'group';
 
     protected $usenotepad  = true;
 
@@ -58,7 +58,7 @@ class Group extends CommonTreeDropdown
         return [];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Group', 'Groups', $nb);
     }
@@ -120,7 +120,7 @@ class Group extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_groups_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
@@ -159,7 +159,7 @@ class Group extends CommonTreeDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case self::class:
@@ -189,7 +189,7 @@ class Group extends CommonTreeDropdown
         return false;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

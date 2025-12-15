@@ -48,7 +48,7 @@ class ObjectLock extends CommonDBTM
 {
     private static bool $shutdownregistered = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Object Lock', 'Object Locks', $nb);
     }

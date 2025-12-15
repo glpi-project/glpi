@@ -42,7 +42,7 @@
 /// Class OLALevel
 class OlaLevel_Ticket extends CommonDBTM
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('OLA level for Ticket');
     }

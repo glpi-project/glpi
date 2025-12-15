@@ -39,12 +39,12 @@ class WifiNetwork extends CommonDropdown
 {
     public $dohistory          = true;
 
-    public static $rightname          = 'internet';
+    public static string $rightname          = 'internet';
 
     public $can_be_translated  = false;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Wifi network', 'Wifi networks', $nb);
     }
@@ -102,7 +102,7 @@ class WifiNetwork extends CommonDropdown
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong  = [];

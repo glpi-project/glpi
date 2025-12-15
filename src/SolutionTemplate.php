@@ -46,12 +46,12 @@ class SolutionTemplate extends AbstractITILChildTemplate
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'solutiontemplate';
+    public static string $rightname = 'solutiontemplate';
 
     public $can_be_translated = true;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Solution template', 'Solution templates', $nb);
     }

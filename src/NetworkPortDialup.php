@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class NetworkPortDialup extends NetworkPortInstantiation
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Connection by dial line - Dialup Port');
     }

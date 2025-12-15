@@ -700,7 +700,7 @@ TWIG, $twig_params);
         return $rand;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): string
     {
         global $CFG_GLPI;
 
@@ -732,7 +732,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -844,7 +844,7 @@ TWIG, $twig_params);
         return $select;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Connection', 'Connections', $nb);
     }

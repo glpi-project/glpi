@@ -47,9 +47,9 @@ class PendingReason extends CommonDropdown
     public $can_be_translated = true;
 
     // Rights managment
-    public static $rightname = 'pendingreason';
+    public static string $rightname = 'pendingreason';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Pending reason', 'Pending reasons', $nb);
     }

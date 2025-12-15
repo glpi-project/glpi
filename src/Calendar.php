@@ -50,7 +50,7 @@ class Calendar extends CommonDropdown
 
     protected static $forward_entity_to = ['CalendarSegment'];
 
-    public static $rightname = 'calendar';
+    public static string $rightname = 'calendar';
 
 
     public function getCloneRelations(): array
@@ -74,13 +74,13 @@ class Calendar extends CommonDropdown
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Calendar', 'Calendars', $nb);
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = parent::defineTabs($options);

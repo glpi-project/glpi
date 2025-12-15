@@ -61,9 +61,9 @@ use function Safe\ob_start;
  **/
 class Event extends CommonDBTM
 {
-    public static $rightname = 'system_logs';
+    public static string $rightname = 'system_logs';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Event log', 'Event logs', $nb);
     }

@@ -61,7 +61,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
-    public static $rightname                   = 'project';
+    public static string $rightname                   = 'project';
     protected $usenotepad               = true;
 
     public const READMY                        = 1;
@@ -84,7 +84,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Project', 'Projects', $nb);
     }
@@ -143,7 +143,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return $values;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (static::canView() && !$withtemplate) {
             $nb = 0;
@@ -168,7 +168,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case self::class:
@@ -186,7 +186,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return true;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

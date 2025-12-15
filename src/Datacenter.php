@@ -44,9 +44,9 @@ class Datacenter extends CommonDBTM
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public static string $rightname                   = 'datacenter';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         //TRANS: Test of comment for translation (mark : //TRANS)
         return _n('Data center', 'Data centers', $nb);
@@ -69,7 +69,7 @@ class Datacenter extends CommonDBTM
         return $this->managePictures($input);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

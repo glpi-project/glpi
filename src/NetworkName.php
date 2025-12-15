@@ -62,10 +62,10 @@ class NetworkName extends FQDNLabel
 
     public static $mustBeAttached        = false;
 
-    public static $rightname                   = 'internet';
+    public static string $rightname                   = 'internet';
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Network name', 'Network names', $nb);
     }
@@ -80,7 +80,7 @@ class NetworkName extends FQDNLabel
         return false;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong  = [];
         $this->addDefaultFormTab($ong);
@@ -811,7 +811,7 @@ TWIG, $twig_params);
         }
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case NetworkPort::class:
@@ -878,7 +878,7 @@ TWIG, $twig_params);
         return 0;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)

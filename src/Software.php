@@ -60,7 +60,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
     protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
 
-    public static $rightname                   = 'software';
+    public static string $rightname                   = 'software';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -77,7 +77,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Software', 'Software', $nb);
     }
@@ -97,7 +97,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return 'inventory';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             !$withtemplate
@@ -110,7 +110,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             $item->showMergeCandidates();
@@ -118,7 +118,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return true;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

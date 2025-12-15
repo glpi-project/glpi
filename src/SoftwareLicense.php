@@ -63,7 +63,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     protected static $forward_entity_to = ['Infocom'];
 
-    public static $rightname                   = 'license';
+    public static string $rightname                   = 'license';
     protected $usenotepad               = true;
 
 
@@ -79,7 +79,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('License', 'Licenses', $nb);
     }
@@ -234,7 +234,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return '';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -1192,7 +1192,7 @@ TWIG, $twig_params);
         ];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -1230,7 +1230,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === Software::class && self::canView()) {
             self::showForSoftware($item);

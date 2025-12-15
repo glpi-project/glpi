@@ -92,7 +92,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public $dohistory             = true;
 
-    public static $rightname             = 'profile';
+    public static string $rightname             = 'profile';
 
     /**
      * Profile rights to update after profile update.
@@ -154,7 +154,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return $forbidden;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Profile', 'Profiles', $nb);
     }
@@ -164,7 +164,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return ['admin', self::class];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -176,7 +176,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -204,7 +204,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $item->cleanProfile();

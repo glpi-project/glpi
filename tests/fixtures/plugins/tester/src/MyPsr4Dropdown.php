@@ -38,7 +38,7 @@ use CommonDropdown;
 
 final class MyPsr4Dropdown extends CommonDropdown
 {
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName(int $nb = 0): string
     {
         return 'Tester plugin PSR4 dropdown';
     }

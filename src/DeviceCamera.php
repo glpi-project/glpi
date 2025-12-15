@@ -37,12 +37,12 @@ class DeviceCamera extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceCamera', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Camera', 'Cameras', $nb);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

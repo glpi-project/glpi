@@ -54,7 +54,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public $grouplinkclass              = 'Change_Group';
     public $supplierlinkclass           = 'Change_Supplier';
 
-    public static $rightname            = 'change';
+    public static string $rightname            = 'change';
     protected $usenotepad               = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
@@ -70,7 +70,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public const CANCELED               = 14;
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Change', 'Changes', $nb);
     }
@@ -219,7 +219,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -274,7 +274,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -297,7 +297,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

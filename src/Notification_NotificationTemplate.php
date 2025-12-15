@@ -50,7 +50,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
     public $no_form_page    = false;
-    protected $displaylist  = false;
+    protected bool $displaylist  = false;
 
     public const MODE_MAIL      = 'mailing';
     public const MODE_AJAX      = 'ajax';
@@ -60,13 +60,13 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public const MODE_IRC       = 'irc';
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Template', 'Templates', $nb);
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (!$withtemplate && Notification::canView()) {
@@ -94,7 +94,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch (get_class($item)) {
             case Notification::class:

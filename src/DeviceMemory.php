@@ -40,7 +40,7 @@ class DeviceMemory extends CommonDevice
 {
     protected static $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Memory', 'Memory', $nb);
     }

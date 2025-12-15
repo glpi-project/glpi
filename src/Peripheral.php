@@ -63,7 +63,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
         'Item_OperatingSystem', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'peripheral';
+    public static string $rightname                   = 'peripheral';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -88,7 +88,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Peripheral', 'Peripherals', $nb);
     }
@@ -114,7 +114,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

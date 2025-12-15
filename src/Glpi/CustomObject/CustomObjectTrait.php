@@ -40,7 +40,7 @@ use Toolbox;
 
 trait CustomObjectTrait
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return static::getDefinition()->getTranslatedName($nb);
     }
@@ -48,7 +48,7 @@ trait CustomObjectTrait
     /**
      * @see \CommonGLPI::getSearchURL()
      */
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         return Toolbox::getItemTypeSearchURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
             . '?class=' . static::getDefinition()->fields['system_name'];
@@ -57,7 +57,7 @@ trait CustomObjectTrait
     /**
      * @see \CommonGLPI::getFormURL()
      */
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         return Toolbox::getItemTypeFormURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
             . '?class=' . static::getDefinition()->fields['system_name'];

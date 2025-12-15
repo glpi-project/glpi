@@ -43,7 +43,7 @@ final class Foo extends CommonDBChild
     public static $items_id = 'items_id';
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return 'Foo';
     }

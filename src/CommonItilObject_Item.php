@@ -520,7 +520,7 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -634,7 +634,7 @@ TWIG, $twig_params);
         return $result['cpt'] ?? 0;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

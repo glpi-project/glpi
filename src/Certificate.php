@@ -56,7 +56,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     }
 
     public $dohistory           = true;
-    public static $rightname           = "certificate";
+    public static string $rightname           = "certificate";
     protected $usenotepad       = true;
 
     public function getCloneRelations(): array
@@ -72,7 +72,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Certificate', 'Certificates', $nb);
     }
@@ -492,7 +492,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return $tab;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

@@ -55,7 +55,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'appliance';
+    public static string $rightname                   = 'appliance';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -84,12 +84,12 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return 'inventory';
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Appliance', 'Appliances', $nb);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

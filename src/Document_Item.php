@@ -52,7 +52,7 @@ class Document_Item extends CommonDBRelation
     public static $items_id_2    = 'items_id';
     public static $take_entity_2 = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Document item', 'Document items', $nb);
     }
@@ -261,7 +261,7 @@ class Document_Item extends CommonDBRelation
         parent::post_purgeItem();
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -308,7 +308,7 @@ class Document_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

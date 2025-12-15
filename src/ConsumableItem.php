@@ -62,7 +62,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
     public $dohistory                   = true;
     protected $usenotepad               = true;
 
-    public static $rightname                   = 'consumable';
+    public static string $rightname                   = 'consumable';
 
     public function getCloneRelations(): array
     {
@@ -72,7 +72,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Consumable model', 'Consumable models', $nb);
     }
@@ -141,7 +141,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         }
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

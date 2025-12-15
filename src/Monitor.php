@@ -62,7 +62,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
         'Item_SoftwareVersion',
     ];
 
-    public static $rightname            = 'monitor';
+    public static string $rightname            = 'monitor';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -85,7 +85,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Monitor', 'Monitors', $nb);
     }
@@ -111,7 +111,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

@@ -35,9 +35,9 @@
 
 class DomainType extends CommonDropdown
 {
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Domain type', 'Domain types', $nb);
     }

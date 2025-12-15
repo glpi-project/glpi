@@ -66,7 +66,7 @@ class Agent extends CommonDBTM
     public $dohistory = true;
 
     /** @var string */
-    public static $rightname = 'agent';
+    public static string $rightname = 'agent';
     //static $rightname = 'inventory';
 
     /** @var bool */
@@ -74,7 +74,7 @@ class Agent extends CommonDBTM
 
     public $history_blacklist = ['last_contact'];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Agent', 'Agents', $nb);
     }
@@ -348,7 +348,7 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

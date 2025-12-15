@@ -81,7 +81,7 @@ class Contract_Item extends CommonDBRelation
         return parent::canCreateItem();
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Link Contract/Item', 'Links Contract/Item', $nb);
     }
@@ -196,7 +196,7 @@ class Contract_Item extends CommonDBRelation
         return $items;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -224,7 +224,7 @@ class Contract_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 

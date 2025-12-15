@@ -58,7 +58,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     // From CommonDBTM
     public $auto_message_on_action = false;
 
-    public static $rightname = 'task';
+    public static string $rightname = 'task';
 
     /** @return class-string<CommonITILObject> */
     public static function getItilObjectItemType()
@@ -300,7 +300,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return $parent::canView();
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Task', 'Tasks', $nb);
     }
@@ -356,7 +356,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (

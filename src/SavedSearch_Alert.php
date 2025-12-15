@@ -48,7 +48,7 @@ class SavedSearch_Alert extends CommonDBChild
     public static $itemtype = 'SavedSearch';
     public static $items_id = 'savedsearches_id';
     public $dohistory       = true;
-    protected $displaylist  = false;
+    protected bool $displaylist  = false;
 
     public const OP_LESS     = 0;
     public const OP_LESSEQ   = 1;
@@ -57,7 +57,7 @@ class SavedSearch_Alert extends CommonDBChild
     public const OP_GREATEQ  = 4;
     public const OP_GREAT    = 5;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Saved search alert', 'Saved searches alerts', $nb);
     }
@@ -67,7 +67,7 @@ class SavedSearch_Alert extends CommonDBChild
         return 'ti ti-bell';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         // can exists for template
         if (
@@ -86,7 +86,7 @@ class SavedSearch_Alert extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof SavedSearch) {
             return false;
@@ -97,7 +97,7 @@ class SavedSearch_Alert extends CommonDBChild
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

@@ -50,9 +50,9 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'unmanaged';
+    public static string $rightname                   = 'unmanaged';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Unmanaged asset', 'Unmanaged assets', $nb);
     }
@@ -67,7 +67,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         return 'inventory';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

@@ -44,7 +44,7 @@ class Group_Item extends CommonDBRelation
     public static $itemtype_2          = 'itemtype';
     public static $items_id_2          = 'items_id';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Group item', 'Group items', $nb);
     }

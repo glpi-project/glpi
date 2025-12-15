@@ -76,13 +76,13 @@ class Config extends CommonDBTM
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
     // From CommonGLPI
-    protected $displaylist         = false;
+    protected bool $displaylist         = false;
 
     // From CommonDBTM
     public $auto_message_on_action = false;
-    public $showdebug              = true;
+    public bool $showdebug              = true;
 
-    public static $rightname              = 'config';
+    public static string $rightname              = 'config';
 
     public static $undisclosedFields      = [
         'proxy_passwd',
@@ -104,7 +104,7 @@ class Config extends CommonDBTM
      */
     private static $loaded = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Setup');
     }
@@ -152,7 +152,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];
@@ -957,7 +957,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -1008,7 +1008,7 @@ class Config extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 

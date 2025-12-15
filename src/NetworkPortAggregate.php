@@ -41,7 +41,7 @@ use Glpi\Toolbox\ArrayNormalizer;
  */
 class NetworkPortAggregate extends NetworkPortInstantiation
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Aggregation port');
     }

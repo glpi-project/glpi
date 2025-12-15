@@ -45,13 +45,13 @@ class Item_Enclosure extends CommonDBRelation
     public static $mustBeAttached_1 = false; // FIXME It make no sense for an enclosure item to not be attached to an Enclosure.
     public static $mustBeAttached_2 = false; // FIXME It make no sense for an enclosure item to not be attached to an Item.
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Enclosure item', 'Enclosure items', $nb);
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -64,7 +64,7 @@ class Item_Enclosure extends CommonDBRelation
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof Enclosure) {
             return false;

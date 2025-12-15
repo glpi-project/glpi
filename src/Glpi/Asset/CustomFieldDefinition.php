@@ -53,9 +53,9 @@ final class CustomFieldDefinition extends CommonDBChild
     public static $itemtype = AssetDefinition::class;
     public static $items_id = 'assets_assetdefinitions_id';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Custom field', 'Custom fields', $nb);
     }

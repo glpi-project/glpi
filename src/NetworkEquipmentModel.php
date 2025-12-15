@@ -36,12 +36,12 @@
 /// Class NetworkEquipmentModel
 class NetworkEquipmentModel extends CommonDCModelDropdown
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Networking equipment model', 'Networking equipment models', $nb);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = parent::defineTabs($options);
 

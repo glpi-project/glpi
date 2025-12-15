@@ -40,11 +40,11 @@
 
 class LineOperator extends CommonDropdown
 {
-    public static $rightname = 'lineoperator';
+    public static string $rightname = 'lineoperator';
 
     public $can_be_translated = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Line operator', 'Line operators', $nb);
     }

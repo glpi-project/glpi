@@ -77,12 +77,12 @@ class ProjectTask_Ticket extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Link Ticket/Project task', 'Links Ticket/Project task', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (static::canView()) {
             $nb = 0;
@@ -103,7 +103,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case ProjectTask::class:

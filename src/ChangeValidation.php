@@ -42,10 +42,10 @@ class ChangeValidation extends CommonITILValidation
     public static $itemtype           = 'Change';
     public static $items_id           = 'changes_id';
 
-    public static $rightname                 = 'changevalidation';
+    public static string $rightname                 = 'changevalidation';
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Change approval', 'Change approvals', $nb);
     }

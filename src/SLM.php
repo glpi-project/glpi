@@ -46,14 +46,14 @@ class SLM extends CommonDBTM
 
     protected static $forward_entity_to = ['SLA', 'OLA'];
 
-    public static $rightname                   = 'slm';
+    public static string $rightname                   = 'slm';
 
     public const TTR = 0; // Time to resolve
     public const TTO = 1; // Time to own
 
     public const RIGHT_ASSIGN = 256;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Service level', 'Service levels', $nb);
     }
@@ -68,7 +68,7 @@ class SLM extends CommonDBTM
         return 'setup';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -174,7 +174,7 @@ class SLM extends CommonDBTM
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% extends 'generic_show_form.html.twig' %}
             {% import 'components/form/fields_macros.html.twig' as fields %}
-            
+
             {% block more_fields %}
                 {{ fields.dropdownField('Calendar', 'calendars_id', item.fields['use_ticket_calendar'] ? -1 : item.fields['calendars_id'], 'Calendar'|itemtype_name(1), {
                     emptylabel: empty_label,

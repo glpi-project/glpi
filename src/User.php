@@ -90,7 +90,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const UPDATEAUTHENT       = 4096;
     public const IMPERSONATE         = 8192;
 
-    public static $rightname = 'user';
+    public static string $rightname = 'user';
 
     public static $undisclosedFields = [
         'password',
@@ -143,7 +143,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         //FIXME? clone config
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('User', 'Users', $nb);
     }
@@ -361,7 +361,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         switch ($item::class) {
@@ -385,7 +385,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -415,7 +415,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

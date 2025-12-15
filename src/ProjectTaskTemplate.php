@@ -44,9 +44,9 @@ class ProjectTaskTemplate extends CommonDropdown
     /** @var bool */
     public $can_be_translated  = true;
 
-    public static $rightname          = 'project';
+    public static string $rightname          = 'project';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Project task template', 'Project task templates', $nb);
     }
@@ -251,7 +251,7 @@ class ProjectTaskTemplate extends CommonDropdown
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = parent::defineTabs($options);

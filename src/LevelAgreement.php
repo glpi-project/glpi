@@ -46,7 +46,7 @@ abstract class LevelAgreement extends CommonDBChild
 {
     // From CommonDBTM
     public $dohistory          = true;
-    public static $rightname       = 'slm';
+    public static string $rightname       = 'slm';
 
     // From CommonDBChild
     public static $itemtype = 'SLM';
@@ -108,7 +108,7 @@ abstract class LevelAgreement extends CommonDBChild
         return static::$prefix . '_waiting_duration';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -490,7 +490,7 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -509,7 +509,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch (true) {
             case $item instanceof SLM:

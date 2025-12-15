@@ -49,7 +49,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'cluster';
+    public static string $rightname                   = 'cluster';
 
     public function getCloneRelations(): array
     {
@@ -61,7 +61,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Cluster', 'Clusters', $nb);
     }
@@ -76,7 +76,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
         return 'inventory';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

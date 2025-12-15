@@ -49,7 +49,7 @@ use function Safe\json_encode;
 
 abstract class ItemTranslation extends CommonDBChild
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';

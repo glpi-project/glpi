@@ -53,9 +53,9 @@ class PassiveDCEquipment extends CommonDBTM implements AssignableItemInterface, 
 
     // From CommonDBTM
     public $dohistory = true;
-    public static $rightname = 'datacenter';
+    public static string $rightname = 'datacenter';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Passive device', 'Passive devices', $nb);
     }
@@ -70,7 +70,7 @@ class PassiveDCEquipment extends CommonDBTM implements AssignableItemInterface, 
         return 'inventory';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

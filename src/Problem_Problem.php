@@ -49,7 +49,7 @@ class Problem_Problem extends CommonITILObject_CommonITILObject
     public static $itemtype_2   = 'Problem';
     public static $items_id_2   = 'problems_id_2';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Link Problem/Problem', 'Links Problem/Problem', $nb);
     }

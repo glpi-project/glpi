@@ -71,7 +71,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
 
-    public static $rightname   = 'knowbase';
+    public static string $rightname   = 'knowbase';
 
     public function getCloneRelations(): array
     {
@@ -87,7 +87,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Knowledge base');
     }
@@ -167,7 +167,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $this->canViewItem() && Session::haveRight(self::$rightname, self::COMMENTS);
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 
@@ -179,7 +179,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return "$dir/front/helpdesk.faq.php";
     }
 
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         global $CFG_GLPI;
 
@@ -214,7 +214,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $url;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -229,7 +229,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -253,7 +253,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;

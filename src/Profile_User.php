@@ -980,7 +980,7 @@ TWIG, $avatar_params) . $username;
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Profile', 'Profiles', $nb);
     }
@@ -1007,7 +1007,7 @@ TWIG, $avatar_params) . $username;
         return $name;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $DB;
 
@@ -1063,7 +1063,7 @@ TWIG, $avatar_params) . $username;
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         switch (get_class($item)) {

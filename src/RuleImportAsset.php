@@ -58,7 +58,7 @@ class RuleImportAsset extends Rule
 
     public $restrict_matching = Rule::AND_MATCHING;
 
-    public static $rightname         = 'rule_import';
+    public static string $rightname         = 'rule_import';
 
     /** @var int */
     private $found_criteria = 0;

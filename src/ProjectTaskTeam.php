@@ -69,7 +69,7 @@ class ProjectTaskTeam extends CommonDBRelation
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Task team', 'Task teams', $nb);
     }
@@ -88,7 +88,7 @@ class ProjectTaskTeam extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (!$withtemplate && static::canView()) {
@@ -105,7 +105,7 @@ class ProjectTaskTeam extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         switch (get_class($item)) {

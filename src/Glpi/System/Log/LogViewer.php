@@ -47,7 +47,7 @@ final class LogViewer extends CommonGLPI
      */
     private $log_parser;
 
-    public static $rightname = 'system_logs';
+    public static string $rightname = 'system_logs';
 
     public function __construct()
     {
@@ -55,7 +55,7 @@ final class LogViewer extends CommonGLPI
         parent::__construct();
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Log', 'Logs', $nb);
     }
@@ -166,7 +166,7 @@ final class LogViewer extends CommonGLPI
         return "ti ti-news";
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 

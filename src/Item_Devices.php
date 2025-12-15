@@ -78,7 +78,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
-    public static $rightname = 'device';
+    public static string $rightname = 'device';
 
     public function getCloneRelations(): array
     {
@@ -102,7 +102,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return $name;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         $device_type = static::getDeviceType();
         $device_typename = $device_type::getTypeName(1);
@@ -591,7 +591,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if ($item->canView()) {
@@ -634,7 +634,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         self::showForItem($item, $withtemplate);
@@ -1472,7 +1472,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];
@@ -1648,7 +1648,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         }
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 

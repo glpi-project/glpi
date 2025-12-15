@@ -48,7 +48,7 @@ use Glpi\System\Requirement\SessionsSecurityConfiguration;
  **/
 class Central extends CommonGLPI
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
 
         // No plural
@@ -56,7 +56,7 @@ class Central extends CommonGLPI
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];
@@ -66,7 +66,7 @@ class Central extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if ($item->getType() == self::class) {
@@ -88,7 +88,7 @@ class Central extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         if ($item instanceof self) {

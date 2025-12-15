@@ -77,7 +77,7 @@ class Log extends CommonDBTM
     // Plugin must use value starting from
     public const HISTORY_PLUGIN             = 1000;
 
-    public static $rightname = 'logs';
+    public static string $rightname = 'logs';
 
     /** @var array  */
     public static array $queue = [];
@@ -85,7 +85,7 @@ class Log extends CommonDBTM
     public static bool $use_queue = false;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Historical');
     }
@@ -95,7 +95,7 @@ class Log extends CommonDBTM
         return 'ti ti-history';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!self::canView()) {
             return '';
@@ -117,7 +117,7 @@ class Log extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

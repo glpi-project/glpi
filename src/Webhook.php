@@ -64,7 +64,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
     use Clonable;
     use FilterableTrait;
 
-    public static $rightname         = 'config';
+    public static string $rightname         = 'config';
 
     // From CommonDBTM
     public $dohistory                = true;
@@ -87,7 +87,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ]);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Webhook', 'Webhooks', $nb);
     }
@@ -129,7 +129,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return empty($itemtype) || (is_subclass_of($itemtype, CommonGLPI::class) && $itemtype::canView());
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $parent_tabs = parent::defineTabs();
         $tabs = [
@@ -776,7 +776,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$item instanceof self) {
             throw new RuntimeException("This tab is only available for Webhooks items");
@@ -806,7 +806,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ];
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;

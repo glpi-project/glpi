@@ -40,7 +40,7 @@ use Glpi\Socket;
  **/
 class CableStrand extends CommonDropdown
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Cable strand', 'Cable strands', $nb);
     }
@@ -51,7 +51,7 @@ class CableStrand extends CommonDropdown
         return _n('Cable strand', 'Cable strands', 1);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = parent::defineTabs($options);
@@ -66,7 +66,7 @@ class CableStrand extends CommonDropdown
         Rule::cleanForItemCriteria($this, '_cablestrands_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -86,7 +86,7 @@ class CableStrand extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             return $item->showItems();

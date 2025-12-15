@@ -67,9 +67,9 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public static string $rightname                   = 'datacenter';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         //TRANS: Test of comment for translation (mark : //TRANS)
         return _n('Rack', 'Racks', $nb);
@@ -80,7 +80,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         return ['assets', self::class];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this
@@ -369,7 +369,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         switch (get_class($item)) {
             case DCRoom::class:
@@ -392,7 +392,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof DCRoom) {
             return self::showForRoom($item);

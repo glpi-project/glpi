@@ -47,11 +47,11 @@ abstract class NotificationSetting extends CommonDBTM
      * @var string
      */
     public $table           = 'glpi_configs';
-    protected $displaylist  = false;
-    public static $rightname       = 'config';
+    protected bool $displaylist  = false;
+    public static string $rightname       = 'config';
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         throw new RuntimeException('getTypeName must be implemented');
     }
@@ -88,7 +88,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addStandardTab(static::class, $ong, $options);
@@ -97,7 +97,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         switch ($item->getType()) {
             case static::class:
@@ -108,7 +108,7 @@ abstract class NotificationSetting extends CommonDBTM
     }
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (get_class($item) == static::class) {
             switch ($tabnum) {

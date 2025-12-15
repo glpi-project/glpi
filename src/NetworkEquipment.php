@@ -63,7 +63,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'networking';
+    public static string $rightname                   = 'networking';
     protected $usenotepad               = true;
 
     /** RELATIONS */
@@ -89,7 +89,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Network device', 'Network devices', $nb);
     }
@@ -126,7 +126,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

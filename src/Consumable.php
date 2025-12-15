@@ -55,7 +55,7 @@ class Consumable extends CommonDBChild
     protected static $forward_entity_to = ['Infocom'];
     public $no_form_page                = true;
 
-    public static $rightname                   = 'consumable';
+    public static string $rightname                   = 'consumable';
 
     // From CommonDBChild
     public static $itemtype             = 'ConsumableItem';
@@ -90,7 +90,7 @@ class Consumable extends CommonDBChild
         return 'id';
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Consumable', 'Consumables', $nb);
     }
@@ -814,7 +814,7 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
@@ -858,7 +858,7 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case ConsumableItem::class:

@@ -38,7 +38,7 @@
  **/
 class NotImportedEmail extends CommonDBTM
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const MATCH_NO_RULE     = 0;
     public const USER_UNKNOWN      = 1;
@@ -58,7 +58,7 @@ class NotImportedEmail extends CommonDBTM
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Refused email', 'Refused emails', $nb);
     }

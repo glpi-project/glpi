@@ -43,12 +43,12 @@ class ManualLink extends CommonDBChild
 {
     public $dohistory              = false;
     public $auto_message_on_action = false; // Link in message can't work'
-    protected $displaylist         = false;
+    protected bool $displaylist         = false;
     public static $logs_for_parent = true;
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Manual link', 'Manual links', $nb);
     }
@@ -58,7 +58,7 @@ class ManualLink extends CommonDBChild
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         $count = 0;
@@ -87,7 +87,7 @@ class ManualLink extends CommonDBChild
         return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

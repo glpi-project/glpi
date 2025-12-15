@@ -53,7 +53,7 @@ final class HomePageTabs extends CommonGLPI
     private const DASHBOARD_TAB = 5;
 
     #[Override]
-    public function defineTabs($options = []): array
+    public function defineTabs(array $options = []): array
     {
         $tabs = [];
         $this->addStandardTab(self::class, $tabs, $options);
@@ -65,7 +65,7 @@ final class HomePageTabs extends CommonGLPI
     #[Override]
     public function getTabNameForItem(
         CommonGLPI $item,
-        $withtemplate = 0
+        int $withtemplate = 0
     ): array|string {
         // Only available on self
         if (!($item instanceof self)) {
@@ -116,8 +116,8 @@ final class HomePageTabs extends CommonGLPI
     #[Override]
     public static function displayTabContentForItem(
         CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
+        int        $tabnum = 1,
+        int $withtemplate = 0
     ): bool {
         if (!($item instanceof self)) {
             return false;

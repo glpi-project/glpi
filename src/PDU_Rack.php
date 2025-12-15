@@ -52,7 +52,7 @@ class PDU_Rack extends CommonDBRelation
     public const SIDE_TOP    = 3;
     public const SIDE_BOTTOM = 4;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Item', 'Item', $nb);
     }

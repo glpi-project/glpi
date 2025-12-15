@@ -93,7 +93,7 @@ final class AssetDefinition extends AbstractDefinition
         return sprintf('asset_%s', strtolower($this->fields['system_name']));
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Asset definition', 'Asset definitions', $nb);
     }
@@ -103,7 +103,7 @@ final class AssetDefinition extends AbstractDefinition
         return $this->getTranslatedName();
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             $capacities_count   = 0;
@@ -147,7 +147,7 @@ final class AssetDefinition extends AbstractDefinition
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             switch ($tabnum) {

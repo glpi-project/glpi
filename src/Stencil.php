@@ -46,7 +46,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
 
     private CommonDBTM $item;
 
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName(int $nb = 0): string
     {
         return __('Stencil');
     }
@@ -275,7 +275,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         echo Html::scss('css/standalone/stencil-editor.scss');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): string
     {
         if (!($item instanceof CommonDBTM)) {
             return '';

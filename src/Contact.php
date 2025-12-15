@@ -50,12 +50,12 @@ class Contact extends CommonDBTM
     // From CommonDBTM
     public $dohistory           = true;
 
-    public static $rightname           = 'contact_enterprise';
+    public static string $rightname           = 'contact_enterprise';
     protected $usenotepad       = true;
 
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Contact', 'Contacts', $nb);
     }
@@ -102,7 +102,7 @@ class Contact extends CommonDBTM
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

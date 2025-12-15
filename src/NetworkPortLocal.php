@@ -42,7 +42,7 @@ class NetworkPortLocal extends NetworkPortInstantiation
     public $canHaveVLAN = false;
     public $haveMAC     = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Local loop port');
     }

@@ -44,7 +44,7 @@ class TicketCost extends CommonITILCost
     public static $itemtype  = 'Ticket';
     public static $items_id  = 'tickets_id';
 
-    public static $rightname        = 'ticketcost';
+    public static string $rightname        = 'ticketcost';
 
     public function post_updateItem($history = true)
     {

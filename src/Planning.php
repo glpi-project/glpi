@@ -57,7 +57,7 @@ use function Safe\strtotime;
  **/
 class Planning extends CommonGLPI
 {
-    public static $rightname = 'planning';
+    public static string $rightname = 'planning';
 
     /** @var string[]  */
     public static $palette_bg = ['#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
@@ -88,7 +88,7 @@ class Planning extends CommonGLPI
     public const TODO = 1;
     public const DONE = 2;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Planning');
     }
@@ -180,7 +180,7 @@ class Planning extends CommonGLPI
         ]);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong               = [];
         $ong['no_all_tab'] = true;
@@ -190,7 +190,7 @@ class Planning extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $tabs[1] = self::createTabEntry(self::getTypeName());
@@ -200,7 +200,7 @@ class Planning extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {

@@ -54,7 +54,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /** @use Clonable<static> */
     use Clonable;
 
-    public static $rightname               = 'bookmark_public';
+    public static string $rightname               = 'bookmark_public';
 
     public const SEARCH = 1; //SEARCH SYSTEM bookmark
     public const URI    = 2;
@@ -69,7 +69,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return ['add'];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Saved search', 'Saved searches', $nb);
     }
@@ -284,7 +284,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::canViewItem();
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

@@ -147,7 +147,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'notification';
+    public static string $rightname = 'notification';
 
     // Filterable implementation
     public function getItemtypeToFilter(): string
@@ -171,7 +171,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Notification', 'Notifications', $nb);
     }
@@ -221,7 +221,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         // Get parents tabs
         $parent_tabs = parent::defineTabs();

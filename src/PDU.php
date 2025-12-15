@@ -55,7 +55,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public static string $rightname                   = 'datacenter';
 
     public function getCloneRelations(): array
     {
@@ -69,7 +69,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('PDU', 'PDUs', $nb);
     }
@@ -84,7 +84,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         return 'inventory';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

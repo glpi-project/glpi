@@ -61,7 +61,7 @@ class NotificationTemplate extends CommonDBTM
      */
     public $templates_by_languages = [];
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     #[Override]
     public function getCloneRelations(): array
@@ -72,7 +72,7 @@ class NotificationTemplate extends CommonDBTM
     }
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Notification template', 'Notification templates', $nb);
     }
@@ -102,7 +102,7 @@ class NotificationTemplate extends CommonDBTM
     }
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

@@ -43,9 +43,9 @@ class TicketRecurrent extends CommonITILRecurrent
     /**
      * @var string Right managements
      */
-    public static $rightname = 'ticketrecurrent';
+    public static string $rightname = 'ticketrecurrent';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Recurrent tickets');
     }
@@ -89,7 +89,7 @@ class TicketRecurrent extends CommonITILRecurrent
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = parent::defineTabs($options);
         $this->addStandardTab(Item_TicketRecurrent::class, $ong, $options);

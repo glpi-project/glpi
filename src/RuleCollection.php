@@ -91,13 +91,13 @@ class RuleCollection extends CommonDBTM
     /** @var int */
     public $entity                                = 0;
 
-    public static $rightname                             = 'config';
+    public static string $rightname                             = 'config';
 
     /**
      * @var string Tab orientation : horizontal or vertical
      * @phpstan-var 'horizontal'|'vertical'
      */
-    public $taborientation = 'horizontal';
+    public string $taborientation = 'horizontal';
 
     public static function getTable($classname = null)
     {
@@ -1984,7 +1984,7 @@ TWIG, $twig_params);
         return false;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong               = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -2002,7 +2002,7 @@ TWIG, $twig_params);
         return _n('Rule', 'Rules', Session::getPluralNumber());
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             $ong = [];
@@ -2040,7 +2040,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             $options = $_GET;

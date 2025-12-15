@@ -49,7 +49,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 {
     public $dohistory = true;
 
-    public static $rightname = 'internet';
+    public static string $rightname = 'internet';
 
     /**
      * Data used during add/update process to handle CommonImplicitTreeDropdown ancestors/sons.
@@ -84,7 +84,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
      */
     private $networkUpdate;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('IP network', 'IP networks', $nb);
     }
@@ -750,7 +750,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

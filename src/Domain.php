@@ -48,7 +48,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         post_updateItem as post_updateItemAssignableItem;
     }
 
-    public static $rightname = 'domain';
+    public static string $rightname = 'domain';
     protected static $forward_entity_to = ['DomainRecord'];
 
     /** @var bool */
@@ -79,7 +79,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Domain', 'Domains', $nb);
     }
@@ -323,7 +323,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $tab;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

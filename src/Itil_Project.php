@@ -48,7 +48,7 @@ class Itil_Project extends CommonDBRelation
     public static $itemtype_2 = 'Project';
     public static $items_id_2 = 'projects_id';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Link Project/Itil', 'Links Project/Itil', $nb);
     }
@@ -60,7 +60,7 @@ class Itil_Project extends CommonDBRelation
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $label = '';
 
@@ -101,7 +101,7 @@ class Itil_Project extends CommonDBRelation
         return $label;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case Change::class:

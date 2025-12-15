@@ -49,14 +49,14 @@ class Link extends CommonDBTM
     // From CommonDBTM
     public $dohistory                   = true;
 
-    public static $rightname = 'link';
+    public static string $rightname = 'link';
     /** @var string[] */
     public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',
         'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL',
     ];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('External link', 'External links', $nb);
     }
@@ -89,7 +89,7 @@ class Link extends CommonDBTM
         }
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (self::canView()) {
             $nb = 0;
@@ -114,7 +114,7 @@ class Link extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -123,7 +123,7 @@ class Link extends CommonDBTM
         return true;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

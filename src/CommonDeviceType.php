@@ -35,12 +35,12 @@
 
 abstract class CommonDeviceType extends CommonType
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Device type', 'Device types', $nb);
     }
 
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         global $CFG_GLPI;
 
@@ -51,7 +51,7 @@ abstract class CommonDeviceType extends CommonType
         return $link;
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 

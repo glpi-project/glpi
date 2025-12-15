@@ -73,7 +73,7 @@ class Impact extends CommonGLPI
     // Config values
     public const CONF_ENABLED = 'impact_enabled_itemtypes';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Impact analysis');
     }
@@ -86,7 +86,7 @@ class Impact extends CommonGLPI
         return 'ti ti-affiliate';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $DB;
 
@@ -150,8 +150,8 @@ class Impact extends CommonGLPI
 
     public static function displayTabContentForItem(
         CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
+        int        $tabnum = 1,
+        int $withtemplate = 0
     ) {
         // Impact analysis should not be available outside of central or used with templates
         if (Session::getCurrentInterface() !== "central" || $withtemplate != 0) {

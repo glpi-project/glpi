@@ -38,7 +38,7 @@ class SoftwareLicenseType extends CommonTreeDropdown
 {
     public $can_be_translated       = true;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('License type', 'License types', $nb);
     }

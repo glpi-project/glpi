@@ -53,7 +53,7 @@ class Cartridge extends CommonDBRelation
     public $dohistory                   = true;
     public $no_form_page                = true;
 
-    public static $rightname = 'cartridge';
+    public static string $rightname = 'cartridge';
 
     public static $itemtype_1 = 'CartridgeItem';
     public static $items_id_1 = 'cartridgeitems_id';
@@ -95,7 +95,7 @@ class Cartridge extends CommonDBRelation
         return 'id';
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Cartridge', 'Cartridges', $nb);
     }
@@ -1258,7 +1258,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
@@ -1299,7 +1299,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case Printer::class:

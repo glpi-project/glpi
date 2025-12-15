@@ -42,9 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class KnowbaseItem_Revision extends CommonDBTM
 {
-    public static $rightname   = 'knowbase';
+    public static string $rightname   = 'knowbase';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Revision', 'Revisions', $nb);
     }
@@ -54,7 +54,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         return 'ti ti-history';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             !($item instanceof CommonDBTM)
@@ -86,7 +86,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

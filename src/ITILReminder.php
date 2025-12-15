@@ -41,7 +41,7 @@ class ITILReminder extends CommonDBChild
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
     public static $items_id = 'items_id'; // Field name
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Automatic reminder', 'Automatic reminders', $nb);
     }

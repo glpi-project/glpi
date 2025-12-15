@@ -49,11 +49,11 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     use VobjectConverterTrait;
 
     public $dohistory = true;
-    public static $rightname = 'externalevent';
+    public static string $rightname = 'externalevent';
 
     public const MANAGE_BG_EVENTS =   1024;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('External event', 'External events', $nb);
     }
@@ -63,7 +63,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return ['helpdesk', Planning::class, self::class];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

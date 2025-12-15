@@ -64,8 +64,8 @@ class NetworkPort extends CommonDBChild
 
     protected static $forward_entity_to = ['NetworkName'];
 
-    public static $rightname                   = 'networking';
-    protected $displaylist = false;
+    public static string $rightname                   = 'networking';
+    protected bool $displaylist = false;
 
     /**
      * Subset of input that will be used for NetworkPortInstantiation.
@@ -168,7 +168,7 @@ class NetworkPort extends CommonDBChild
         return $CFG_GLPI['networkport_instantiations'];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Network port', 'Network ports', $nb);
     }
@@ -556,7 +556,7 @@ class NetworkPort extends CommonDBChild
         return false;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -1713,7 +1713,7 @@ class NetworkPort extends CommonDBChild
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 
@@ -1779,7 +1779,7 @@ class NetworkPort extends CommonDBChild
         );
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 

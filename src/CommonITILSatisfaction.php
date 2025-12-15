@@ -58,7 +58,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     abstract public static function getConfigSufix(): string;
     abstract public static function getSearchOptionIDOffset(): int;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Satisfaction');
     }
@@ -358,7 +358,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getFormURLWithID($id = 0, $full = true)
+    public static function getFormURLWithID(int $id = 0, bool $full = true)
     {
 
         $satisfaction = new static();

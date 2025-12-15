@@ -55,7 +55,7 @@ class SLA extends LevelAgreement
     protected static $levelticketclass  = SlaLevel_Ticket::class;
     protected static $forward_entity_to = [SlaLevel::class];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         // Acronym, no plural
         return __('SLA');

@@ -61,7 +61,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public $must_be_replace             = true;
     public $dohistory                   = true;
 
-    public static $rightname            = 'entity';
+    public static string $rightname            = 'entity';
     protected $usenotepad               = true;
 
     public const READHELPDESK       = 1024;
@@ -259,7 +259,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return true;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Entity', 'Entities', $nb);
     }
@@ -322,7 +322,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return Session::haveAccessToEntity($this->getField('id'));
     }
 
-    public static function isNewID($ID): bool
+    public static function isNewID(int $ID): bool
     {
         return (($ID < 0) || $ID === '');
     }
@@ -627,7 +627,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $input;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -643,7 +643,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -676,7 +676,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;

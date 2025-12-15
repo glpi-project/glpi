@@ -66,7 +66,7 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     public const SYSTEM_NAME_PATTERN = '[A-Za-z][A-Za-z0-9_]*[A-Za-z0-9]';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * @var CustomFieldDefinition[]|null
@@ -188,7 +188,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $this->getFromDBByCrit(['system_name' => $system_name]);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $tabs = [];
 

@@ -45,8 +45,8 @@ class APIClient extends CommonDBTM
     public const DOLOG_LOGS       = 1;
     public const DOLOG_HISTORICAL = 2;
 
-    public static $rightname = 'config';
-    protected $displaylist = false;
+    public static string $rightname = 'config';
+    protected bool $displaylist = false;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -65,7 +65,7 @@ class APIClient extends CommonDBTM
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n("API client", "API clients", $nb);
     }
@@ -80,7 +80,7 @@ class APIClient extends CommonDBTM
         return 'setup';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

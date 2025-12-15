@@ -81,7 +81,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     private ?Section $section = null;
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Question', 'Questions', $nb);
     }

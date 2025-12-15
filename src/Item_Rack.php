@@ -47,13 +47,13 @@ class Item_Rack extends CommonDBRelation
     public static $mustBeAttached_1 = false; // FIXME It make no sense for a rack item to not be attached to a Rack.
     public static $mustBeAttached_2 = false; // FIXME It make no sense for a rack item to not be attached to an Item.
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Item', 'Item', $nb);
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $nb = 0;
         if (
@@ -72,7 +72,7 @@ class Item_Rack extends CommonDBRelation
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof Rack) {
             return false;

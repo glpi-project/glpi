@@ -52,12 +52,12 @@ class Change_Problem extends CommonITILObject_CommonITILObject
     public static $items_id_2   = 'problems_id';
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Link Problem/Change', 'Links Problem/Change', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (static::canView()) {
             $nb = 0;
@@ -84,7 +84,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case Change::class:

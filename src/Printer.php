@@ -64,7 +64,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'printer';
+    public static string $rightname                   = 'printer';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -90,7 +90,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Printer', 'Printers', $nb);
     }
@@ -116,7 +116,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

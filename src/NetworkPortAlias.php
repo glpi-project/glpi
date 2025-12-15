@@ -40,7 +40,7 @@
  */
 class NetworkPortAlias extends NetworkPortInstantiation
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Alias port');
     }

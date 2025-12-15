@@ -45,13 +45,13 @@ class Item_Cluster extends CommonDBRelation
     public static $mustBeAttached_1 = false; // FIXME It make no sense for a cluster item to not be attached to a Cluster.
     public static $mustBeAttached_2 = false; // FIXME It make no sense for a cluster item to not be attached to an Item.
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Cluster item', 'Cluster items', $nb);
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -63,7 +63,7 @@ class Item_Cluster extends CommonDBRelation
         return self::createTabEntry(_n('Item', 'Items', $nb), $nb, $item::getType(), 'ti ti-package');
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof Cluster) {
             return false;

@@ -45,12 +45,12 @@ class NetworkPortConnectionLog extends CommonDBRelation
     public static $itemtype_2 = NetworkPort::class;
     public static $items_id_2 = 'networkports_id_destination';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Port connection history');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $array_ret = [];
 
@@ -76,7 +76,7 @@ class NetworkPortConnectionLog extends CommonDBRelation
         ];
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === NetworkPort::class && $item->getID() > 0) {
             $connectionlog = new self();

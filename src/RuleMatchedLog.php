@@ -49,9 +49,9 @@ class RuleMatchedLog extends CommonDBTM
      *
      * @var string
      */
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Matched rules');
     }
@@ -79,7 +79,7 @@ class RuleMatchedLog extends CommonDBTM
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $array_ret = [];
 
@@ -121,7 +121,7 @@ class RuleMatchedLog extends CommonDBTM
         return $array_ret;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof CommonDBTM && ($tabnum == '0' || $tabnum == '1') && $item->getID() > 0) {
             self::showForItem($item);

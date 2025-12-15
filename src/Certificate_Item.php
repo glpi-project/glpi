@@ -74,7 +74,7 @@ class Certificate_Item extends CommonDBRelation
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -106,8 +106,8 @@ class Certificate_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(
         CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
+        int        $tabnum = 1,
+        int $withtemplate = 0
     ) {
         if (!$item instanceof CommonDBTM) {
             return false;

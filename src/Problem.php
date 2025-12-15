@@ -54,7 +54,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public $grouplinkclass       = 'Group_Problem';
     public $supplierlinkclass    = 'Problem_Supplier';
 
-    public static $rightname            = 'problem';
+    public static string $rightname            = 'problem';
     protected $usenotepad        = true;
 
 
@@ -64,7 +64,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public const STATUS_MATRIX_FIELD  = 'problem_status';
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Problem', 'Problems', $nb);
     }
@@ -163,7 +163,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (static::canView()) {
@@ -212,7 +212,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     #[Override]
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -233,7 +233,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

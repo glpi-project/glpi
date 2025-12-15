@@ -61,7 +61,7 @@ class Socket extends CommonDBChild
 
     // From CommonDBTM
     public $dohistory          = true;
-    public static $rightname          = 'cable_management';
+    public static string $rightname          = 'cable_management';
     /** @var bool */
     public $can_be_translated  = false;
 
@@ -94,7 +94,7 @@ class Socket extends CommonDBChild
         return false;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -332,7 +332,7 @@ class Socket extends CommonDBChild
         return ($tab[$value] ?? $value);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Socket', 'Sockets', $nb);
     }
@@ -607,7 +607,7 @@ class Socket extends CommonDBChild
         }
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $CFG_GLPI;
         if (!$withtemplate) {
@@ -639,7 +639,7 @@ class Socket extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         global $CFG_GLPI;
         if ($item instanceof Location) {

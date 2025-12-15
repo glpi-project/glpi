@@ -68,7 +68,7 @@ class IPNetmask extends IPAddress
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Subnet mask', 'Subnet masks', $nb);
     }

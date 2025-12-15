@@ -67,7 +67,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     public $grouplinkclass              = Group_Ticket::class;
     public $supplierlinkclass           = Supplier_Ticket::class;
 
-    public static $rightname                   = 'ticket';
+    public static string $rightname                   = 'ticket';
 
     /**
      * @var bool
@@ -125,7 +125,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Ticket', 'Tickets', $nb);
     }
@@ -707,7 +707,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
         if (static::canView()) {
@@ -815,7 +815,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         switch (get_class($item)) {
@@ -844,7 +844,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $tabs = [];
         $this->addDefaultFormTab($tabs);

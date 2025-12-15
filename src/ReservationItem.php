@@ -49,21 +49,21 @@ class ReservationItem extends CommonDBChild
 
     public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-    public static $rightname                = 'reservation';
+    public static string $rightname                = 'reservation';
 
     public const RESERVEANITEM              = 1024;
 
-    public $get_item_to_display_tab  = false;
-    public $showdebug                = false;
+    public bool $get_item_to_display_tab  = false;
+    public bool $showdebug                = false;
 
-    public $taborientation           = 'horizontal';
+    public string $taborientation           = 'horizontal';
 
     public static function canView(): bool
     {
         return Session::haveRightsOr(self::$rightname, [READ, self::RESERVEANITEM]);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Reservable item', 'Reservable items', $nb);
     }
@@ -849,7 +849,7 @@ TWIG, $twig_params);
         return $values;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -857,7 +857,7 @@ TWIG, $twig_params);
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $tabs = [];
@@ -875,7 +875,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {

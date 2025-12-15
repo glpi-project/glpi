@@ -51,7 +51,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname            = 'database';
+    public static string $rightname            = 'database';
     protected $usenotepad               = true;
     protected static $forward_entity_to = ['Database'];
 
@@ -76,7 +76,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return false;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Database instance', 'Database instances', $nb);
     }
@@ -86,7 +86,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return ['management', Database::class, self::class];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -406,7 +406,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)
@@ -422,7 +422,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

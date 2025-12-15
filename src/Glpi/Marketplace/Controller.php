@@ -66,7 +66,7 @@ class Controller extends CommonGLPI
     /** @var string */
     protected $plugin_key = "";
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
     /** @var ?PluginsApi */
     public static $api       = null;
 
@@ -113,7 +113,7 @@ class Controller extends CommonGLPI
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Marketplace');
     }

@@ -44,7 +44,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     public const SON_OF         = 3;
     public const PARENT_OF      = 4;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Linked assistance object', 'Linked assistance objects', $nb);
     }

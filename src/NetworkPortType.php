@@ -42,7 +42,7 @@ class NetworkPortType extends CommonDropdown
 {
     public const DEFAULT_TYPE = 'NetworkPortEthernet';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Network port type', 'Network port types', $nb);
     }

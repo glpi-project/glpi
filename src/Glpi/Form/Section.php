@@ -84,7 +84,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     private ?Form $form = null;
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Section', 'Sections', $nb);
     }

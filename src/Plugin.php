@@ -141,7 +141,7 @@ class Plugin extends CommonDBTM
      */
     private const PLUGIN_KEY_PATTERN = '/^[a-z0-9]+$/i';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * Indicates whether plugins have been initialized.
@@ -198,7 +198,7 @@ class Plugin extends CommonDBTM
      */
     private ?array $filesystem_plugin_keys = null;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Plugin', 'Plugins', $nb);
     }

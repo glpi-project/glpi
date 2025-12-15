@@ -58,7 +58,7 @@ final class FormAccessControl extends CommonDBChild
     public static $items_id = 'forms_forms_id';
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Access control', 'Access controls', $nb);
     }
@@ -70,7 +70,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): string
     {
         // This tab is only available for forms
         if (!($item instanceof Form)) {
@@ -90,8 +90,8 @@ final class FormAccessControl extends CommonDBChild
     #[Override]
     public static function displayTabContentForItem(
         CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
+        int        $tabnum = 1,
+        int $withtemplate = 0
     ) {
         // This tab is only available for forms
         if (!($item instanceof Form)) {

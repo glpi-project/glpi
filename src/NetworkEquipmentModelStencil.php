@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class NetworkEquipmentModelStencil extends Stencil
 {
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName(int $nb = 0): string
     {
         return __('Graphical slot definition');
     }
@@ -71,7 +71,7 @@ class NetworkEquipmentModelStencil extends Stencil
         return 256;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

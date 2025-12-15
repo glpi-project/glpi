@@ -43,12 +43,12 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
     public static $itemtype_2 = 'ImageFormat';
     public static $items_id_2 = 'imageformats_id';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _nx('camera', 'Format', 'Formats', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         $nb = 0;
         if ($item instanceof CommonDBTM && $_SESSION['glpishow_count_on_tabs']) {
@@ -62,7 +62,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof DeviceCamera) {
             return false;

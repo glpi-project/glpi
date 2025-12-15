@@ -51,7 +51,7 @@ class ProblemTemplate extends ITILTemplate
         return new ProblemTemplatePredefinedField();
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Problem template', 'Problem templates', $nb);
     }

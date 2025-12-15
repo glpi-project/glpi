@@ -48,7 +48,7 @@ class Change_Item extends CommonItilObject_Item
     public static $items_id_2          = 'items_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Change item', 'Change items', $nb);
     }

@@ -37,12 +37,12 @@ use Glpi\Application\View\TemplateRenderer;
 
 final class ValidatorSubstitute extends CommonDBTM
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Authorized substitute', 'Authorized substitutes', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): string
     {
         if ($item instanceof Preference) {
             $user = User::getById(Session::getLoginUserID());
@@ -60,7 +60,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return 'ti ti-replace-user';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof Preference) {
             $user = User::getById(Session::getLoginUserID());

@@ -41,14 +41,14 @@ use Glpi\DBAL\QueryFunction;
  */
 abstract class CommonDevice extends CommonDropdown
 {
-    public static $rightname          = 'device';
+    public static string $rightname          = 'device';
 
     public $can_be_translated  = false;
 
     // From CommonDBTM
     public $dohistory           = true;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Component', 'Components', $nb);
     }
@@ -574,7 +574,7 @@ abstract class CommonDevice extends CommonDropdown
         ];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -641,7 +641,7 @@ abstract class CommonDevice extends CommonDropdown
         parent::post_updateItem($history);
     }
 
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         global $CFG_GLPI;
 
@@ -650,7 +650,7 @@ abstract class CommonDevice extends CommonDropdown
         return "$dir/front/device.form.php?itemtype=$itemtype";
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 

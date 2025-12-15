@@ -40,7 +40,7 @@ use function Safe\json_encode;
 
 class DomainRecordType extends CommonDropdown
 {
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
     /** @var array */
     public static $knowtypes = [
@@ -350,7 +350,7 @@ class DomainRecordType extends CommonDropdown
         return $fields;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Record type', 'Records types', $nb);
     }

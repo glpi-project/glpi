@@ -37,7 +37,7 @@ class ImageResolution extends CommonDropdown
 {
     public $can_be_translated = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _nx('image', 'Resolution', 'Resolutions', $nb);
     }

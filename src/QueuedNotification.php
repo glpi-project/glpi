@@ -47,10 +47,10 @@ use function Safe\strtotime;
  **/
 class QueuedNotification extends CommonDBTM
 {
-    public static $rightname = 'queuednotification';
+    public static string $rightname = 'queuednotification';
 
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Notification queue');
     }

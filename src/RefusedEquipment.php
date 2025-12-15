@@ -48,9 +48,9 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'refusedequipment';
+    public static string $rightname                   = 'refusedequipment';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Equipment refused by rules log', 'Equipments refused by rules log', $nb);
     }

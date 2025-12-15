@@ -40,13 +40,13 @@
  **/
 class Knowbase extends CommonGLPI
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         // No plural
         return __('Knowledge base');
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -55,7 +55,7 @@ class Knowbase extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             $tabs[1] = self::createTabEntry(_x('button', 'Search'), icon: 'ti ti-search');
@@ -66,7 +66,7 @@ class Knowbase extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === self::class) {
             switch ($tabnum) {

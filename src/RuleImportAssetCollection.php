@@ -43,10 +43,10 @@ class RuleImportAssetCollection extends RuleCollection
 {
     // From RuleCollection
     public $stop_on_first_match = true;
-    public static $rightname           = 'rule_import';
+    public static string $rightname           = 'rule_import';
     public $menu_option         = 'linkcomputer';
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = parent::defineTabs();
 
@@ -55,7 +55,7 @@ class RuleImportAssetCollection extends RuleCollection
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         global $CFG_GLPI;
 

@@ -49,12 +49,12 @@ class NetworkAlias extends FQDNLabel
     public static $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Network alias', 'Network aliases', $nb);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong  = [];
         $this->addDefaultFormTab($ong);
@@ -460,7 +460,7 @@ class NetworkAlias extends FQDNLabel
         echo "</div>";
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         switch ($item::class) {
             case NetworkName::class:
@@ -473,7 +473,7 @@ class NetworkAlias extends FQDNLabel
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             ($item instanceof CommonDBTM)

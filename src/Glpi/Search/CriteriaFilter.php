@@ -51,12 +51,12 @@ final class CriteriaFilter extends CommonDBChild
     public static $itemtype = "itemtype";
     public static $items_id = "items_id";
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Filter');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): string
     {
         // Only on filterable items
         if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {
@@ -85,8 +85,8 @@ final class CriteriaFilter extends CommonDBChild
 
     public static function displayTabContentForItem(
         CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
+        int        $tabnum = 1,
+        int $withtemplate = 0
     ) {
         // Only on filterable commondbtm
         if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {

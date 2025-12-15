@@ -50,11 +50,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     // From CommonDBTM
     public $dohistory                   = true;
 
-    public static $rightname    = 'rssfeed_public';
+    public static string $rightname    = 'rssfeed_public';
 
     public const PERSONAL = 128;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         if (Session::haveRight('rssfeed_public', READ)) {
             return _n('RSS feed', 'RSS feed', $nb);
@@ -417,7 +417,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (self::canView()) {
             $nb = 0;
@@ -440,7 +440,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return '';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -450,7 +450,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $ong;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;

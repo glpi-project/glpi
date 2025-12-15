@@ -161,12 +161,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * {@inheritDoc}
      */
-    public $taborientation = 'vertical';
+    public string $taborientation = 'vertical';
 
     /**
      * {@inheritDoc}
      */
-    public $get_item_to_display_tab = true;
+    public bool $get_item_to_display_tab = true;
 
     /**
      * List of linked item types from plugins on which entities information should be forwarded on update.
@@ -2941,7 +2941,7 @@ class CommonDBTM extends CommonGLPI
         echo "<td class='center' colspan='" . ((int) $params['colspan'] * 2) . "'>";
     }
 
-    public static function isNewID($ID)
+    public static function isNewID(int $ID)
     {
         // Default is empty of <0 may be overriden (for entity for example)
         return (empty($ID) || ($ID <= 0));
@@ -2956,7 +2956,7 @@ class CommonDBTM extends CommonGLPI
         return true;
     }
 
-    public function can($ID, int $right, ?array &$input = null): bool
+    public function can(int $ID, int $right, ?array &$input = null): bool
     {
         if (Session::isInventory()) {
             return true;

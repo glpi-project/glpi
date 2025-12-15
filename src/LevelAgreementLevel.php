@@ -44,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 abstract class LevelAgreementLevel extends RuleTicket
 {
-    public static $rightname            = 'slm';
+    public static string $rightname            = 'slm';
 
     /**
      * LevelAgreement parent class.
@@ -87,7 +87,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $forbidden;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Escalation level', 'Escalation levels', $nb);
     }
@@ -364,7 +364,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $result;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -382,7 +382,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof LevelAgreement) {
             $level = new static();

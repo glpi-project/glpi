@@ -47,7 +47,7 @@ class TaskCategory extends CommonTreeDropdown
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'taskcategory';
+    public static string $rightname          = 'taskcategory';
 
     public function getAdditionalFields()
     {
@@ -85,7 +85,7 @@ class TaskCategory extends CommonTreeDropdown
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Task category', 'Task categories', $nb);
     }

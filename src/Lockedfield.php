@@ -49,9 +49,9 @@ class Lockedfield extends CommonDBTM
     // From CommonDBTM
     public $dohistory                   = false;
 
-    public static $rightname                   = 'locked_field';
+    public static string $rightname                   = 'locked_field';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Locked field', 'Locked fields', $nb);
     }

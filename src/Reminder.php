@@ -63,11 +63,11 @@ class Reminder extends CommonDBVisible implements
     /** @var bool */
     public $can_be_translated           = true;
 
-    public static $rightname    = 'reminder_public';
+    public static string $rightname    = 'reminder_public';
 
     public const PERSONAL = 128;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         if (Session::haveRight('reminder_public', READ)) {
             return _n('Reminder', 'Reminders', $nb);
@@ -472,7 +472,7 @@ class Reminder extends CommonDBVisible implements
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (self::canView()) {
             $nb = 0;
@@ -494,7 +494,7 @@ class Reminder extends CommonDBVisible implements
         return '';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -506,7 +506,7 @@ class Reminder extends CommonDBVisible implements
         return $ong;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             return $item->showVisibility();

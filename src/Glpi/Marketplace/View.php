@@ -52,11 +52,11 @@ use function Safe\parse_url;
 
 class View extends CommonGLPI
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
     /** @var ?PluginsApi */
     public static $api       = null;
 
-    public $get_item_to_display_tab = true;
+    public bool $get_item_to_display_tab = true;
 
 
     public const COL_PAGE = 12;
@@ -74,7 +74,7 @@ class View extends CommonGLPI
     }
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Marketplace');
     }
@@ -95,7 +95,7 @@ class View extends CommonGLPI
     }
 
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 
@@ -104,7 +104,7 @@ class View extends CommonGLPI
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $tabs = [
             'no_all_tab' => true,
@@ -115,7 +115,7 @@ class View extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!Controller::isWebAllowed()) {
             return '';
@@ -130,7 +130,7 @@ class View extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!Controller::isWebAllowed()) {
             return false;

@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class KnowbaseItem_Comment extends CommonDBTM
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Comment', 'Comments', $nb);
     }
@@ -52,7 +52,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         return 'ti ti-message-circle';
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!($item instanceof KnowbaseItem) || !$item->canComment()) {
             return '';
@@ -80,7 +80,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof CommonDBTM) {
             return false;

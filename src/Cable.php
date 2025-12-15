@@ -53,9 +53,9 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
 
     // From CommonDBTM
     public $dohistory         = true;
-    public static $rightname         = 'cable_management';
+    public static string $rightname         = 'cable_management';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Cable', 'Cables', $nb);
     }
@@ -75,7 +75,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return self::getTypeName(1);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong)

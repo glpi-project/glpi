@@ -67,13 +67,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     protected static $forward_entity_to = ['Document_Item'];
 
-    public static $rightname                   = 'document';
+    public static string $rightname                   = 'document';
     /** @var string */
     public static $tag_prefix                  = '#';
     protected $usenotepad               = true;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Document', 'Documents', $nb);
     }
@@ -202,7 +202,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);

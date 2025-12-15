@@ -45,12 +45,12 @@ class Ticket_Contract extends CommonDBRelation
     public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
     public static $check_entity_coherency = false;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Tickets / Contracts');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (Contract::canView()) {
             $nb = 0;
@@ -73,8 +73,8 @@ class Ticket_Contract extends CommonDBRelation
 
     public static function displayTabContentForItem(
         CommonGLPI $item,
-        $tabnum = 1,
-        $withtemplate = 0
+        int        $tabnum = 1,
+        int $withtemplate = 0
     ) {
         $rand = mt_rand();
 

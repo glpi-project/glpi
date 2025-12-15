@@ -50,7 +50,7 @@ class Location extends CommonTreeDropdown
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'location';
+    public static string $rightname          = 'location';
 
 
     public function getAdditionalFields()
@@ -133,7 +133,7 @@ class Location extends CommonTreeDropdown
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Location', 'Locations', $nb);
     }
@@ -397,7 +397,7 @@ class Location extends CommonTreeDropdown
         return $tab;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = parent::defineTabs($options);
         $this->addImpactTab($ong, $options);
@@ -414,7 +414,7 @@ class Location extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_locations_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             switch ($item::class) {
@@ -428,7 +428,7 @@ class Location extends CommonTreeDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if (!$item instanceof self) {
             return false;

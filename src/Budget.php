@@ -50,7 +50,7 @@ class Budget extends CommonDropdown
     // From CommonDBTM
     public $dohistory           = true;
 
-    public static $rightname           = 'budget';
+    public static string $rightname           = 'budget';
     protected $usenotepad       = true;
 
     public $can_be_translated = false;
@@ -64,7 +64,7 @@ class Budget extends CommonDropdown
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Budget', 'Budgets', $nb);
     }
@@ -79,7 +79,7 @@ class Budget extends CommonDropdown
         return 'management';
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];
@@ -94,7 +94,7 @@ class Budget extends CommonDropdown
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         if (!$withtemplate) {
@@ -108,7 +108,7 @@ class Budget extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
 
         if ($item instanceof self) {

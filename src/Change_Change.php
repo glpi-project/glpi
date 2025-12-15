@@ -49,7 +49,7 @@ class Change_Change extends CommonITILObject_CommonITILObject
     public static $itemtype_2   = 'Change';
     public static $items_id_2   = 'changes_id_2';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Link Change/Change', 'Links Change/Change', $nb);
     }

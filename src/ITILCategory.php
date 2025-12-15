@@ -47,7 +47,7 @@ class ITILCategory extends CommonTreeDropdown
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'itilcategory';
+    public static string $rightname          = 'itilcategory';
 
     public function getAdditionalFields()
     {
@@ -312,7 +312,7 @@ class ITILCategory extends CommonTreeDropdown
         return $tab;
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('ITIL category', 'ITIL categories', $nb);
     }
@@ -418,7 +418,7 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (Session::haveRight(self::$rightname, READ)) {
             if ($item instanceof ITILTemplate) {
@@ -432,7 +432,7 @@ class ITILCategory extends CommonTreeDropdown
         return parent::getTabNameForItem($item, $withtemplate);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof ITILTemplate) {
             self::showForITILTemplate($item, $withtemplate);

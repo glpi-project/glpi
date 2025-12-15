@@ -41,12 +41,12 @@ abstract class CommonDeviceModel extends CommonDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Device model', 'Device models', $nb);
     }
 
-    public static function getFormURL($full = true)
+    public static function getFormURL(bool $full = true)
     {
         global $CFG_GLPI;
 
@@ -57,7 +57,7 @@ abstract class CommonDeviceModel extends CommonDropdown
         return $link;
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL(bool $full = true)
     {
         global $CFG_GLPI;
 

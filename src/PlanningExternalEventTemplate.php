@@ -52,7 +52,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
     public $can_be_translated  = true;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('External events template', 'External events templates', $nb);
     }

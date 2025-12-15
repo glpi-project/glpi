@@ -73,7 +73,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
      */
     public $devices                     = [];
 
-    public static $rightname                   = 'computer';
+    public static string $rightname                   = 'computer';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
@@ -107,7 +107,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
         ];
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Computer', 'Computers', $nb);
     }
@@ -134,7 +134,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

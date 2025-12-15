@@ -53,12 +53,12 @@ class ITILSolution extends CommonDBChild
         return 'id';
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Solution', 'Solutions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item->isNewItem()) {
             return '';

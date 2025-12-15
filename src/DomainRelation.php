@@ -39,7 +39,7 @@ class DomainRelation extends CommonDropdown
     public const MANAGE = 2;
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'dropdown';
+    public static string $rightname                   = 'dropdown';
 
     /** @var array */
     public static $knowrelations = [
@@ -54,12 +54,12 @@ class DomainRelation extends CommonDropdown
         ],
     ];
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Domain relation', 'Domains relations', $nb);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
 
         $ong = [];

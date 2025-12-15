@@ -44,7 +44,7 @@ use function Safe\json_decode;
 class NotificationMailingSetting extends NotificationSetting
 {
     #[Override]
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Email notifications configuration');
     }
@@ -62,7 +62,7 @@ class NotificationMailingSetting extends NotificationSetting
     }
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = parent::defineTabs($options);
         $this->addStandardTab(Log::class, $ong, $options);

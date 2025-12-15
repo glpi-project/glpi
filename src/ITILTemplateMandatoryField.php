@@ -42,7 +42,7 @@
  **/
 abstract class ITILTemplateMandatoryField extends ITILTemplateField
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Mandatory field', 'Mandatory fields', $nb);
     }
@@ -53,7 +53,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
 
         // can exists for template

@@ -46,13 +46,13 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
 {
     public $can_be_translated = true;
 
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
     /** @var ServiceCatalogItemInterface[] $children */
     private array $children = [];
 
     #[Override]
-    public static function getTypeName($nb = 0): string
+    public static function getTypeName(int $nb = 0): string
     {
         return _n('Service catalog category', 'Service catalog categories', $nb);
     }

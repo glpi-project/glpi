@@ -45,7 +45,7 @@ use Session;
  */
 final class DropdownDefinition extends AbstractDefinition
 {
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Dropdown definition', 'Dropdown definitions', $nb);
     }
@@ -92,7 +92,7 @@ final class DropdownDefinition extends AbstractDefinition
         return sprintf('dropdown_%s', strtolower($this->fields['system_name']));
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $tabs = [];
 
@@ -102,7 +102,7 @@ final class DropdownDefinition extends AbstractDefinition
         return $tabs;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             $profiles_count     = 0;
@@ -131,7 +131,7 @@ final class DropdownDefinition extends AbstractDefinition
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof self) {
             switch ($tabnum) {

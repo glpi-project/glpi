@@ -48,9 +48,9 @@ class ReminderTranslation extends CommonDBChild
     public $dohistory       = true;
     public static $logs_for_parent = false;
 
-    public static $rightname       = 'reminder_public';
+    public static string $rightname       = 'reminder_public';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Translation', 'Translations', $nb);
     }
@@ -68,7 +68,7 @@ class ReminderTranslation extends CommonDBChild
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (
             $item instanceof Reminder
@@ -84,7 +84,7 @@ class ReminderTranslation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item instanceof Reminder) {
             self::showTranslations($item);

@@ -100,7 +100,7 @@ class Rule extends CommonDBTM
     /** @var array */
     public $criterias_results     = [];
 
-    public static $rightname             = 'config';
+    public static string $rightname             = 'config';
 
     public const RULE_NOT_IN_CACHE       = -1;
     public const RULE_WILDCARD           = '*';
@@ -145,7 +145,7 @@ class Rule extends CommonDBTM
         return parent::getTable(self::class);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return _n('Rule', 'Rules', $nb);
     }
@@ -3082,7 +3082,7 @@ TWIG, ['label' => $this->getTitle()]);
         ]);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -3263,7 +3263,7 @@ TWIG, ['label' => $this->getTitle()]);
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -3344,7 +3344,7 @@ TWIG, ['label' => $this->getTitle()]);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
     {
         if ($item::class === Entity::class) {
             $collection = new RuleRightCollection();

@@ -79,9 +79,9 @@ final class Transfer extends CommonDBTM
 
     private ?array $to_entity_ancestors = null;
 
-    public static $rightname = 'transfer';
+    public static string $rightname = 'transfer';
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName(int $nb = 0)
     {
         return __('Transfer');
     }
