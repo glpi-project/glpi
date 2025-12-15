@@ -143,7 +143,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         //FIXME? clone config
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('User', 'Users', $nb);
     }
@@ -153,12 +153,12 @@ class User extends CommonDBTM implements TreeBrowseInterface
         return ['admin', self::class];
     }
 
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return 'u';
     }
 
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): bool|array
     {
 
         if (Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
@@ -173,7 +173,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         return false;
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): bool|array
     {
         $links = [];
         if (Auth::useAuthExt() && Session::haveRight('user', self::IMPORTEXTAUTHUSERS)) {
@@ -274,7 +274,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function isEntityAssign()
+    public function isEntityAssign(): bool
     {
         // glpi_users.entities_id is only a pref.
         return false;
@@ -361,7 +361,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
 
         switch ($item::class) {
@@ -385,7 +385,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         global $CFG_GLPI;
 

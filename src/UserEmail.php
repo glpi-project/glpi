@@ -47,12 +47,12 @@ class UserEmail extends CommonDBChild
     public $dohistory              = true;
 
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Email', 'Emails', $nb);
     }
 
-    public function canChildItem($methodItem, $methodNotItem)
+    public function canChildItem($methodItem, $methodNotItem): bool
     {
         $users_id = $this->input['users_id'] ?? $this->fields['users_id'] ?? null;
         if ($users_id !== null && !$this->canAlterUserEmails((int) $users_id)) {
@@ -173,7 +173,7 @@ class UserEmail extends CommonDBChild
     }
 
     #[Override()]
-    public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var)
+    public static function getJSCodeToAddForItemChild($field_name, $child_count_js_var): string
     {
         $html = "<div class='d-flex'>"
             . "<input title='" . __s('Default email') . "' type='radio' name='_default_email' value='-__JS_PLACEHOLDER__' aria-label='" . __s('Set as default email') . "'>"
@@ -341,7 +341,7 @@ class UserEmail extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         global $DB;
 
@@ -366,7 +366,7 @@ class UserEmail extends CommonDBChild
     }
 
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         global $DB;
 
@@ -388,7 +388,7 @@ class UserEmail extends CommonDBChild
     }
 
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
         global $DB;
 

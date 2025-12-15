@@ -80,14 +80,14 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ];
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb([
             QueuedWebhook::class,
         ]);
     }
 
-    public static function getTypeName($nb = 0)
+    public static function getTypeName($nb = 0): string
     {
         return _n('Webhook', 'Webhooks', $nb);
     }
@@ -129,7 +129,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return empty($itemtype) || (is_subclass_of($itemtype, CommonGLPI::class) && $itemtype::canView());
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $parent_tabs = parent::defineTabs();
         $tabs = [
@@ -147,7 +147,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $tabs;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
 
         $tab = parent::rawSearchOptions();
@@ -203,7 +203,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -230,7 +230,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -750,7 +750,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $path;
     }
 
-    public function showForm($id, array $options = [])
+    public function showForm($id, array $options = []): void
     {
         if (!empty($id)) {
             $this->getFromDB($id);
@@ -773,10 +773,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
             'response_schema' => self::getMonacoSuggestions($this->fields['itemtype']),
         ]);
 
-        return true;
+        return;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
         if (!$item instanceof self) {
             throw new RuntimeException("This tab is only available for Webhooks items");
@@ -806,7 +806,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ];
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof self) {
             return false;
@@ -1267,17 +1267,17 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ]);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): bool|array
     {
         return $this->handleInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): bool|array
     {
         return $this->handleInput($input);
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         if (!empty($this->fields['secret'])) {
             $this->fields['secret'] = (new GLPIKey())->decrypt($this->fields['secret']);
@@ -1350,12 +1350,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $input;
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         $this->fields['is_cra_challenge_valid'] = 0;
     }
 
-    public static function getMenuContent()
+    public static function getMenuContent(): bool|array
     {
         $menu = [];
         if (Webhook::canView()) {
@@ -1378,7 +1378,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return false;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-webhook";
     }

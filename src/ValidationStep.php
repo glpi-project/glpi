@@ -141,7 +141,7 @@ class ValidationStep extends CommonDropdown
         return !$this->isDefault() && !$this->isInUsage();
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         $is_default_select = [
             'name' => 'is_default',

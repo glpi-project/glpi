@@ -48,7 +48,7 @@ class Vlan extends CommonDropdown
         return _n('VLAN', 'VLANs', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [

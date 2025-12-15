@@ -113,7 +113,7 @@ class WifiNetwork extends CommonDropdown
     }
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'  => 'essid',
@@ -130,7 +130,7 @@ class WifiNetwork extends CommonDropdown
     }
 
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
 
         if ($field['type'] == 'wifi_mode') {
