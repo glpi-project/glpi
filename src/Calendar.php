@@ -208,6 +208,12 @@ class Calendar extends CommonDropdown
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
+    /**
+     * @param CommonDBTM $source
+     * @param bool $history
+     *
+     * @return void
+     */
     public function post_clone($source, $history)
     {
         $this->updateDurationCache($this->getID());

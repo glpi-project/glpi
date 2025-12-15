@@ -51,14 +51,11 @@ if (($_SESSION['can_process_update'] ?? false) && isset($_POST['update_end'])) {
 }
 
 //test la connection a la base de donn???.
-function test_connect()
+function test_connect(): bool
 {
     global $DB;
 
-    if ($DB->errno() == 0) {
-        return true;
-    }
-    return false;
+    return $DB->errno() == 0;
 }
 
 /**
@@ -66,7 +63,7 @@ function test_connect()
  *
  * @return void
  */
-function showSecurityKeyCheckForm()
+function showSecurityKeyCheckForm(): void
 {
     global $DB;
 

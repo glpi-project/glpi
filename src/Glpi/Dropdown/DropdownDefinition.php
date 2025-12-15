@@ -70,6 +70,9 @@ final class DropdownDefinition extends AbstractDefinition
         return 'Dropdown';
     }
 
+    /**
+     * @return class-string<DropdownDefinitionManager>
+     */
     public static function getDefinitionManagerClass(): string
     {
         return DropdownDefinitionManager::class;

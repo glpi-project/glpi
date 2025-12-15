@@ -566,6 +566,7 @@ class Html
      *
      * @param bool $with_session with session information (true by default)
      * @param bool $ajax         If we're called from ajax (false by default)
+     * @param ?int $rand         Random number to identify ajax call (null by default)
      *
      * @return void
      * @deprecated 10.0.0
