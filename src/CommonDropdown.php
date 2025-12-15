@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Asset\AssetModel;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Features\AssetImage;
 
