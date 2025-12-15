@@ -105,7 +105,7 @@ class NotificationMailing implements NotificationInterface
         } catch (Exception $e) {
             return [
                 'success' => false,
-                'error'   => __('Cannot initialize mailer: ') . $e->getMessage(),
+                'error'   => sprintf(__('Cannot initialize mailer, error is: %s'), "\n" . $e->getMessage()),
                 'debug'   => null,
             ];
         }
