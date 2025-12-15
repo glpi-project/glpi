@@ -93,7 +93,7 @@ abstract class Dropdown extends CommonTreeDropdown
         return $this->prepareDefinitionInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = parent::prepareInputForUpdate($input);
         if ($input === false) {
@@ -103,7 +103,7 @@ abstract class Dropdown extends CommonTreeDropdown
         return $this->prepareDefinitionInput($input);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display(
@@ -117,7 +117,7 @@ abstract class Dropdown extends CommonTreeDropdown
         return true;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $search_options = parent::rawSearchOptions();
 

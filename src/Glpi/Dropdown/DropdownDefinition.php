@@ -92,7 +92,7 @@ final class DropdownDefinition extends AbstractDefinition
         return sprintf('dropdown_%s', strtolower($this->fields['system_name']));
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $tabs = [];
 
@@ -102,7 +102,7 @@ final class DropdownDefinition extends AbstractDefinition
         return $tabs;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof self) {
             $profiles_count     = 0;
@@ -131,7 +131,7 @@ final class DropdownDefinition extends AbstractDefinition
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof self) {
             switch ($tabnum) {
@@ -160,7 +160,7 @@ final class DropdownDefinition extends AbstractDefinition
         return parent::prepareInputForAdd($input);
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         parent::post_addItem();
 

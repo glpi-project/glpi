@@ -96,14 +96,14 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         // Clear any lazy loaded data
         $this->clearLazyLoadedData();
     }
 
     #[Override]
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -131,7 +131,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
@@ -204,7 +204,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     ): array {
         return array_merge(
             ...array_map(
-                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                fn(ConditionHandlerInterface $handler): array => $handler->getSupportedValueOperators(),
                 $this->getConditionHandlers($question_config)
             )
         );
@@ -223,7 +223,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         $groupedBlocks = [];
 
         // Sort blocks by their vertical rank
-        usort($blocks, fn($a, $b) => $a->fields['vertical_rank'] <=> $b->fields['vertical_rank']);
+        usort($blocks, fn($a, $b): int => $a->fields['vertical_rank'] <=> $b->fields['vertical_rank']);
 
         // Group blocks by their vertical rank
         foreach ($blocks as $block) {
@@ -246,7 +246,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                 continue;
             }
 
-            usort($group, fn($a, $b) => $a->fields['horizontal_rank'] <=> $b->fields['horizontal_rank']);
+            usort($group, fn($a, $b): int => $a->fields['horizontal_rank'] <=> $b->fields['horizontal_rank']);
         }
 
         return $groupedBlocks;
@@ -350,7 +350,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
-    public function prepareInputForClone($input)
+    public function prepareInputForClone($input): array
     {
         $input = parent::prepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareSectionInputForClone($input);

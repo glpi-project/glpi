@@ -44,7 +44,7 @@ abstract class AbstractSortStrategy implements SortStrategyInterface
         usort($items, function (
             ServiceCatalogItemInterface $a,
             ServiceCatalogItemInterface $b,
-        ) {
+        ): int {
             // First compare pinned status
             if ($a->isServiceCatalogItemPinned() !== $b->isServiceCatalogItemPinned()) {
                 return $b->isServiceCatalogItemPinned() <=> $a->isServiceCatalogItemPinned();

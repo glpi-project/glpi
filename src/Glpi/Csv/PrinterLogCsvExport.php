@@ -95,7 +95,7 @@ class PrinterLogCsvExport implements ExportToCsvInterface
 
     public function getFileContent(): array
     {
-        return array_map(function ($metric) {
+        return array_map(function (array $metric): array {
             $fields = [];
 
             foreach ($metric as $key => $value) {

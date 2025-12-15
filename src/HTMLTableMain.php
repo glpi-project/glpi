@@ -67,7 +67,7 @@ class HTMLTableMain extends HTMLTableBase
     /** @var ?string */
     private $title;
     /** @var array<string, HTMLTableGroup> */
-    private $groups    = [];
+    private array $groups    = [];
     /** @var array<class-string<CommonDBTM>, string> */
     private $itemtypes = [];
 
@@ -83,12 +83,12 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      **/
-    public function setTitle($name)
+    public function setTitle($name): void
     {
         $this->title = $name;
     }
 
-    public function tryAddHeader()
+    public function tryAddHeader(): void
     {
         if (count($this->groups) > 0) {
             throw new Exception('Implementation error: must define all headers before any subgroups');
@@ -119,7 +119,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      */
-    public function addItemType($itemtype, $title)
+    public function addItemType($itemtype, $title): void
     {
         $this->itemtypes[$itemtype] = $title;
     }
@@ -141,7 +141,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      */
-    public function displaySuperHeader()
+    public function displaySuperHeader(): void
     {
         echo "\t\t<tr class='noHover'>\n";
         foreach ($this->getHeaderOrder() as $header_name) {
@@ -160,7 +160,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return int the total number of rows
      **/
-    public function getNumberOfRows()
+    public function getNumberOfRows(): int|float
     {
         $numberOfRow = 0;
         foreach ($this->groups as $group) {
@@ -183,7 +183,7 @@ class HTMLTableMain extends HTMLTableBase
      *
      * @return void
      **/
-    public function display(array $params)
+    public function display(array $params): void
     {
         $p = array_replace([
             'html_id' => '',

@@ -104,7 +104,7 @@ final class StatusChecker
      *    One of {@link STATUS_NO_DATA}, {@link STATUS_OK}, {@link STATUS_WARNING}, or {@link STATUS_PROBLEM}.
      * @since 10.0.0
      */
-    public static function calculateGlobalStatus(array $status)
+    public static function calculateGlobalStatus(array $status): string
     {
         $statuses = array_column($status, 'status');
         $global_status = self::STATUS_OK;
@@ -473,7 +473,7 @@ final class StatusChecker
                 global $DB;
 
                 $crontasks = getAllDataFromTable('glpi_crontasks');
-                $running = count(array_filter($crontasks, static fn($crontask) => $crontask['state'] === CronTask::STATE_RUNNING));
+                $running = count(array_filter($crontasks, static fn(array $crontask): bool => $crontask['state'] === CronTask::STATE_RUNNING));
                 $stuck_crontasks = CronTask::getZombieCronTasks();
                 foreach ($stuck_crontasks as $ct) {
                     $status['stuck'][] = $ct['name'];

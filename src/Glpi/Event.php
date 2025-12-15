@@ -73,7 +73,7 @@ class Event extends CommonDBTM
         return ['admin', LogViewer::class, self::class];
     }
 
-    public static function getMenuContent()
+    public static function getMenuContent(): array|false
     {
         $menu = parent::getMenuContent();
         if ($menu !== false) {
@@ -82,7 +82,7 @@ class Event extends CommonDBTM
         return $menu;
     }
 
-    public function add(array $input, $options = [], $history = true)
+    public function add(array $input, $options = [], $history = true): never
     {
         throw new RuntimeException(
             \sprintf(
@@ -92,12 +92,12 @@ class Event extends CommonDBTM
         );
     }
 
-    public function update(array $input, $history = true, $options = [])
+    public function update(array $input, $history = true, $options = []): int|float|string|bool|array|null
     {
         throw new RuntimeException('Events cannot be updated.');
     }
 
-    public function delete(array $input, $force = false, $history = true)
+    public function delete(array $input, $force = false, $history = true): bool
     {
         throw new RuntimeException('Events cannot be deleted.');
     }
@@ -116,7 +116,7 @@ class Event extends CommonDBTM
      *
      * @return void
      */
-    public static function log($items_id, $type, $level, $service, $event)
+    public static function log($items_id, $type, $level, string $service, string $event): void
     {
         global $CFG_GLPI, $DB;
 
@@ -180,7 +180,7 @@ class Event extends CommonDBTM
      *
      * @return array
      */
-    public static function logArray()
+    public static function logArray(): array
     {
 
         static $logItemtype = [];
@@ -227,7 +227,7 @@ class Event extends CommonDBTM
      *
      * @return void
      **/
-    public static function displayItemLogID($type, $items_id)
+    public static function displayItemLogID($type, $items_id): void
     {
         global $CFG_GLPI;
 
@@ -405,12 +405,12 @@ class Event extends CommonDBTM
         }
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-news";
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -533,7 +533,7 @@ class Event extends CommonDBTM
         return array_column(iterator_to_array($data), 'type');
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         if ($field === 'service') {
             $value = $values['service'];
@@ -559,7 +559,7 @@ class Event extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
         if ($field === 'service') {
             $value = $values['service'];

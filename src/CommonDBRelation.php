@@ -347,7 +347,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -762,7 +762,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
 
         if (!is_array($input)) {
@@ -1412,7 +1412,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         $specificities = static::getRelationMassiveActionsSpecificities();
@@ -2138,7 +2138,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         throw new RuntimeException('Cannot guess ');
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'clone';

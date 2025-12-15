@@ -72,7 +72,7 @@ abstract class Device extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 

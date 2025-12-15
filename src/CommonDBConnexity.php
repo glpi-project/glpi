@@ -587,7 +587,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      *
      * @see CommonDBTM::showMassiveActionsSubForm()
      **/
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         $action = $ma->getAction();

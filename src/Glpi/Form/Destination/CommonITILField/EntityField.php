@@ -140,7 +140,7 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
             $form->getQuestionsByType(
                 QuestionTypeItem::class
             ),
-            fn($question) => (new QuestionTypeItem())->getDefaultValueItemtype($question) === Entity::getType()
+            fn(\Glpi\Form\Question $question): bool => (new QuestionTypeItem())->getDefaultValueItemtype($question) === Entity::getType()
         );
 
         if (count($valid_answers) == 0) {

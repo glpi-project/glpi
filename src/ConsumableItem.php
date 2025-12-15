@@ -82,7 +82,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return Consumable::getTypeName(Session::getPluralNumber());
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): bool
     {
         if (static::canView()) {
             return ['summary' => '/front/consumableitem.php?synthese=yes'];
@@ -90,7 +90,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return false;
     }
 
-    public function getPostAdditionalInfosForName()
+    public function getPostAdditionalInfosForName(): string
     {
         if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
             return $this->fields["ref"];
@@ -107,7 +107,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -116,7 +116,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return $this->managePictures($input);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -129,7 +129,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alarm_threshold"] = Entity::getUsedConfig(
@@ -141,7 +141,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         }
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -155,7 +155,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return $ong;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         global $DB;
 
@@ -322,7 +322,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         return ['description' => __('Send alarms on consumables')];
     }
@@ -335,7 +335,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
      * @return int 0 : nothing to do 1 : done with success
      * @used-by CronTask
      **/
-    public static function cronConsumable(?CronTask $task = null)
+    public static function cronConsumable(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -466,12 +466,12 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
     /**
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return ['alert' => __('Send alarms on consumables')];
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/consumableitem.html.twig', [
@@ -481,7 +481,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return Consumable::getIcon();
     }

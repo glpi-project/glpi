@@ -47,7 +47,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -62,7 +62,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      *
      * @return bool
      */
-    public function unassignVlan($portID, $vlanID)
+    public function unassignVlan($portID, $vlanID): bool
     {
 
         $this->getFromDBByCrit([
@@ -213,7 +213,7 @@ class IPNetwork_Vlan extends CommonDBRelation
      *
      * @return array
      */
-    public static function getVlansForIPNetwork($portID)
+    public static function getVlansForIPNetwork($portID): array
     {
         global $DB;
 
@@ -231,7 +231,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
 
         if (!$withtemplate) {
@@ -251,7 +251,7 @@ class IPNetwork_Vlan extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
 
         if ($item instanceof IPNetwork) {

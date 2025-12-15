@@ -98,7 +98,7 @@ enum ITILCategoryFieldStrategy: string
         );
 
         // Filter by itemtype
-        $valid_answers = array_filter($valid_answers, function (Answer $answer) {
+        $valid_answers = array_filter($valid_answers, function (Answer $answer): bool {
             $value = $answer->getRawAnswer();
             if (
                 $value['itemtype'] !== ITILCategory::getType()

@@ -204,7 +204,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
     {
         if (property_exists($this->data[$this->current_key], 'is_ap')) {
             $bkp_assets = $this->assets;
@@ -290,7 +290,7 @@ class NetworkEquipment extends MainAsset
     /**
      * @return array
      */
-    public function getManagementPorts()
+    public function getManagementPorts(): array
     {
         return $this->management_ports;
     }
@@ -479,7 +479,7 @@ class NetworkEquipment extends MainAsset
      *
      * @return bool
      */
-    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
+    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val): bool
     {
         if (property_exists($val, 'ips')) {
             foreach ($val->ips as $ip) {

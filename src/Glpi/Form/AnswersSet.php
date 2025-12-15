@@ -108,7 +108,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         $filtered_answers = array_filter(
             $answers,
-            fn(Answer $answer) => $answer->getQuestionId() == $id
+            fn(Answer $answer): bool => $answer->getQuestionId() == $id
         );
 
         if (count($filtered_answers) == 1) {
@@ -130,7 +130,7 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         return array_filter(
             $answers,
-            fn(Answer $answer) => $answer->getRawType() == $type
+            fn(Answer $answer): bool => $answer->getRawType() == $type
         );
     }
 
@@ -140,12 +140,12 @@ final class AnswersSet extends CommonDBChild
         $answers = $this->getAnswers();
         return array_filter(
             $answers,
-            fn(Answer $answer) => in_array($answer->getRawType(), $types)
+            fn(Answer $answer): bool => in_array($answer->getRawType(), $types)
         );
     }
 
     #[Override]
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $search_options = parent::rawSearchOptions();
 

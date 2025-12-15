@@ -43,7 +43,7 @@ use Glpi\ContentTemplates\TemplateManager;
  */
 abstract class AbstractITILChildTemplate extends CommonDropdown
 {
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if (!parent::showForm($ID, $options)) {
             return false;
@@ -76,7 +76,7 @@ abstract class AbstractITILChildTemplate extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = parent::prepareInputForUpdate($input);
 

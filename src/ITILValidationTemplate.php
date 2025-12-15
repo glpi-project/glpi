@@ -55,7 +55,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return _n('Approval template', 'Approval templates', $nb);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (isset($input['validationsteps_id']) && !(new ValidationStep())->getFromDB($input['validationsteps_id'])) {
             Session::addMessageAfterRedirect(
@@ -69,7 +69,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return parent::prepareInputForUpdate($input);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [
@@ -116,7 +116,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
         if ($id > 0) {
             $targets   = ITILValidationTemplate_Target::getTargets($id);
-            if (!empty($targets)) {
+            if ($targets !== []) {
                 $target = current($targets);
                 $itemtype = $target['itemtype'];
                 $items_ids = array_column($targets, 'items_id');
@@ -130,14 +130,14 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return CommonITILValidation::dropdownValidator($options);
     }
 
-    public function displaySpecificTypeField($id, $field = [], array $options = [])
+    public function displaySpecificTypeField($id, $field = [], array $options = []): void
     {
         if ($field['name'] == 'approver') {
             echo self::displayValidatorField($id);
         }
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -153,7 +153,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-stack-2-filled";
     }
@@ -186,12 +186,12 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
      *
      * @return void
      */
-    public function post_addItem($history = 1)
+    public function post_addItem($history = 1): void
     {
         $this->postTargets();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->postTargets();
     }

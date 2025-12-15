@@ -76,66 +76,48 @@ class DatabaseSchemaIntegrityChecker
 
     /**
      * DB instance.
-     *
-     * @var DBmysql
      */
-    protected $db;
+    protected \DBmysql $db;
 
     /**
      * Do not check tokens related to "DYNAMIC" row format migration.
-     *
-     * @var bool
      */
-    protected $ignore_dynamic_row_format_migration;
+    protected bool $ignore_dynamic_row_format_migration;
 
     /**
      * Do not check tokens related to migration from "MyISAM" to "InnoDB".
-     *
-     * @var bool
      */
-    protected $ignore_innodb_migration;
+    protected bool $ignore_innodb_migration;
 
     /**
      * Do not check tokens related to migration from "datetime" to "timestamp".
-     *
-     * @var bool
      */
-    protected $ignore_timestamps_migration;
+    protected bool $ignore_timestamps_migration;
 
     /**
      * Do not check tokens related to migration from signed to unsigned integers in primary/foreign keys.
-     *
-     * @var bool
      */
-    protected $ignore_unsigned_keys_migration;
+    protected bool $ignore_unsigned_keys_migration;
 
     /**
      * Do not check tokens related to migration from "utf8" to "utf8mb4".
-     *
-     * @var bool
      */
-    protected $ignore_utf8mb4_migration;
+    protected bool $ignore_utf8mb4_migration;
 
     /**
      * Ignore differences that has no effect on application (columns and keys order for instance).
-     *
-     * @var bool
      */
-    protected $strict;
+    protected bool $strict;
 
     /**
      * Local cache for normalized SQL.
-     *
-     * @var array
      */
-    private $normalized = [];
+    private array $normalized = [];
 
     /**
      * Differ instance.
-     *
-     * @var Differ
      */
-    private $differ;
+    private \SebastianBergmann\Diff\Differ $differ;
 
     /**
      * GLPI database version.
@@ -422,7 +404,7 @@ class DatabaseSchemaIntegrityChecker
         if (!$this->strict) {
             usort(
                 $columns,
-                function (string $a, string $b) {
+                function (string $a, string $b): int {
                     // Move id / AUTO_INCREMENT column first
                     if (preg_match('/(`id`|AUTO_INCREMENT)/i', $a)) {
                         return -1;
@@ -450,7 +432,7 @@ class DatabaseSchemaIntegrityChecker
             . '$/i';
         $columns = preg_replace_callback(
             $column_pattern,
-            fn($matches) => $matches['name'] . ' ' . strtolower($matches['type']) . ($matches['length'] ?? '') . ($matches['extra'] ?? ''),
+            fn($matches): string => $matches['name'] . ' ' . strtolower($matches['type']) . ($matches['length'] ?? '') . ($matches['extra'] ?? ''),
             $columns
         );
 

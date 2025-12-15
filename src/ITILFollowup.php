@@ -61,7 +61,7 @@ class ITILFollowup extends CommonDBChild
     /**
      * @return string
      */
-    public function getItilObjectItemType()
+    public function getItilObjectItemType(): string
     {
         return str_replace('Followup', '', $this->getType());
     }
@@ -72,7 +72,7 @@ class ITILFollowup extends CommonDBChild
         return _n('Followup', 'Followups', $nb);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-message-circle';
     }
@@ -82,7 +82,7 @@ class ITILFollowup extends CommonDBChild
      *
      * @return bool
      */
-    public function canReadITILItem()
+    public function canReadITILItem(): bool
     {
         if ($this->isParentAlreadyLoaded()) {
             $item = $this->item;
@@ -253,7 +253,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
 
         if (isset($_SESSION['glpifollowup_private']) && $_SESSION['glpifollowup_private']) {
@@ -266,7 +266,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         global $CFG_GLPI;
@@ -332,7 +332,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
         global $CFG_GLPI;
 
@@ -376,7 +376,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): false|array
     {
         $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
         if (
@@ -494,7 +494,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
             return false;
@@ -516,7 +516,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         global $CFG_GLPI;
 
@@ -626,7 +626,7 @@ class ITILFollowup extends CommonDBChild
         return true;
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading
@@ -653,7 +653,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
 
         $tab = [];
@@ -733,7 +733,7 @@ class ITILFollowup extends CommonDBChild
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         global $DB;
 
@@ -874,7 +874,7 @@ class ITILFollowup extends CommonDBChild
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -890,7 +890,7 @@ class ITILFollowup extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -921,7 +921,7 @@ class ITILFollowup extends CommonDBChild
      *@param $options array of possible options:
      *     - item Object : the ITILObject parent
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($this->isNewItem()) {
             $this->getEmpty();
@@ -939,7 +939,7 @@ class ITILFollowup extends CommonDBChild
     /**
      * @return void
      */
-    public static function showMassiveActionAddFollowupForm()
+    public static function showMassiveActionAddFollowupForm(): void
     {
         echo "<table class='tab_cadre_fixe'>";
         echo '<tr><th colspan=4>' . __s('Add a new followup') . '</th></tr>';
@@ -971,7 +971,7 @@ class ITILFollowup extends CommonDBChild
         echo "</table>";
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         switch ($ma->getAction()) {
@@ -987,7 +987,7 @@ class ITILFollowup extends CommonDBChild
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         switch ($ma->getAction()) {
             case 'add_followup':
                 $input = $ma->getInput();
@@ -1046,7 +1046,7 @@ class ITILFollowup extends CommonDBChild
         $target = "",
         $user_table = "",
         $group_table = ""
-    ) {
+    ): string {
         $itilfup_table = static::getTable();
 
         // An ITILFollowup parent can only by a CommonItilObject
@@ -1109,7 +1109,7 @@ class ITILFollowup extends CommonDBChild
         }
     }
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'id';
     }

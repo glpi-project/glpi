@@ -87,28 +87,28 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // Report logs to the parent form
         $this->logCreationInParentForm();
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);
     }
 
     #[Override]
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
         // Report logs to the parent form
         $this->logDeleteInParentForm();
     }
 
     #[Override]
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -118,7 +118,7 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array
     {
         if (!isset($input['uuid'])) {
             $input['uuid'] = Uuid::uuid4();
@@ -134,7 +134,7 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
@@ -215,7 +215,7 @@ final class Comment extends CommonDBChild implements
     ): array {
         return array_merge(
             ...array_map(
-                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                fn(ConditionHandlerInterface $handler): array => $handler->getSupportedValueOperators(),
                 $this->getConditionHandlers($question_config)
             )
         );
@@ -269,7 +269,7 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function prepareInputForClone($input)
+    public function prepareInputForClone($input): array
     {
         $input = parent::prepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareCommentInputForClone($input);

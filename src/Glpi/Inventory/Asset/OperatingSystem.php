@@ -143,7 +143,7 @@ class OperatingSystem extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 
@@ -211,7 +211,7 @@ class OperatingSystem extends InventoryAsset
      *
      * @return int
      */
-    public function getId()
+    public function getId(): string|int
     {
         return $this->operatingsystems_id;
     }

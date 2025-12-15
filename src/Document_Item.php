@@ -57,7 +57,7 @@ class Document_Item extends CommonDBRelation
         return _n('Document item', 'Document items', $nb);
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -261,7 +261,7 @@ class Document_Item extends CommonDBRelation
         parent::post_purgeItem();
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -308,7 +308,7 @@ class Document_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -940,7 +940,7 @@ TWIG, $twig_params);
         return $criteria;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return Document::getIcon();
     }

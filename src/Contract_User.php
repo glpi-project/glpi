@@ -46,7 +46,7 @@ class Contract_User extends CommonDBRelation
 
     public static $check_entity_coherency = false; // `entities_id`/`is_recursive` fields from user should not be used here
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -81,7 +81,7 @@ class Contract_User extends CommonDBRelation
         return User::getTypeName($nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (Contract::canView() && $item::class === User::class) {
             $nb = 0;

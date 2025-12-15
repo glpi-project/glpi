@@ -136,7 +136,7 @@ final class ServiceCatalogManager
     ): array {
         return array_filter(
             $items,
-            function (ServiceCatalogItemInterface $item) {
+            function (ServiceCatalogItemInterface $item): bool {
                 // Not a composite, do not remove it from the list.
                 if ($item instanceof ServiceCatalogLeafInterface) {
                     return true;
@@ -168,7 +168,7 @@ final class ServiceCatalogManager
     ): array {
         return array_filter(
             $items,
-            function (ServiceCatalogItemInterface $item) use ($item_request) {
+            function (ServiceCatalogItemInterface $item) use ($item_request): bool {
                 // Not a composite, do not remove it from the list.
                 if ($item instanceof ServiceCatalogLeafInterface) {
                     return true;
@@ -191,11 +191,11 @@ final class ServiceCatalogManager
     ): bool {
         $leaf_providers = array_filter(
             $this->providers,
-            fn($p) => $p instanceof LeafProviderInterface
+            fn(\Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface $p): bool => $p instanceof LeafProviderInterface
         );
         $composite_providers = array_filter(
             $this->providers,
-            fn($p) => $p instanceof CompositeProviderInterface
+            fn(\Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface $p): bool => $p instanceof CompositeProviderInterface
         );
         $child_request = $composite->getChildrenItemRequest($item_request);
 

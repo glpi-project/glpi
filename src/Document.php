@@ -330,7 +330,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         // security (don't accept filename from $_REQUEST)
         if (array_key_exists('filename', $_REQUEST)) {
@@ -1392,7 +1392,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *    string if option display=false (HTML code)
      *    void if hide_if_no_elements=true and no elements
      **/
-    public static function dropdown($options = [])
+    public static function dropdown($options = []): int|string|false
     {
         global $CFG_GLPI, $DB;
 

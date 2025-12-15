@@ -55,7 +55,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         return _n('Link Ticket/Change', 'Links Ticket/Change', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (static::canView()) {
             $nb = 0;
@@ -96,7 +96,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         return true;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         switch ($ma->getAction()) {
             case 'add_task':

@@ -51,8 +51,7 @@ use function Safe\session_write_close;
 
 class Plugins
 {
-    /** @var ?Client */
-    protected $httpClient  = null;
+    protected \GuzzleHttp\Client $httpClient;
     /** @var ?array  */
     protected $last_error  = null;
 
@@ -98,7 +97,7 @@ class Plugins
         string $endpoint = '',
         array $options = [],
         string $method = 'GET'
-    ) {
+    ): \GuzzleHttp\Psr7\Response|false|\Psr\Http\Message\ResponseInterface {
         if (!GLPINetwork::isRegistered()) {
             // Simulate empty response if registration key is not valid
             return new Response(200, [], '[]');
@@ -217,7 +216,7 @@ class Plugins
                 foreach ($plugins_colct as &$plugin) {
                     usort(
                         $plugin['versions'],
-                        fn($a, $b) => version_compare($a['num'], $b['num'])
+                        fn(array $a, array $b): int => version_compare($a['num'], $b['num'])
                     );
                 }
 
@@ -232,7 +231,7 @@ class Plugins
             // without having to purge the cache manually.
             foreach ($plugins_colct as &$plugin) {
                 if (!GLPI_MARKETPLACE_PRERELEASES) {
-                    $plugin['versions'] = array_filter($plugin['versions'], fn($version) => !isset($version['stability']) || $version['stability'] === "stable");
+                    $plugin['versions'] = array_filter($plugin['versions'], fn(array $version): bool => !isset($version['stability']) || $version['stability'] === "stable");
                 }
 
                 if (count($plugin['versions']) === 0) {
@@ -259,11 +258,11 @@ class Plugins
         }
 
         if ($string_filter !== '') {
-            $plugins_colct = array_filter($plugins_colct, fn($plugin) => str_contains(strtolower(json_encode($plugin)), strtolower($string_filter)));
+            $plugins_colct = array_filter($plugins_colct, fn($plugin): bool => str_contains(strtolower(json_encode($plugin)), strtolower($string_filter)));
         }
 
         // manage sorting of collection
-        uasort($plugins_colct, function ($plugin1, $plugin2) use ($sort) {
+        uasort($plugins_colct, function (array $plugin1, array $plugin2) use ($sort) {
             switch ($sort) {
                 case "sort-alpha-asc":
                     return strnatcasecmp($plugin1['name'], $plugin2['name']);
@@ -305,7 +304,7 @@ class Plugins
         int $nb_per_page = 15,
         string $sort = 'sort-alpha-asc',
         int &$total = 0
-    ) {
+    ): array {
         $plugins = $this->getAllPlugins($force_refresh, $tag_filter, $string_filter, $sort);
 
         $total = count($plugins);
@@ -322,7 +321,7 @@ class Plugins
      *
      * @return int number of plugins
      */
-    public function getNbPlugins(string $tag_filter = "")
+    public function getNbPlugins(string $tag_filter = ""): int
     {
         $plugins = $this->getAllPlugins(false, $tag_filter);
 
@@ -355,7 +354,7 @@ class Plugins
      *
      * @return void we don't wait for a response, this a fire and forget request
      */
-    public function incrementPluginDownload(string $key, string $version)
+    public function incrementPluginDownload(string $key, string $version): void
     {
         $this->request(
             "plugin/{$key}/download/{$version}",
@@ -451,7 +450,7 @@ class Plugins
         ];
         if ($track_progress) {
             // track download progress
-            $options['progress'] = function ($downloadTotal, $downloadedBytes) use ($plugin_key) {
+            $options['progress'] = function ($downloadTotal, $downloadedBytes) use ($plugin_key): void {
                 if (PHP_SAPI !== 'cli') {
                     // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
                     // Each time Session::start() is called, PHP add a 'Set-Cookie' header,

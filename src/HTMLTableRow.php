@@ -40,10 +40,9 @@ class HTMLTableRow extends HTMLTableEntity
 {
     /** @var HTMLTableGroup */
     private $group;
-    /** @var bool */
-    private $empty              = true;
+    private bool $empty              = true;
     /** @var array<string, array<HTMLTableCell>> */
-    private $cells              = [];
+    private array $cells              = [];
     /** @var int */
     private $numberOfSubRows    = 1;
     /** @var array<int, array> */
@@ -68,7 +67,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return bool
      */
-    public function notEmpty()
+    public function notEmpty(): bool
     {
         return !$this->empty;
     }
@@ -84,7 +83,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return HTMLTableRow
      */
-    public function createAnotherRow()
+    public function createAnotherRow(): \HTMLTableRow
     {
         return $this->group->createRow();
     }
@@ -95,7 +94,7 @@ class HTMLTableRow extends HTMLTableEntity
      *
      * @return void
      */
-    public function addAttributForLine($lineIndex, $attributs)
+    public function addAttributForLine($lineIndex, $attributs): void
     {
         $this->linesWithAttributs[$lineIndex] = $attributs;
     }
@@ -113,7 +112,7 @@ class HTMLTableRow extends HTMLTableEntity
         $content,
         ?HTMLTableCell $father = null,
         ?CommonDBTM $item = null
-    ) {
+    ): \HTMLTableCell {
 
         if (!$this->group->haveHeader($header)) {
             throw new Exception('Unavailable header!');
@@ -137,7 +136,7 @@ class HTMLTableRow extends HTMLTableEntity
     /**
      * @return bool
      */
-    public function prepareDisplay()
+    public function prepareDisplay(): bool
     {
         if ($this->empty) {
             return false;
@@ -186,7 +185,7 @@ class HTMLTableRow extends HTMLTableEntity
      *
      * @return void
      */
-    public function displayRow($headers)
+    public function displayRow($headers): void
     {
         echo "\t<tbody";
         $this->displayEntityAttributs();
@@ -230,7 +229,7 @@ class HTMLTableRow extends HTMLTableEntity
      *
      * @return HTMLTableHeader
      */
-    public function getHeaderByName($name, $sub_name = null)
+    public function getHeaderByName(string $name, $sub_name = null)
     {
         return $this->group->getHeaderByName($name, $sub_name);
     }

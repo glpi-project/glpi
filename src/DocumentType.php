@@ -79,7 +79,7 @@ class DocumentType extends CommonDropdown
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -120,7 +120,7 @@ class DocumentType extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
         global $CFG_GLPI;
 
@@ -147,7 +147,7 @@ class DocumentType extends CommonDropdown
      * @param $values             (default '')
      * @param $options      array
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
 
         if (!is_array($values)) {

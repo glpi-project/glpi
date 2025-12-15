@@ -94,12 +94,12 @@ final class UserDevicesAsTextConditionHandler implements ConditionHandlerInterfa
         return match ($operator) {
             ValueOperator::CONTAINS     => array_reduce(
                 $a,
-                fn(bool $carry, string $item) => $carry || str_contains($item, $b),
+                fn(bool $carry, string $item): bool => $carry || str_contains($item, $b),
                 false
             ),
             ValueOperator::NOT_CONTAINS => !array_reduce(
                 $a,
-                fn(bool $carry, string $item) => $carry || str_contains($item, $b),
+                fn(bool $carry, string $item): bool => $carry || str_contains($item, $b),
                 false
             ),
 

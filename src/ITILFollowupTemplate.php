@@ -56,7 +56,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
     }
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [
@@ -86,7 +86,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -126,7 +126,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-stack-2-filled";
     }

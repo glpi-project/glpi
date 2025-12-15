@@ -87,7 +87,7 @@ class DeviceNetworkCard extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -277,7 +277,7 @@ class DeviceNetworkCard extends CommonDevice
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return NetworkPort::getIcon();
     }

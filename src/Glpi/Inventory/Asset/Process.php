@@ -41,8 +41,7 @@ use Item_Process;
 
 class Process extends InventoryAsset
 {
-    /** @var Conf */
-    private $conf;
+    private ?\Glpi\Inventory\Conf $conf = null;
 
     public function prepare(): array
     {
@@ -101,7 +100,7 @@ class Process extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $itemProcess = new Item_Process();
         $db_itemProcess = $this->getExisting();

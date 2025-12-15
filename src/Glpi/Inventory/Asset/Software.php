@@ -61,14 +61,10 @@ class Software extends InventoryAsset
     private $softwares = [];
     /** @var array */
     private $versions = [];
-    /** @var array */
-    private $items_versions = [];
-    /** @var array */
-    private $current_versions = [];
-    /** @var array */
-    private $added_versions   = [];
-    /** @var array */
-    private $updated_versions = [];
+    private array $items_versions = [];
+    private array $current_versions = [];
+    private array $added_versions   = [];
+    private array $updated_versions = [];
     /** @var array */
     private $deleted_versions = [];
 
@@ -251,7 +247,7 @@ class Software extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 
@@ -617,7 +613,7 @@ class Software extends InventoryAsset
      *
      * @return  void
      */
-    private function populateSoftware()
+    private function populateSoftware(): void
     {
         global $DB;
 
@@ -676,7 +672,7 @@ class Software extends InventoryAsset
      *
      * @return  void
      */
-    private function populateVersions()
+    private function populateVersions(): void
     {
         global $DB;
 
@@ -754,7 +750,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeSoftware()
+    private function storeSoftware(): void
     {
         global $DB;
 
@@ -812,7 +808,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeVersions()
+    private function storeVersions(): void
     {
         global $DB;
 
@@ -882,7 +878,7 @@ class Software extends InventoryAsset
      *
      * @return array
      */
-    private function cleanInputToPrepare(array $input, array $known_fields)
+    private function cleanInputToPrepare(array $input, array $known_fields): array
     {
         foreach (array_keys($input) as $column) {
             if (!isset($known_fields[$column])) {
@@ -903,7 +899,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    private function storeAssetLink()
+    private function storeAssetLink(): void
     {
         global $DB;
 
@@ -992,7 +988,7 @@ class Software extends InventoryAsset
      *
      * @return void
      */
-    public function logSoftwares()
+    public function logSoftwares(): void
     {
         foreach ($this->added_versions as $software_data) {
             Log::history(

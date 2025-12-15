@@ -102,11 +102,11 @@ final class FormTranslation extends ItemTranslation
         CommonGLPI $item,
         $tabnum = 1,
         $withtemplate = 0
-    ) {
+    ): bool {
         if ($item instanceof Form) {
             $translations = array_reduce(
                 self::getTranslationsForItem($item),
-                fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
+                fn($carry, $translation): array => $carry + [$translation->fields['language'] => $translation],
                 []
             );
             $available_languages = self::getLanguagesCanBeAddedToTranslation($item->getID());
@@ -127,15 +127,15 @@ final class FormTranslation extends ItemTranslation
         return array_merge(
             self::getTranslationsForItem($form),
             ...array_map(
-                fn($section) => self::getTranslationsForItem($section),
+                fn(\Glpi\Form\Section $section): array => self::getTranslationsForItem($section),
                 $form->getSections()
             ),
             ...array_map(
-                fn($question) => self::getTranslationsForItem($question),
+                fn(\Glpi\Form\Question $question): array => self::getTranslationsForItem($question),
                 $form->getQuestions()
             ),
             ...array_map(
-                fn($comment) => self::getTranslationsForItem($comment),
+                fn(\Glpi\Form\Comment $comment): array => self::getTranslationsForItem($comment),
                 $form->getFormComments()
             ),
         );
@@ -157,7 +157,7 @@ final class FormTranslation extends ItemTranslation
         return array_combine(
             array_diff(array_keys(Dropdown::getLanguages()), $form_translations),
             array_map(
-                fn($language) => Dropdown::getLanguageName($language),
+                fn(int|string $language) => Dropdown::getLanguageName($language),
                 array_diff(array_keys(Dropdown::getLanguages()), $form_translations)
             )
         );

@@ -82,7 +82,7 @@ final class DirectAccess implements ControlTypeInterface
             FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
             && array_reduce(
                 $form->getQuestions(),
-                fn($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
+                fn($carry, $question): bool => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
             )
         ) {
             $warnings[] = __('This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.');

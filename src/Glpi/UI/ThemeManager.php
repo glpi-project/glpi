@@ -127,7 +127,7 @@ class ThemeManager
              * @param $filePattern
              * @return array
              */
-            $streamSafeGlob = static function ($directory, $filePattern) {
+            $streamSafeGlob = static function (string $directory, $filePattern) {
                 $files = scandir($directory);
                 $found = [];
 

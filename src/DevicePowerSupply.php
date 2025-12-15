@@ -64,7 +64,7 @@ class DevicePowerSupply extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 

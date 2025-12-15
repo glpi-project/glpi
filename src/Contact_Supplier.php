@@ -52,7 +52,7 @@ class Contact_Supplier extends CommonDBRelation
         return _n('Link Contact/Supplier', 'Links Contact/Supplier', $nb);
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -60,7 +60,7 @@ class Contact_Supplier extends CommonDBRelation
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$item instanceof CommonDBTM) {
             return '';
@@ -86,7 +86,7 @@ class Contact_Supplier extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -109,7 +109,7 @@ class Contact_Supplier extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForContact(Contact $contact)
+    public static function showForContact(Contact $contact): void
     {
         $instID = (int) $contact->fields['id'];
 
@@ -215,7 +215,7 @@ class Contact_Supplier extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForSupplier(Supplier $supplier)
+    public static function showForSupplier(Supplier $supplier): void
     {
         $instID = $supplier->fields['id'];
         if (!$supplier->can($instID, READ)) {

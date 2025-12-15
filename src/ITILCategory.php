@@ -49,7 +49,10 @@ class ITILCategory extends CommonTreeDropdown
 
     public static $rightname          = 'itilcategory';
 
-    public function getAdditionalFields()
+    /**
+     * @return mixed[]
+     */
+    public function getAdditionalFields(): array
     {
         $tab = [
             [
@@ -153,7 +156,7 @@ class ITILCategory extends CommonTreeDropdown
         return $tab;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab                       = parent::rawSearchOptions();
 
@@ -317,7 +320,7 @@ class ITILCategory extends CommonTreeDropdown
         return _n('ITIL category', 'ITIL categories', $nb);
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         $this->fields['is_helpdeskvisible'] = 1;
         $this->fields['is_request']         = 1;
@@ -326,7 +329,7 @@ class ITILCategory extends CommonTreeDropdown
         $this->fields['is_change']          = 1;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         Rule::cleanForItemCriteria($this);
     }
@@ -349,7 +352,7 @@ class ITILCategory extends CommonTreeDropdown
      * @param mixed  $value
      * @return int
      **/
-    private static function getITILCategoryIDByField($field, $value)
+    private static function getITILCategoryIDByField(string $field, $value)
     {
         global $DB;
 
@@ -385,7 +388,7 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = parent::prepareInputForUpdate($input);
 
@@ -411,14 +414,14 @@ class ITILCategory extends CommonTreeDropdown
      *
      * @return array
      */
-    public function prepareInputForClone($input)
+    public function prepareInputForClone(array $input): array
     {
         // The code must be unique so we cannot clone it
         unset($input['code']);
         return $input;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (Session::haveRight(self::$rightname, READ)) {
             if ($item instanceof ITILTemplate) {
@@ -432,7 +435,7 @@ class ITILCategory extends CommonTreeDropdown
         return parent::getTabNameForItem($item, $withtemplate);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof ITILTemplate) {
             self::showForITILTemplate($item, $withtemplate);
@@ -538,7 +541,7 @@ class ITILCategory extends CommonTreeDropdown
         return [];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-tags";
     }

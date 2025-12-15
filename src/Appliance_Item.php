@@ -62,7 +62,7 @@ class Appliance_Item extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!Appliance::canView() || !$item instanceof CommonDBTM) {
             return '';
@@ -315,7 +315,7 @@ class Appliance_Item extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput($input);
     }
@@ -381,7 +381,7 @@ class Appliance_Item extends CommonDBRelation
         return parent::countForMainItem($item, $extra_types_where);
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';

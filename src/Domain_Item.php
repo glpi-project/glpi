@@ -65,7 +65,7 @@ class Domain_Item extends CommonDBRelation
         );
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$item instanceof CommonDBTM) {
             return '';

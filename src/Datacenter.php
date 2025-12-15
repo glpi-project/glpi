@@ -63,7 +63,7 @@ class Datacenter extends CommonDBTM
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input): array
     {
         $input = parent::prepareInputForUpdate($input);
         return $this->managePictures($input);

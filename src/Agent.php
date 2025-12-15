@@ -251,7 +251,7 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -516,7 +516,7 @@ class Agent extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array|false
     {
         global $CFG_GLPI;
 
@@ -536,7 +536,7 @@ class Agent extends CommonDBTM
         return $this->prepareInputs($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInputs($input);
     }

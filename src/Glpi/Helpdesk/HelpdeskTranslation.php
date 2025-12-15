@@ -56,7 +56,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-language";
     }
@@ -82,7 +82,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
         if ($item instanceof Config) {
             $translations = array_reduce(
                 self::getTranslationsForHelpdesk(),
-                fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
+                fn($carry, $translation): array => $carry + [$translation->fields['language'] => $translation],
                 []
             );
 
@@ -100,11 +100,11 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
         CommonGLPI $item,
         $tabnum = 1,
         $withtemplate = 0
-    ) {
+    ): bool {
         if ($item instanceof Config) {
             $translations = array_reduce(
                 self::getTranslationsForHelpdesk(),
-                fn($carry, $translation) => $carry + [$translation->fields['language'] => $translation],
+                fn($carry, $translation): array => $carry + [$translation->fields['language'] => $translation],
                 []
             );
             $available_languages = self::getLanguagesCanBeAddedToTranslation();
@@ -125,17 +125,17 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     {
         $tiles_manager = TilesManager::getInstance();
         $entities = array_map(
-            fn($entity_id) => Entity::getById($entity_id),
+            fn(int|string $entity_id): \CommonDBTM|false => Entity::getById($entity_id),
             array_keys((new Entity())->find(getEntitiesRestrictCriteria(Entity::getTable())))
         );
         $entities_handlers = array_map(
-            fn($entity) => $entity->listTranslationsHandlers(),
+            fn(\Entity|false $entity): array => $entity->listTranslationsHandlers(),
             $entities
         );
 
         $tiles = $tiles_manager->getAllTiles();
-        $tiles = array_filter($tiles, fn($tile) => $tile instanceof ProvideTranslationsInterface);
-        $tiles_handlers = array_map(fn(ProvideTranslationsInterface $tile) => $tile->listTranslationsHandlers(), $tiles);
+        $tiles = array_filter($tiles, fn(\CommonDBTM&\Glpi\Helpdesk\Tile\TileInterface $tile): bool => $tile instanceof ProvideTranslationsInterface);
+        $tiles_handlers = array_map(fn(ProvideTranslationsInterface $tile): array => $tile->listTranslationsHandlers(), $tiles);
 
         return array_merge(...$entities_handlers, ...$tiles_handlers);
     }
@@ -144,17 +144,17 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     {
         $tiles_manager = TilesManager::getInstance();
         $entities = array_map(
-            fn($entity_id) => Entity::getById($entity_id),
+            fn(int|string $entity_id): \CommonDBTM|false => Entity::getById($entity_id),
             array_keys((new Entity())->find())
         );
 
         return array_merge(
             ...array_map(
-                fn($entity) => self::getTranslationsForItem($entity),
+                fn(\Entity|false $entity): array => self::getTranslationsForItem($entity),
                 $entities
             ),
             ...array_map(
-                fn($item) => self::getTranslationsForItem($item),
+                fn(\CommonDBTM&\Glpi\Helpdesk\Tile\TileInterface $item): array => self::getTranslationsForItem($item),
                 $tiles_manager->getAllTiles()
             )
         );
@@ -175,7 +175,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
         return array_combine(
             array_diff(array_keys(Dropdown::getLanguages()), $helpdesk_translations),
             array_map(
-                fn($language) => Dropdown::getLanguageName($language),
+                fn(int|string $language) => Dropdown::getLanguageName($language),
                 array_diff(array_keys(Dropdown::getLanguages()), $helpdesk_translations)
             )
         );
@@ -186,9 +186,9 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     {
         // Filter out handlers with empty values and those that do not have a translation yet
         return array_map(
-            fn(array $handlers) => array_filter(
+            fn(array $handlers): array => array_filter(
                 $handlers,
-                fn(TranslationHandler $handler) => !empty($handler->getValue()) || !empty(self::getForItemKeyAndLanguage(
+                fn(TranslationHandler $handler): bool => !empty($handler->getValue()) || !empty(self::getForItemKeyAndLanguage(
                     $handler->getItem(),
                     $handler->getKey(),
                     $this->fields['language']
@@ -201,7 +201,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     public static function getSystemSQLCriteria(?string $tablename = null): array
     {
         return [
-            'itemtype' => array_map(static fn($tile) => $tile::class, (TilesManager::getInstance())->getTileTypes()),
+            'itemtype' => array_map(static fn(\CommonDBTM&\Glpi\Helpdesk\Tile\TileInterface $tile): string => $tile::class, (TilesManager::getInstance())->getTileTypes()),
         ];
     }
 }

@@ -107,7 +107,7 @@ final class AnswersHandler
         // Retrieve visible mandatory questions
         $mandatory_questions = array_filter(
             $questions_container->getQuestions(),
-            fn($question) => $question->fields['is_mandatory']
+            fn(\Glpi\Form\Question $question): bool => $question->fields['is_mandatory']
                 && $visibility->isQuestionVisible($question->getID())
                 && $visibility->isSectionVisible($question->getSection()->getID())
         );

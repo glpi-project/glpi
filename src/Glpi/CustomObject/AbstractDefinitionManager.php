@@ -68,7 +68,7 @@ abstract class AbstractDefinitionManager
     final public function registerAutoload(): void
     {
         spl_autoload_register(
-            function ($classname) {
+            function ($classname): void {
                 // Use `static::getInstance()` to be sure that the autoloader will use the current instance in testing context
                 // instead of the instance that was the current one during the GLPI boot.
                 static::getInstance()->autoloadClass($classname);

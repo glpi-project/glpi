@@ -94,7 +94,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput($input);
     }

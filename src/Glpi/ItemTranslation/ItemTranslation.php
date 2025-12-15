@@ -163,7 +163,7 @@ abstract class ItemTranslation extends CommonDBChild
             static::$itemtype => $item->getType(),
         ]);
 
-        return array_map(fn($id) => static::getById($id), array_keys($translations));
+        return array_map(fn(int|string $id): \CommonDBTM|false => static::getById($id), array_keys($translations));
     }
 
     /**
@@ -178,7 +178,7 @@ abstract class ItemTranslation extends CommonDBChild
             'language'        => $language,
         ]);
 
-        if (!empty($translation)) {
+        if ($translation !== []) {
             $itemtranslation = static::getById(key($translation));
             if ($itemtranslation instanceof self) {
                 return $itemtranslation;
@@ -223,9 +223,9 @@ abstract class ItemTranslation extends CommonDBChild
 
         // Filter out handlers with empty values and those that do not have a translation yet
         return array_map(
-            fn(array $handlers) => array_filter(
+            fn(array $handlers): array => array_filter(
                 $handlers,
-                fn(TranslationHandler $handler) => !empty($handler->getValue()) || !empty(self::getForItemKeyAndLanguage(
+                fn(TranslationHandler $handler): bool => !empty($handler->getValue()) || !empty(self::getForItemKeyAndLanguage(
                     $item,
                     $handler->getKey(),
                     $this->fields['language']
@@ -243,7 +243,7 @@ abstract class ItemTranslation extends CommonDBChild
 
         array_walk_recursive(
             $translations_handlers,
-            function ($handler) use (&$translated_handlers, &$total_handlers) {
+            function ($handler) use (&$translated_handlers, &$total_handlers): void {
                 if (
                     !empty(static::getForItemKeyAndLanguage($handler->getItem(), $handler->getKey(), $this->fields['language'])?->getTranslation())
                 ) {
@@ -265,7 +265,7 @@ abstract class ItemTranslation extends CommonDBChild
 
         array_walk_recursive(
             $translations_handlers,
-            function ($handler) use (&$translated_handlers, &$total_handlers) {
+            function ($handler) use (&$translated_handlers, &$total_handlers): void {
                 if (
                     !empty(static::getForItemKeyAndLanguage($handler->getItem(), $handler->getKey(), $this->fields['language'])?->getTranslation())
                 ) {
@@ -287,7 +287,7 @@ abstract class ItemTranslation extends CommonDBChild
 
         array_walk_recursive(
             $translations_handlers,
-            function ($handler) use (&$translations_to_review) {
+            function ($handler) use (&$translations_to_review): void {
                 $translation = new FormTranslation();
                 if (
                     $translation->getFromDBByCrit([

@@ -44,10 +44,9 @@ class HTMLTableGroup extends HTMLTableBase
     private $content;
     /** @var ?HTMLTableHeader[] */
     private $ordered_headers;
-    /** @var HTMLTableMain */
-    private $table;
+    private \HTMLTableMain $table;
     /** @var HTMLTableRow[] */
-    private $rows = [];
+    private array $rows = [];
 
     /**
      * @param HTMLTableMain $table
@@ -73,7 +72,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return HTMLTableMain
      */
-    public function getTable()
+    public function getTable(): \HTMLTableMain
     {
         return $this->table;
     }
@@ -100,7 +99,7 @@ class HTMLTableGroup extends HTMLTableBase
         return isset($subheaders[$subheader_name]);
     }
 
-    public function tryAddHeader()
+    public function tryAddHeader(): void
     {
         if ($this->ordered_headers !== null) {
             throw new Exception('Implementation error: must define all headers before any row');
@@ -110,7 +109,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return HTMLTableRow
      */
-    public function createRow()
+    public function createRow(): \HTMLTableRow
     {
         $new_row      = new HTMLTableRow($this);
         $this->rows[] = $new_row;
@@ -120,7 +119,7 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return void
      */
-    public function prepareDisplay()
+    public function prepareDisplay(): void
     {
         foreach ($this->table->getHeaderOrder() as $super_header_name) {
             $super_header = $this->table->getSuperHeaderByName($super_header_name);
@@ -174,7 +173,7 @@ class HTMLTableGroup extends HTMLTableBase
      *
      * @return void
      **/
-    public function displayGroup($totalNumberOfColumn, array $params)
+    public function displayGroup($totalNumberOfColumn, array $params): void
     {
         $p = array_replace([
             'display_header_for_each_group'         => true,
@@ -251,9 +250,9 @@ class HTMLTableGroup extends HTMLTableBase
     /**
      * @return int
      */
-    public function getNumberOfRows()
+    public function getNumberOfRows(): int
     {
-        return count(array_filter($this->rows, static fn($r) => $r->notEmpty()));
+        return count(array_filter($this->rows, static fn(\HTMLTableRow $r): bool => $r->notEmpty()));
     }
 
     /**

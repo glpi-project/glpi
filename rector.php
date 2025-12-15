@@ -39,6 +39,7 @@ use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
 use Rector\Set\ValueObject\SetList;
+use Rector\TypeDeclaration\Rector\Property\TypedPropertyFromAssignsRector;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -111,5 +112,8 @@ return RectorConfig::configure()
     ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
     ->withSets([
         SetList::TYPE_DECLARATION,
+    ])
+    ->withConfiguredRule(TypedPropertyFromAssignsRector::class, [
+        'inline_public' => false,
     ])
 ;

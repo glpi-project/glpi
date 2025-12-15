@@ -257,7 +257,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     ): array {
         return array_merge(
             ...array_map(
-                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                fn(ConditionHandlerInterface $handler): array => $handler->getSupportedValueOperators(),
                 $this->getConditionHandlers($question_config)
             )
         );

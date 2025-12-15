@@ -77,7 +77,7 @@ trait ConditionableTrait
         // Filter out invalid conditions
         $conditions = array_filter(
             $form_data->getConditionsData(),
-            fn(ConditionData $condition) => $condition->isValid()
+            fn(ConditionData $condition): bool => $condition->isValid()
         );
 
         return $conditions;

@@ -81,7 +81,7 @@ final class LinkedITILObjectsFieldConfig implements JsonFieldInterface
     {
         return [
             self::STRATEGY_CONFIGS => array_map(
-                fn(LinkedITILObjectsFieldStrategyConfig $config) => $config->jsonSerialize(),
+                fn(LinkedITILObjectsFieldStrategyConfig $config): array => $config->jsonSerialize(),
                 $this->strategy_configs
             ),
         ];
@@ -93,7 +93,7 @@ final class LinkedITILObjectsFieldConfig implements JsonFieldInterface
     public function getStrategies(): array
     {
         return array_map(
-            fn(LinkedITILObjectsFieldStrategyConfig $config) => $config->getStrategy(),
+            fn(LinkedITILObjectsFieldStrategyConfig $config): ?\Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategy => $config->getStrategy(),
             $this->strategy_configs
         );
     }

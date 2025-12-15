@@ -71,7 +71,7 @@ abstract class AssetModel extends CommonDCModelDropdown
         return sprintf(_n('%s model', '%s models', $nb), static::getDefinition()->getTranslatedName());
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return static::getDefinition()->getCustomObjectIcon();
     }
@@ -102,7 +102,7 @@ abstract class AssetModel extends CommonDCModelDropdown
      * @return self|false
      */
 
-    public static function getById(?int $id)
+    public static function getById(?int $id): \CommonDBTM|false
     {
         if ($id === null) {
             return false;
@@ -147,7 +147,7 @@ abstract class AssetModel extends CommonDCModelDropdown
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareDefinitionInput($input);
         return parent::prepareInputForUpdate($input);
@@ -183,7 +183,7 @@ abstract class AssetModel extends CommonDCModelDropdown
         return $input;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         // Get parent search options, but skip the ones from the immediate CommonDCModelDropdown parent
         $options = CommonDropdown::rawSearchOptions();

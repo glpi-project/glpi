@@ -147,7 +147,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $tabs = parent::defineTabs();
         $this->addStandardTab(ServiceCatalog::class, $tabs, $options);
@@ -169,7 +169,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function showForm($id, array $options = [])
+    public function showForm($id, array $options = []): bool
     {
         if (!empty($id)) {
             $this->getFromDB($id);
@@ -249,7 +249,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $search_options = parent::rawSearchOptions();
 
@@ -305,14 +305,14 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         // Clear lazy loaded data
         $this->clearLazyLoadedData();
     }
 
     #[Override]
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $from_import    = $this->input['_from_import']    ?? false;
         $from_migration = $this->input['_from_migration'] ?? false;
@@ -357,7 +357,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function prepareInputForUpdate($input): array
+    public function prepareInputForUpdate(array $input): array
     {
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
@@ -381,7 +381,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         global $DB;
 
@@ -405,7 +405,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -482,7 +482,7 @@ final class Form extends CommonDBTM implements
         );
 
         $sections_handlers = array_map(
-            fn($section) => $section->listTranslationsHandlers(),
+            fn(\Glpi\Form\Section $section): array => $section->listTranslationsHandlers(),
             $this->getSections()
         );
 
@@ -518,7 +518,7 @@ final class Form extends CommonDBTM implements
      *
      * @return array Array of information
      **/
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         return [
             'description' => __('Purge old form drafts'),
@@ -699,7 +699,7 @@ final class Form extends CommonDBTM implements
 
         return array_filter(
             $this->getQuestions(),
-            function (Question $question) use ($types) {
+            function (Question $question) use ($types): bool {
                 $type = $question->getQuestionType() !== null ? get_class($question->getQuestionType()) : self::class;
                 return in_array($type, $types);
             }

@@ -77,8 +77,7 @@ final class SearchOption implements ArrayAccess
      * @var array{id: int, name: string, field: string, table: string}
      */
     private array $search_opt_array;
-    /** @var array */
-    private static $search_options_cache = [];
+    private static array $search_options_cache = [];
 
     public function __construct(array $search_opt_array)
     {
@@ -149,7 +148,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array The reference to the array of search options for the given item type
      **/
-    public static function getOptionsForItemtype($itemtype, $withplugins = true): array
+    public static function getOptionsForItemtype(string $itemtype, $withplugins = true): array
     {
         global $CFG_GLPI;
 
@@ -160,7 +159,7 @@ final class SearchOption implements ArrayAccess
             return self::$search_options_cache[$cache_key];
         }
 
-        $fn_append_options = static function ($new_options) use (&$search, $itemtype) {
+        $fn_append_options = static function ($new_options) use (&$search, $itemtype): void {
             // Check duplicate keys between new options and existing options
             $duplicate_keys = array_intersect(array_keys($search[$itemtype]), array_keys($new_options));
             if (count($duplicate_keys) > 0) {
@@ -420,7 +419,7 @@ final class SearchOption implements ArrayAccess
         }
 
         $infocom_options = Infocom::rawSearchOptionsToAdd($itemtype);
-        $found_infocoms  = array_filter($infocom_options, static fn($option) => isset($option['id']) && $searchID == $option['id']);
+        $found_infocoms  = array_filter($infocom_options, static fn(array $option): bool => isset($option['id']) && $searchID == $option['id']);
 
         return (count($found_infocoms) > 0);
     }
@@ -431,7 +430,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return array
      **/
-    public static function getActionsFor($itemtype, $field_num)
+    public static function getActionsFor(string $itemtype, $field_num): array
     {
 
         $searchopt = self::getOptionsForItemtype($itemtype);
@@ -616,7 +615,7 @@ final class SearchOption implements ArrayAccess
      *
      * @return int
      **/
-    public static function getOptionNumber($itemtype, $field, $meta_itemtype = null): int
+    public static function getOptionNumber(string $itemtype, $field, $meta_itemtype = null): int
     {
         $meta_itemtype ??= $itemtype;
         $table = $meta_itemtype::getTable();
@@ -731,9 +730,9 @@ final class SearchOption implements ArrayAccess
                 $namefield_key = $itemtype::getCompleteNameField();
             }
 
-            $options = array_filter(self::getOptionsForItemtype($itemtype, false), static fn($o) => is_numeric($o), ARRAY_FILTER_USE_KEY);
-            $id_field = array_filter($options, static fn($option) => $option['field'] === $itemtype::getIndexName() && $option['table'] === $itemtype::getTable());
-            $name_field = array_filter($options, static fn($option) => $option['field'] === $namefield_key && $option['table'] === $itemtype::getTable());
+            $options = array_filter(self::getOptionsForItemtype($itemtype, false), static fn($o): bool => is_numeric($o), ARRAY_FILTER_USE_KEY);
+            $id_field = array_filter($options, static fn(array $option): bool => $option['field'] === $itemtype::getIndexName() && $option['table'] === $itemtype::getTable());
+            $name_field = array_filter($options, static fn(array $option): bool => $option['field'] === $namefield_key && $option['table'] === $itemtype::getTable());
         } else {
             $id_field = [];
             $name_field = [];

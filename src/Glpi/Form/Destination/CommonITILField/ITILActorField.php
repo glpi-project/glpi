@@ -73,11 +73,11 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     {
         $question_type = array_filter(
             $this->getAllowedQuestionType(),
-            fn(AbstractQuestionType $type) => $type instanceof AbstractQuestionTypeActors
+            fn(AbstractQuestionType $type): bool => $type instanceof AbstractQuestionTypeActors
         );
 
         return array_merge(...array_map(
-            fn(AbstractQuestionTypeActors $type) => $type->getAllowedActorTypes(),
+            fn(AbstractQuestionTypeActors $type): array => $type->getAllowedActorTypes(),
             $question_type
         ));
     }
@@ -220,7 +220,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
         } else {
             $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS] = array_reduce(
                 $input[$this->getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS],
-                function ($carry, $value) {
+                function (array $carry, $value): array {
                     $parts = explode("-", $value);
                     $carry[getItemtypeForForeignKeyField($parts[0])][] = (int) $parts[1];
                     return $carry;
@@ -358,7 +358,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     {
         $allowed_item_questions = array_filter(
             $form->getQuestionsByType(QuestionTypeItem::class),
-            function ($question) {
+            function (\Glpi\Form\Question $question): bool {
                 $question_itemtype = (new QuestionTypeItem())->getDefaultValueItemtype($question);
                 if ($question_itemtype === null) {
                     return false;

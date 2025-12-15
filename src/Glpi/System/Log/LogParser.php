@@ -56,17 +56,13 @@ final class LogParser extends CommonGLPI
 {
     /**
      * Log directory.
-     *
-     * @var string
      */
-    private $directory;
+    private string $directory;
 
     /**
      * Known files cache.
-     *
-     * @var array
      */
-    private $known_files;
+    private ?array $known_files = null;
 
     public function __construct(string $directory = GLPI_LOG_DIR)
     {
@@ -175,7 +171,7 @@ final class LogParser extends CommonGLPI
             $last_date = "";
             $line = preg_replace_callback(
                 "/$datetime_pattern/",
-                function ($matches) use (&$last_date) {
+                function ($matches) use (&$last_date): string {
                     $last_date = $matches[0];
                     return "";
                 },

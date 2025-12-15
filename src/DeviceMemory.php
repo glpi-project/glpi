@@ -78,7 +78,7 @@ class DeviceMemory extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -138,7 +138,7 @@ class DeviceMemory extends CommonDevice
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInputForAddOrUpdate($input);
     }

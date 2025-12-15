@@ -59,7 +59,7 @@ final class FormTagsManager
     {
         return preg_replace_callback(
             '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
-            function ($match) {
+            function (array $match): string {
                 $tag = $match[0];
 
                 // Extract value.
@@ -98,7 +98,7 @@ final class FormTagsManager
     ): string {
         return preg_replace_callback(
             '/<span.*?data-form-tag="true".*?>.*?<\/span>/',
-            function ($match) use ($answers_set) {
+            function (array $match) use ($answers_set): string {
                 $tag = $match[0];
 
                 // Extract value.
@@ -174,7 +174,7 @@ final class FormTagsManager
 
     private function removeInvalidProviders(array $providers): array
     {
-        return array_filter($providers, function ($provider) {
+        return array_filter($providers, function ($provider): bool {
             if (!($provider instanceof TagProviderInterface)) {
                 trigger_error(
                     "Provider must implement TagProviderInterface",
@@ -191,7 +191,7 @@ final class FormTagsManager
     {
         $filtered_tags = array_filter(
             $tags,
-            fn($tag) => $tag instanceof Tag && str_contains(
+            fn($tag): bool => $tag instanceof Tag && str_contains(
                 strtoupper($tag->label),
                 strtoupper($filter)
             )

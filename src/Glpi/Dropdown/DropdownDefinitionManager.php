@@ -96,7 +96,7 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
             }
         }
 
-        return '/^(' . \implode('|', \array_map(fn($classname) => \preg_quote($classname, '/'), $core_dropdowns)) . ')$/i';
+        return '/^(' . \implode('|', \array_map(fn(string $classname): string => \preg_quote($classname, '/'), $core_dropdowns)) . ')$/i';
     }
 
     public function autoloadClass(string $classname): void

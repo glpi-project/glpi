@@ -76,13 +76,13 @@ class Contact extends CommonDBTM
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input): array
     {
         $input = parent::prepareInputForUpdate($input);
         return $this->managePictures($input);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         $this->deleteChildrenAndRelationsFromDb(
@@ -102,7 +102,7 @@ class Contact extends CommonDBTM
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -186,7 +186,7 @@ class Contact extends CommonDBTM
     }
 
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
 
         $this->initForm($ID, $options);
@@ -221,7 +221,7 @@ HTML;
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -250,7 +250,7 @@ HTML;
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -463,7 +463,7 @@ HTML;
      *
      * @return void
      */
-    public function generateVcard()
+    public function generateVcard(): void
     {
 
         if (!$this->can($this->fields['id'], READ)) {
@@ -515,7 +515,7 @@ HTML;
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-address-book";
     }

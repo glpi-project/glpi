@@ -159,7 +159,7 @@ class Group_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForUser(User $user)
+    public static function showForUser(User $user): void
     {
         $ID = $user->fields['id'];
         if (
@@ -395,7 +395,7 @@ class Group_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function showForGroup(Group $group)
+    public static function showForGroup(Group $group): void
     {
         $ID = $group->getID();
         if (
@@ -563,7 +563,7 @@ class Group_User extends CommonDBRelation
         CommonDBTM $item,
         array $ids,
         array $input
-    ) {
+    ): array {
         return match ($action) {
             'add_supervisor' => ['is_manager' => 1],
             'add_delegatee' => ['is_userdelegate' => 1],
@@ -576,7 +576,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array of search option
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -646,7 +646,7 @@ class Group_User extends CommonDBRelation
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
         $name = _n('User', 'Users', Session::getPluralNumber());
@@ -679,7 +679,7 @@ class Group_User extends CommonDBRelation
      *
      * @return void
      */
-    public static function deleteGroups($user_ID, $only_dynamic = false)
+    public static function deleteGroups($user_ID, $only_dynamic = false): void
     {
         $crit['users_id'] = $user_ID;
         if ($only_dynamic) {
@@ -689,7 +689,7 @@ class Group_User extends CommonDBRelation
         $obj->deleteByCriteria($crit);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate) {
             $nb = 0;
@@ -742,7 +742,7 @@ class Group_User extends CommonDBRelation
         return 0;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item::class) {
             case User::class:
@@ -774,7 +774,7 @@ class Group_User extends CommonDBRelation
         return $params;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         global $DB;
 
@@ -833,7 +833,7 @@ class Group_User extends CommonDBRelation
         Group::updateLastGroupChange();
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         global $DB;
 
@@ -955,7 +955,7 @@ class Group_User extends CommonDBRelation
     {
         $user_ids = [];
 
-        return array_filter($data, static function ($user_data) use (&$user_ids) {
+        return array_filter($data, static function (array $user_data) use (&$user_ids): bool {
             if (!isset($user_ids[$user_data['id']])) {
                 $user_ids[$user_data['id']] = true;
                 return true;

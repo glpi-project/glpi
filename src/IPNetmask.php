@@ -85,7 +85,7 @@ class IPNetmask extends IPAddress
      *
      * @return bool false if the netmask is not valid or if it does not correspond to version
      */
-    public function setNetmaskFromString($netmask, $version)
+    public function setNetmaskFromString($netmask, $version): bool
     {
         if (is_numeric($netmask)) {
             if ($netmask < 0) {

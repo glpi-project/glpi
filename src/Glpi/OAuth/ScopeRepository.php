@@ -73,6 +73,6 @@ class ScopeRepository implements ScopeRepositoryInterface
         if (!is_array($allowed_scopes)) {
             $allowed_scopes = [];
         }
-        return array_filter($scopes, static fn($scope) => in_array($scope->getIdentifier(), $allowed_scopes, true));
+        return array_filter($scopes, static fn($scope): bool => in_array($scope->getIdentifier(), $allowed_scopes, true));
     }
 }

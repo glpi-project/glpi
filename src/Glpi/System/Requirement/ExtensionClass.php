@@ -42,10 +42,8 @@ class ExtensionClass extends Extension
 {
     /**
      * Required class or interface name.
-     *
-     * @var string
      */
-    private $class_name;
+    private string $class_name;
 
     /**
      * @param string $name        Extension name.

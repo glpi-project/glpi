@@ -443,7 +443,7 @@ final class RoutePath
         $compiled_path = $this->getRoutePath();
 
         // Replace all placeholders with their matching requirement or a default pattern (letters,  numbers, underscore only)
-        $compiled_path = preg_replace_callback('/(\{[^}]+\})/', function ($matches): string {
+        $compiled_path = preg_replace_callback('/(\{[^}]+\})/', function (array $matches): string {
             $name = $matches[1];
             $name = substr($name, 1, -1);
             if (isset($this->route->requirements[$name])) {

@@ -106,7 +106,7 @@ class PluginMigrationResult
     {
         $errors = \array_filter(
             $this->messages,
-            static fn(array $entry) => $entry['type'] === MessageType::Error
+            static fn(array $entry): bool => $entry['type'] === MessageType::Error
         );
         return count($errors) > 0;
     }

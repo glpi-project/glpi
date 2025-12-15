@@ -89,13 +89,13 @@ class View extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-building-store";
     }
 
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL($full = true): string
     {
         global $CFG_GLPI;
 
@@ -104,7 +104,7 @@ class View extends CommonGLPI
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $tabs = [
             'no_all_tab' => true,
@@ -115,7 +115,7 @@ class View extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!Controller::isWebAllowed()) {
             return '';
@@ -130,7 +130,7 @@ class View extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!Controller::isWebAllowed()) {
             return false;
@@ -220,7 +220,7 @@ class View extends CommonGLPI
         bool $force_refresh = false,
         bool $only_lis = false,
         string $string_filter = ""
-    ) {
+    ): void {
         global $CFG_GLPI;
 
         $plugin_inst = new Plugin();
@@ -291,7 +291,7 @@ class View extends CommonGLPI
         string $string_filter = "",
         int $page = 1,
         string $sort = 'sort-alpha-asc'
-    ) {
+    ): void {
         if (!self::checkRegistrationStatus()) {
             return;
         }
@@ -319,7 +319,7 @@ class View extends CommonGLPI
      *
      * @return string tags list
      */
-    public static function getTagsHtml()
+    public static function getTagsHtml(): string
     {
         $api  = self::getAPI();
         $tags = $api->getTopTags();
@@ -844,7 +844,7 @@ JS;
      *
      * @return string the jtml for plugin logo
      */
-    public static function getPluginIcon(array $plugin = [])
+    public static function getPluginIcon(array $plugin = []): string
     {
         $icon = "";
 
@@ -1013,7 +1013,7 @@ JS;
      *
      * @return void display things
      */
-    public static function showFeatureSwitchDialog()
+    public static function showFeatureSwitchDialog(): void
     {
         global $CFG_GLPI;
 

@@ -64,15 +64,14 @@ final class Profile
 
     private static ?self $current = null;
 
-    /** @var bool */
-    private $disabled = false;
+    private bool $disabled = false;
 
     public function __construct(string $id, ?string $parent_id)
     {
         $this->id = $id;
         $this->parent_id = $parent_id;
         // Register a shutdown function to save the profile
-        register_shutdown_function(function () {
+        register_shutdown_function(function (): void {
             // Stop all profiler timers (should just be the main php_request one unless something died)
             Profiler::getInstance()->stopAll();
             $this->save();
@@ -144,7 +143,7 @@ final class Profile
      *
      * @return void
      */
-    public function setData(string $widget, $data)
+    public function setData(string $widget, $data): void
     {
         if ($this->disabled) {
             return;
@@ -164,7 +163,7 @@ final class Profile
      *
      * @return void
      */
-    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = '')
+    public function addSQLQueryData(string $query, float $time, int $rows = 0, string $errors = '', string $warnings = ''): void
     {
         if ($this->disabled) {
             return;
@@ -193,7 +192,7 @@ final class Profile
 
         $execution_time = -1;
         if (isset($this->additional_info['profiler'])) {
-            $main_section = array_values(array_filter($this->additional_info['profiler'], static fn(array $section) => $section['category'] === Profiler::CATEGORY_CORE && $section['name'] === 'php_request'));
+            $main_section = array_values(array_filter($this->additional_info['profiler'], static fn(array $section): bool => $section['category'] === Profiler::CATEGORY_CORE && $section['name'] === 'php_request'));
             if (count($main_section)) {
                 $execution_time = $main_section[0]['end'] - $main_section[0]['start'];
             }

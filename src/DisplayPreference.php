@@ -147,7 +147,7 @@ class DisplayPreference extends CommonDBTM
         return $input;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         switch ($ma->getAction()) {
             case 'reset_to_default':
@@ -651,7 +651,7 @@ class DisplayPreference extends CommonDBTM
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         switch ($item->getType()) {
             case 'Preference':
@@ -727,7 +727,7 @@ class DisplayPreference extends CommonDBTM
         return false;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         //TRANS: short for : Search result user display
         $values[self::PERSONAL]  = ['short' => __('User display'),
@@ -802,7 +802,7 @@ class DisplayPreference extends CommonDBTM
     }
 
     #[Override]
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $search_options = parent::rawSearchOptions();
 

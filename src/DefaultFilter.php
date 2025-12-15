@@ -83,7 +83,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return static::canUpdate();
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -209,7 +209,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput($input);
     }

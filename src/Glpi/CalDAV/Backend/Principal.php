@@ -256,7 +256,7 @@ class Principal extends AbstractBackend
      *
      * @return null|array
      */
-    private function getPrincipalFromItem(CommonDBTM $item)
+    private function getPrincipalFromItem(CommonDBTM $item): ?array
     {
 
         $principal = null;

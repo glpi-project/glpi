@@ -61,7 +61,7 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
              *
              * @return void
              */
-            public function setPrintFooter($val = true)
+            public function setPrintFooter($val = true): void
             {
                 //override because \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::save() explicitly calls setPrintFooter(false) -_-
                 $this->print_footer = true;

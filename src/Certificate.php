@@ -580,7 +580,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return true;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -595,7 +595,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return $actions;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         switch ($ma->getAction()) {

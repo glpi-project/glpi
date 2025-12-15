@@ -101,7 +101,7 @@ enum LocationFieldStrategy: string
         );
         $location_answers = array_filter(
             $items_answers,
-            fn(Answer $a) => ($a->getRawAnswer()['itemtype'] ?? '') === Location::class,
+            fn(Answer $a): bool => ($a->getRawAnswer()['itemtype'] ?? '') === Location::class,
         );
         if (count($location_answers) == 0) {
             return null;

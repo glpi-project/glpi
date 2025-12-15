@@ -62,14 +62,14 @@ class DropdownTranslation extends CommonDBChild
     /**
      * Forbidden massives actions
      **/
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
             $nb = 0;
@@ -102,7 +102,7 @@ class DropdownTranslation extends CommonDBChild
         return false;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if ($this->checkBeforeAddorUpdate($input, false)) {
             return $input;
@@ -476,7 +476,7 @@ TWIG, $twig_params);
      *
      * @return int the dropdown's random identifier
      **/
-    public static function dropdownFields(CommonDBTM $item, $language = '', $value = '')
+    public static function dropdownFields(CommonDBTM $item, $language = '', $value = ''): int|string
     {
         global $DB;
 

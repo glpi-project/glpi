@@ -617,7 +617,7 @@ final class DbUtils
      *
      * @return int nb of elements in table
      */
-    public function countDistinctElementsInTable($table, $field, $condition = [])
+    public function countDistinctElementsInTable($table, $field, $condition = []): int
     {
 
         if (!is_array($condition)) {
@@ -643,7 +643,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function countElementsInTableForMyEntities($table, $condition = [])
+    public function countElementsInTableForMyEntities($table, $condition = []): int
     {
 
         /// TODO clean it / maybe include when review of SQL requests
@@ -665,7 +665,7 @@ final class DbUtils
      *
      * @return int number of elements in table
      */
-    public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
+    public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true): int
     {
 
         /// TODO clean it / maybe include when review of SQL requests

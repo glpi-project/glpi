@@ -115,7 +115,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $this->manageBlueprint($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (isset($input['vis_rows']) && (int) ($input['vis_rows']) < 1) {
             Session::addMessageAfterRedirect(
@@ -306,7 +306,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         switch ($item::class) {
             case Datacenter::class:

@@ -55,7 +55,7 @@ class AuthMail extends CommonDBTM
         return ['config', Auth::class, self::class];
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (array_key_exists('name', $input) && (string) $input['name'] === '') {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
@@ -195,7 +195,7 @@ class AuthMail extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if (!$this->can($ID, UPDATE)) {
             return false;

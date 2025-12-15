@@ -182,7 +182,7 @@ class Printer extends NetworkEquipment
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         parent::handle();
         $this->handleMetrics();
@@ -203,7 +203,7 @@ class Printer extends NetworkEquipment
      *
      * @return void
      */
-    public function handleMetrics()
+    public function handleMetrics(): void
     {
         if (!isset($this->counters)) {
             return;

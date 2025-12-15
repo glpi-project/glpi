@@ -80,7 +80,7 @@ class Controller extends Device
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $data = $this->data;
 

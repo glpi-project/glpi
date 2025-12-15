@@ -223,7 +223,7 @@ class Cartridge extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $cartinfo = new Printer_CartridgeInfo();
         $db_cartridges = $this->getExisting();

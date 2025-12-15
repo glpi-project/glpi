@@ -423,7 +423,7 @@ trait Clonable
      * @param bool $history
      * @return void
      */
-    public function post_clone($source, $history)
+    public function post_clone($source, $history): void
     {
         if ($this instanceof AssignableItemInterface) {
             $this->updateGroupFields();

@@ -92,7 +92,7 @@ final class FormAccessControl extends CommonDBChild
         CommonGLPI $item,
         $tabnum = 1,
         $withtemplate = 0
-    ) {
+    ): bool {
         // This tab is only available for forms
         if (!($item instanceof Form)) {
             return false;
@@ -199,7 +199,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): false|array
     {
         // Config is mandatory on creation; inject default config if missing.
         if (!isset($input['_config']) && !isset($input['config'])) {
@@ -236,7 +236,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForClone($input)
+    public function prepareInputForClone($input): array
     {
         $input = parent::prepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareAccessControlInputForClone($input);
@@ -331,7 +331,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    protected function computeFriendlyName()
+    protected function computeFriendlyName(): string
     {
         $strategy = $this->getStrategy();
         return $strategy->getLabel();
@@ -344,7 +344,7 @@ final class FormAccessControl extends CommonDBChild
      *
      * @return array
      */
-    protected function prepareConfigInput(array $input)
+    protected function prepareConfigInput(array $input): array
     {
         $config = $input['_config'] ?? null;
         if ($config !== null) {

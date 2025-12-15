@@ -66,7 +66,7 @@ use function Safe\strtotime;
 
 trait PlanningEvent
 {
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         if ($this->isField("users_id")) {
             $this->fields["users_id"] = Session::getLoginUserID();
@@ -87,7 +87,7 @@ trait PlanningEvent
         parent::post_getEmpty();
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // Add document if needed
         $this->input = $this->addFiles($this->input, [
@@ -254,7 +254,7 @@ trait PlanningEvent
         return $input;
     }
 
-    public function encodeRrule(array $rrule = [])
+    public function encodeRrule(array $rrule = []): string
     {
 
         if (empty($rrule['freq'])) {
@@ -286,7 +286,7 @@ trait PlanningEvent
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if (
             !isset($this->input['_no_check_plan'])
@@ -313,7 +313,7 @@ trait PlanningEvent
     }
 
 
-    public function pre_updateInDB()
+    public function pre_updateInDB(): void
     {
         // Set new user if initial user have been deleted
         if (
@@ -332,7 +332,7 @@ trait PlanningEvent
      *
      * @see addInstanceException
      */
-    public function deleteInstance(int $id = 0, string $day = "")
+    public function deleteInstance(int $id = 0, string $day = ""): void
     {
         $this->addInstanceException($id, $day);
     }
@@ -371,7 +371,7 @@ trait PlanningEvent
      *
      * @return object the new object
      */
-    public function createInstanceClone(int $id = 0, string $start = "")
+    public function createInstanceClone(int $id = 0, string $start = ""): static
     {
         $this->getFromDB($id);
         $fields = $this->fields;
@@ -689,7 +689,7 @@ trait PlanningEvent
      *
      * @return string
      */
-    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false)
+    public static function displayPlanningItem(array $val, $who, $type = "", $complete = false): string
     {
         global $CFG_GLPI;
 
@@ -914,7 +914,7 @@ trait PlanningEvent
      *
      * @return string
      **/
-    public function getAlreadyPlannedInformation(array $val)
+    public function getAlreadyPlannedInformation(array $val): string
     {
         $itemtype = $this->getType();
         if ($item = getItemForItemtype($itemtype)) {
@@ -984,7 +984,7 @@ trait PlanningEvent
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [
             [

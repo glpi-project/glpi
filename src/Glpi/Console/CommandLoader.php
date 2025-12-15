@@ -137,7 +137,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return Command[]
      */
-    private function getCommands()
+    private function getCommands(): ?array
     {
         if ($this->commands === null) {
             $this->findCoreCommands();

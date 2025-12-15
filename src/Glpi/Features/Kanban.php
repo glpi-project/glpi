@@ -45,13 +45,13 @@ use Glpi\Plugin\Hooks;
 trait Kanban
 {
     /** @see KanbanInterface::canModifyGlobalState() */
-    public function canModifyGlobalState()
+    public function canModifyGlobalState(): bool
     {
         return false;
     }
 
     /** @see KanbanInterface::forceGlobalState() */
-    public function forceGlobalState()
+    public function forceGlobalState(): bool
     {
         return false;
     }
@@ -63,13 +63,14 @@ trait Kanban
     }
 
     /** @see KanbanInterface::canOrderKanbanCard() */
-    public function canOrderKanbanCard($ID)
+    public function canOrderKanbanCard($ID): bool
     {
         return true;
     }
 
-    /** @see KanbanInterface::getKanbanPluginFilters() */
-    public static function getKanbanPluginFilters($itemtype)
+    /** @see KanbanInterface::getKanbanPluginFilters()
+     * @return mixed[] */
+    public static function getKanbanPluginFilters($itemtype): array
     {
         global $PLUGIN_HOOKS;
         $filters = [];

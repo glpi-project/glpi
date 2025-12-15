@@ -111,30 +111,22 @@ class Inventory
     protected $raw_data = null;
     /** @var array */
     protected $data = [];
-    /** @var array */
-    private $metadata = [];
-    /** @var array */
-    private $errors = [];
+    private array $metadata = [];
+    private array $errors = [];
     /** @var CommonDBTM */
     protected $item;
-    /** @var Agent */
-    private $agent;
+    private ?\Agent $agent = null;
     /** @var InventoryAsset[] */
     protected $assets = [];
-    /** @var Conf */
-    protected $conf;
-    /** @var array */
-    private $benchs = [];
+    protected \Glpi\Inventory\Conf $conf;
+    private array $benchs = [];
     /** @var string|false */
-    private $inventory_tmpfile = false;
+    private string|bool $inventory_tmpfile = false;
     /** @var ?string */
     private $inventory_content;
-    /** @var int */
-    private $inventory_format;
-    /** @var ?MainAsset */
-    private $mainasset;
-    /** @var string */
-    private $request_query;
+    private ?int $inventory_format = null;
+    private ?\Glpi\Inventory\MainAsset\MainAsset $mainasset = null;
+    private ?string $request_query = null;
     /** @var bool */
     private bool $is_discovery = false;
 
@@ -294,7 +286,7 @@ class Inventory
      *
      * @return void
      */
-    public function contact($data)
+    public function contact($data): void
     {
         $this->raw_data = $data;
         $this->extractMetadata();
@@ -310,7 +302,7 @@ class Inventory
      *
      * @return array
      */
-    public function doInventory($test_rules = false)
+    public function doInventory($test_rules = false): array
     {
         global $DB;
 
@@ -341,7 +333,7 @@ class Inventory
             $properties = array_keys((array) $schema->properties->content->properties);
             $properties = array_filter(
                 $properties,
-                function ($property_name) {
+                function (int|string $property_name): bool {
                     return !in_array($property_name, ['versionclient', 'versionprovider']); //already handled in extractMetadata
                 }
             );
@@ -531,7 +523,7 @@ class Inventory
      *
      * @return void
      */
-    private function handleInventoryFile()
+    private function handleInventoryFile(): void
     {
         if (isset($this->mainasset)) {
             $ext = (Request::XML_MODE === $this->inventory_format ? 'xml' : 'json');
@@ -585,7 +577,7 @@ class Inventory
     /**
      * @return array|false
      */
-    public static function getMenuContent()
+    public static function getMenuContent(): false|array
     {
         if (!Session::haveRight(Conf::$rightname, Conf::IMPORTFROMFILE)) {
             return false;
@@ -672,7 +664,7 @@ class Inventory
      *
      * @return string
      */
-    public function getMainClass()
+    public function getMainClass(): string
     {
         $class_ns = '\Glpi\Inventory\MainAsset\\';
         $main_class = $class_ns . $this->item::class;
@@ -698,7 +690,7 @@ class Inventory
      *
      * @return void
      */
-    final public function processInventoryData()
+    final public function processInventoryData(): void
     {
         //map existing keys in inventory format to their respective Inventory\Asset class if needed.
         foreach ($this->data as $key => &$value) {
@@ -845,7 +837,7 @@ class Inventory
      *
      * @return void
      */
-    public function handleItem()
+    public function handleItem(): void
     {
         if ($this->mainasset->checkConf($this->conf)) {
             //inject converted assets
@@ -864,7 +856,7 @@ class Inventory
      *
      * @return Agent
      */
-    public function getAgent()
+    public function getAgent(): ?\Agent
     {
         return $this->agent;
     }
@@ -897,7 +889,7 @@ class Inventory
      *
      * @return void
      */
-    public function printBenchResults()
+    public function printBenchResults(): void
     {
         $output = '';
         foreach ($this->benchs as $asset => $types) {
@@ -957,7 +949,7 @@ class Inventory
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-cloud-download";
     }
@@ -990,7 +982,7 @@ class Inventory
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         switch ($name) {
             case 'cleantemp':
@@ -1009,7 +1001,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleantemp($task)
+    public static function cronCleantemp($task): int
     {
         $conf = new Conf();
         $temp_files = glob(GLPI_INVENTORY_DIR . '/*.{' . implode(',', $conf->knownInventoryExtensions()) . '}', GLOB_BRACE);
@@ -1043,7 +1035,7 @@ class Inventory
      *
      * @return int
      **/
-    public static function cronCleanorphans($task)
+    public static function cronCleanorphans($task): int
     {
         global $DB;
 

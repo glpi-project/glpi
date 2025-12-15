@@ -47,7 +47,7 @@ class PasswordTooWeakException extends Exception
      *
      * @return void
      */
-    public function addMessage($message)
+    public function addMessage($message): void
     {
         $this->messages[] = $message;
     }

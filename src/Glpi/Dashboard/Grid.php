@@ -94,7 +94,7 @@ class Grid
      *
      * @return Dashboard
      */
-    public function getDashboard()
+    public function getDashboard(): \Glpi\Dashboard\Dashboard
     {
         return $this->dashboard;
     }
@@ -103,7 +103,7 @@ class Grid
      * Return the context used for this Grid instance
      * @return string
      */
-    public function getContext()
+    public function getContext(): string
     {
         return $this->context;
     }

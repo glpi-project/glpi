@@ -239,7 +239,7 @@ trait AssignableItem
     }
 
     /** @see AssignableItemInterface::prepareGroupFields() */
-    public function prepareGroupFields(array $input)
+    public function prepareGroupFields(array $input): array
     {
         $fields = ['groups_id', 'groups_id_tech'];
         foreach ($fields as $field) {
@@ -247,7 +247,7 @@ trait AssignableItem
                 if (!is_array($input[$field])) {
                     $input[$field] = [$input[$field]];
                 }
-                $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn($v) => $v > 0);
+                $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn(int $v): bool => $v > 0);
                 unset($input[$field]);
             }
         }
@@ -281,7 +281,7 @@ trait AssignableItem
     }
 
     /** @see AssignableItemInterface::updateGroupFields() */
-    public function updateGroupFields()
+    public function updateGroupFields(): void
     {
         global $DB;
 
@@ -305,7 +305,7 @@ trait AssignableItem
             Group_Item::GROUP_TYPE_TECH   => '_groups_id_tech',
         ];
         foreach ($fields as $type => $field) {
-            $existing_for_type = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
+            $existing_for_type = array_column(array_filter($existing_links, static fn(array $link): bool => $link['type'] === $type), 'groups_id');
             if (array_key_exists($field, $this->input)) {
                 $new_links = array_diff($this->input[$field], $existing_for_type);
                 $old_links = array_diff($existing_for_type, $this->input[$field]);
@@ -343,7 +343,7 @@ trait AssignableItem
      *
      * @return void
      */
-    public function post_addItem()
+    public function post_addItem(): void
     {
         parent::post_addItem();
         $this->updateGroupFields();
@@ -356,7 +356,7 @@ trait AssignableItem
      *
      *@return void
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         parent::post_updateItem($history);
         $this->updateGroupFields();
@@ -367,7 +367,7 @@ trait AssignableItem
      *
      * @return bool
      */
-    public function getEmpty()
+    public function getEmpty(): bool
     {
         if (!parent::getEmpty()) {
             return false;
@@ -399,7 +399,7 @@ trait AssignableItem
             Group_Item::GROUP_TYPE_TECH   => 'groups_id_tech',
         ];
         foreach ($group_fields as $type => $field) {
-            $this->fields[$field] = array_column(array_filter($existing_links, static fn($link) => $link['type'] === $type), 'groups_id');
+            $this->fields[$field] = array_column(array_filter($existing_links, static fn(array $link): bool => $link['type'] === $type), 'groups_id');
         }
     }
 
@@ -408,7 +408,7 @@ trait AssignableItem
      *
      * @return void
      */
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         $this->loadGroupFields();
     }

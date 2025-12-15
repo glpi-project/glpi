@@ -548,7 +548,7 @@ abstract class MainAsset extends InventoryAsset
         return $input;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $blacklist = new Blacklist();
 
@@ -694,7 +694,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1032,7 +1032,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * @return void
      */
-    public function handleAssets()
+    public function handleAssets(): void
     {
         $key = $this->current_key;
         $val = $this->data[$key];

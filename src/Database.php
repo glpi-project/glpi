@@ -349,7 +349,7 @@ class Database extends CommonDBChild
         return $tab;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (
             !$withtemplate

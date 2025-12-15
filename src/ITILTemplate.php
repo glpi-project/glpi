@@ -226,7 +226,7 @@ abstract class ITILTemplate extends CommonDropdown
         return $fields;
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         $itil_itemtype = static::getITILObjectClass();
         switch ($field['name']) {
@@ -441,7 +441,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $ong          = [];
         $this->addDefaultFormTab($ong);
@@ -458,7 +458,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof ITILTemplate && $tabnum === 1) {
             return $item->showCentralPreview($item);
@@ -467,7 +467,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
 
         if (Session::haveRight(static::$rightname, READ)) {
@@ -595,7 +595,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -612,7 +612,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         switch ($ma->getAction()) {
@@ -630,7 +630,7 @@ abstract class ITILTemplate extends CommonDropdown
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         switch ($ma->getAction()) {
             case 'merge':
@@ -682,7 +682,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return void
      */
-    public function mergeTemplateFields($target_id, $source_id)
+    public function mergeTemplateFields($target_id, $source_id): void
     {
         global $DB;
 
@@ -739,7 +739,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @return void
      */
-    public function mergeTemplateITILCategories($target_id, $source_id)
+    public function mergeTemplateITILCategories($target_id, $source_id): void
     {
         global $DB;
 
@@ -856,7 +856,7 @@ abstract class ITILTemplate extends CommonDropdown
      *
      * @see CommonDBTM::getForbiddenStandardMassiveAction()
      **/
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -866,7 +866,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-stack-2-filled";
     }
@@ -882,7 +882,7 @@ abstract class ITILTemplate extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = parent::prepareInputForAdd($input);
 
@@ -893,7 +893,7 @@ abstract class ITILTemplate extends CommonDropdown
         return $input;
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         parent::post_getFromDB();
 
@@ -902,7 +902,7 @@ abstract class ITILTemplate extends CommonDropdown
         }
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         $itil_itemtype = static::getITILObjectClass();
 
@@ -927,7 +927,7 @@ abstract class ITILTemplate extends CommonDropdown
         );
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
 
         if (!$this->isNewID($ID)) {

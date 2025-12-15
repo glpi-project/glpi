@@ -98,7 +98,7 @@ class Drive extends Device
      *
      * @return bool
      */
-    public function isDrive($data)
+    public function isDrive($data): bool
     {
         $drives_regex = [
             'rom',
@@ -124,7 +124,7 @@ class Drive extends Device
 
         return false;
     }
-    public function handle()
+    public function handle(): void
     {
         parent::handle();
         if (isset($this->harddrives)) {

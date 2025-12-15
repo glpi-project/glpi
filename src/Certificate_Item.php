@@ -53,7 +53,7 @@ class Certificate_Item extends CommonDBRelation
      * @since 9.2
      *
      **/
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -74,7 +74,7 @@ class Certificate_Item extends CommonDBRelation
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$item instanceof CommonDBTM) {
             return '';

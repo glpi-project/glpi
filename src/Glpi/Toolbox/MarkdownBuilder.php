@@ -85,7 +85,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addH1(string $content, ?string $css_class = null)
+    public function addH1(string $content, ?string $css_class = null): void
     {
         $this->addHeader("#", $content, $css_class);
     }
@@ -98,7 +98,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addH2(string $content, ?string $css_class = null)
+    public function addH2(string $content, ?string $css_class = null): void
     {
         $this->addHeader("##", $content, $css_class);
     }
@@ -111,7 +111,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addH3(string $content, ?string $css_class = null)
+    public function addH3(string $content, ?string $css_class = null): void
     {
         $this->addHeader("###", $content, $css_class);
     }
@@ -124,7 +124,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addH4(string $content, ?string $css_class = null)
+    public function addH4(string $content, ?string $css_class = null): void
     {
         $this->addHeader("####", $content, $css_class);
     }
@@ -137,7 +137,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addH5(string $content, ?string $css_class = null)
+    public function addH5(string $content, ?string $css_class = null): void
     {
         $this->addHeader("#####", $content, $css_class);
     }
@@ -150,7 +150,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addH6(string $content, ?string $css_class = null)
+    public function addH6(string $content, ?string $css_class = null): void
     {
         $this->addHeader("######", $content, $css_class);
     }
@@ -162,7 +162,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addTableRow(array $values)
+    public function addTableRow(array $values): void
     {
         $this->content .= "|" . implode("|", $values) . "\n";
     }
@@ -174,7 +174,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addTableHeader(array $headers)
+    public function addTableHeader(array $headers): void
     {
         $separator = array_fill(0, count($headers), '------');
         $this->addTableRow($headers);
@@ -200,7 +200,7 @@ class MarkdownBuilder
      *
      * @return string
      */
-    public static function navigationLink($label)
+    public static function navigationLink(string $label): string
     {
         $link = Toolbox::slugify($label, '');
         return "[$label](#$link)";
@@ -213,7 +213,7 @@ class MarkdownBuilder
      *
      * @return void
      */
-    public function addSummaryEntry($label)
+    public function addSummaryEntry(string $label): void
     {
         $link = self::navigationLink($label);
         $this->content .= "* $link\n";

@@ -45,7 +45,7 @@ final class IntegerSize extends AbstractRequirement
         );
     }
 
-    protected function check()
+    protected function check(): void
     {
         if (PHP_INT_SIZE < 8) {
             $this->validated = false;

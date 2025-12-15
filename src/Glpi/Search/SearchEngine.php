@@ -437,7 +437,7 @@ final class SearchEngine
 
         if (count($p['criteria']) > 0) {
             // use a recursive closure to push searchoption when using nested criteria
-            $parse_criteria = function ($criteria) use (&$parse_criteria, &$data) {
+            $parse_criteria = function ($criteria) use (&$parse_criteria, &$data): void {
                 foreach ($criteria as $criterion) {
                     // recursive call
                     if (isset($criterion['criteria'])) {

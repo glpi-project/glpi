@@ -409,7 +409,7 @@ class Calendar extends AbstractBackend
      *
      * @return bool
      */
-    private function storeVCalendarData($calendarData, $items_id, $itemtype)
+    private function storeVCalendarData($calendarData, $items_id, string $itemtype)
     {
 
         $vobject = new VObject();

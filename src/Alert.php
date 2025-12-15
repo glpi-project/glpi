@@ -88,7 +88,7 @@ class Alert extends CommonDBTM
         return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], true);
     }
 
-    public static function dropdown($options = [])
+    public static function dropdown($options = []): int|string
     {
 
         $p = [
@@ -139,7 +139,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownYesNo($options = [])
+    public static function dropdownYesNo($options = []): int|string
     {
 
         $p = [
@@ -177,7 +177,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownIntegerNever($name, $value, array $options = [])
+    public static function dropdownIntegerNever(string $name, $value, array $options = [])
     {
 
         $p = [

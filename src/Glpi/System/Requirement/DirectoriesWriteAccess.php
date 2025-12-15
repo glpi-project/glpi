@@ -45,7 +45,7 @@ class DirectoriesWriteAccess extends AbstractRequirement
      *
      * @var string[]
      */
-    private $paths;
+    private array $paths;
 
     /**
      * @param string   $title     Requirement title.

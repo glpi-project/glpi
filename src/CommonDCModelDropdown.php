@@ -129,7 +129,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $fields;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         global $DB;
         $options = parent::rawSearchOptions();
@@ -197,7 +197,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $options;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -288,7 +288,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->managePictures($input);
         $input = $this->checkForRackIssues($input);
@@ -483,7 +483,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $soptions;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         $model_class  = static::class;
         $device_class = str_replace('Model', '', $model_class);

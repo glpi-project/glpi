@@ -75,7 +75,7 @@ final class ValidationFieldConfig implements
     {
         return [
             self::STRATEGY_CONFIGS => array_map(
-                fn(ValidationFieldStrategyConfig $config) => $config->jsonSerialize(),
+                fn(ValidationFieldStrategyConfig $config): array => $config->jsonSerialize(),
                 $this->strategy_configs
             ),
         ];
@@ -93,7 +93,7 @@ final class ValidationFieldConfig implements
     public function getStrategies(): array
     {
         return array_map(
-            fn(ValidationFieldStrategyConfig $config) => $config->getStrategy(),
+            fn(ValidationFieldStrategyConfig $config): \Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy => $config->getStrategy(),
             $this->strategy_configs
         );
     }

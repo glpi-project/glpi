@@ -68,7 +68,7 @@ class Group extends CommonTreeDropdown
         return ['admin', self::class];
     }
 
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): bool
     {
         if (Session::haveRight('user', User::UPDATEAUTHENT)) {
             return [
@@ -81,12 +81,12 @@ class Group extends CommonTreeDropdown
         return false;
     }
 
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return 'g';
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         $this->fields['is_requester'] = 1;
         $this->fields['is_watcher']   = 1;
@@ -98,7 +98,7 @@ class Group extends CommonTreeDropdown
         $this->fields['is_manager']   = 1;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -120,7 +120,7 @@ class Group extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_groups_id%');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
@@ -159,7 +159,7 @@ class Group extends CommonTreeDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item::class) {
             case self::class:
@@ -189,7 +189,7 @@ class Group extends CommonTreeDropdown
         return false;
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -222,7 +222,7 @@ class Group extends CommonTreeDropdown
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         TemplateRenderer::getInstance()->display('pages/admin/group.html.twig', [
             'item' => $this,
@@ -230,7 +230,7 @@ class Group extends CommonTreeDropdown
         return true;
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): bool
     {
         $links = [];
         if (
@@ -243,7 +243,7 @@ class Group extends CommonTreeDropdown
         return $links;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -262,7 +262,7 @@ class Group extends CommonTreeDropdown
         return $actions;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         $input = $ma->getInput();
 
@@ -301,7 +301,7 @@ class Group extends CommonTreeDropdown
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         switch ($ma->getAction()) {
             case 'changegroup':
@@ -333,7 +333,7 @@ class Group extends CommonTreeDropdown
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -493,7 +493,7 @@ class Group extends CommonTreeDropdown
      * Show the LDAP options form for this group
      * @return void
      */
-    public function showLDAPForm()
+    public function showLDAPForm(): void
     {
         if (
             !$this->fields['is_usergroup']
@@ -517,7 +517,7 @@ class Group extends CommonTreeDropdown
      *
      * @return void
      **/
-    public function showSecurityForm($ID)
+    public function showSecurityForm($ID): void
     {
         $canedit = self::canUpdate() && Session::haveRight("user", User::UPDATEAUTHENT);
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
@@ -691,7 +691,7 @@ class Group extends CommonTreeDropdown
      *
      * @return void
      */
-    public function showItems($tech)
+    public function showItems($tech): void
     {
         global $CFG_GLPI;
 
@@ -818,7 +818,7 @@ class Group extends CommonTreeDropdown
         ]);
     }
 
-    public function cleanRelationData()
+    public function cleanRelationData(): void
     {
         global $DB;
 
@@ -861,7 +861,7 @@ class Group extends CommonTreeDropdown
      *
      * @return bool
      */
-    private function isUsedInConsumables()
+    private function isUsedInConsumables(): bool
     {
         return countElementsInTable(
             Consumable::getTable(),
@@ -910,7 +910,7 @@ class Group extends CommonTreeDropdown
         }
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-users";
     }
@@ -932,7 +932,7 @@ class Group extends CommonTreeDropdown
         return $this->getLink();
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         parent::post_addItem();
         // Adding a new group might invalidate the group cache if it's a new child
@@ -942,7 +942,7 @@ class Group extends CommonTreeDropdown
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         parent::post_updateItem($history);
         // Changing a group's parent might invalidate the group cache if recursive
@@ -964,7 +964,7 @@ class Group extends CommonTreeDropdown
         }
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         // Purging a group will invalidate the group cache
         self::updateLastGroupChange();
@@ -977,7 +977,7 @@ class Group extends CommonTreeDropdown
      *
      * @return void
      */
-    public static function updateLastGroupChange()
+    public static function updateLastGroupChange(): void
     {
         global $GLPI_CACHE;
         $GLPI_CACHE->set('last_group_change', $_SESSION['glpi_currenttime']);

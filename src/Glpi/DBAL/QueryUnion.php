@@ -102,7 +102,7 @@ class QueryUnion extends AbstractQuery
     {
         $union_queries = $this->getQueries();
         if (
-            empty($union_queries)
+            $union_queries === []
         ) {
             throw new RuntimeException('Cannot build an empty union query');
         }

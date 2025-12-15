@@ -40,11 +40,11 @@
 abstract class HTMLTableBase
 {
     /** @var array<string, array<string, HTMLTableHeader>> */
-    private $headers = [];
+    private array $headers = [];
     /** @var string[] */
-    private $headers_order = [];
+    private array $headers_order = [];
     /** @var array<string, string[]> */
-    private $headers_sub_order = [];
+    private array $headers_sub_order = [];
     /** @var bool */
     private $super;
 
@@ -162,7 +162,7 @@ abstract class HTMLTableBase
      *
      * @return HTMLTableHeader
      */
-    public function getSuperHeaderByName($name)
+    public function getSuperHeaderByName(string $name)
     {
         return $this->getHeaderByName($name, '');
     }
@@ -175,7 +175,7 @@ abstract class HTMLTableBase
      *
      * @throws HTMLTableUnknownHeader
      */
-    public function getHeaderByName($name, $sub_name = null)
+    public function getHeaderByName(string $name, $sub_name = null)
     {
         if (is_string($sub_name)) {
             if (isset($this->headers[$name][$sub_name])) {

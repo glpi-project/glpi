@@ -240,7 +240,7 @@ enum ITILActorFieldStrategy: string
 
         if ($answer->getType() instanceof AbstractQuestionTypeActors) {
             $values = $answer->getRawAnswer();
-            return array_reduce($values, function ($carry, $value) use ($itil_actor_field) {
+            return array_reduce($values, function ($carry, array $value) use ($itil_actor_field) {
                 if (
                     !in_array($value['itemtype'], $itil_actor_field->getAllowedActorTypes())
                     || !is_numeric($value['items_id'])
@@ -377,7 +377,7 @@ enum ITILActorFieldStrategy: string
         }
 
         $itemtype = getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field));
-        return array_map(fn($actor_id) => [
+        return array_map(fn($actor_id): array => [
             'itemtype' => $itemtype,
             'items_id' => (int) $actor_id,
         ], $actors_ids);

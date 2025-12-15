@@ -246,7 +246,7 @@ class DomainRecordType extends CommonDropdown
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (array_key_exists('fields', $input)) {
             $input['fields'] = Toolbox::cleanNewLines($input['fields']);

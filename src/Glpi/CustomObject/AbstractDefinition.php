@@ -155,12 +155,12 @@ abstract class AbstractDefinition extends CommonDBTM
         return $this->getCustomObjectClassInstance()->getRights();
     }
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'label';
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-database-cog';
     }
@@ -188,7 +188,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $this->getFromDBByCrit(['system_name' => $system_name]);
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $tabs = [];
 
@@ -198,7 +198,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $tabs;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         global $DB;
 
@@ -241,7 +241,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 'existing_system_names' => array_values(array_filter(array_map(
                     static fn(self $definition) => $definition->fields['system_name'],
                     $definition_manager->getDefinitions()
-                ), fn($name) => $name !== $this->fields['system_name'])),
+                ), fn($name): bool => $name !== $this->fields['system_name'])),
                 'item_count'            => $item_count,
             ]
         );
@@ -268,7 +268,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         $central_profiles = \array_filter(
             $profiles_data,
-            static fn(array $profile) => $profile['interface'] !== 'heldesk'
+            static fn(array $profile): bool => $profile['interface'] !== 'heldesk'
         );
 
         $nb_cb_per_col = array_fill_keys(
@@ -360,7 +360,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         usort(
             $translations,
-            static fn(array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
+            static fn(array $a, array $b): int => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
         );
 
         $rand = mt_rand();
@@ -423,7 +423,7 @@ abstract class AbstractDefinition extends CommonDBTM
             );
             return false;
         } else {
-            $existing_system_names = array_map(static fn($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
+            $existing_system_names = array_map(static fn(\Glpi\CustomObject\AbstractDefinition $d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
             if (in_array(strtolower($input['system_name']), $existing_system_names, true)) {
                 Session::addMessageAfterRedirect(
                     htmlescape(sprintf(
@@ -443,7 +443,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (
             array_key_exists('system_name', $input)
@@ -542,13 +542,13 @@ abstract class AbstractDefinition extends CommonDBTM
         return $has_errors ? false : $input;
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         // Clear the custom fields definitions cache when the object is reloaded
         $this->custom_field_definitions = null;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // Register and bootstrap the definition to make it usable right now.
         $this->registerAndBootstrapDefinition();
@@ -559,7 +559,7 @@ abstract class AbstractDefinition extends CommonDBTM
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         // Register and bootstrap the definition to make it usable right now.
         $this->registerAndBootstrapDefinition();
@@ -587,7 +587,7 @@ abstract class AbstractDefinition extends CommonDBTM
         }
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->purgeConcreteClassFromDb($this->getCustomObjectClassName());
     }
@@ -732,7 +732,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $current_translation[$category_index_string] ?? $this->fields['label'];
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $search_options = parent::rawSearchOptions();
 
@@ -808,7 +808,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $search_options;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -845,7 +845,7 @@ TWIG,
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];

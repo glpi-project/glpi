@@ -121,7 +121,7 @@ enum EntityFieldStrategy: string
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
             ),
-            fn($answer) => $answer->getRawAnswer()['itemtype'] === Entity::getType()
+            fn(\Glpi\Form\Answer $answer): bool => $answer->getRawAnswer()['itemtype'] === Entity::getType()
         );
 
         if (count($valid_answers) == 0) {

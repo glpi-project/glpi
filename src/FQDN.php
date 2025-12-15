@@ -107,7 +107,7 @@ class FQDN extends CommonDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput(parent::prepareInputForUpdate($input));
     }
@@ -209,7 +209,7 @@ class FQDN extends CommonDropdown
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 

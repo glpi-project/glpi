@@ -214,7 +214,7 @@ final class RichText
      *
      * @return string
      */
-    private static function normalizeHtmlContent(string $content)
+    private static function normalizeHtmlContent(string $content): string
     {
         if (self::isRichTextHtmlContent($content)) {
             // Remove contentless HTML tags

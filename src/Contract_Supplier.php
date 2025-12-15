@@ -47,14 +47,14 @@ class Contract_Supplier extends CommonDBRelation
     public static $itemtype_2 = 'Supplier';
     public static $items_id_2 = 'suppliers_id';
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$item instanceof CommonDBTM) {
             return '';

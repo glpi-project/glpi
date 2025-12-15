@@ -58,7 +58,7 @@ use function Safe\preg_replace;
 trait TreeBrowse
 {
     /** @see TreeBrowseInterface::showBrowseView() */
-    public static function showBrowseView(string $itemtype, array $params, $update = false)
+    public static function showBrowseView(string $itemtype, array $params, $update = false): void
     {
         global $CFG_GLPI;
 

@@ -126,12 +126,12 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return ['assets', static::getDefinition()->getAssetClassName()];
     }
 
-    public function useDeletedToLockIfDynamic()
+    public function useDeletedToLockIfDynamic(): bool
     {
         return false;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $search_options = parent::rawSearchOptions();
 
@@ -356,7 +356,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     /**
      * @return string[]
      */
-    public function getUnallowedFieldsForUnicity()
+    public function getUnallowedFieldsForUnicity(): array
     {
         $not_allowed = parent::getUnallowedFieldsForUnicity();
         $not_allowed[] = AssetDefinition::getForeignKeyField();
@@ -371,7 +371,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return array_filter($shown_fields, static fn($f): bool => in_array($f, $all_fields, true));
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
@@ -417,7 +417,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $this->prepareDefinitionInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareGroupFields($input);
         $input = $this->handleReadonlyFieldUpdate($input);
@@ -521,7 +521,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $return;
     }
 
-    public function getEmpty()
+    public function getEmpty(): bool
     {
         if (!$this->getEmptyFromAssignableItem()) {
             return false;

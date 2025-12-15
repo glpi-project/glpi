@@ -42,12 +42,10 @@ class HTMLTableCell extends HTMLTableEntity
     private $row;
     /** @var HTMLTableHeader */
     private $header;
-    /** @var ?HTMLTableCell */
-    private $father;
+    private ?\HTMLTableCell $father;
     /** @var array<string, array<self>> */
-    private $sons = [];
-    /** @var ?CommonDBTM */
-    private $item;
+    private array $sons = [];
+    private ?\CommonDBTM $item;
     /** @var ?int */
     private $numberOfLines;
     /** @var ?int */
@@ -75,7 +73,7 @@ class HTMLTableCell extends HTMLTableEntity
         $this->header     = $header;
         $this->father     = $father;
 
-        if (!empty($item)) {
+        if ($item instanceof \CommonDBTM) {
             $this->item = clone $item;
         } else {
             $this->item = null;
@@ -133,7 +131,7 @@ class HTMLTableCell extends HTMLTableEntity
      *
      * @return void
      */
-    public function setAttributForTheRow($attributForTheRow)
+    public function setAttributForTheRow($attributForTheRow): void
     {
         $this->attributForTheRow = $attributForTheRow;
     }
@@ -149,9 +147,9 @@ class HTMLTableCell extends HTMLTableEntity
     /**
      * @return CommonDBTM|false
      */
-    public function getItem()
+    public function getItem(): \CommonDBTM|false
     {
-        if (!empty($this->item)) {
+        if ($this->item instanceof \CommonDBTM) {
             return $this->item;
         }
         return false;
@@ -163,7 +161,7 @@ class HTMLTableCell extends HTMLTableEntity
      *
      * @return void
      */
-    public function addSon(HTMLTableCell $son, HTMLTableHeader $sons_header)
+    public function addSon(HTMLTableCell $son, HTMLTableHeader $sons_header): void
     {
         if (!isset($this->sons[$sons_header->getName()])) {
             $this->sons[$sons_header->getName()] = [];
@@ -182,7 +180,7 @@ class HTMLTableCell extends HTMLTableEntity
     /**
      * @return void
      */
-    public function computeNumberOfLines()
+    public function computeNumberOfLines(): void
     {
         if ($this->numberOfLines === null) {
             $this->numberOfLines = 1;
@@ -206,7 +204,7 @@ class HTMLTableCell extends HTMLTableEntity
      *
      * @return void
      */
-    public function addToNumberOfLines($value)
+    public function addToNumberOfLines($value): void
     {
         $this->numberOfLines += $value;
     }
@@ -217,7 +215,7 @@ class HTMLTableCell extends HTMLTableEntity
      *
      * @return void
      */
-    public static function updateCellSteps(array $cells, $totalNumberOflines)
+    public static function updateCellSteps(array $cells, $totalNumberOflines): void
     {
         $numberOfLines = 0;
         foreach ($cells as $cell) {
@@ -240,7 +238,7 @@ class HTMLTableCell extends HTMLTableEntity
      *
      * @return void
      */
-    public function computeStartEnd(&$start)
+    public function computeStartEnd(&$start): void
     {
         if ($this->start === null) {
             if ($this->attributForTheRow !== false) {
@@ -267,7 +265,7 @@ class HTMLTableCell extends HTMLTableEntity
      *
      * @return bool
      */
-    public function displayCell($index, array $options = [])
+    public function displayCell($index, array $options = []): bool
     {
         if (
             ($index >= $this->start)

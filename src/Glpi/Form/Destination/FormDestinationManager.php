@@ -128,7 +128,7 @@ final class FormDestinationManager
         $destinations = $form->getDestinations();
         $destinations_without_conditions = array_filter(
             $destinations,
-            fn($d) => !in_array($d->fields['creation_strategy'], [
+            fn(\Glpi\Form\Destination\FormDestination $d): bool => !in_array($d->fields['creation_strategy'], [
                 CreationStrategy::CREATED_IF->value,
                 CreationStrategy::CREATED_UNLESS->value,
             ]),

@@ -100,7 +100,7 @@ class SanitizedStringsDecoder
         return implode(
             $separator,
             array_map(
-                fn(string $chunk) => $this->decodeHtmlSpecialChars($chunk),
+                fn(string $chunk): string => $this->decodeHtmlSpecialChars($chunk),
                 explode($separator, $value)
             )
         );

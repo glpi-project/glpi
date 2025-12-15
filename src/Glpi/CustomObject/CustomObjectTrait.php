@@ -48,7 +48,7 @@ trait CustomObjectTrait
     /**
      * @see \CommonGLPI::getSearchURL()
      */
-    public static function getSearchURL($full = true)
+    public static function getSearchURL($full = true): string
     {
         return Toolbox::getItemTypeSearchURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
             . '?class=' . static::getDefinition()->fields['system_name'];
@@ -57,7 +57,7 @@ trait CustomObjectTrait
     /**
      * @see \CommonGLPI::getFormURL()
      */
-    public static function getFormURL($full = true)
+    public static function getFormURL($full = true): string
     {
         return Toolbox::getItemTypeFormURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
             . '?class=' . static::getDefinition()->fields['system_name'];
@@ -85,7 +85,7 @@ trait CustomObjectTrait
     /**
      * @see \CommonDBTM:: getById()
      */
-    public static function getById(?int $id)
+    public static function getById(?int $id): false|self|string
     {
         if ($id === null) {
             return false;

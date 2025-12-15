@@ -151,7 +151,7 @@ final class Kernel extends BaseKernel
     }
 
     #[Override()]
-    public function reboot(?string $warmupDir)
+    public function reboot(?string $warmupDir): void
     {
         $this->in_reboot = true;
 

@@ -68,7 +68,7 @@ class Consumable extends CommonDBChild
         ];
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -85,7 +85,7 @@ class Consumable extends CommonDBChild
         return $forbidden;
     }
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'id';
     }
@@ -95,7 +95,7 @@ class Consumable extends CommonDBChild
         return _n('Consumable', 'Consumables', $nb);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array
     {
         $item = new ConsumableItem();
         if ($item->getFromDB($input["consumableitems_id"])) {
@@ -107,7 +107,7 @@ class Consumable extends CommonDBChild
         return [];
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // inherit infocom
         $infocoms = Infocom::getItemsAssociatedTo(ConsumableItem::getType(), $this->fields[ConsumableItem::getForeignKeyField()]);
@@ -130,7 +130,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      */
-    public function backToStock(array $input, $history = true)
+    public function backToStock(array $input, $history = true): bool
     {
         global $DB;
 
@@ -149,7 +149,7 @@ class Consumable extends CommonDBChild
         return false;
     }
 
-    public function getPreAdditionalInfosForName()
+    public function getPreAdditionalInfosForName(): string
     {
         $ci = new ConsumableItem();
         if ($ci->getFromDB($this->fields['consumableitems_id'])) {
@@ -169,7 +169,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      **/
-    public function out($ID, $itemtype = '', $items_id = 0)
+    public function out($ID, $itemtype = '', $items_id = 0): bool
     {
         global $DB;
 
@@ -200,7 +200,7 @@ class Consumable extends CommonDBChild
         $itemtype,
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         // Special actions only for self
         if ($itemtype !== static::class) {
             return;
@@ -211,7 +211,7 @@ class Consumable extends CommonDBChild
         $actions[$action_prefix . 'give'] = _sx('button', 'Give');
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         global $CFG_GLPI;
 
@@ -252,7 +252,7 @@ class Consumable extends CommonDBChild
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         /** @var Consumable $item */
         switch ($ma->getAction()) {
             case 'backtostock':
@@ -312,7 +312,7 @@ class Consumable extends CommonDBChild
      *
      * @return int number of consumable counted.
      **/
-    public static function getTotalNumber($tID)
+    public static function getTotalNumber($tID): int
     {
         global $DB;
 
@@ -331,7 +331,7 @@ class Consumable extends CommonDBChild
      *
      * @return int number of old consumable counted.
      **/
-    public static function getOldNumber($tID)
+    public static function getOldNumber($tID): int
     {
         global $DB;
 
@@ -353,7 +353,7 @@ class Consumable extends CommonDBChild
      *
      * @return int number of consumable unused counted.
      **/
-    public static function getUnusedNumber($tID)
+    public static function getUnusedNumber($tID): int
     {
         global $DB;
 
@@ -462,7 +462,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      **/
-    public static function isNew($cID)
+    public static function isNew($cID): bool
     {
         global $DB;
 
@@ -484,7 +484,7 @@ class Consumable extends CommonDBChild
      *
      * @return bool
      **/
-    public static function isOld($cID)
+    public static function isOld($cID): bool
     {
         global $DB;
 
@@ -577,7 +577,7 @@ class Consumable extends CommonDBChild
      *
      * @return void
      */
-    public static function showForUser(User $user)
+    public static function showForUser(User $user): void
     {
         global $DB;
 
@@ -681,7 +681,7 @@ class Consumable extends CommonDBChild
      *
      * @return void
      **/
-    public static function showSummary()
+    public static function showSummary(): void
     {
         global $DB;
 
@@ -814,7 +814,7 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
@@ -858,7 +858,7 @@ class Consumable extends CommonDBChild
         ]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item::class) {
             case ConsumableItem::class:
@@ -871,12 +871,12 @@ class Consumable extends CommonDBChild
         return true;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         return (new ConsumableItem())->getRights($interface);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-package";
     }
@@ -901,7 +901,7 @@ class Consumable extends CommonDBChild
         return $sql_filters;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $options = parent::rawSearchOptions();
 
@@ -982,7 +982,7 @@ class Consumable extends CommonDBChild
         $field,
         $values,
         array $options = []
-    ) {
+    ): string {
         switch ($options['searchopt']['id']) {
             case '3': // State
                 $date_out = $values['date_out'];

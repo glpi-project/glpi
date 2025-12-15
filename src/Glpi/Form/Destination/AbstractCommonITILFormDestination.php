@@ -183,7 +183,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // Remove already applied fields from fields to apply
         $fields_to_apply = array_filter(
             $fields_to_apply,
-            fn($field) => !in_array(get_class($field), $already_applied_fields)
+            fn(\Glpi\Form\Destination\AbstractConfigField $field): bool => !in_array(get_class($field), $already_applied_fields)
         );
 
         // Compute input from fields configuration

@@ -52,7 +52,7 @@ class AuthLdapReplicate extends CommonDBTM
         return static::canUpdate();
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -67,7 +67,7 @@ class AuthLdapReplicate extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInputForAdd($input);
     }
@@ -80,7 +80,7 @@ class AuthLdapReplicate extends CommonDBTM
      *
      * @return void
      */
-    public static function addNewReplicateForm($target, $master_id)
+    public static function addNewReplicateForm($target, $master_id): void
     {
         TemplateRenderer::getInstance()->display('pages/setup/authentication/ldap_replicate.html.twig', [
             'target' => $target,

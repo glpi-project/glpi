@@ -104,7 +104,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         CommonGLPI $item,
         $tabnum = 1,
         $withtemplate = 0
-    ) {
+    ): bool {
         // Only for forms
         if (!($item instanceof Form)) {
             return false;
@@ -212,7 +212,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     }
 
     #[Override]
-    public function prepareInputForClone($input)
+    public function prepareInputForClone($input): array
     {
         $input = parent::prepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareDestinationInputForClone(

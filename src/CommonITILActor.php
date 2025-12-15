@@ -269,7 +269,7 @@ abstract class CommonITILActor extends CommonDBRelation
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         if (isset($input['alternative_email']) && $input['alternative_email'] == '') {
             if (isset($input['users_id'])) {

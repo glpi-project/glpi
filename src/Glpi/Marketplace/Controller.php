@@ -63,8 +63,7 @@ use function Safe\session_write_close;
  */
 class Controller extends CommonGLPI
 {
-    /** @var string */
-    protected $plugin_key = "";
+    protected string $plugin_key;
 
     public static $rightname = 'config';
     /** @var ?PluginsApi */
@@ -405,7 +404,7 @@ class Controller extends CommonGLPI
      *
      * @return array of [plugin_key => new_version_num]
      */
-    public static function getAllUpdates()
+    public static function getAllUpdates(): array
     {
         $plugin_inst = new Plugin();
         $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
@@ -432,7 +431,7 @@ class Controller extends CommonGLPI
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         return ['description' => __('Check all plugin updates')];
     }
@@ -498,7 +497,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function canBeDownloaded(?string $version = null)
+    public function canBeDownloaded(?string $version = null): bool
     {
         $api        = self::getAPI();
         $api_plugin = $api->getPlugin($this->plugin_key);
@@ -520,7 +519,7 @@ class Controller extends CommonGLPI
      *
      * @return bool
      */
-    public function isAvailable()
+    public function isAvailable(): bool
     {
         $api          = self::getAPI();
         $api_plugin   = $api->getPlugin($this->plugin_key);
@@ -699,7 +698,7 @@ class Controller extends CommonGLPI
      *
      * @return int config status (self::MP_REPLACE_ASK, self::MP_REPLACE_YES, self::MP_REPLACE_NEVER)
      */
-    public static function getPluginPageConfig()
+    public static function getPluginPageConfig(): int
     {
         $config = Config::getConfigurationValues('core', ['marketplace_replace_plugins']);
 

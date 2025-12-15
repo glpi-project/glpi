@@ -155,7 +155,7 @@ abstract class CommonDevice extends CommonDropdown
         return "Item_$devicetype";
     }
 
-    public static function getMenuContent()
+    public static function getMenuContent(): array|false
     {
         $menu = [];
         if (self::canView()) {
@@ -296,7 +296,7 @@ abstract class CommonDevice extends CommonDropdown
         return true;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -382,7 +382,7 @@ abstract class CommonDevice extends CommonDropdown
         return $tab;
     }
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'designation';
     }
@@ -574,7 +574,7 @@ abstract class CommonDevice extends CommonDropdown
         ];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -659,7 +659,7 @@ abstract class CommonDevice extends CommonDropdown
         return "$dir/front/device.php?itemtype=$itemtype";
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-components";
     }

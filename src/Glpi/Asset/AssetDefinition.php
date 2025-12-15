@@ -279,7 +279,7 @@ TWIG, $twig_params);
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->managePictures($input);
         return parent::prepareInputForUpdate($input);

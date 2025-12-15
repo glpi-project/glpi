@@ -52,7 +52,7 @@ abstract class CommonITILCost extends CommonDBChild
         return _n('Cost', 'Costs', $nb);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return Infocom::getIcon();
     }
@@ -65,7 +65,7 @@ abstract class CommonITILCost extends CommonDBChild
         return str_replace('Cost', '', static::class);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // can exists for template
         if (
@@ -85,7 +85,7 @@ abstract class CommonITILCost extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof CommonITILObject && !$item instanceof Project) {
             return false;
@@ -95,7 +95,7 @@ abstract class CommonITILCost extends CommonDBChild
         return true;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -409,7 +409,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param int $ID ID of the item
      * @param array $options options used
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form

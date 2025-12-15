@@ -96,7 +96,7 @@ class Printer extends InventoryAsset
         return $this->data;
     }
 
-    public function handle()
+    public function handle(): void
     {
         global $DB;
 

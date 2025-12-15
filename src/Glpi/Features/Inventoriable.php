@@ -56,7 +56,7 @@ trait Inventoriable
     /**
      * @return bool
      */
-    public function pre_purgeInventory()
+    public function pre_purgeInventory(): bool
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {

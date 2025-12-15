@@ -49,7 +49,7 @@ class Contract_Item extends CommonDBRelation
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -86,7 +86,7 @@ class Contract_Item extends CommonDBRelation
         return _n('Link Contract/Item', 'Links Contract/Item', $nb);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -113,7 +113,7 @@ class Contract_Item extends CommonDBRelation
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -196,7 +196,7 @@ class Contract_Item extends CommonDBRelation
         return $items;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         global $CFG_GLPI;
 

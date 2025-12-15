@@ -61,7 +61,7 @@ final readonly class Tag
             "class"                  => "border-$color border-start border-3 bg-dark-lt",
         ];
         $properties = implode(" ", array_map(
-            fn($key, $value) => sprintf('%s="%s"', htmlescape($key), htmlescape($value)),
+            fn($key, $value): string => sprintf('%s="%s"', htmlescape($key), htmlescape($value)),
             array_keys($properties),
             array_values($properties),
         ));

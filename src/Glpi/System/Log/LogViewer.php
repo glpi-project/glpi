@@ -42,10 +42,7 @@ use Session;
 
 final class LogViewer extends CommonGLPI
 {
-    /**
-     * @var LogParser
-     */
-    private $log_parser;
+    private \Glpi\System\Log\LogParser $log_parser;
 
     public static $rightname = 'system_logs';
 
@@ -161,12 +158,12 @@ final class LogViewer extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-news";
     }
 
-    public static function getSearchURL($full = true)
+    public static function getSearchURL($full = true): string
     {
         global $CFG_GLPI;
 

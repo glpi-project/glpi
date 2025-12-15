@@ -41,14 +41,12 @@ abstract class HTMLTableHeader extends HTMLTableEntity
 {
     /** @var string */
     private $name;
-    /** @var ?HTMLTableHeader */
-    private $father;
+    private ?\HTMLTableHeader $father;
     /** @var array<class-string<CommonDBTM>, string> */
     private $itemtypes   = [];
     /** @var int */
     private $colSpan     = 1;
-    /** @var int */
-    private $numberCells = 0;
+    private int $numberCells = 0;
     /** @var int */
     public $numberOfSubHeaders;
 
@@ -82,7 +80,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      */
-    public function setItemType($itemtype, $title = '')
+    public function setItemType($itemtype, $title = ''): void
     {
         $this->itemtypes[$itemtype] = $title;
     }
@@ -107,7 +105,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @throws Exception
      */
-    public function checkItemType(?CommonDBTM $item = null)
+    public function checkItemType(?CommonDBTM $item = null): void
     {
         if (($item === null) && (count($this->itemtypes) > 0)) {
             throw new Exception('Implementation error: header requires an item');
@@ -136,7 +134,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      */
-    public function setColSpan($colSpan)
+    public function setColSpan($colSpan): void
     {
         $this->colSpan = $colSpan;
     }
@@ -144,7 +142,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
     /**
      * @return void
      */
-    public function addCell()
+    public function addCell(): void
     {
         $this->numberCells++;
     }
@@ -171,7 +169,7 @@ abstract class HTMLTableHeader extends HTMLTableEntity
      *
      * @return void
      */
-    public function displayTableHeader($with_content, $main_header = true)
+    public function displayTableHeader($with_content, $main_header = true): void
     {
         if ($main_header) {
             echo "<th";

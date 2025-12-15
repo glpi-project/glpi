@@ -45,7 +45,7 @@ abstract class CommonType extends CommonDropdown
         return _n('Type', 'Types', 1);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         $type_class  = static::class;
         $device_class = str_replace('Type', '', $type_class);

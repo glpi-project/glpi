@@ -891,7 +891,7 @@ class Dropdown
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function showItemTypes($name, $types = [], $options = [])
+    public static function showItemTypes(string $name, $types = [], $options = []): int|string
     {
         $params['value']               = '';
         $params['used']                = [];
@@ -936,7 +936,7 @@ class Dropdown
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function dropdownUsedItemTypes($name, $itemtype_ref, $options = [])
+    public static function dropdownUsedItemTypes(string $name, $itemtype_ref, $options = []): int|string
     {
         global $DB;
 
@@ -1089,7 +1089,7 @@ HTML;
      *
      * @return void
      **/
-    public static function showGMT($name, $value = ''): void
+    public static function showGMT(string $name, $value = ''): void
     {
         $values = self::getGMTValues();
         Dropdown::showFromArray($name, $values, ['value' => $value]);
@@ -1536,7 +1536,7 @@ HTML;
      *
      * @return int|string
      **/
-    public static function showLanguages($myname, array $options = [])
+    public static function showLanguages(string $myname, array $options = []): int|string
     {
         $values = [];
         if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
@@ -1607,7 +1607,7 @@ HTML;
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function showHours($name, $options = [])
+    public static function showHours(string $name, $options = []): int|string
     {
         global $CFG_GLPI;
 
@@ -1694,7 +1694,7 @@ HTML;
      *
      * @return int rand for select id
      **/
-    public static function showItemType($types = '', $options = [])
+    public static function showItemType($types = '', $options = []): int|string
     {
         global $CFG_GLPI;
 
@@ -2118,7 +2118,7 @@ HTML;
      *
      * @return int|string
      */
-    public static function showTimeStamp($myname, $options = [])
+    public static function showTimeStamp(string $myname, $options = []): int|string
     {
         global $CFG_GLPI;
 
@@ -2571,7 +2571,7 @@ HTML;
      *
      * @return void
      **/
-    public static function showFrequency($name, $value = 0, $options = []): void
+    public static function showFrequency(string $name, $value = 0, $options = []): void
     {
 
         $tab = [];
@@ -2813,7 +2813,7 @@ HTML;
      *
      * @return ($display is true ? int : string)
      */
-    public static function showListLimit($onchange = '', $display = true)
+    public static function showListLimit($onchange = '', $display = true): int|string
     {
         global $CFG_GLPI;
 

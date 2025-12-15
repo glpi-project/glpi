@@ -68,10 +68,10 @@ class Variables
      *
      * @return string[]
      */
-    public static function getDataDirectories()
+    public static function getDataDirectories(): array
     {
         return array_map(
-            fn(string $constant) => constant($constant),
+            fn(string $constant): mixed => constant($constant),
             self::getDataDirectoriesConstants()
         );
     }

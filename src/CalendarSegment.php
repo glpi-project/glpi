@@ -52,7 +52,7 @@ class CalendarSegment extends CommonDBChild
     /**
      * @since 0.84
      **/
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -430,7 +430,7 @@ class CalendarSegment extends CommonDBChild
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate) {
             $nb = 0;

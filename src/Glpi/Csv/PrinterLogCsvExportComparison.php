@@ -115,7 +115,7 @@ class PrinterLogCsvExportComparison implements ExportToCsvInterface
             }
         }
 
-        usort($content, fn($a, $b) => $a['date'] <=> $b['date']);
+        usort($content, fn(array $a, array $b): int => $a['date'] <=> $b['date']);
 
         // Fill null values with previous non-null value
         foreach ($content as $key => $value) {

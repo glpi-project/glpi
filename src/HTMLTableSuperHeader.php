@@ -40,7 +40,7 @@
 class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTableInterface
 {
     /** @var HTMLTableBase The table that owns the current super header */
-    private $table;
+    private \HTMLTableBase $table;
 
     /**
      * @param HTMLTableBase         $table    HTMLTableBase object: table owning the current header
@@ -62,7 +62,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      *
      * @return int LCM of $first and $second
      */
-    private static function LCM($first, $second)
+    private static function LCM($first, $second): float|int
     {
         $result = $first * $second;
         while ($first > 1) {
@@ -77,12 +77,12 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
         return $result;
     }
 
-    public function isSuperHeader()
+    public function isSuperHeader(): bool
     {
         return true;
     }
 
-    public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name)
+    public function getHeaderAndSubHeaderName(&$header_name, &$subheader_name): void
     {
 
         $header_name    = $this->getName();
@@ -95,7 +95,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
         return $this->getName() . ':';
     }
 
-    protected function getTable()
+    protected function getTable(): \HTMLTableBase
     {
         return $this->table;
     }
@@ -108,7 +108,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      *
      * @return void
      */
-    public function updateNumberOfSubHeader($number)
+    public function updateNumberOfSubHeader($number): void
     {
         $this->setColSpan(self::LCM($number, $this->getColSpan()));
     }
@@ -118,7 +118,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader implements HTMLCompositeTable
      *
      * @return true
      **/
-    public function hasToDisplay()
+    public function hasToDisplay(): bool
     {
         return true;
     }

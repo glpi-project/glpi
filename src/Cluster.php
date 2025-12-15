@@ -99,7 +99,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 

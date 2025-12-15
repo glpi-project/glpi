@@ -305,7 +305,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
      *                  and values are the HTML snippet corresponding to the tab name.
      */
-    final public function defineAllTabs($options = [])
+    final public function defineAllTabs(array $options = []): array
     {
         global $CFG_GLPI;
 

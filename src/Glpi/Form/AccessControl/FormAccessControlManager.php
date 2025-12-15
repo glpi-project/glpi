@@ -90,7 +90,7 @@ final class FormAccessControlManager
         $controls = $form->getAccessControls();
         $controls = array_filter(
             $controls,
-            fn($control) => $control->fields['is_active'],
+            fn(\Glpi\Form\AccessControl\FormAccessControl $control) => $control->fields['is_active'],
         );
         return array_values($controls);
     }
@@ -100,7 +100,7 @@ final class FormAccessControlManager
         $access_controls = $this->getActiveAccessControlsForForm($form);
         return array_reduce(
             $access_controls,
-            fn($acc, $control) => $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig()),
+            fn($acc, $control): bool => $acc || $control->getStrategy()->allowUnauthenticated($control->getConfig()),
             false
         );
     }
@@ -267,10 +267,10 @@ final class FormAccessControlManager
      * @param FormAccessControl[] $access_controls
      * @return ControlTypeInterface[]
      */
-    private function getDefinedStrategies(array $access_controls)
+    private function getDefinedStrategies(array $access_controls): array
     {
         return array_map(
-            fn($control) => $control->getStrategy(),
+            fn(\Glpi\Form\AccessControl\FormAccessControl $control): \Glpi\Form\AccessControl\ControlType\ControlTypeInterface => $control->getStrategy(),
             $access_controls
         );
     }
@@ -279,16 +279,16 @@ final class FormAccessControlManager
      * @param ControlTypeInterface[] $defined_strategies
      * @return ControlTypeInterface[]
      */
-    private function getMissingStrategies(array $defined_strategies)
+    private function getMissingStrategies(array $defined_strategies): array
     {
         $defined_strategies_classes = array_map(
-            fn($strategy) => $strategy::class,
+            fn(\Glpi\Form\AccessControl\ControlType\ControlTypeInterface $strategy): string => $strategy::class,
             $defined_strategies
         );
 
         return array_filter(
             $this->getPossibleAccessControlsStrategies(),
-            fn(ControlTypeInterface $strategy) => !in_array(
+            fn(ControlTypeInterface $strategy): bool => !in_array(
                 $strategy::class,
                 $defined_strategies_classes
             )

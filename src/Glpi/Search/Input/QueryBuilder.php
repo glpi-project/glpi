@@ -173,7 +173,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      */
-    public static function displaySearchoption($request = [])
+    public static function displaySearchoption(array $request = []): void
     {
         global $CFG_GLPI;
         if (
@@ -394,7 +394,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      */
-    public static function displayCriteria($request = [])
+    public static function displayCriteria(array $request = []): void
     {
         global $CFG_GLPI;
 
@@ -495,7 +495,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      */
-    public static function displayMetaCriteria($request = [])
+    public static function displayMetaCriteria(array $request = []): void
     {
         if (
             !isset($request["itemtype"])
@@ -621,7 +621,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void
      */
-    public static function displayCriteriaGroup($request = [])
+    public static function displayCriteriaGroup(array $request = []): void
     {
 
         $num         = (int) $request['num'];
@@ -980,7 +980,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return array|false The found criteria array or false if nothing found
      */
-    private static function findCriteriaInSession($itemtype, $num, $parents_num)
+    private static function findCriteriaInSession($itemtype, int $num, $parents_num): false|array
     {
         if (!isset($_SESSION['glpisearch'][$itemtype]['criteria'])) {
             return false;

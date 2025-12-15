@@ -49,7 +49,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
 
 
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -69,7 +69,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$item instanceof CommonDBTM) {
             return '';

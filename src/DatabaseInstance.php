@@ -157,7 +157,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return $input;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
 
         $tab = parent::rawSearchOptions();
@@ -340,7 +340,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -409,7 +409,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (
             ($item instanceof CommonDBTM)

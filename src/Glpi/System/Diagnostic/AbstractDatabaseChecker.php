@@ -45,24 +45,18 @@ abstract class AbstractDatabaseChecker
 {
     /**
      * DB instance.
-     *
-     * @var DBmysql
      */
-    protected $db;
+    protected \DBmysql $db;
 
     /**
      * Local cache for tables columns.
-     *
-     * @var array
      */
-    private $columns = [];
+    private array $columns = [];
 
     /**
      * Local cache for tables indexes.
-     *
-     * @var array
      */
-    private $indexes = [];
+    private array $indexes = [];
 
     /**
      * @param DBmysql $db   DB instance.

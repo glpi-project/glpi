@@ -343,7 +343,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     }
 
 
-    public function isEntityAssign()
+    public function isEntityAssign(): bool
     {
 
         // Case of Duplicate Entity info to child
@@ -366,7 +366,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return bool
      **/
-    public function maybeRecursive()
+    public function maybeRecursive(): bool
     {
 
         // Case of Duplicate Entity info to child
@@ -482,7 +482,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
 
         if (!is_array($input)) {

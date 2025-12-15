@@ -127,7 +127,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 

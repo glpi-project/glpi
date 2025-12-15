@@ -49,7 +49,7 @@ class Holiday extends CommonDropdown
     }
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'  => 'begin_date',
@@ -68,7 +68,7 @@ class Holiday extends CommonDropdown
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -116,7 +116,7 @@ class Holiday extends CommonDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
 
         $input = parent::prepareInputForUpdate($input);
@@ -132,7 +132,7 @@ class Holiday extends CommonDropdown
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
 
         $this->invalidateCalendarHolidayCache();
@@ -140,7 +140,7 @@ class Holiday extends CommonDropdown
         parent::post_updateItem($history);
     }
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
 
         $this->invalidateCalendarHolidayCache();
@@ -148,7 +148,7 @@ class Holiday extends CommonDropdown
         parent::post_deleteFromDB();
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         $this->deleteChildrenAndRelationsFromDb(
@@ -169,7 +169,7 @@ class Holiday extends CommonDropdown
         $calendar_holiday->invalidateHolidayCache($this->fields['id']);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-calendar-off";
     }

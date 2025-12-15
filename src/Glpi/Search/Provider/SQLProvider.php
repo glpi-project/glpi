@@ -2113,7 +2113,7 @@ final class SQLProvider implements SearchProviderInterface
                 ];
 
                 // Recursively walk through add_criteria array and make the placeholder replacements in the keys and values
-                $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders) {
+                $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders): array {
                     $new_criteria = [];
                     foreach ($add_criteria as $key => $value) {
                         $new_key = strtr($key, $placeholders);
@@ -2934,7 +2934,7 @@ final class SQLProvider implements SearchProviderInterface
                     $add_criteria = [new QueryExpression($add_criteria)];
                 }
             }
-            $append_join_criteria = static function (&$join_fkey, $additional_criteria) {
+            $append_join_criteria = static function (array &$join_fkey, $additional_criteria): void {
                 if (empty($additional_criteria)) {
                     return;
                 }
@@ -2969,7 +2969,7 @@ final class SQLProvider implements SearchProviderInterface
                 'NEWTABLE'                  => $DB::quoteName($nt),
             ];
             // Recursively walk through add_criteria array and make the placeholder replacements in the keys and values
-            $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders) {
+            $replace_placeholders = static function ($add_criteria) use (&$replace_placeholders, $placeholders): array {
                 $new_criteria = [];
                 foreach ($add_criteria as $key => $value) {
                     $new_key = strtr($key, $placeholders);
@@ -3727,7 +3727,7 @@ final class SQLProvider implements SearchProviderInterface
      * @param array $joinparams
      * @return string
      */
-    public static function computeComplexJoinID(array $joinparams)
+    public static function computeComplexJoinID(array $joinparams): string
     {
         $complexjoin = '';
 
@@ -4329,7 +4329,7 @@ final class SQLProvider implements SearchProviderInterface
         //// 7 - Manage GROUP BY
         $GROUPBY = "";
         // Meta Search / Search All / Count tickets
-        $criteria_with_meta = array_filter($data['search']['criteria'], fn($criterion) => isset($criterion['meta'])
+        $criteria_with_meta = array_filter($data['search']['criteria'], fn(array $criterion): bool => isset($criterion['meta'])
             && $criterion['meta']);
         if (
             (count($data['search']['metacriteria']))
@@ -4666,7 +4666,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string             the sql sub string
      */
-    public static function constructCriteriaSQL($criteria = [], $data = [], $searchopt = [], $is_having = false): string
+    public static function constructCriteriaSQL($criteria = [], array $data = [], array $searchopt = [], $is_having = false): string
     {
         $sql = "";
 
@@ -4869,11 +4869,11 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function constructAdditionalSqlForMetacriteria(
         $criteria = [],
-        &$SELECT = "",
+        string &$SELECT = "",
         &$FROM = "",
         &$already_link_tables = [],
-        &$data = []
-    ) {
+        array &$data = []
+    ): void {
         $data['meta_toview'] = [];
         foreach ($criteria as $criterion) {
             // manage sub criteria
@@ -5264,7 +5264,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string Search SQL string
      **/
-    public static function makeTextCriteria($field, $val, $not = false, $link = 'AND')
+    public static function makeTextCriteria(string $field, $val, $not = false, $link = 'AND'): string
     {
 
         $sql = $field . self::makeTextSearch($val, $not);
@@ -5311,7 +5311,7 @@ final class SQLProvider implements SearchProviderInterface
      *
      * @return string|null
      **/
-    public static function makeTextSearchValue($val)
+    public static function makeTextSearchValue($val): ?string
     {
         // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
         // https://dev.mysql.com/doc/refman/8.0/en/string-comparison-functions.html
@@ -6774,7 +6774,7 @@ final class SQLProvider implements SearchProviderInterface
 
         $aggregate = (isset($so['aggregate']) && $so['aggregate']);
 
-        $append_specific = static function ($specific, $field_data, &$out) use ($so) {
+        $append_specific = static function (?string $specific, $field_data, string &$out) use ($so): void {
             if (!empty($specific)) {
                 // result of `getSpecificValueToDisplay()` is expected to be safe HTML
                 $out .= $specific;

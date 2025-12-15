@@ -176,7 +176,7 @@ class APIClient extends CommonDBTM
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         switch ($field) {
@@ -211,7 +211,7 @@ class APIClient extends CommonDBTM
         return $this->prepareInputForUpdate($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
 
         if (isset($input['ipv4_range_start'])) {

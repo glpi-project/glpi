@@ -155,7 +155,7 @@ final class IllustrationManager
 
         $icons = array_filter(
             $this->getIconsDefinitions(),
-            fn($icon) => str_contains(
+            fn(array $icon): bool => str_contains(
                 strtolower($icon['title']),
                 strtolower($filter),
             )
@@ -172,12 +172,12 @@ final class IllustrationManager
     ): array {
         $icons = array_filter(
             $this->getIconsDefinitions(),
-            fn($icon) => str_contains(
+            fn(array $icon): bool => str_contains(
                 strtolower(_x("Icon", $icon['title'])),
                 strtolower($filter),
             ) || !empty(array_filter(
                 $icon['tags'] ?? [],
-                fn($tag) => str_contains(
+                fn($tag): bool => str_contains(
                     strtolower(_x("Icon", $tag)),
                     strtolower($filter)
                 ),

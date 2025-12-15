@@ -69,14 +69,14 @@ class Cartridge extends CommonDBRelation
         ];
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
         return $forbidden;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         switch ($ma->getAction()) {
             case 'updatepages':
@@ -152,7 +152,7 @@ class Cartridge extends CommonDBRelation
         parent::post_updateItem($history);
     }
 
-    public function getPreAdditionalInfosForName()
+    public function getPreAdditionalInfosForName(): string
     {
         $ci = new CartridgeItem();
         if ($ci->getFromDB($this->fields['cartridgeitems_id'])) {
@@ -1258,7 +1258,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return true;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate && self::canView()) {
             $nb = 0;
@@ -1318,7 +1318,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return true;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         return (new CartridgeItem())->getRights($interface);
     }

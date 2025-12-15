@@ -205,12 +205,12 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         $values = array_combine(
-            array_map(fn($option) => $option['uuid'], $this->getValues($question)),
-            array_map(fn($option) => $option['value'], $this->getValues($question))
+            array_map(fn(array $option) => $option['uuid'], $this->getValues($question)),
+            array_map(fn(array $option) => $option['value'], $this->getValues($question))
         );
         $checked_values = array_map(
-            fn($option) => $option['uuid'],
-            array_filter($this->getValues($question), fn($option) => $option['checked'])
+            fn(array $option) => $option['uuid'],
+            array_filter($this->getValues($question), fn(array $option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
             'question'              => $question,
@@ -273,8 +273,8 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         $checked_values = array_map(
-            fn($option) => $option['uuid'],
-            array_filter($this->getValues($question), fn($option) => $option['checked'])
+            fn(array $option) => $option['uuid'],
+            array_filter($this->getValues($question), fn(array $option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
             'question'       => $question,

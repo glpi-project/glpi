@@ -72,7 +72,7 @@ final class ServiceCatalog extends CommonGLPI
         CommonGLPI $item,
         $tabnum = 1,
         $withtemplate = 0
-    ) {
+    ): bool {
         // This tab is only available for service catalog leafs
         if (!($item instanceof ServiceCatalogLeafInterface)) {
             return false;

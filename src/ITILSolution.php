@@ -48,7 +48,7 @@ class ITILSolution extends CommonDBChild
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
     public static $items_id = 'items_id'; // Field name
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'id';
     }
@@ -58,7 +58,7 @@ class ITILSolution extends CommonDBChild
         return _n('Solution', 'Solutions', $nb);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item->isNewItem()) {
             return '';
@@ -124,7 +124,7 @@ class ITILSolution extends CommonDBChild
         return $this->item->maySolve();
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         // Bandaid to avoid loading parent item if not needed
         // TODO: replace by proper lazy loading
@@ -150,7 +150,7 @@ class ITILSolution extends CommonDBChild
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($this->isNewItem()) {
             $this->getEmpty();
@@ -186,7 +186,7 @@ class ITILSolution extends CommonDBChild
         );
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): false|array
     {
         if (!isset($input['users_id']) && !(Session::isCron() || str_contains($_SERVER['REQUEST_URI'] ?? '', 'crontask.form.php'))) {
             $input['users_id'] = Session::getLoginUserID();
@@ -291,7 +291,7 @@ class ITILSolution extends CommonDBChild
         return $input;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         $item = getItemForItemtype($this->fields['itemtype']);
@@ -348,7 +348,7 @@ class ITILSolution extends CommonDBChild
         parent::post_addItem();
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
 
         if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
@@ -366,7 +366,7 @@ class ITILSolution extends CommonDBChild
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -379,7 +379,7 @@ class ITILSolution extends CommonDBChild
      * {@inheritDoc}
      * @see CommonDBTM::getSpecificValueToDisplay()
      */
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -406,7 +406,7 @@ class ITILSolution extends CommonDBChild
      * {@inheritDoc}
      * @see CommonDBTM::getSpecificValueToSelect()
      */
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -435,7 +435,7 @@ class ITILSolution extends CommonDBChild
      *
      * @return string[]
      */
-    public static function getStatuses()
+    public static function getStatuses(): array
     {
         return [
             CommonITILValidation::WAITING  => __('Waiting for approval'),
@@ -444,12 +444,12 @@ class ITILSolution extends CommonDBChild
         ];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-check';
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
 
         $tab = [];

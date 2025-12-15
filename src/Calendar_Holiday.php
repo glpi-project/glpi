@@ -49,7 +49,7 @@ class Calendar_Holiday extends CommonDBRelation
     /**
      * @since 0.84
      **/
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -154,7 +154,7 @@ class Calendar_Holiday extends CommonDBRelation
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate) {
             $nb = 0;

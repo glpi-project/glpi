@@ -86,7 +86,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
          * translations and not item type keys.
          * The array_keys() function is not used because it does not work for nested arrays.
          */
-        array_walk_recursive($dropdown_itemtypes, function (&$value, $key) {
+        array_walk_recursive($dropdown_itemtypes, function (&$value, $key): void {
             $value = $key;
         });
 

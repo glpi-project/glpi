@@ -192,7 +192,7 @@ final class UserMention
      *
      * @return int[]
      */
-    public static function getUserIdsFromUserMentions(string $content)
+    public static function getUserIdsFromUserMentions(string $content): array
     {
         $ids = [];
 

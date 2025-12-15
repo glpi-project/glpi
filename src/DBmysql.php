@@ -1222,7 +1222,7 @@ class DBmysql
      *
      * @psalm-taint-escape sql
      */
-    public static function quoteValue($value)
+    public static function quoteValue($value): string
     {
         if ($value instanceof QueryParam || $value instanceof QueryExpression) {
             //no quote for query parameters nor expressions
@@ -1294,7 +1294,7 @@ class DBmysql
      *
      * @return mysqli_result|bool Query result handler
      */
-    public function insert($table, $params)
+    public function insert($table, array $params)
     {
         $result = $this->doQuery(
             $this->buildInsert($table, $params)

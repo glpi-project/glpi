@@ -68,7 +68,7 @@ final class CriteriaFilter extends CommonDBChild
         if (($filter = self::getForItem($item))) {
             // important: array_walk_recursive iterates only over non-array values
             // so we need to count only when we found the 'field' key
-            array_walk_recursive($filter->fields['search_criteria'], function ($value, $key) use (&$nb) {
+            array_walk_recursive($filter->fields['search_criteria'], function ($value, $key) use (&$nb): void {
                 if ($key === 'field') {
                     $nb++;
                 }
@@ -87,7 +87,7 @@ final class CriteriaFilter extends CommonDBChild
         CommonGLPI $item,
         $tabnum = 1,
         $withtemplate = 0
-    ) {
+    ): bool {
         // Only on filterable commondbtm
         if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {
             return false;
@@ -138,7 +138,7 @@ final class CriteriaFilter extends CommonDBChild
         return true;
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         parent::post_getFromDB();
 

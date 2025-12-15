@@ -69,7 +69,7 @@ abstract class ITILTemplateField extends CommonDBChild
     }
 
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -102,7 +102,7 @@ abstract class ITILTemplateField extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof ITILTemplate) {
             return static::showForITILTemplate($item, $withtemplate);

@@ -63,30 +63,15 @@ final class Server
     private const PRIVATE_KEY_PATH = GLPI_CONFIG_DIR . '/oauth.pem';
     private const PUBLIC_KEY_PATH  = GLPI_CONFIG_DIR . '/oauth.pub';
 
-    /**
-     * @var ClientRepository
-     */
-    private $client_repository;
+    private \Glpi\OAuth\ClientRepository $client_repository;
 
-    /**
-     * @var AccessTokenRepository
-     */
-    private $access_token_repository;
+    private \Glpi\OAuth\AccessTokenRepository $access_token_repository;
 
-    /**
-     * @var ScopeRepository
-     */
-    private $scope_repository;
+    private \Glpi\OAuth\ScopeRepository $scope_repository;
 
-    /**
-     * @var AuthorizationServer
-     */
-    private $auth_server;
+    private \League\OAuth2\Server\AuthorizationServer $auth_server;
 
-    /**
-     * @var ResourceServer
-     */
-    private $resource_server;
+    private \League\OAuth2\Server\ResourceServer $resource_server;
 
     /**
      * Number of bytes used in the identifier and secret (32 bytes = 256 bit).

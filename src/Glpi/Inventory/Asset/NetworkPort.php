@@ -172,7 +172,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return array
      */
-    private function prepareConnections(stdClass $port)
+    private function prepareConnections(stdClass $port): array
     {
         global $DB;
 
@@ -632,7 +632,7 @@ class NetworkPort extends InventoryAsset
         }
     }
 
-    public function handle()
+    public function handle(): void
     {
         $this->ports += $this->extra_data[$this->main_asset::class]->getManagementPorts();
         $this->handlePorts();
@@ -684,7 +684,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = []): void
     {
         if (!is_array($ports_id)) {
             $ports_id = [$ports_id]; // Handle compatibility with previous signature.
@@ -831,7 +831,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    public function handlePorts($itemtype = null, $items_id = null)
+    public function handlePorts($itemtype = null, $items_id = null): void
     {
         $mainasset = $this->extra_data[$this->main_asset::class];
 
@@ -902,7 +902,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return void
      */
-    public function handleHub($found_macs, $netports_id)
+    public function handleHub($found_macs, $netports_id): void
     {
         $hubs_id = 0;
 

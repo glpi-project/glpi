@@ -44,8 +44,7 @@ class NetworkCard extends Device
 {
     use InventoryNetworkPort;
 
-    /** @var Conf */
-    private $conf;
+    private ?\Glpi\Inventory\Conf $conf = null;
 
     protected $extra_data = ['controllers' => null];
     /** @var array */
@@ -307,7 +306,7 @@ class NetworkCard extends Device
      *
      * @return void
      */
-    public function handlePorts($itemtype = null, $items_id = null)
+    public function handlePorts($itemtype = null, $items_id = null): void
     {
         //ports are handled from main asset in NetworkCard case
         return;

@@ -228,7 +228,7 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
 
         $namespaced_itemtype = preg_replace_callback(
             '~\\\([a-z])~Uu',
-            static fn($i) => '\\' . \ucfirst($i[1]),
+            static fn($i): string => '\\' . \ucfirst($i[1]),
             'Glpi\\' . \str_replace('/', '\\', $itemtype)
         );
 

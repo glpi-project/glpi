@@ -541,7 +541,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if displayed  false if item not found or not right to display
      */
-    public function showForm($ID, array $options = []): bool
+    public function showForm($ID, array $options = []): void
     {
         global $CFG_GLPI;
 
@@ -558,7 +558,6 @@ class CommonDBTM extends CommonGLPI
             'cluster' => $cluster,
             'field_order' => $this->getFormFields(),
         ]);
-        return true;
     }
 
     /**
@@ -2947,7 +2946,7 @@ class CommonDBTM extends CommonGLPI
         return (empty($ID) || ($ID <= 0));
     }
 
-    public function isNewItem()
+    public function isNewItem(): bool
     {
 
         if (isset($this->fields['id'])) {
@@ -3373,7 +3372,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function useDeletedToLockIfDynamic()
+    public function useDeletedToLockIfDynamic(): bool
     {
         return $this->maybeDynamic();
     }
@@ -4192,7 +4191,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string|false|int
      **/
-    public static function dropdown($options = [])
+    public static function dropdown($options = []): int|string|false
     {
         /// TODO try to revert usage : Dropdown::show calling this function
         /// TODO use this function instead of Dropdown::show

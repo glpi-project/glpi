@@ -155,7 +155,7 @@ TWIG;
             if ($answers_set !== null) {
                 $questions = array_filter(
                     $questions,
-                    fn($q) => $answers_set->hasAnswerForQuestionId($q->getID()),
+                    fn(\Glpi\Form\Question $q): bool => $answers_set->hasAnswerForQuestionId($q->getID()),
                 );
             }
             if (count($questions) == 0) {

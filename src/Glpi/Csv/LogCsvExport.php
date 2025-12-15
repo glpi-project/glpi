@@ -43,11 +43,9 @@ use User;
 
 class LogCsvExport implements ExportToCsvInterface
 {
-    /** @var CommonDBTM */
-    protected $item;
+    protected \CommonDBTM $item;
 
-    /** @var array */
-    protected $filter;
+    protected array $filter;
 
     public function __construct(CommonDBTM $item, array $filter)
     {
@@ -86,7 +84,7 @@ class LogCsvExport implements ExportToCsvInterface
         $logs = Log::getHistoryData($this->item, 0, 0, $filter);
 
         // Remove uneeded rows
-        $logs = array_map(function ($log) {
+        $logs = array_map(function (array $log): array {
             unset($log['display_history']);
             unset($log['datatype']);
             $log['date_mod'] = Html::convDateTime($log["date_mod"]);

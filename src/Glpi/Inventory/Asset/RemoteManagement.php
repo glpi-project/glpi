@@ -99,7 +99,7 @@ class RemoteManagement extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $db_mgmt = $this->getExisting();
         $value = $this->data;

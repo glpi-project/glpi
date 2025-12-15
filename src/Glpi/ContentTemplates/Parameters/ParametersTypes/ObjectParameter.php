@@ -48,10 +48,8 @@ class ObjectParameter extends AbstractParameterType
 {
     /**
      * Parameters availables in the item that will be linked.
-     *
-     * @var TemplatesParametersInterface
      */
-    protected $template_parameters;
+    protected \Glpi\ContentTemplates\Parameters\TemplatesParametersInterface $template_parameters;
 
     /**
      * @param TemplatesParametersInterface $template_parameters Parameters to add

@@ -122,19 +122,19 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
         return 'inventory';
     }
 
-    public function useDeletedToLockIfDynamic()
+    public function useDeletedToLockIfDynamic(): bool
     {
         return false;
     }
 
 
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return 'o';
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -176,7 +176,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function post_restoreItem()
+    public function post_restoreItem(): void
     {
 
         $comp_softvers = new Item_SoftwareVersion();
@@ -184,7 +184,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function post_deleteItem()
+    public function post_deleteItem(): void
     {
 
         $comp_softvers = new Item_SoftwareVersion();
@@ -192,7 +192,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         global $CFG_GLPI, $DB;
 
@@ -356,7 +356,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -370,7 +370,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function getLinkedItems()
+    public function getLinkedItems(): array
     {
         global $DB;
 
@@ -394,7 +394,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -427,7 +427,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
 
         $tab = parent::rawSearchOptions();
@@ -689,7 +689,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-device-laptop";
     }

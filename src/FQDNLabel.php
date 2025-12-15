@@ -62,7 +62,7 @@ abstract class FQDNLabel extends CommonDBChild
         );
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-signature';
     }
@@ -183,7 +183,7 @@ abstract class FQDNLabel extends CommonDBChild
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareIPNetworkFromInput($input);
         return parent::prepareInputForUpdate($this->prepareLabelInput($input));

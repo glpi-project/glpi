@@ -77,7 +77,7 @@ final class Environment extends InventoryAsset
         return $db_existing;
     }
 
-    public function handle()
+    public function handle(): void
     {
         $itemEnv = new Item_Environment();
         $db_itemEnvs = $this->getExisting();

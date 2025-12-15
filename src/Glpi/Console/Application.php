@@ -246,7 +246,7 @@ class Application extends BaseApplication
      *
      * @return OutputInterface
      */
-    public function getOutput()
+    public function getOutput(): ?\Symfony\Component\Console\Output\OutputInterface
     {
         return $this->output;
     }

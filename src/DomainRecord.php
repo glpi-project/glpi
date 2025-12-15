@@ -63,7 +63,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return ['management', Domain::class, self::class];
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item::class === Domain::class) {
             $nb = 0;
@@ -364,7 +364,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return $this->prepareInput($input, true);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareGroupFields($input);
         if ($input === false) {

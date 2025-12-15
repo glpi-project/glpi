@@ -42,10 +42,8 @@ class Extension extends AbstractRequirement
 {
     /**
      * Required extension name.
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * @param string      $name         Required extension name.

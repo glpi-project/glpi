@@ -454,7 +454,7 @@ final class TOTPManager
             if (!$enforced) {
                 // Check group configuration
                 $groups = Group_User::getUserGroups($users_id);
-                $enforced = count(array_filter($groups, static fn($group) => $group['2fa_enforced'])) > 0;
+                $enforced = count(array_filter($groups, static fn(array $group) => $group['2fa_enforced'])) > 0;
             }
         }
 

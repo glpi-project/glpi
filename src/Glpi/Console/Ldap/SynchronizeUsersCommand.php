@@ -166,7 +166,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         $description .= implode(
             "\n",
             array_map(
-                static fn($key, $value) => '- ' . sprintf(__('%1$s: %2$s'), $key, $value),
+                static fn($key, $value): string => '- ' . sprintf(__('%1$s: %2$s'), $key, $value),
                 array_keys($restored_strategies),
                 $restored_strategies
             )
@@ -191,7 +191,7 @@ class SynchronizeUsersCommand extends AbstractCommand
         return implode(
             "\n",
             array_map(
-                fn($key, $value) => '- ' . sprintf(__('%1$s: %2$s'), $key, $value),
+                fn($key, $value): string => '- ' . sprintf(__('%1$s: %2$s'), $key, $value),
                 array_keys($options),
                 $options
             )
@@ -479,7 +479,7 @@ class SynchronizeUsersCommand extends AbstractCommand
      *
      * @throws InvalidArgumentException
      */
-    private function validateInput(InputInterface $input)
+    private function validateInput(InputInterface $input): void
     {
 
         $only_create = $input->getOption('only-create-new');

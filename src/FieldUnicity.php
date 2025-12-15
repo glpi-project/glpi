@@ -112,7 +112,7 @@ class FieldUnicity extends CommonDropdown
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate) {
             if ($item::class === static::class) {
@@ -269,7 +269,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return string|int|false
      */
-    public static function dropdownFields($itemtype, $options = [])
+    public static function dropdownFields($itemtype, $options = []): int|string|false
     {
         global $DB;
 
@@ -405,7 +405,7 @@ class FieldUnicity extends CommonDropdown
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -433,7 +433,7 @@ class FieldUnicity extends CommonDropdown
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];

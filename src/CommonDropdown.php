@@ -93,12 +93,12 @@ abstract class CommonDropdown extends CommonDBTM
         return $this->can_be_translated;
     }
 
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return 'n';
     }
 
-    public static function getMenuContent()
+    public static function getMenuContent(): array|false
     {
 
         $menu = [];
@@ -220,7 +220,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -278,7 +278,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @see CommonDBTM::prepareInputForUpdate()
      **/
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         //add a "metadata to find if we're on an update or a add
         $input['_is_update'] = true;
@@ -342,7 +342,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): void
     {
 
         if (!$this->isNewID($ID)) {
@@ -371,8 +371,6 @@ abstract class CommonDropdown extends CommonDBTM
             'params' => $options,
             'additional_fields' => $fields,
         ]);
-
-        return true;
     }
 
 
@@ -390,7 +388,7 @@ abstract class CommonDropdown extends CommonDBTM
     public function displaySpecificTypeField($ID, $field = [], array $options = []) {}
 
 
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
             Session::addMessageAfterRedirect(
@@ -405,7 +403,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         global $DB;
         $tab = [];
@@ -829,7 +827,7 @@ abstract class CommonDropdown extends CommonDBTM
         return ($add ? $this->import($input) : $this->findID($input));
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -849,7 +847,7 @@ abstract class CommonDropdown extends CommonDBTM
         return $actions;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         switch ($ma->getAction()) {
@@ -1015,7 +1013,7 @@ abstract class CommonDropdown extends CommonDBTM
         return $ret;
     }
 
-    public function getForbiddenSingleMassiveActions()
+    public function getForbiddenSingleMassiveActions(): array
     {
         $excluded = parent::getForbiddenSingleMassiveActions();
         $excluded[] = '*:merge';
@@ -1023,7 +1021,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-edit";
     }

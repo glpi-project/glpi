@@ -59,7 +59,7 @@ class DeviceSensor extends CommonDevice
         );
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab                 = parent::rawSearchOptions();
 

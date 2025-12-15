@@ -126,7 +126,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -155,7 +155,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return true;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -508,7 +508,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return $types;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -524,7 +524,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return $actions;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         switch ($ma->getAction()) {

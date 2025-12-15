@@ -42,17 +42,13 @@ abstract class AbstractRequirement implements RequirementInterface
 {
     /**
      * Flag that indicates if requirement check has already been done.
-     *
-     * @var bool
      */
-    private $has_been_checked = false;
+    private bool $has_been_checked = false;
 
     /**
      * Flag that indicates if requirement is considered as optional.
-     *
-     * @var bool|null
      */
-    protected $optional;
+    protected ?bool $optional;
 
     /**
      * Flag that indicates if requirement is recommended for security reasons.
@@ -63,24 +59,18 @@ abstract class AbstractRequirement implements RequirementInterface
 
     /**
      * Flag that indicates if requirement is considered as out of context.
-     *
-     * @var bool|null
      */
-    protected $out_of_context;
+    protected ?bool $out_of_context;
 
     /**
      * Requirement title.
-     *
-     * @var string|null
      */
-    protected $title;
+    protected ?string $title;
 
     /**
      * Requirement description.
-     *
-     * @var string|null
      */
-    protected $description;
+    protected ?string $description;
 
     /**
      * Flag that indicates if requirement is validated on system.
@@ -125,7 +115,7 @@ abstract class AbstractRequirement implements RequirementInterface
      *
      * @return void
      */
-    private function doCheck()
+    private function doCheck(): void
     {
         if (!$this->has_been_checked) {
             $this->check();

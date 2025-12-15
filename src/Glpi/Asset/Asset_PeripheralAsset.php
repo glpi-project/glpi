@@ -58,7 +58,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';

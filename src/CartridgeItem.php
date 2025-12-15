@@ -89,7 +89,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return Cartridge::getTypeName(Session::getPluralNumber());
     }
 
-    public function getPostAdditionalInfosForName()
+    public function getPostAdditionalInfosForName(): string
     {
         if (isset($this->fields["ref"]) && !empty($this->fields["ref"])) {
             return $this->fields["ref"];
@@ -106,7 +106,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -211,7 +211,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return false;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = parent::rawSearchOptions();
 
@@ -539,7 +539,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return string|bool
      **/
-    public static function dropdownForPrinter(Printer $printer)
+    public static function dropdownForPrinter(Printer $printer): int|string|false
     {
         global $DB;
 
@@ -616,7 +616,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return Cartridge::getIcon();
     }

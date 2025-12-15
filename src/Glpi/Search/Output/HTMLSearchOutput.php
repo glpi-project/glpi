@@ -84,7 +84,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
         }
     }
 
-    public function displayData(array $data, array $params = [])
+    public function displayData(array $data, array $params = []): void
     {
         global $CFG_GLPI;
 
@@ -196,7 +196,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
         // should be sorted (0 => 0 : is the default value -> no sort)
         if (count($data['search']['sort']) > 0 && $data['search']['sort'] != [0 => 0]) {
             $used_fields = array_unique($data['search']['sort']);
-            $used_fields = array_filter($used_fields, fn($value) => !is_null($value) && $value !== '');
+            $used_fields = array_filter($used_fields, fn($value): bool => !is_null($value) && $value !== '');
 
             $used_soptions_names = [];
             foreach ($used_fields as $sopt_id) {
@@ -325,7 +325,7 @@ class HTMLSearchOutput extends AbstractSearchOutput
      *
      * @return string
      */
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = false, $order = "", $options = ""): string
+    public static function showHeaderItem(string $value, &$num, $linkto = "", $issort = false, $order = "", $options = ""): string
     {
         $class = "";
         if ($issort) {

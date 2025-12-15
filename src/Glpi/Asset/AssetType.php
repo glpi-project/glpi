@@ -69,7 +69,7 @@ abstract class AssetType extends CommonType
         return sprintf(_n('%s type', '%s types', $nb), static::getDefinition()->getTranslatedName());
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return static::getDefinition()->getCustomObjectIcon();
     }
@@ -100,7 +100,7 @@ abstract class AssetType extends CommonType
      * @return self|false
      */
 
-    public static function getById(?int $id)
+    public static function getById(?int $id): \CommonDBTM|false
     {
         if ($id === null) {
             return false;
@@ -144,7 +144,7 @@ abstract class AssetType extends CommonType
         return $this->prepareDefinitionInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareDefinitionInput($input);
     }
@@ -179,7 +179,7 @@ abstract class AssetType extends CommonType
         return $input;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         // Get parent search options, but skip the ones from the immediate CommonDCModelDropdown parent
         $options = parent::rawSearchOptions();

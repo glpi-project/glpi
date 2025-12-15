@@ -1431,7 +1431,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
         $GO_FIELDS = [];
         // @phpstan-ignore closure.unusedUse
-        (function () use (&$GO_FIELDS, $constant_files) {
+        (function () use (&$GO_FIELDS, $constant_files): void {
             foreach ($constant_files as $constant_file) {
                 if (\file_exists($constant_file)) {
                     include($constant_file);

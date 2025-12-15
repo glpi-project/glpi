@@ -113,7 +113,7 @@ enum AssociatedItemsFieldStrategy: string
             }
         }
 
-        return array_filter($associated_items, fn($answer) => $this->isValidAnswer($answer));
+        return array_filter($associated_items, fn(array $answer): bool => $this->isValidAnswer($answer));
     }
 
     private function getAssociatedItemsForSpecificAnswers(
@@ -126,7 +126,7 @@ enum AssociatedItemsFieldStrategy: string
 
         return array_reduce(
             $question_ids,
-            fn($carry, $question_id) => array_merge(
+            fn($carry, $question_id): array => array_merge(
                 $carry ?? [],
                 $this->getAssociatedItemsForSpecificAnswer($question_id, $answers_set) ?? []
             )
@@ -154,7 +154,7 @@ enum AssociatedItemsFieldStrategy: string
             $values = [$values];
         }
 
-        $values = array_filter($values, fn($value) => $this->isValidAnswer($value));
+        $values = array_filter($values, fn($value): bool => $this->isValidAnswer($value));
         if ($values === []) {
             return null;
         }
@@ -224,7 +224,7 @@ enum AssociatedItemsFieldStrategy: string
                 QuestionTypeItem::class,
                 QuestionTypeUserDevice::class,
             ]),
-            function ($answer) {
+            function (\Glpi\Form\Answer $answer): bool {
                 $raw_answer = $answer->getRawAnswer();
 
                 // $raw_answer must be a list of items
@@ -235,7 +235,7 @@ enum AssociatedItemsFieldStrategy: string
 
                 return array_reduce(
                     $raw_answer,
-                    fn($carry, $value) => $carry || $this->isValidAnswer($value),
+                    fn($carry, $value): bool => $carry || $this->isValidAnswer($value),
                     false
                 );
             }

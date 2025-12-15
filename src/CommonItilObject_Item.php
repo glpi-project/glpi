@@ -49,12 +49,12 @@ use function Safe\ob_start;
  */
 abstract class CommonItilObject_Item extends CommonDBRelation
 {
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-package';
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
@@ -88,7 +88,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->updateItemTCO();
         $obj = getItemForTable(static::$itemtype_1);
@@ -108,7 +108,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         parent::post_addItem();
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         $this->updateItemTCO();
         $obj = getItemForItemtype(static::$itemtype_1);
@@ -520,7 +520,7 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         global $CFG_GLPI;
 
@@ -634,7 +634,7 @@ TWIG, $twig_params);
         return $result['cpt'] ?? 0;
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -785,7 +785,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = [])
+    public static function dropdownMyDevices($userID = 0, $entity_restrict = -1, $itemtype = '', $items_id = 0, $options = []): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1259,7 +1259,7 @@ TWIG, $twig_params);
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
      **/
-    public static function dropdown($options = [])
+    public static function dropdown($options = []): int|string|false
     {
         global $DB;
 
@@ -1343,7 +1343,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function showFormMassiveAction($ma)
+    public static function showFormMassiveAction($ma): void
     {
         global $CFG_GLPI;
 
@@ -1365,7 +1365,7 @@ TWIG, $twig_params);
         }
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         switch ($ma->getAction()) {
             case 'delete_item':
@@ -1382,7 +1382,7 @@ TWIG, $twig_params);
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         switch ($ma->getAction()) {
             case 'add_item':
                 $input = $ma->getInput();
@@ -1426,7 +1426,7 @@ TWIG, $twig_params);
                             'itemtype'     => $input['item_itemtype'],
                             'items_id'     => $input['items_id'],
                         ]);
-                        if (!empty($item_found)) {
+                        if ($item_found !== []) {
                             $item_founds_id = array_keys($item_found);
                             $input['id'] = $item_founds_id[0];
 
@@ -1460,7 +1460,7 @@ TWIG, $twig_params);
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -1499,7 +1499,7 @@ TWIG, $twig_params);
     /**
      * Add a message on add action
      **/
-    public function addMessageOnAddAction()
+    public function addMessageOnAddAction(): void
     {
         $addMessAfterRedirect = false;
         if (isset($this->input['_add'])) {
@@ -1541,7 +1541,7 @@ TWIG, $twig_params);
     /**
      * Add a message on delete action
      **/
-    public function addMessageOnPurgeAction()
+    public function addMessageOnPurgeAction(): void
     {
         if (!$this->maybeDeleted()) {
             return;
@@ -1573,7 +1573,7 @@ TWIG, $twig_params);
         }
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         if (!is_array($values)) {
@@ -1604,7 +1604,7 @@ TWIG, $twig_params);
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -1634,7 +1634,7 @@ TWIG, $twig_params);
      * @return int
      */
     public static function dropdownAllDevices(
-        $myname,
+        string $myname,
         $itemtype,
         $items_id = 0,
         $admin = 0,
@@ -1790,7 +1790,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, $options = [])
+    public static function itemAddForm(CommonITILObject|CommonITILRecurrent $object, $options = []): void
     {
         if (!(is_a($object, static::$itemtype_1))) {
             return;

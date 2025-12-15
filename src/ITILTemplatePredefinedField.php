@@ -100,7 +100,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         global $DB;
 
@@ -130,7 +130,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
 
         // can exists for template
@@ -151,7 +151,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof ITILTemplate) {
             return false;

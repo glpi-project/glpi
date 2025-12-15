@@ -675,7 +675,7 @@ class APIRest extends API
      *
      * @return void
      */
-    public function inlineDocumentation($file = "apirest.md"): void
+    public function inlineDocumentation(string $file = "apirest.md"): void
     {
 
         if ($this->format == "html") {

@@ -218,7 +218,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
         return empty(array_diff(array_keys($input), $allowed_keys))
             && array_reduce(
                 $input,
-                fn($carry, $value) => $carry && (is_bool($value) || preg_match('/^[01]$/', $value)),
+                fn($carry, $value): bool => $carry && (is_bool($value) || preg_match('/^[01]$/', $value)),
                 true
             );
     }

@@ -93,34 +93,34 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function isEntityAssign()
+    public function isEntityAssign(): bool
     {
         return false;
     }
 
     #[Override]
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // Report logs to the parent form
         $this->logCreationInParentForm();
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);
     }
 
     #[Override]
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
         // Report logs to the parent form
         $this->logDeleteInParentForm();
     }
 
     #[Override]
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -262,7 +262,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);
@@ -324,7 +324,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function prepareInputForClone($input)
+    public function prepareInputForClone($input): array
     {
         $input = parent::prepareInputForClone($input);
         return FormCloneHelper::getInstance()->prepareQuestionInputForClone($input);

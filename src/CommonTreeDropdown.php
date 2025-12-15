@@ -58,7 +58,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -92,7 +92,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
 
         if (
@@ -112,7 +112,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
 
         if ($item instanceof CommonTreeDropdown) {
@@ -130,7 +130,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return string
      **/
-    public static function getCompleteNameFromParents($parentCompleteName, $thisName)
+    public static function getCompleteNameFromParents(string $parentCompleteName, string $thisName)
     {
         return $parentCompleteName . " > " . $thisName;
     }
@@ -182,7 +182,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         global $DB;
 
@@ -213,7 +213,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         global $GLPI_CACHE;
 
@@ -251,7 +251,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
      *
      * @return void
      */
-    public function regenerateTreeUnderID($ID, $updateName, $changeParent)
+    public function regenerateTreeUnderID($ID, $updateName, $changeParent): void
     {
         global $DB, $GLPI_CACHE;
 
@@ -376,7 +376,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         $parent = $this->fields[$this->getForeignKeyField()];
@@ -400,7 +400,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
 
         $ID           = $this->getID();
@@ -474,7 +474,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
 
         $parent = $this->fields[$this->getForeignKeyField()];
@@ -526,7 +526,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
 
         $ID            = $this->getID();
         $this->check($ID, READ);
-        $fields = array_filter($this->getAdditionalFields(), static fn($field) => isset($field['list']) && $field['list']);
+        $fields = array_filter($this->getAdditionalFields(), static fn(array $field): bool => isset($field['list']) && $field['list']);
         $entity_assign = $this->isEntityAssign();
 
         // Minimal form for quick input.
@@ -676,7 +676,7 @@ TWIG, $twig_params);
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -691,7 +691,7 @@ TWIG, $twig_params);
     }
 
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
 
         switch ($ma->getAction()) {
@@ -715,7 +715,7 @@ TWIG, $twig_params);
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         $input = $ma->getInput();
 
@@ -767,7 +767,7 @@ TWIG, $twig_params);
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -1032,7 +1032,7 @@ TWIG, $twig_params);
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-subtask";
     }

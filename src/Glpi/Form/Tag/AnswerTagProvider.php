@@ -69,7 +69,7 @@ final class AnswerTagProvider implements TagProviderInterface, TagWithIdValueInt
 
         $answers = array_filter(
             $answers_set->getAnswers(),
-            fn(Answer $answer) => $answer->getQuestionId() === $id
+            fn(Answer $answer): bool => $answer->getQuestionId() === $id
         );
 
         if (count($answers) !== 1) {

@@ -48,10 +48,8 @@ class ArrayParameter extends AbstractParameterType
 {
     /**
      * Parameters of each item contained in this array.
-     *
-     * @var TemplatesParametersInterface
      */
-    protected $template_parameters;
+    protected \Glpi\ContentTemplates\Parameters\TemplatesParametersInterface $template_parameters;
 
     /**
      * @param string                       $key        Key to access this value

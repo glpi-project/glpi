@@ -54,7 +54,7 @@ class Group_KnowbaseItem extends CommonDBRelation
      *
      * @return array of groups linked to a knowbaseitem
      **/
-    public static function getGroups($knowbaseitems_id)
+    public static function getGroups($knowbaseitems_id): array
     {
         global $DB;
 

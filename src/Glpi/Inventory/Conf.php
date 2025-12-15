@@ -152,7 +152,7 @@ class Conf extends CommonGLPI
      *
      * @return void
      */
-    public function showUploadForm()
+    public function showUploadForm(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/inventory/upload_form.html.twig', [
             'inventory_extensions' => $this->knownInventoryExtensions(),
@@ -218,7 +218,7 @@ class Conf extends CommonGLPI
      *
      * @return bool
      */
-    public function isInventoryFile($name): bool
+    public function isInventoryFile(string $name): bool
     {
         return (bool) preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
     }
@@ -296,7 +296,7 @@ class Conf extends CommonGLPI
         ];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -304,7 +304,7 @@ class Conf extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if ($item instanceof self) {
             $tabs = [];
@@ -319,7 +319,7 @@ class Conf extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item->getType() == self::class) {
             /** @var self $item */
@@ -344,7 +344,7 @@ class Conf extends CommonGLPI
      * @return true (Always true)
      * @copyright 2010-2022 by the FusionInventory Development Team. (Agent cleanup section)
      **/
-    public function showConfigForm()
+    public function showConfigForm(): bool
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -1106,7 +1106,7 @@ class Conf extends CommonGLPI
      *
      * @return bool
      */
-    public function saveConf(array $values)
+    public function saveConf(array $values): bool
     {
         if (!Config::canUpdate()) {
             return false;
@@ -1115,7 +1115,7 @@ class Conf extends CommonGLPI
         $defaults = self::getDefaults();
         unset($values['_glpi_csrf_token']);
 
-        $ext_configs = array_filter($values, static fn($k, $v) => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
+        $ext_configs = array_filter($values, static fn($k, $v): bool => str_starts_with($v, '_'), ARRAY_FILTER_USE_BOTH);
 
         $unknown = array_diff_key($values, $defaults, $ext_configs);
         if (count($unknown)) {
@@ -1170,7 +1170,7 @@ class Conf extends CommonGLPI
                 } elseif ($prop == 'stale_agents_status_condition') {
                     $to_process[$prop] = ArrayNormalizer::normalizeValues(
                         $to_process[$prop],
-                        fn(mixed $val) => $val === 'all' ? 'all' : intval($val)
+                        fn(mixed $val): int|string => $val === 'all' ? 'all' : intval($val)
                     );
                 }
                 $to_process[$prop] = exportArrayToDB($to_process[$prop]);
@@ -1220,7 +1220,7 @@ class Conf extends CommonGLPI
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         $values = [ READ => __('Read')];
         $values[self::IMPORTFROMFILE] = ['short' => __('Import'),
@@ -1242,7 +1242,7 @@ class Conf extends CommonGLPI
      *
      * @return string
      */
-    public function buildInventoryFileName($itemtype, $items_id, $ext): string
+    public function buildInventoryFileName(string $itemtype, $items_id, $ext): string
     {
         $files_per_dir = 1000;
 
@@ -1306,7 +1306,7 @@ class Conf extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-adjustments";
     }

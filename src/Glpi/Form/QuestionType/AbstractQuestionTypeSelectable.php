@@ -174,7 +174,7 @@ TWIG;
     {
         // Sort options by order
         if (isset($input['options_order']) && is_array($input['options_order'])) {
-            uksort($input['options'], function ($a, $b) use ($input) {
+            uksort($input['options'], function ($a, $b) use ($input): int {
                 $orderA = $input['options_order'][$a] ?? 0;
                 $orderB = $input['options_order'][$b] ?? 0;
                 return $orderA <=> $orderB;
@@ -229,7 +229,7 @@ TWIG;
         $values = json_decode($rawData['values'] ?? '[]', true) ?? [];
 
         // Formcreator may include some empty values, remove them
-        $values = array_filter($values, fn($v) => $v !== "");
+        $values = array_filter($values, fn($v): bool => $v !== "");
         $values = array_values($values); // Re-index keys
 
         // Convert array values to use index + 1 as keys
@@ -249,7 +249,7 @@ TWIG;
     {
         $options = $this->getOptions($question);
         $handlers = array_map(
-            fn($uuid, $option) => new TranslationHandler(
+            fn($uuid, $option): \Glpi\ItemTranslation\Context\TranslationHandler => new TranslationHandler(
                 item: $question,
                 key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
                 name: sprintf('%s %s', self::getName(), __('Option')),

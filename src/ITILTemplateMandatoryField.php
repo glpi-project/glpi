@@ -53,7 +53,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
 
         // can exists for template
@@ -74,7 +74,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
     }
 
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         global $DB;
 
