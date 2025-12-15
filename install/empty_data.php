@@ -104,6 +104,20 @@ $empty_data_builder = new class {
             ],
         ];
 
+        if ($add_e2e_data) {
+            // White list docker internal host
+            $tables['glpi_apiclients'][] = [
+                'id' => 2,
+                'entities_id' => 0,
+                'is_recursive' => 1,
+                'name' => 'full access from docker networks',
+                'is_active' => 1,
+                'ipv4_range_start' => "2885681153", //value from MySQL INET_ATON('172.0.0.1')
+                'ipv4_range_end' => "2902458367", //value from MySQL INET_ATON('172.255.255.255')
+                'ipv6' => '::1',
+            ];
+        }
+
         foreach (Blacklist::getDefaults() as $type => $values) {
             foreach ($values as $value) {
                 $tables['glpi_blacklists'][] = [
@@ -9649,7 +9663,10 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             $users_to_create = [
                 [
                     'login'       => 'e2e_api_account',
-                    'password'    => 'e2e_api_account',
+                    'password'    => password_hash(
+                        'e2e_api_account',
+                        PASSWORD_DEFAULT,
+                    ),
                     'realname'    => 'E2E API account',
                     'entities_id' => 0,
                 ],

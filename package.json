@@ -26,6 +26,7 @@
         "@typescript-eslint/parser": "^8.49.0",
         "altcha": "^2.1.0",
         "animate.css": "^4.1.1",
+        "axios": "^1.13.2",
         "cropperjs": "^2.0.1",
         "cytoscape": "^3.32.2",
         "cytoscape-canvas": "^3.0.1",

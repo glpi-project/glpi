@@ -40,6 +40,7 @@ import { Constants } from '../utils/Constants';
 import { ProfileSwitcher } from '../utils/ProfileSwitcher';
 import { CsrfFetcher } from '../utils/CsrfFetcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
+import { Api } from '../utils/Api';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -47,6 +48,7 @@ export const test = baseTest.extend<{
     anonymousPage: Page,
     profile: ProfileSwitcher,
     csrf: CsrfFetcher,
+    api: Api,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
     workerSessionCache: WorkerSessionCache,
@@ -137,6 +139,11 @@ export const test = baseTest.extend<{
     // Service used to switch profiles as needed.
     profile: [async ({ request, csrf, workerSessionCache }, use) => {
         await use(new ProfileSwitcher(request, csrf, workerSessionCache));
+    }, { scope: 'test' }],
+
+    // Service used to send API request to GLPI.
+    api: [async ({ workerSessionCache }, use) => {
+        await use(new Api(workerSessionCache));
     }, { scope: 'test' }],
 
     // Store the state of the current session.
