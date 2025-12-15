@@ -513,7 +513,7 @@ class DBmysql
      * @param string            $sql    SQL query with ? placeholders.
      * @param QueryParameterBag $params Parameters to bind to the placeholders.
      *
-     * @return mysqli_result|bool Query result handler.
+     * @return mysqli_result|bool Query result handler, or true for non-SELECT on success, false on failure.
      */
     public function executeWithParams(string $sql, QueryParameterBag $params): mysqli_result|bool
     {
@@ -527,22 +527,51 @@ class DBmysql
 
         $start_time = microtime(true);
 
-        $stmt = $this->prepare($sql);
+        try {
+            $stmt = $this->prepare($sql);
+        } catch (RuntimeException $e) {
+            // Log error and return false like doQuery
+            $debug_data['errors'] = $e->getMessage();
+            if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+                Profile::getCurrent()->addSQLQueryData(
+                    $debug_data['query'],
+                    $debug_data['time'],
+                    $debug_data['rows'],
+                    $debug_data['errors'],
+                    $debug_data['warnings']
+                );
+            }
+            return false;
+        }
 
         if (!$params->isEmpty()) {
+            $types = $params->getTypeString();
             $values = $params->getParameters();
-            $stmt->bind_param($params->getTypeString(), ...$values);
+
+            // bind_param needs references, so we create a reference array
+            $bindParams = [$types];
+            foreach ($values as $key => $value) {
+                $bindParams[] = &$values[$key];
+            }
+            call_user_func_array([$stmt, 'bind_param'], $bindParams);
         }
 
         if (!$stmt->execute()) {
-            throw new RuntimeException(
-                sprintf(
-                    'MySQL execute error: %s (%d) in SQL query "%s".',
-                    $stmt->error,
-                    $stmt->errno,
-                    $sql
-                )
+            $debug_data['errors'] = sprintf(
+                'MySQL execute error: %s (%d)',
+                $stmt->error,
+                $stmt->errno
             );
+            if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+                Profile::getCurrent()->addSQLQueryData(
+                    $debug_data['query'],
+                    $debug_data['time'],
+                    $debug_data['rows'],
+                    $debug_data['errors'],
+                    $debug_data['warnings']
+                );
+            }
+            return false;
         }
 
         $result = $stmt->get_result();
