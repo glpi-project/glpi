@@ -405,6 +405,8 @@
                 // reload active widget
                 switchWidget(content_area.data('active-widget'), true);
             }
+        }).catch(() => {
+            // Ignore errors. In some cases it is normal for the endpoint to return 404
         });
     }
 </script>

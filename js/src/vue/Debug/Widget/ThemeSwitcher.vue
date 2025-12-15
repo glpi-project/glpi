@@ -11,7 +11,7 @@
     onMounted(() => {
         ajaxGet('/ajax/debug.php', {
             params: {
-                action: 'get_current_theme'
+                action: 'get_themes'
             }
         }).then(({data}) => {
             themes.value = data;
