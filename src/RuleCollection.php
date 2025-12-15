@@ -2290,7 +2290,8 @@ TWIG, $twig_params);
         return $dictionnaries;
     }
 
-    public static function getRulesTestURL(): string {
+    public static function getRulesTestURL(): string
+    {
         $url = '';
         if ($plugin = isPluginItemType(static::class)) {
             $url .= "/plugins/" . $plugin['plugin'];
