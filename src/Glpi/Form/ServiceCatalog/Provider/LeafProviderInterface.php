@@ -39,6 +39,7 @@ use Glpi\Form\ServiceCatalog\ItemRequest;
 
 /**
  * @template T of \Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface
+ * @extends ItemProviderInterface<T>
  */
 interface LeafProviderInterface extends ItemProviderInterface
 {

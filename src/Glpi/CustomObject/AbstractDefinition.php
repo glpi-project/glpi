@@ -94,7 +94,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
     /**
      * Get the class name for the definition manager of this type.
-     * @return class-string<AbstractDefinitionManager>
+     * @return class-string<AbstractDefinitionManager<static>>
      */
     abstract public static function getDefinitionManagerClass(): string;
 
