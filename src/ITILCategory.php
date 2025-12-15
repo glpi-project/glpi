@@ -443,9 +443,9 @@ class ITILCategory extends CommonTreeDropdown
     /**
      * @param ITILTemplate $tt
      * @param int $withtemplate (default 0)
-     * @return false|void
+     * @return void
      */
-    public static function showForITILTemplate(ITILTemplate $tt, int $withtemplate = 0): bool|void
+    public static function showForITILTemplate(ITILTemplate $tt, int $withtemplate = 0): void
     {
         global $CFG_GLPI, $DB;
 
@@ -456,7 +456,7 @@ class ITILCategory extends CommonTreeDropdown
             !$tt->getFromDB($ID)
             || !$tt->can($ID, READ)
         ) {
-            return false;
+            return;
         }
 
         echo "<div class='center'>";

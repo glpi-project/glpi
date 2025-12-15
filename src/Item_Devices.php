@@ -644,9 +644,9 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     /**
      * @param CommonGLPI $item
      * @param int $withtemplate
-     * @return false|void
+     * @return void
      */
-    public static function showForItem(CommonGLPI $item, int $withtemplate = 0): bool|void
+    public static function showForItem(CommonGLPI $item, int $withtemplate = 0): void
     {
         global $CFG_GLPI;
 
@@ -656,7 +656,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         $ID = $item->getID();
 
         if (!$item->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = (($withtemplate != 2)

@@ -5282,18 +5282,18 @@ class CommonDBTM extends CommonGLPI
      * @param string  $target   Target
      * @param bool $add      If true, displays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
      *
-     * @return false|void
+     * @return void
      */
-    public static function listTemplates(string $itemtype, string $target, bool $add = false): bool|void
+    public static function listTemplates(string $itemtype, string $target, bool $add = false): void
     {
         global $DB;
 
         if (!($item = getItemForItemtype($itemtype))) {
-            return false;
+            return;
         }
 
         if (!$item->maybeTemplate()) {
-            return false;
+            return;
         }
 
         // Avoid to get old data
@@ -5303,7 +5303,7 @@ class CommonDBTM extends CommonGLPI
             !$item::canView()
             && !$item::canCreate()
         ) {
-            return false;
+            return;
         }
 
         $request = [

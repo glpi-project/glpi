@@ -87,15 +87,15 @@ class NetworkPort_Vlan extends CommonDBRelation
 
     /**
      * @param NetworkPort $port
-     * @return false|void
+     * @return void
      */
-    public static function showForNetworkPort(NetworkPort $port): bool|void
+    public static function showForNetworkPort(NetworkPort $port): void
     {
         global $DB;
 
         $ID = $port->getID();
         if (!$port->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $port->canEdit($ID);
@@ -199,15 +199,15 @@ TWIG, $twig_params);
     /**
      * @param Vlan $vlan
      *
-     * @return false|void
+     * @return void
      */
-    public static function showForVlan(Vlan $vlan): bool|void
+    public static function showForVlan(Vlan $vlan): void
     {
         global $DB;
 
         $ID = $vlan->getID();
         if (!$vlan->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $vlan->canEdit($ID);

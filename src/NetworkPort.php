@@ -577,9 +577,9 @@ class NetworkPort extends CommonDBChild
      *
      * @param CommonDBTM $item
      * @param int $withtemplate
-     * @return false|void
+     * @return void
      */
-    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool|void
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $CFG_GLPI, $DB;
 
@@ -606,7 +606,7 @@ class NetworkPort extends CommonDBChild
             !NetworkEquipment::canView()
             || !$item->can($items_id, READ)
         ) {
-            return false;
+            return;
         }
 
         if ($itemtype === self::class || $withtemplate == 2) {

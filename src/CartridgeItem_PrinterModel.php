@@ -94,14 +94,14 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
      *
      * @param $item   CartridgeItem object
      *
-     * @return bool|void
+     * @return void
      **/
-    public static function showForCartridgeItem(CartridgeItem $item): bool|void
+    public static function showForCartridgeItem(CartridgeItem $item): void
     {
         $instID = $item->getID();
 
         if (!$item->can($instID, READ)) {
-            return false;
+            return;
         }
         $canedit = $item->canEdit($instID);
         $rand    = mt_rand();

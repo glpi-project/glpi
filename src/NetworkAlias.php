@@ -229,15 +229,15 @@ class NetworkAlias extends FQDNLabel
      *
      * @param NetworkName $item
      * @param int $withtemplate
-     * @return false|void
+     * @return void
      */
-    public static function showForNetworkName(NetworkName $item, int $withtemplate = 0): bool|void
+    public static function showForNetworkName(NetworkName $item, int $withtemplate = 0): void
     {
         global $CFG_GLPI, $DB;
 
         $ID = $item->getID();
         if (!$item->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $item->canEdit($ID);

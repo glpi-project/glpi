@@ -739,15 +739,15 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      * @param CartridgeItem   $cartitem  The cartridge item
      * @param bool|int $show_old  Show old cartridges or not (default 0/false)
      *
-     * @return bool|void
+     * @return void
      **/
-    public static function showForCartridgeItem(CartridgeItem $cartitem, bool|int $show_old = 0): bool|void
+    public static function showForCartridgeItem(CartridgeItem $cartitem, bool|int $show_old = 0): void
     {
         global $DB;
 
         $tID = $cartitem->getField('id');
         if (!$cartitem->can($tID, READ)) {
-            return false;
+            return;
         }
         $start = (int) ($_GET["start"] ?? 0);
 
@@ -935,14 +935,14 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @param CartridgeItem $cartitem
      *
-     * @return bool|void
+     * @return void
      **/
-    public static function showAddForm(CartridgeItem $cartitem): bool|void
+    public static function showAddForm(CartridgeItem $cartitem): void
     {
 
         $ID = $cartitem->getField('id');
         if (!$cartitem->can($ID, UPDATE)) {
-            return false;
+            return;
         }
         if ($ID > 0) {
             $twig_params = [
@@ -985,15 +985,15 @@ TWIG, $twig_params);
      * @param Printer         $printer Printer object
      * @param bool|int $old     Old cartridges or not? (default 0/false)
      *
-     * @return bool|void
+     * @return void
      **/
-    public static function showForPrinter(Printer $printer, bool|int $old = 0): bool|void
+    public static function showForPrinter(Printer $printer, bool|int $old = 0): void
     {
         global $DB;
 
         $instID = $printer->getField('id');
         if (!self::canView()) {
-            return false;
+            return;
         }
         $canedit = Session::haveRight("cartridge", UPDATE);
         $rand    = mt_rand();

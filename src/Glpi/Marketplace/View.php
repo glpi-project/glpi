@@ -344,7 +344,7 @@ class View extends CommonGLPI
      * @param int $nb_plugins total of plugins ($plugins contains only the current page)
      * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
      *
-     * @return false|void displays things
+     * @return void
      */
     public static function displayList(
         array $plugins = [],
@@ -353,9 +353,9 @@ class View extends CommonGLPI
         int $nb_plugins = 0,
         string $sort = 'sort-alpha-asc',
         bool $is_list_truncated = false
-    ): bool|void {
+    ): void {
         if (!self::canView()) {
-            return false;
+            return;
         }
 
         $messages = '';

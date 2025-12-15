@@ -292,22 +292,22 @@ class ReservationItem extends CommonDBChild
 
     /**
      * @param CommonDBTM $item
-     * @return false|void
+     * @return void
      */
-    public static function showActivationFormForItem(CommonDBTM $item): bool|void
+    public static function showActivationFormForItem(CommonDBTM $item): void
     {
         if (!self::canUpdate()) {
-            return false;
+            return;
         }
         if ($item->getID()) {
             // Recursive type case => need entity right
             if ($item->isRecursive()) {
                 if (!Session::haveAccessToEntity($item->fields["entities_id"])) {
-                    return false;
+                    return;
                 }
             }
         } else {
-            return false;
+            return;
         }
 
         $ri = new self();

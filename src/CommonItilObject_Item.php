@@ -375,18 +375,18 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *
      * @param CommonITILObject|CommonITILRecurrent $obj
      *
-     * @return bool|void
+     * @return void
      **/
-    protected static function showForObject(CommonITILObject|CommonITILRecurrent $obj): bool|void
+    protected static function showForObject(CommonITILObject|CommonITILRecurrent $obj): void
     {
         if (!(is_a($obj, static::$itemtype_1))) {
-            return false;
+            return;
         }
 
         $instID = (int) $obj->fields['id'];
 
         if (!$obj->can($instID, READ)) {
-            return false;
+            return;
         }
         //can Add Item takes type as param but there is none here
         $canedit = $obj->canAddItem('');
@@ -663,18 +663,18 @@ TWIG, $twig_params);
      * @param int    $withtemplate (default 0)
      * @param array      $options
      *
-     * @return bool|void (display a table)
+     * @return void
      */
-    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0, array $options = []): bool|void
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0, array $options = []): void
     {
         global $DB;
 
         if (!static::$itemtype_1::canView()) {
-            return false;
+            return;
         }
 
         if ($item->isNewID($item->getID())) {
-            return false;
+            return;
         }
 
         $criteria = static::$itemtype_1::getCommonCriteria();

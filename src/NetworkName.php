@@ -666,14 +666,14 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      *
      * @param CommonDBTM $item
      * @param int $withtemplate
-     * @return false|void
+     * @return void
      * @throws Exception
      */
-    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): bool|void
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         $ID = $item->getID();
         if (!$item->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $rand = mt_rand();

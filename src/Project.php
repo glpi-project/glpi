@@ -1955,16 +1955,16 @@ TWIG, $twig_params);
     /**
      * Show Kanban view.
      * @param int $ID ID of the parent Project or 0 for a global view.
-     * @return bool|void False if the Kanban cannot be shown.
+     * @return void False if the Kanban cannot be shown.
      */
-    public static function showKanban(int $ID): bool|void
+    public static function showKanban(int $ID): void
     {
         $project = new Project();
         if (
             ($ID <= 0 && !self::canView())
             || ($ID > 0 && (!$project->getFromDB($ID) || !$project->canViewItem()))
         ) {
-            return false;
+            return;
         }
 
         $supported_itemtypes = [];
