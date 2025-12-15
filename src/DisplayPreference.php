@@ -407,7 +407,7 @@ class DisplayPreference extends CommonDBTM
                 break;
 
             default:
-                return false;
+                return;
         }
 
         $result = $DB->request([

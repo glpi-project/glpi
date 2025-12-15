@@ -264,7 +264,7 @@ class ItemVirtualMachine extends CommonDBChild
         $itemtype = $asset->getType();
 
         if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
-            return false;
+            return;
         }
         $canedit = $asset->canEdit($ID);
 

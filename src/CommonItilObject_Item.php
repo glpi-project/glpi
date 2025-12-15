@@ -191,7 +191,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = []): void
     {
         if (!(is_a($obj, static::$itemtype_1))) {
-            return false;
+            return;
         }
 
         $params = [
@@ -210,7 +210,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         }
 
         if (!$obj->can($params['id'], READ)) {
-            return false;
+            return;
         }
 
         $is_closed = in_array($obj->fields['status'], $obj->getClosedStatusArray());

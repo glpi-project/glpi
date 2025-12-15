@@ -409,7 +409,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
         $instID = $domain->fields['id'];
         if (!$domain->can($instID, READ)) {
-            return false;
+            return;
         }
         $canedit = $domain->can($instID, UPDATE)
                  || count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes']);

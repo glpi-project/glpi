@@ -391,7 +391,7 @@ class Database extends CommonDBChild
         $ID = $instance->getID();
 
         if (!$instance->getFromDB($ID) || !$instance->can($ID, READ)) {
-            return false;
+            return;
         }
         $canedit = $instance->canEdit($ID);
 
