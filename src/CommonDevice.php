@@ -398,9 +398,7 @@ abstract class CommonDevice extends CommonDropdown
      *                            (default NULL)
      * @param array $options parameter such as restriction
      *
-     * @return HTMLTableHeader|void
-     * @throws Exception
-     * @since 0.84
+     * @return HTMLTableHeader
      */
     public static function getHTMLTableHeader(
         string $itemtype,
@@ -408,7 +406,7 @@ abstract class CommonDevice extends CommonDropdown
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ): HTMLTableHeader|void {
+    ): HTMLTableHeader {
         if (isset($options['dont_display'][static::class])) {
             return $father;
         }

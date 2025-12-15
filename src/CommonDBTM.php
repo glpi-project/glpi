@@ -2841,9 +2841,9 @@ class CommonDBTM extends CommonGLPI
      * @param array   $options Array of possible options:
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
-     * @return int|void value of withtemplate option (throw an exception if not enough rights)
+     * @return int value of withtemplate option (throw an exception if not enough rights)
      **/
-    public function initForm(int $ID, array $options = []): int|void
+    public function initForm(int $ID, array $options = []): int
     {
 
         if (

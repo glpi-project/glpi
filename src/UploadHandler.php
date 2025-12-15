@@ -738,9 +738,9 @@ class UploadHandler
     /**
      * @param string $file_path
      *
-     * @return string[]|void
+     * @return string[]
      */
-    protected function get_valid_image_extensions(string $file_path): array|void
+    protected function get_valid_image_extensions(string $file_path): array
     {
         switch ($this->imagetype($file_path)) {
             case self::IMAGETYPE_JPEG:
@@ -750,6 +750,7 @@ class UploadHandler
             case self::IMAGETYPE_GIF:
                 return ['gif'];
         }
+        return [];
     }
 
     /**

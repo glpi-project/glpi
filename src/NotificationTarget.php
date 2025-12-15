@@ -1660,9 +1660,9 @@ class NotificationTarget extends CommonDBChild
     }
 
     /**
-     * @return string[]|string[][]|void
+     * @return array<string, string|array<string|array>>
      */
-    public function getTags(): array|void
+    public function getTags(): array
     {
         return $this->tag_descriptions;
     }
