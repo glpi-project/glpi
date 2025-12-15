@@ -227,7 +227,6 @@ abstract class CommonDropdown extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $type = $this->getType();
 
         if (
             in_array($this->getType(), $CFG_GLPI['document_types'])
