@@ -37,6 +37,7 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Message\MessageType;
 use Glpi\Progress\AbstractProgressIndicator;
+use Symfony\Component\Console\Output\OutputInterface;
 
 use function Safe\preg_replace;
 
@@ -1515,6 +1516,8 @@ class Migration
 
     /**
      * @deprecated 11.0.0
+     *
+     * @param ?OutputInterface $output_handler
      */
     public function setOutputHandler($output_handler): void
     {

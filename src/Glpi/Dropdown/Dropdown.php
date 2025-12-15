@@ -78,6 +78,7 @@ abstract class Dropdown extends CommonTreeDropdown
 
     /**
      * Get the definition class instance.
+     * @return AbstractDefinition<Dropdown>
      */
     public static function getDefinitionClassInstance(): AbstractDefinition
     {

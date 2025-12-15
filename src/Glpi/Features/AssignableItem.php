@@ -254,7 +254,12 @@ trait AssignableItem
         return $input;
     }
 
-    /** @see AssignableItemInterface::prepareInputForAdd() */
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     * @see AssignableItemInterface::prepareInputForAdd()
+     */
     public function prepareInputForAdd($input)
     {
         if ($input === false) {
@@ -267,7 +272,13 @@ trait AssignableItem
         return $this->prepareGroupFields($input);
     }
 
-    /** @see AssignableItemInterface::prepareInputForUpdate() */
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     * @see AssignableItemInterface::prepareInputForUpdate()
+     */
+
     public function prepareInputForUpdate($input)
     {
         if ($input === false) {
