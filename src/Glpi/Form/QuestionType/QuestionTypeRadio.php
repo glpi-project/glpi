@@ -57,9 +57,9 @@ final class QuestionTypeRadio extends AbstractQuestionTypeSelectable implements 
     }
 
     #[Override]
-    protected function getExtraInputAttributes(): string
+    protected function getExtraInputAttributes(): array
     {
-        return 'data-glpi-form-radio-uncheckable';
+        return ['data-glpi-form-radio-uncheckable' => ''];
     }
 
     #[Override]

@@ -335,11 +335,11 @@ TWIG;
     /**
      * Get extra attributes for the input
      *
-     * @return string
+     * @return array
      */
-    protected function getExtraInputAttributes(): string
+    protected function getExtraInputAttributes(): array
     {
-        return '';
+        return [];
     }
 
     #[Override]
@@ -348,7 +348,7 @@ TWIG;
         $template = <<<TWIG
         {% set rand = random() %}
 
-        {% macro addOption(input_type, checked, value, translations, uuid = null, order, extra_details = false, disabled = false, hide_default_value_input = false, extra_input_attributes = '') %}
+        {% macro addOption(input_type, checked, value, translations, uuid = null, order, extra_details = false, disabled = false, hide_default_value_input = false, extra_input_attributes = []) %}
             {% if uuid is null %}
                 {% set uuid = random() %}
             {% endif %}
@@ -375,7 +375,7 @@ TWIG;
                     aria-label="{{ translations.default_option }}"
                     {{ checked ? 'checked' : '' }}
                     {{ disabled ? 'disabled' : '' }}
-                    {{ extra_input_attributes|raw }}
+                    {{ extra_input_attributes|map((value, key) => key|e ~ '="' ~ value|e ~ '"')|join(' ')|raw }}
                 >
                 <input
                     data-glpi-form-editor-specific-question-extra-data
