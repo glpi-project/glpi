@@ -2940,13 +2940,13 @@ class CommonDBTM extends CommonGLPI
         echo "<td class='center' colspan='" . ((int) $params['colspan'] * 2) . "'>";
     }
 
-    public static function isNewID($ID)
+    public static function isNewID($ID): bool
     {
         // Default is empty of <0 may be overriden (for entity for example)
         return (empty($ID) || ($ID <= 0));
     }
 
-    public function isNewItem()
+    public function isNewItem(): bool
     {
 
         if (isset($this->fields['id'])) {

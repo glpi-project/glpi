@@ -296,7 +296,7 @@ class Conf extends CommonGLPI
         ];
     }
 
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -304,7 +304,7 @@ class Conf extends CommonGLPI
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
         if ($item instanceof self) {
             $tabs = [];
@@ -319,7 +319,7 @@ class Conf extends CommonGLPI
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item->getType() == self::class) {
             /** @var self $item */
@@ -1200,7 +1200,7 @@ class Conf extends CommonGLPI
             return $this->currents[$name];
         } elseif ($name == 'fields') {
             //no fields here
-            return;
+            return null;
         } else {
             $msg = sprintf(
                 __('Property %1$s does not exists!'),
