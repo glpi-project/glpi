@@ -729,8 +729,6 @@ class MailCollectorTest extends DbTestCase
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
 
         $expected_logged_errors = [
-            // 05-empty-from.eml
-            'The input is not a valid email address. Use the basic format local-part@hostname' => LogLevel::ERROR,
             // 17-malformed-email.eml
             'Header with Name date or date not found' => LogLevel::ERROR,
         ];
@@ -740,6 +738,16 @@ class MailCollectorTest extends DbTestCase
             'Invalid header "X-Invalid-Encoding"',
             LogLevel::WARNING
         );
+        // 05-empty-from.eml - Invalid address caught by Laminas patch
+        $this->hasPhpLogRecordThatContains(
+            'Invalid address "<>"',
+            LogLevel::WARNING
+        );
+        // 49-invalid-cc-email-address.eml - Invalid CC address caught by Laminas patch
+        $this->hasPhpLogRecordThatContains(
+            'Invalid address "} <}>"',
+            LogLevel::WARNING
+        );
 
         // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
         foreach ($expected_logged_errors as $error_message => $error_level) {
@@ -747,8 +755,8 @@ class MailCollectorTest extends DbTestCase
         }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 12;
-        $expected_error_count            = 2;
+        $expected_refused_count          = 13;
+        $expected_error_count            = 1;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
 
@@ -865,6 +873,7 @@ class MailCollectorTest extends DbTestCase
                     '43 - Korean encoding issue',
                     '44 - Hebrew encoding issue',
                     '47 - Missing charset parameter',
+                    '49 - Message with invalid CC email address',
                 ],
             ],
             // Mails having "normal" user as observer
