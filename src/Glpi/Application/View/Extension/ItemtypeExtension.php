@@ -132,11 +132,11 @@ class ItemtypeExtension extends AbstractExtension
      * Returns typename of given itemtype.
      *
      * @param string $itemtype
-     * @param number $count
+     * @param int $count
      *
      * @return string|null
      */
-    public function getItemtypeName(string $itemtype, number $count = 1): ?string
+    public function getItemtypeName(string $itemtype, int $count = 1): ?string
     {
         return is_a($itemtype, CommonGLPI::class, true) ? $itemtype::getTypeName($count) : null;
     }
