@@ -51,13 +51,14 @@ export class CsrfFetcher
 
     public async get(): Promise<string>
     {
-        if (this.cache.getCsrfToken() !== null) {
-            return this.cache.getCsrfToken();
+        let token = this.cache.getCsrfToken();
+        if (token !== null) {
+            return token;
         }
 
         const response = await this.request.get("/front/preference.php");
         const extractor = new CsrfExtractor();
-        const token = extractor.extractToken(await response.text());
+        token = extractor.extractToken(await response.text());
         this.cache.setCsrfToken(token);
 
         return token;
