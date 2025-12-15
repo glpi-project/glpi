@@ -230,7 +230,6 @@ abstract class CommonDropdown extends CommonDBTM
 
         if (
             in_array($this->getType(), $CFG_GLPI['document_types'])
-            || is_subclass_of($this, AssetModel::class)
         ) {
             $this->addStandardTab(Document_Item::class, $ong, $options);
         }
