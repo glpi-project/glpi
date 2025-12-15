@@ -32,8 +32,10 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QueryParameterBag;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Debug\Profile;
@@ -500,6 +502,73 @@ class DBmysql
         }
         $this->current_query = $query;
         return $res;
+    }
+
+    /**
+     * Execute a query using prepared statement with bound parameters.
+     *
+     * This method provides SQL injection protection by using parameter binding
+     * instead of string escaping.
+     *
+     * @param string            $sql    SQL query with ? placeholders.
+     * @param QueryParameterBag $params Parameters to bind to the placeholders.
+     *
+     * @return mysqli_result|bool Query result handler.
+     */
+    public function executeWithParams(string $sql, QueryParameterBag $params): mysqli_result|bool
+    {
+        $debug_data = [
+            'query' => $sql,
+            'time' => 0,
+            'rows' => 0,
+            'errors' => '',
+            'warnings' => '',
+        ];
+
+        $start_time = microtime(true);
+
+        $stmt = $this->prepare($sql);
+
+        if (!$params->isEmpty()) {
+            $values = $params->getParameters();
+            $stmt->bind_param($params->getTypeString(), ...$values);
+        }
+
+        if (!$stmt->execute()) {
+            throw new RuntimeException(
+                sprintf(
+                    'MySQL execute error: %s (%d) in SQL query "%s".',
+                    $stmt->error,
+                    $stmt->errno,
+                    $sql
+                )
+            );
+        }
+
+        $result = $stmt->get_result();
+
+        $duration = (microtime(true) - $start_time) * 1000;
+
+        $debug_data['time'] = $duration;
+        $debug_data['rows'] = $stmt->affected_rows;
+
+        if (isset($_SESSION['glpi_use_mode']) && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)) {
+            Profile::getCurrent()->addSQLQueryData(
+                $debug_data['query'],
+                $debug_data['time'],
+                $debug_data['rows'],
+                $debug_data['errors'],
+                $debug_data['warnings']
+            );
+        }
+
+        if ($this->execution_time === true) {
+            $this->execution_time = $duration;
+        }
+
+        // For INSERT/UPDATE/DELETE, get_result() returns false but execution succeeded
+        // Return true in those cases, or the result for SELECT queries
+        return $result !== false ? $result : true;
     }
 
     /**
@@ -1318,7 +1387,6 @@ class DBmysql
                 $fields[] = static::quoteName($key);
                 if ($value instanceof QueryExpression) {
                     $values[] = $value->getValue();
-                    unset($params[$key]);
                 } elseif ($value instanceof QueryParam) {
                     $values[] = $value->getValue();
                 } else {
@@ -1336,6 +1404,62 @@ class DBmysql
     }
 
     /**
+     * Builds an insert statement with parameter collection for prepared statements.
+     *
+     * This method returns SQL with ? placeholders and a QueryParameterBag
+     * containing the values to be bound. Use with executeWithParams().
+     *
+     * @since 11.0.0
+     *
+     * @param string $table  Table name
+     * @param QuerySubQuery|array  $params Array of field => value pairs or a QuerySubQuery for INSERT INTO ... SELECT
+     * @phpstan-param array<string, mixed>|QuerySubQuery $params
+     *
+     * @return array{sql: string, params: QueryParameterBag}
+     */
+    public function buildInsertWithParams($table, $params): array
+    {
+        $paramBag = new QueryParameterBag();
+        $query = "INSERT INTO " . self::quoteName($table) . ' ';
+
+        if ($params instanceof QuerySubQuery) {
+            // INSERT INTO ... SELECT Query where the sub-query returns all columns needed for the insert
+            // These cannot use prepared parameters, return the full query
+            $query .= $params->getQuery();
+        } else {
+            $fields = [];
+            $values = [];
+            foreach ($params as $key => $value) {
+                $fields[] = static::quoteName($key);
+                if ($value instanceof QueryExpression) {
+                    // Raw expressions are not parameterized
+                    $values[] = $value->getValue();
+                } elseif ($value instanceof QueryParam) {
+                    $values[] = '?';
+                    if ($value->hasValue()) {
+                        $paramBag->add($value->getBoundValue());
+                    }
+                } else {
+                    // Use placeholder for regular values
+                    $values[] = '?';
+                    if ($value === null || $value === 'NULL' || $value === 'null') {
+                        $paramBag->add(null);
+                    } else {
+                        $paramBag->add($value);
+                    }
+                }
+            }
+            $query .= "(";
+            $query .= implode(', ', $fields);
+            $query .= ") VALUES (";
+            $query .= implode(", ", $values);
+            $query .= ")";
+        }
+
+        return ['sql' => $query, 'params' => $paramBag];
+    }
+
+    /**
      * Insert a row in the database
      *
      * @since 9.3
@@ -1347,10 +1471,16 @@ class DBmysql
      */
     public function insert($table, $params)
     {
-        $result = $this->doQuery(
-            $this->buildInsert($table, $params)
-        );
-        return $result;
+        // Use prepared statements for array params (most common case)
+        if (!($params instanceof QuerySubQuery)) {
+            $built = $this->buildInsertWithParams($table, $params);
+            if (!$built['params']->isEmpty()) {
+                return $this->executeWithParams($built['sql'], $built['params']);
+            }
+        }
+
+        // Fall back to doQuery for INSERT ... SELECT or empty params
+        return $this->doQuery($this->buildInsert($table, $params));
     }
 
     /**
@@ -1451,6 +1581,105 @@ class DBmysql
     }
 
     /**
+     * Builds an update statement with parameter collection for prepared statements.
+     *
+     * This method returns SQL with ? placeholders and a QueryParameterBag
+     * containing the values to be bound. Use with executeWithParams().
+     *
+     * @since 11.0.0
+     *
+     * @param string $table   Table name
+     * @param array  $params  Query parameters ([field name => field value)
+     * @param array  $clauses Clauses to use. If not 'WHERE' key specified, will be the WHERE clause
+     * @param array  $joins   JOINS criteria array
+     *
+     * @return array{sql: string, params: QueryParameterBag}
+     */
+    public function buildUpdateWithParams($table, $params, $clauses, array $joins = []): array
+    {
+        $paramBag = new QueryParameterBag();
+
+        // Normalize clauses
+        if (!isset($clauses['WHERE'])) {
+            $clauses = ['WHERE' => $clauses];
+        } else {
+            $known_clauses = ['WHERE', 'ORDER', 'LIMIT', 'START'];
+            foreach (array_keys($clauses) as $key) {
+                if (!in_array($key, $known_clauses)) {
+                    throw new RuntimeException(
+                        str_replace(
+                            '%clause',
+                            $key,
+                            'Trying to use an unknown clause (%clause) building update query!'
+                        )
+                    );
+                }
+            }
+        }
+
+        if (!count($clauses['WHERE'])) {
+            throw new RuntimeException('Cannot run an UPDATE query without WHERE clause!');
+        }
+        if (!count($params)) {
+            throw new RuntimeException('Cannot run an UPDATE query without parameters!');
+        }
+
+        $query = "UPDATE " . self::quoteName($table);
+
+        // JOINS - use iterator without parameter collection for joins
+        $this->iterator = new DBmysqlIterator($this);
+        $query .= $this->iterator->analyseJoins($joins);
+
+        // SET clause - collect parameters
+        $query .= " SET ";
+        foreach ($params as $field => $value) {
+            if ($value instanceof QueryExpression) {
+                // Raw expressions are not parameterized
+                $query .= self::quoteName($field) . " = " . $value->getValue() . ", ";
+            } elseif ($value instanceof QueryParam) {
+                $query .= self::quoteName($field) . " = ?, ";
+                if ($value->hasValue()) {
+                    $paramBag->add($value->getBoundValue());
+                }
+            } else {
+                // Use placeholder for regular values
+                $query .= self::quoteName($field) . " = ?, ";
+                if ($value === null || $value === 'NULL' || $value === 'null') {
+                    $paramBag->add(null);
+                } elseif (is_bool($value)) {
+                    $paramBag->add((int) $value);
+                } else {
+                    $paramBag->add($value);
+                }
+            }
+        }
+        $query = rtrim($query, ', ');
+
+        // WHERE clause - enable parameter collection on iterator
+        $this->iterator->startParameterCollection();
+        $query .= " WHERE " . $this->iterator->analyseCrit($clauses['WHERE']);
+
+        // Merge iterator's collected parameters
+        $iteratorBag = $this->iterator->getParameterBag();
+        if ($iteratorBag !== null) {
+            $paramBag->addAll($iteratorBag->getParameters());
+        }
+        $this->iterator->stopParameterCollection();
+
+        // ORDER BY
+        if (isset($clauses['ORDER']) && !empty($clauses['ORDER'])) {
+            $query .= $this->iterator->handleOrderClause($clauses['ORDER']);
+        }
+
+        if (isset($clauses['LIMIT']) && !empty($clauses['LIMIT'])) {
+            $offset = (isset($clauses['START']) && !empty($clauses['START'])) ? $clauses['START'] : null;
+            $query .= $this->iterator->handleLimits($clauses['LIMIT'], $offset);
+        }
+
+        return ['sql' => $query, 'params' => $paramBag];
+    }
+
+    /**
      * Update a row in the database
      *
      * @since 9.3
@@ -1465,9 +1694,14 @@ class DBmysql
      */
     public function update($table, $params, $where, array $joins = [])
     {
-        $query = $this->buildUpdate($table, $params, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $built = $this->buildUpdateWithParams($table, $params, $where, $joins);
+
+        if (!$built['params']->isEmpty()) {
+            return $this->executeWithParams($built['sql'], $built['params']);
+        }
+
+        // Fall back to doQuery for queries without parameters
+        return $this->doQuery($this->buildUpdate($table, $params, $where, $joins));
     }
 
     /**
@@ -1561,6 +1795,44 @@ class DBmysql
     }
 
     /**
+     * Builds a delete statement with parameter collection for prepared statements.
+     *
+     * @since 11.0.0
+     *
+     * @param string $table  Table name
+     * @param array  $where  WHERE clause (@see DBmysqlIterator capabilities)
+     * @param array  $joins  JOINS criteria array
+     *
+     * @return array{sql: string, params: QueryParameterBag}
+     */
+    public function buildDeleteWithParams($table, $where, array $joins = []): array
+    {
+        $paramBag = new QueryParameterBag();
+
+        if (!count($where)) {
+            throw new RuntimeException('Cannot run an DELETE query without WHERE clause!');
+        }
+
+        $query = "DELETE " . self::quoteName($table) . " FROM " . self::quoteName($table);
+
+        $this->iterator = new DBmysqlIterator($this);
+        $query .= $this->iterator->analyseJoins($joins);
+
+        // Enable parameter collection for WHERE clause
+        $this->iterator->startParameterCollection();
+        $query .= " WHERE " . $this->iterator->analyseCrit($where);
+
+        // Collect parameters from iterator
+        $iteratorBag = $this->iterator->getParameterBag();
+        if ($iteratorBag !== null) {
+            $paramBag->addAll($iteratorBag->getParameters());
+        }
+        $this->iterator->stopParameterCollection();
+
+        return ['sql' => $query, 'params' => $paramBag];
+    }
+
+    /**
      * Delete rows in the database
      *
      * @since 9.3
@@ -1574,9 +1846,14 @@ class DBmysql
      */
     public function delete($table, $where, array $joins = [])
     {
-        $query = $this->buildDelete($table, $where, $joins);
-        $result = $this->doQuery($query);
-        return $result;
+        $built = $this->buildDeleteWithParams($table, $where, $joins);
+
+        if (!$built['params']->isEmpty()) {
+            return $this->executeWithParams($built['sql'], $built['params']);
+        }
+
+        // Fall back to doQuery for queries without parameters
+        return $this->doQuery($this->buildDelete($table, $where, $joins));
     }
 
     /**

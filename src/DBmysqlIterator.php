@@ -35,6 +35,7 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\DBAL\QueryParameterBag;
 use Glpi\DBAL\QuerySubQuery;
 
 use function Safe\preg_replace;
@@ -97,6 +98,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
     ];
 
     /**
+     * Parameter bag for collecting bound parameters during query building.
+     * When set, values are collected as parameters instead of being escaped.
+     */
+    private ?QueryParameterBag $parameterBag = null;
+
+    /**
      * Constructor
      *
      * @param ?DBmysql $dbconnexion Database connection (must be a CommonDBTM object)
@@ -106,6 +113,46 @@ class DBmysqlIterator implements SeekableIterator, Countable
     public function __construct($dbconnexion)
     {
         $this->conn = $dbconnexion;
+    }
+
+    /**
+     * Start collecting parameters for prepared statement binding.
+     *
+     * When parameter collection is enabled, `analyseCriterionValue()` will
+     * add values to the parameter bag and return '?' placeholders instead
+     * of escaped values.
+     *
+     * @since 11.0.0
+     *
+     * @return void
+     */
+    public function startParameterCollection(): void
+    {
+        $this->parameterBag = new QueryParameterBag();
+    }
+
+    /**
+     * Stop collecting parameters and clear the parameter bag.
+     *
+     * @since 11.0.0
+     *
+     * @return void
+     */
+    public function stopParameterCollection(): void
+    {
+        $this->parameterBag = null;
+    }
+
+    /**
+     * Get the parameter bag containing collected values.
+     *
+     * @since 11.0.0
+     *
+     * @return QueryParameterBag|null The parameter bag, or null if collection is not enabled.
+     */
+    public function getParameterBag(): ?QueryParameterBag
+    {
+        return $this->parameterBag;
     }
 
     /**
@@ -640,12 +687,23 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function getCriterionValue($value)
     {
-        return match (true) {
-            $value instanceof AbstractQuery => $value->getQuery(),
-            $value instanceof QueryExpression => $value->getValue(),
-            $value instanceof QueryParam => $value->getValue(),
-            default => $this->analyseCriterionValue($value)
-        };
+        if ($value instanceof AbstractQuery) {
+            return $value->getQuery();
+        }
+
+        if ($value instanceof QueryExpression) {
+            return $value->getValue();
+        }
+
+        if ($value instanceof QueryParam) {
+            // If parameter collection is enabled and the QueryParam has a value, collect it
+            if ($this->parameterBag !== null && $value->hasValue()) {
+                $this->parameterBag->add($value->getBoundValue());
+            }
+            return $value->getValue(); // Returns '?'
+        }
+
+        return $this->analyseCriterionValue($value);
     }
 
     /**
@@ -659,11 +717,23 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if (is_array($value)) {
             $values = [];
             foreach ($value as $v) {
-                $values[] = DBmysql::quoteValue($v);
+                if ($this->parameterBag !== null) {
+                    // Collecting parameters for prepared statements
+                    $values[] = '?';
+                    $this->parameterBag->add($v);
+                } else {
+                    $values[] = DBmysql::quoteValue($v);
+                }
             }
             $crit_value = '(' . implode(', ', $values) . ')';
         } else {
-            $crit_value = DBmysql::quoteValue($value);
+            if ($this->parameterBag !== null) {
+                // Collecting parameters for prepared statements
+                $crit_value = '?';
+                $this->parameterBag->add($value);
+            } else {
+                $crit_value = DBmysql::quoteValue($value);
+            }
         }
         return $crit_value;
     }

@@ -38,16 +38,60 @@ namespace Glpi\DBAL;
 class QueryParam
 {
     /**
-     * Query parameter value.
+     * The bound parameter value.
+     */
+    private mixed $value = null;
+
+    /**
+     * Whether a value has been bound.
+     */
+    private bool $hasValue = false;
+
+    /**
+     * Create a query parameter placeholder.
+     *
+     * @param mixed $value Optional value to bind to this parameter.
+     *                     If provided, the value will be used in prepared statement binding.
+     */
+    public function __construct(mixed $value = null)
+    {
+        if (func_num_args() > 0) {
+            $this->value = $value;
+            $this->hasValue = true;
+        }
+    }
+
+    /**
+     * Query parameter placeholder value (always returns '?').
      *
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return '?';
     }
 
-    public function __toString()
+    /**
+     * Get the bound parameter value.
+     *
+     * @return mixed The bound value, or null if no value was bound.
+     */
+    public function getBoundValue(): mixed
+    {
+        return $this->value;
+    }
+
+    /**
+     * Check if a value has been bound to this parameter.
+     *
+     * @return bool True if a value was provided in the constructor.
+     */
+    public function hasValue(): bool
+    {
+        return $this->hasValue;
+    }
+
+    public function __toString(): string
     {
         return $this->getValue();
     }
