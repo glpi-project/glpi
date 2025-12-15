@@ -125,8 +125,8 @@ class SearchOptionTest extends DbTestCase
         // Find our computer in the results
         $found_computer = false;
         foreach ($result['data']['rows'] as $row) {
-            if (isset($row['AllAssets_1']['displayname']) &&
-                strpos($row['AllAssets_1']['displayname'], 'Test Computer ' . __FUNCTION__) !== false) {
+            if (isset($row['AllAssets_1']['displayname'])
+                && strpos($row['AllAssets_1']['displayname'], 'Test Computer ' . __FUNCTION__) !== false) {
 
                 $found_computer = true;
 
