@@ -14,7 +14,7 @@ index 1234567..abcdefg 100644
 +                    return Address::fromString($value, $comments);
 +                } catch (\Laminas\Mail\Exception\InvalidArgumentException $e) {
 +                    // Invalid email address, ignore it and add a warning
-+                    trigger_error(sprintf('Invalid address "%s"', $value), E_USER_WARNING);
++                    trigger_error($e->getMessage(), E_USER_WARNING);
 +                    return null;
 +                }
              },
