@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetModel;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Features\AssetImage;
 
@@ -230,7 +231,7 @@ abstract class CommonDropdown extends CommonDBTM
 
         if (
             in_array($this->getType(), $CFG_GLPI['document_types'])
-            || is_subclass_of($this, \Glpi\Asset\AssetModel::class)
+            || is_subclass_of($this, AssetModel::class)
         ) {
             $this->addStandardTab(Document_Item::class, $ong, $options);
         }
