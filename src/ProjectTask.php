@@ -1448,7 +1448,7 @@ TWIG, $twig_params);
         if ($withtemplate == 2) {
             echo '<div class="alert alert-info mb-3">';
             echo '<i class="ti ti-info-circle me-2"></i>';
-            echo __('You are viewing tasks from the template. Save the project first to be able to add or modify tasks.');
+            echo __s('You are viewing tasks from the template. Save the project first to be able to add or modify tasks.');
             echo '</div>';
         }
 

@@ -236,7 +236,7 @@ class Contract_Item extends CommonDBRelation
         if ($withtemplate == 2 && $item instanceof Project) {
             echo '<div class="alert alert-info mb-3">';
             echo '<i class="ti ti-info-circle me-2"></i>';
-            echo __('You are viewing contracts from the template. Save the project first to be able to add or modify contracts.');
+            echo __s('You are viewing contracts from the template. Save the project first to be able to add or modify contracts.');
             echo '</div>';
         }
 
