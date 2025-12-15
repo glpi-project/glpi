@@ -641,7 +641,7 @@ class DBConnection extends CommonGLPI
      *
      * @return int|mixed|null
      */
-    public static function getHistoryMaxDate(DBmysql $DBconnection): int|mixed|null
+    public static function getHistoryMaxDate(DBmysql $DBconnection)
     {
 
         if ($DBconnection->connected) {

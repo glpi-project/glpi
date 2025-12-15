@@ -7308,7 +7308,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *
      * @since 0.90.4
      **/
-    public function getCalendar(): int|mixed|null
+    public function getCalendar()
     {
         return Entity::getUsedConfig(
             'calendars_strategy',

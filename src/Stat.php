@@ -377,7 +377,7 @@ class Stat extends CommonGLPI
      * @param string $value2 (default '')
      * @return array|mixed
      */
-    public static function getData($itemtype, string $type, string $date1, string $date2, int $start, array $value, string $value2 = ""): array|mixed|null
+    public static function getData($itemtype, string $type, string $date1, string $date2, int $start, array $value, string $value2 = "")
     {
         $hash = md5(serialize(func_get_args()));
 

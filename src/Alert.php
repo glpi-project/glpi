@@ -246,9 +246,9 @@ class Alert extends CommonDBTM
      * @param int $items_id The item's ID
      * @param int $type     The type of alert (see constants in {@link \Alert} class)
      *
-     * @return mixed|bool
+     * @return mixed|false
      */
-    public static function getAlertDate(string $itemtype, int $items_id, int $type): mixed|bool|null
+    public static function getAlertDate(string $itemtype, int $items_id, int $type)
     {
         global $DB;
 

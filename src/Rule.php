@@ -2419,7 +2419,7 @@ TWIG, $twig_params);
      *
      * @return mixed|false  A value associated with the criteria, or false otherwise
      **/
-    public function getAdditionalCriteriaDisplayPattern(string $ID, int $condition, string $pattern): mixed|bool|null
+    public function getAdditionalCriteriaDisplayPattern(string $ID, int $condition, string $pattern)
     {
         return false;
     }
