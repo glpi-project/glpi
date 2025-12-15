@@ -46,7 +46,7 @@ final class HomeSearchManager
     /** @var int */
     private const MAX_ITEMS_PER_TYPE = 20;
 
-    /** @var LeafProviderInterface[] */
+    /** @var LeafProviderInterface<covariant ServiceCatalogLeafInterface>[] */
     private array $providers;
 
     private bool $providers_are_sorted = false;
@@ -82,6 +82,10 @@ final class HomeSearchManager
         return $items_by_label;
     }
 
+    /**
+     * @param LeafProviderInterface<covariant ServiceCatalogLeafInterface> $provider
+     * @return void
+     */
     public function registerPluginProvider(
         LeafProviderInterface $provider
     ): void {
@@ -89,7 +93,7 @@ final class HomeSearchManager
         $this->providers_are_sorted = false;
     }
 
-    /** @return LeafProviderInterface[] */
+    /** @return LeafProviderInterface<covariant ServiceCatalogLeafInterface>[] */
     private function getProviders(): array
     {
         if (!$this->providers_are_sorted) {

@@ -42,6 +42,7 @@ use function Safe\preg_split;
 
 /**
  *  Database iterator class for Mysql
+ * @implements SeekableIterator<int, mixed>
  **/
 class DBmysqlIterator implements SeekableIterator, Countable
 {

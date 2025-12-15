@@ -48,6 +48,9 @@ abstract class AbstractDefinitionManager
      */
     private array $definitions = [];
 
+    /**
+     * @phpstan-return static<ConcreteDefinition>
+     */
     abstract public static function getInstance(): self;
 
     /**
@@ -108,6 +111,7 @@ abstract class AbstractDefinitionManager
 
     /**
      * Register a definition.
+     * @phpstan-param ConcreteDefinition $definition
      */
     public function registerDefinition(AbstractDefinition $definition): void
     {

@@ -116,6 +116,9 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $definition;
     }
 
+    /**
+     * @return AssetDefinition
+     */
     public static function getDefinitionClassInstance(): AbstractDefinition
     {
         return new AssetDefinition();

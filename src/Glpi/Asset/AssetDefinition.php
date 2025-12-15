@@ -83,6 +83,9 @@ final class AssetDefinition extends AbstractDefinition
         return 'Asset';
     }
 
+    /**
+     * @return class-string<AssetDefinitionManager>
+     */
     public static function getDefinitionManagerClass(): string
     {
         return AssetDefinitionManager::class;
