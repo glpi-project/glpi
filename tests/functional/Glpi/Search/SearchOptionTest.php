@@ -65,42 +65,106 @@ class SearchOptionTest extends DbTestCase
         );
     }
 
-    public function testAllAssetsGroupInChargeSearchOption(): void
+    /**
+     * Test that AllAssets search results work correctly with Group in charge option (field 49)
+     */
+    public function testAllAssetsGroupInChargeSearchResults(): void
     {
         $this->login();
 
-        // Get search options for AllAssets
-        $search_options = \Search::getOptions('AllAssets');
+        // Create a technical group
+        $group = $this->createItem(
+            \Group::class,
+            [
+                'name'       => 'Test Tech Group ' . __FUNCTION__,
+                'is_assign'  => 1,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
 
-        // Verify that option 49 (Group in charge) exists and has correct structure
-        $this->assertArrayHasKey(49, $search_options);
+        // Create a computer
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                'name'        => 'Test Computer ' . __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
 
-        $group_option = $search_options[49];
+        // Assign the technical group to the computer
+        $this->createItem(
+            \Group_Item::class,
+            [
+                'groups_id'   => $group->getID(),
+                'itemtype'    => \Computer::class,
+                'items_id'    => $computer->getID(),
+                'type'        => \Group_Item::GROUP_TYPE_TECH,
+            ]
+        );
 
-        // Verify basic structure
-        $this->assertEquals('glpi_groups', $group_option['table']);
-        $this->assertEquals('completename', $group_option['field']);
-        $this->assertEquals('groups_id', $group_option['linkfield']);
-        $this->assertEquals(__('Group in charge'), $group_option['name']);
-        $this->assertEquals('dropdown', $group_option['datatype']);
+        // Test search by group ID - this should not throw SQL error
+        $result = \Search::getDatas(
+            \AllAssets::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 49, // Group in charge
+                        'searchtype' => 'equals',
+                        'value'      => $group->getID(),
+                    ],
+                ],
+                'forcetoview' => [1, 49], // Name and Group in charge
+            ]
+        );
 
-        // Verify it uses the new glpi_groups_items relationship structure
-        $this->assertArrayHasKey('joinparams', $group_option);
-        $this->assertArrayHasKey('beforejoin', $group_option['joinparams']);
+        // Verify we have results
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('rows', $result['data']);
+        $this->assertGreaterThan(0, $result['data']['totalcount']);
 
-        $beforejoin = $group_option['joinparams']['beforejoin'];
-        $this->assertEquals('glpi_groups_items', $beforejoin['table']);
-        $this->assertEquals('itemtype_item', $beforejoin['joinparams']['jointype']);
+        // Find our computer in the results
+        $found_computer = false;
+        foreach ($result['data']['rows'] as $row) {
+            if (isset($row['AllAssets_1']['displayname']) &&
+                strpos($row['AllAssets_1']['displayname'], 'Test Computer ' . __FUNCTION__) !== false) {
 
-        // Verify it targets GROUP_TYPE_TECH specifically
-        $this->assertArrayHasKey('condition', $beforejoin['joinparams']);
-        $condition = $beforejoin['joinparams']['condition'];
-        $this->assertArrayHasKey('NEWTABLE.type', $condition);
-        $this->assertEquals(\Group_Item::GROUP_TYPE_TECH, $condition['NEWTABLE.type']);
+                $found_computer = true;
 
-        // Verify additional configuration
-        $this->assertTrue($group_option['forcegroupby']);
-        $this->assertFalse($group_option['massiveaction']);
-        $this->assertEquals(['is_assign' => 1], $group_option['condition']);
+                // Verify the group is correctly displayed
+                $this->assertArrayHasKey('AllAssets_49', $row);
+                $this->assertStringContainsString(
+                    'Test Tech Group ' . __FUNCTION__,
+                    $row['AllAssets_49']['displayname']
+                );
+                break;
+            }
+        }
+
+        $this->assertTrue($found_computer, 'Computer with technical group should be found in AllAssets search results');
+
+        // Test search by group name - this should also work without SQL error
+        $result2 = \Search::getDatas(
+            \AllAssets::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 49, // Group in charge
+                        'searchtype' => 'contains',
+                        'value'      => 'Test Tech Group ' . __FUNCTION__,
+                    ],
+                ],
+                'forcetoview' => [1, 49],
+            ]
+        );
+
+        // This search should also return results
+        $this->assertArrayHasKey('data', $result2);
+        $this->assertArrayHasKey('rows', $result2['data']);
+        $this->assertGreaterThan(0, $result2['data']['totalcount']);
+
+        // Test regression: ensure no SQL error occurs during search
+        // The old bug would throw: "Unknown column 'glpi_computers.groups_id_tech' in 'field list'"
+        // If we reach this point, the SQL was successful
+        $this->assertTrue(true, 'Search completed without SQL error - fix is working');
     }
 }
