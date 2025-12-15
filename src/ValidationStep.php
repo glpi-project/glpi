@@ -58,7 +58,7 @@ class ValidationStep extends CommonDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if ($this->isDefault()) {
             $this->removeDefaultFromOthers();
@@ -67,7 +67,7 @@ class ValidationStep extends CommonDropdown
         parent::post_updateItem($history);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $is_input_valid = true;
         // name is mandatory
@@ -97,7 +97,7 @@ class ValidationStep extends CommonDropdown
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $is_input_valid = true;
 

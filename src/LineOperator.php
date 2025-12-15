@@ -87,7 +87,7 @@ class LineOperator extends CommonDropdown
         return $tab;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 

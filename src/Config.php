@@ -79,12 +79,12 @@ class Config extends CommonDBTM
     protected bool $displaylist         = false;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
     public bool $showdebug              = true;
 
     public static string $rightname              = 'config';
 
-    public static $undisclosedFields      = [
+    public static array $undisclosedFields      = [
         'proxy_passwd',
         'smtp_passwd',
         'smtp_oauth_client_id',
@@ -165,7 +165,7 @@ class Config extends CommonDBTM
         return $ong;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         global $CFG_GLPI;
 
@@ -446,7 +446,7 @@ class Config extends CommonDBTM
         return $input;
     }
 
-    public static function unsetUndisclosedFields(&$fields)
+    public static function unsetUndisclosedFields(array &$fields)
     {
         if (isset($fields['context']) && isset($fields['name'])) {
             if (
@@ -1514,7 +1514,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();
@@ -1697,7 +1697,7 @@ class Config extends CommonDBTM
         $this->logConfigChange($this->fields['context'], $this->fields['name'], (string) $this->fields['value'], '');
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI, $DB;
         // Check if password expiration mechanism has been activated

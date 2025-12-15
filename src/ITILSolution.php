@@ -42,7 +42,7 @@ use Glpi\ContentTemplates\TemplateManager;
 class ITILSolution extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     private ?CommonITILObject $item = null;
 
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
@@ -119,7 +119,7 @@ class ITILSolution extends CommonDBChild
         return $item->canSolve();
     }
 
-    public function canEdit($ID): bool
+    public function canEdit(int $ID): bool
     {
         return $this->item->maySolve();
     }
@@ -150,7 +150,7 @@ class ITILSolution extends CommonDBChild
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($this->isNewItem()) {
             $this->getEmpty();
@@ -186,7 +186,7 @@ class ITILSolution extends CommonDBChild
         );
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['users_id']) && !(Session::isCron() || str_contains($_SERVER['REQUEST_URI'] ?? '', 'crontask.form.php'))) {
             $input['users_id'] = Session::getLoginUserID();
@@ -348,7 +348,7 @@ class ITILSolution extends CommonDBChild
         parent::post_addItem();
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
@@ -366,7 +366,7 @@ class ITILSolution extends CommonDBChild
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -379,7 +379,7 @@ class ITILSolution extends CommonDBChild
      * {@inheritDoc}
      * @see CommonDBTM::getSpecificValueToDisplay()
      */
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -406,7 +406,7 @@ class ITILSolution extends CommonDBChild
      * {@inheritDoc}
      * @see CommonDBTM::getSpecificValueToSelect()
      */
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {

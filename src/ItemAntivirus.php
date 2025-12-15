@@ -43,7 +43,7 @@ class ItemAntivirus extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
 
 
@@ -259,7 +259,7 @@ class ItemAntivirus extends CommonDBChild
      *
      * @return bool TRUE if form is ok
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (isset($options['parent'])) {
             $options['itemtype'] = $options['parent']::class;
@@ -374,7 +374,7 @@ class ItemAntivirus extends CommonDBChild
         ]);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
 
@@ -385,7 +385,7 @@ class ItemAntivirus extends CommonDBChild
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
 

@@ -44,7 +44,7 @@ class ITILCategory extends CommonTreeDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public $can_be_translated  = true;
 
     public static string $rightname          = 'itilcategory';
@@ -366,7 +366,7 @@ class ITILCategory extends CommonTreeDropdown
         return -1;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
 
@@ -385,7 +385,7 @@ class ITILCategory extends CommonTreeDropdown
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
 

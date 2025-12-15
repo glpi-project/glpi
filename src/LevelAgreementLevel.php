@@ -168,7 +168,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         switch ($field) {
             case 'execution_time':
@@ -181,7 +181,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -404,7 +404,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         return abs($this->fields['execution_time']) >= DAY_TIMESTAMP;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         /** @var class-string<LevelAgreement> $parent_class */
         $parent_class = static::$parentclass;
@@ -535,7 +535,7 @@ TWIG, ['la_level' => $la_level]);
         ]);
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

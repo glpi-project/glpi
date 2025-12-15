@@ -46,8 +46,8 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     use DCBreadcrumb;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected $usenotepad               = true;
+    public bool $dohistory                   = true;
+    protected bool $usenotepad               = true;
     public static string $rightname                   = 'datacenter';
 
     public static function getTypeName(int $nb = 0)
@@ -78,7 +78,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -89,7 +89,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if ((int) ($input['vis_rows'] ?? 0) < 1) {
             Session::addMessageAfterRedirect(
@@ -112,7 +112,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $this->manageBlueprint($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['vis_rows']) && (int) ($input['vis_rows']) < 1) {
             Session::addMessageAfterRedirect(

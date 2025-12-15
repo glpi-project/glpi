@@ -76,12 +76,12 @@ class NetworkPortFiberchannel extends NetworkPortInstantiation
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return parent::prepareInputForAdd($this->prepareInput($input));
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return parent::prepareInputForUpdate($this->prepareInput($input));
     }
@@ -248,7 +248,7 @@ TWIG, $twig_params);
         return $tmp[$val] ?? self::transformPortSpeed($val, true);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -260,7 +260,7 @@ TWIG, $twig_params);
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

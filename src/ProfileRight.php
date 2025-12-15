@@ -46,7 +46,7 @@ class ProfileRight extends CommonDBChild
     // From CommonDBChild:
     public static $itemtype = 'Profile';
     public static $items_id = 'profiles_id'; // Field name
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     /**
      * {@inheritDoc}
@@ -303,7 +303,7 @@ class ProfileRight extends CommonDBChild
         $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Refresh session rights to avoid log out and login when rights change
         $this->updateProfileLastRightsUpdate($this->fields['profiles_id']);
@@ -324,13 +324,13 @@ class ProfileRight extends CommonDBChild
     }
 
     /**
-     * @since 085
-     *
-     * @param $field
-     * @param $values
+     * @param string $field
+     * @param array|string $values
      * @param $options   array
-     **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+     **@since 085
+     *
+     */
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         $itemtype = $options['searchopt']['rightclass'];

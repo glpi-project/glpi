@@ -176,14 +176,14 @@ abstract class FQDNLabel extends CommonDBChild
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareIPNetworkFromInput($input);
         return parent::prepareInputForAdd($this->prepareLabelInput($input));
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareIPNetworkFromInput($input);
         return parent::prepareInputForUpdate($this->prepareLabelInput($input));

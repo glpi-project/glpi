@@ -46,7 +46,7 @@ class ITILFollowup extends CommonDBChild
     use ITILSubItemRights;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
     public static string $rightname              = 'followup';
     private ?CommonITILObject $item = null;
 
@@ -376,7 +376,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
         if (
@@ -494,7 +494,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
             return false;
@@ -516,7 +516,7 @@ class ITILFollowup extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -874,7 +874,7 @@ class ITILFollowup extends CommonDBChild
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -890,7 +890,7 @@ class ITILFollowup extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -921,7 +921,7 @@ class ITILFollowup extends CommonDBChild
      *@param $options array of possible options:
      *     - item Object : the ITILObject parent
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($this->isNewItem()) {
             $this->getEmpty();

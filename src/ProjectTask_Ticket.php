@@ -59,7 +59,7 @@ class ProjectTask_Ticket extends CommonDBRelation
         return $forbidden;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (
             countElementsInTable(

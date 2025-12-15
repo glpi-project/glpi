@@ -38,7 +38,7 @@ use Glpi\DBAL\QueryFunction;
 /// Class DeviceMemory
 class DeviceMemory extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceMemory', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {
@@ -133,12 +133,12 @@ class DeviceMemory extends CommonDevice
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }

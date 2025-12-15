@@ -36,7 +36,7 @@
 /// Class DevicePowerSupply
 class DevicePowerSupply extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DevicePowerSupply', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {

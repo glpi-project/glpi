@@ -59,10 +59,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     use MapGeolocation;
 
     public $must_be_replace             = true;
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname            = 'entity';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public const READHELPDESK       = 1024;
     public const UPDATEHELPDESK     = 2048;
@@ -376,7 +376,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $tmp;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
         $input['name'] = isset($input['name']) ? trim($input['name']) : '';
@@ -430,7 +430,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         // Force entities_id = NULL for root entity
         if ((int) $input['id'] === 0) {
@@ -733,7 +733,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ((int) $ID === 0) {
             // Root entity: can edit but cannot delete
@@ -799,7 +799,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         $_SESSION['glpi_multientitiesmode'] = 1;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $GLPI_CACHE;
 
@@ -2532,7 +2532,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return Dropdown::showFromArray($p['name'], $tab, $p);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -2776,7 +2776,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -2895,7 +2895,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $values = parent::getRights();
         $values[self::READHELPDESK]   = ['short' => __('Read parameters'),

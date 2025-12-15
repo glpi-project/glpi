@@ -54,7 +54,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'datacenter';
 
     public function getCloneRelations(): array
@@ -113,7 +113,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/enclosure.html.twig', [
@@ -326,7 +326,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
         return $options;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {

@@ -45,7 +45,7 @@ class NotificationTemplateTranslation extends CommonDBChild
     public static $itemtype  = 'NotificationTemplate';
     public static $items_id  = 'notificationtemplates_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
 
     #[Override]
@@ -97,7 +97,7 @@ class NotificationTemplateTranslation extends CommonDBChild
     }
 
     #[Override]
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!Config::canUpdate()) {
             return false;
@@ -209,13 +209,13 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return parent::prepareInputForAdd(self::cleanContentHtml($input));
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return parent::prepareInputForUpdate(self::cleanContentHtml($input));
     }
@@ -235,7 +235,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, [

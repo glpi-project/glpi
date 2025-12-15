@@ -49,7 +49,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public static $items_id_2       = 'notificationtemplates_id';
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
-    public $no_form_page    = false;
+    public bool $no_form_page    = false;
     protected bool $displaylist  = false;
 
     public const MODE_MAIL      = 'mailing';
@@ -308,13 +308,13 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public function getName($options = [])
+    public function getName(array $options = [])
     {
         return (string) $this->getID();
     }
 
     #[Override]
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!Session::haveRight("notification", UPDATE)) {
             return false;
@@ -414,7 +414,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -433,7 +433,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

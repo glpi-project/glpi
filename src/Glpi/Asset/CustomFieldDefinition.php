@@ -128,7 +128,7 @@ final class CustomFieldDefinition extends CommonDBChild
         ]);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $options[self::$items_id] = $options['parent']->fields["id"];
         if (!self::isNewID($ID)) {
@@ -232,7 +232,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!$this->validateSystemName($input)) {
             return false;
@@ -252,7 +252,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         // Cannot change type or system_name of existing field
         if (
@@ -305,7 +305,7 @@ final class CustomFieldDefinition extends CommonDBChild
         $this->refreshAssetDefinition();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         parent::post_updateItem($history);
 
@@ -401,7 +401,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return $is_valid;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

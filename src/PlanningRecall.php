@@ -119,7 +119,7 @@ class PlanningRecall extends CommonDBChild
         ]);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $alert = new Alert();
         $alert->clear(static::class, $this->fields['id'], Alert::ACTION);
@@ -272,7 +272,7 @@ class PlanningRecall extends CommonDBChild
      *
      * @return void|false print out an HTML select box or return false if mandatory fields are not ok
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         // Default values
         $p['itemtype'] = '';

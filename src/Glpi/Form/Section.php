@@ -115,7 +115,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['uuid'])) {
             $input['uuid'] = Uuid::uuid4();
@@ -131,7 +131,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);

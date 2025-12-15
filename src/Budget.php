@@ -48,10 +48,10 @@ class Budget extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static string $rightname           = 'budget';
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
     public $can_be_translated = false;
 
@@ -133,7 +133,7 @@ class Budget extends CommonDropdown
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [
             'item' => $this,
@@ -145,7 +145,7 @@ class Budget extends CommonDropdown
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (isset($input["id"]) && ($input["id"] > 0)) {

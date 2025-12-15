@@ -46,7 +46,7 @@ class KnowbaseItemTranslation extends CommonDBChild
 {
     public static $itemtype = 'KnowbaseItem';
     public static $items_id = 'knowbaseitems_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
     public static $logs_for_parent = false;
 
     public static string $rightname       = 'knowbase';
@@ -245,7 +245,7 @@ TWIG, $twig_params);
      * @param int $ID
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm(int $ID = -1, array $options = [])
     {
         if (($ID <= 0 && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form

@@ -48,8 +48,8 @@ class RuleAction extends CommonDBChild
      */
     public static $itemtype        = Rule::class;
     public static $items_id        = 'rules_id';
-    public $dohistory              = true;
-    public $auto_message_on_action = false;
+    public bool $dohistory              = true;
+    public bool $auto_message_on_action = false;
 
 
     public function getForbiddenStandardMassiveAction()
@@ -133,7 +133,7 @@ class RuleAction extends CommonDBChild
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (empty($input['field'])) {
             return false;
@@ -178,7 +178,7 @@ class RuleAction extends CommonDBChild
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -226,7 +226,7 @@ class RuleAction extends CommonDBChild
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -684,7 +684,7 @@ class RuleAction extends CommonDBChild
         }
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         // Yllen: you always have parent for action
         $rule = $options['parent'];

@@ -92,7 +92,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return $connections > 0;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $peripheral = self::getItemFromArray(self::$itemtype_2, self::$items_id_2, $input);
 
@@ -254,9 +254,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
     }
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
         $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;

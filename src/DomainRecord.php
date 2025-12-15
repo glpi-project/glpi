@@ -50,7 +50,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     // From CommonDBChild
     public static $itemtype        = 'Domain';
     public static $items_id        = 'domains_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
     public static $mustBeAttached  = false;
 
     public static function getTypeName(int $nb = 0)
@@ -349,7 +349,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareGroupFields($input);
         if ($input === false) {
@@ -358,7 +358,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return $this->prepareInput($input, true);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareGroupFields($input);
         if ($input === false) {
@@ -381,7 +381,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         }
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);

@@ -1060,7 +1060,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         return $actions;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $values = parent::getRights();
         $values[self::PARENT] = [

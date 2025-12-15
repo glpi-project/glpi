@@ -45,7 +45,7 @@ abstract class CommonDropdown extends CommonDBTM
     use AssetImage;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * For delete operation (entity will overload this value)
@@ -241,7 +241,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @see CommonDBTM::prepareInputForAdd()
      **/
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 
@@ -278,7 +278,7 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @see CommonDBTM::prepareInputForUpdate()
      **/
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         //add a "metadata to find if we're on an update or a add
         $input['_is_update'] = true;
@@ -292,7 +292,7 @@ abstract class CommonDropdown extends CommonDBTM
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->addFilesFromRichText();
 
@@ -342,7 +342,7 @@ abstract class CommonDropdown extends CommonDBTM
     }
 
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
 
         if (!$this->isNewID($ID)) {
@@ -829,7 +829,7 @@ abstract class CommonDropdown extends CommonDBTM
         return ($add ? $this->import($input) : $this->findID($input));
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

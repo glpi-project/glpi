@@ -231,7 +231,7 @@ class DomainRecordType extends CommonDropdown
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!array_key_exists('fields', $input)) {
             $input['fields'] = '[]';
@@ -246,7 +246,7 @@ class DomainRecordType extends CommonDropdown
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (array_key_exists('fields', $input)) {
             $input['fields'] = Toolbox::cleanNewLines($input['fields']);
@@ -258,7 +258,7 @@ class DomainRecordType extends CommonDropdown
         return parent::prepareInputForUpdate($input);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 

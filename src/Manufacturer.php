@@ -127,7 +127,7 @@ class Manufacturer extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
 
         $this->post_workOnItem();

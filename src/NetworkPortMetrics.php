@@ -43,7 +43,7 @@ class NetworkPortMetrics extends CommonDBChild
 {
     public static $itemtype        = 'NetworkPort';
     public static $items_id        = 'networkports_id';
-    public $dohistory              = false;
+    public bool $dohistory              = false;
 
     public static function getTypeName(int $nb = 0)
     {

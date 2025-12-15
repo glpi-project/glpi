@@ -49,10 +49,10 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
     use AssignableItem;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname                   = 'line';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -108,7 +108,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/line.html.twig', [
@@ -248,7 +248,7 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
         return "ti ti-phone-calling";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
+    public static function getMassiveActionsForItemtype(array &$actions, string $itemtype, bool $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
         global $CFG_GLPI;
 

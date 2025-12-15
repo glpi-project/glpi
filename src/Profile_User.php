@@ -42,7 +42,7 @@ use Glpi\DBAL\QuerySubQuery;
 class Profile_User extends CommonDBRelation
 {
     // From CommonDBTM
-    public $auto_message_on_action               = false;
+    public bool $auto_message_on_action               = false;
 
     // From CommonDBRelation
     public static $itemtype_1                    = User::class;
@@ -98,7 +98,7 @@ class Profile_User extends CommonDBRelation
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // TODO: check if the entities should not be inherited from the profile or the user
         $valid_entity = isset($input['entities_id']) && $input['entities_id'] >= 0;

@@ -151,7 +151,7 @@ class Item_Cluster extends CommonDBRelation
         return true;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $DB;
 
@@ -190,12 +190,12 @@ TWIG, $twig_params);
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }

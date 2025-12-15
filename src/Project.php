@@ -59,10 +59,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ProjectCost', 'ProjectTask'];
     public static string $rightname                   = 'project';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public const READMY                        = 1;
     public const READALL                       = 1024;
@@ -132,7 +132,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return Session::haveRight(self::$rightname, CREATE);
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $values = parent::getRights();
         unset($values[READ]);
@@ -258,7 +258,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return false;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -1235,7 +1235,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return $data;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
@@ -1249,7 +1249,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
@@ -1372,7 +1372,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $plugin = new Plugin();
@@ -1388,7 +1388,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
         return true;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -1399,7 +1399,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
         };
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

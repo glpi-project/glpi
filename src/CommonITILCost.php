@@ -44,7 +44,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 abstract class CommonITILCost extends CommonDBChild
 {
-    public $dohistory        = true;
+    public bool $dohistory        = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -409,7 +409,7 @@ abstract class CommonITILCost extends CommonDBChild
      * @param int $ID ID of the item
      * @param array $options options used
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form

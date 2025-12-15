@@ -55,9 +55,9 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         post_updateItem as post_updateItemAssignableItem;
     }
 
-    public $dohistory           = true;
+    public bool $dohistory           = true;
     public static string $rightname           = "certificate";
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
     public function getCloneRelations(): array
     {
@@ -515,7 +515,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return $ong;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -541,7 +541,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
 
@@ -574,7 +574,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return true;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -854,7 +854,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END]);

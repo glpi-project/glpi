@@ -82,7 +82,7 @@ class Event extends CommonDBTM
         return $menu;
     }
 
-    public function add(array $input, $options = [], $history = true)
+    public function add(array $input, array $options = [], bool $history = true)
     {
         throw new RuntimeException(
             \sprintf(
@@ -92,12 +92,12 @@ class Event extends CommonDBTM
         );
     }
 
-    public function update(array $input, $history = true, $options = [])
+    public function update(array $input, bool $history = true, array $options = [])
     {
         throw new RuntimeException('Events cannot be updated.');
     }
 
-    public function delete(array $input, $force = false, $history = true)
+    public function delete(array $input, bool $force = false, bool $history = true)
     {
         throw new RuntimeException('Events cannot be deleted.');
     }
@@ -533,7 +533,7 @@ class Event extends CommonDBTM
         return array_column(iterator_to_array($data), 'type');
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if ($field === 'service') {
             $value = $values['service'];
@@ -559,7 +559,7 @@ class Event extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if ($field === 'service') {
             $value = $values['service'];
@@ -645,7 +645,7 @@ class Event extends CommonDBTM
         return null;
     }
 
-    public function getRights($interface = 'central'): array
+    public function getRights(string $interface = 'central'): array
     {
         return [ READ => __('Read')];
     }

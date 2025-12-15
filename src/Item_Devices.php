@@ -56,7 +56,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     public static $take_entity_1         = false;
     // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
-    protected static $notable            = true;
+    protected static bool $notable            = true;
 
     public static $logs_for_item_2       = false;
     public static $take_entity_2         = true;
@@ -68,13 +68,13 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     public static $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
     // This var is defined by CommonDBRelation ...
-    public $no_form_page                 = false;
+    public bool $no_form_page                 = false;
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    protected static $forward_entity_to  = ['Infocom'];
+    protected static array $forward_entity_to  = ['Infocom'];
 
-    public static $undisclosedFields      = [];
+    public static array $undisclosedFields      = [];
 
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
@@ -331,7 +331,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return $options;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -358,7 +358,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -1447,7 +1447,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     }
 
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();
@@ -1486,7 +1486,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!$this->isNewID($ID)) {
             $this->check($ID, READ);
@@ -1571,7 +1571,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $CFG_GLPI;
 
@@ -1620,7 +1620,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         foreach (static::getSpecificities() as $field => $attributs) {
             if (!isset($attributs['right'])) {
@@ -1637,7 +1637,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         return $input;
     }
 
-    public static function unsetUndisclosedFields(&$fields)
+    public static function unsetUndisclosedFields(array &$fields)
     {
         foreach (static::getSpecificities() as $key => $attributs) {
             if (isset($attributs['right'])) {

@@ -100,7 +100,7 @@ class Holiday extends CommonDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         $input = parent::prepareInputForAdd($input);
@@ -116,7 +116,7 @@ class Holiday extends CommonDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         $input = parent::prepareInputForUpdate($input);
@@ -132,7 +132,7 @@ class Holiday extends CommonDropdown
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
 
         $this->invalidateCalendarHolidayCache();

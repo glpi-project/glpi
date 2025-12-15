@@ -90,12 +90,11 @@ class QueuedWebhook extends CommonDBChild
     }
 
     /**
-     * @param CommonDBTM $checkitem
-     * @param bool $is_deleted
+     * @param CommonDBTM|null $checkitem
      *
      * @return array
      */
-    public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -131,7 +130,7 @@ class QueuedWebhook extends CommonDBChild
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 
@@ -474,7 +473,7 @@ JS);
         return $badge;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         // For last_status_code field, we want to display a badge element
         if (!is_array($values)) {
@@ -489,7 +488,7 @@ JS);
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $webhook = new Webhook();
         $webhook->getFromDB($this->fields['webhooks_id']);

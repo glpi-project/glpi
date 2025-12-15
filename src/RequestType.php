@@ -182,7 +182,7 @@ class RequestType extends CommonDropdown
     /**
      * @see CommonDBTM::post_updateItem()
      **/
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
         $update = [];

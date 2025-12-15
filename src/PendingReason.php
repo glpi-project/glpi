@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class PendingReason extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBTM
     public $can_be_translated = true;
@@ -309,7 +309,7 @@ class PendingReason extends CommonDropdown
         }
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if ($field == 'followup_frequency') {
             if ($values[$field] == 0) {
@@ -326,7 +326,7 @@ class PendingReason extends CommonDropdown
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if ($field == 'followup_frequency') {
@@ -407,12 +407,12 @@ class PendingReason extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }

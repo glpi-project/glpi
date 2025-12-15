@@ -38,7 +38,7 @@ class Item_RemoteManagement extends CommonDBChild
 {
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
 
     public const TEAMVIEWER = 'teamviewer';
     public const LITEMANAGER = 'litemanager';
@@ -266,7 +266,7 @@ class Item_RemoteManagement extends CommonDBChild
     }
 
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {

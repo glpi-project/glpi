@@ -47,7 +47,7 @@ use Glpi\DBAL\QueryFunction;
 /// @since 0.84
 class IPNetwork extends CommonImplicitTreeDropdown
 {
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'internet';
 
@@ -429,7 +429,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         $preparedInput = $this->prepareInput($input);
@@ -447,7 +447,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         $preparedInput = $this->prepareInput($input);
@@ -479,7 +479,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
 
         if ($this->networkUpdate) {

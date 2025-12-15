@@ -3775,7 +3775,7 @@ final class Transfer extends CommonDBTM
         }
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $edit_form = true;
         $referer_url = Html::getRefererUrl();

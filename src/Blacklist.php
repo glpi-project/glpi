@@ -48,7 +48,7 @@ class Blacklist extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'config';
 
@@ -139,7 +139,7 @@ class Blacklist extends CommonDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (
@@ -164,7 +164,7 @@ class Blacklist extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -179,7 +179,7 @@ class Blacklist extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {

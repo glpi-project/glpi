@@ -62,7 +62,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBChild
     public static $itemtype     = 'Project';
@@ -71,7 +71,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
     protected $team             = [];
     public static string $rightname    = 'projecttask';
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
     /** @var bool */
     public $can_be_translated   = true;
@@ -199,7 +199,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         parent::cleanDBonPurge();
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $values = parent::getRights();
         unset($values[READ], $values[CREATE], $values[UPDATE]);
@@ -235,7 +235,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $this->fields['percent_done'] = 0;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI, $DB;
 
@@ -477,7 +477,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['auto_percent_done']) && $input['auto_percent_done']) {
             unset($input['percent_done']);
@@ -538,7 +538,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         return Project::checkPlanAndRealDates($input);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['projects_id']) || (int) $input['projects_id'] === 0) {
             Session::addMessageAfterRedirect(
@@ -769,7 +769,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return bool True if displayed, false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);

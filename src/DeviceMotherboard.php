@@ -36,7 +36,7 @@
 /// Class DeviceMotherboard
 class DeviceMotherboard extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceMotherboard', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceMotherboard', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {

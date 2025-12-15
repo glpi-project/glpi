@@ -48,8 +48,8 @@ use Glpi\Team\Team;
 class ProjectTeam extends CommonDBRelation
 {
     // From CommonDBTM
-    public $dohistory                  = true;
-    public $no_form_page               = true;
+    public bool $dohistory                  = true;
+    public bool $no_form_page               = true;
 
     // From CommonDBRelation
     public static $itemtype_1          = 'Project';

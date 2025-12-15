@@ -263,7 +263,7 @@ class NetworkPort_NetworkPort extends CommonDBRelation
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (
             $this->getFromDBForNetworkPort($input['networkports_id_1'])

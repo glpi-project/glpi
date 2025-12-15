@@ -66,7 +66,7 @@ class Item_Project extends CommonDBRelation
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         // Avoid duplicate entry

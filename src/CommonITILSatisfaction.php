@@ -42,8 +42,8 @@ use function Safe\strtotime;
 
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
-    public $dohistory         = true;
-    public $history_blacklist = ['date_answered'];
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_answered'];
 
     /**
      * Survey is done internally
@@ -183,7 +183,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
             $input["date_answered"] = $_SESSION["glpi_currenttime"];
@@ -240,7 +240,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      *
      * @return void
      */
-    public function post_UpdateItem($history = true)
+    public function post_UpdateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -325,7 +325,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -338,7 +338,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {

@@ -56,12 +56,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
+    protected static array $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
 
     public static string $rightname                   = 'software';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -145,7 +145,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return $ong;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['is_update']) && !$input['is_update']) {
             $input['softwares_id'] = 0;
@@ -154,7 +154,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return $this->prepareInputForUpdateAssignableItem($input);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input['is_update']) && !$input['is_update']) {
             $input['softwares_id'] = 0;
@@ -216,7 +216,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         }
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/software.html.twig', [
@@ -238,7 +238,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         return true;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

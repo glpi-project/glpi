@@ -176,7 +176,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->adaptTreeFieldsFromUpdateOrAdd($input);
     }
@@ -213,7 +213,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         global $GLPI_CACHE;
 
@@ -400,7 +400,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
 
         $ID           = $this->getID();
@@ -676,7 +676,7 @@ TWIG, $twig_params);
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

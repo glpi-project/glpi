@@ -99,7 +99,7 @@ class Reservation extends CommonDBChild
         return true;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         // Save fields
         $oldfields             = $this->fields;
@@ -121,7 +121,7 @@ class Reservation extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -136,7 +136,7 @@ class Reservation extends CommonDBChild
         parent::post_updateItem($history);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // Error on previous added reservation on several add
         if (isset($input['_ok']) && !$input['_ok']) {
@@ -778,7 +778,7 @@ class Reservation extends CommonDBChild
      *      <li>end: planning end (should be an ISO_8601 date, but could be anything that can be parsed by strtotime)</li>
      *  </ul>
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -1261,7 +1261,7 @@ JAVASCRIPT;
         return "ti ti-calendar-event";
     }
 
-    public static function getMassiveActionsForItemtype(array &$actions, $itemtype, $is_deleted = false, ?CommonDBTM $checkitem = null)
+    public static function getMassiveActionsForItemtype(array &$actions, string $itemtype, bool $is_deleted = false, ?CommonDBTM $checkitem = null)
     {
         global $CFG_GLPI;
 

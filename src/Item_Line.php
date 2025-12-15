@@ -418,17 +418,17 @@ class Item_Line extends CommonDBRelation
         ]);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         return false;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }

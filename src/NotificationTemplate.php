@@ -49,7 +49,7 @@ class NotificationTemplate extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     /**
      * @var string Signature to add to the template
@@ -125,7 +125,7 @@ class NotificationTemplate extends CommonDBTM
     }
 
     #[Override]
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!Config::canUpdate()) {
             return false;

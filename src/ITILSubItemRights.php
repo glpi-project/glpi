@@ -47,7 +47,7 @@ trait ITILSubItemRights
 
     public const SEEPRIVATEGROUPS         = 65536;
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();

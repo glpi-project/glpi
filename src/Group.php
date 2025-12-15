@@ -46,11 +46,11 @@ class Group extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     public static string $rightname       = 'group';
 
-    protected $usenotepad  = true;
+    protected bool $usenotepad  = true;
 
 
     public function getCloneRelations(): array
@@ -222,7 +222,7 @@ class Group extends CommonTreeDropdown
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/admin/group.html.twig', [
             'item' => $this,
@@ -243,7 +243,7 @@ class Group extends CommonTreeDropdown
         return $links;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -872,7 +872,7 @@ class Group extends CommonTreeDropdown
         ) > 0;
     }
 
-    public function getName($options = [])
+    public function getName(array $options = [])
     {
         if (
             Session::getCurrentInterface() === 'helpdesk'
@@ -942,7 +942,7 @@ class Group extends CommonTreeDropdown
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         parent::post_updateItem($history);
         // Changing a group's parent might invalidate the group cache if recursive

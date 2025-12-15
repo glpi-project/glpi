@@ -38,7 +38,7 @@ class DomainRelation extends CommonDropdown
     public const BELONGS = 1;
     public const MANAGE = 2;
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'dropdown';
 
     /** @var array */

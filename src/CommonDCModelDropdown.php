@@ -44,7 +44,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $additional_fields_for_dictionnary = ['manufacturer'];
+    public array $additional_fields_for_dictionnary = ['manufacturer'];
 
 
     public static function getFieldLabel()
@@ -197,7 +197,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $options;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -283,12 +283,12 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return false;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->managePictures($input);
         $input = $this->checkForRackIssues($input);
@@ -296,7 +296,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->updateRackItemsHorizontalPosition();
     }

@@ -204,12 +204,12 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }

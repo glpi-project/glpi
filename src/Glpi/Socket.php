@@ -60,7 +60,7 @@ class Socket extends CommonDBChild
     public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public static string $rightname          = 'cable_management';
     /** @var bool */
     public $can_be_translated  = false;
@@ -115,7 +115,7 @@ class Socket extends CommonDBChild
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $itemtype = null;
         if (!empty($options['_add_fromitem'])) {
@@ -148,7 +148,7 @@ class Socket extends CommonDBChild
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (empty($input['items_id'])) {
             unset($input['itemtype'], $input['items_id']);
@@ -157,7 +157,7 @@ class Socket extends CommonDBChild
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['items_id']) && empty($input['items_id'])) {
             unset($input['itemtype'], $input['items_id']);
@@ -463,16 +463,16 @@ class Socket extends CommonDBChild
     }
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
+     * @param string $field
+     * @param string $name (default '')
+     * @param array|string $values          (default '')
      * @param array $options   array
      *
      * @return string
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -495,13 +495,13 @@ class Socket extends CommonDBChild
     }
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
+     * @param string $field
+     * @param array|string $values
      * @param array $options
-     **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -567,7 +567,7 @@ class Socket extends CommonDBChild
         $this->cleanIfStealNetworkPort();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->cleanIfStealNetworkPort();
     }

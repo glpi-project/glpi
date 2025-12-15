@@ -41,7 +41,7 @@ class Item_DeviceCase extends Item_Devices
     public static $itemtype_2 = 'DeviceCase';
     public static $items_id_2 = 'devicecases_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')

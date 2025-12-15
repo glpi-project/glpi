@@ -39,12 +39,12 @@
 class UserEmail extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     // From CommonDBChild
     public static $itemtype        = 'User';
     public static $items_id        = 'users_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -292,7 +292,7 @@ class UserEmail extends CommonDBChild
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!$this->checkInputEmailValidity($input)) {
             return false;
@@ -306,7 +306,7 @@ class UserEmail extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (!$this->checkInputEmailValidity($input)) {
             return false;
@@ -341,7 +341,7 @@ class UserEmail extends CommonDBChild
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 

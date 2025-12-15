@@ -44,7 +44,7 @@ class DisplayPreference extends CommonDBTM
     public bool $get_item_to_display_tab = false;
 
     // From CommonDBTM
-    public $auto_message_on_action  = false;
+    public bool $auto_message_on_action  = false;
 
     protected bool $displaylist          = false;
 
@@ -131,7 +131,7 @@ class DisplayPreference extends CommonDBTM
         return __('Search result display');
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 
@@ -724,7 +724,7 @@ class DisplayPreference extends CommonDBTM
         return false;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         //TRANS: short for : Search result user display
         $values[self::PERSONAL]  = ['short' => __('User display'),

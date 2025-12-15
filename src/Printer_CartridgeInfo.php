@@ -41,7 +41,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 {
     public static $itemtype        = 'Printer';
     public static $items_id        = 'printers_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
 
     public static function getTypeName(int $nb = 0)
     {
@@ -208,7 +208,7 @@ HTML;
         return $tab;
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
@@ -250,7 +250,7 @@ TWIG, $twig_params);
         return null;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         $printer = new Printer();
         if (str_starts_with($field, '_virtual_')) {

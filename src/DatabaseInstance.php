@@ -50,10 +50,10 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname            = 'database';
-    protected $usenotepad               = true;
-    protected static $forward_entity_to = ['Database'];
+    protected bool $usenotepad               = true;
+    protected static array $forward_entity_to = ['Database'];
 
     public function getCloneRelations(): array
     {
@@ -130,7 +130,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return $dbs;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/management/databaseinstance.html.twig', [
             'item' => $this,
@@ -142,7 +142,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -337,7 +337,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {

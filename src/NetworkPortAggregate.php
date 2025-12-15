@@ -46,7 +46,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation
         return __('Aggregation port');
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if ((isset($input['networkports_id_list']))) {
             $input['networkports_id_list'] = exportArrayToDB(
@@ -56,7 +56,7 @@ class NetworkPortAggregate extends NetworkPortInstantiation
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if ((isset($input['networkports_id_list']))) {
             $input['networkports_id_list'] = exportArrayToDB(

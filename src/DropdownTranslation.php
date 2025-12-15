@@ -45,7 +45,7 @@ class DropdownTranslation extends CommonDBChild
 {
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
     public static string $rightname       = 'dropdown';
 
 
@@ -89,7 +89,7 @@ class DropdownTranslation extends CommonDBChild
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if ($this->checkBeforeAddorUpdate($input, true)) {
             return $input;
@@ -102,7 +102,7 @@ class DropdownTranslation extends CommonDBChild
         return false;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if ($this->checkBeforeAddorUpdate($input, false)) {
             return $input;
@@ -146,7 +146,7 @@ class DropdownTranslation extends CommonDBChild
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if (!isset($this->input['_no_completename'])) {
             $translation = new self();
@@ -439,7 +439,7 @@ TWIG, $twig_params);
      * @param int $ID       field (default -1)
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm(int $ID = -1, array $options = [])
     {
         if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {
             // parent is mandatory

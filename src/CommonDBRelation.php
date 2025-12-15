@@ -107,7 +107,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     public static $check_entity_coherency = true;
 
     /** @var bool */
-    public $no_form_page                  = true;
+    public bool $no_form_page                  = true;
 
     /**
      * Search option number to use in parent item log.
@@ -710,7 +710,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
 
-    public function addNeededInfoToInput($input)
+    public function addNeededInfoToInput(array $input)
     {
 
         // is entity missing and forwarding on ?
@@ -751,7 +751,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (!is_array($input)) {
@@ -762,7 +762,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (!is_array($input)) {
@@ -880,7 +880,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
 
         if (
@@ -2174,7 +2174,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function check($ID, int $right, ?array &$input = null): void
+    public function check(int $ID, int $right, ?array &$input = null): void
     {
         $error_types = [];
         $required_fields = [];

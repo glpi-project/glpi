@@ -52,7 +52,7 @@ class KnowbaseItem_Item extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
 
     public static function getTypeName(int $nb = 0)
     {
@@ -277,9 +277,9 @@ class KnowbaseItem_Item extends CommonDBRelation
     }
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
 
@@ -301,7 +301,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         return KnowbaseItem::getIcon();
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -320,7 +320,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

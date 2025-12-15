@@ -59,7 +59,7 @@ use function Safe\unlink;
 class CronTask extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     // Specific ones
     private static string $lockname = '';
@@ -605,7 +605,7 @@ class CronTask extends CommonDBTM
      *
      * @return bool
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!Config::canView() || !$this->getFromDB($ID)) {
             return false;
@@ -1301,7 +1301,7 @@ TWIG, ['msg' => __('Last run list')]);
         ]);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -1323,7 +1323,7 @@ TWIG, ['msg' => __('Last run list')]);
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -1335,7 +1335,7 @@ TWIG, ['msg' => __('Last run list')]);
         };
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

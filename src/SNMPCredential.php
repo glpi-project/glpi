@@ -42,7 +42,7 @@ use Glpi\Inventory\Inventory;
 class SNMPCredential extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname = 'snmpcredential';
 
     public static function getTypeName(int $nb = 0)
@@ -114,7 +114,7 @@ class SNMPCredential extends CommonDBTM
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         // warning and no form if can't read keyfile,
         // only version 3 is impacted but it's better to always show the warning & forbid form display
@@ -245,7 +245,7 @@ class SNMPCredential extends CommonDBTM
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
         if (!$this->checkRequiredFields($input)) {
@@ -254,7 +254,7 @@ class SNMPCredential extends CommonDBTM
         return $this->prepareInputs($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
         if (!$this->checkRequiredFields($input)) {

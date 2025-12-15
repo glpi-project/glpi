@@ -1414,7 +1414,7 @@ class Log extends CommonDBTM
         $_SESSION['glpi_maxhistory'] = $this->fields['id'];
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = [ READ => __('Read')];

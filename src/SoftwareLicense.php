@@ -59,12 +59,12 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     /// TODO move to CommonDBChild ?
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom'];
+    protected static array $forward_entity_to = ['Infocom'];
 
     public static string $rightname                   = 'license';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
 
     public function getCloneRelations(): array
@@ -101,7 +101,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -128,7 +128,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -212,7 +212,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         Software::updateValidityIndicator($this->fields["softwares_id"]);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->post_updateItemAssignableItem($history);
         if (in_array("is_valid", $this->updates, true)) {
@@ -254,7 +254,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $softwares_id = $options['softwares_id'] ?? -1;
 
@@ -939,7 +939,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return $result['numsum'] ?: 0;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {

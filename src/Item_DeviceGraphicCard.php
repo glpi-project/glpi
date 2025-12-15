@@ -41,7 +41,7 @@ class Item_DeviceGraphicCard extends Item_Devices
     public static $itemtype_2 = 'DeviceGraphicCard';
     public static $items_id_2 = 'devicegraphiccards_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')

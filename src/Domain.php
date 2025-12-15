@@ -49,15 +49,15 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     }
 
     public static string $rightname = 'domain';
-    protected static $forward_entity_to = ['DomainRecord'];
+    protected static array $forward_entity_to = ['DomainRecord'];
 
     /** @var bool */
     public $can_be_translated = false;
 
-    public $dohistory        = true;
+    public bool $dohistory        = true;
     /** @var bool */
     protected $usenotepadrights = true;
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
     /** @var string */
     public static $tags             = '[DOMAIN_NAME]';
 
@@ -361,7 +361,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -370,7 +370,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -447,7 +447,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $out;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -821,7 +821,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $types;
     }
 
-    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $extra_data = [])
+    public static function generateLinkContents(string $link, CommonDBTM $item, bool $safe_url = true)
     {
         return Link::generateLinkContents(
             $link,
@@ -918,7 +918,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return "ti ti-world-www";
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END, Alert::NOTICE]);

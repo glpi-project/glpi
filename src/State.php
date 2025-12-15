@@ -293,7 +293,7 @@ class State extends CommonTreeDropdown
         Rule::cleanForItemCriteria($this, '_states_id%');
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['states_id'])) {
             $input['states_id'] = 0;
@@ -338,7 +338,7 @@ class State extends CommonTreeDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $state_visibility = new DropdownVisibility();
         foreach ($this->getvisibilityFields() as $itemtype => $field) {
@@ -737,7 +737,7 @@ class State extends CommonTreeDropdown
         return $tab;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (!$this->isUnique($input)) {
             Session::addMessageAfterRedirect(

@@ -57,14 +57,14 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_SoftwareVersion',
     ];
 
     public static string $rightname                   = 'peripheral';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -149,7 +149,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
@@ -189,7 +189,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
         return $tab;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

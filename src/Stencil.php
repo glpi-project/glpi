@@ -56,7 +56,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         return 'ti ti-shape';
     }
 
-    public static function getTable($classname = null): string
+    public static function getTable(string $classname = null): string
     {
         return 'glpi_stencils';
     }
@@ -192,7 +192,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         return 256;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // Check if the "nb_zones" property is set
         if (!isset($input['nb_zones'])) {

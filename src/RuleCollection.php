@@ -99,7 +99,7 @@ class RuleCollection extends CommonDBTM
      */
     public string $taborientation = 'horizontal';
 
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         return parent::getTable('Rule');
     }

@@ -106,9 +106,9 @@ final class Form extends CommonDBTM implements
 
     public static string $rightname = 'form';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'date_mod',
     ];
 
@@ -169,14 +169,14 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function showForm($id, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
-        if (!empty($id)) {
-            $this->getFromDB($id);
+        if (!empty($ID)) {
+            $this->getFromDB($ID);
         } else {
             $this->getEmpty();
         }
-        $this->initForm($id, $options);
+        $this->initForm($ID, $options);
 
         $types_manager = QuestionTypesManager::getInstance();
 
@@ -341,7 +341,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['uuid'])) {
             $input['uuid'] = Uuid::uuid4();
@@ -357,7 +357,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function prepareInputForUpdate($input): array
+    public function prepareInputForUpdate(array $input): array
     {
         // Insert date_mod even if the framework would handle it by itself
         // This avoid "empty" updates when the form itself is not modified but
@@ -381,7 +381,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 
@@ -420,7 +420,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function getSpecificMassiveActions($checkitem = null): array
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null): array
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

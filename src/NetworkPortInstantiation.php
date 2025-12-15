@@ -56,12 +56,12 @@ use Glpi\Toolbox\ArrayPathAccessor;
 class NetworkPortInstantiation extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action   = false;
+    public bool $auto_message_on_action   = false;
 
     // From CommonDBChild
     public static $itemtype       = NetworkPort::class;
     public static $items_id       = 'networkports_id';
-    public $dohistory             = false;
+    public bool $dohistory             = false;
 
     // Instantiation properties
     /** @var bool */
@@ -106,12 +106,12 @@ class NetworkPortInstantiation extends CommonDBChild
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return parent::prepareInputForAdd($this->prepareInput($input));
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return parent::prepareInputForUpdate($this->prepareInput($input));
     }
@@ -121,7 +121,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $this->manageSocket();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->manageSocket();
     }

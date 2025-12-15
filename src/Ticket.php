@@ -59,8 +59,8 @@ use function Safe\strtotime;
 class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = [TicketValidation::class, TicketCost::class];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = [TicketValidation::class, TicketCost::class];
 
     // From CommonITIL
     public $userlinkclass               = Ticket_User::class;
@@ -328,7 +328,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function canMassiveAction($action, $field, $value)
+    public function canMassiveAction(string $action, int $field, string $value)
     {
 
         switch ($action) {
@@ -936,7 +936,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->transformActorsInput($input);
 
@@ -1391,7 +1391,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -1521,7 +1521,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // Standard clean datas
         $input =  parent::prepareInputForAdd($input);
@@ -2138,7 +2138,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         return $request;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
 
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -3203,7 +3203,7 @@ JAVASCRIPT;
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -3231,7 +3231,7 @@ JAVASCRIPT;
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -3586,7 +3586,7 @@ JAVASCRIPT;
     }
 
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         // show full create form only to tech users
         if ($ID <= 0 && Session::getCurrentInterface() !== "central") {
@@ -5304,7 +5304,7 @@ JAVASCRIPT;
      *
      * @see commonDBTM::getRights()
      **/
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();
@@ -5407,7 +5407,7 @@ JAVASCRIPT;
      *
      * @since 9.1
      */
-    public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
+    public function getValueToSelect(int|array|string $field_id_or_search_options, string $name = '', mixed|string $values = '', array $options = [])
     {
         if (isset($field_id_or_search_options['linkfield'])) {
             switch ($field_id_or_search_options['linkfield']) {

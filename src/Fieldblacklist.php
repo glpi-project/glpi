@@ -128,7 +128,7 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -158,14 +158,14 @@ class Fieldblacklist extends CommonDropdown
 
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
+     * @param string $field
+     * @param string $name (default '')
+     * @param array|string $values             (default '')
      * @param $options      array
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -202,7 +202,7 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         $input = parent::prepareInputForAdd($input);
@@ -210,7 +210,7 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         $input = parent::prepareInputForUpdate($input);

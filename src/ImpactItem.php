@@ -83,7 +83,7 @@ class ImpactItem extends CommonDBTM
         return $impact_item;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $max_depth = $input['max_depth'] ?? 0;
 

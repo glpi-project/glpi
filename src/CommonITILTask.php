@@ -56,7 +56,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     use ITILSubItemRights;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     public static string $rightname = 'task';
 
@@ -306,13 +306,13 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
+     * @param string $field
+     * @param array|string $values
      * @param $options   array
-     **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -332,16 +332,16 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     }
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
+     * @param string $field
+     * @param string $name            (default '')
+     * @param array|string $values          (default '')
      * @param $options   array
      *
      * @return string
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -482,7 +482,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (array_key_exists('content', $input) && empty($input['content'])) {
             Session::addMessageAfterRedirect(
@@ -575,7 +575,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -658,7 +658,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         parent::post_updateItem($history);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         // Handle template
@@ -1673,12 +1673,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
     /** form for Task
      *
-     * @param int   $ID      Id of the task
+     * @param int $ID      Id of the task
      * @param array $options [parent Object : the object]
      *
      * @return true
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_task.html.twig', [
             'item'               => $options['parent'],

@@ -36,7 +36,7 @@
 /// Class DeviceBatteryModel
 class DeviceBatteryModel extends CommonDeviceModel
 {
-    public $additional_fields_for_dictionnary = ['manufacturer'];
+    public array $additional_fields_for_dictionnary = ['manufacturer'];
 
     public static function getTypeName(int $nb = 0)
     {

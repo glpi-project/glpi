@@ -52,7 +52,7 @@ class SoftwareLicense_User extends CommonDBRelation
 
     public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (
             !isset($input['softwarelicenses_id'])

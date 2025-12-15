@@ -46,7 +46,7 @@ class Alert extends CommonDBTM
     public const ACTION      = 5;
     public const PERIODICITY = 6;
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (!isset($input['date']) || empty($input['date'])) {
@@ -88,7 +88,7 @@ class Alert extends CommonDBTM
         return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], true);
     }
 
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
 
         $p = [

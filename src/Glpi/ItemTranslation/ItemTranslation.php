@@ -55,13 +55,13 @@ abstract class ItemTranslation extends CommonDBChild
     public static $items_id = 'items_id';
 
     #[Override]
-    public function prepareInputForAdd($input): array
+    public function prepareInputForAdd(array $input): array
     {
         return $this->prepapreInput($input);
     }
 
     #[Override]
-    public function prepareInputForUpdate($input): array
+    public function prepareInputForUpdate(array $input): array
     {
         return $this->prepapreInput($input);
     }

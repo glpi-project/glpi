@@ -63,7 +63,7 @@ class Agent extends CommonDBTM
     public const ACTION_INVENTORY = 'inventory';
 
     /** @var bool */
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     /** @var string */
     public static string $rightname = 'agent';
@@ -72,7 +72,7 @@ class Agent extends CommonDBTM
     /** @var bool */
     private static $found_address = false;
 
-    public $history_blacklist = ['last_contact'];
+    public array $history_blacklist = ['last_contact'];
 
     public static function getTypeName(int $nb = 0)
     {
@@ -251,7 +251,7 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -362,21 +362,21 @@ class Agent extends CommonDBTM
     /**
      * Display form for agent configuration
      *
-     * @param int $id      ID of the agent
+     * @param int $ID      ID of the agent
      * @param array   $options Options
      *
      * @return bool
      */
-    public function showForm($id, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI;
 
-        if (!empty($id)) {
-            $this->getFromDB($id);
+        if (!empty($ID)) {
+            $this->getFromDB($ID);
         } else {
             $this->getEmpty();
         }
-        $this->initForm($id, $options);
+        $this->initForm($ID, $options);
 
         // avoid generic form to display generic version field as we have an exploded view
         $versions = $this->fields['version'] ?? '';
@@ -513,7 +513,7 @@ class Agent extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $CFG_GLPI;
 
@@ -533,7 +533,7 @@ class Agent extends CommonDBTM
         return $this->prepareInputs($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInputs($input);
     }

@@ -407,7 +407,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     }
 
 
-    public function addNeededInfoToInput($input)
+    public function addNeededInfoToInput(array $input)
     {
 
         // is entity missing and forwarding on ?
@@ -439,7 +439,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (!is_array($input)) {
@@ -482,7 +482,7 @@ abstract class CommonDBChild extends CommonDBConnexity
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (!is_array($input)) {
@@ -563,13 +563,13 @@ abstract class CommonDBChild extends CommonDBConnexity
     /**
      * Actions done after the UPDATE of the item in the database
      *
-     * @since 0.84
-     *
-     * @param int|bool $history store changes history ?
+     * @param bool $history store changes history ?
      *
      * @return void
-     **/
-    public function post_updateItem($history = true)
+     **@since 0.84
+     *
+     */
+    public function post_updateItem(bool $history = true)
     {
 
         if (

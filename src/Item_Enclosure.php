@@ -151,7 +151,7 @@ class Item_Enclosure extends CommonDBRelation
         return true;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI, $DB;
 
@@ -272,12 +272,12 @@ class Item_Enclosure extends CommonDBRelation
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }

@@ -128,7 +128,7 @@ class AuthLDAP extends CommonDBTM
     ];
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'config';
 
@@ -138,7 +138,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static $conn_cache = [];
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'rootdn_passwd',
     ];
 
@@ -286,7 +286,7 @@ class AuthLDAP extends CommonDBTM
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input["rootdn_passwd"])) {
             if (empty($input["rootdn_passwd"])) {
@@ -334,7 +334,7 @@ class AuthLDAP extends CommonDBTM
         return $input;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -346,7 +346,7 @@ class AuthLDAP extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -444,7 +444,7 @@ class AuthLDAP extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!Config::canUpdate()) {
             return false;
@@ -3842,7 +3842,7 @@ TWIG, $twig_params);
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if ($this->fields["is_default"]) {
             $this->removeDefaultFromOtherItems();
@@ -3863,7 +3863,7 @@ TWIG, $twig_params);
         parent::post_addItem();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (empty($input['can_support_pagesize'] ?? '')) {
             $input['can_support_pagesize'] = 0;

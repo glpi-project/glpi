@@ -58,9 +58,9 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
     }
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Consumable', 'Infocom'];
-    public $dohistory                   = true;
-    protected $usenotepad               = true;
+    protected static array $forward_entity_to = ['Consumable', 'Infocom'];
+    public bool $dohistory                   = true;
+    protected bool $usenotepad               = true;
 
     public static string $rightname                   = 'consumable';
 
@@ -98,7 +98,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return '';
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -107,7 +107,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -471,7 +471,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
         return ['alert' => __('Send alarms on consumables')];
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/consumableitem.html.twig', [

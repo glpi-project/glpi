@@ -39,7 +39,7 @@
  **/
 class NotificationEvent extends CommonDBTM
 {
-    protected static $notable = true;
+    protected static bool $notable = true;
 
     #[Override]
     public static function getTypeName(int $nb = 0)

@@ -36,7 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Calendar_Holiday extends CommonDBRelation
 {
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     // From CommonDBRelation
     public static $itemtype_1 = 'Calendar';
@@ -187,7 +187,7 @@ class Calendar_Holiday extends CommonDBRelation
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if (in_array('calendars_id', $this->updates)) {
             $this->invalidateCalendarCache($this->oldvalues['calendars_id']);

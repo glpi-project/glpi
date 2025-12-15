@@ -70,7 +70,7 @@ final class Comment extends CommonDBChild implements
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     private ?Section $section = null;
 
@@ -94,7 +94,7 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);
@@ -118,7 +118,7 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['uuid'])) {
             $input['uuid'] = Uuid::uuid4();
@@ -134,7 +134,7 @@ final class Comment extends CommonDBChild implements
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);

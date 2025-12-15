@@ -357,7 +357,7 @@ class ReservationItem extends CommonDBChild
 TWIG, $twig_params);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!self::canView()) {
             return false;
@@ -837,7 +837,7 @@ TWIG, $twig_params);
         return $cron_status;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         if ($interface === 'central') {
             $values = parent::getRights();

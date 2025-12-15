@@ -50,11 +50,11 @@ class Contract extends CommonDBTM implements StateInterface
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ContractCost'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ContractCost'];
 
     public static string $rightname                   = 'contract';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public const RENEWAL_NEVER = 0;
     public const RENEWAL_TACIT = 1;
@@ -167,7 +167,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @inheritDoc
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/contract.html.twig', [
@@ -406,7 +406,7 @@ class Contract extends CommonDBTM implements StateInterface
         return $tab;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -422,7 +422,7 @@ class Contract extends CommonDBTM implements StateInterface
         return $actions;
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -441,7 +441,7 @@ class Contract extends CommonDBTM implements StateInterface
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -1395,7 +1395,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|int HTML output, or random part of dropdown ID.
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         global $DB;
 
@@ -1625,9 +1625,9 @@ class Contract extends CommonDBTM implements StateInterface
     }
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
         global $CFG_GLPI;

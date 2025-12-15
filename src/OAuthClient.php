@@ -43,7 +43,7 @@ final class OAuthClient extends CommonDBTM
 {
     public static string $rightname = 'oauth_client';
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'secret',
     ];
 
@@ -62,7 +62,7 @@ final class OAuthClient extends CommonDBTM
         return 'ti ti-key';
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/oauthclient.html.twig', [
             'item' => $this,
@@ -116,7 +116,7 @@ final class OAuthClient extends CommonDBTM
         return bin2hex(random_bytes(Server::ID_SECRET_LENGTH_BYTES));
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
             Session::addMessageAfterRedirect(
@@ -140,7 +140,7 @@ final class OAuthClient extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (array_key_exists('allowed_ips', $input) && !$this->validateAllowedIPs($input['allowed_ips'])) {
             Session::addMessageAfterRedirect(

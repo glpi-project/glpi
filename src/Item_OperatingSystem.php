@@ -302,7 +302,7 @@ class Item_OperatingSystem extends CommonDBRelation
         return parent::getConnexityItem($itemtype, $items_id, $getFromDB, $getEmpty, $getFromDBOrEmpty);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $this->fields);
         TemplateRenderer::getInstance()->display('pages/assets/operatingsystem.html.twig', [
@@ -656,7 +656,7 @@ class Item_OperatingSystem extends CommonDBRelation
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $item = getItemForItemtype($input['itemtype']);
         $item->getFromDB($input['items_id']);

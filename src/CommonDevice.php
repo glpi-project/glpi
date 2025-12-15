@@ -46,7 +46,7 @@ abstract class CommonDevice extends CommonDropdown
     public $can_be_translated  = false;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static function getTypeName(int $nb = 0)
     {
@@ -635,7 +635,7 @@ abstract class CommonDevice extends CommonDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->post_workOnItem();
         parent::post_updateItem($history);

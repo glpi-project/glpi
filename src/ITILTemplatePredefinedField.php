@@ -62,7 +62,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // Use massiveaction system to manage add system.
         // Need to update data : value not set but

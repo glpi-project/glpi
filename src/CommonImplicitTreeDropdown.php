@@ -74,7 +74,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
         return []; // By default, we don't have any son
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         $input[$this->getForeignKeyField()] = $this->getNewAncestor();
@@ -82,7 +82,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         $input[$this->getForeignKeyField()] = $this->getNewAncestor();
@@ -97,7 +97,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
 
         $this->alterElementInsideTree("update");

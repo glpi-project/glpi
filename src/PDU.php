@@ -54,7 +54,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'datacenter';
 
     public function getCloneRelations(): array
@@ -303,7 +303,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         return "ti ti-plug";
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];

@@ -381,7 +381,7 @@ class RuleRight extends Rule
         return Profile::getIcon();
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI;
 

@@ -60,7 +60,7 @@ abstract class ITILTemplateField extends CommonDBChild
     private array $all_fields;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static function getMultiplePredefinedValues(): array
     {

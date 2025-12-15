@@ -123,7 +123,7 @@ class Dashboard extends CommonDBTM
         return -1;
     }
 
-    public function getFromDB($ID)
+    public function getFromDB(int|string $ID)
     {
         global $DB;
 

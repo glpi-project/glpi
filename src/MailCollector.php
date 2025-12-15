@@ -128,7 +128,7 @@ class MailCollector extends CommonDBTM
      */
     private $body_is_html   = false;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     public static string $rightname       = 'config';
 
@@ -140,11 +140,11 @@ class MailCollector extends CommonDBTM
     public const REQUESTER_FIELD_FROM = 0;
     public const REQUESTER_FIELD_REPLY_TO = 1;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'passwd',
     ];
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'errors',
         'last_collect_date',
     ];
@@ -254,7 +254,7 @@ class MailCollector extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInput($input, 'update');
         if ($input === false) {
@@ -269,7 +269,7 @@ class MailCollector extends CommonDBTM
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInput($input, 'add');
         if ($input === false) {
@@ -300,7 +300,7 @@ class MailCollector extends CommonDBTM
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         // warning and no form if can't read keyfile
         $glpi_encryption_key = new GLPIKey();

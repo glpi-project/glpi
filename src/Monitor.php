@@ -57,13 +57,13 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['Infocom', 'ReservationItem', 'Item_OperatingSystem', 'NetworkPort',
         'Item_SoftwareVersion',
     ];
 
     public static string $rightname            = 'monitor';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -142,7 +142,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
         return $ong;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
@@ -168,7 +168,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/monitor.html.twig', [
@@ -208,7 +208,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
 
         $actions = parent::getSpecificMassiveActions($checkitem);

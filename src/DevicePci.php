@@ -38,7 +38,7 @@
  **/
 class DevicePci extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DevicePci', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DevicePci', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {

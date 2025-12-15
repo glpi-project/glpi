@@ -50,7 +50,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     /**
      * @var bool From CommonDBTM
      */
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     /**
      * @var bool From CommonDropdown
@@ -133,7 +133,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return $ong;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input['periodicity'])) {
             $input['next_creation_date'] = $this->computeNextCreationDate(
@@ -148,7 +148,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (
             isset($input['begin_date'])
@@ -230,9 +230,9 @@ abstract class CommonITILRecurrent extends CommonDropdown
     }
 
     public static function getSpecificValueToDisplay(
-        $field,
-        $values,
-        array $options = []
+        string       $field,
+        array|string $values,
+        array        $options = []
     ) {
         if (!is_array($values)) {
             $values = [$field => $values];

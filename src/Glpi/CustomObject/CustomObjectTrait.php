@@ -74,7 +74,7 @@ trait CustomObjectTrait
     /**
      * @see \CommonDBTM:: getTable()
      */
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         if (is_a($classname ?? static::class, self::class, true)) {
             return parent::getTable(self::class);

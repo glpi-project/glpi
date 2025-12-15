@@ -49,10 +49,10 @@ class Supplier extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static string $rightname           = 'contact_enterprise';
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
     public static function getTypeName(int $nb = 0)
     {
@@ -74,13 +74,13 @@ class Supplier extends CommonDBTM
         $this->fields['is_active'] = 1;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
         return $this->managePictures($input);
@@ -131,14 +131,14 @@ class Supplier extends CommonDBTM
         return $ong;
     }
 
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         $condition = ['is_active' => true];
         $options['condition'] = (isset($options['condition']) ? $options['condition'] + $condition : $condition);
         return Dropdown::show(static::class, $options);
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

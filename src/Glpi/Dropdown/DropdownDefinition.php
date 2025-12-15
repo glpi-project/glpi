@@ -149,7 +149,7 @@ final class DropdownDefinition extends AbstractDefinition
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         foreach (['profiles', 'translations'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {

@@ -80,7 +80,7 @@ class Document_Item extends CommonDBRelation
         return parent::canCreateItem();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (empty($input['itemtype'])) {
             trigger_error('Item type is mandatory', E_USER_WARNING);

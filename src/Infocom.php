@@ -51,8 +51,8 @@ class Infocom extends CommonDBChild
     // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
-    public $dohistory              = true;
-    public $auto_message_on_action = false; // Link in message can't work'
+    public bool $dohistory              = true;
+    public bool $auto_message_on_action = false; // Link in message can't work'
     public static $logs_for_parent = false;
     public static string $rightname              = 'infocom';
 
@@ -210,7 +210,7 @@ class Infocom extends CommonDBChild
         );
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -228,14 +228,14 @@ class Infocom extends CommonDBChild
 
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
+     * @param string $field
+     * @param string $name (default '')
+     * @param array|string $values             (default '')
      * @param $options      array
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -429,7 +429,7 @@ class Infocom extends CommonDBChild
         return iterator_to_array($DB->request($criteria));
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
             if ($item = static::getItemFromArray(static::$itemtype, static::$items_id, $input)) {
@@ -554,7 +554,7 @@ class Infocom extends CommonDBChild
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         //Check if one or more dates needs to be updated
@@ -906,7 +906,7 @@ class Infocom extends CommonDBChild
         return 'financial';
     }
 
-    public static function displayFullPageForItem($id, ?array $menus = null, array $options = []): void
+    public static function displayFullPageForItem(int|string $id, ?array $menus = null, array $options = []): void
     {
         $ic = new self();
 
@@ -2025,9 +2025,9 @@ HTML;
 
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
 

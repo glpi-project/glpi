@@ -39,7 +39,7 @@
  */
 class FQDN extends CommonDropdown
 {
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'internet';
 
@@ -101,13 +101,13 @@ class FQDN extends CommonDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput(parent::prepareInputForAdd($input));
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput(parent::prepareInputForUpdate($input));
     }

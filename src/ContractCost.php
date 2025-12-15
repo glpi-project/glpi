@@ -44,7 +44,7 @@ class ContractCost extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = 'Contract';
     public static $items_id = 'contracts_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -57,7 +57,7 @@ class ContractCost extends CommonDBChild
         return Infocom::getIcon();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (
@@ -72,7 +72,7 @@ class ContractCost extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (
@@ -242,7 +242,7 @@ class ContractCost extends CommonDBChild
         return [];
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);

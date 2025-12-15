@@ -48,7 +48,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
     use AssignableItem;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'cluster';
 
     public function getCloneRelations(): array

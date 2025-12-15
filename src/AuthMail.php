@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class AuthMail extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'config';
 
@@ -55,7 +55,7 @@ class AuthMail extends CommonDBTM
         return ['config', Auth::class, self::class];
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (array_key_exists('name', $input) && (string) $input['name'] === '') {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
@@ -79,7 +79,7 @@ class AuthMail extends CommonDBTM
         return static::canUpdate();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (empty($input['name'])) {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
@@ -192,7 +192,7 @@ class AuthMail extends CommonDBTM
      *
      * @return void|bool (display) Returns false if there is a rights error.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!$this->can($ID, UPDATE)) {
             return false;
@@ -213,7 +213,7 @@ class AuthMail extends CommonDBTM
     /**
      * @return void
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if ($this->fields["is_default"] === 1) {
             $this->removeDefaultFromOtherItems();

@@ -47,7 +47,7 @@ use function Safe\preg_match;
 class Link extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname = 'link';
     /** @var string[] */
@@ -213,7 +213,7 @@ class Link extends CommonDBTM
         return $completions;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/externallink.html.twig', [
             'item' => $this,
@@ -416,14 +416,13 @@ class Link extends CommonDBTM
     /**
      * Generate link(s).
      *
-     * @param string        $link           original string content
+     * @param string $link           original string content
      * @param CommonDBTM    $item           item used to make replacements
      * @param bool          $safe_url       indicates whether URL should be sanitized or not
-     * @param array         $custom_vars    custom variables that will be passed to link template renderer
      *
      * @return array of link contents (may have several when item have several IP / MAC cases)
      */
-    public static function generateLinkContents($link, CommonDBTM $item, bool $safe_url = true, array $custom_vars = [])
+    public static function generateLinkContents(string $link, CommonDBTM $item, bool $safe_url = true): array
     {
         global $CFG_GLPI, $DB;
 
@@ -819,7 +818,7 @@ TWIG, $buttons_params);
         return "ti ti-link";
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!$this->validateTemplateFields($input)) {
             return false;
@@ -828,7 +827,7 @@ TWIG, $buttons_params);
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (!$this->validateTemplateFields($input)) {
             return false;
@@ -874,7 +873,7 @@ TWIG, $buttons_params);
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 

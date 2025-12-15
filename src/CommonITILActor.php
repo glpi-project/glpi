@@ -42,7 +42,7 @@ abstract class CommonITILActor extends CommonDBRelation
     // items_id_1, items_id_2, itemtype_1 and itemtype_2 are defined inside the inherited classes
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
     public static $logs_for_item_2     = false;
-    public $auto_message_on_action     = false;
+    public bool $auto_message_on_action     = false;
 
     public const REQUESTER = 1;
     public const ASSIGN    = 2;
@@ -228,7 +228,7 @@ abstract class CommonITILActor extends CommonDBRelation
         $this->_force_log_option = $current_log_option;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // don't duplicate actors (search for existing before adding)
         // actors with $fk_field=0 are "email" actors
@@ -269,7 +269,7 @@ abstract class CommonITILActor extends CommonDBRelation
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['alternative_email']) && $input['alternative_email'] == '') {
             if (isset($input['users_id'])) {

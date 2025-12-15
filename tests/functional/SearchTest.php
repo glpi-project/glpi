@@ -6601,7 +6601,7 @@ namespace SearchTest;
 class Computer extends \Computer
 {
     // @codingStandardsIgnoreEnd
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         return 'glpi_computers';
     }

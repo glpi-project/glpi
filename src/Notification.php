@@ -145,7 +145,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     public const VALIDATION_TARGET_SUBSTITUTES       = 41;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'notification';
 
@@ -254,7 +254,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/notification/notification.html.twig', [
             'item' => $this,
@@ -266,7 +266,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -283,7 +283,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         global $CFG_GLPI;
@@ -448,7 +448,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
 
         $isadmin = static::canUpdate();
@@ -661,7 +661,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {
@@ -673,7 +673,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (isset($input["itemtype"]) && empty($input["itemtype"])) {

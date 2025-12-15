@@ -66,7 +66,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
     public const ROOM_O_WEST  = 4;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'datacenter';
 
     public static function getTypeName(int $nb = 0)
@@ -153,7 +153,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/rack.html.twig', [
@@ -528,7 +528,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -549,7 +549,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
         return false;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {

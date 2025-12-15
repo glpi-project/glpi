@@ -90,7 +90,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      */
     public static $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
 
-    public $dohistory             = true;
+    public bool $dohistory             = true;
 
     public static string $rightname             = 'profile';
 
@@ -239,7 +239,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return true;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 
@@ -345,7 +345,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         ];
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         global $CFG_GLPI;
 
@@ -534,7 +534,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input['last_rights_update'] = Session::getCurrentTime();
 
@@ -797,7 +797,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      *
      * @inheritDoc
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/admin/profile/form.html.twig', [
@@ -3116,7 +3116,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -3141,7 +3141,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

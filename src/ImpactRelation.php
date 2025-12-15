@@ -44,7 +44,7 @@ class ImpactRelation extends CommonDBRelation
     public static $itemtype_2          = 'itemtype_impacted';
     public static $items_id_2          = 'items_id_impacted';
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 

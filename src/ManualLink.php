@@ -41,8 +41,8 @@ use Glpi\DBAL\QueryExpression;
  */
 class ManualLink extends CommonDBChild
 {
-    public $dohistory              = false;
-    public $auto_message_on_action = false; // Link in message can't work'
+    public bool $dohistory              = false;
+    public bool $auto_message_on_action = false; // Link in message can't work'
     protected bool $displaylist         = false;
     public static $logs_for_parent = true;
     public static $itemtype        = 'itemtype';
@@ -97,7 +97,7 @@ class ManualLink extends CommonDBChild
         return true;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/manuallink.html.twig', [
             'item' => $this,
@@ -110,7 +110,7 @@ class ManualLink extends CommonDBChild
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!array_key_exists('url', $input) || empty($input['url'])) {
             Session::addMessageAfterRedirect(
@@ -124,7 +124,7 @@ class ManualLink extends CommonDBChild
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }
@@ -201,7 +201,7 @@ class ManualLink extends CommonDBChild
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {

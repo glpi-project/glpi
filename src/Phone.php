@@ -55,14 +55,14 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_Disk',
     ];
 
     public static string $rightname                   = 'phone';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -158,7 +158,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
@@ -191,7 +191,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/phone.html.twig', [
@@ -230,7 +230,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return $tab;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {

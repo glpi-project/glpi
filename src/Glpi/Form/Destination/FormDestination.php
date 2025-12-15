@@ -186,7 +186,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     }
 
     #[Override]
-    public function prepareInputForAdd($input): array
+    public function prepareInputForAdd(array $input): array
     {
         $input = $this->prepareInput($input);
 
@@ -206,7 +206,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     }
 
     #[Override]
-    public function prepareInputForUpdate($input): array
+    public function prepareInputForUpdate(array $input): array
     {
         return $this->prepareInput($input);
     }

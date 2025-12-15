@@ -226,7 +226,7 @@ trait AssignableItem
     }
 
     /** @see AssignableItemInterface::getRights() */
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $rights = parent::getRights($interface);
         $rights[READ] = __('View all');
@@ -255,7 +255,7 @@ trait AssignableItem
     }
 
     /** @see AssignableItemInterface::prepareInputForAdd() */
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if ($input === false) {
             return false;
@@ -268,7 +268,7 @@ trait AssignableItem
     }
 
     /** @see AssignableItemInterface::prepareInputForUpdate() */
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if ($input === false) {
             return false;
@@ -350,13 +350,13 @@ trait AssignableItem
     }
 
     /**
-     * @see AssignableItemInterface::post_updateItem()
-     *
      * @param bool $history
      *
      *@return void
+     *@see AssignableItemInterface::post_updateItem()
+     *
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         parent::post_updateItem($history);
         $this->updateGroupFields();

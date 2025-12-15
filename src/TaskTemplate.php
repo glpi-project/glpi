@@ -45,7 +45,7 @@ class TaskTemplate extends AbstractITILChildTemplate
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public $can_be_translated  = true;
 
     public static string $rightname          = 'tasktemplate';
@@ -189,7 +189,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -210,7 +210,7 @@ class TaskTemplate extends AbstractITILChildTemplate
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -295,7 +295,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
 
@@ -304,7 +304,7 @@ class TaskTemplate extends AbstractITILChildTemplate
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
 

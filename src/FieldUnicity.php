@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class FieldUnicity extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
 
     public $can_be_translated  = false;
 
@@ -402,7 +402,7 @@ class FieldUnicity extends CommonDropdown
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -430,7 +430,7 @@ class FieldUnicity extends CommonDropdown
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -477,12 +477,12 @@ class FieldUnicity extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }

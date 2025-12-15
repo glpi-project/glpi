@@ -371,7 +371,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return array_filter($shown_fields, static fn($f) => in_array($f, $all_fields, true));
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
@@ -408,7 +408,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareGroupFields($input);
         $input = $this->handleReadonlyFieldUpdate($input);
@@ -417,7 +417,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return $this->prepareDefinitionInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareGroupFields($input);
         $input = $this->handleReadonlyFieldUpdate($input);
@@ -569,7 +569,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         $this->addFilesFromRichTextCustomFields();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->post_updateItemFromAssignableItem($history);
         if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {

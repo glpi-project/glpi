@@ -72,12 +72,12 @@ class PDU_Rack extends CommonDBRelation
         return $forbidden;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }
@@ -204,7 +204,7 @@ class PDU_Rack extends CommonDBRelation
         return $filled;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $DB;
 

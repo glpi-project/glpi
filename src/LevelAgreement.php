@@ -45,7 +45,7 @@ use function Safe\strtotime;
 abstract class LevelAgreement extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public static string $rightname       = 'slm';
 
     // From CommonDBChild
@@ -139,7 +139,7 @@ abstract class LevelAgreement extends CommonDBChild
         $this->fields['definition_time'] = 'hour';
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $rowspan = 3;
         if ($ID > 0) {
@@ -628,7 +628,7 @@ TWIG, $twig_params);
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -651,7 +651,7 @@ TWIG, $twig_params);
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -867,7 +867,7 @@ TWIG, $twig_params);
         return Dropdown::showFromArray($options['name'] ?? 'type', self::getTypes(), $options);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (
             $input['definition_time'] !== 'day'
@@ -886,7 +886,7 @@ TWIG, $twig_params);
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (
             isset($input['definition_time']) && ($input['definition_time'] !== 'day'

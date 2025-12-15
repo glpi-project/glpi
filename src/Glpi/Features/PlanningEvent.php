@@ -118,7 +118,7 @@ trait PlanningEvent
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 
@@ -182,7 +182,7 @@ trait PlanningEvent
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareGuestsInput($input);
 
@@ -286,7 +286,7 @@ trait PlanningEvent
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if (
             !isset($this->input['_no_check_plan'])
@@ -1131,7 +1131,7 @@ trait PlanningEvent
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {

@@ -49,7 +49,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
     use AssignableItem;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'unmanaged';
 
     public static function getTypeName(int $nb = 0)
@@ -91,7 +91,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/unmanaged.html.twig', [
@@ -276,7 +276,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         return "ti ti-question-mark";
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -287,9 +287,9 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
         if (self::canUpdate()) {

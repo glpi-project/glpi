@@ -58,13 +58,13 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
     public static string $rightname                   = 'networking';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     /** RELATIONS */
     public function getCloneRelations(): array
@@ -162,7 +162,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
@@ -265,7 +265,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
 
         $isadmin = static::canUpdate();

@@ -52,7 +52,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory         = true;
+    public bool $dohistory         = true;
     public static string $rightname         = 'cable_management';
 
     public static function getTypeName(int $nb = 0)
@@ -410,7 +410,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -437,7 +437,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -479,7 +479,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [

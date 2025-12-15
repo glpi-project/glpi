@@ -43,7 +43,7 @@ class Datacenter extends CommonDBTM
     use AssetImage;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'datacenter';
 
     public static function getTypeName(int $nb = 0)
@@ -57,13 +57,13 @@ class Datacenter extends CommonDBTM
         return ['management', self::class];
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
         return $this->managePictures($input);

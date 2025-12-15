@@ -66,12 +66,12 @@ class NetworkPortAlias extends NetworkPortInstantiation
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return parent::prepareInputForAdd($this->prepareInput($input));
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return parent::prepareInputForUpdate($this->prepareInput($input));
     }

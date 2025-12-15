@@ -42,9 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
 class SLM extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['SLA', 'OLA'];
+    protected static array $forward_entity_to = ['SLA', 'OLA'];
 
     public static string $rightname                   = 'slm';
 
@@ -80,14 +80,14 @@ class SLM extends CommonDBTM
         return $ong;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->handleCalendarStrategy($input);
 
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->handleCalendarStrategy($input);
 
@@ -116,7 +116,7 @@ class SLM extends CommonDBTM
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 
@@ -162,7 +162,7 @@ class SLM extends CommonDBTM
      * Print the SLM form
      * {@inheritdoc}
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $twig_params = [
             'item'        => $this,
@@ -272,7 +272,7 @@ TWIG, $twig_params);
         return "ti ti-checkup-list";
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $values = parent::getRights();
         $values[self::RIGHT_ASSIGN]  = [

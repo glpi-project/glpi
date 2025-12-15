@@ -49,7 +49,7 @@ use function Safe\json_encode;
 abstract class CommonITILValidation extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action    = false;
+    public bool $auto_message_on_action    = false;
 
     public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
     public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
@@ -331,7 +331,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // validation step is mandatory : add default value is not set
         if (!isset($input['itils_validationsteps_id']) && !isset($input['_validationsteps_id'])) {
@@ -454,7 +454,7 @@ abstract class CommonITILValidation extends CommonDBChild
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $can_answer = $this->canAnswer();
         // Don't allow changing internal entity fields or change the item it is attached to
@@ -513,7 +513,7 @@ abstract class CommonITILValidation extends CommonDBChild
         parent::post_purgeItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -1303,7 +1303,7 @@ HTML;
      * @param $ID        integer  ID of the item
      * @param $options   array    options used
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->canEdit($ID);
@@ -1729,7 +1729,7 @@ HTML;
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -1764,12 +1764,12 @@ HTML;
 
 
     /**
-     * @param $field
-     * @param $name              (default '')
-     * @param $values            (default '')
+     * @param string $field
+     * @param string $name              (default '')
+     * @param array|string $values            (default '')
      * @param $options   array
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -1789,7 +1789,7 @@ HTML;
     /**
      * @see commonDBTM::getRights()
      **/
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();

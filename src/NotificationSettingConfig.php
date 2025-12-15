@@ -48,7 +48,7 @@ class NotificationSettingConfig extends CommonDBTM
     public static string $rightname       = 'config';
 
     #[Override]
-    public function update(array $input, $history = true, $options = [])
+    public function update(array $input, bool $history = true, array $options = [])
     {
         $success = true;
 

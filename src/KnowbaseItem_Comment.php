@@ -195,7 +195,7 @@ class KnowbaseItem_Comment extends CommonDBTM
         ]);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input["users_id"])) {
             $input["users_id"] = 0;

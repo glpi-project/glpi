@@ -55,7 +55,7 @@ class ItemVirtualMachine extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -142,7 +142,7 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @return bool TRUE if form is ok
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (isset($options['parent'])) {
             $options['itemtype'] = $options['parent']::class;

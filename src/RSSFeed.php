@@ -48,7 +48,7 @@ use function Safe\parse_url;
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname    = 'rssfeed_public';
 
@@ -270,7 +270,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $criteria;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -282,7 +282,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -467,7 +467,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!$this->checkUrlInput($input['url'])) {
             return false;
@@ -503,7 +503,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (array_key_exists('url', $input) && !$this->checkUrlInput($input['url'])) {
             return false;
@@ -567,7 +567,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      * @param array $options Array of possible options:
      *     - target filename : where to go when done.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         // Test _rss cache directory. If permission trouble : unable to edit
         if (Toolbox::testWriteAccessToDirectory(GLPI_RSS_DIR) > 0) {
@@ -860,7 +860,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         }
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         if ($interface === 'helpdesk') {
             $values = [READ => __('Read')];

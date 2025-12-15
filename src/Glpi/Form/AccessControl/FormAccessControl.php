@@ -199,7 +199,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // Config is mandatory on creation; inject default config if missing.
         if (!isset($input['_config']) && !isset($input['config'])) {
@@ -224,7 +224,7 @@ final class FormAccessControl extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForUpdate($input): array
+    public function prepareInputForUpdate(array $input): array
     {
         $input = $this->prepareConfigInput($input);
 

@@ -54,9 +54,9 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'appliance';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -114,7 +114,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAssignableItem($input);
         if ($input === false) {
@@ -123,7 +123,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInputForUpdateAssignableItem($input);
         if ($input === false) {
@@ -142,7 +142,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return bool item found
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
@@ -505,7 +505,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return $types;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

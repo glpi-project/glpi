@@ -125,7 +125,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         parent::post_purgeItem();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // Avoid duplicate entry
         if (
@@ -1259,7 +1259,7 @@ TWIG, $twig_params);
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         global $DB;
 
@@ -1573,7 +1573,7 @@ TWIG, $twig_params);
         }
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -1604,7 +1604,7 @@ TWIG, $twig_params);
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

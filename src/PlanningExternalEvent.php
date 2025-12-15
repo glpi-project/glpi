@@ -48,7 +48,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     }
     use VobjectConverterTrait;
 
-    public $dohistory = true;
+    public bool $dohistory = true;
     public static string $rightname = 'externalevent';
 
     public const MANAGE_BG_EVENTS =   1024;
@@ -136,7 +136,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         $this->fields['users_id_guests'] = importArrayFromDB($this->fields['users_id_guests']);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $options['canedit'] = $this->can($ID, UPDATE);
@@ -194,7 +194,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return true;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $values = parent::getRights();
 

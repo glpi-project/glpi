@@ -69,7 +69,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public static function unsetUndisclosedFields(&$fields)
+    public static function unsetUndisclosedFields(array &$fields)
     {
         parent::unsetUndisclosedFields($fields);
 
@@ -119,12 +119,11 @@ class QueuedNotification extends CommonDBTM
     }
 
     /**
-     * @param CommonDBTM $checkitem
-     * @param bool $is_deleted
+     * @param CommonDBTM|null $checkitem
      * @return array<string, string>
      */
     #[Override]
-    public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -165,7 +164,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (empty($input['create_time'])) {
             $input['create_time'] = $_SESSION["glpi_currenttime"];
@@ -417,7 +416,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -490,7 +489,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -729,7 +728,7 @@ class QueuedNotification extends CommonDBTM
     }
 
     #[Override]
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!Session::haveRight("queuednotification", READ)) {
             return false;

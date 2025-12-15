@@ -273,14 +273,14 @@ class Plugin extends CommonDBTM
         return false;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInput($input);
 
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInput($input);
 
@@ -2799,7 +2799,7 @@ class Plugin extends CommonDBTM
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -3040,7 +3040,7 @@ class Plugin extends CommonDBTM
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -3113,7 +3113,7 @@ class Plugin extends CommonDBTM
         return "ti ti-puzzle";
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = [];
 

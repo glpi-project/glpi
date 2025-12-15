@@ -36,7 +36,7 @@
 class ITILReminder extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
     public static $items_id = 'items_id'; // Field name

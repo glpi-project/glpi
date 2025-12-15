@@ -45,7 +45,7 @@ class ReminderTranslation extends CommonDBChild
 {
     public static $itemtype = 'Reminder';
     public static $items_id = 'reminders_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
     public static $logs_for_parent = false;
 
     public static string $rightname       = 'reminder_public';
@@ -199,7 +199,7 @@ TWIG, $twig_params);
      * @param int $ID
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm(int $ID = -1, array $options = [])
     {
         if ($this->getID() > 0) {
             $this->check($ID, READ);

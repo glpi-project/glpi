@@ -48,10 +48,10 @@ class Contact extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static string $rightname           = 'contact_enterprise';
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
 
 
@@ -70,13 +70,13 @@ class Contact extends CommonDBTM
         return 'financial';
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
         return $this->managePictures($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
         return $this->managePictures($input);
@@ -186,7 +186,7 @@ class Contact extends CommonDBTM
     }
 
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
 
         $this->initForm($ID, $options);
@@ -221,7 +221,7 @@ HTML;
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

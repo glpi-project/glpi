@@ -82,7 +82,7 @@ abstract class NotificationSetting extends CommonDBTM
     abstract protected function showFormConfig();
 
     #[Override]
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         return parent::getTable('Config');
     }

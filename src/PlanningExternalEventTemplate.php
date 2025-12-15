@@ -48,7 +48,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public $can_be_translated  = true;
 
 
@@ -121,7 +121,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -136,7 +136,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -157,7 +157,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $saved_input = $input;
         $input = $this->prepareInputForAddTrait($input);
@@ -171,7 +171,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
      *
      * @return array
      */
-    public function prepareInputForupdate($input)
+    public function prepareInputForupdate(array $input)
     {
         $saved_input = $input;
         $input = $this->prepareInputForupdateTrait($input);

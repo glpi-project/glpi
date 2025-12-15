@@ -44,7 +44,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'itilvalidationtemplate';
 
@@ -55,7 +55,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         return _n('Approval template', 'Approval templates', $nb);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['validationsteps_id']) && !(new ValidationStep())->getFromDB($input['validationsteps_id'])) {
             Session::addMessageAfterRedirect(
@@ -191,7 +191,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
         $this->postTargets();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->postTargets();
     }

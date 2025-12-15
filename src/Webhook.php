@@ -67,9 +67,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static string $rightname         = 'config';
 
     // From CommonDBTM
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'secret', 'clientsecret',
     ];
 
@@ -203,7 +203,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -230,7 +230,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -750,10 +750,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
         return $path;
     }
 
-    public function showForm($id, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
-        if (!empty($id)) {
-            $this->getFromDB($id);
+        if (!empty($ID)) {
+            $this->getFromDB($ID);
 
             //validate CRA if needed
             if (GLPI_WEBHOOK_CRA_MANDATORY || (isset($this->fields['use_cra_challenge']) && $this->fields['use_cra_challenge'])) {
@@ -766,7 +766,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         } else {
             $this->getEmpty();
         }
-        $this->initForm($id, $options);
+        $this->initForm($ID, $options);
 
         TemplateRenderer::getInstance()->display('pages/setup/webhook/webhook.html.twig', [
             'item' => $this,
@@ -1267,12 +1267,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
         ]);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->handleInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->handleInput($input);
     }

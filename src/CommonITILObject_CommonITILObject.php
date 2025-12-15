@@ -49,7 +49,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return _n('Linked assistance object', 'Linked assistance objects', $nb);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input[static::$items_id_1], $input[static::$items_id_2])) {
             return false;
@@ -90,7 +90,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = self::normalizeParentSonRelation($input);
 

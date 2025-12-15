@@ -46,8 +46,8 @@ use Glpi\Search\DefaultSearchRequestInterface;
 class Change extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
 
     // From CommonITIL
     public $userlinkclass               = 'Change_User';
@@ -55,7 +55,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public $supplierlinkclass           = 'Change_Supplier';
 
     public static string $rightname            = 'change';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
     public const URGENCY_MASK_FIELD            = 'urgency_mask';
@@ -152,7 +152,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input =  parent::prepareInputForAdd($input);
         if ($input === false) {
@@ -182,7 +182,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->transformActorsInput($input);
 
@@ -205,7 +205,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -350,7 +350,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $CFG_GLPI;
 
@@ -799,7 +799,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();

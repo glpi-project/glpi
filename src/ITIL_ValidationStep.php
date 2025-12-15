@@ -36,7 +36,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 abstract class ITIL_ValidationStep extends CommonDBChild
 {
-    public $dohistory              = false;
+    public bool $dohistory              = false;
 
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
@@ -48,7 +48,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
      */
     protected static string $validation_classname;
 
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         return $classname
             ? parent::getTable($classname)
@@ -94,7 +94,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
      *
      * If minimal_required_validation_percent has changed : recompute Tickets validation status
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // if minimal_required_validation_percent has changed : recompute Ticket validation status
         if (
@@ -257,7 +257,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
         return ['minimal_required_validation_percent'];
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
 

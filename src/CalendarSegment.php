@@ -43,7 +43,7 @@ use Glpi\DBAL\QueryFunction;
 class CalendarSegment extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     // From CommonDBChild
     public static $itemtype = 'Calendar';
@@ -70,7 +70,7 @@ class CalendarSegment extends CommonDBChild
         return 'ti ti-calendar-time';
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         // Check override of segment : do not add

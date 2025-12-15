@@ -35,7 +35,7 @@
 
 class DeviceCamera extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceCamera', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceCamera', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {

@@ -52,8 +52,8 @@ class Consumable extends CommonDBChild
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Infocom'];
-    public $no_form_page                = true;
+    protected static array $forward_entity_to = ['Infocom'];
+    public bool $no_form_page                = true;
 
     public static string $rightname                   = 'consumable';
 
@@ -95,7 +95,7 @@ class Consumable extends CommonDBChild
         return _n('Consumable', 'Consumables', $nb);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $item = new ConsumableItem();
         if ($item->getFromDB($input["consumableitems_id"])) {
@@ -196,9 +196,9 @@ class Consumable extends CommonDBChild
     }
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
         // Special actions only for self
@@ -871,7 +871,7 @@ class Consumable extends CommonDBChild
         return true;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         return (new ConsumableItem())->getRights($interface);
     }
@@ -979,9 +979,9 @@ class Consumable extends CommonDBChild
     }
 
     public static function getSpecificValueToDisplay(
-        $field,
-        $values,
-        array $options = []
+        string       $field,
+        array|string $values,
+        array        $options = []
     ) {
         switch ($options['searchopt']['id']) {
             case '3': // State

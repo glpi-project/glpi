@@ -36,7 +36,7 @@
 /// Class DeviceSimcard
 class DeviceSimcard extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceSimcard', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {

@@ -47,7 +47,7 @@ class SavedSearch_Alert extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = 'SavedSearch';
     public static $items_id = 'savedsearches_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
     protected bool $displaylist  = false;
 
     public const OP_LESS     = 0;
@@ -116,7 +116,7 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return bool true if displayed  false if item not found or not right to display
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $search = new SavedSearch();
         if ($ID > 0) {

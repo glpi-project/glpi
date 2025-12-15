@@ -76,7 +76,7 @@ abstract class AssetModel extends CommonDCModelDropdown
         return static::getDefinition()->getCustomObjectIcon();
     }
 
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         if (is_a($classname ?? static::class, self::class, true)) {
             return parent::getTable(self::class);
@@ -141,13 +141,13 @@ abstract class AssetModel extends CommonDCModelDropdown
         return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareDefinitionInput($input);
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareDefinitionInput($input);
         return parent::prepareInputForUpdate($input);

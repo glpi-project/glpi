@@ -58,11 +58,11 @@ class NetworkPort extends CommonDBChild
     // From CommonDBChild
     public static $itemtype             = 'itemtype';
     public static $items_id             = 'items_id';
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
-    protected static $forward_entity_to = ['NetworkName'];
+    protected static array $forward_entity_to = ['NetworkName'];
 
     public static string $rightname                   = 'networking';
     protected bool $displaylist = false;
@@ -245,7 +245,7 @@ class NetworkPort extends CommonDBChild
         return true;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (!isset($input["_no_history"])) {
             $input['_no_history'] = false;
@@ -260,7 +260,7 @@ class NetworkPort extends CommonDBChild
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 
@@ -488,7 +488,7 @@ class NetworkPort extends CommonDBChild
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["logical_number"]) && ($input["logical_number"] === '')) {
             unset($input["logical_number"]);
@@ -1338,7 +1338,7 @@ class NetworkPort extends CommonDBChild
         return $link;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!isset($options['several'])) {
             $options['several'] = false;
@@ -1447,7 +1447,7 @@ class NetworkPort extends CommonDBChild
         return $tab;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = $checkitem !== null && $checkitem->canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -1809,7 +1809,7 @@ class NetworkPort extends CommonDBChild
         return $specificities;
     }
 
-    public function getLink($options = [])
+    public function getLink(array $options = [])
     {
         $port_link = parent::getLink($options);
 

@@ -156,7 +156,7 @@ final class ValidatorSubstitute extends CommonDBTM
         return true;
     }
 
-    public function prepareInputForUpdate($input): array
+    public function prepareInputForUpdate(array $input): array
     {
         if (isset($input['users_id']) && $input['users_id'] != $this->fields['users_id']) {
             // Do not change the user.

@@ -49,7 +49,7 @@ class OLA extends LevelAgreement
     protected static $prefixticket      = 'internal_';
     protected static $levelclass        = 'OlaLevel';
     protected static $levelticketclass  = 'OlaLevel_Ticket';
-    protected static $forward_entity_to = ['OlaLevel'];
+    protected static array $forward_entity_to = ['OlaLevel'];
 
     public static function getTypeName(int $nb = 0)
     {

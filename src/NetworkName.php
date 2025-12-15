@@ -52,9 +52,9 @@ class NetworkName extends FQDNLabel
     // From CommonDBChild
     public static $itemtype              = 'itemtype';
     public static $items_id              = 'items_id';
-    public $dohistory                    = true;
+    public bool $dohistory                    = true;
 
-    protected static $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
+    protected static array $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
 
     public static $canDeleteOnItemClean  = false;
 
@@ -91,7 +91,7 @@ class NetworkName extends FQDNLabel
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
 
@@ -264,7 +264,7 @@ class NetworkName extends FQDNLabel
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         global $DB;
 
@@ -894,7 +894,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         $rights = parent::getRights($interface);
         // Rename READ and UPDATE right labels to match other assets

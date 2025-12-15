@@ -76,7 +76,7 @@ class NotificationTarget extends CommonDBChild
     public $tag_descriptions = [];
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * @var array<string, array{
@@ -189,7 +189,7 @@ class NotificationTarget extends CommonDBChild
     }
 
     #[Override]
-    public static function getTable($classname = null): string
+    public static function getTable(string $classname = null): string
     {
         return parent::getTable(self::class);
     }

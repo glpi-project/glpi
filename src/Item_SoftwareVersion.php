@@ -132,7 +132,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = $this->prepareInputForAddAndUpdate($input, true);
         if ($input === false) {
@@ -141,7 +141,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInputForAddAndUpdate($input, false);
         if ($input === false) {

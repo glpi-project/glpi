@@ -47,8 +47,8 @@ class Notepad extends CommonDBChild
     // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
-    public $dohistory              = false;
-    public $auto_message_on_action = false; // Link in message can't work'
+    public bool $dohistory              = false;
+    public bool $auto_message_on_action = false; // Link in message can't work'
     public static $logs_for_parent = true;
 
 
@@ -95,7 +95,7 @@ class Notepad extends CommonDBChild
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         $input['users_id']             = Session::getLoginUserID();
@@ -104,7 +104,7 @@ class Notepad extends CommonDBChild
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         $input['users_id_lastupdater'] = Session::getLoginUserID();
@@ -347,7 +347,7 @@ class Notepad extends CommonDBChild
         return true;
     }
 
-    public function post_updateItem($history = 1)
+    public function post_updateItem(bool $history = 1)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);

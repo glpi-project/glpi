@@ -58,14 +58,14 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
+    protected static array $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
     public static string $rightname                   = 'printer';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {
@@ -241,7 +241,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
             $input["_oldID"] = $input["id"];
@@ -265,7 +265,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (isset($input['init_pages_counter'])) {
             $input['init_pages_counter'] = intval($input['init_pages_counter']);
@@ -312,7 +312,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/printer.html.twig', [
@@ -351,7 +351,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         return $tab;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {

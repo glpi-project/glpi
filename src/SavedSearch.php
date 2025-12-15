@@ -93,7 +93,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $forbidden;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 
@@ -414,7 +414,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
 
         if (!isset($input['url']) || !isset($input['type'])) {
@@ -425,7 +425,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (isset($input['url']) && $input['type']) {
@@ -466,7 +466,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         );
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (empty($this->fields) && $ID > 0) {
             $this->getFromDB($ID);
@@ -888,7 +888,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         }
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -910,7 +910,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

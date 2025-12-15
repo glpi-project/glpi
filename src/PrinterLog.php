@@ -46,7 +46,7 @@ class PrinterLog extends CommonDBChild
 {
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
-    public $dohistory       = false;
+    public bool $dohistory       = false;
 
     public static function getTypeName(int $nb = 0)
     {

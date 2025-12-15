@@ -51,7 +51,7 @@ class Rule extends CommonDBTM
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory             = true;
+    public bool $dohistory             = true;
 
     // Specific ones
     /**
@@ -140,7 +140,7 @@ class Rule extends CommonDBTM
         ];
     }
 
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         return parent::getTable(self::class);
     }
@@ -642,7 +642,7 @@ class Rule extends CommonDBTM
         return new $collection_class();
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -853,13 +853,13 @@ class Rule extends CommonDBTM
     }
 
     /**
-     * @param  string $field
-     * @param  array $values
+     * @param string $field
+     * @param array|string $values
      * @param  array $options
      *
      * @return string
      **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -881,14 +881,14 @@ class Rule extends CommonDBTM
     }
 
     /**
-     * @param  string $field
-     * @param  string $name              (default '')
-     * @param  string|array $values            (default '')
+     * @param string $field
+     * @param string $name              (default '')
+     * @param array|string $values            (default '')
      * @param  array $options
      *
      * @return string
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -914,7 +914,7 @@ class Rule extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -1998,7 +1998,7 @@ TWIG, $twig_params);
         return $data;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // If no uuid given, generate a new one
         if (!isset($input['uuid'])) {
@@ -2030,7 +2030,7 @@ TWIG, $twig_params);
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForUpdate($input);
 
@@ -2055,7 +2055,7 @@ TWIG, $twig_params);
         $this->handleRankChange(true);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         parent::post_updateItem($history);
         $this->handleRankChange();
@@ -2841,7 +2841,7 @@ TWIG, $twig_params);
      *    - sub_type : integer / sub_type of rule
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         $p = array_replace([
             'sub_type' => '',

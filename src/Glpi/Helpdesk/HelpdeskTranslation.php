@@ -62,7 +62,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     }
 
     #[Override]
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         if (is_a($classname ?? self::class, ItemTranslation::class, true)) {
             return parent::getTable(ItemTranslation::class);
@@ -71,7 +71,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     }
 
     #[Override]
-    public function getName($options = []): string
+    public function getName(array $options = []): string
     {
         return Dropdown::getLanguageName($this->fields['language']);
     }

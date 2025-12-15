@@ -47,7 +47,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
     use Inventoriable;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'refusedequipment';
 
     public static function getTypeName(int $nb = 0)
@@ -173,7 +173,7 @@ class RefusedEquipment extends CommonDBTM implements DefaultSearchRequestInterfa
         return "ti ti-x";
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $CFG_GLPI;
 

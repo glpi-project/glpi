@@ -45,7 +45,7 @@ class SlaLevel extends LevelAgreementLevel
     // No criteria
     protected $rulecriteriaclass = SlaLevelCriteria::class;
 
-    public static function getTable($classname = null)
+    public static function getTable(string $classname = null)
     {
         return CommonDBTM::getTable(self::class);
     }

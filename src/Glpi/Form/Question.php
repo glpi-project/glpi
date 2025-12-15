@@ -76,7 +76,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     private ?Section $section = null;
 
@@ -106,7 +106,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);
@@ -242,7 +242,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!isset($input['uuid'])) {
             $input['uuid'] = Uuid::uuid4();
@@ -262,7 +262,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->prepareInput($input);
         return parent::prepareInputForUpdate($input);

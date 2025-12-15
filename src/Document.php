@@ -63,14 +63,14 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     use ParentStatus;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Document_Item'];
+    protected static array $forward_entity_to = ['Document_Item'];
 
     public static string $rightname                   = 'document';
     /** @var string */
     public static $tag_prefix                  = '#';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -213,7 +213,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $ong;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $CFG_GLPI;
 
@@ -327,7 +327,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         // security (don't accept filename from $_REQUEST)
         if (array_key_exists('filename', $_REQUEST)) {
@@ -357,7 +357,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $input;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -1386,7 +1386,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *    string if option display=false (HTML code)
      *    void if hide_if_no_elements=true and no elements
      **/
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         global $CFG_GLPI, $DB;
 
@@ -1514,9 +1514,9 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     public static function getMassiveActionsForItemtype(
-        array &$actions,
-        $itemtype,
-        $is_deleted = false,
+        array       &$actions,
+        string      $itemtype,
+        bool        $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
         $action_prefix = 'Document_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;

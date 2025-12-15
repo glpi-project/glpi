@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Database extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = true;
+    public bool $auto_message_on_action = true;
     public static string $rightname       = 'database';
     public static $mustBeAttached  = false;
 
@@ -86,7 +86,7 @@ class Database extends CommonDBChild
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -456,7 +456,7 @@ class Database extends CommonDBChild
         echo "</div>";
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input['date_lastbackup']) && empty($input['date_lastbackup'])) {
             unset($input['date_lastbackup']);

@@ -266,7 +266,7 @@ final class AssetDefinition extends AbstractDefinition
 TWIG, $twig_params);
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         foreach (['capacities', 'profiles', 'translations', 'fields_display'] as $json_field) {
             if (!array_key_exists($json_field, $input)) {
@@ -279,7 +279,7 @@ TWIG, $twig_params);
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->managePictures($input);
         return parent::prepareInputForUpdate($input);
@@ -376,7 +376,7 @@ TWIG, $twig_params);
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         parent::post_updateItem();
 

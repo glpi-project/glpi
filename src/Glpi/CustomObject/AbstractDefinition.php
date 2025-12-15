@@ -198,7 +198,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $tabs;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $DB;
 
@@ -388,7 +388,7 @@ abstract class AbstractDefinition extends CommonDBTM
         );
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (!array_key_exists('system_name', $input)) {
             Session::addMessageAfterRedirect(
@@ -443,7 +443,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (
             array_key_exists('system_name', $input)
@@ -559,7 +559,7 @@ abstract class AbstractDefinition extends CommonDBTM
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Register and bootstrap the definition to make it usable right now.
         $this->registerAndBootstrapDefinition();
@@ -808,7 +808,7 @@ abstract class AbstractDefinition extends CommonDBTM
         return $search_options;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -845,7 +845,7 @@ TWIG,
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];

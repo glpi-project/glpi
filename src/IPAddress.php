@@ -62,9 +62,9 @@ class IPAddress extends CommonDBChild
     // From CommonDBChild
     public static $itemtype       = 'itemtype';
     public static $items_id       = 'items_id';
-    public $dohistory             = false;
+    public bool $dohistory             = false;
 
-    public $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
+    public array $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
 
     /**
      * Version of the address. Should be 4 or 6, or empty if not valid address
@@ -186,12 +186,12 @@ class IPAddress extends CommonDBChild
         return array_merge($input, $this->setArrayFromAddress($input, "version", "name", "binary"));
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return parent::prepareInputForAdd($this->prepareInput($input));
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return parent::prepareInputForUpdate($this->prepareInput($input));
     }
@@ -202,7 +202,7 @@ class IPAddress extends CommonDBChild
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if (
             (isset($this->oldvalues['name']))

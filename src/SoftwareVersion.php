@@ -44,7 +44,7 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBChild
     public static $itemtype  = 'Software';
@@ -102,7 +102,7 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
      * @return bool true if displayed  false if item not found or not right to display
      *
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);

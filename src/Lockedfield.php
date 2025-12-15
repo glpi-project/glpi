@@ -47,7 +47,7 @@ class Lockedfield extends CommonDBTM
     private $item;
 
     // From CommonDBTM
-    public $dohistory                   = false;
+    public bool $dohistory                   = false;
 
     public static string $rightname                   = 'locked_field';
 
@@ -358,7 +358,7 @@ class Lockedfield extends CommonDBTM
         );
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -385,12 +385,12 @@ class Lockedfield extends CommonDBTM
         return ['update', 'clone'];
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInput($input);
     }
@@ -413,7 +413,7 @@ class Lockedfield extends CommonDBTM
         return $input;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         unset($this->fields['is_global']);

@@ -46,7 +46,7 @@ use function Safe\preg_replace;
 abstract class ITILTemplate extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory                 = true;
+    public bool $dohistory                 = true;
 
     public $display_dropdowntitle     = false;
 
@@ -595,7 +595,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
@@ -871,7 +871,7 @@ abstract class ITILTemplate extends CommonDropdown
         return "ti ti-stack-2-filled";
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $input = parent::prepareInputForAdd($input);
 
@@ -882,7 +882,7 @@ abstract class ITILTemplate extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = parent::prepareInputForAdd($input);
 
@@ -927,7 +927,7 @@ abstract class ITILTemplate extends CommonDropdown
         );
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
 
         if (!$this->isNewID($ID)) {

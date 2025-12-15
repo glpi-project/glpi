@@ -61,7 +61,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public static $browse_default = true;
 
     // From CommonDBTM
-    public $dohistory    = true;
+    public bool $dohistory    = true;
 
     /** @var array */
     protected $items     = [];
@@ -97,7 +97,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return 'b';
     }
 
-    public function getName($options = [])
+    public function getName(array $options = [])
     {
         return KnowbaseItemTranslation::getTranslatedValue($this);
     }
@@ -706,7 +706,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $entity_restriction;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         // set title for question if empty
         if (isset($input["name"]) && empty($input["name"])) {
@@ -728,7 +728,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         // set title for question if empty
         if (isset($input["name"]) && empty($input["name"])) {
@@ -737,7 +737,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles(
@@ -766,7 +766,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
-    public function showForm($ID, array $options = []): bool
+    public function showForm(int $ID, array $options = []): bool
     {
         // show kb item form
         if (
@@ -1968,7 +1968,7 @@ TWIG, $twig_params);
         return $tab;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         if ($interface === 'central') {
             $values = parent::getRights();

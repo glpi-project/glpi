@@ -611,10 +611,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
     /**
-     * @param $ID
+     * @param int $ID
      * @param $options   array
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if (!static::canView()) {
             return false;
@@ -1100,7 +1100,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
 
-    public function canMassiveAction($action, $field, $value)
+    public function canMassiveAction(string $action, int $field, string $value)
     {
 
         switch ($action) {
@@ -1994,7 +1994,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         $input = $this->handleInputDeprecations($input);
 
@@ -2400,7 +2400,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
@@ -2863,7 +2863,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $CFG_GLPI;
 
@@ -4095,7 +4095,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         };
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -4112,7 +4112,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     }
 
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -4150,7 +4150,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
         $actions = [];
 

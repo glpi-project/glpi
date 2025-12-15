@@ -74,8 +74,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     use TreeBrowse;
 
     // From CommonDBTM
-    public $dohistory         = true;
-    public $history_blacklist = ['date_mod', 'date_sync', 'last_login',
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_mod', 'date_sync', 'last_login',
         'publicbookmarkorder', 'privatebookmarkorder',
     ];
 
@@ -92,7 +92,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public static string $rightname = 'user';
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'password',
         'password_history',
         'personal_token',
@@ -837,7 +837,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         return false;
     }
 
-    public static function unsetUndisclosedFields(&$fields)
+    public static function unsetUndisclosedFields(array &$fields)
     {
         parent::unsetUndisclosedFields($fields);
 
@@ -866,7 +866,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         global $DB;
 
@@ -1074,7 +1074,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         global $CFG_GLPI;
 
@@ -1410,7 +1410,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         //handle timezone change for current user
         if ($this->fields['id'] == Session::getLoginUserID()) {
@@ -2815,7 +2815,7 @@ HTML;
      *
      * @return bool true if user found, false otherwise
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         global $DB;
 
@@ -3047,7 +3047,7 @@ HTML;
         }
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
     {
 
         $isadmin = static::canUpdate();
@@ -3683,7 +3683,7 @@ HTML;
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         if (!is_array($values)) {
@@ -3710,7 +3710,7 @@ HTML;
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -4230,7 +4230,7 @@ HTML;
      *
      * @return int|string Random value if displayed, string otherwise
      */
-    public static function dropdown($options = [])
+    public static function dropdown(array $options = [])
     {
         global $CFG_GLPI;
         // Default values
@@ -5739,7 +5739,7 @@ HTML;
         }
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
 
         $values = parent::getRights();

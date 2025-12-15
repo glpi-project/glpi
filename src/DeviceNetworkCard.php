@@ -38,7 +38,7 @@
  **/
 class DeviceNetworkCard extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceNetworkCard', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {

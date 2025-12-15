@@ -49,9 +49,9 @@ class APIClient extends CommonDBTM
     protected bool $displaylist = false;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'app_token',
     ];
 
@@ -173,7 +173,7 @@ class APIClient extends CommonDBTM
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
 
         switch ($field) {
@@ -192,7 +192,7 @@ class APIClient extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public function showForm($ID, $options = [])
+    public function showForm(int $ID, $options = [])
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/setup/apiclient.html.twig', [
@@ -203,12 +203,12 @@ class APIClient extends CommonDBTM
         return true;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInputForUpdate($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
 
         if (isset($input['ipv4_range_start'])) {

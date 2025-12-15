@@ -35,7 +35,7 @@
 
 class SavedSearch_User extends CommonDBRelation
 {
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     public static $itemtype_1          = 'SavedSearch';
     public static $items_id_1          = 'savedsearches_id';
@@ -44,7 +44,7 @@ class SavedSearch_User extends CommonDBRelation
     public static $items_id_2          = 'users_id';
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -60,7 +60,7 @@ class SavedSearch_User extends CommonDBRelation
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -83,7 +83,7 @@ class SavedSearch_User extends CommonDBRelation
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->can($input['id'], READ) ? $input : false;
     }

@@ -120,7 +120,7 @@ class DocumentType extends CommonDropdown
     }
 
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -140,14 +140,14 @@ class DocumentType extends CommonDropdown
 
 
     /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name               (default '')
-     * @param $values             (default '')
+     * @param string $field
+     * @param string $name (default '')
+     * @param array|string $values             (default '')
      * @param $options      array
-     **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+     **@since 0.84
+     *
+     */
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
 
         if (!is_array($values)) {
@@ -252,7 +252,7 @@ class DocumentType extends CommonDropdown
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         $this->clearCachedUploadablePatterns();
         parent::post_updateItem($history);

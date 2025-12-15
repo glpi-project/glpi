@@ -59,7 +59,7 @@ class AuthLdapReplicate extends CommonDBTM
         return $forbidden;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (isset($input["port"]) && ((int) $input["port"] == 0)) {
             $input["port"] = 389;
@@ -67,7 +67,7 @@ class AuthLdapReplicate extends CommonDBTM
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInputForAdd($input);
     }

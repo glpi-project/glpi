@@ -36,7 +36,7 @@
 /// Class DeviceGraphicCard
 class DeviceGraphicCard extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceGraphicCard', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceGraphicCard', 'Infocom'];
 
     public static function getTypeName(int $nb = 0)
     {
@@ -134,12 +134,12 @@ class DeviceGraphicCard extends CommonDevice
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         return $this->prepareInputForAddOrUpdate($input);
     }

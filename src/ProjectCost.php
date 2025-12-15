@@ -40,7 +40,7 @@ class ProjectCost extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = 'Project';
     public static $items_id = 'projects_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
 
     public static function getTypeName(int $nb = 0)
@@ -53,7 +53,7 @@ class ProjectCost extends CommonDBChild
         return Infocom::getIcon();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         if (
             empty($input['end_date'])
@@ -66,7 +66,7 @@ class ProjectCost extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input)
     {
         if (
             empty($input['end_date'])
@@ -235,7 +235,7 @@ class ProjectCost extends CommonDBChild
      * @param int $ID ID of the item
      * @param array $options options used
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);

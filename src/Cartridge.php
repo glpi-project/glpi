@@ -49,9 +49,9 @@ class Cartridge extends CommonDBRelation
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Infocom'];
-    public $dohistory                   = true;
-    public $no_form_page                = true;
+    protected static array $forward_entity_to = ['Infocom'];
+    public bool $dohistory                   = true;
+    public bool $no_form_page                = true;
 
     public static string $rightname = 'cartridge';
 
@@ -105,7 +105,7 @@ class Cartridge extends CommonDBRelation
         return ['assets', self::class];
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd(array $input)
     {
         $item = static::getItemFromArray(CartridgeItem::class, CartridgeItem::getForeignKeyField(), $input);
         if ($item === false) {
@@ -134,7 +134,7 @@ class Cartridge extends CommonDBRelation
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem(bool $history = true)
     {
         if (in_array('pages', $this->updates, true)) {
             $printer = new Printer();
@@ -1222,15 +1222,15 @@ TWIG, ['printer_id' => $printer->getID()]);
 
     /**
      * Show form for Cartridge
-     * @since 0.84
-     *
      * @param int $ID       Id of the cartridge
      * @param array   $options  Array of possible options:
      *     - parent Object : the printers where the cartridge is used
      *
      * @return bool False if there was a rights issue. Otherwise, returns true.
+     *@since 0.84
+     *
      */
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $printer = new Printer();
         if (!empty($options['parent'])) {
@@ -1318,7 +1318,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return true;
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         return (new CartridgeItem())->getRights($interface);
     }

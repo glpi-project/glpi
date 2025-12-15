@@ -59,7 +59,7 @@ class Reminder extends CommonDBVisible implements
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     /** @var bool */
     public $can_be_translated           = true;
 
@@ -446,7 +446,7 @@ class Reminder extends CommonDBVisible implements
         return $tab;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -458,7 +458,7 @@ class Reminder extends CommonDBVisible implements
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -528,7 +528,7 @@ class Reminder extends CommonDBVisible implements
      *     - target filename : where to go when done.
      *     - from_planning_ajax : set to disable planning form part
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm(int $ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $rand = mt_rand();
@@ -830,7 +830,7 @@ class Reminder extends CommonDBVisible implements
         }
     }
 
-    public function getRights($interface = 'central')
+    public function getRights(string $interface = 'central')
     {
         if ($interface === 'helpdesk') {
             $values = [READ => __('Read')];
