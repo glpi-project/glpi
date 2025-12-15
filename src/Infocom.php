@@ -989,7 +989,7 @@ class Infocom extends CommonDBChild
      *
      * @return void|string
      **/
-    public static function showDisplayLink($itemtype, int $device_id, bool $display = true): void|string
+    public static function showDisplayLink($itemtype, int $device_id, bool $display = true)
     {
         global $CFG_GLPI, $DB;
 

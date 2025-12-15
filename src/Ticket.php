@@ -3820,9 +3820,9 @@ JAVASCRIPT;
      * @param bool $showgrouptickets   (true by default)
      * @param bool $display            set to false to return html
      *
-     * @return void|string|false
+     * @return void|string
      */
-    public static function showCentralList(int $start, string $status = "process", bool $showgrouptickets = true, bool $display = true): void|string|bool
+    public static function showCentralList(int $start, string $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
         global $DB;
 
@@ -3830,7 +3830,7 @@ JAVASCRIPT;
             !Session::haveRightsOr(self::$rightname, [CREATE, self::READALL, self::READASSIGN])
             && !Session::haveRightsOr('ticketvalidation', TicketValidation::getValidateRights())
         ) {
-            return false;
+            return;
         }
 
         $SELECT = ['glpi_tickets.id', 'glpi_tickets.date_mod'];
@@ -4640,7 +4640,7 @@ JAVASCRIPT;
      *
      * @return string|false|void
      */
-    public static function showCentralCount(bool $foruser = false, bool $display = true): string|bool|void
+    public static function showCentralCount(bool $foruser = false, bool $display = true)
     {
         global $CFG_GLPI, $DB;
 

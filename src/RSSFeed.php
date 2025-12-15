@@ -754,16 +754,16 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      * @param bool $personal display rssfeeds created by me?
      * @param bool $display  if false, return html
      *
-     * @return false|void|string
+     * @return void|string
      **/
-    public static function showListForCentral(bool $personal = true, bool $display = true): bool|void|string
+    public static function showListForCentral(bool $personal = true, bool $display = true)
     {
         global $CFG_GLPI, $DB;
 
         if ($personal) {
             // Personal notes only for central view
             if (Session::getCurrentInterface() === 'helpdesk') {
-                return false;
+                return;
             }
 
             $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>"
@@ -771,7 +771,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         } else {
             // Show public rssfeeds / not mines : need to have access to public rssfeeds
             if (!self::canView()) {
-                return false;
+                return;
             }
 
             if (Session::getCurrentInterface() === 'central') {

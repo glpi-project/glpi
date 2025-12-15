@@ -449,7 +449,7 @@ class Search
      *
      * @return void|string
      */
-    public static function displaySearchoptionValue(array $request = []): void|string
+    public static function displaySearchoptionValue(array $request = [])
     {
         return QueryBuilder::displaySearchoptionValue($request);
     }

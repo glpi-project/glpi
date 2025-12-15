@@ -2431,7 +2431,7 @@ class Session
      * @return mixed|void The return value of the callable.
      * @throws Throwable Any throwable that was caught from the callable if any.
      */
-    public static function callAsSystem(callable $fn): mixed|void|null
+    public static function callAsSystem(callable $fn)
     {
         $caught_throwable = null;
         try {

@@ -290,7 +290,7 @@ class Event extends CommonDBTM
      *
      * @return void|string
      */
-    public static function showForUser(string $user = "", bool $display = true): void|string
+    public static function showForUser(string $user = "", bool $display = true)
     {
         global $CFG_GLPI, $DB;
 

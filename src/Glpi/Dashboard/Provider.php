@@ -182,7 +182,7 @@ class Provider
      *
      * @return array|void
      */
-    public static function __callStatic(string $name = "", array $arguments = []): array|void
+    public static function __callStatic(string $name = "", array $arguments = [])
     {
         if (str_contains($name, 'bigNumber')) {
             $itemtype = str_replace('bigNumber', '', $name);

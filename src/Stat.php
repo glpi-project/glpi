@@ -946,7 +946,7 @@ class Stat extends CommonGLPI
         string|array $value = "",
         string $value2 = "",
         array $add_criteria = []
-    ): array|void {
+    ) {
         global $CFG_GLPI;
         $DB = DBConnection::getReadConnection();
 
@@ -1948,7 +1948,7 @@ class Stat extends CommonGLPI
         ?array $options = null,
         bool $display = true,
         ?string $csv_link = null
-    ): string|void {
+    ) {
         $param = [
             'width'   => 800,
             'height'  => 300,
@@ -2124,7 +2124,7 @@ TWIG, $twig_params);
         array $options = [],
         bool $display = true,
         ?string $csv_link = null
-    ): string|void {
+    ) {
         $param = [
             'csv'     => true,
         ];
@@ -2247,7 +2247,7 @@ TWIG, $twig_params);
      * @return void|string
      * @phpstan-return ($display is true ? void : string)
      */
-    public function displaySearchForm(string $itemtype, string $date1, string $date2, bool $display = true): void|string
+    public function displaySearchForm(string $itemtype, string $date1, string $date2, bool $display = true)
     {
         $out = TemplateRenderer::getInstance()->render('pages/assistance/stats/global_form.html.twig', [
             'itemtype' => $itemtype,

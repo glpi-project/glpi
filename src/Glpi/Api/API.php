@@ -287,7 +287,7 @@ abstract class API
      *
      * @return array|void array with session_token, or void when error response is send in case of error
      */
-    protected function initSession(array $params = []): array|void
+    protected function initSession(array $params = [])
     {
         global $CFG_GLPI;
 
@@ -418,7 +418,7 @@ abstract class API
      *
      * @return bool|void success status or void when error response is send in case of error
      */
-    protected function changeActiveEntities(array $params = []): bool|void
+    protected function changeActiveEntities(array $params = [])
     {
         if (!isset($params['entities_id'])) {
             $entities_id = 'all';
@@ -516,7 +516,7 @@ abstract class API
      *
      * @return bool|void success status, or void when error response is send in case of error
      */
-    protected function changeActiveProfile(array $params = []): bool|void
+    protected function changeActiveProfile(array $params = [])
     {
         if (!isset($params['profiles_id'])) {
             $this->returnError();
@@ -1116,7 +1116,7 @@ abstract class API
      *
      * @return array|void collection of fields, or void when error response is send in case of error
      */
-    protected function getItems($itemtype, array $params = [], int &$totalcount = 0): array|void
+    protected function getItems($itemtype, array $params = [], int &$totalcount = 0)
     {
         global $DB;
 
@@ -1613,7 +1613,7 @@ abstract class API
      *
      * @return array|void array of raw rows from Search class, or void when error response is sent in case of error
      */
-    protected function searchItems(string $itemtype, array $params = []): array|void
+    protected function searchItems(string $itemtype, array $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -1868,7 +1868,7 @@ abstract class API
      *
      * @return array|void array of id, or void when error response is send in case of error
      */
-    protected function createItems(string $itemtype, array $params = []): array|void
+    protected function createItems(string $itemtype, array $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -1999,7 +1999,7 @@ abstract class API
      *
      * @return array|void  array of boolean, or void when error response is send in case of error
      */
-    protected function updateItems(string $itemtype, array $params = []): array|void
+    protected function updateItems(string $itemtype, array $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
         $input    = isset($params['input']) ? $params["input"] : null;
@@ -2119,7 +2119,7 @@ abstract class API
      *
      * @return array|void success status, or void when error response is send in case of error
      */
-    protected function deleteItems(string $itemtype, array $params = []): array|void
+    protected function deleteItems(string $itemtype, array $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -2233,7 +2233,7 @@ abstract class API
      *
      * @return array|void response array, or void when error response is send in case of error
      */
-    protected function lostPassword(array $params = []): array|void
+    protected function lostPassword(array $params = [])
     {
         global $CFG_GLPI;
 
@@ -2861,7 +2861,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         string $statuscode = "ERROR",
         bool $docmessage = true,
         bool $return_response = true
-    ): array|void {
+    ) {
 
         if (empty($httpcode)) {
             $httpcode = 400;
@@ -3220,7 +3220,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         string $itemtype,
         ?int $id = null,
         bool $is_deleted = false
-    ): array|void {
+    ) {
         if (is_null($id)) {
             // No id supplied, show massive actions for the given itemtype
             $actions = $this->getMassiveActionsForItemtype(
@@ -3323,7 +3323,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         string $itemtype,
         ?string $action_key,
         bool $is_deleted
-    ): array|void {
+    ) {
         if (is_null($action_key)) {
             return $this->returnError(
                 "Missing action key, run 'getMassiveActions' endpoint to see available keys",

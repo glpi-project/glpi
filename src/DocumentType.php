@@ -170,7 +170,7 @@ class DocumentType extends CommonDropdown
      *
      * @return void|string
      */
-    public static function showAvailableTypesLink(array $options = []): void|string
+    public static function showAvailableTypesLink(array $options = [])
     {
         global $CFG_GLPI;
 

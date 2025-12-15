@@ -3683,7 +3683,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      * @used-by templates/pages/admin/profile/assistance.html.twig
      * @used-by templates/pages/admin/profile/assistance_simple.html.twig
      **/
-    public static function getLinearRightChoice(array $elements, array $options = []): string|void
+    public static function getLinearRightChoice(array $elements, array $options = [])
     {
 
         $param = [

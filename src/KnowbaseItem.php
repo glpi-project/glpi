@@ -1620,7 +1620,7 @@ TWIG, $twig_params);
      *
      * @return void|string
      **/
-    public static function showRecentPopular(string $type = "", bool $display = true): void|string
+    public static function showRecentPopular(string $type = "", bool $display = true)
     {
         global $DB;
 

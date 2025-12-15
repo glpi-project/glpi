@@ -1179,7 +1179,7 @@ class Auth extends CommonGLPI
      *
      * @return void|string (Based on 'display' option)
      */
-    public static function dropdown(array $options = []): void|string
+    public static function dropdown(array $options = [])
     {
         global $DB;
 

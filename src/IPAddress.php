@@ -346,7 +346,7 @@ class IPAddress extends CommonDBChild
      *
      * @return int|void
      */
-    public static function countForItem(CommonDBTM $item): int|void
+    public static function countForItem(CommonDBTM $item)
     {
         global $DB;
 

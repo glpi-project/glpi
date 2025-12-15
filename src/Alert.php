@@ -139,7 +139,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownYesNo(array $options = []): void|string
+    public static function dropdownYesNo(array $options = [])
     {
 
         $p = [
@@ -177,7 +177,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownIntegerNever(string $name, string $value, array $options = []): void|string
+    public static function dropdownIntegerNever(string $name, string $value, array $options = [])
     {
 
         $p = [

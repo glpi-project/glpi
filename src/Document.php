@@ -1386,7 +1386,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *    string if option display=false (HTML code)
      *    void if hide_if_no_elements=true and no elements
      **/
-    public static function dropdown(array $options = []): int|string|void
+    public static function dropdown(array $options = [])
     {
         global $CFG_GLPI, $DB;
 

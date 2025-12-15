@@ -321,7 +321,7 @@ class DBConnection extends CommonGLPI
      *
      * @return DBmysql|void object
      **/
-    public static function getDBSlaveConf(?int $choice = null): DBmysql|void
+    public static function getDBSlaveConf(?int $choice = null)
     {
 
         if (self::isDBSlaveActive()) {

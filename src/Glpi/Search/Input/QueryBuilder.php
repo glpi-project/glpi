@@ -251,7 +251,7 @@ final class QueryBuilder implements SearchInputInterface
      *
      * @return void|string
      */
-    public static function displaySearchoptionValue(array $request = []): void|string
+    public static function displaySearchoptionValue(array $request = [])
     {
         if (!isset($request['searchtype'])) {
             return '';

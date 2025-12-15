@@ -702,7 +702,7 @@ class Reminder extends CommonDBVisible implements
      * @return string|void
      * @phpstan-return ($display is true ? void : string)
      **/
-    public static function showListForCentral(bool $personal = true, bool $display = true): string|void
+    public static function showListForCentral(bool $personal = true, bool $display = true)
     {
         global $CFG_GLPI, $DB;
 

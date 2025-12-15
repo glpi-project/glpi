@@ -1336,7 +1336,7 @@ class MassiveAction
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ): bool|void {
+    ) {
         global $CFG_GLPI;
 
         $action = $ma->getAction();

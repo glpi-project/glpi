@@ -67,7 +67,7 @@ class PluginExtension extends AbstractExtension
      *
      * @return mixed|void
      */
-    public function callPluginHook(string $name, mixed $params = null, bool $return_result = false): mixed|void|null
+    public function callPluginHook(string $name, mixed $params = null, bool $return_result = false)
     {
         $result = Plugin::doHook($name, $params);
 
@@ -85,7 +85,7 @@ class PluginExtension extends AbstractExtension
      *
      * @return mixed|void
      */
-    public function callPluginHookFunction(string $name, mixed $params = null, bool $return_result = false): mixed|void|null
+    public function callPluginHookFunction(string $name, mixed $params = null, bool $return_result = false)
     {
         $result = Plugin::doHookFunction($name, $params);
 

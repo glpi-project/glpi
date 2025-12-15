@@ -615,7 +615,7 @@ class MailCollector extends CommonDBTM
      *
      * @return string|void
      **/
-    public function collect(int $mailgateID, bool $display = false): string|void
+    public function collect(int $mailgateID, bool $display = false)
     {
         global $CFG_GLPI;
 
@@ -1888,7 +1888,7 @@ class MailCollector extends CommonDBTM
      *
      * @return array|void
      */
-    public static function cronInfo(string $name): array|void
+    public static function cronInfo(string $name)
     {
 
         switch ($name) {

@@ -820,7 +820,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return string|void
      **/
-    public function showChildForItemForm(bool $canedit, string $field_name, int $id, bool $display = true): string|void
+    public function showChildForItemForm(bool $canedit, string $field_name, int $id, bool $display = true)
     {
 
         if ($this->isNewID($this->getID())) {

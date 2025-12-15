@@ -625,7 +625,7 @@ TWIG,
         bool $add_id = true,
         bool $allow_insecured_iframe = false,
         bool $display = true
-    ): string|void {
+    ) {
         global $CFG_GLPI;
 
         // complete title with id if exist
@@ -2836,7 +2836,7 @@ JS;
      *
      * @see self::showGenericDateTimeSearch()
      **/
-    public static function showDatesTimelineGraph(array $options = []): void|string
+    public static function showDatesTimelineGraph(array $options = [])
     {
         $default_options = [
             'title'   => '',
@@ -2909,7 +2909,7 @@ JS;
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $content (string will be added to HTML source)
      */
-    public static function showToolTip(string $content, $options = []): void|string
+    public static function showToolTip(string $content, $options = [])
     {
         global $CFG_GLPI;
 
@@ -3074,7 +3074,7 @@ JS;
         string $content_style = '',
         bool $init_on_demand = false,
         array $plugins_to_remove = [],
-    ): void|string {
+    ) {
         global $CFG_GLPI, $DB;
 
         $language = $_SESSION['glpilanguage'];
@@ -3464,7 +3464,7 @@ JAVASCRIPT
      *
      * @TODO Deprecate $additional_info, $display and $additional_params params in GLPI 12.0, they are not used.
      **/
-    public static function printAjaxPager(string $title, int $start, int $numrows, string $additional_info = '', bool $display = true, string $additional_params = ''): void|string
+    public static function printAjaxPager(string $title, int $start, int $numrows, string $additional_info = '', bool $display = true, string $additional_params = '')
     {
         $list_limit = $_SESSION['glpilist_limit'];
         // Forward is the next step forward
@@ -3776,7 +3776,7 @@ JAVASCRIPT
      *
      * @return void|string
      **/
-    public static function printPagerForm(string $action = "", bool $display = true, string $additional_params = ''): void|string
+    public static function printPagerForm(string $action = "", bool $display = true, string $additional_params = '')
     {
 
         if (!empty($additional_params) && !str_starts_with($additional_params, '&')) {
@@ -4793,7 +4793,7 @@ HTML;
      *
      * @return void|string   the html if display parameter is false
      **/
-    public static function file(array $options = []): void|string
+    public static function file(array $options = [])
     {
         global $CFG_GLPI;
 

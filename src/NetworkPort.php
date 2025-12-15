@@ -337,7 +337,7 @@ class NetworkPort extends CommonDBChild
      *
      * @see self::updateDependencies() for the update
      **/
-    public function splitInputForElements(?array $input): array|void
+    public function splitInputForElements(?array $input)
     {
 
         if (

@@ -934,9 +934,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
      *                       - value    : default value (default self::COUNT_AUTO)
      *                       - display  : boolean if false get string
      *
-     * @return void|string
+     * @return int|string
      **/
-    public static function dropdownDoCount(array $options = []): void|string
+    public static function dropdownDoCount(array $options = []): int|string
     {
         $p['name']      = 'do_count';
         $p['value']     = self::COUNT_AUTO;

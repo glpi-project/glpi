@@ -5127,7 +5127,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @param string $table
      * @return QueryExpression|void
      */
-    public static function generateSLAOLAComputation(string $type, string $table = "TABLE"): QueryExpression|void
+    public static function generateSLAOLAComputation(string $type, string $table = "TABLE")
     {
         global $DB;
 

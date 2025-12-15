@@ -977,7 +977,7 @@ class Dropdown
      *    void if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function dropdownIcons(string $myname, mixed $value, string $store_path = '', bool $display = true, array $options = []): void|string
+    public static function dropdownIcons(string $myname, mixed $value, string $store_path = '', bool $display = true, array $options = [])
     {
         if (!empty($store_path)) {
             Toolbox::deprecated('The store_path parameter is no longer used.');

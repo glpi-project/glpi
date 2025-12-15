@@ -968,7 +968,7 @@ class NetworkPort extends InventoryAsset
      *
      * @return array|void
      */
-    public function getPart(string $part): array|void
+    public function getPart(string $part)
     {
         if (!in_array($part, ['connections', 'aggregates', 'vlans', 'connection_ports'])) {
             return;

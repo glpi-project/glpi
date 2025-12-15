@@ -1873,7 +1873,7 @@ class Plugin extends CommonDBTM
      *
      * @return mixed|void $data
      **/
-    public static function doOneHook(string $plugin_key, string|callable $hook, ...$args): mixed|void|null
+    public static function doOneHook(string $plugin_key, string|callable $hook, ...$args)
     {
         if ((new Plugin())->isPluginsExecutionSuspended()) {
             return;

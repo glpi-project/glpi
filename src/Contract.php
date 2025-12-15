@@ -856,7 +856,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|void Return generated content if `display` parameter is true.
      **/
-    public static function showCentral(bool $display = true): string|void
+    public static function showCentral(bool $display = true)
     {
         global $CFG_GLPI, $DB;
 

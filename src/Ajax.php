@@ -61,7 +61,7 @@ class Ajax
      *
      * @return void|string (see $options['display'])
      */
-    public static function createModalWindow(string $name, string $url, array $options = []): void|string
+    public static function createModalWindow(string $name, string $url, array $options = [])
     {
         if (preg_match('/[^\w]+/', $name) === 1) {
             throw new InvalidArgumentException('Modal name is expected to be a valid javascript variable identifier.');
@@ -152,7 +152,7 @@ class Ajax
      *
      * @return void|string (see $options['display'])
      */
-    public static function createIframeModalWindow(string $domid, string $url, array $options = []): void|string
+    public static function createIframeModalWindow(string $domid, string $url, array $options = [])
     {
 
         $param = [
@@ -539,7 +539,7 @@ JS;
         int $buffertime = -1,
         array $forceloadfor = [],
         bool $display = true
-    ): void|string {
+    ) {
 
         $js = "$(function() {";
         $js .= self::updateItemOnEventJsCode(
@@ -582,7 +582,7 @@ JS;
         string $url,
         array $parameters = [],
         bool $display = true
-    ): void|string {
+    ) {
 
         return self::updateItemOnEvent(
             $toobserve,
@@ -623,7 +623,7 @@ JS;
         int $buffertime = -1,
         array $forceloadfor = [],
         bool $display = true
-    ): void|string {
+    ) {
         if ($buffertime !== -1) {
             trigger_error('$buffertime parameter has no effect anymore.', E_USER_WARNING);
         }
@@ -686,7 +686,7 @@ JS;
      *
      * @return void|string (see $display)
      */
-    public static function commonDropdownUpdateItem(array $options, bool $display = true): void|string
+    public static function commonDropdownUpdateItem(array $options, bool $display = true)
     {
 
         $field     = '';
@@ -767,7 +767,7 @@ JS;
         array $parameters = [],
         string|array $toobserve = "",
         bool $display = true
-    ): void|string {
+    ) {
 
         $out = sprintf('$("#%s").load("%s"', jsescape($toupdate), jsescape($url));
         if (count($parameters)) {
@@ -817,7 +817,7 @@ JS;
      *
      * @return void|string (see $display)
      */
-    public static function updateItem(string $toupdate, string $url, array $parameters = [], string $toobserve = "", bool $display = true): void|string
+    public static function updateItem(string $toupdate, string $url, array $parameters = [], string $toobserve = "", bool $display = true)
     {
 
         $js = "$(function() {";
