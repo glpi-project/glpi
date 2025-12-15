@@ -112,15 +112,10 @@ describe('Form access policy', () => {
         // Logout
         cy.logout();
 
-        // Visit the direct access URL
+        // Visit the direct access URL, the user should be directed to the login page
         cy.get('@direct_access_url').invoke('val').then((direct_access_url) => {
-            // Check if we can't access the form
-            cy.request({
-                url: direct_access_url,
-                failOnStatusCode: false,
-            }).then((response) => {
-                expect(response.status).to.eq(403);
-            });
+            cy.visit(direct_access_url);
+            cy.findByText("Your session has expired. Please log in again.").should("be.visible");
         });
     });
 
