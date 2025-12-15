@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Asset\Asset_PeripheralAsset;
-use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\AssetModel;
 use Glpi\Marketplace\Controller;
 use Glpi\Socket;
 use Glpi\SocketModel;
