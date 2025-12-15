@@ -41,7 +41,7 @@ function refreshAssetBreadcrumb(itemtype, items_id, dom_to_update) {
             items_id: items_id,
             itemtype: itemtype,
         }
-    }).done((html_breadcrum) => {
+    }).then((html_breadcrum) => {
         $(`#${CSS.escape(dom_to_update)}`).empty();
         $(`#${CSS.escape(dom_to_update)}`).append(html_breadcrum);
     });
@@ -58,7 +58,7 @@ function refreshNetworkPortDropdown(itemtype, items_id, dom_to_update) {
             items_id: items_id,
             itemtype: itemtype,
         }
-    }).done((html_data) => {
+    }).then((html_data) => {
         $(`#${CSS.escape(dom_to_update)}`).empty();
         $(`#${CSS.escape(dom_to_update)}`).append(html_data);
     });
@@ -76,9 +76,18 @@ function refreshSocketDropdown(itemtype, items_id, socketmodels_id, dom_name) {
             socketmodels_id: socketmodels_id,
             dom_name: dom_name
         }
-    }).done((html_data) => {
+    }).then((html_data) => {
         const parent_dom = $(`select[name="${CSS.escape(dom_name)}"]`).parent().parent();
         parent_dom.empty();
         parent_dom.append(html_data);
     });
+}
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        refreshAssetBreadcrumb,
+        refreshNetworkPortDropdown,
+        refreshSocketDropdown
+    };
 }

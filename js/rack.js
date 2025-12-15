@@ -261,3 +261,11 @@ var getHpos = function(x, is_half_rack, is_rack_rear) {
         return 2;
     }
 };
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        initRack,
+        getHpos
+    };
+}
