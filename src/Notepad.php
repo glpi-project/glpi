@@ -52,18 +52,18 @@ class Notepad extends CommonDBChild
     public static $logs_for_parent = true;
 
 
-    public static function getTypeName(int $nb = 0)
+    public static function getTypeName(int $nb = 0): string
     {
         //TRANS: Always plural
         return _n('Note', 'Notes', $nb);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-notes';
     }
 
-    public function getLogTypeID()
+    public function getLogTypeID(): array
     {
         return [$this->fields['itemtype'], $this->fields['items_id']];
     }
@@ -114,7 +114,7 @@ class Notepad extends CommonDBChild
         return $input;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): array|string
     {
 
         if (Session::haveRight($item::$rightname, READNOTE) && $item instanceof CommonDBTM) {
@@ -127,7 +127,7 @@ class Notepad extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -347,7 +347,7 @@ class Notepad extends CommonDBChild
         return true;
     }
 
-    public function post_updateItem(bool $history = 1)
+    public function post_updateItem(bool $history = true)
     {
         // Handle rich-text images and uploaded documents
         $this->input = $this->addFiles($this->input, ['force_update' => true]);

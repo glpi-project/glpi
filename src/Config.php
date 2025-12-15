@@ -96,21 +96,21 @@ class Config extends CommonDBTM
     ];
 
     /** @var string[] */
-    public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+    public static array $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
      * @var bool
      */
-    private static $loaded = false;
+    private static bool $loaded = false;
 
-    public static function getTypeName(int $nb = 0)
+    public static function getTypeName(int $nb = 0): string
     {
         return __('Setup');
     }
 
 
-    public static function getMenuContent()
+    public static function getMenuContent(): false|array
     {
         $menu = [];
         if (static::canView()) {
@@ -152,7 +152,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function defineTabs(array $options = [])
+    public function defineTabs(array $options = []): array
     {
 
         $ong = [];
@@ -165,7 +165,7 @@ class Config extends CommonDBTM
         return $ong;
     }
 
-    public function prepareInputForUpdate(array $input)
+    public function prepareInputForUpdate(array $input): false|array
     {
         global $CFG_GLPI;
 
@@ -446,7 +446,7 @@ class Config extends CommonDBTM
         return $input;
     }
 
-    public static function unsetUndisclosedFields(array &$fields)
+    public static function unsetUndisclosedFields(array &$fields): void
     {
         if (isset($fields['context']) && isset($fields['name'])) {
             if (
@@ -957,7 +957,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): array|string
     {
 
         switch (get_class($item)) {
@@ -1008,7 +1008,7 @@ class Config extends CommonDBTM
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0): bool
     {
         global $CFG_GLPI;
 
@@ -1514,7 +1514,7 @@ class Config extends CommonDBTM
     }
 
 
-    public function getRights(string $interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
 
         $values = parent::getRights();
@@ -1667,7 +1667,7 @@ class Config extends CommonDBTM
         ]);
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -1687,17 +1687,17 @@ class Config extends CommonDBTM
         return $tab;
     }
 
-    public function getLogTypeID()
+    public function getLogTypeID(): array
     {
         return [$this->getType(), 1];
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->logConfigChange($this->fields['context'], $this->fields['name'], (string) $this->fields['value'], '');
     }
 
-    public function post_updateItem(bool $history = true)
+    public function post_updateItem(bool $history = true): void
     {
         global $CFG_GLPI, $DB;
         // Check if password expiration mechanism has been activated
@@ -1830,7 +1830,7 @@ class Config extends CommonDBTM
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-adjustments";
     }

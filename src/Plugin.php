@@ -198,19 +198,19 @@ class Plugin extends CommonDBTM
      */
     private ?array $filesystem_plugin_keys = null;
 
-    public static function getTypeName(int $nb = 0)
+    public static function getTypeName(int $nb = 0): string
     {
         return _n('Plugin', 'Plugins', $nb);
     }
 
 
-    public static function getMenuName()
+    public static function getMenuName(): string
     {
         return static::getTypeName(Session::getPluralNumber());
     }
 
 
-    public static function getMenuContent()
+    public static function getMenuContent(): false|array
     {
         $menu = parent::getMenuContent() ?: [];
         if (!MarketplaceController::isWebAllowed()) {
@@ -233,7 +233,7 @@ class Plugin extends CommonDBTM
     }
 
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): false|array
     {
         if (!static::canView()) {
             return false;
@@ -273,14 +273,14 @@ class Plugin extends CommonDBTM
         return false;
     }
 
-    public function prepareInputForAdd(array $input)
+    public function prepareInputForAdd(array $input): false|array
     {
         $input = $this->prepareInput($input);
 
         return $input;
     }
 
-    public function prepareInputForUpdate(array $input)
+    public function prepareInputForUpdate(array $input): false|array
     {
         $input = $this->prepareInput($input);
 
@@ -2710,7 +2710,7 @@ class Plugin extends CommonDBTM
         return $plugin->isActivated($plugin_key);
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -2799,7 +2799,7 @@ class Plugin extends CommonDBTM
     }
 
 
-    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = [])
+    public static function getSpecificValueToDisplay(string $field, array|string $values, array $options = []): string
     {
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
@@ -3040,7 +3040,7 @@ class Plugin extends CommonDBTM
     }
 
 
-    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = [])
+    public static function getSpecificValueToSelect(string $field, string $name = '', array|string $values = '', array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];
@@ -3065,7 +3065,7 @@ class Plugin extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden   = parent::getForbiddenStandardMassiveAction();
@@ -3108,12 +3108,12 @@ class Plugin extends CommonDBTM
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-puzzle";
     }
 
-    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null): array
     {
         $actions = [];
 
@@ -3140,7 +3140,7 @@ class Plugin extends CommonDBTM
         return $actions;
     }
 
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         switch ($ma->getAction()) {
             case 'install':

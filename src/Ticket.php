@@ -110,7 +110,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         return true;
     }
 
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
 
         $forbidden = parent::getForbiddenStandardMassiveAction();
@@ -125,19 +125,19 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public static function getTypeName(int $nb = 0)
+    public static function getTypeName(int $nb = 0): string
     {
         return _n('Ticket', 'Tickets', $nb);
     }
 
 
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return 't';
     }
 
 
-    public static function getAdditionalMenuContent()
+    public static function getAdditionalMenuContent(): false|array
     {
 
         if (static::canCreate()) {
@@ -696,7 +696,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         global $CFG_GLPI;
 
@@ -707,7 +707,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, int $withtemplate = 0): array|string
     {
         /** @var CommonDBTM $item */
         if (static::canView()) {
@@ -815,7 +815,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, int $tabnum = 1, int $withtemplate = 0): bool
     {
 
         switch (get_class($item)) {
@@ -844,7 +844,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
 
-    public function defineTabs(array $options = [])
+    public function defineTabs(array $options = []): array
     {
         $tabs = [];
         $this->addDefaultFormTab($tabs);
@@ -2580,7 +2580,7 @@ JAVASCRIPT;
     }
 
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         global $DB;
 
@@ -5304,7 +5304,7 @@ JAVASCRIPT;
      *
      * @see commonDBTM::getRights()
      **/
-    public function getRights(string $interface = 'central')
+    public function getRights(string $interface = 'central'): array
     {
 
         $values = parent::getRights();
@@ -5407,7 +5407,7 @@ JAVASCRIPT;
      *
      * @since 9.1
      */
-    public function getValueToSelect(int|array|string $field_id_or_search_options, string $name = '', mixed|string $values = '', array $options = [])
+    public function getValueToSelect(int|array|string $field_id_or_search_options, string $name = '', mixed $values = '', array $options = []): false|string
     {
         if (isset($field_id_or_search_options['linkfield'])) {
             switch ($field_id_or_search_options['linkfield']) {
@@ -5690,7 +5690,7 @@ JAVASCRIPT;
         return $excluded;
     }
 
-    public function getWhitelistedSingleMassiveActions()
+    public function getWhitelistedSingleMassiveActions(): array
     {
         $whitelist = parent::getWhitelistedSingleMassiveActions();
 
@@ -6161,7 +6161,7 @@ JAVASCRIPT;
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-alert-circle";
     }
