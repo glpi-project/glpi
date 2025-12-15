@@ -99,7 +99,7 @@ class ProjectCost extends CommonDBChild
             if ($withtemplate == 2) {
                 echo '<div class="alert alert-info mb-3">';
                 echo '<i class="ti ti-info-circle me-2"></i>';
-                echo __('You are viewing costs from the template. Save the project first to be able to add or modify costs.');
+                echo __s('You are viewing costs from the template. Save the project first to be able to add or modify costs.');
                 echo '</div>';
             }
             return self::showForProject($item, $withtemplate);
