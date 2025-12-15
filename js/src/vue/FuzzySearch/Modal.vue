@@ -113,11 +113,11 @@
 
 <template>
     <Teleport to="body">
-        <div ref="ref_modal" id="fuzzysearch" class="modal" tabindex="-1" @keydown.esc="hideModal" @keyup="navigate_results">
+        <div ref="ref_modal" id="fuzzysearch" class="modal" aria-labelledby="fuzzysearch_title" tabindex="-1" @keydown.esc="hideModal" @keyup="navigate_results">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">
+                        <h5 id="fuzzysearch_title" class="modal-title">
                             <i class="ti ti-arrow-big-right me-2"></i>
                             {{ header_message }}
                         </h5>

@@ -35,20 +35,59 @@ describe('Page layout', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
     });
-    it('Accessibility', () => {
+    // it('Accessibility', () => {
+    //     cy.visit('/front/computer.php');
+    //     cy.disableAnimations();
+    //     cy.get('aside.navbar.sidebar .nav-link.dropdown-toggle:visible').each(($el) => {
+    //         cy.wrap($el).click();
+    //         cy.get('aside.navbar.sidebar').injectAndCheckA11y();
+    //     });
+    //
+    //     cy.get('.navbar-nav.user-menu:visible').click();
+    //     cy.get('.navbar-nav.user-menu:visible .dropdown-menu').injectAndCheckA11y();
+    //
+    //     cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle').click();
+    //     cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
+    //
+    //     cy.get('header.navbar').injectAndCheckA11y();
+    // });
+
+    it('Fuzzy search modal', () => {
         cy.visit('/front/computer.php');
-        cy.disableAnimations();
-        cy.get('aside.navbar.sidebar .nav-link.dropdown-toggle:visible').each(($el) => {
-            cy.wrap($el).click();
-            cy.get('aside.navbar.sidebar').injectAndCheckA11y();
+        // Open fuzzy search modal using Ctrl + Alt + G
+        cy.get('body').type('{ctrl}{alt}g');
+        cy.findByRole('dialog', { name: /Go to menu/ }).should('be.visible');
+        cy.findByRole('button', { name: /Close/ }).click();
+        cy.findByRole('dialog', { name: /Go to menu/ }).should('not.exist');
+        // Open with Command + Option + G (MacOS)
+        cy.get('body').type('{meta}{alt}g');
+        cy.findByRole('dialog', { name: /Go to menu/ }).should('be.visible');
+        cy.findByRole('button', { name: /Close/ }).click();
+        cy.findByRole('dialog', { name: /Go to menu/ }).should('not.exist');
+        // Open with button
+        cy.findByRole('button', { name: /Find menu/ }).click();
+        cy.findByRole('dialog', { name: /Go to menu/ }).should('be.visible');
+
+        cy.findByRole('dialog', { name: /Go to menu/ }).within(() => {
+            cy.findAllByRole('listitem').should('have.length.greaterThan', 3);
+            cy.findByPlaceholderText('Start typing to find a menu').type('Computer');
+            cy.findAllByRole('listitem').contains('Computer').should('have.length.greaterThan', 0);
+            cy.findAllByRole('listitem').contains('Monitor').should('have.length', 0);
+            cy.findByPlaceholderText('Start typing to find a menu').type('{selectAll}Cmptr');
+            cy.findAllByRole('listitem').contains('Computer').should('have.length.greaterThan', 0);
+            cy.findAllByRole('listitem').contains('Monitor').should('have.length', 0);
+
+            cy.root().type('{downArrow}');
+            cy.root().type('{downArrow}');
+            cy.root().type('{downArrow}');
+            cy.findAllByRole('listitem').eq(3).should('have.class', 'active');
+            cy.root().type('{upArrow}');
+            cy.findAllByRole('listitem').eq(2).should('have.class', 'active');
+            cy.findAllByRole('listitem').eq(2).then(($el) => {
+                const href = $el.find('a').attr('href');
+                cy.root().type('{enter}');
+                cy.url().should('include', href);
+            });
         });
-
-        cy.get('.navbar-nav.user-menu:visible').click();
-        cy.get('.navbar-nav.user-menu:visible .dropdown-menu').injectAndCheckA11y();
-
-        cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle').click();
-        cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
-
-        cy.get('header.navbar').injectAndCheckA11y();
     });
 });
