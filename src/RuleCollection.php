@@ -658,9 +658,7 @@ TWIG, $twig_params);
 HTML;
 
         $url = $CFG_GLPI["root_doc"];
-        if ($plugin = isPluginItemType(static::class)) {
-            $url .= "/plugins/{$plugin['plugin']}";
-        }
+        $url .= static::getRulesTestURL();
 
         $twig_params = [
             'rule_class' => $rule::class,
@@ -671,7 +669,7 @@ HTML;
             'reset_warning' => __('Rules will be erased and recreated from defaults. All existing rules will be lost.'),
             'test_label' => __('Test rules engine'),
             'replay_label' => __('Replay the dictionary rules'),
-            'test_url' => $url . "/front/rulesengine.test.php?sub_type=" . $rule::class . "&condition={$p['condition']}",
+            'test_url' => $url . "?sub_type=" . $rule::class . "&condition={$p['condition']}",
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -1592,11 +1590,6 @@ TWIG, $twig_params);
             }
         }
 
-        $target = '/front/rulesengine.test.php';
-        if ($plugin = isPluginItemType(static::class)) {
-            $target = '/plugins/' . $plugin['plugin'] . $target;
-        }
-
         TemplateRenderer::getInstance()->display('pages/admin/rules/engine_preview_criteria.html.twig', [
             'rule' => $rule,
             'input' => $input,
@@ -1605,7 +1598,7 @@ TWIG, $twig_params);
             'rule_classname' => static::getRuleClassName(),
             'condition' => $condition,
             'params' => [
-                'target' => $target,
+                'target' => static::getRulesTestURL(),
             ],
         ]);
 
@@ -1907,7 +1900,10 @@ TWIG, $twig_params);
         global $CFG_GLPI;
 
         if ($plug = isPluginItemType($itemtype)) {
-            $typeclass = 'Plugin' . $plug['plugin'] . $plug['class'] . 'Collection';
+            $typeclass = "GlpiPlugin\\{$plug['plugin']}\\{$plug['class']}Collection";
+            if (!class_exists($typeclass)) {
+                $typeclass = 'Plugin' . $plug['plugin'] . $plug['class'] . 'Collection';
+            }
         } else {
             if (in_array($itemtype, $CFG_GLPI["dictionnary_types"], true)) {
                 $typeclass = 'RuleDictionnary' . $itemtype . "Collection";
@@ -2292,5 +2288,14 @@ TWIG, $twig_params);
         }
 
         return $dictionnaries;
+    }
+
+    public static function getRulesTestURL(): string {
+        $url = '';
+        if ($plugin = isPluginItemType(static::class)) {
+            $url .= "/plugins/" . $plugin['plugin'];
+        }
+
+        return $url . "/front/rulesengine.test.php";
     }
 }
