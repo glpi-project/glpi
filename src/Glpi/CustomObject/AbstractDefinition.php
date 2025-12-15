@@ -36,7 +36,6 @@ namespace Glpi\CustomObject;
 
 use CommonDBTM;
 use DisplayPreference;
-use Document_Item;
 use Dropdown;
 use Gettext\Languages\Category as Language_Category;
 use Gettext\Languages\CldrData as Language_CldrData;
@@ -191,16 +190,10 @@ abstract class AbstractDefinition extends CommonDBTM
 
     public function defineTabs($options = [])
     {
-        global $CFG_GLPI;
-
         $tabs = [];
 
         $this->addDefaultFormTab($tabs);
         $this->addStandardTab(static::class, $tabs, $options);
-
-        if (in_array($this->getType(), $CFG_GLPI['document_types'])) {
-            $this->addStandardTab(Document_Item::class, $tabs, $options);
-        }
 
         return $tabs;
     }
