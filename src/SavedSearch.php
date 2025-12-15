@@ -93,7 +93,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return $forbidden;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

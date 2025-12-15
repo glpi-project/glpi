@@ -535,7 +535,7 @@ TWIG, ['la_level' => $la_level]);
         ]);
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

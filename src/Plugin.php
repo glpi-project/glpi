@@ -3113,7 +3113,7 @@ class Plugin extends CommonDBTM
         return "ti ti-puzzle";
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = [];
 

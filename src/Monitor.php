@@ -208,7 +208,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
     }
 
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
 
         $actions = parent::getSpecificMassiveActions($checkitem);

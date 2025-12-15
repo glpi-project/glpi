@@ -62,7 +62,7 @@ final class HelpdeskTranslation extends ItemTranslation implements ProvideTransl
     }
 
     #[Override]
-    public static function getTable(string $classname = null)
+    public static function getTable(?string $classname = null)
     {
         if (is_a($classname ?? self::class, ItemTranslation::class, true)) {
             return parent::getTable(ItemTranslation::class);

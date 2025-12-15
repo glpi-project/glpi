@@ -420,7 +420,7 @@ final class Form extends CommonDBTM implements
     }
 
     #[Override]
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null): array
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null): array
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

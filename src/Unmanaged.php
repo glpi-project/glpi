@@ -276,7 +276,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
         return "ti ti-question-mark";
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

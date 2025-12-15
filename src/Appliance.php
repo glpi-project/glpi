@@ -505,7 +505,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return $types;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

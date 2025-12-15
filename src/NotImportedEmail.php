@@ -68,7 +68,7 @@ class NotImportedEmail extends CommonDBTM
         return ['config', MailCollector::class, self::class];
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
 
         $isadmin = static::canUpdate();

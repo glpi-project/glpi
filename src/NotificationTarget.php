@@ -189,7 +189,7 @@ class NotificationTarget extends CommonDBChild
     }
 
     #[Override]
-    public static function getTable(string $classname = null): string
+    public static function getTable(?string $classname = null): string
     {
         return parent::getTable(self::class);
     }

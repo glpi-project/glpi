@@ -448,7 +448,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     }
 
     #[Override]
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
 
         $isadmin = static::canUpdate();

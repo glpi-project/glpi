@@ -351,7 +351,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         return $tab;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {

@@ -140,7 +140,7 @@ class Rule extends CommonDBTM
         ];
     }
 
-    public static function getTable(string $classname = null)
+    public static function getTable(?string $classname = null)
     {
         return parent::getTable(self::class);
     }
@@ -642,7 +642,7 @@ class Rule extends CommonDBTM
         return new $collection_class();
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

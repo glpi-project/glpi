@@ -2138,7 +2138,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         return $request;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
 
         $actions = parent::getSpecificMassiveActions($checkitem);

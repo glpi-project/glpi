@@ -189,7 +189,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
         return $tab;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
 

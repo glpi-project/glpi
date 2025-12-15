@@ -56,7 +56,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         return 'ti ti-shape';
     }
 
-    public static function getTable(string $classname = null): string
+    public static function getTable(?string $classname = null): string
     {
         return 'glpi_stencils';
     }

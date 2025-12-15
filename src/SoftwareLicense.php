@@ -939,7 +939,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
         return $result['numsum'] ?: 0;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {

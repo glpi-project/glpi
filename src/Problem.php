@@ -442,7 +442,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     #[Override]
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (ProblemTask::canCreate()) {

@@ -48,7 +48,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
      */
     protected static string $validation_classname;
 
-    public static function getTable(string $classname = null)
+    public static function getTable(?string $classname = null)
     {
         return $classname
             ? parent::getTable($classname)

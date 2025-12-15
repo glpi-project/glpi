@@ -51,7 +51,7 @@ class OlaLevel extends LevelAgreementLevel
     protected $rulecriteriaclass = 'OlaLevelCriteria';
 
 
-    public static function getTable(string $classname = null)
+    public static function getTable(?string $classname = null)
     {
         return CommonDBTM::getTable(self::class);
     }

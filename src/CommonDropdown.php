@@ -829,7 +829,7 @@ abstract class CommonDropdown extends CommonDBTM
         return ($add ? $this->import($input) : $this->findID($input));
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);

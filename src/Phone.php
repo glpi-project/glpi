@@ -230,7 +230,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return $tab;
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {

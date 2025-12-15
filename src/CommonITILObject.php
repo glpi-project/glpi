@@ -4150,7 +4150,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null)
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null)
     {
         $actions = [];
 

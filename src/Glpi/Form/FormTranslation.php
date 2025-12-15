@@ -59,7 +59,7 @@ final class FormTranslation extends ItemTranslation
     }
 
     #[Override]
-    public static function getTable(string $classname = null)
+    public static function getTable(?string $classname = null)
     {
         if (is_a($classname ?? self::class, ItemTranslation::class, true)) {
             return parent::getTable(ItemTranslation::class);

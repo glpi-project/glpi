@@ -602,7 +602,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array all retrieved data in an associative array by id
      **/
-    public function find(array $condition = [], array|string $order = [], int $limit = null): array
+    public function find(array $condition = [], array|string $order = [], ?int $limit = null): array
     {
         global $DB;
 
@@ -3953,7 +3953,7 @@ class CommonDBTM extends CommonGLPI
      **@since 9.2
      *
      */
-    public static function getSearchOptionsToAdd(string $itemtype = null): array
+    public static function getSearchOptionsToAdd(?string $itemtype = null): array
     {
         $options = [];
 
@@ -4144,7 +4144,7 @@ class CommonDBTM extends CommonGLPI
      * This should be overloaded in Class
      *
      */
-    public function getSpecificMassiveActions(CommonDBTM $checkitem = null): array
+    public function getSpecificMassiveActions(?CommonDBTM $checkitem = null): array
     {
         global $CFG_GLPI, $DB;
 
@@ -5691,7 +5691,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string
      */
-    public function getAutofillMark(string $field, array $options, string $value = null): string
+    public function getAutofillMark(string $field, array $options, ?string $value = null): string
     {
         $mark = '';
         $title = null;
@@ -5999,8 +5999,7 @@ class CommonDBTM extends CommonGLPI
         array $data,
         int   $parent_id,
         string $parent_itemtype
-    ): array
-    {
+    ): array {
         // No entity field -> no modification needed
         if (!isset($data['entities_id'])) {
             return $data;
