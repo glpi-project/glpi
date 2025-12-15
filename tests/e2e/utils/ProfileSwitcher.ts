@@ -59,10 +59,10 @@ export class ProfileSwitcher
     /**
      * Use one of the default profiles found in the `Profiles` enum.
      */
-    public async set(profile_name: Profiles)
+    public async set(profile_name: Profiles): Promise<void>
     {
         const profile_id = profile_name.valueOf();
-        this.setById(profile_id);
+        await this.setById(profile_id);
     }
 
     /**
@@ -70,7 +70,7 @@ export class ProfileSwitcher
      * trying to use a non default profile (for example a new profile that you
      * just created for a given test).
      */
-    public async setById(profile_id: number)
+    public async setById(profile_id: number): Promise<void>
     {
         // Profile is already loaded, do nothing.
         if (this.cache.getCurrentProfileId() === profile_id) {
