@@ -56,7 +56,10 @@ class Central extends CommonGLPI
     }
 
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -66,7 +69,7 @@ class Central extends CommonGLPI
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
 
         if ($item->getType() == self::class) {
@@ -88,7 +91,7 @@ class Central extends CommonGLPI
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
 
         if ($item instanceof self) {
@@ -120,7 +123,7 @@ class Central extends CommonGLPI
     /**
      * @return void
      */
-    public function showGlobalDashboard()
+    public function showGlobalDashboard(): void
     {
         echo "<table class='tab_cadre_central'>";
         Plugin::doHook(Hooks::DISPLAY_CENTRAL);
@@ -141,7 +144,7 @@ class Central extends CommonGLPI
      *
      * @return void
      **/
-    public static function showGlobalView()
+    public static function showGlobalView(): void
     {
 
         $showticket  = Session::haveRight("ticket", Ticket::READALL);
@@ -180,7 +183,7 @@ class Central extends CommonGLPI
      *
      * @return void
      */
-    public static function showMyView()
+    public static function showMyView(): void
     {
         $showticket  = Session::haveRightsOr(
             "ticket",
@@ -357,7 +360,7 @@ class Central extends CommonGLPI
      *
      * @return void
      */
-    public static function showRSSView()
+    public static function showRSSView(): void
     {
 
         $idor = Session::getNewIDORToken(RSSFeed::class, [
@@ -397,7 +400,7 @@ class Central extends CommonGLPI
      *
      * @return void
      */
-    public static function showGroupView()
+    public static function showGroupView(): void
     {
 
         $showticket = Session::haveRightsOr("ticket", [Ticket::READALL, Ticket::READASSIGN]);
@@ -647,7 +650,7 @@ class Central extends CommonGLPI
     /**
      * @return void
      */
-    public static function showMessages()
+    public static function showMessages(): void
     {
 
         $messages = self::getMessages();

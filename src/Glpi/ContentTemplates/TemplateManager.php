@@ -205,7 +205,7 @@ class TemplateManager
      *
      * @return array
      */
-    public static function computeParameters(array $parameters)
+    public static function computeParameters(array $parameters): array
     {
         return array_map(fn($parameter) => $parameter->compute(), $parameters);
     }

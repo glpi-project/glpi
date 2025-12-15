@@ -75,7 +75,7 @@ abstract class FQDNLabel extends CommonDBChild
      *
      * @return string  result the full internet name
      **/
-    public static function getInternetNameFromLabelAndDomainID($label, $domain)
+    public static function getInternetNameFromLabelAndDomainID(string $label, $domain)
     {
 
         $domainName = FQDN::getFQDNFromID($domain);

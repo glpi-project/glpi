@@ -277,7 +277,7 @@ final class Search
     {
         $joins = [];
 
-        $fn_append_join = static function ($join_alias, $join, $parent_type = null) use (&$joins, &$fn_append_join) {
+        $fn_append_join = static function ($join_alias, $join, $parent_type = null) use (&$joins, &$fn_append_join): void {
             $join_alias = str_replace('.', chr(0x1F), $join_alias);
             $join_type = ($join['type'] ?? 'LEFT') . ' JOIN';
             if (!isset($joins[$join_type])) {
@@ -301,7 +301,7 @@ final class Search
             if (isset($join['condition'])) {
                 $condition = $join['condition'];
                 // recursively inject the join alias into the condition keys in the cases where they don't contain a '.'
-                $fn_update_keys = static function ($condition) use (&$fn_update_keys, $join_alias) {
+                $fn_update_keys = static function ($condition) use (&$fn_update_keys, $join_alias): array {
                     $new_condition = [];
                     foreach ($condition as $key => $value) {
                         if (is_array($value)) {
@@ -325,14 +325,14 @@ final class Search
      * @param array $criteria The current search criteria. Used to get the SELECT criteria for the union search.
      * @return QueryUnion|string
      */
-    private function getFrom(array $criteria)
+    private function getFrom(array $criteria): \Glpi\DBAL\QueryUnion|string
     {
         if ($this->context->isUnionSearchMode()) {
             $queries = [];
             foreach ($this->context->getUnionTableNames() as $table) {
                 $query = $criteria;
                 // Remove join props from the select for now (complex to handle)
-                $query['SELECT'] = array_filter($query['SELECT'], function ($select) {
+                $query['SELECT'] = array_filter($query['SELECT'], function ($select): bool {
                     $select_str = (string) $select;
                     return str_starts_with($select_str, $this->db_read::quoteName('_.id'));
                 });
@@ -398,7 +398,7 @@ final class Search
             if ($item instanceof ExtraVisibilityCriteria) {
                 $main_table = $item::getTable();
                 $visibility_restrict = $item::getVisibilityCriteria();
-                $fn_update_keys = static function ($restrict) use (&$fn_update_keys, $main_table) {
+                $fn_update_keys = static function ($restrict) use (&$fn_update_keys, $main_table): array {
                     $new_restrict = [];
                     foreach ($restrict as $key => $value) {
                         $new_key = $key;
@@ -438,7 +438,7 @@ final class Search
                 ];
                 // if $entity_restrict has nothing except empty values as leafs, replace with a simple empty array.
                 // Expected in root entity when recursive. Having empty arrays will fail the query (thinks it is empty IN).
-                $fn_is_empty = static function ($where) use (&$fn_is_empty) {
+                $fn_is_empty = static function ($where) use (&$fn_is_empty): bool {
                     foreach ($where as $where_field => $where_value) {
                         if (is_array($where_value)) {
                             if (!$fn_is_empty($where_value)) {
@@ -475,7 +475,7 @@ final class Search
         // Handle sorting
         $sort = $this->context->getRequestParameter('sort');
         if ($sort !== null) {
-            $sorts = array_map(static fn($s) => trim($s), explode(',', (string) $sort));
+            $sorts = array_map(static fn($s): string => trim($s), explode(',', (string) $sort));
             $orderby = [];
             foreach ($sorts as $s) {
                 if ($s === '') {
@@ -717,12 +717,12 @@ final class Search
                 $current_path = implode('.', $new_path);
                 $next_id = array_shift($ids_path);
                 // if current path points to an object, we don't need to add the ID to the path
-                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
+                $path_without_ids = implode('.', array_filter(explode('.', $current_path), static fn($p): bool => !is_numeric($p)));
                 if (!isset($this->context->getJoins()[$path_without_ids]['parent_type']) && $this->context->getJoins()[$path_without_ids]['parent_type'] === Doc\Schema::TYPE_OBJECT) {
                     if (!empty($next_id) && preg_match('/\.\d+/', $current_path)) {
                         $items = ArrayPathAccessor::getElementByArrayPath($hydrated_record, $current_path);
                         // Remove numeric id parts from the path to get the join name
-                        $current_join = implode('.', array_filter(explode('.', $current_path), static fn($p) => !is_numeric($p)));
+                        $current_join = implode('.', array_filter(explode('.', $current_path), static fn($p): bool => !is_numeric($p)));
                         $primary_prop = $this->context->getPrimaryKeyPropertyForJoin($current_join);
                         // We just need the last part of the property name (not the full path)
                         $primary_prop = substr($primary_prop, strrpos($primary_prop, '.') + 1);
@@ -737,7 +737,7 @@ final class Search
                     $new_path[] = $next_id;
                 }
             }
-            $new_path = array_filter($new_path, static fn($p) => !empty($p));
+            $new_path = array_filter($new_path, static fn($p): bool => !empty($p));
             $join_prop_path = implode('.', $new_path);
         }
         return [$join_prop_path ?? $join_name, $id];
@@ -771,7 +771,7 @@ final class Search
         $results = $record_set->hydrate();
         Profiler::getInstance()->stop('Hydrate matching records');
 
-        $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn($prop) => isset($prop['x-mapper']));
+        $mapped_props = array_filter($search->context->getFlattenedProperties(), static fn(array $prop): bool => isset($prop['x-mapper']));
 
         Profiler::getInstance()->start('Map and cast properties', Profiler::CATEGORY_HLAPI);
         foreach ($results as &$result) {

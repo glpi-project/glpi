@@ -86,7 +86,7 @@ class UpgradeCommand extends AbstractCommand
         $local_plugins_data = $plugins_manager->find();
         $local_versions     = \array_column($local_plugins_data, 'version', 'directory');
         $active_plugins     = \array_column(
-            \array_filter($local_plugins_data, fn($plugin_data) => $plugin_data['state'] === Plugin::ACTIVATED),
+            \array_filter($local_plugins_data, fn(array $plugin_data): bool => $plugin_data['state'] === Plugin::ACTIVATED),
             'id',
             'directory'
         );

@@ -90,7 +90,7 @@ class ComputerAntivirus implements DeprecatedInterface
         $this->deleteSearchOption($soptions, '4');
 
         $soptions = array_map(
-            function ($soption) {
+            function (array $soption): array {
                 if (isset($soption['table']) && $soption['table'] === 'glpi_itemantiviruses') {
                     $soption['table'] = 'glpi_computerantiviruses';
                 }

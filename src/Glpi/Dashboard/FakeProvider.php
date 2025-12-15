@@ -71,14 +71,14 @@ final class FakeProvider extends Provider
             ['Zachariah', 'Ellis'],
             ['Rena', 'Velez'],
         ];
-        return array_map(static fn($name) => formatUserName(0, '', $name[1], $name[0]), $names);
+        return array_map(static fn(array $name) => formatUserName(0, '', $name[1], $name[0]), $names);
     }
 
     /**
      * @param string|null $itemtype
      * @return int|array|null
      */
-    private static function getItemCount(?string $itemtype = null)
+    private static function getItemCount(?string $itemtype = null): array|int|null
     {
         global $CFG_GLPI;
 
@@ -135,7 +135,7 @@ final class FakeProvider extends Provider
         ];
     }
 
-    public static function getTicketSummary(array $params = [])
+    public static function getTicketSummary(array $params = []): array
     {
         return [
             'data'  => [
@@ -334,7 +334,7 @@ final class FakeProvider extends Provider
             ];
         }
         // sort by date so newest is first
-        usort($data, static fn($a, $b) => $b['date'] <=> $a['date']);
+        usort($data, static fn(array $a, array $b): int => $b['date'] <=> $a['date']);
         return [
             'data'   => $data,
             'number' => 5,
@@ -516,7 +516,7 @@ final class FakeProvider extends Provider
         ];
     }
 
-    public static function averageTicketTimes(array $params = [])
+    public static function averageTicketTimes(array $params = []): array
     {
         $data = [
             'labels' => [],

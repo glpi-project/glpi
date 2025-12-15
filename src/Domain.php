@@ -89,7 +89,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return ['management', self::class];
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         global $DB;
 
@@ -111,7 +111,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         }
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -269,7 +269,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 
@@ -323,7 +323,10 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return $tab;
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -509,7 +512,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return parent::showMassiveActionsSubForm($ma);
     }
 
-    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
+    public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids): void
     {
         $domain_item = new Domain_Item();
 
@@ -621,7 +624,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         switch ($name) {
             case 'DomainsAlert':
@@ -688,7 +691,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return int
      */
-    public static function cronDomainsAlert($task = null)
+    public static function cronDomainsAlert($task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -839,7 +842,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function getUsed(array $used, $domaintype)
+    public static function getUsed(array $used, $domaintype): array
     {
         global $DB;
 
@@ -862,12 +865,12 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * @return bool
      */
-    public static function canManageRecords()
+    public static function canManageRecords(): bool
     {
         return static::canView() && count($_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] ?? []) > 0;
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): array|false
     {
         $links = [];
         if (static::canManageRecords()) {
@@ -882,7 +885,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         return false;
     }
 
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): array|false
     {
         if (static::canManageRecords()) {
             return [
@@ -903,22 +906,22 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     /**
      * @return string
      */
-    public function getCanonicalName()
+    public function getCanonicalName(): string
     {
         return rtrim($this->fields['name'], '.') . '.';
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         $this->fields['is_active'] = $this->fields['is_template'] ? 0 : 1;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-world-www";
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END, Alert::NOTICE]);

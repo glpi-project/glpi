@@ -42,7 +42,7 @@ class DeviceBattery extends CommonDevice
         return _n('Battery', 'Batteries', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -126,7 +126,7 @@ class DeviceBattery extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -161,7 +161,7 @@ class DeviceBattery extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'           => 'equal',
@@ -172,7 +172,7 @@ class DeviceBattery extends CommonDevice
         ];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-battery-2";
     }

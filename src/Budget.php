@@ -79,7 +79,10 @@ class Budget extends CommonDropdown
         return 'management';
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -94,7 +97,7 @@ class Budget extends CommonDropdown
         return $ong;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
 
         if (!$withtemplate) {
@@ -133,7 +136,7 @@ class Budget extends CommonDropdown
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [
             'item' => $this,
@@ -157,7 +160,10 @@ class Budget extends CommonDropdown
         return $input;
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -659,7 +665,7 @@ class Budget extends CommonDropdown
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-calculator";
     }

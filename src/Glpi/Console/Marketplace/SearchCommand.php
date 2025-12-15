@@ -74,7 +74,7 @@ class SearchCommand extends AbstractCommand
         $plugins = $controller::getAPI()->getAllPlugins();
 
         if (!empty($term)) {
-            $result = array_filter($plugins, static function ($plugin) use ($term) {
+            $result = array_filter($plugins, static function (array $plugin) use ($term): bool {
                 if (stripos($plugin['key'], $term)) {
                     return true;
                 }

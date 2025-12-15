@@ -62,10 +62,8 @@ class TemplateDocumentation
 
     /**
      * Context of the displayed variables
-     *
-     * @var string
      */
-    protected $context;
+    protected string $context;
 
     public function __construct(string $context)
     {
@@ -109,7 +107,7 @@ class TemplateDocumentation
         string $title,
         array $parameters,
         ?string $fields_prefix = null
-    ) {
+    ): void {
         // Check if this section is already defined, needed as some parameters
         // might have the same references
         if (isset($this->sections[$title])) {

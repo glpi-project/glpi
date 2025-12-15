@@ -75,7 +75,10 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return self::getTypeName(1);
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -88,7 +91,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return $ong;
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         $this->fields['color'] = '#dddddd';
         $this->fields['itemtype_endpoint_a'] = 'Computer';
@@ -105,7 +108,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         ];
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): array|false
     {
         $links = [];
         if (static::canView()) {
@@ -119,7 +122,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return false;
     }
 
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): array|false
     {
         if (static::canView()) {
             return [
@@ -136,7 +139,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return false;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -479,7 +482,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
      *
      * @return void|bool (display) Returns false if there is a rights error.
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [
@@ -489,7 +492,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-line";
     }

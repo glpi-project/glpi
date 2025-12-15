@@ -70,7 +70,7 @@ class Blacklist extends CommonDropdown
     public const MANUFACTURER   = 8;
 
     /** @return int */
-    public function maxActionsCount()
+    public function maxActionsCount(): int
     {
         return 0;
     }
@@ -86,7 +86,7 @@ class Blacklist extends CommonDropdown
     }
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'  => 'value',
@@ -152,7 +152,7 @@ class Blacklist extends CommonDropdown
     }
 
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
 
         if ($field['name'] == 'type') {
@@ -239,7 +239,7 @@ class Blacklist extends CommonDropdown
      *
      * @return array Array of types
      **/
-    public static function getTypes()
+    public static function getTypes(): array
     {
 
         $options = [
@@ -284,7 +284,7 @@ class Blacklist extends CommonDropdown
      *
      * @return array Array of blacklisted items
      **/
-    public static function getBlacklistedItems($type)
+    public static function getBlacklistedItems($type): array
     {
 
         $data = getAllDataFromTable('glpi_blacklists', ['type' => $type]);
@@ -485,7 +485,7 @@ class Blacklist extends CommonDropdown
      *
      * @return string
      */
-    public function process(int $type, string $value)
+    public function process(int $type, string $value): string
     {
         $criteria = $this->getBlacklists()[$type] ?? [];
 
@@ -505,7 +505,7 @@ class Blacklist extends CommonDropdown
      *
      * @return void
      */
-    public function processBlackList($value)
+    public function processBlackList($value): void
     {
 
         if (
@@ -570,7 +570,7 @@ class Blacklist extends CommonDropdown
         }
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-ban";
     }

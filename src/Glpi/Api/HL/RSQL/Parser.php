@@ -78,7 +78,7 @@ final class Parser
         // Strip slashes added by CSV parser
         $items = array_map('stripslashes', $items);
         // Trim outter quotes (' or ") but only if they are present on both sides
-        $items = array_map(function ($item) {
+        $items = array_map(function ($item): string {
             if (preg_match('/^\s*".*"\s*$/', $item) || preg_match("/^\s*'.*'\s*$/", $item)) {
                 return substr($item, 1, -1);
             }
@@ -97,7 +97,7 @@ final class Parser
                     'operator' => '==',
                     'description' => 'equivalent to',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => $b],
                     ],
                 ],
@@ -105,7 +105,7 @@ final class Parser
                     'operator' => '!=',
                     'description' => 'not equivalent to',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => ['<>', $b]],
                     ],
                 ],
@@ -113,7 +113,7 @@ final class Parser
                     'operator' => '=in=',
                     'description' => 'in',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)],
                     ],
                 ],
@@ -121,7 +121,7 @@ final class Parser
                     'operator' => '=out=',
                     'description' => 'not in',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         ['NOT' => [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)]],
                     ],
                 ],
@@ -129,7 +129,7 @@ final class Parser
                     'operator' => '=lt=',
                     'description' => 'less than',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => ['<', $b]],
                     ],
                 ],
@@ -137,7 +137,7 @@ final class Parser
                     'operator' => '=le=',
                     'description' => 'less than or equal to',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => ['<=', $b]],
                     ],
                 ],
@@ -145,7 +145,7 @@ final class Parser
                     'operator' => '=gt=',
                     'description' => 'greater than',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => ['>', $b]],
                     ],
                 ],
@@ -153,7 +153,7 @@ final class Parser
                     'operator' => '=ge=',
                     'description' => 'greater than or equal to',
                     'value_expected' => true,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => ['>=', $b]],
                     ],
                 ],
@@ -161,7 +161,7 @@ final class Parser
                     'operator' => '=like=',
                     'description' => 'like',
                     'value_expected' => true,
-                    'sql_where_callable' => function ($a, $b) {
+                    'sql_where_callable' => function ($a, $b): array {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
                             [
@@ -174,7 +174,7 @@ final class Parser
                     'operator' => '=ilike=',
                     'description' => 'case insensitive like',
                     'value_expected' => true,
-                    'sql_where_callable' => function ($a, $b) {
+                    'sql_where_callable' => function ($a, $b): array {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
                             [$this->db::quoteName($a) => ['LIKE', $b]],
@@ -185,7 +185,7 @@ final class Parser
                     'operator' => '=isnull=',
                     'description' => 'is null',
                     'value_expected' => false,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [$this->db::quoteName($a) => null],
                     ],
                 ],
@@ -193,7 +193,7 @@ final class Parser
                     'operator' => '=notnull=',
                     'description' => 'is not null',
                     'value_expected' => false,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         ['NOT' => [$this->db::quoteName($a) => null]],
                     ],
                 ],
@@ -202,7 +202,7 @@ final class Parser
                     'operator' => '=empty=',
                     'description' => 'is empty',
                     'value_expected' => false,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [
                             'OR' => [
                                 [$this->db::quoteName($a) => ''],
@@ -215,7 +215,7 @@ final class Parser
                     'operator' => '=notempty=',
                     'description' => 'is not empty',
                     'value_expected' => false,
-                    'sql_where_callable' => fn($a, $b) => [
+                    'sql_where_callable' => fn($a, $b): array => [
                         [
                             'AND' => [
                                 [$this->db::quoteName($a) => ['<>', '']],

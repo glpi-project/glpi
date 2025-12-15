@@ -45,7 +45,7 @@ class DeviceHardDrive extends CommonDevice
         return _n('Hard drive', 'Hard drives', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -197,7 +197,7 @@ class DeviceHardDrive extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -234,7 +234,7 @@ class DeviceHardDrive extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return ['designation'       => 'equal',
             'manufacturers_id'  => 'equal',
@@ -248,7 +248,7 @@ class DeviceHardDrive extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
@@ -335,7 +335,7 @@ class DeviceHardDrive extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-server-2";
     }

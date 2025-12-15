@@ -169,7 +169,7 @@ class UnlockCommand extends AbstractCommand
      *
      * @throws InvalidArgumentException
      */
-    private function validateInput(InputInterface $input)
+    private function validateInput(InputInterface $input): void
     {
 
         $all   = $input->getOption('all');

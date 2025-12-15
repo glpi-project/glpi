@@ -118,7 +118,10 @@ class UninstallCommand extends AbstractPluginCommand
         return __('Which plugin(s) do you want to uninstall (comma separated values)?');
     }
 
-    protected function getDirectoryChoiceChoices()
+    /**
+     * @return mixed[]
+     */
+    protected function getDirectoryChoiceChoices(): array
     {
         $choices = [];
         $plugin_iterator = $this->db->request(
@@ -145,7 +148,7 @@ class UninstallCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunUninstallMethod($directory)
+    private function canRunUninstallMethod($directory): bool
     {
         $plugin = new Plugin();
 

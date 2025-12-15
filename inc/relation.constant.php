@@ -1716,7 +1716,7 @@ $RELATION = [
 
 ];
 
-$add_mapping_entry = static function (string $source_table, string $target_table_key, string|array $relation_fields) use (&$RELATION) {
+$add_mapping_entry = static function (string $source_table, string $target_table_key, string|array $relation_fields) use (&$RELATION): void {
     if (!array_key_exists($source_table, $RELATION)) {
         $RELATION[$source_table] = [];
     }

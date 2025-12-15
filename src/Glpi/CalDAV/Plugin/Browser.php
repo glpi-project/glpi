@@ -65,7 +65,7 @@ class Browser extends Plugin
      *
      * @return bool
      */
-    private function canDisplayDebugInterface()
+    private function canDisplayDebugInterface(): bool
     {
         return Environment::get()->shouldEnableExtraDevAndDebugTools() || Config::canUpdate();
     }

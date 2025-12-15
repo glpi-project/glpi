@@ -308,7 +308,7 @@ class DBConnection extends CommonGLPI
      *
      * @return bool true if active / false if not active
      **/
-    public static function isDBSlaveActive()
+    public static function isDBSlaveActive(): bool
     {
         return file_exists(GLPI_CONFIG_DIR . "/config_db_slave.php");
     }
@@ -336,7 +336,7 @@ class DBConnection extends CommonGLPI
      *
      * @return void
      **/
-    public static function createDBSlaveConfig()
+    public static function createDBSlaveConfig(): void
     {
         global $DB;
         self::createSlaveConnectionFile(
@@ -363,7 +363,7 @@ class DBConnection extends CommonGLPI
      *
      * @return void
      */
-    public static function saveDBSlaveConf($host, $user, $password, $DBname)
+    public static function saveDBSlaveConf(string $host, string $user, string $password, string $DBname): void
     {
         global $DB;
         self::createSlaveConnectionFile(
@@ -385,7 +385,7 @@ class DBConnection extends CommonGLPI
      *
      * @return void
      */
-    public static function deleteDBSlaveConfig()
+    public static function deleteDBSlaveConfig(): void
     {
         unlink(GLPI_CONFIG_DIR . "/config_db_slave.php");
     }
@@ -555,7 +555,7 @@ class DBConnection extends CommonGLPI
      *
      * @return int
      **/
-    public static function getReplicateDelay($choice = null)
+    public static function getReplicateDelay($choice = null): int
     {
 
         include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
@@ -660,7 +660,7 @@ class DBConnection extends CommonGLPI
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
 
         return ['description' => __('Check the SQL replica'),
@@ -676,7 +676,7 @@ class DBConnection extends CommonGLPI
      *
      * @return int
      */
-    public static function cronCheckDBreplicate(CronTask $task)
+    public static function cronCheckDBreplicate(CronTask $task): int
     {
         global $DB;
 
@@ -728,7 +728,7 @@ class DBConnection extends CommonGLPI
      * @param bool $no_display if true, the function returns the HTML string to display
      * @return ($no_display is true ? string : null)
      **/
-    public static function showAllReplicateDelay($no_display = false)
+    public static function showAllReplicateDelay($no_display = false): ?string
     {
         $DBslave = self::getDBSlaveConf();
         $hosts = is_array($DBslave->dbhost) ? $DBslave->dbhost : [$DBslave->dbhost];
@@ -792,7 +792,7 @@ class DBConnection extends CommonGLPI
      *
      * @return void
      */
-    public static function changeCronTaskStatus($enable = true)
+    public static function changeCronTaskStatus($enable = true): void
     {
 
         $cron           = new CronTask();

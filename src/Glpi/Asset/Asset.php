@@ -368,19 +368,19 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         $all_fields = array_keys(static::getDefinition()->getAllFields());
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $shown_fields = array_column($fields_display, 'key');
-        return array_filter($shown_fields, static fn($f) => in_array($f, $all_fields, true));
+        return array_filter($shown_fields, static fn($f): bool => in_array($f, $all_fields, true));
     }
 
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
-        $custom_fields = array_combine(array_map(static fn($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
+        $custom_fields = array_combine(array_map(static fn(\Glpi\Asset\CustomFieldDefinition $f): string => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
         // Remove fields that are hidden for the current profile
-        $custom_fields = array_filter($custom_fields, static fn($f) => !$f->getFieldType()->getOptionValues()['hidden']);
+        $custom_fields = array_filter($custom_fields, static fn(\Glpi\Asset\CustomFieldDefinition $f): bool => !$f->getFieldType()->getOptionValues()['hidden']);
 
         $core_fields = static::getDefinition()->getAllFields();
         foreach ($fields_display as $field) {
@@ -393,7 +393,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         }
 
         $field_order = $this->getFormFields();
-        $field_order = array_filter($field_order, static fn($f) => $core_field_options[$f]['hidden'] !== true);
+        $field_order = array_filter($field_order, static fn($f): bool => $core_field_options[$f]['hidden'] !== true);
 
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
@@ -534,7 +534,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         return true;
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         parent::post_getFromDB();
 
@@ -551,7 +551,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         }
     }
 
-    public function pre_updateInDB()
+    public function pre_updateInDB(): void
     {
         parent::pre_updateInDB();
         // Fill old values for custom fields
@@ -562,14 +562,14 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
         }
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->post_addItemFromAssignableItem();
 
         $this->addFilesFromRichTextCustomFields();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->post_updateItemFromAssignableItem($history);
         if ($this->dohistory && $history && in_array('custom_fields', $this->updates, true)) {
@@ -637,7 +637,7 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
     public function getNonLoggedFields(): array
     {
         $ignored_fields = array_map(
-            static fn(CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
+            static fn(CustomFieldDefinition $field): string => 'custom_' . $field->fields['system_name'],
             static::getDefinition()->getCustomFieldDefinitions()
         );
         $ignored_fields[] = 'custom_fields';

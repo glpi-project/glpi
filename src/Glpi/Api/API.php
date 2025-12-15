@@ -176,7 +176,7 @@ abstract class API
      *
      * @return void
      */
-    public function initApi()
+    public function initApi(): void
     {
         global $CFG_GLPI;
 
@@ -189,7 +189,7 @@ abstract class API
         }
 
         // construct api url
-        $api_version_info = array_filter(Router::getAPIVersions(), static fn($info) => (int) $info['api_version'] === 1);
+        $api_version_info = array_filter(Router::getAPIVersions(), static fn(array $info): bool => (int) $info['api_version'] === 1);
         $api_version_info = reset($api_version_info);
         self::$api_url = trim($api_version_info['endpoint'], "/");
 
@@ -448,7 +448,7 @@ abstract class API
      *
      * @return array of entities (with id and name)
      */
-    protected function getMyEntities($params = [])
+    protected function getMyEntities(array $params = [])
     {
         if (!isset($params['is_recursive'])) {
             $params['is_recursive'] = false;
@@ -516,7 +516,7 @@ abstract class API
      *
      * @return bool|void success status, or void when error response is send in case of error
      */
-    protected function changeActiveProfile($params = [])
+    protected function changeActiveProfile(array $params = [])
     {
         if (!isset($params['profiles_id'])) {
             $this->returnError();
@@ -1454,7 +1454,7 @@ abstract class API
      */
     protected function listSearchOptions(
         $itemtype,
-        $params = [],
+        array $params = [],
         bool $check_depreciation = true
     ) {
         if ($check_depreciation) {
@@ -1519,7 +1519,7 @@ abstract class API
      *
      * @return string the unique id
      */
-    private function getSearchOptionUniqID($itemtype, $option = [])
+    private function getSearchOptionUniqID($itemtype, array $option = []): string
     {
 
         $uid_parts = [$itemtype];
@@ -1563,7 +1563,7 @@ abstract class API
      *
      * @return array unique id parts
      */
-    private function getSearchOptionUniqIDJoins($option)
+    private function getSearchOptionUniqIDJoins($option): array
     {
 
         $uid_parts = [];
@@ -1868,7 +1868,7 @@ abstract class API
      *
      * @return array|void array of id, or void when error response is send in case of error
      */
-    protected function createItems($itemtype, $params = [])
+    protected function createItems($itemtype, array $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
 
@@ -1999,7 +1999,7 @@ abstract class API
      *
      * @return array|void  array of boolean, or void when error response is send in case of error
      */
-    protected function updateItems($itemtype, $params = [])
+    protected function updateItems($itemtype, array $params = [])
     {
         $itemtype = $this->handleDepreciation($itemtype);
         $input    = isset($params['input']) ? $params["input"] : null;
@@ -2313,7 +2313,7 @@ abstract class API
      *
      * @return void
      */
-    private function checkAppToken()
+    private function checkAppToken(): void
     {
         // check app token (if needed)
         if (!isset($this->parameters['app_token'])) {
@@ -2349,7 +2349,7 @@ abstract class API
      *
      * @return void
      */
-    private function logEndpointUsage($endpoint = "")
+    private function logEndpointUsage($endpoint = ""): void
     {
 
         $username = "";
@@ -2415,7 +2415,7 @@ abstract class API
      *
      * @return void
      */
-    private function unlockSessionIfPossible()
+    private function unlockSessionIfPossible(): void
     {
 
         if (!$this->session_write) {
@@ -2429,7 +2429,7 @@ abstract class API
      *
      * @return string Last message
      */
-    private function getGlpiLastMessage()
+    private function getGlpiLastMessage(): string
     {
         $all_messages             = [];
 
@@ -2503,7 +2503,7 @@ abstract class API
      *
      * @return void
      */
-    public function inlineDocumentation($file)
+    public function inlineDocumentation(string $file): void
     {
         $this->header(true, __("API Documentation"));
 
@@ -2726,7 +2726,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageNotfoundError($return_error = true)
+    public function messageNotfoundError($return_error = true): void
     {
 
         $this->returnError(
@@ -2746,7 +2746,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageBadArrayError($return_error = true)
+    public function messageBadArrayError($return_error = true): void
     {
 
         $this->returnError(
@@ -2766,7 +2766,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageLostError($return_error = true)
+    public function messageLostError($return_error = true): void
     {
 
         $this->returnError(
@@ -2786,7 +2786,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageRightError($return_error = true)
+    public function messageRightError($return_error = true): void
     {
 
         $this->returnError(
@@ -2806,7 +2806,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageSessionError($return_error = true)
+    public function messageSessionError($return_error = true): void
     {
         $this->returnError(
             __("session_token seems invalid"),
@@ -2825,7 +2825,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
      *
      * @return void
      */
-    public function messageSessionTokenMissing($return_error = true)
+    public function messageSessionTokenMissing($return_error = true): void
     {
 
         $this->returnError(
@@ -3372,7 +3372,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         // Parse html to find all non hidden inputs, textareas and select
         $inputs = [];
         $crawler = new Crawler($html);
-        $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs) {
+        $crawler->filterXPath('//input')->each(function (Crawler $node, $i) use (&$inputs): void {
             if ($node->attr('type') != "hidden") {
                 $inputs[] = [
                     'name' => $node->attr('name'),
@@ -3380,7 +3380,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 ];
             }
         });
-        $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs) {
+        $crawler->filterXPath('//select')->each(function (Crawler $node, $i) use (&$inputs): void {
             $type = 'select';
             if (str_starts_with($node->attr('id'), 'dropdown_')) {
                 $type = 'dropdown';
@@ -3390,7 +3390,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 'type' => $type,
             ];
         });
-        $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs) {
+        $crawler->filterXPath('//textarea')->each(function (Crawler $node, $i) use (&$inputs): void {
             $inputs[] = [
                 'name' => $node->attr('name'),
                 'type' => 'text',

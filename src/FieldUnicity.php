@@ -68,7 +68,7 @@ class FieldUnicity extends CommonDropdown
         return static::canUpdate();
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [
@@ -99,7 +99,10 @@ class FieldUnicity extends CommonDropdown
         ];
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong          = [];
         $this->addDefaultFormTab($ong);
@@ -119,7 +122,7 @@ class FieldUnicity extends CommonDropdown
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item::class === self::class) {
             self::showDoubles($item);
@@ -127,7 +130,7 @@ class FieldUnicity extends CommonDropdown
         return true;
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         switch ($field['type']) {
             case 'unicity_itemtype':
@@ -148,7 +151,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public function showItemtype($ID, $value = 0)
+    public function showItemtype($ID, $value = 0): void
     {
         global $CFG_GLPI;
 
@@ -192,7 +195,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return array an array of fields to check, or an empty array if no
      **/
-    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true)
+    public static function getUnicityFieldsConfig($itemtype, $entities_id = 0, $check_active = true): array
     {
         global $DB;
 
@@ -233,7 +236,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public static function selectCriterias(CommonDBTM $unicity)
+    public static function selectCriterias(CommonDBTM $unicity): void
     {
         echo "<span id='span_fields'>";
 
@@ -303,7 +306,7 @@ class FieldUnicity extends CommonDropdown
         return false;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -477,12 +480,12 @@ class FieldUnicity extends CommonDropdown
         return $input;
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array|false
     {
         return $this->prepareInput($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array|false
     {
         return $this->prepareInput($input);
     }
@@ -493,7 +496,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public static function deleteForItemtype($itemtype)
+    public static function deleteForItemtype($itemtype): void
     {
         global $DB;
 
@@ -512,7 +515,7 @@ class FieldUnicity extends CommonDropdown
      *
      * @return void
      **/
-    public static function showDoubles(FieldUnicity $unicity)
+    public static function showDoubles(FieldUnicity $unicity): void
     {
         global $DB;
 
@@ -584,7 +587,7 @@ class FieldUnicity extends CommonDropdown
         ]);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-fingerprint";
     }

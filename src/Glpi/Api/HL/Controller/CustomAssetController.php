@@ -89,7 +89,7 @@ final class CustomAssetController extends AbstractController
                 'x-itemtype' => $asset_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
-                    'read' => static function () use ($asset_class, $definition) {
+                    'read' => static function () use ($asset_class, $definition): array {
                         $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_')];
                         $criteria['WHERE']['_.assets_assetdefinitions_id'] = $definition->getID();
                         return $criteria;
@@ -284,7 +284,7 @@ final class CustomAssetController extends AbstractController
                         'items' => [
                             'type' => Doc\Schema::TYPE_STRING,
                             'x-mapped-from' => 'pictures',
-                            'x-mapper' => static function ($v) {
+                            'x-mapper' => static function ($v): array {
                                 $pictures = importArrayFromDB($v);
                                 return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
                             },

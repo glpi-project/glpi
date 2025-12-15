@@ -80,7 +80,10 @@ class APIClient extends CommonDBTM
         return 'setup';
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -90,7 +93,7 @@ class APIClient extends CommonDBTM
         return $ong;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -192,7 +195,7 @@ class APIClient extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    public function showForm($ID, $options = [])
+    public function showForm($ID, $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/setup/apiclient.html.twig', [
@@ -257,7 +260,7 @@ class APIClient extends CommonDBTM
      *
      * @return array
      */
-    public static function getLogMethod()
+    public static function getLogMethod(): array
     {
 
         return [self::DOLOG_DISABLED   => __('Disabled'),
@@ -283,7 +286,7 @@ class APIClient extends CommonDBTM
         return $key;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-browser";
     }

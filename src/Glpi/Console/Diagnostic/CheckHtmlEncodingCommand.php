@@ -102,7 +102,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private array $text_fields = [];
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -236,7 +236,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
             $this->outputMessage(
                 '<comment>' . sprintf(__('Fixing %s...'), $item::getTypeName(Session::getPluralNumber())) . '</comment>',
             );
-            $progress_message = (fn(array $fields, int $id) => sprintf(__('Fixing %s with ID %s...'), $item::getTypeName(1), $id));
+            $progress_message = (fn(array $fields, int $id): string => sprintf(__('Fixing %s with ID %s...'), $item::getTypeName(1), $id));
 
             foreach ($this->iterate($items, $progress_message) as $item_id => $fields) {
                 if (!$item->getFromDB($item_id)) {

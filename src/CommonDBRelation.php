@@ -830,7 +830,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         if (
@@ -880,7 +880,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
 
         if (
@@ -1023,7 +1023,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function cleanDBonMarkDeleted()
+    public function cleanDBonMarkDeleted(): void
     {
 
         if (
@@ -1082,7 +1082,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function post_restoreItem()
+    public function post_restoreItem(): void
     {
 
         if (
@@ -1140,7 +1140,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
     }
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
 
         if (
@@ -1210,7 +1210,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         ?HTMLTableSuperHeader $super = null,
         ?HTMLTableHeader $father = null,
         array $options = []
-    ) {
+    ): void {
 
         if (isset($options[static::class . '_side'])) {
             $side = $options[static::class . '_side'];
@@ -1253,11 +1253,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
         global $DB;
 
-        if (empty($item)) {
-            if (empty($father)) {
+        if (!$item instanceof \CommonDBTM) {
+            if (!$father instanceof \HTMLTableCell) {
                 return;
             }
             $item = $father->getItem();
@@ -1526,7 +1526,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         global $DB;
 
         $action        = $ma->getAction();

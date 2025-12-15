@@ -127,7 +127,7 @@ final class ResourceAccessor
         $params = [];
         $flattened_properties = Doc\Schema::flattenProperties($schema['properties']);
         $joins = Doc\Schema::getJoins($schema['properties']);
-        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins) {
+        $writable_props = array_filter($flattened_properties, static function ($v, $k) use ($joins): bool {
             $base_k = strstr($k, '.', true) ?: $k;
             $is_join = isset($joins[$base_k]);
             $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $k);
@@ -262,7 +262,7 @@ final class ResourceAccessor
         if (isset($schema['x-subtypes'])) {
             // For this case, we need to filter out the schemas that the user doesn't have read rights on
             $schemas = $schema['x-subtypes'];
-            $schemas = array_filter($schemas, static function ($v) {
+            $schemas = array_filter($schemas, static function (array $v) {
                 $itemtype = $v['itemtype'];
                 if (class_exists($itemtype) && is_subclass_of($itemtype, CommonDBTM::class)) {
                     return $itemtype::canView();

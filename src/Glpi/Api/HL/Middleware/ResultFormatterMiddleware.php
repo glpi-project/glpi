@@ -89,9 +89,9 @@ class ResultFormatterMiddleware extends AbstractMiddleware implements ResponseMi
         foreach ($data as $result_row) {
             $rows[] = $fn_get_data($result_row, '');
         }
-        $csv = implode(',', array_map(static fn($value) => '"' . str_replace('"', '""', $value) . '"', $columns)) . "\n";
+        $csv = implode(',', array_map(static fn($value): string => '"' . str_replace('"', '""', $value) . '"', $columns)) . "\n";
         foreach ($rows as $row) {
-            $csv .= implode(',', array_map(static fn($value) => '"' . str_replace('"', '""', $value) . '"', $row)) . "\n";
+            $csv .= implode(',', array_map(static fn($value): string => '"' . str_replace('"', '""', $value) . '"', $row)) . "\n";
         }
         return $csv;
     }

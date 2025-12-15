@@ -54,7 +54,7 @@ final class ApiRestController extends AbstractController
         $_SERVER['PATH_INFO'] = $request->get('request_parameters');
 
         // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
-        return new HeaderlessStreamedResponse(function () {
+        return new HeaderlessStreamedResponse(function (): void {
             $api = new APIRest();
             $api->call();
         });

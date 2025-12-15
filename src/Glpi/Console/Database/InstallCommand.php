@@ -366,7 +366,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
      *
      * @return bool
      */
-    private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output)
+    private function isInputContainingConfigValues(InputInterface $input, OutputInterface $output): bool
     {
 
         $config_options = [

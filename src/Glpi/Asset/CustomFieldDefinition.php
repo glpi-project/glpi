@@ -60,12 +60,12 @@ final class CustomFieldDefinition extends CommonDBChild
         return _n('Custom field', 'Custom fields', $nb);
     }
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'label';
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-forms';
     }
@@ -85,7 +85,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return parent::canUpdate();
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         global $DB;
 
@@ -128,7 +128,7 @@ final class CustomFieldDefinition extends CommonDBChild
         ]);
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $options[self::$items_id] = $options['parent']->fields["id"];
         if (!self::isNewID($ID)) {
@@ -139,7 +139,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         $adm = AssetDefinitionManager::getInstance();
         $field_types = $adm->getCustomFieldTypes();
-        $field_types = array_combine($field_types, array_map(static fn($t) => $t::getName(), $field_types));
+        $field_types = array_combine($field_types, array_map(static fn(string $t) => $t::getName(), $field_types));
         TemplateRenderer::getInstance()->display('pages/assets/customfield.html.twig', [
             'no_header' => true,
             'item' => $this,
@@ -153,7 +153,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return true;
     }
 
-    public function getEmpty()
+    public function getEmpty(): bool
     {
         if (parent::getEmpty()) {
             $this->fields['field_options'] = [];
@@ -252,7 +252,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         // Cannot change type or system_name of existing field
         if (
@@ -286,7 +286,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
-    public function post_getFromDB()
+    public function post_getFromDB(): void
     {
         $this->fields['field_options'] = json_decode($this->fields['field_options'] ?? '[]', true) ?? [];
         if (isset($this->fields['field_options']['multiple'])) {
@@ -298,21 +298,21 @@ final class CustomFieldDefinition extends CommonDBChild
         parent::post_getFromDB();
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         parent::post_addItem();
 
         $this->refreshAssetDefinition();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         parent::post_updateItem($history);
 
         $this->refreshAssetDefinition();
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         parent::post_purgeItem();
 
@@ -401,7 +401,7 @@ final class CustomFieldDefinition extends CommonDBChild
         return $is_valid;
     }
 
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
         if (!is_array($values)) {
             $values = [$field => $values];

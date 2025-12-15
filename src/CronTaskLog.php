@@ -49,7 +49,7 @@ class CronTaskLog extends CommonDBChild
     public const STATE_STOP  = 2;
     public const STATE_ERROR = 3;
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-news";
     }
@@ -80,7 +80,7 @@ class CronTaskLog extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
 
         if (!$withtemplate) {
@@ -104,7 +104,7 @@ class CronTaskLog extends CommonDBChild
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
 
         if ($item instanceof  CronTask) {

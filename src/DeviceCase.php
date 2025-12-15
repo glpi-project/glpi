@@ -43,7 +43,7 @@ class DeviceCase extends CommonDevice
         return _n('Case', 'Cases', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -109,7 +109,7 @@ class DeviceCase extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -124,7 +124,7 @@ class DeviceCase extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'        => 'equal',

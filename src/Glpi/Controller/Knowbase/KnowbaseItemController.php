@@ -89,7 +89,7 @@ final class KnowbaseItemController extends AbstractController
         } elseif (!$kbitem->canViewItem()) {
             throw new AccessDeniedHttpException();
         }
-        return new StreamedResponse(static function () use ($kbitem) {
+        return new StreamedResponse(static function () use ($kbitem): void {
             $kbitem->showFull();
         });
     }
@@ -178,7 +178,7 @@ final class KnowbaseItemController extends AbstractController
             'start' => $start,
         ];
 
-        return new StreamedResponse(static function () use ($twig_params) {
+        return new StreamedResponse(static function () use ($twig_params): void {
             TemplateRenderer::getInstance()->display('pages/tools/search_knowbaseitem.html.twig', $twig_params);
         });
     }

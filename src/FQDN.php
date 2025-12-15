@@ -52,7 +52,7 @@ class FQDN extends CommonDropdown
     }
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'    => 'fqdn',
@@ -113,7 +113,10 @@ class FQDN extends CommonDropdown
     }
 
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -229,7 +232,7 @@ class FQDN extends CommonDropdown
      *
      * @return bool  true if the FQDN is valid
      **/
-    public static function checkFQDN($fqdn)
+    public static function checkFQDN($fqdn): bool
     {
 
         // The FQDN must be compose of several labels separated by dots '.'
@@ -242,7 +245,7 @@ class FQDN extends CommonDropdown
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-world";
     }

@@ -91,7 +91,7 @@ class ComputerVirtualMachine implements DeprecatedInterface
         $this->deleteSearchOption($soptions, '5');
 
         $soptions = array_map(
-            function ($soption) {
+            function (array $soption): array {
                 if (isset($soption['table']) && $soption['table'] === 'glpi_itemvirtualmachines') {
                     $soption['table'] = 'glpi_computervirtualmachines';
                 }

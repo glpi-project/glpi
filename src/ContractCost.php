@@ -104,7 +104,7 @@ class ContractCost extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof Contract) {
             return false;
@@ -114,7 +114,7 @@ class ContractCost extends CommonDBChild
         return true;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -242,7 +242,7 @@ class ContractCost extends CommonDBChild
         return [];
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -274,7 +274,7 @@ class ContractCost extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForContract(Contract $contract, $withtemplate = 0)
+    public static function showForContract(Contract $contract, $withtemplate = 0): void
     {
         global $DB;
 

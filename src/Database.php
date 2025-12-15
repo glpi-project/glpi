@@ -67,7 +67,10 @@ class Database extends CommonDBChild
         ];
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -86,7 +89,7 @@ class Database extends CommonDBChild
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -102,12 +105,12 @@ class Database extends CommonDBChild
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-database";
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
 
         $tab = [];
@@ -249,7 +252,7 @@ class Database extends CommonDBChild
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
         $name = self::getTypeName(Session::getPluralNumber());
@@ -368,7 +371,7 @@ class Database extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof DatabaseInstance) {
             return false;
@@ -469,7 +472,7 @@ class Database extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): array|false
     {
         $links = [];
         $label = htmlescape(DatabaseInstance::getTypeName(Session::getPluralNumber()));
@@ -484,7 +487,7 @@ class Database extends CommonDBChild
         return false;
     }
 
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): array|false
     {
         if (static::canView()) {
             return [
@@ -502,7 +505,7 @@ class Database extends CommonDBChild
         return false;
     }
 
-    public function useDeletedToLockIfDynamic()
+    public function useDeletedToLockIfDynamic(): bool
     {
         return false;
     }

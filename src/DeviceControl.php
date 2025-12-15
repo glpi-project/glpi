@@ -45,7 +45,7 @@ class DeviceControl extends CommonDevice
         return _n('Controller', 'Controllers', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -148,7 +148,7 @@ class DeviceControl extends CommonDevice
         return $column;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-cpu";
     }

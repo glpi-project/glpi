@@ -268,7 +268,7 @@ class Calendar extends AbstractBackend
      *
      * @return void
      */
-    public function deleteCalendarObject($calendarId, $objectPath)
+    public function deleteCalendarObject($calendarId, $objectPath): void
     {
 
         $item = $this->getCalendarItemForPath($objectPath);
@@ -292,7 +292,7 @@ class Calendar extends AbstractBackend
      *
      * @return array
      */
-    private function convertVCalendarToCalendarObject(VCalendar $vcalendar)
+    private function convertVCalendarToCalendarObject(VCalendar $vcalendar): array
     {
 
         $vcalendar->PRODID = '-//glpi-project.org//GLPI CalDAV server//EN';

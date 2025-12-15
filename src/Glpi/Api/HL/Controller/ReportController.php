@@ -447,10 +447,10 @@ class ReportController extends AbstractController
             'number_closed' => array_values($nb_closed_stats),
             'satisfaction_surveys_open' => array_values($nb_opensatisfaction_stats),
             'satisfaction_surveys_answered' => array_values($nb_answersatisfaction_stats),
-            'satisfaction_surveys_avg_rating' => array_map(static fn($v) => round((float) $v, 2), array_values($avg_satisfaction_stats)),
-            'time_solve_avg' => array_map(static fn($v) => (int) $v, array_values($avg_solvedtime_stats)),
-            'time_close_avg' => array_map(static fn($v) => (int) $v, array_values($avg_closedtime_stats)),
-            'time_treatment_avg' => array_map(static fn($v) => (int) $v, array_values($avg_actiontime_stats)),
+            'satisfaction_surveys_avg_rating' => array_map(static fn($v): float => round((float) $v, 2), array_values($avg_satisfaction_stats)),
+            'time_solve_avg' => array_map(static fn($v): int => (int) $v, array_values($avg_solvedtime_stats)),
+            'time_close_avg' => array_map(static fn($v): int => (int) $v, array_values($avg_closedtime_stats)),
+            'time_treatment_avg' => array_map(static fn($v): int => (int) $v, array_values($avg_actiontime_stats)),
         ]);
     }
 

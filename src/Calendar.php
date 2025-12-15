@@ -130,7 +130,7 @@ class Calendar extends CommonDropdown
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         switch ($ma->getAction()) {
             case 'duplicate': // For calendar duplicate in another entity
@@ -208,13 +208,13 @@ class Calendar extends CommonDropdown
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    public function post_clone($source, $history)
+    public function post_clone($source, $history): void
     {
         $this->updateDurationCache($this->getID());
     }
 
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         $this->deleteChildrenAndRelationsFromDb(
@@ -232,7 +232,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      **/
-    public function isHoliday($date)
+    public function isHoliday(string $date): bool
     {
         $calendar_holiday = new Calendar_Holiday();
         $holidays = $calendar_holiday->getHolidaysForCalendar($this->fields['id']);
@@ -272,7 +272,7 @@ class Calendar extends CommonDropdown
      *
      * @FIXME Remove `$include_inactive_time` parameter in GLPI 11.0. It does not seems to be used and makes no sense.
      */
-    public function getActiveTimeBetween($start, $end, $include_inactive_time = false)
+    public function getActiveTimeBetween($start, $end, $include_inactive_time = false): float|int
     {
 
         if (!isset($this->fields['id'])) {
@@ -345,7 +345,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      */
-    public function isAWorkingDay($time)
+    public function isAWorkingDay($time): bool
     {
 
         $cache_duration   = $this->getDurationsCache();
@@ -362,7 +362,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool
      */
-    public function hasAWorkingDay()
+    public function hasAWorkingDay(): bool
     {
 
         $durations = $this->getDurationsCache();
@@ -409,7 +409,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool|string end date
      **/
-    public function computeEndDate($start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
+    public function computeEndDate(string $start, $delay, $additional_delay = 0, $work_in_days = false, $end_of_working_day = false)
     {
         // TODO 11.0: parameter $work_in_day make calculation for duration exprimed
         // in days (e.g "+ 5 days") but we don't have anything for month.
@@ -626,7 +626,7 @@ class Calendar extends CommonDropdown
      *
      * @return int
      */
-    public static function getActualTime($current_time, $number = 0, $negative = false)
+    public static function getActualTime($current_time, $number = 0, $negative = false): int|float|array
     {
         if ($negative) {
             return $current_time - $number;
@@ -664,7 +664,7 @@ class Calendar extends CommonDropdown
      *
      * @return bool|array
      **/
-    public function getDaysDurations()
+    public function getDaysDurations(): false|array
     {
 
         if (!isset($this->fields['id'])) {
@@ -712,12 +712,12 @@ class Calendar extends CommonDropdown
      *
      * @return int
      */
-    public static function getDayNumberInWeek($date)
+    public static function getDayNumberInWeek($date): int
     {
         return (int) date('w', $date);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-calendar";
     }

@@ -66,18 +66,14 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
 
     /**
      * Target items mapping.
-     *
-     * @var array
      */
-    private $target_items_mapping = [];
+    private array $target_items_mapping = [];
 
     /**
      * Matching items mapping.
      * Acts as a local cache to prevent DB queries when matching was found earlier for same criteria.
-     *
-     * @var array
      */
-    private $matching_items_mapping = [];
+    private array $matching_items_mapping = [];
 
     protected function configure()
     {

@@ -42,12 +42,12 @@ class QueryParam
      *
      * @return string
      */
-    public function getValue()
+    public function getValue(): string
     {
         return '?';
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getValue();
     }

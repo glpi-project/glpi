@@ -140,7 +140,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      * @return void
      */
     protected function writelnOutputWithProgressBar(
-        $messages,
+        string|iterable $messages,
         ProgressBar $progress_bar,
         $verbosity = OutputInterface::VERBOSITY_NORMAL
     ) {

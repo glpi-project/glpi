@@ -60,7 +60,10 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return ['management', Datacenter::class, self::class];
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this
@@ -78,7 +81,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $ong;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -135,7 +138,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $this->manageBlueprint($input);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         Toolbox::deletePicture($this->fields['blueprint']);
     }
@@ -175,7 +178,10 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $input;
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -264,7 +270,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -324,7 +330,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof Datacenter) {
             return false;
@@ -411,7 +417,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @return array [x => [pos_x], y => [pos_y]]]
      */
-    public function getFilled($current = null)
+    public function getFilled($current = null): array
     {
         global $DB;
 
@@ -442,7 +448,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @return array
      */
-    public function getAllPositions()
+    public function getAllPositions(): array
     {
         $positions = [];
         for ($x = 1; $x < (int) $this->fields['vis_cols'] + 1; ++$x) {
@@ -457,7 +463,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
         return $positions;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-building";
     }

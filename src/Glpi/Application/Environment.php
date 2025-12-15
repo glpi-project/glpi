@@ -72,7 +72,7 @@ enum Environment: string
     /**
      * @return array
      */
-    public static function getValues()
+    public static function getValues(): array
     {
         $values = [];
         foreach (self::cases() as $env) {

@@ -45,7 +45,7 @@ class DeviceSensor extends CommonDevice
         return _n('Sensor', 'Sensors', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -100,7 +100,7 @@ class DeviceSensor extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -119,7 +119,7 @@ class DeviceSensor extends CommonDevice
     /**
      * Criteria used for import function
      */
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'          => 'equal',

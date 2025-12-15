@@ -94,7 +94,7 @@ class Contract_User extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (Contract::canView() && $item::class === User::class) {
             self::showForUser($item, (int) $withtemplate);

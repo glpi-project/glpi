@@ -43,7 +43,7 @@ class DevicePowerSupply extends CommonDevice
         return _n('Power supply', 'Power supplies', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return array_merge(
@@ -121,7 +121,7 @@ class DevicePowerSupply extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -146,7 +146,7 @@ class DevicePowerSupply extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
@@ -194,7 +194,7 @@ class DevicePowerSupply extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-bolt";
     }

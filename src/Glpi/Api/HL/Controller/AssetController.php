@@ -117,7 +117,7 @@ final class AssetController extends AbstractController
         global $CFG_GLPI;
         $schemas = [];
 
-        $fn_get_assignable_restriction = static function (string $itemtype) {
+        $fn_get_assignable_restriction = static function (string $itemtype): bool|array {
             if (method_exists($itemtype, 'getAssignableVisiblityCriteria')) {
                 $criteria = $itemtype::getAssignableVisiblityCriteria('_');
                 if (count($criteria) === 1 && isset($criteria[0]) && is_numeric((string) $criteria[0])) {
@@ -514,7 +514,7 @@ final class AssetController extends AbstractController
                     ],
                 ];
                 $schemas[$schema_name]['x-rights-conditions'] = [
-                    'read' => static fn() => $fn_get_assignable_restriction($asset_type),
+                    'read' => static fn(): array|bool => $fn_get_assignable_restriction($asset_type),
                 ];
             }
 
@@ -608,7 +608,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => CartridgeItem::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(CartridgeItem::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(CartridgeItem::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -718,7 +718,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => ConsumableItem::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(ConsumableItem::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(ConsumableItem::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -764,7 +764,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Software::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Software::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(Software::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -878,7 +878,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Rack::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Rack::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(Rack::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -1044,7 +1044,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Enclosure::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Enclosure::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(Enclosure::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -1133,7 +1133,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => PDU::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(PDU::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(PDU::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -1221,7 +1221,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => PassiveDCEquipment::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(PassiveDCEquipment::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(PassiveDCEquipment::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -1309,7 +1309,7 @@ final class AssetController extends AbstractController
             'x-version-introduced' => '2.0',
             'x-itemtype' => Cable::class,
             'type' => Doc\Schema::TYPE_OBJECT,
-            'x-rights-conditions' => ['read' => static fn() => $fn_get_assignable_restriction(Cable::class)],
+            'x-rights-conditions' => ['read' => static fn(): array|bool => $fn_get_assignable_restriction(Cable::class)],
             'properties' => [
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -1531,7 +1531,7 @@ final class AssetController extends AbstractController
     private static function getGlobalAssetSchema(array $asset_schemas): array
     {
         $asset_types = self::getAssetTypes();
-        $asset_schemas = array_filter($asset_schemas, static fn($key) => !str_starts_with($key, '_') && in_array($key, $asset_types, true), ARRAY_FILTER_USE_KEY);
+        $asset_schemas = array_filter($asset_schemas, static fn($key): bool => !str_starts_with($key, '_') && in_array($key, $asset_types, true), ARRAY_FILTER_USE_KEY);
         $union_schema = Doc\Schema::getUnionSchema($asset_schemas);
         $union_schema['x-version-introduced'] = '2.0';
         return $union_schema;

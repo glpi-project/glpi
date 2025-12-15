@@ -63,18 +63,14 @@ class Grid
 {
     /** @var int */
     protected $cell_margin     = 3;
-    /** @var int */
-    protected $grid_cols       = 26;
-    /** @var int */
-    protected $grid_rows       = 24;
+    protected int $grid_cols;
+    protected int $grid_rows;
     /** @var string */
     protected $current         = "";
-    /** @var Dashboard|null */
-    protected $dashboard       = null;
+    protected \Glpi\Dashboard\Dashboard $dashboard;
     /** @var array */
     protected $items           = [];
-    /** @var string */
-    protected $context            = '';
+    protected string $context;
 
     /** @var bool */
     public static $embed              = false;
@@ -144,7 +140,7 @@ class Grid
      *
      * @return void
      */
-    public function getCards()
+    public function getCards(): void
     {
         self::loadAllDashboards();
 
@@ -217,7 +213,7 @@ HTML;
 
         $viewable = self::$all_dashboards;
         if ($context) {
-            $viewable = array_filter(self::$all_dashboards, fn($dashboard) => $dashboard['context'] === $context);
+            $viewable = array_filter(self::$all_dashboards, fn(array $dashboard): bool => $dashboard['context'] === $context);
         }
         return (count($viewable) > 0);
     }
@@ -251,7 +247,7 @@ HTML;
      *
      * @return void display html of the grid
      */
-    public function show(bool $mini = false, ?string $token = null)
+    public function show(bool $mini = false, ?string $token = null): void
     {
         global $GLPI_CACHE;
 
@@ -500,7 +496,7 @@ TWIG, $twig_params);
     /**
      * @return void
      */
-    public function showDefault()
+    public function showDefault(): void
     {
         echo "<div class='card p-3'>";
         $this->show();
@@ -515,7 +511,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public function initEmbedSession(array $params = [])
+    public function initEmbedSession(array $params = []): void
     {
         // load minimal session
         Session::start();
@@ -547,7 +543,7 @@ TWIG, $twig_params);
      *
      * @return void (display)
      */
-    public function initEmbed(array $params = [])
+    public function initEmbed(array $params = []): void
     {
         $defaults = [
             'dashboard'    => '',
@@ -574,7 +570,7 @@ TWIG, $twig_params);
      *
      * @return void (display)
      */
-    public function embed(array $params)
+    public function embed(array $params): void
     {
         Toolbox::deprecated(version: '12.0.0');
 
@@ -682,7 +678,7 @@ HTML;
         int $width = 2,
         int $height = 2,
         array $data_option = []
-    ) {
+    ): void {
 
         // let grid-stack to autoposition item
         $autoposition = 'gs-auto-position="true"';
@@ -732,7 +728,7 @@ HTML;
      *
      * @return void (display)
      */
-    public function displayAddDashboardForm()
+    public function displayAddDashboardForm(): void
     {
         $rand = mt_rand();
 
@@ -771,7 +767,7 @@ HTML;
      *
      * @return void
      */
-    public function displayWidgetForm(array $params = [])
+    public function displayWidgetForm(array $params = []): void
     {
         $gridstack_id = $params['gridstack_id'] ?? "";
         $old_id       = $gridstack_id;
@@ -800,7 +796,7 @@ HTML;
         }
 
         $list_cards = [];
-        array_walk($cards, function ($data, $index) use (&$list_cards) {
+        array_walk($cards, function (array $data, $index) use (&$list_cards): void {
             $group = $data['group'] ?? __("others");
             $list_cards[$group][$index] = $data['label'] ?? $data['itemtype']::getTypeName();
         });
@@ -839,7 +835,7 @@ HTML;
      *
      * @return void
      */
-    public function displayFilterForm(array $params = [])
+    public function displayFilterForm(array $params = []): void
     {
         $default_params = [
             'used'  => [],
@@ -877,7 +873,7 @@ HTML;
      *
      * @return void
      */
-    public function displayEmbedForm()
+    public function displayEmbedForm(): void
     {
         global $CFG_GLPI;
 
@@ -918,7 +914,7 @@ HTML;
      *
      * @return void
      */
-    public function displayEditRightsForm()
+    public function displayEditRightsForm(): void
     {
         self::loadAllDashboards();
         $rand   = mt_rand();
@@ -1054,7 +1050,7 @@ HTML;
                     unset($widget_args['url']);
 
                     if (isset($widget_args['data'])) {
-                        $unset_url = static function (&$array) use (&$unset_url) {
+                        $unset_url = static function (array &$array) use (&$unset_url): void {
                             unset($array['url']);
                             foreach ($array as &$value) {
                                 if (is_array($value)) {
@@ -1151,7 +1147,7 @@ HTML;
         ];
 
         $menu = Html::getMenuInfos();
-        array_walk($menu, static function ($firstlvl) use (&$menu_itemtypes) {
+        array_walk($menu, static function (array $firstlvl) use (&$menu_itemtypes): void {
             $key = $firstlvl['title'];
             if (isset($firstlvl['types'])) {
                 $menu_itemtypes[$key] = array_merge($menu_itemtypes[$key] ?? [], $firstlvl['types']);
@@ -1159,7 +1155,7 @@ HTML;
         });
 
         foreach ($menu_itemtypes as &$firstlvl) {
-            $firstlvl = array_filter($firstlvl, static function ($itemtype) use ($exclude) {
+            $firstlvl = array_filter($firstlvl, static function ($itemtype) use ($exclude): bool {
                 if (
                     in_array($itemtype, $exclude)
                     || !is_subclass_of($itemtype, 'CommonDBTM')
@@ -1490,7 +1486,7 @@ HTML;
      *
      * @return array
      */
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         return [
             READ   => __('Read'),
@@ -1512,7 +1508,7 @@ HTML;
      *
      * @return void
      */
-    public function setLastDashboard(string $page = "", string $dashboard = "")
+    public function setLastDashboard(string $page = "", string $dashboard = ""): void
     {
         $_SESSION['last_dashboards'][$page] = $dashboard;
     }

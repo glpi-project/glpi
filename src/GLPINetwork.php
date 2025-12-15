@@ -48,12 +48,12 @@ class GLPINetwork extends CommonGLPI
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-headset';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item::class === Config::class) {
             self::showForConfig();
@@ -64,7 +64,7 @@ class GLPINetwork extends CommonGLPI
     /**
      * @return void
      */
-    public static function showForConfig()
+    public static function showForConfig(): void
     {
         if (!Config::canView()) {
             return;

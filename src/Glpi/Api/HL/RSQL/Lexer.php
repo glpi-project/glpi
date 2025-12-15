@@ -95,7 +95,7 @@ final class Lexer
         $length = mb_strlen($query, 'UTF-8');
         $in_filter = false;
         $in_value = false;
-        $fn_validate_pos = static function () use ($pos, $length) {
+        $fn_validate_pos = static function () use ($pos, $length): void {
             // Note: phpstan doesn't like this, it should probably be a dedicated method.
             if ($pos < 0 || $pos >= $length) { // @phpstan-ignore smaller.alwaysFalse
                 // This case will probably never happen. An issue should be caught before now with a more specific error message.

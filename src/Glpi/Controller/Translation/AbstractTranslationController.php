@@ -193,7 +193,7 @@ abstract class AbstractTranslationController extends AbstractController
         if ($context_translations !== []) {
             $translation = current(array_filter(
                 $context_translations,
-                fn($translation) => $translation->fields['language'] === $language
+                fn($translation): bool => $translation->fields['language'] === $language
             ));
 
             if ($translation) {

@@ -90,7 +90,7 @@ SQL;
         }
 
         $capacities_normalized = array_map(
-            fn($capacity) => is_string($capacity) ? ['name' => $capacity, 'config' => []] : $capacity,
+            fn($capacity): mixed => is_string($capacity) ? ['name' => $capacity, 'config' => []] : $capacity,
             $capacities_current
         );
         if ($capacities_normalized !== $capacities_current) {

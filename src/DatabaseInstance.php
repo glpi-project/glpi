@@ -71,7 +71,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         ];
     }
 
-    public function useDeletedToLockIfDynamic()
+    public function useDeletedToLockIfDynamic(): bool
     {
         return false;
     }
@@ -86,7 +86,10 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return ['management', Database::class, self::class];
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -130,7 +133,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return $dbs;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         TemplateRenderer::getInstance()->display('pages/management/databaseinstance.html.twig', [
             'item' => $this,
@@ -389,7 +392,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return $types;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -401,7 +404,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     /**
      * @return bool
      */
-    public function pre_purgeInventory()
+    public function pre_purgeInventory(): bool
     {
         return true;
     }
@@ -422,7 +425,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -443,7 +446,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
      *
      * @return void
      */
-    public static function showInstances(CommonDBTM $item, $withtemplate)
+    public static function showInstances(CommonDBTM $item, $withtemplate): void
     {
         global $DB;
 
@@ -503,7 +506,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         ]);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-database-import";
     }

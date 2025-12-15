@@ -59,9 +59,8 @@ class FrontEndAssetsExtension extends AbstractExtension
 {
     /**
      * GLPI root dir.
-     * @var string
      */
-    private $root_dir;
+    private string $root_dir;
 
     public function __construct(string $root_dir = GLPI_ROOT)
     {
@@ -307,7 +306,7 @@ class FrontEndAssetsExtension extends AbstractExtension
 
         $plugins_path = \array_combine(
             Plugin::getPlugins(),
-            \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins())
+            \array_map(fn(string $plugin_key): string => "/plugins/{$plugin_key}", Plugin::getPlugins())
         );
 
         $script = sprintf('window.CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))

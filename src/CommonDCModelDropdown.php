@@ -296,7 +296,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         return $input;
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->updateRackItemsHorizontalPosition();
     }
@@ -385,7 +385,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      *
      * @return void
      */
-    private function updateRackItemsHorizontalPosition()
+    private function updateRackItemsHorizontalPosition(): void
     {
         if (!$this->fields['is_half_rack']) {
             // If the model is not half rack, set the hpos to none for all rack items using this model
@@ -416,13 +416,13 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         }
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         Toolbox::deletePicture($this->fields['picture_front']);
         Toolbox::deletePicture($this->fields['picture_rear']);
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         switch ($field['type']) {
             case 'depth':

@@ -177,7 +177,7 @@ class Alert extends CommonDBTM
      *
      * @return void|string (see $options['display'])
      */
-    public static function dropdownIntegerNever($name, $value, $options = [])
+    public static function dropdownIntegerNever($name, $value, array $options = [])
     {
 
         $p = [
@@ -271,7 +271,7 @@ class Alert extends CommonDBTM
      *
      * @return void
      */
-    public static function displayLastAlert($itemtype, $items_id)
+    public static function displayLastAlert($itemtype, $items_id): void
     {
         global $DB;
 

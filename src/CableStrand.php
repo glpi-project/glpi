@@ -60,7 +60,7 @@ class CableStrand extends CommonDropdown
         return $ong;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         Rule::cleanForItemAction($this);
         Rule::cleanForItemCriteria($this, '_cablestrands_id%');

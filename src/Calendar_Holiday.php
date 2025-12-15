@@ -172,7 +172,7 @@ class Calendar_Holiday extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof Calendar) {
             self::showForCalendar($item);
@@ -180,14 +180,14 @@ class Calendar_Holiday extends CommonDBRelation
         return true;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->invalidateCalendarCache($this->fields['calendars_id']);
 
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if (in_array('calendars_id', $this->updates)) {
             $this->invalidateCalendarCache($this->oldvalues['calendars_id']);
@@ -198,7 +198,7 @@ class Calendar_Holiday extends CommonDBRelation
         parent::post_updateItem($history);
     }
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
         $this->invalidateCalendarCache($this->fields['calendars_id']);
 

@@ -89,7 +89,10 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         return _n('Appliance', 'Appliances', $nb);
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -142,7 +145,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return bool item found
      */
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/appliance.html.twig', [
@@ -361,7 +364,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd(string $itemtype)
+    public static function rawSearchOptionsToAdd(string $itemtype): array
     {
         $tab = [];
 
@@ -464,7 +467,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         $this->deleteChildrenAndRelationsFromDb(
@@ -475,7 +478,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-versions";
     }
@@ -537,7 +540,7 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         $appli_item = new Appliance_Item();
 
         switch ($ma->getAction()) {

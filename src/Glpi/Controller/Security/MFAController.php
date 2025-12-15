@@ -59,7 +59,7 @@ final class MFAController extends AbstractController
         if (!isset($_SESSION['mfa_pre_auth'])) {
             return new RedirectResponse($request->getBasePath() . '/front/login.php');
         }
-        return new StreamedResponse(static function () {
+        return new StreamedResponse(static function (): void {
             $totp = new TOTPManager();
             $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user_id']);
         });
@@ -74,7 +74,7 @@ final class MFAController extends AbstractController
     public function prompt(Request $request): Response
     {
         $totp = new TOTPManager();
-        return new StreamedResponse(static function () use ($totp) {
+        return new StreamedResponse(static function () use ($totp): void {
             $totp->showTOTPPrompt();
         });
     }
@@ -161,7 +161,7 @@ final class MFAController extends AbstractController
             return new RedirectResponse($request->getBasePath() . '/front/login.php?' . $query_params);
         }
         $totp = new TOTPManager();
-        return new StreamedResponse(static function () use ($pre_auth_data, $totp) {
+        return new StreamedResponse(static function () use ($pre_auth_data, $totp): void {
             $totp->showBackupCodes((int) $pre_auth_data['user_id']);
         });
     }

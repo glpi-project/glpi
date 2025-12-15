@@ -71,7 +71,7 @@ class QuerySubQuery extends AbstractQuery
      *
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         global $DB;
 
@@ -83,7 +83,7 @@ class QuerySubQuery extends AbstractQuery
         return $sql;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getQuery();
     }

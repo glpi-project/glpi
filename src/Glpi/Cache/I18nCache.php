@@ -56,7 +56,7 @@ class I18nCache
      *
      * @return mixed
      */
-    public function getItem($key)
+    public function getItem(string $key): mixed
     {
         return $this->cache->get($key);
     }
@@ -67,7 +67,7 @@ class I18nCache
      *
      * @return bool
      */
-    public function setItem($key, $value)
+    public function setItem(string $key, $value): bool
     {
         return $this->cache->set($key, $value);
     }
@@ -77,7 +77,7 @@ class I18nCache
      *
      * @return bool
      */
-    public function removeItem($key)
+    public function removeItem(string $key): bool
     {
         return $this->cache->delete($key);
     }

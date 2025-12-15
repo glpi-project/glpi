@@ -119,7 +119,7 @@ class ActivateCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunActivateMethod($directory)
+    private function canRunActivateMethod($directory): bool
     {
 
         $plugin = new Plugin();
@@ -168,7 +168,10 @@ class ActivateCommand extends AbstractPluginCommand
         return __('Which plugin(s) do you want to activate (comma separated values)?');
     }
 
-    protected function getDirectoryChoiceChoices()
+    /**
+     * @return mixed[]
+     */
+    protected function getDirectoryChoiceChoices(): array
     {
 
         $choices = [];

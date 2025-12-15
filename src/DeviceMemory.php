@@ -45,7 +45,7 @@ class DeviceMemory extends CommonDevice
         return _n('Memory', 'Memory', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -171,7 +171,7 @@ class DeviceMemory extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -201,7 +201,7 @@ class DeviceMemory extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'          => 'equal',
@@ -216,7 +216,7 @@ class DeviceMemory extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($class, $main_joinparams)
+    public static function rawSearchOptionsToAdd($class, $main_joinparams): array
     {
         $tab = [];
 
@@ -283,7 +283,7 @@ class DeviceMemory extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "fas fa-memory";
     }

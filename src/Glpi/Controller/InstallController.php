@@ -75,7 +75,7 @@ class InstallController extends AbstractController
 
         $this->progress_storage->registerFailureCallback(
             $progress_indicator->getStorageKey(),
-            function () {
+            function (): void {
                 // Try to remove the config file, to be able to restart the process.
                 @unlink(GLPI_CONFIG_DIR . '/config_db.php');
             }
@@ -83,7 +83,7 @@ class InstallController extends AbstractController
 
         return $this->getProgressInitResponse(
             $progress_indicator,
-            function () use ($progress_indicator) {
+            function () use ($progress_indicator): void {
                 Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_indicator);
             }
         );
@@ -111,7 +111,7 @@ class InstallController extends AbstractController
 
         return $this->getProgressInitResponse(
             $progress_indicator,
-            function () use ($logger, $progress_indicator) {
+            function () use ($logger, $progress_indicator): void {
                 global $DB;
                 $DB = new DB();
                 $DB->disableTableCaching(); // Prevents issues on fieldExists upgrading from old versions

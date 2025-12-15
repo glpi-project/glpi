@@ -243,7 +243,7 @@ final class RuleController extends AbstractController
                             'field' => 'rules_id',
                             'primary-property' => 'id',
                         ],
-                        'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
+                        'properties' => array_filter($schemas['RuleCriteria']['properties'], static fn($k): bool => $k !== 'rule', ARRAY_FILTER_USE_KEY),
                     ],
                 ],
                 'actions' => [
@@ -258,7 +258,7 @@ final class RuleController extends AbstractController
                             'field' => 'rules_id',
                             'primary-property' => 'id',
                         ],
-                        'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k) => $k !== 'rule', ARRAY_FILTER_USE_KEY),
+                        'properties' => array_filter($schemas['RuleAction']['properties'], static fn($k): bool => $k !== 'rule', ARRAY_FILTER_USE_KEY),
                     ],
                 ],
                 'date_creation' => [

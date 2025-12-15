@@ -115,7 +115,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         return $this->managePictures($input);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -128,7 +128,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         $class->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alarm_threshold"] = Entity::getUsedConfig(
@@ -140,7 +140,10 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
         }
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -187,7 +190,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return bool : true for success
      **/
-    public static function addCompatibleType($cartridgeitems_id, $printermodels_id)
+    public static function addCompatibleType($cartridgeitems_id, $printermodels_id): bool
     {
         global $DB;
 
@@ -395,7 +398,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         return ['description' => __('Send alarms on cartridges')];
     }
@@ -408,7 +411,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
      * @return int
      * @used-by CronTask
      */
-    public static function cronCartridge($task = null)
+    public static function cronCartridge($task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -598,12 +601,12 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     /**
      * @return array
      */
-    public function getEvents()
+    public function getEvents(): array
     {
         return ['alert' => __('Send alarms on cartridges')];
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/cartridgeitem.html.twig', [

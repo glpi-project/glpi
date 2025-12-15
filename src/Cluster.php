@@ -76,7 +76,10 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
         return 'inventory';
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -202,7 +205,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
         return $options;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         $this->deleteChildrenAndRelationsFromDb(
@@ -235,7 +238,7 @@ class Cluster extends CommonDBTM implements AssignableItemInterface, StateInterf
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-hierarchy-2";
     }

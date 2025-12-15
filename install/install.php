@@ -52,7 +52,7 @@ if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]
 }
 
 //Print a correct  Html header for application
-function header_html($etape)
+function header_html($etape): void
 {
     // Send UTF8 Headers
     header("Content-Type: text/html; charset=UTF-8");
@@ -87,14 +87,14 @@ function header_html($etape)
 
 
 //Display a great footer.
-function footer_html()
+function footer_html(): void
 {
     echo "</div></div></body></html>";
 }
 
 
 // choose language
-function choose_language()
+function choose_language(): void
 {
     global $CFG_GLPI;
 
@@ -111,7 +111,7 @@ function choose_language()
 }
 
 
-function acceptLicense()
+function acceptLicense(): void
 {
     TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
         'copying' => file_get_contents(GLPI_ROOT . "/LICENSE"),
@@ -120,14 +120,14 @@ function acceptLicense()
 
 
 //confirm install form
-function step0()
+function step0(): void
 {
     TemplateRenderer::getInstance()->display('install/step0.html.twig');
 }
 
 
 //Step 1 checking some compatibility issue and some write tests.
-function step1($update)
+function step1($update): void
 {
     $config_files_to_update = [
         GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
@@ -148,7 +148,7 @@ function step1($update)
 
 
 //step 2 import mysql settings.
-function step2($update)
+function step2($update): void
 {
     TemplateRenderer::getInstance()->display('install/step2.html.twig', [
         'update' => $update,
@@ -157,7 +157,7 @@ function step2($update)
 
 
 //step 3 test mysql settings and select database.
-function step3($host, $user, $password, $update)
+function step3($host, $user, $password, $update): void
 {
 
     mysqli_report(MYSQLI_REPORT_OFF);
@@ -224,7 +224,7 @@ function step3($host, $user, $password, $update)
 
 
 //Step 4 Create and fill database.
-function step4($databasename, $newdatabasename)
+function step4($databasename, $newdatabasename): void
 {
     global $CFG_GLPI;
 
@@ -236,7 +236,7 @@ function step4($databasename, $newdatabasename)
     echo "<h3>" . __s('Initialization of the database') . "</h3>";
     echo "<br />";
 
-    $prev_form = function ($host, $user, $password, bool $disabled = false) {
+    $prev_form = function ($host, $user, $password, bool $disabled = false): void {
         echo "<form action='install.php' method='post' class='d-inline'>";
         echo "<input type='hidden' name='db_host' value='" . htmlescape($host) . "'>";
         echo "<input type='hidden' name='db_user' value='" . htmlescape($user) . "'>";
@@ -251,7 +251,7 @@ function step4($databasename, $newdatabasename)
     };
 
     //Display the form to go to the next page
-    $next_form = function (bool $disabled = false) {
+    $next_form = function (bool $disabled = false): void {
         echo "<form action='install.php' method='post' class='d-inline'>";
         echo "<input type='hidden' name='install' value='Etape_4'>";
         echo "<button type='submit' name='submit' class='btn btn-primary' " . ($disabled ? 'disabled="disabled"' : '') . ">";
@@ -355,7 +355,7 @@ function step4($databasename, $newdatabasename)
 }
 
 //send telemetry information
-function step6()
+function step6(): void
 {
     global $DB;
 
@@ -370,7 +370,7 @@ function step6()
     ]);
 }
 
-function step7()
+function step7(): void
 {
     TemplateRenderer::getInstance()->display('install/step7.html.twig', [
         'glpinetwork'     => GLPINetwork::showInstallMessage(),
@@ -379,7 +379,7 @@ function step7()
 }
 
 // finish installation
-function step8()
+function step8(): void
 {
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
     /** @var DB&DBmysql $DB */
@@ -414,7 +414,7 @@ function step8()
 }
 
 
-function update1($dbname)
+function update1($dbname): void
 {
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
@@ -459,7 +459,7 @@ function update1($dbname)
 /**
  * @since 0.84.2
  **/
-function checkConfigFile()
+function checkConfigFile(): void
 {
     global $CFG_GLPI;
 

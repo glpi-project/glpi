@@ -160,7 +160,7 @@ class Document_Item extends CommonDBRelation
         return countElementsInTable(static::getTable(), $criteria) > 0;
     }
 
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         // fordocument mandatory
         if ($this->fields['itemtype'] === Ticket::class) {
@@ -196,7 +196,7 @@ class Document_Item extends CommonDBRelation
         return true;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         if ($this->fields['itemtype'] === Ticket::class) {
             $ticket = new Ticket();
@@ -232,7 +232,7 @@ class Document_Item extends CommonDBRelation
         }
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         if ($this->fields['itemtype'] === Ticket::class) {
             $ticket = new Ticket();
@@ -528,7 +528,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
+    public static function showAddFormForItem(CommonDBTM $item, $withtemplate = 0, $options = []): bool
     {
         global $CFG_GLPI, $DB;
 
@@ -614,7 +614,7 @@ TWIG, $twig_params);
      *
      * @return void
      */
-    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = [])
+    public static function showListForItem(CommonDBTM $item, $withtemplate = 0, $options = []): void
     {
         global $DB;
 
@@ -732,7 +732,7 @@ TWIG, $twig_params);
         ]);
     }
 
-    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
+    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma): int
     {
         return match ($ma->getAction()) {
             'add', 'remove' => 1,
@@ -860,7 +860,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public function isFromSupportAgent()
+    public function isFromSupportAgent(): bool
     {
         // If not a CommonITILObject
         if (!is_a($this->fields['itemtype'], CommonITILObject::class, true)) {

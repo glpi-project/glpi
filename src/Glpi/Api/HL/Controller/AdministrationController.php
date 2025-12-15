@@ -72,7 +72,7 @@ final class AdministrationController extends AbstractController
                 'x-itemtype' => User::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
-                    'read' => static function () {
+                    'read' => static function (): array|true {
                         if (!Session::canViewAllEntities()) {
                             return [
                                 'LEFT JOIN' => [
@@ -624,7 +624,7 @@ EOT,
                 'palette' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'description' => 'Color palette/theme',
-                    'enum' => array_map(static fn($theme) => $theme->getKey(), ThemeManager::getInstance()->getAllThemes()),
+                    'enum' => array_map(static fn(\Glpi\UI\Theme $theme): string => $theme->getKey(), ThemeManager::getInstance()->getAllThemes()),
                 ],
                 'page_layout' => [
                     'type' => Doc\Schema::TYPE_STRING,

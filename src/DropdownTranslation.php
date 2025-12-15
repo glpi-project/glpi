@@ -54,7 +54,7 @@ class DropdownTranslation extends CommonDBChild
         return _n('Translation', 'Translations', $nb);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-language';
     }
@@ -81,7 +81,7 @@ class DropdownTranslation extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
             self::showTranslations($item);
@@ -115,7 +115,7 @@ class DropdownTranslation extends CommonDBChild
         return false;
     }
 
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         if ($this->fields['field'] === 'name') {
             $translation = new self();
@@ -146,7 +146,7 @@ class DropdownTranslation extends CommonDBChild
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if (!isset($this->input['_no_completename'])) {
             $translation = new self();
@@ -154,7 +154,7 @@ class DropdownTranslation extends CommonDBChild
         }
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // Add to session
         $_SESSION['glpi_dropdowntranslations'][$this->fields['itemtype']][$this->fields['field']]
@@ -216,7 +216,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return bool true if translation can be added/update, false otherwise
      **/
-    public function checkBeforeAddorUpdate($input, $add = true)
+    public function checkBeforeAddorUpdate(array $input, $add = true): bool
     {
         $number = self::getNumberOfTranslations(
             $input['itemtype'],
@@ -238,7 +238,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return void
      **/
-    public function generateCompletename($input, $add = true)
+    public function generateCompletename(array $input, $add = true): void
     {
         global $DB;
 
@@ -337,7 +337,7 @@ class DropdownTranslation extends CommonDBChild
      *
      * @return void
      */
-    public static function showTranslations(CommonDropdown $item)
+    public static function showTranslations(CommonDropdown $item): void
     {
         global $DB;
 
@@ -439,7 +439,7 @@ TWIG, $twig_params);
      * @param int $ID       field (default -1)
      * @param array   $options
      */
-    public function showForm($ID = -1, array $options = [])
+    public function showForm($ID = -1, array $options = []): bool
     {
         if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {
             // parent is mandatory
@@ -631,7 +631,7 @@ TWIG, $twig_params);
      *
      * @return array
      **/
-    public static function getTranslationsForAnItem($itemtype, $items_id, $field)
+    public static function getTranslationsForAnItem($itemtype, $items_id, $field): array
     {
         global $DB;
 
@@ -659,7 +659,7 @@ TWIG, $twig_params);
      *
      * @return void
      **/
-    public static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id)
+    public static function regenerateAllCompletenameTranslationsFor($itemtype, $items_id): void
     {
         foreach (self::getTranslationsForAnItem($itemtype, $items_id, 'completename') as $data) {
             $dt = new DropdownTranslation();
@@ -674,7 +674,7 @@ TWIG, $twig_params);
      *
      * @return bool true if there's at least one translation, otherwise false
      **/
-    public static function hasItemtypeATranslation($itemtype)
+    public static function hasItemtypeATranslation($itemtype): bool
     {
         return countElementsInTable(self::getTable(), ['itemtype' => $itemtype ]) > 0;
     }
@@ -686,7 +686,7 @@ TWIG, $twig_params);
      *
      * @return array Array of table / field translated items
      **/
-    public static function getAvailableTranslations($language)
+    public static function getAvailableTranslations($language): array
     {
         global $DB;
 

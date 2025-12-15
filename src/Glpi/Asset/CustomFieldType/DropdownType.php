@@ -63,8 +63,8 @@ class DropdownType extends AbstractType
             if (!is_array($value)) {
                 $value = [$value];
             }
-            $value = array_filter($value, static fn($val) => (int) $val > 0);
-            $value = array_map(static fn($val) => (int) $val, $value);
+            $value = array_filter($value, static fn($val): bool => (int) $val > 0);
+            $value = array_map(static fn($val): int => (int) $val, $value);
             return $value;
         }
 

@@ -205,18 +205,16 @@ class DBmysql
     /**
      * Cached list fo tables.
      *
-     * @var array
      * @see self::tableExists()
      */
-    private $table_cache = [];
+    private array $table_cache = [];
 
     /**
      * Cached list of fields.
      *
-     * @var array
      * @see self::listFields()
      */
-    private $field_cache = [];
+    private array $field_cache = [];
 
     private int $transaction_level = 0;
 
@@ -240,7 +238,7 @@ class DBmysql
      *
      * @return void
      */
-    public function connect($choice = null)
+    public function connect($choice = null): void
     {
         $this->connected = false;
 
@@ -345,7 +343,7 @@ class DBmysql
      *
      * @return string escaped string
      */
-    public function escape($string)
+    public function escape($string): string
     {
         return $this->dbh->real_escape_string((string) $string);
     }
@@ -396,7 +394,7 @@ class DBmysql
             $warnings_string = implode(
                 "\n",
                 array_map(
-                    static fn($warning) => sprintf('%s: %s', $warning['Code'], $warning['Message']),
+                    static fn(array $warning): string => sprintf('%s: %s', $warning['Code'], $warning['Message']),
                     $sql_warnings
                 )
             );
@@ -436,7 +434,7 @@ class DBmysql
      *
      * @return mysqli_stmt
      */
-    public function prepare($query)
+    public function prepare(string $query)
     {
         $res = $this->dbh->prepare($query);
         if (!$res) {
@@ -494,7 +492,7 @@ class DBmysql
      *
      * @return string[]|null array results
      */
-    public function fetchArray($result)
+    public function fetchArray($result): object|array|false|null
     {
         return $this->decodeFetchResult($result->fetch_array());
     }
@@ -506,7 +504,7 @@ class DBmysql
      *
      * @return mixed|null result row
      */
-    public function fetchRow($result)
+    public function fetchRow($result): object|array|false|null
     {
         return $this->decodeFetchResult($result->fetch_row());
     }
@@ -518,7 +516,7 @@ class DBmysql
      *
      * @return string[]|null result associative array
      */
-    public function fetchAssoc($result)
+    public function fetchAssoc($result): object|array|false|null
     {
         return $this->decodeFetchResult($result->fetch_assoc());
     }
@@ -530,7 +528,7 @@ class DBmysql
      *
      * @return object|null
      */
-    public function fetchObject($result)
+    public function fetchObject($result): object|array|false|null
     {
         return $this->decodeFetchResult($result->fetch_object());
     }
@@ -543,7 +541,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function dataSeek($result, $num)
+    public function dataSeek($result, $num): bool
     {
         return $result->data_seek($num);
     }
@@ -908,7 +906,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function freeResult($result)
+    public function freeResult($result): bool
     {
         $result->free();
         return true;
@@ -964,7 +962,7 @@ class DBmysql
      *
      * @return bool true if all query are successfull
      */
-    public function runFile($path)
+    public function runFile(string $path): bool
     {
         $queries = $this->getQueriesFromFile($path);
 
@@ -992,7 +990,7 @@ class DBmysql
 
         $queries = preg_split('/;\s*$/m', $sql_query);
 
-        $queries = array_filter($queries, static fn($query) => \trim($query) !== '');
+        $queries = array_filter($queries, static fn($query): bool => \trim($query) !== '');
 
         return $queries;
     }
@@ -1006,7 +1004,7 @@ class DBmysql
      *
      * @since 11.0.0 The `$debug` parameter has been removed.
      */
-    public function request($criteria)
+    public function request($criteria): \DBmysqlIterator
     {
         $iterator = new DBmysqlIterator($this);
         $iterator->execute(...func_get_args()); // pass all args to be compatible with previous signature
@@ -1021,7 +1019,7 @@ class DBmysql
      *
      * @return string[] Array of label / value
      */
-    public function getInfo()
+    public function getInfo(): array
     {
         // No translation, used in sysinfo
         $ret = [];
@@ -1057,7 +1055,7 @@ class DBmysql
      *
      * @return bool
      */
-    public function getLock($name)
+    public function getLock($name): bool
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
@@ -1098,7 +1096,7 @@ class DBmysql
      *
      * @return bool
      **/
-    public function tableExists($tablename, $usecache = true)
+    public function tableExists($tablename, $usecache = true): bool
     {
 
         if (!$this->cache_disabled && $usecache && in_array($tablename, $this->table_cache)) {
@@ -1137,7 +1135,7 @@ class DBmysql
      *
      * @return bool
      **/
-    public function fieldExists($table, $field, $usecache = true)
+    public function fieldExists($table, $field, $usecache = true): bool
     {
         if (!$this->tableExists($table, $usecache)) {
             trigger_error("Table $table does not exists", E_USER_WARNING);
@@ -1158,7 +1156,7 @@ class DBmysql
      *
      * @return void
      */
-    public function disableTableCaching()
+    public function disableTableCaching(): void
     {
         $this->cache_disabled = true;
     }
@@ -1255,7 +1253,7 @@ class DBmysql
      *
      * @return string
      */
-    public function buildInsert($table, $params)
+    public function buildInsert($table, array $params): string
     {
         $query = "INSERT INTO " . self::quoteName($table) . ' ';
 
@@ -1317,7 +1315,7 @@ class DBmysql
      * @since 9.4.0 $joins parameter added
      * @return string
      */
-    public function buildUpdate($table, $params, $clauses, array $joins = [])
+    public function buildUpdate($table, $params, $clauses, array $joins = []): string
     {
         //when no explicit "WHERE", we only have a WHERE clause.
         if (!isset($clauses['WHERE'])) {
@@ -1452,7 +1450,7 @@ class DBmysql
      * @since 9.4.0 $joins parameter added
      * @return string
      */
-    public function buildDelete($table, $where, array $joins = [])
+    public function buildDelete($table, $where, array $joins = []): string
     {
 
         if (!count($where)) {
@@ -1705,7 +1703,7 @@ class DBmysql
      *
      * @return DBmysql
      */
-    public function setTimezone($timezone)
+    public function setTimezone($timezone): static
     {
         //setup timezone
         if ($this->use_timezones) {
@@ -1723,7 +1721,7 @@ class DBmysql
      *
      * @since 9.5.0
      */
-    public function getTimezones()
+    public function getTimezones(): array
     {
         $list = [];
 
@@ -1765,7 +1763,7 @@ class DBmysql
      *
      * @return void
      */
-    public function clearSchemaCache()
+    public function clearSchemaCache(): void
     {
         $this->table_cache = [];
         $this->field_cache = [];
@@ -1783,7 +1781,7 @@ class DBmysql
      *
      * @since 9.5.0
      */
-    public function quote($value, int $type = 2/*\PDO::PARAM_STR*/)
+    public function quote($value, int $type = 2/*\PDO::PARAM_STR*/): string
     {
         return "'" . $this->escape($value) . "'";
         //return $this->dbh->quote($value, $type);
@@ -1824,7 +1822,7 @@ class DBmysql
      *
      * @return string
      */
-    public function removeSqlComments($output)
+    public function removeSqlComments($output): string
     {
         $lines = explode("\n", $output);
         $output = "";
@@ -1860,7 +1858,7 @@ class DBmysql
      *
      * @return string
      */
-    public function removeSqlRemarks($sql)
+    public function removeSqlRemarks($sql): string
     {
         $lines = explode("\n", $sql);
 

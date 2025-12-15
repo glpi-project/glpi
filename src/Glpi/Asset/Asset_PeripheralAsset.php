@@ -65,7 +65,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return $forbidden;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-sitemap';
     }
@@ -191,7 +191,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         return parent::prepareInputForAdd($input);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         if (!isset($this->input['_no_auto_action'])) {
             // Get the item
@@ -258,7 +258,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $itemtype,
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
 
@@ -667,9 +667,9 @@ TWIG, $twig_params);
      * @return int Random generated number used for select box ID (select box HTML is printed)
      */
     public static function dropdownConnect(
-        $itemtype,
+        string $itemtype,
         $fromtype,
-        $myname,
+        string $myname,
         $entity_restrict = -1,
         $onlyglobal = false,
         $used = []
@@ -732,7 +732,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         global $CFG_GLPI;
 
@@ -757,7 +757,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function canUnrecursSpecif(CommonDBTM $item, $entities)
+    public static function canUnrecursSpecif(CommonDBTM $item, $entities): bool
     {
         global $DB;
 
@@ -854,7 +854,7 @@ TWIG, $twig_params);
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         global $CFG_GLPI;
 
@@ -871,7 +871,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
+    public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma): int
     {
         global $CFG_GLPI;
 
@@ -960,7 +960,7 @@ TWIG, $twig_params);
     }
 
     #[Override]
-    public static function countForItem(CommonDBTM $item)
+    public static function countForItem(CommonDBTM $item): int
     {
         return self::countLinkedAssets($item);
     }

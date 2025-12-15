@@ -98,12 +98,12 @@ final class AssetDefinition extends AbstractDefinition
         return _n('Asset definition', 'Asset definitions', $nb);
     }
 
-    protected function computeFriendlyName()
+    protected function computeFriendlyName(): string
     {
         return $this->getTranslatedName();
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
         if ($item instanceof self) {
             $capacities_count   = 0;
@@ -147,7 +147,7 @@ final class AssetDefinition extends AbstractDefinition
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof self) {
             switch ($tabnum) {
@@ -178,7 +178,7 @@ final class AssetDefinition extends AbstractDefinition
         $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
         usort(
             $capacities,
-            static fn(CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
+            static fn(CapacityInterface $a, CapacityInterface $b): int => strnatcasecmp($a->getLabel(), $b->getLabel())
         );
 
         TemplateRenderer::getInstance()->display(
@@ -230,7 +230,7 @@ final class AssetDefinition extends AbstractDefinition
     {
         $all_fields = $this->getAllFields();
         $field_display = $this->getDecodedFieldsField();
-        $field_match = array_filter($field_display, static fn($field) => $field['key'] === $field_key);
+        $field_match = array_filter($field_display, static fn(array $field): bool => $field['key'] === $field_key);
         $field_options = [];
         if ($field_match !== []) {
             $field_options = reset($field_match)['field_options'] ?? [];
@@ -249,7 +249,7 @@ final class AssetDefinition extends AbstractDefinition
         $options_allowlist = ['required', 'readonly', 'full_width', 'hidden'];
 
         $twig_params = [
-            'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn($option) => in_array($option->getKey(), $options_allowlist, true)),
+            'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn(\Glpi\Asset\CustomFieldOption\OptionInterface $option): bool => in_array($option->getKey(), $options_allowlist, true)),
             'key' => $field_key,
         ];
 
@@ -319,7 +319,7 @@ TWIG, $twig_params);
             } else {
                 // Add the config key if not present in the input.
                 $capacities = \array_map(
-                    fn(array $capacity_specs) => new Capacity(
+                    fn(array $capacity_specs): \Glpi\Asset\Capacity => new Capacity(
                         $capacity_specs['name'],
                         new CapacityConfig($capacity_specs['config'] ?? [])
                     ),
@@ -346,7 +346,7 @@ TWIG, $twig_params);
         return $has_errors ? false : parent::prepareInput($input);
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         parent::post_addItem();
 
@@ -376,7 +376,7 @@ TWIG, $twig_params);
         }
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         parent::post_updateItem();
 
@@ -401,7 +401,7 @@ TWIG, $twig_params);
         }
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $capacities = $this->getDecodedCapacitiesField();
         foreach ($capacities as $capacity) {
@@ -801,7 +801,7 @@ TWIG, $twig_params);
         $fields_display = $this->getDecodedFieldsField();
         usort(
             $fields_display,
-            static fn($a, $b) => $a['order'] <=> $b['order']
+            static fn(array $a, array $b): int => $a['order'] <=> $b['order']
         );
         return array_column($fields_display, 'key');
     }
@@ -822,7 +822,7 @@ TWIG, $twig_params);
         $is_valid = true;
 
         $available_capacities = array_map(
-            fn($capacity) => $capacity::class,
+            fn(\Glpi\Asset\Capacity\CapacityInterface $capacity): string => $capacity::class,
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
         foreach ($capacities as $capacity_specs) {

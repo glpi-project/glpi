@@ -73,7 +73,7 @@ if (isset($_GET['action'])) {
     $action = $_GET['action'];
     if ($action === 'get_itemtypes') {
         $loaded = get_declared_classes();
-        $glpi_classes = array_filter($loaded, static function ($class) {
+        $glpi_classes = array_filter($loaded, static function (string $class): bool {
             if (!is_subclass_of($class, 'CommonDBTM')) {
                 return false;
             }
@@ -109,7 +109,7 @@ if (isset($_GET['action'])) {
         } catch (Throwable $e) {
             $options = [];
         }
-        $options = array_filter($options, static fn($k) => is_numeric($k), ARRAY_FILTER_USE_KEY);
+        $options = array_filter($options, static fn($k): bool => is_numeric($k), ARRAY_FILTER_USE_KEY);
         echo json_encode($options);
         return;
     }

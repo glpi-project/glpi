@@ -131,7 +131,7 @@ class Contract_Item extends CommonDBRelation
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -175,7 +175,7 @@ class Contract_Item extends CommonDBRelation
      *
      * @return array of items linked to contracts
      **/
-    public static function getItemsForContract($contract_id, $entities_id)
+    public static function getItemsForContract($contract_id, $entities_id): array
     {
         $items = [];
 
@@ -224,7 +224,7 @@ class Contract_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         global $CFG_GLPI;
 
@@ -255,7 +255,7 @@ class Contract_Item extends CommonDBRelation
      *
      * @return void
      **/
-    public static function showForItem(CommonDBTM $item, $withtemplate = 0)
+    public static function showForItem(CommonDBTM $item, $withtemplate = 0): void
     {
         $ID       = $item->fields['id'];
 

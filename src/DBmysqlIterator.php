@@ -51,8 +51,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private $conn;
     // Current SQL query
-    /** @var ?string */
-    private $sql;
+    private ?string $sql = null;
     // Current result
     /** @var mysqli_result|bool  */
     private $res = false;
@@ -343,7 +342,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function handleOrderClause($clause)
+    public function handleOrderClause($clause): string
     {
         if (!is_array($clause)) {
             $clause = [$clause];
@@ -382,7 +381,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function handleLimits($limit, $offset = null)
+    public function handleLimits($limit, $offset = null): string
     {
         $limits = '';
         if (is_numeric($limit) && ($limit > 0)) {
@@ -402,7 +401,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function handleFields($t, $f)
+    private function handleFields(int|string $t, $f)
     {
         if (is_numeric($t)) {
             if ($f instanceof AbstractQuery) {
@@ -464,7 +463,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function handleFieldsAlias($t, $f, $suffix = '')
+    private function handleFieldsAlias(string $t, string $f, string $suffix = ''): string
     {
         $names = preg_split('/\s+AS\s+/i', $f);
         $expr  = "$t(" . $this->handleFields(0, $names[0]) . "$suffix)";
@@ -507,7 +506,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function analyseCrit($crit, $bool = "AND")
+    public function analyseCrit($crit, $bool = "AND"): string
     {
         if (is_string($crit)) {
             Toolbox::deprecated(
@@ -590,7 +589,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    private function analyseCriterion($value)
+    private function analyseCriterion($value): string
     {
         $criterion = null;
 
@@ -678,7 +677,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return string
      */
-    public function analyseJoins(array $joinarray)
+    public function analyseJoins(array $joinarray): string
     {
         $query = '';
         foreach ($joinarray as $jointype => $jointables) {
@@ -903,7 +902,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      *
      * @return bool
      */
-    public function isOperator($value)
+    public function isOperator($value): bool
     {
         return in_array($value, $this->allowed_operators, true);
     }

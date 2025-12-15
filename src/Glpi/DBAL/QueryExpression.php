@@ -68,7 +68,7 @@ class QueryExpression
      *
      * @psalm-taint-escape sql
      */
-    public function getValue()
+    public function getValue(): string
     {
         global $DB;
         $sql = $this->expression;
@@ -78,7 +78,7 @@ class QueryExpression
         return $sql;
     }
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getValue();
     }

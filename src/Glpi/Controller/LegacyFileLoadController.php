@@ -97,7 +97,7 @@ final class LegacyFileLoadController implements PublicService
             );
 
             // @phpstan-ignore-next-line method.deprecatedClass (deprecated usage is intended for backward compatibility, this BC layer will be removed in the next GLPI major version)
-            return new HeaderlessStreamedResponse(function () use ($content) {
+            return new HeaderlessStreamedResponse(function () use ($content): void {
                 echo $content;
             });
         }

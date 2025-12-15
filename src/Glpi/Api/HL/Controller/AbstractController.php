@@ -231,7 +231,7 @@ abstract class AbstractController
         $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
         $additional_messages = [];
         if (count($messages) > 0) {
-            $get_priority_name = (static fn($priority) => match ($priority) {
+            $get_priority_name = (static fn($priority): string => match ($priority) {
                 0 => 'info',
                 1 => 'error',
                 2 => 'warning',
@@ -334,8 +334,8 @@ abstract class AbstractController
         $route_paths = Router::getInstance()->getAllRoutes();
         $matches = array_filter($route_paths, static fn(
             /** @var RoutePath $route_path */
-            $route_path
-        ) => $route_path->getController() === $controller && $route_path->getMethod()->getName() === $function);
+            \Glpi\Api\HL\RoutePath $route_path
+        ): bool => $route_path->getController() === $controller && $route_path->getMethod()->getName() === $function);
         if (count($matches) === 0) {
             return '/';
         }

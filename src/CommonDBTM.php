@@ -209,7 +209,7 @@ class CommonDBTM extends CommonGLPI
     public $right;
 
     /** @var array<class-string, array> */
-    private static $search_options_cache = [];
+    private static array $search_options_cache = [];
 
     /**
      * If this method return true, a third 'Helpdesk view' display preference
@@ -252,7 +252,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public static function forceTable($table)
+    public static function forceTable($table): void
     {
         self::$tables_of[static::class] = $table;
     }
@@ -286,7 +286,7 @@ class CommonDBTM extends CommonGLPI
      * @throws InvalidArgumentException
      * @throws LogicException
      **/
-    public static function getTableField($field, $classname = null)
+    public static function getTableField($field, $classname = null): string
     {
 
         if (empty($field)) {
@@ -336,7 +336,7 @@ class CommonDBTM extends CommonGLPI
      * @return bool true if succeed to find a single item matching $ID else false (no items or more than one item)
      * @see self::getIndexName()
      **/
-    public function getFromDB($ID)
+    public function getFromDB($ID): bool
     {
         global $DB;
         // Make new database object and fill variables
@@ -378,7 +378,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    public function getFromResultSet($rs)
+    public function getFromResultSet($rs): void
     {
         // just set fields!
         $this->fields = $rs;
@@ -458,7 +458,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if succeed else false
      **/
-    public function getFromDBByRequest(array $request)
+    public function getFromDBByRequest(array $request): bool
     {
         global $DB;
 
@@ -495,7 +495,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return int ID
      **/
-    public function getID()
+    public function getID(): int
     {
         if (isset($this->fields[static::getIndexName()])) {
             return (int) $this->fields[static::getIndexName()];
@@ -521,7 +521,7 @@ class CommonDBTM extends CommonGLPI
             'sysdescr', 'snmpcredentials_id', 'users_id', 'is_global', 'size', 'networks_id', 'groups_id', 'uuid', 'version',
             'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot',
         ];
-        return array_filter($fields, function ($f) {
+        return array_filter($fields, function (?string $f): bool {
             $assignable_item = Toolbox::hasTrait(static::class, AssignableItem::class);
             if ($assignable_item && in_array($f, ['groups_id', 'groups_id_tech'], true)) {
                 return true;
@@ -541,7 +541,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if displayed  false if item not found or not right to display
      */
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         global $CFG_GLPI;
 
@@ -592,7 +592,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    public static function unsetUndisclosedFields(&$fields)
+    public static function unsetUndisclosedFields(array &$fields): void
     {
         foreach (static::$undisclosedFields as $key) {
             unset($fields[$key]);
@@ -608,7 +608,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array all retrieved data in an associative array by id
      **/
-    public function find($condition = [], $order = [], $limit = null)
+    public function find($condition = [], $order = [], $limit = null): array
     {
         global $DB;
 
@@ -645,7 +645,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string name of the index field
      **/
-    public static function getIndexName()
+    public static function getIndexName(): string
     {
         return "id";
     }
@@ -655,7 +655,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if succeed else false
      **/
-    public function getEmpty()
+    public function getEmpty(): bool
     {
         global $DB;
 
@@ -701,7 +701,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array array of type + ID
      **/
-    public function getLogTypeID()
+    public function getLogTypeID(): array
     {
         return [static::getType(), $this->fields['id']];
     }
@@ -714,7 +714,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function updateInDB($updates, $oldvalues = [])
+    public function updateInDB($updates, array $oldvalues = [])
     {
         global $DB;
 
@@ -801,7 +801,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if succeed else false
      **/
-    public function restoreInDB()
+    public function restoreInDB(): bool
     {
         global $DB;
 
@@ -827,7 +827,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if succeed else false
      **/
-    public function deleteFromDB($force = false)
+    public function deleteFromDB($force = false): bool
     {
         global $DB;
 
@@ -889,7 +889,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function cleanHistory()
+    public function cleanHistory(): void
     {
         global $DB;
 
@@ -914,7 +914,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function cleanRelationData()
+    public function cleanRelationData(): void
     {
         global $DB;
 
@@ -1048,7 +1048,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function cleanTranslations()
+    public function cleanTranslations(): void
     {
         // Do not try to clean is dropdown translation is globally off
         if ($this instanceof CommonDropdown && $this->maybeTranslated()) {
@@ -1067,7 +1067,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    public function cleanRelationTable()
+    public function cleanRelationTable(): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1461,7 +1461,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string HTML link
      **/
-    public function getLink($options = [])
+    public function getLink($options = []): string
     {
         $p = [
             'class'      => '',
@@ -1533,7 +1533,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string HTML link
      **/
-    public function getLinkURL()
+    public function getLinkURL(): string
     {
 
         if (!isset($this->fields['id'])) {
@@ -1552,7 +1552,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function addMessageOnAddAction()
+    public function addMessageOnAddAction(): void
     {
 
         $addMessAfterRedirect = false;
@@ -1625,7 +1625,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         UserMention::handleUserMentions($this);
@@ -1641,7 +1641,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true on success
      **/
-    public function update(array $input, $history = true, $options = [])
+    public function update(array $input, $history = true, $options = []): array|int|float|string|null|bool
     {
         global $DB;
 
@@ -1896,7 +1896,7 @@ class CommonDBTM extends CommonGLPI
             && (!isset($this->input['is_dynamic']) || $this->input['is_dynamic'] == false)
         ) {
             $fields = array_values($this->updates);
-            $fields = array_filter($fields, fn($f) => $f !== 'date_mod');
+            $fields = array_filter($fields, fn($f): bool => $f !== 'date_mod');
             $stmt = $DB->prepare(
                 $DB->buildInsert(
                     $lockedfield->getTable(),
@@ -1994,7 +1994,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function addMessageOnUpdateAction()
+    public function addMessageOnUpdateAction(): void
     {
 
         $addMessAfterRedirect = false;
@@ -2036,7 +2036,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return false|array<string, mixed> the modified $input array
      **/
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate(array $input): array
     {
         $this->deleteUnusedCustomIllustrationFile($input);
 
@@ -2073,7 +2073,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if (count($this->updates) > 0) {
             UserMention::handleUserMentions($this);
@@ -2117,7 +2117,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true on success
      **/
-    public function delete(array $input, $force = false, $history = true)
+    public function delete(array $input, $force = false, $history = true): bool
     {
         global $DB;
 
@@ -2250,7 +2250,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function addMessageOnDeleteAction()
+    public function addMessageOnDeleteAction(): void
     {
 
         if (!$this->maybeDeleted()) {
@@ -2281,7 +2281,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function addMessageOnPurgeAction()
+    public function addMessageOnPurgeAction(): void
     {
 
         $addMessAfterRedirect = false;
@@ -2317,7 +2317,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if item need to be deleted else false
      **/
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         return true;
     }
@@ -2331,7 +2331,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true on success
      **/
-    public function restore(array $input, $history = true)
+    public function restore(array $input, $history = true): bool
     {
 
         if (!$this->getFromDB($input[static::getIndexName()])) {
@@ -2398,7 +2398,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function addMessageOnRestoreAction()
+    public function addMessageOnRestoreAction(): void
     {
 
         $addMessAfterRedirect = false;
@@ -2425,7 +2425,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function reset()
+    public function reset(): void
     {
         $this->fields = [];
     }
@@ -2436,7 +2436,7 @@ class CommonDBTM extends CommonGLPI
      * @see Asset_PeripheralAsset::unglobalizeItem()
      * @return bool true on success, false on failure
      */
-    public function unglobalize()
+    public function unglobalize(): bool
     {
         // Wrapper only to standardize the usage of form actions in generic forms
         return Asset_PeripheralAsset::unglobalizeItem($this);
@@ -2805,7 +2805,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function showFormButtons($options = [])
+    public function showFormButtons($options = []): void
     {
         $params = [
             'colspan'      => 2,
@@ -2897,7 +2897,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function showFormHeader($options = [])
+    public function showFormHeader($options = []): void
     {
         $params = [
             'target'         => $this->getFormURL(),
@@ -2941,7 +2941,7 @@ class CommonDBTM extends CommonGLPI
         echo "<td class='center' colspan='" . ((int) $params['colspan'] * 2) . "'>";
     }
 
-    public static function isNewID($ID)
+    public static function isNewID($ID): bool
     {
         // Default is empty of <0 may be overriden (for entity for example)
         return (empty($ID) || ($ID <= 0));
@@ -3218,7 +3218,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function isEntityAssign()
+    public function isEntityAssign(): bool
     {
 
         if (!array_key_exists('id', $this->fields)) {
@@ -3233,7 +3233,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function maybeRecursive()
+    public function maybeRecursive(): bool
     {
 
         if (!array_key_exists('id', $this->fields)) {
@@ -3262,7 +3262,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function maybeDeleted()
+    public function maybeDeleted(): bool
     {
 
         if (!isset($this->fields['id'])) {
@@ -3293,7 +3293,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function maybeActive()
+    public function maybeActive(): bool
     {
 
         if (!isset($this->fields['id'])) {
@@ -3324,7 +3324,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function maybeTemplate()
+    public function maybeTemplate(): bool
     {
 
         if (!isset($this->fields['id'])) {
@@ -3355,7 +3355,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function maybeDynamic()
+    public function maybeDynamic(): bool
     {
 
         if (!isset($this->fields['id'])) {
@@ -3400,7 +3400,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public function maybePrivate()
+    public function maybePrivate(): bool
     {
 
         if (!isset($this->fields['id'])) {
@@ -3431,7 +3431,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      */
-    public function maybeLocated()
+    public function maybeLocated(): bool
     {
 
         if (!array_key_exists('id', $this->fields)) {
@@ -3446,7 +3446,7 @@ class CommonDBTM extends CommonGLPI
      * @return array an array of linked items  like array('Computer' => array(1,2), 'Printer' => array(5,6))
      * @since 0.84.4
      **/
-    public function getLinkedItems()
+    public function getLinkedItems(): array
     {
         return [];
     }
@@ -3458,7 +3458,7 @@ class CommonDBTM extends CommonGLPI
      * @return int number of linked items
      * @since 0.84.4
      **/
-    public function getLinkedItemsCount()
+    public function getLinkedItemsCount(): int
     {
 
         $linkeditems = $this->getLinkedItems();
@@ -3658,7 +3658,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string
      **/
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'name';
     }
@@ -3671,7 +3671,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string
      **/
-    public static function getCompleteNameField()
+    public static function getCompleteNameField(): string
     {
         return 'completename';
     }
@@ -3760,7 +3760,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string string to add
      **/
-    public function getPreAdditionalInfosForName()
+    public function getPreAdditionalInfosForName(): string
     {
         return '';
     }
@@ -3772,7 +3772,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string string to add
      **/
-    public function getPostAdditionalInfosForName()
+    public function getPostAdditionalInfosForName(): string
     {
         return '';
     }
@@ -3908,7 +3908,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
      **/
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         global $CFG_GLPI;
 
@@ -3961,7 +3961,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array
      **/
-    public static function getSearchOptionsToAdd($itemtype = null)
+    public static function getSearchOptionsToAdd($itemtype = null): array
     {
         $options = [];
 
@@ -4035,7 +4035,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool false if parameters displayed ?
      **/
-    public static function showMassiveActionsSubForm(MassiveAction $ma)
+    public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
         return false;
     }
@@ -4068,7 +4068,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array an array of massive actions
      **/
-    public function getForbiddenStandardMassiveAction()
+    public function getForbiddenStandardMassiveAction(): array
     {
         return [];
     }
@@ -4081,7 +4081,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array
      **/
-    public function getForbiddenSingleMassiveActions()
+    public function getForbiddenSingleMassiveActions(): array
     {
         $excluded = [
             '*:update',
@@ -4112,7 +4112,7 @@ class CommonDBTM extends CommonGLPI
      * Get actions which are forbidden for multiple items. These actions are only meant to be used on single items (from the item's form).
      * @return array
      */
-    public function getForbiddenMultipleMassiveActions()
+    public function getForbiddenMultipleMassiveActions(): array
     {
         return [
             '*:create_template', // Only makes sense to create a template from a single item
@@ -4126,7 +4126,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array
      **/
-    public function getWhitelistedSingleMassiveActions()
+    public function getWhitelistedSingleMassiveActions(): array
     {
         global $CFG_GLPI;
 
@@ -4152,7 +4152,7 @@ class CommonDBTM extends CommonGLPI
      * @return array An array of massive actions where the keys are the internal identifier for the action and the values are the displayed value.
      *         Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
      **/
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null): array
     {
         global $CFG_GLPI, $DB;
 
@@ -4275,7 +4275,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function filterValues($display = true)
+    public function filterValues($display = true): void
     {
         // MoYo : comment it because do not understand why filtering is disable
         // if (in_array('CommonDBRelation', class_parents($this))) {
@@ -4402,7 +4402,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool true if value is ok, false if not
      **/
-    public function checkSpecificValues($datatype, &$value)
+    public function checkSpecificValues($datatype, &$value): bool
     {
         return true;
     }
@@ -4413,7 +4413,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array an array which contains field => label
      **/
-    public function getUnicityFieldsToDisplayInErrorMessage()
+    public function getUnicityFieldsToDisplayInErrorMessage(): array
     {
 
         return ['id'          => __('ID'),
@@ -4426,7 +4426,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * @return array
      */
-    public function getUnallowedFieldsForUnicity()
+    public function getUnallowedFieldsForUnicity(): array
     {
         return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];
     }
@@ -4441,7 +4441,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string
      **/
-    public function getUnicityErrorMessage($msgs, $unicity, $doubles)
+    public function getUnicityErrorMessage($msgs, array $unicity, $doubles): string
     {
 
         $message = [];
@@ -4747,7 +4747,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string the string to display
      **/
-    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    public static function getSpecificValueToDisplay($field, $values, array $options = []): string
     {
 
         switch ($field) {
@@ -4778,7 +4778,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return mixed the value to display
      **/
-    public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
+    public function getValueToDisplay($field_id_or_search_options, $values, array $options = [])
     {
         global $CFG_GLPI;
 
@@ -5008,7 +5008,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string the string to display
      **/
-    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
+    public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = []): string
     {
         return '';
     }
@@ -5285,7 +5285,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return false|void
      */
-    public static function listTemplates($itemtype, $target, $add = false)
+    public static function listTemplates($itemtype, string $target, $add = false)
     {
         global $DB;
 
@@ -5393,7 +5393,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public static function addForwardEntity($for_itemtype, $to_itemtype)
+    public static function addForwardEntity($for_itemtype, $to_itemtype): void
     {
         self::$plugins_forward_entity[$for_itemtype][] = $to_itemtype;
     }
@@ -5407,7 +5407,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return bool
      **/
-    public static function isEntityForwardTo($itemtype)
+    public static function isEntityForwardTo($itemtype): bool
     {
         if (in_array($itemtype, static::$forward_entity_to)) {
             return true;
@@ -5431,7 +5431,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array array of rights to display
      **/
-    public function getRights($interface = 'central')
+    public function getRights($interface = 'central'): array
     {
         $values = [
             CREATE  => __('Create'),
@@ -5497,7 +5497,7 @@ class CommonDBTM extends CommonGLPI
      *                        - date  Date to set on document_items
      * @return array the input param transformed
      **/
-    public function addFiles(array $input, $options = [])
+    public function addFiles(array $input, $options = []): array
     {
         global $CFG_GLPI;
 
@@ -5701,7 +5701,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return string
      */
-    public function getAutofillMark($field, $options, $value = null)
+    public function getAutofillMark($field, array $options, $value = null): string
     {
         $mark = '';
         $title = null;
@@ -5738,7 +5738,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    private function assetBusinessRules($condition)
+    private function assetBusinessRules(int $condition): void
     {
         global $CFG_GLPI;
 
@@ -5813,7 +5813,7 @@ class CommonDBTM extends CommonGLPI
      * @param int    $parents_id  The wanted parent of the specified item.
      * @return bool True if there is a circular relation.
      */
-    public static function checkCircularRelation($items_id, $parents_id)
+    public static function checkCircularRelation($items_id, $parents_id): bool
     {
         global $DB;
 
@@ -5849,7 +5849,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return array
      */
-    public function getITILTickets(bool $count = false)
+    public function getITILTickets(bool $count = false): array
     {
         $ticket = new Ticket();
         $problem = new Problem();
@@ -5899,7 +5899,7 @@ class CommonDBTM extends CommonGLPI
     }
 
     /** @return string */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         // Generic icon that is not visible, but still takes up space to allow proper alignment in lists
         return "ti ti-square bs-invisible";
@@ -5954,7 +5954,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return static|false
      */
-    public static function getById(?int $id)
+    public static function getById(?int $id): false|self
     {
         if (is_null($id)) {
             return false;
@@ -6059,7 +6059,7 @@ class CommonDBTM extends CommonGLPI
      * @param string $alias
      * @return mixed
      */
-    public static function getFriendlyNameFields(string $alias = "name")
+    public static function getFriendlyNameFields(string $alias = "name"): string
     {
         $table = static::getTable();
         $name_field = static::getNameField();

@@ -86,7 +86,7 @@ class Principal extends AbstractBackend
 
         usort(
             $principals,
-            fn($p1, $p2) => $p1['id'] - $p2['id']
+            fn(array $p1, array $p2): int|float => $p1['id'] - $p2['id']
         );
 
         return $principals;
@@ -280,7 +280,7 @@ class Principal extends AbstractBackend
      *
      * @return array
      */
-    private function getPrincipalFromUserFields(array $user_fields)
+    private function getPrincipalFromUserFields(array $user_fields): array
     {
         return [
             'id'                    => $user_fields['id'],
@@ -304,7 +304,7 @@ class Principal extends AbstractBackend
      *
      * @return array
      */
-    private function getPrincipalFromGroupFields(array $group_fields)
+    private function getPrincipalFromGroupFields(array $group_fields): array
     {
         return [
             'id'                    => $group_fields['id'],

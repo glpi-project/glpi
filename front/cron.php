@@ -149,7 +149,7 @@ if (PHP_SAPI === 'cli') {
     header_remove();
 
     return new StreamedResponse(
-        function () use ($image) {
+        function () use ($image): void {
             // Be sure to disable the output buffering.
             while (ob_get_level() > 0) {
                 ob_end_clean();

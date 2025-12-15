@@ -185,7 +185,7 @@ abstract class CommonITILActor extends CommonDBRelation
                   && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
     }
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
         global $CFG_GLPI;
 
@@ -301,7 +301,7 @@ abstract class CommonITILActor extends CommonDBRelation
         return $input;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $item = getItemForItemtype(static::$itemtype_1);
 

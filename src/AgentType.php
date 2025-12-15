@@ -43,7 +43,7 @@ class AgentType extends CommonDBTM
         return _n('Agent type', 'Agents types', $nb);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $agent = new Agent();
         $agent->deleteByCriteria(['agenttypes_id' => $this->fields['id']]);

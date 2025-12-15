@@ -194,7 +194,7 @@ EOT,
                     'value' => ['type' => Doc\Schema::TYPE_STRING],
                 ],
                 'x-rights-conditions' => [
-                    'read' => static function () use ($DB) {
+                    'read' => static function () use ($DB): array {
                         // Make a SQL request to get all config items so we can check which are undisclosed
                         // We are using safe IDs rather than undisclosed IDs to avoid issues with concurrent modifications
                         // We cannot reliably lock the table due to the fact that the DB connection here may differ from the one used to perform the actual read in the Search code

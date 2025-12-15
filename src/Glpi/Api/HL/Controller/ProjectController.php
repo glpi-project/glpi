@@ -70,7 +70,7 @@ final class ProjectController extends AbstractController
                 'x-itemtype' => Project::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
-                    'read' => static function () {
+                    'read' => static function (): array|bool {
                         if (!Session::haveRight(Project::$rightname, Project::READALL)) {
                             if (!Session::haveRight(Project::$rightname, Project::READMY)) {
                                 return false; // Deny reading
@@ -161,7 +161,7 @@ final class ProjectController extends AbstractController
                 'x-itemtype' => ProjectTask::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [ // Object-level extra permissions
-                    'read' => static function () {
+                    'read' => static function (): array|bool {
                         if (!Session::haveRight(Project::$rightname, Project::READALL)) {
                             if (!Session::haveRight(Project::$rightname, Project::READMY)) {
                                 return false; // Deny reading

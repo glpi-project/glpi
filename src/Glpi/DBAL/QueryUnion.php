@@ -73,7 +73,7 @@ class QueryUnion extends AbstractQuery
      *
      * @return void
      */
-    public function addQuery($query)
+    public function addQuery($query): void
     {
         if (!$query instanceof QuerySubQuery) {
             $query = new QuerySubQuery($query);
@@ -87,7 +87,7 @@ class QueryUnion extends AbstractQuery
      *
      * @return array
      */
-    public function getQueries()
+    public function getQueries(): array
     {
         return $this->queries;
     }
@@ -98,7 +98,7 @@ class QueryUnion extends AbstractQuery
      *
      * @return string
      */
-    public function getQuery()
+    public function getQuery(): string
     {
         $union_queries = $this->getQueries();
         if (

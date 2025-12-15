@@ -285,21 +285,21 @@ abstract class CommonDropdown extends CommonDBTM
         return self::prepareInputForAdd($input);
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->addFilesFromRichText();
 
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->addFilesFromRichText();
 
         parent::post_updateItem($history);
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         if (isset($this->fields['picture_front'])) {
             Toolbox::deletePicture($this->fields['picture_front']);
@@ -778,7 +778,7 @@ abstract class CommonDropdown extends CommonDBTM
     public function importExternal(
         $value,
         $entities_id = -1,
-        $external_params = [],
+        array $external_params = [],
         $comment = "",
         $add = true
     ) {
@@ -866,7 +866,7 @@ abstract class CommonDropdown extends CommonDBTM
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         /** @var CommonDropdown $item */
         switch ($ma->getAction()) {
             case 'merge':

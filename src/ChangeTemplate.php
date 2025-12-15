@@ -71,7 +71,7 @@ class ChangeTemplate extends ITILTemplate
         ];
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -82,7 +82,7 @@ class ChangeTemplate extends ITILTemplate
         );
     }
 
-    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false)
+    public static function getExtraAllowedFields($withtypeandcategory = false, $withitemtype = false): array
     {
         $change = new Change();
         return [

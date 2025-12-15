@@ -101,13 +101,13 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
         }
 
         $all_ok = true;
-        if (count(array_filter($summary, static fn($status) => $status === SourceCodeIntegrityChecker::STATUS_ALTERED)) > 0) {
+        if (count(array_filter($summary, static fn($status): bool => $status === SourceCodeIntegrityChecker::STATUS_ALTERED)) > 0) {
             $all_ok = false;
         }
-        if (count(array_filter($summary, static fn($status) => $status === SourceCodeIntegrityChecker::STATUS_MISSING)) > 0) {
+        if (count(array_filter($summary, static fn($status): bool => $status === SourceCodeIntegrityChecker::STATUS_MISSING)) > 0) {
             $all_ok = false;
         }
-        if (count(array_filter($summary, static fn($status) => $status === SourceCodeIntegrityChecker::STATUS_ADDED)) > 0) {
+        if (count(array_filter($summary, static fn($status): bool => $status === SourceCodeIntegrityChecker::STATUS_ADDED)) > 0) {
             $all_ok = false;
         }
         if ($all_ok) {

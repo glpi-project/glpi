@@ -63,7 +63,7 @@ trait AsyncOperationProgressControllerTrait
         }
 
         return new StreamedResponse(
-            function () use ($progress_indicator, $operation_callable) {
+            function () use ($progress_indicator, $operation_callable): void {
                 echo $progress_indicator->getStorageKey();
 
                 // Send headers and content.

@@ -65,7 +65,7 @@ class CalendarSegment extends CommonDBChild
         return _n('Time range', 'Time ranges', $nb);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return 'ti ti-calendar-time';
     }
@@ -93,7 +93,7 @@ class CalendarSegment extends CommonDBChild
         return parent::prepareInputForAdd($input);
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // Update calendar cache
         $cal = new Calendar();
@@ -102,7 +102,7 @@ class CalendarSegment extends CommonDBChild
         parent::post_addItem();
     }
 
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
 
         // Update calendar cache
@@ -157,7 +157,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return int Time in seconds
      **/
-    public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time)
+    public static function getActiveTimeBetween($calendars_id, $day, $begin_time, $end_time): int
     {
         global $DB;
 
@@ -204,7 +204,7 @@ class CalendarSegment extends CommonDBChild
         $begin_time,
         $delay,
         bool $negative_delay = false
-    ) {
+    ): string|false {
         // TODO: unit test this method with complex calendars using multiple
         // disconnected segments per day
         global $DB;
@@ -332,7 +332,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return bool
      **/
-    public static function isAWorkingHour($calendars_id, $day, $hour)
+    public static function isAWorkingHour($calendars_id, $day, $hour): bool
     {
         global $DB;
 
@@ -357,7 +357,7 @@ class CalendarSegment extends CommonDBChild
      *
      * @return void
      **/
-    public static function showForCalendar(Calendar $calendar)
+    public static function showForCalendar(Calendar $calendar): void
     {
         global $DB;
 
@@ -444,7 +444,7 @@ class CalendarSegment extends CommonDBChild
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item instanceof Calendar) {
             self::showForCalendar($item);

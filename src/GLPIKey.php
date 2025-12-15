@@ -52,17 +52,13 @@ class GLPIKey
 {
     /**
      * Key file path.
-     *
-     * @var string
      */
-    private $keyfile;
+    private string $keyfile;
 
     /**
      * Legacy key file path.
-     *
-     * @var string
      */
-    private $legacykeyfile;
+    private string $legacykeyfile;
 
     /**
      * List of crypted DB fields.
@@ -128,7 +124,7 @@ class GLPIKey
      *
      * @return bool
      */
-    public function keyExists()
+    public function keyExists(): bool
     {
         return file_exists($this->keyfile);
     }

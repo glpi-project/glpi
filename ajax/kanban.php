@@ -116,7 +116,7 @@ if ($item !== null) {
 }
 
 // Helper to check required parameters
-$checkParams = static function ($required) {
+$checkParams = static function ($required): void {
     foreach ($required as $param) {
         if (!isset($_REQUEST[$param])) {
             throw new BadRequestHttpException("Missing $param parameter");

@@ -65,7 +65,7 @@ final class RecordSet
     {
         if ($fkey === 'id') {
             // Main item
-            $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_params, $prop_name) {
+            $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_params, $prop_name): bool {
                 if (isset($this->search->getContext()->getJoins()[$prop_name])) {
                     /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
                     return false;
@@ -75,12 +75,12 @@ final class RecordSet
                 // We aren't handling joins or mapped fields here
                 $prop_name = str_replace(chr(0x1F), '.', $prop_name);
                 $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
-                $is_join = count(array_filter($this->search->getContext()->getJoins(), static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
+                $is_join = count(array_filter($this->search->getContext()->getJoins(), static fn($j_name): bool => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
                 return !$is_join && !$mapped_from_other;
             }, ARRAY_FILTER_USE_BOTH);
         } else {
             $join_name = $this->getJoinNameForFKey($fkey);
-            $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_name) use ($join_name) {
+            $props_to_use = array_filter($this->search->getContext()->getFlattenedProperties(), function ($prop_name) use ($join_name): bool {
                 if (isset($this->search->getContext()->getJoins()[$prop_name])) {
                     /** Scalar joined properties are fetched directly during {@link self::getMatchingRecords()} */
                     return false;
@@ -97,7 +97,7 @@ final class RecordSet
      * @param $row
      * @return array
      */
-    private function getHydratedPartsOfMainRecord($row)
+    private function getHydratedPartsOfMainRecord($row): array
     {
         $hydrated_row = [];
         $context = $this->search->getContext();
@@ -271,7 +271,7 @@ final class RecordSet
                     foreach ($dehydrated_records as $row) {
                         $hydrated_row = $this->getHydratedPartsOfMainRecord($row);
                         $needed_ids = explode(chr(0x1D), $row[$fkey] ?? '');
-                        $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
+                        $needed_ids = array_filter($needed_ids, static fn($id): bool => $id !== chr(0x0));
                         $fetched_records[$table][$needed_ids[0]] = $hydrated_row;
                     }
                     Profiler::getInstance()->stop('RecordSet::check if nothing to select');
@@ -326,7 +326,7 @@ final class RecordSet
                 continue;
             }
             $needed_ids = explode(chr(0x1D), $dehydrated_row[$dehydrated_ref] ?? '');
-            $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
+            $needed_ids = array_filter($needed_ids, static fn($id): bool => $id !== chr(0x0));
             if ($dehydrated_ref === 'id') {
                 // Add the main item fields
                 $main_record = $fetched_records[$table][$needed_ids[0]];
@@ -411,7 +411,7 @@ final class RecordSet
                     continue;
                 }
                 // Remove any empty values
-                $join_prop = array_filter($join_prop, static fn($v) => $v !== []);
+                $join_prop = array_filter($join_prop, static fn($v): bool => $v !== []);
                 ArrayPathAccessor::setElementByArrayPath($record, $path, $join_prop);
             }
         }

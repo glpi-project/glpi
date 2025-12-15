@@ -9479,7 +9479,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 
         // Test environment data
         if ($add_e2e_data) {
-            $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
+            $root_entity = array_filter($tables['glpi_entities'], static fn(array $e): bool => $e['id'] === 0);
             $root_entity = current($root_entity);
 
             // Main E2E test entity
@@ -9513,7 +9513,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             $tables['glpi_entities'][] = $e2e_subentity2;
 
             // New e2e super-admin user (login: e2e_tests, password: glpi)
-            $default_glpi_user = array_filter($tables['glpi_users'], static fn($u) => $u['id'] === self::USER_GLPI);
+            $default_glpi_user = array_filter($tables['glpi_users'], static fn(array $u): bool => $u['id'] === self::USER_GLPI);
             $e2e_user = array_shift($default_glpi_user);
             $e2e_user = array_replace($e2e_user, [
                 'id' => 7,

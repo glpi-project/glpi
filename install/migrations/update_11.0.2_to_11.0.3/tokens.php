@@ -60,7 +60,7 @@ if ($use_legacy_key) {
     };
 } else {
     $glpi_key    = $glpi_key_manager->get();
-    $encrypt_fct = fn(string $value) => $glpi_key_manager->encrypt($value);
+    $encrypt_fct = fn(string $value): string => $glpi_key_manager->encrypt($value);
 }
 
 if ($glpi_key === null) {

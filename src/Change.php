@@ -82,7 +82,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function canSolve()
+    public function canSolve(): bool
     {
 
         return (self::isAllowedStatus($this->fields['status'], self::SOLVED)
@@ -143,7 +143,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * @return bool
      */
-    public function canReopen()
+    public function canReopen(): bool
     {
         return Session::haveRight('followup', CREATE)
              && in_array($this->fields["status"], static::getClosedStatusArray())
@@ -194,7 +194,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         global $CFG_GLPI;
 
@@ -296,8 +296,11 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return true;
     }
 
+    /**
+     * @return mixed[]
+     */
     #[Override]
-    public function defineTabs($options = [])
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -319,7 +322,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         // CommonITILTask does not extends CommonDBConnexity
@@ -350,7 +353,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         global $CFG_GLPI;
 
@@ -394,7 +397,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public function post_addItem()
+    public function post_addItem(): void
     {
         global $DB;
 
@@ -490,8 +493,11 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $search;
     }
 
+    /**
+     * @return mixed[]
+     */
     #[Override]
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -659,7 +665,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param class-string<CommonDBTM> $itemtype
      * @return array
      */
-    public static function rawSearchOptionsToAdd(string $itemtype)
+    public static function rawSearchOptionsToAdd(string $itemtype): array
     {
         global $CFG_GLPI;
 
@@ -727,8 +733,11 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
         return $tab;
     }
 
+    /**
+     * @return mixed[]
+     */
     #[Override]
-    public static function getAllStatusArray($withmetaforsearch = false)
+    public static function getAllStatusArray($withmetaforsearch = false): array
     {
 
         $tab = [
@@ -757,7 +766,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function getClosedStatusArray()
+    public static function getClosedStatusArray(): array
     {
 
         // To be overridden by class
@@ -770,7 +779,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function getSolvedStatusArray()
+    public static function getSolvedStatusArray(): array
     {
         // To be overridden by class
         $tab = [self::OBSERVED, self::SOLVED];
@@ -778,13 +787,13 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function getNewStatusArray()
+    public static function getNewStatusArray(): array
     {
         return [self::INCOMING, self::ACCEPTED, self::EVALUATION, self::APPROVAL];
     }
 
     #[Override]
-    public static function getProcessStatusArray()
+    public static function getProcessStatusArray(): array
     {
 
         // To be overridden by class
@@ -793,7 +802,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function getReopenableStatusArray()
+    public static function getReopenableStatusArray(): array
     {
         return array_merge(self::getClosedStatusArray(), [self::SOLVED]);
     }
@@ -856,7 +865,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param CommonDBTM $item
      * @return array
      */
-    public static function getListForItemRestrict(CommonDBTM $item)
+    public static function getListForItemRestrict(CommonDBTM $item): array
     {
         $restrict = [];
 
@@ -906,7 +915,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     }
 
     #[Override]
-    public static function getDefaultValues($entity = 0)
+    public static function getDefaultValues($entity = 0): array
     {
         if (is_numeric(Session::getLoginUserID(false))) {
             $users_id_requester = Session::getLoginUserID();
@@ -1006,7 +1015,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-clipboard-check";
     }
@@ -1043,7 +1052,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      *
      * @return void
      **/
-    public static function showCentralList($start, $status = "process", $showgroupchanges = true)
+    public static function showCentralList($start, $status = "process", $showgroupchanges = true): void
     {
         global $CFG_GLPI, $DB;
 
@@ -1550,7 +1559,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param string $forcetab
      * @return void
      */
-    public static function showVeryShort($ID, $forcetab = '')
+    public static function showVeryShort($ID, $forcetab = ''): void
     {
         // Prints a job in short form
         // Should be called in a <table>-segment

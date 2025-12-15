@@ -86,7 +86,7 @@ class Contract extends CommonDBTM implements StateInterface
         return 'financial';
     }
 
-    public function post_getEmpty()
+    public function post_getEmpty(): void
     {
         if (isset($_SESSION['glpiactive_entity'])) {
             $this->fields["alert"] = Entity::getUsedConfig(
@@ -99,7 +99,7 @@ class Contract extends CommonDBTM implements StateInterface
         $this->fields["notice"] = 0;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -114,7 +114,10 @@ class Contract extends CommonDBTM implements StateInterface
         $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -132,7 +135,7 @@ class Contract extends CommonDBTM implements StateInterface
         return $ong;
     }
 
-    public function pre_updateInDB()
+    public function pre_updateInDB(): void
     {
         // Clean end alert if begin_date is after old one
         // Or if duration is greater than old one
@@ -167,7 +170,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @inheritDoc
      */
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/management/contract.html.twig', [
@@ -180,7 +183,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * @return array
      */
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
         $tab = [];
 
@@ -461,7 +464,10 @@ class Contract extends CommonDBTM implements StateInterface
         };
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -1038,7 +1044,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string The name(s) of the suppliers for this contract (HTML content)
      **/
-    public function getSuppliersNames()
+    public function getSuppliersNames(): string
     {
         global $DB;
 
@@ -1067,7 +1073,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         return ['description' => __('Send alarms on contracts')];
     }
@@ -1080,7 +1086,7 @@ class Contract extends CommonDBTM implements StateInterface
      * @return int
      * @used-by CronTask
      **/
-    public static function cronContract(?CronTask $task = null)
+    public static function cronContract(?CronTask $task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -1584,7 +1590,7 @@ class Contract extends CommonDBTM implements StateInterface
      *
      * @return string|string[]
      **/
-    public static function getAlertName($val = null)
+    public static function getAlertName($val = null): array|string
     {
         $names = [
             0                                                  => Dropdown::EMPTY_VALUE,
@@ -1611,7 +1617,7 @@ class Contract extends CommonDBTM implements StateInterface
         return NOT_AVAILABLE;
     }
 
-    public function getUnallowedFieldsForUnicity()
+    public function getUnallowedFieldsForUnicity(): array
     {
         return array_merge(
             parent::getUnallowedFieldsForUnicity(),
@@ -1629,7 +1635,7 @@ class Contract extends CommonDBTM implements StateInterface
         $itemtype,
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         global $CFG_GLPI;
 
         if (in_array($itemtype, $CFG_GLPI["contract_types"], true)) {
@@ -1645,7 +1651,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * @return string
      */
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-writing-sign";
     }
@@ -1653,7 +1659,7 @@ class Contract extends CommonDBTM implements StateInterface
     /**
      * @return array
      */
-    public static function getNotExpiredCriteria()
+    public static function getNotExpiredCriteria(): array
     {
         global $DB;
         return [

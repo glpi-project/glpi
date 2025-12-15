@@ -49,7 +49,7 @@ if (Session::getCurrentInterface() == "helpdesk") {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
 }
 
-$fn_redirect_back = static function ($begin_year = null, $begin_month = null) {
+$fn_redirect_back = static function ($begin_year = null, $begin_month = null): void {
     $back_url = Html::getBackUrl();
     if ($begin_year === null && $begin_month === null) {
         // Try to get from POST data

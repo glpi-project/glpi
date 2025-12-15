@@ -74,7 +74,7 @@ class PhpExtension extends AbstractExtension
      *
      * @return mixed
      */
-    public function phpConfig(string $name)
+    public function phpConfig(string $name): string
     {
         return ini_get($name);
     }

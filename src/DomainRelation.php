@@ -59,7 +59,10 @@ class DomainRelation extends CommonDropdown
         return _n('Domain relation', 'Domains relations', $nb);
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
 
         $ong = [];
@@ -73,10 +76,10 @@ class DomainRelation extends CommonDropdown
     /**
      * @return array
      */
-    public static function getDefaults()
+    public static function getDefaults(): array
     {
         return array_map(
-            function ($e) {
+            function (array $e): array {
                 $e['is_recursive'] = 1;
                 return $e;
             },
@@ -84,7 +87,7 @@ class DomainRelation extends CommonDropdown
         );
     }
 
-    public function pre_deleteItem()
+    public function pre_deleteItem(): bool
     {
         if (in_array($this->fields['id'], [self::BELONGS, self::MANAGE])) {
             //keep defaults

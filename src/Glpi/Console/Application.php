@@ -101,10 +101,7 @@ class Application extends BaseApplication
 
     private ?DBmysql $db = null;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private ?\Symfony\Component\Console\Output\OutputInterface $output = null;
 
     public function __construct(private Kernel $kernel)
     {
@@ -358,7 +355,7 @@ class Application extends BaseApplication
      *
      * @throws RuntimeException
      */
-    private function computeAndLoadOutputLang()
+    private function computeAndLoadOutputLang(): void
     {
 
         // 1. Check in command line arguments
@@ -397,7 +394,7 @@ class Application extends BaseApplication
      *
      * @return bool
      */
-    private function isLanguageValid($language)
+    private function isLanguageValid($language): bool
     {
         return is_array($this->config)
          && array_key_exists('languages', $this->config)
@@ -468,7 +465,7 @@ class Application extends BaseApplication
         }
 
         $config_files_to_update = array_map(
-            fn($path) => GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . $path,
+            fn($path): string => GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . $path,
             $command->getConfigurationFilesToUpdate($input)
         );
         if (!Filesystem::canWriteFiles($config_files_to_update)) {

@@ -43,7 +43,7 @@ class BarcodeManager
      *
      * @return Model|false
      */
-    public function generateQRCode(CommonDBTM $item)
+    public function generateQRCode(CommonDBTM $item): false|\Com\Tecnick\Barcode\Model
     {
         global $CFG_GLPI;
         if (
@@ -69,7 +69,7 @@ class BarcodeManager
      *
      * @return false|string
      */
-    public static function renderQRCode(CommonDBTM $item)
+    public static function renderQRCode(CommonDBTM $item): string|false
     {
         $barcode_manager = new self();
         $qrcode = $barcode_manager->generateQRCode($item);

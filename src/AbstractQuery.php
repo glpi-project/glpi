@@ -71,7 +71,7 @@ abstract class AbstractQuery
      */
     abstract public function getQuery();
 
-    public function __toString()
+    public function __toString(): string
     {
         return $this->getQuery();
     }

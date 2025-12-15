@@ -152,7 +152,7 @@ class Ajax
      *
      * @return void|string (see $options['display'])
      */
-    public static function createIframeModalWindow($domid, $url, $options = [])
+    public static function createIframeModalWindow($domid, $url, array $options = [])
     {
 
         $param = [
@@ -277,12 +277,12 @@ class Ajax
     public static function createTabs(
         $tabdiv_id = 'tabspanel',
         $tabdivcontent_id = 'tabcontent',
-        $tabs = [],
+        array $tabs = [],
         $type = '',
         $ID = 0,
         $orientation = 'vertical',
         $options = []
-    ) {
+    ): void {
         if (count($tabs) === 0) {
             return;
         }

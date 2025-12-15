@@ -79,7 +79,7 @@ class AuthMail extends CommonDBTM
         return static::canUpdate();
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): false|array
     {
         if (empty($input['name'])) {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
@@ -93,7 +93,10 @@ class AuthMail extends CommonDBTM
         return $input;
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -103,7 +106,7 @@ class AuthMail extends CommonDBTM
         return $ong;
     }
 
-    public function rawSearchOptions()
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -213,7 +216,7 @@ class AuthMail extends CommonDBTM
     /**
      * @return void
      */
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if ($this->fields["is_default"] === 1) {
             $this->removeDefaultFromOtherItems();
@@ -225,7 +228,7 @@ class AuthMail extends CommonDBTM
     /**
      * @return void
      */
-    public function post_addItem()
+    public function post_addItem(): void
     {
         if ($this->fields["is_default"] === 1) {
             $this->removeDefaultFromOtherItems();
@@ -239,7 +242,7 @@ class AuthMail extends CommonDBTM
      *
      * @return void
      */
-    public function showFormTestMail()
+    public function showFormTestMail(): void
     {
         $ID = $this->getField('id');
 
@@ -288,7 +291,7 @@ TWIG, $twig_params);
      *
      * @return bool
      */
-    public static function useAuthMail()
+    public static function useAuthMail(): bool
     {
         return (countElementsInTable('glpi_authmails', ['is_active' => 1]) > 0);
     }
@@ -373,12 +376,12 @@ TWIG, $twig_params);
         return $auth;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         Rule::cleanForItemCriteria($this, 'MAIL_SERVER');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): array|string
     {
         /** @var CommonDBTM $item */
         if (!$withtemplate && $item->can($item->getField('id'), READ)) {
@@ -390,7 +393,7 @@ TWIG, $twig_params);
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         /** @var AuthMail $item */
         switch ($tabnum) {
@@ -401,7 +404,7 @@ TWIG, $twig_params);
         return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-mail";
     }

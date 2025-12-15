@@ -99,10 +99,8 @@ class CommonGLPI implements CommonGLPIInterface
      *              => 100, // weight value used when sorting tabs
      *      ]
      *  ]
-     *
-     * @var array
      */
-    private static $othertabs = [];
+    private static array $othertabs = [];
 
     public function __construct() {}
 
@@ -138,7 +136,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public static function getType()
+    public static function getType(): string
     {
         return static::class;
     }
@@ -243,7 +241,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public static function registerStandardTab($typeform, $typetab, int $order = 500)
+    public static function registerStandardTab($typeform, $typetab, int $order = 500): void
     {
         if (isset(self::$othertabs[$typeform])) {
             self::$othertabs[$typeform][$typetab] = $order;
@@ -263,7 +261,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public static function getOtherTabs($typeform)
+    public static function getOtherTabs($typeform): array
     {
         if (isset(self::$othertabs[$typeform])) {
             $othertabs = self::$othertabs[$typeform];
@@ -282,7 +280,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
      *                  and values are the HTML snippet corresponding to the tab name.
      */
-    public function defineTabs($options = [])
+    public function defineTabs(array $options = []): array
     {
 
         $ong = [];
@@ -341,7 +339,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public function addStandardTab($itemtype, array &$ong, array $options)
+    public function addStandardTab($itemtype, array &$ong, array $options): static
     {
         $withtemplate = 0;
         if (isset($options['withtemplate'])) {
@@ -380,7 +378,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public function addImpactTab(array &$ong, array $options)
+    public function addImpactTab(array &$ong, array $options): static
     {
         global $CFG_GLPI;
 
@@ -401,7 +399,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return static
      */
-    public function addDefaultFormTab(array &$ong)
+    public function addDefaultFormTab(array &$ong): static
     {
         $icon = '';
         if (method_exists(static::class, 'getIcon')) {
@@ -419,7 +417,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return false|array
      */
-    public static function getMenuContent()
+    public static function getMenuContent(): array|false
     {
         $menu       = [];
 
@@ -500,7 +498,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return false|array  Additional menu specs, or false if no additional menu content.
      */
-    public static function getAdditionalMenuContent()
+    public static function getAdditionalMenuContent(): bool
     {
         return false;
     }
@@ -512,7 +510,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return list<'add'|'template'>
      */
-    public static function getForbiddenActionsForMenu()
+    public static function getForbiddenActionsForMenu(): array
     {
         return [];
     }
@@ -524,7 +522,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return array|false  Additional menu options, or false if no additional options.
      */
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): bool
     {
         return false;
     }
@@ -536,7 +534,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return false|array  Additional menu links, or false if no additional links.
      **/
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): bool
     {
         return false;
     }
@@ -548,7 +546,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return string
      */
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return '';
     }
@@ -579,7 +577,7 @@ class CommonGLPI implements CommonGLPIInterface
      *          an array of string if there are multiple tabs;
      *          an empty string if there is no tabs.
      */
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         return '';
     }
@@ -631,7 +629,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @TODO In GLPI 12.0, do something with the return value that is currently not used.
      */
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         return false;
     }
@@ -648,7 +646,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @TODO In GLPI 12.0, do something with the return value that is currently not used.
      */
-    public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, $options = [])
+    public static function displayStandardTab(CommonGLPI $item, $tab, $withtemplate = 0, array $options = [])
     {
         switch ($tab) {
             // All tab
@@ -746,7 +744,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '', ?int $total_nb = null)
+    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '', ?int $total_nb = null): string
     {
         if ($icon === '') {
             $icon = self::getTabIconClass($form_itemtype);
@@ -815,7 +813,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      */
-    public function isNewItem()
+    public function isNewItem(): bool
     {
         return false;
     }
@@ -829,7 +827,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return bool
      */
-    public static function isNewID($ID)
+    public static function isNewID($ID): bool
     {
         return true;
     }
@@ -886,7 +884,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @return string
      */
-    public static function getFormURLWithID($id = 0, $full = true)
+    public static function getFormURLWithID($id = 0, $full = true): string
     {
         $link     = static::getFormURL($full);
         $link    .= (strpos($link, '?') ? '&' : '?') . 'id=' . ((int) $id);
@@ -905,7 +903,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public function showTabsContent($options = [])
+    public function showTabsContent(array $options = []): void
     {
         // for objects not in table like central
         if (isset($this->fields['id'])) {
@@ -1018,7 +1016,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public function showNavigationHeader($options = [])
+    public function showNavigationHeader($options = []): void
     {
         global $CFG_GLPI;
 
@@ -1239,7 +1237,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public function display($options = [])
+    public function display($options = []): void
     {
         // Item might already be loaded, skip load and rights checks
         $item_loaded = $options['loaded'] ?? false;
@@ -1307,7 +1305,7 @@ class CommonGLPI implements CommonGLPIInterface
      * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
      * @psalm-taint-sink html $object (string will be added to HTML source)
      */
-    public function getErrorMessage($error, $object = '')
+    public function getErrorMessage($error, $object = ''): string
     {
         if (empty($object) && $this instanceof CommonDBTM) {
             $object = $this->getLink();
@@ -1329,7 +1327,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @final
      */
-    public function getKBLinks()
+    public function getKBLinks(): string
     {
         global $CFG_GLPI, $DB;
 

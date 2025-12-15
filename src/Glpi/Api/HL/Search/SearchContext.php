@@ -202,7 +202,7 @@ final class SearchContext
             return true;
         }
         $prop_parent = substr($prop_name, 0, strrpos($prop_name, '.'));
-        return count(array_filter($this->joins, static fn($j_name) => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
+        return count(array_filter($this->joins, static fn($j_name): bool => str_starts_with($prop_parent, $j_name), ARRAY_FILTER_USE_KEY)) > 0;
     }
 
     /**
@@ -226,7 +226,7 @@ final class SearchContext
         $primary_key = $join_params[$pkey_field];
         $prop_matches = array_filter(
             $this->getFlattenedProperties(),
-            static fn($prop_name)
+            static fn($prop_name): bool
                 // Filter matches for the primary key
                 => preg_match('/^' . preg_quote($join, '/') . '\.' . preg_quote($primary_key, '/') . '$/', $prop_name) === 1,
             ARRAY_FILTER_USE_KEY
@@ -255,7 +255,7 @@ final class SearchContext
             if ($fkey === 'id') {
                 // This is a primary key on a main item
                 if ($this->isUnionSearchMode()) {
-                    $subtype = array_filter($this->getSchemaSubtypes(), static fn($subtype) => $subtype['schema_name'] === $schema_name);
+                    $subtype = array_filter($this->getSchemaSubtypes(), static fn(array $subtype): bool => $subtype['schema_name'] === $schema_name);
                     if (count($subtype) !== 1) {
                         throw new RuntimeException('Cannot find subtype for schema ' . $schema_name);
                     }

@@ -175,7 +175,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return array array of string with icons and names
      */
-    public static function getForApplianceItem(int $appliances_items_id = 0)
+    public static function getForApplianceItem(int $appliances_items_id = 0): array
     {
         global $DB;
 
@@ -212,7 +212,7 @@ class Appliance_Item_Relation extends CommonDBRelation
      *
      * @return string the html for the list
      */
-    public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true)
+    public static function showListForApplianceItem(int $appliances_items_id = 0, bool $canedit = true): string
     {
         $relations_str = "";
         foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {

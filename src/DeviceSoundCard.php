@@ -45,7 +45,7 @@ class DeviceSoundCard extends CommonDevice
         return _n('Soundcard', 'Soundcards', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -146,7 +146,7 @@ class DeviceSoundCard extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
@@ -193,7 +193,7 @@ class DeviceSoundCard extends CommonDevice
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-volume-2";
     }

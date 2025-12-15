@@ -529,7 +529,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_addItem()
+    public function post_addItem(): void
     {
 
         $item = $this->getItem();
@@ -569,7 +569,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
 
         if (
@@ -653,7 +653,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function post_deleteFromDB()
+    public function post_deleteFromDB(): void
     {
 
         if (
@@ -698,7 +698,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @return void
      **/
-    public function cleanDBonMarkDeleted()
+    public function cleanDBonMarkDeleted(): void
     {
 
         if (
@@ -743,7 +743,7 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @return void
      **/
 
-    public function post_restoreItem()
+    public function post_restoreItem(): void
     {
         if (
             (isset($this->input['_no_history']) && $this->input['_no_history'])

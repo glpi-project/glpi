@@ -161,7 +161,10 @@ class InstallCommand extends AbstractPluginCommand
         return __('Which plugin(s) do you want to install (comma separated values)?');
     }
 
-    protected function getDirectoryChoiceChoices()
+    /**
+     * @return mixed[]
+     */
+    protected function getDirectoryChoiceChoices(): array
     {
 
         $only_not_installed = !$this->input->getOption('force');
@@ -216,7 +219,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function isAlreadyInstalled($directory)
+    private function isAlreadyInstalled($directory): bool
     {
 
         $plugin = new Plugin();
@@ -238,7 +241,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunInstallMethod($directory, $allow_reinstall)
+    private function canRunInstallMethod(string $directory, $allow_reinstall): bool
     {
 
         $plugin = new Plugin();
@@ -298,7 +301,7 @@ class InstallCommand extends AbstractPluginCommand
      *
      * @return array
      */
-    private function getAdditionnalParameters(InputInterface $input)
+    private function getAdditionnalParameters(InputInterface $input): array
     {
 
         $input_params = $input->getOption('param');

@@ -69,7 +69,10 @@ class Datacenter extends CommonDBTM
         return $this->managePictures($input);
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -79,7 +82,10 @@ class Datacenter extends CommonDBTM
     }
 
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
 
         $tab = [];
@@ -143,7 +149,7 @@ class Datacenter extends CommonDBTM
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype)
+    public static function rawSearchOptionsToAdd($itemtype): array
     {
         $tab = [];
 
@@ -202,7 +208,7 @@ class Datacenter extends CommonDBTM
         return $tab;
     }
 
-    public static function getAdditionalMenuLinks()
+    public static function getAdditionalMenuLinks(): array|false
     {
         $links = [];
         $label = htmlescape(DCRoom::getTypeName(Session::getPluralNumber()));
@@ -218,7 +224,7 @@ class Datacenter extends CommonDBTM
         return false;
     }
 
-    public static function getAdditionalMenuOptions()
+    public static function getAdditionalMenuOptions(): array|false
     {
         if (static::canView()) {
             return [
@@ -237,7 +243,7 @@ class Datacenter extends CommonDBTM
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-building-warehouse";
     }

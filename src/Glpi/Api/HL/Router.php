@@ -254,18 +254,18 @@ EOT;
             }
 
             // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
-            self::$instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
+            self::$instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path): false => false);
 
             self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
             self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
-            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
+            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path): bool => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
             self::$instance->registerRequestMiddleware(new DebugRequestMiddleware());
             self::$instance->registerRequestMiddleware(new RSQLRequestMiddleware());
 
             // Always run the security middleware (no condition set)
             self::$instance->registerResponseMiddleware(new SecurityResponseMiddleware());
             self::$instance->registerResponseMiddleware(new DebugResponseMiddleware(), PHP_INT_MAX);
-            self::$instance->registerResponseMiddleware(new ResultFormatterMiddleware(), 0, static fn(RoutePath $route_path) => false);
+            self::$instance->registerResponseMiddleware(new ResultFormatterMiddleware(), 0, static fn(RoutePath $route_path): false => false);
 
             // Register middleware from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_MIDDLEWARE])) {
@@ -345,10 +345,10 @@ EOT;
         $this->auth_middlewares[] = [
             'priority' => $priority,
             'middleware' => $middleware,
-            'condition' => $condition ?? static fn(RoutePath $route_path) => true,
+            'condition' => $condition ?? static fn(RoutePath $route_path): true => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->auth_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
+        usort($this->auth_middlewares, static fn(array $a, array $b): int => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -365,10 +365,10 @@ EOT;
         $this->request_middlewares[] = [
             'priority' => $priority,
             'middleware' => $middleware,
-            'condition' => $condition ?? static fn(RoutePath $route_path) => true,
+            'condition' => $condition ?? static fn(RoutePath $route_path): true => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->request_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
+        usort($this->request_middlewares, static fn(array $a, array $b): int => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -385,10 +385,10 @@ EOT;
         $this->response_middlewares[] = [
             'priority' => $priority,
             'middleware' => $middleware,
-            'condition' => $condition ?? static fn(RoutePath $route_path) => true,
+            'condition' => $condition ?? static fn(RoutePath $route_path): true => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->response_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
+        usort($this->response_middlewares, static fn(array $a, array $b): int => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -483,7 +483,7 @@ EOT;
             ];
         }
         // Sort by href
-        usort($paths, static fn($a, $b) => strcmp($a['href'], $b['href']));
+        usort($paths, static fn(array $a, array $b): int => strcmp($a['href'], $b['href']));
         return $paths;
     }
 
@@ -497,7 +497,7 @@ EOT;
 
         $api_version = self::normalizeAPIVersion($request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION);
         // Filter routes by the requested API version and method
-        $routes = array_filter($routes, static function ($route) use ($request, $api_version) {
+        $routes = array_filter($routes, static function (\Glpi\Api\HL\RoutePath $route) use ($request, $api_version): bool {
             if ($route->matchesAPIVersion($api_version) && in_array($request->getMethod(), $route->getRouteMethods(), true)) {
                 // Verify the request uri path matches the compiled path
                 return (bool) preg_match('#^' . $route->getCompiledPath() . '$#i', $request->getUri()->getPath());
@@ -527,7 +527,7 @@ EOT;
         }
 
         // Sort routes by priority (descending)
-        usort($routes, static fn(RoutePath $a, RoutePath $b) => ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1);
+        usort($routes, static fn(RoutePath $a, RoutePath $b): int => ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1);
 
         return array_reverse($routes);
     }
@@ -547,7 +547,7 @@ EOT;
 
     private function doAuthMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
+        $action = static function (MiddlewareInput $input, ?callable $next = null): void {};
         foreach ($this->auth_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
@@ -561,7 +561,7 @@ EOT;
 
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
     {
-        $action = (static fn(MiddlewareInput $input, ?callable $next = null) => null);
+        $action = (static fn(MiddlewareInput $input, ?callable $next = null): null => null);
         foreach ($this->request_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
@@ -579,7 +579,7 @@ EOT;
 
     private function doResponseMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
+        $action = static function (MiddlewareInput $input, ?callable $next = null): void {};
         foreach ($this->response_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
@@ -665,7 +665,7 @@ EOT;
             } else {
                 // Remove all authentication middlewares except InternalAuthMiddleware if it is present
                 // If HL API is disabled, only internal requests should be allowed as they are used for features like Webhooks rather than user-initiated requests
-                $this->auth_middlewares = array_filter($this->auth_middlewares, static fn($middleware) => get_class($middleware['middleware']) === InternalAuthMiddleware::class);
+                $this->auth_middlewares = array_filter($this->auth_middlewares, static fn(array $middleware): bool => get_class($middleware['middleware']) === InternalAuthMiddleware::class);
                 // The internal auth is required to succeed here even for public endpoints because the HL API is disabled
                 $requires_auth = !in_array(strtolower($matched_route->getCompiledPath()), $routes_allowed_when_disabled, true);
                 $unauthenticated_response = AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');

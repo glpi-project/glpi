@@ -84,7 +84,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item::class) {
             case Change::class:
@@ -104,7 +104,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * @param Problem $problem
      * @return void
      **/
-    public static function showForProblem(Problem $problem)
+    public static function showForProblem(Problem $problem): void
     {
         global $DB;
 
@@ -144,7 +144,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             $used[$data['id']]    = $data['id'];
         }
 
-        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+        $link_types = array_map(static fn(array $link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
 
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -168,7 +168,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         }
 
         [$columns, $formatters] = array_values(Change::getCommonDatatableColumns());
-        $entries = Change::getDatatableEntries(array_map(static function ($c) {
+        $entries = Change::getDatatableEntries(array_map(static function (array $c): array {
             $c['itemtype'] = Change::class;
             $c['item_id'] = $c['id'];
             return $c;
@@ -196,7 +196,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
      * @param Change $change object
      * @return void
      **/
-    public static function showForChange(Change $change)
+    public static function showForChange(Change $change): void
     {
         global $DB;
 
@@ -236,7 +236,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
             $used[$data['id']]     = $data['id'];
         }
 
-        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+        $link_types = array_map(static fn(array $link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
 
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -259,7 +259,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
         }
 
         [$columns, $formatters] = array_values(Problem::getCommonDatatableColumns());
-        $entries = Problem::getDatatableEntries(array_map(static function ($p) {
+        $entries = Problem::getDatatableEntries(array_map(static function (array $p): array {
             $p['itemtype'] = Problem::class;
             $p['item_id'] = $p['id'];
             return $p;

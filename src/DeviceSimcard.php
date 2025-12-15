@@ -43,7 +43,7 @@ class DeviceSimcard extends CommonDevice
         return _n('Simcard', 'Simcards', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -100,7 +100,7 @@ class DeviceSimcard extends CommonDevice
         return $tab;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'             => 'equal',
@@ -109,7 +109,7 @@ class DeviceSimcard extends CommonDevice
         ];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-device-sim";
     }

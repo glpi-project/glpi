@@ -78,7 +78,7 @@ class Pdu_Plug implements DeprecatedInterface
         $this->updateSearchOptionsUids($soptions);
 
         return array_map(
-            static function ($soption) {
+            static function (array $soption): array {
                 if (isset($soption['table']) && $soption['table'] === 'glpi_pdu_plugs') {
                     $soption['table'] = 'glpi_item_plugs';
                 }

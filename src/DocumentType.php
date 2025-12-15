@@ -44,7 +44,7 @@ class DocumentType extends CommonDropdown
 
     private static ?string $uploadable_patterns = null;
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'  => 'icon',
@@ -239,34 +239,34 @@ class DocumentType extends CommonDropdown
         return self::$uploadable_patterns;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-file";
     }
 
     #[Override]
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->clearCachedUploadablePatterns();
         parent::post_addItem();
     }
 
     #[Override]
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->clearCachedUploadablePatterns();
         parent::post_updateItem($history);
     }
 
     #[Override]
-    public function post_deleteItem()
+    public function post_deleteItem(): void
     {
         $this->clearCachedUploadablePatterns();
         parent::post_deleteItem();
     }
 
     #[Override]
-    public function post_purgeItem()
+    public function post_purgeItem(): void
     {
         $this->clearCachedUploadablePatterns();
         parent::post_purgeItem();

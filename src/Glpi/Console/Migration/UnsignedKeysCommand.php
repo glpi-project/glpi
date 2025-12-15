@@ -91,7 +91,7 @@ class UnsignedKeysCommand extends AbstractCommand implements ConfigurationComman
 
             $foreign_keys = $this->db->getForeignKeysContraints();
 
-            $progress_message = (fn(array $column) => sprintf(__('Migrating column "%s.%s"...'), $column['TABLE_NAME'], $column['COLUMN_NAME']));
+            $progress_message = (fn(array $column): string => sprintf(__('Migrating column "%s.%s"...'), $column['TABLE_NAME'], $column['COLUMN_NAME']));
 
             foreach ($this->iterate($columns, $progress_message) as $column) {
                 $table_name  = $column['TABLE_NAME'];

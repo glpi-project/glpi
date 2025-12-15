@@ -412,7 +412,7 @@ HTML;
             if ($user_id === false) {
                 // Redirect to login page
                 $redirect_params = [
-                    'scope'         => implode(' ', array_map(static fn($s) => $s->getIdentifier(), $auth_request->getScopes())),
+                    'scope'         => implode(' ', array_map(static fn(\League\OAuth2\Server\Entities\ScopeEntityInterface $s): string => $s->getIdentifier(), $auth_request->getScopes())),
                     'client_id'     => $auth_request->getClient()->getIdentifier(),
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
@@ -580,12 +580,12 @@ HTML;
         $params = $request->getParameters();
         $transfer = new Transfer();
 
-        $transfer_records = array_filter($params, static fn($param)
+        $transfer_records = array_filter($params, static fn($param): bool
             // must have itemtype, items_id and entity keys
             => is_array($param) && isset($param['itemtype'], $param['items_id'], $param['entity']));
         $original_record_count = count($transfer_records);
         // Filter out any records that would transfer to an entity the user doesn't have access to
-        $transfer_records = array_filter($transfer_records, static fn($record) => Session::haveAccessToEntity((int) $record['entity']));
+        $transfer_records = array_filter($transfer_records, static fn(array $record) => Session::haveAccessToEntity((int) $record['entity']));
         $is_partial_transfer = $original_record_count !== count($transfer_records);
 
         $controllers = Router::getInstance()->getControllers();

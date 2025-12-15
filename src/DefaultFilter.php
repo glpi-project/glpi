@@ -74,7 +74,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
         return ['config', CommonDropdown::class, self::class];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-filter";
     }
@@ -111,7 +111,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
     /**
      * @return array
      */
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [

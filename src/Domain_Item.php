@@ -55,7 +55,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return void
      */
-    public static function cleanForItem(CommonDBTM $item)
+    public static function cleanForItem(CommonDBTM $item): void
     {
         $temp = new self();
         $temp->deleteByCriteria(
@@ -92,7 +92,7 @@ class Domain_Item extends CommonDBRelation
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if (!$item instanceof CommonDBTM) {
             return false;
@@ -174,7 +174,7 @@ class Domain_Item extends CommonDBRelation
      *
      * @return false|int
      */
-    public function addItem($values)
+    public function addItem(array $values)
     {
         return $this->add([
             'domains_id'         => $values['domains_id'],
@@ -684,7 +684,10 @@ TWIG, $twig_params);
         ]);
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return list<array{id: '2', table: mixed, field: 'name', name: mixed, datatype: 'itemlink', itemlink_type: class-string<static>}>
+     */
+    public function rawSearchOptions(): array
     {
         $tab = [];
 

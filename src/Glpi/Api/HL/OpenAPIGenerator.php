@@ -171,7 +171,7 @@ EOT;
 
                 // Add properties that have 'required' flags to a 'required' array on the nearest parent object
                 // We add the 'required' on individual properties so that it works well with the API version filtering
-                $fn_hoist_required_flags = static function (&$schema_part) use (&$fn_hoist_required_flags) {
+                $fn_hoist_required_flags = static function (&$schema_part) use (&$fn_hoist_required_flags): void {
                     if (is_array($schema_part)) {
                         if (isset($schema_part['properties']) && is_array($schema_part['properties'])) {
                             $required_fields = [];
@@ -520,7 +520,7 @@ EOT;
         if ($route_doc === null) {
             return null;
         }
-        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param) => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
+        $request_params = array_filter($route_doc->getParameters(), static fn(Doc\Parameter $param): bool => $param->getLocation() === Doc\Parameter::LOCATION_BODY);
         if (count($request_params) === 0) {
             return null;
         }
@@ -536,7 +536,7 @@ EOT;
         ];
 
         // If there is a parameter with the location of body and name of "_", it should be an object that represents the entire request body (or at least the base schema of it)
-        $request_body_param = array_filter($request_params, static fn(Doc\Parameter $param) => $param->getName() === '_');
+        $request_body_param = array_filter($request_params, static fn(Doc\Parameter $param): bool => $param->getName() === '_');
         if (count($request_body_param) > 0) {
             $request_body_param = array_values($request_body_param)[0];
             if ($request_body_param->getSchema() instanceof Doc\SchemaReference) {

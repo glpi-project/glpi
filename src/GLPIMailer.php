@@ -199,7 +199,7 @@ class GLPIMailer
      *
      * @return bool
      */
-    public function send()
+    public function send(): bool
     {
         $text_body = $this->email->getTextBody();
         if (is_string($text_body)) {

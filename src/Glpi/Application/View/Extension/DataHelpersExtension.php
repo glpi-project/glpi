@@ -282,7 +282,7 @@ class DataHelpersExtension extends AbstractExtension
      *
      * @return string truncated string
      */
-    public function truncateLeft(string $string = "", int $length = 30, string $separator = "...")
+    public function truncateLeft(string $string = "", int $length = 30, string $separator = "..."): string
     {
         if (mb_strlen($string) <= $length) {
             return $string;

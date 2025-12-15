@@ -214,7 +214,7 @@ abstract class CommonDevice extends CommonDropdown
         return false;
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         switch ($field['type']) {
             case 'registeredIDChooser':
@@ -591,7 +591,7 @@ abstract class CommonDevice extends CommonDropdown
      * @return void
      * @since 0.85
      **/
-    public function post_workOnItem()
+    public function post_workOnItem(): void
     {
         if (
             (isset($this->input['_registeredID']))
@@ -629,13 +629,13 @@ abstract class CommonDevice extends CommonDropdown
         }
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         $this->post_workOnItem();
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->post_workOnItem();
         parent::post_updateItem($history);

@@ -52,7 +52,7 @@ final class CaldavController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
-        return new HeaderlessStreamedResponse(function () {
+        return new HeaderlessStreamedResponse(function (): void {
             global $CFG_GLPI;
 
             $server = new Server();

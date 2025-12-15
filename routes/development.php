@@ -41,7 +41,7 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
  * Closures $_route and $_import are here to provide defaults.
  * These are necessary for prefixing and for locale.
  */
-return static function (RoutingConfigurator $routes, Kernel $kernel) {
+return static function (RoutingConfigurator $routes, Kernel $kernel): void {
     $env = Environment::get();
     if (!$env->shouldEnableExtraDevAndDebugTools()) {
         throw new RuntimeException(\sprintf(

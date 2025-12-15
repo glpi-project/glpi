@@ -94,7 +94,7 @@ class Server extends DAV\Server
      *
      * @return void
      */
-    public function logException(Throwable $exception)
+    public function logException(Throwable $exception): void
     {
         if ($exception instanceof Exception && $exception->getHTTPCode() < 500) {
             // Ignore server exceptions that does not corresponds to a server error

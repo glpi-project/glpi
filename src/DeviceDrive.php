@@ -43,7 +43,7 @@ class DeviceDrive extends CommonDevice
         return _n('Drive', 'Drives', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -135,7 +135,7 @@ class DeviceDrive extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): ?\HTMLTableCell {
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
         if ($column == $father) {
@@ -166,7 +166,7 @@ class DeviceDrive extends CommonDevice
         return null;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation'       => 'equal',
@@ -175,7 +175,7 @@ class DeviceDrive extends CommonDevice
         ];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-server-2";
     }

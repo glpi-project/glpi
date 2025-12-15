@@ -58,7 +58,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
     }
 
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch (true) {
             case $item instanceof CartridgeItem:

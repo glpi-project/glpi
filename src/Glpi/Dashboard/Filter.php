@@ -174,7 +174,7 @@ class Filter extends CommonDBChild
      *
      * @return void
      */
-    public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
+    public static function addForDashboard(int $dashboards_id = 0, string $settings = ''): void
     {
         global $DB;
 

@@ -164,7 +164,7 @@ class DisplayPreference extends CommonDBTM
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         switch ($ma->getAction()) {
             case 'delete_for_user':
@@ -314,7 +314,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void
      */
-    public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central')
+    public function updateOrder(string $itemtype, int $users_id, array $order, string $interface = 'central'): void
     {
         global $DB;
 
@@ -533,7 +533,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
-    public function showFormPerso($itemtype)
+    public function showFormPerso(string $itemtype)
     {
         return $this->showConfigForm($itemtype, false);
     }
@@ -575,7 +575,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return null|false (display) Returns false if there is a rights error.
      **/
-    public function showFormGlobal($itemtype)
+    public function showFormGlobal(string $itemtype)
     {
         return $this->showConfigForm($itemtype, true);
     }
@@ -585,12 +585,12 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void
      */
-    public function showFormHelpdesk($itemtype): void
+    public function showFormHelpdesk(string $itemtype): void
     {
         $this->showConfigForm($itemtype, true, 'helpdesk');
     }
 
-    public function isNewItem()
+    public function isNewItem(): bool
     {
         // For tab management : force isNewItem
         return false;
@@ -603,7 +603,7 @@ class DisplayPreference extends CommonDBTM
      *
      * @return void
      */
-    public static function showForUser($users_id)
+    public static function showForUser($users_id): void
     {
         global $DB;
 
@@ -640,7 +640,10 @@ class DisplayPreference extends CommonDBTM
         ]);
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addStandardTab(self::class, $ong, $options);
@@ -684,7 +687,7 @@ class DisplayPreference extends CommonDBTM
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item->getType()) {
             case 'Preference':
@@ -749,7 +752,7 @@ class DisplayPreference extends CommonDBTM
     {
         global $DB;
         $tables = require(GLPI_ROOT . '/install/empty_data.php');
-        $prefs = array_filter($tables[self::getTable()], static fn($pref) => $pref['itemtype'] === $itemtype);
+        $prefs = array_filter($tables[self::getTable()], static fn(array $pref): bool => $pref['itemtype'] === $itemtype);
         if (!count($prefs)) {
             // plugin type or not supported
             $plugin_opts = Plugin::doHookFunction(Hooks::DEFAULT_DISPLAY_PREFS, [

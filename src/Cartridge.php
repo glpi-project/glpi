@@ -90,7 +90,7 @@ class Cartridge extends CommonDBRelation
         return parent::showMassiveActionsSubForm($ma);
     }
 
-    public static function getNameField()
+    public static function getNameField(): string
     {
         return 'id';
     }
@@ -105,7 +105,7 @@ class Cartridge extends CommonDBRelation
         return ['assets', self::class];
     }
 
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): false|array
     {
         $item = static::getItemFromArray(CartridgeItem::class, CartridgeItem::getForeignKeyField(), $input);
         if ($item === false) {
@@ -119,7 +119,7 @@ class Cartridge extends CommonDBRelation
         ];
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         // inherit infocom
         $infocoms = Infocom::getItemsAssociatedTo(CartridgeItem::class, $this->fields[CartridgeItem::getForeignKeyField()]);
@@ -134,7 +134,7 @@ class Cartridge extends CommonDBRelation
         parent::post_addItem();
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         if (in_array('pages', $this->updates, true)) {
             $printer = new Printer();
@@ -165,7 +165,7 @@ class Cartridge extends CommonDBRelation
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
         /** @var Cartridge $item */
         switch ($ma->getAction()) {
             case 'uninstall':
@@ -236,7 +236,7 @@ class Cartridge extends CommonDBRelation
      * @param bool $history
      * @return bool
      */
-    public function backToStock(array $input, $history = true)
+    public function backToStock(array $input, $history = true): bool
     {
         global $DB;
 
@@ -266,7 +266,7 @@ class Cartridge extends CommonDBRelation
      *
      * @return bool True if successful
      **/
-    public function install($pID, $tID)
+    public function install($pID, $tID): bool
     {
         global $DB;
 
@@ -318,7 +318,7 @@ class Cartridge extends CommonDBRelation
      *
      * @return bool
      **/
-    public function uninstall($ID)
+    public function uninstall($ID): bool
     {
         global $DB;
 
@@ -372,7 +372,7 @@ class Cartridge extends CommonDBRelation
      *
      * @return string String to display
      **/
-    public static function getCount($tID, $alarm_threshold, $nohtml = 0)
+    public static function getCount($tID, $alarm_threshold, $nohtml = 0): string
     {
         // Get total
         $total = self::getTotalNumber($tID);
@@ -454,7 +454,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return string String to display
      **/
-    public static function getCountForPrinter($pID, $nohtml = 0)
+    public static function getCountForPrinter($pID, $nohtml = 0): string
     {
         // Get total
         $total = self::getTotalNumberForPrinter($pID);
@@ -539,7 +539,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of cartridges counted.
      **/
-    public static function getTotalNumberForPrinter($pID)
+    public static function getTotalNumberForPrinter($pID): int
     {
         global $DB;
 
@@ -558,7 +558,7 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
      *
      * @return int Number of used cartridges counted.
      **/
-    public static function getUsedNumber($tID)
+    public static function getUsedNumber($tID): int
     {
         global $DB;
 
@@ -1230,7 +1230,7 @@ TWIG, ['printer_id' => $printer->getID()]);
      *
      * @return bool False if there was a rights issue. Otherwise, returns true.
      */
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $printer = new Printer();
         if (!empty($options['parent'])) {
@@ -1299,7 +1299,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return countElementsInTable(['glpi_cartridges'], ['glpi_cartridges.printers_id' => $item->getField('id')]);
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item::class) {
             case Printer::class:
@@ -1323,7 +1323,7 @@ TWIG, ['printer_id' => $printer->getID()]);
         return (new CartridgeItem())->getRights($interface);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-droplet-half-2-filled";
     }

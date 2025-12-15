@@ -48,8 +48,7 @@ class Dashboard extends CommonDBTM
 {
     /** @var int */
     protected $id      = 0;
-    /** @var string */
-    protected $key     = "";
+    protected string $key;
     /** @var string */
     protected $title   = "";
     /** @var bool */
@@ -72,7 +71,7 @@ class Dashboard extends CommonDBTM
     }
 
 
-    public static function getIndexName()
+    public static function getIndexName(): string
     {
         return "key";
     }
@@ -114,7 +113,7 @@ class Dashboard extends CommonDBTM
     }
 
 
-    public function getID()
+    public function getID(): int
     {
         // Force usage of the `id` field
         if (isset($this->fields['id'])) {
@@ -123,7 +122,7 @@ class Dashboard extends CommonDBTM
         return -1;
     }
 
-    public function getFromDB($ID)
+    public function getFromDB($ID): bool
     {
         global $DB;
 
@@ -294,7 +293,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function save(bool $skip_child = false)
+    public function save(bool $skip_child = false): void
     {
         global $DB, $GLPI_CACHE;
 
@@ -326,7 +325,7 @@ class Dashboard extends CommonDBTM
     }
 
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb([
             Item::class,
@@ -349,7 +348,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function saveItems(array $items = [])
+    public function saveItems(array $items = []): void
     {
         $this->load();
         $this->items   = $items;
@@ -368,7 +367,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function saveTitle(string $title = "")
+    public function saveTitle(string $title = ""): void
     {
         if (!strlen($title)) {
             return;
@@ -391,7 +390,7 @@ class Dashboard extends CommonDBTM
      *
      * @return void
      */
-    public function saveRights(array $rights = [])
+    public function saveRights(array $rights = []): void
     {
         $this->load();
         $this->rights = $rights;
@@ -445,7 +444,7 @@ class Dashboard extends CommonDBTM
         $this->key = Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
 
         // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
-        $this->items = array_map(function (array $item) {
+        $this->items = array_map(function (array $item): array {
             $item['gridstack_id'] = $item['card_id'] . Uuid::uuid4();
 
             return $item;
@@ -487,15 +486,15 @@ class Dashboard extends CommonDBTM
                 $key = $dashboard['key'];
                 $id  = $dashboard['id'];
 
-                $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
+                $d_rights = array_filter($rights, static fn(array $right_line): bool => $right_line['dashboards_dashboards_id'] == $id);
                 $dashboardItem = new self($key);
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }
                 $dashboard['rights'] = self::convertRights($d_rights);
 
-                $d_items = array_filter($items, static fn($item) => $item['dashboards_dashboards_id'] == $id);
-                $d_items = array_map(static function ($item) {
+                $d_items = array_filter($items, static fn(array $item): bool => $item['dashboards_dashboards_id'] == $id);
+                $d_items = array_map(static function (array $item): array {
                     $item['card_options'] = importArrayFromDB($item['card_options']);
                     return $item;
                 }, $d_items);
@@ -507,7 +506,7 @@ class Dashboard extends CommonDBTM
 
         // Return dashboards filtered by context (if applicable)
         if ($context !== null && $context !== '') {
-            return array_filter(self::$all_dashboards, static fn($dashboard) => $dashboard['context'] === $context);
+            return array_filter(self::$all_dashboards, static fn(array $dashboard): bool => $dashboard['context'] === $context);
         }
 
         return self::$all_dashboards;
@@ -607,7 +606,7 @@ class Dashboard extends CommonDBTM
      *
      * @return bool
      */
-    public static function importFromJson($import = null)
+    public static function importFromJson($import = null): bool
     {
         if (!is_array($import)) {
             if (!Toolbox::isJSON($import)) {
@@ -634,7 +633,7 @@ class Dashboard extends CommonDBTM
      *
      * @return bool
      */
-    public function setPrivate($is_private)
+    public function setPrivate($is_private): int|float|string|bool|array|null
     {
         $this->load();
 
@@ -648,7 +647,7 @@ class Dashboard extends CommonDBTM
     /**
      * @return string (int as string... should be a boolean.)
      */
-    public function getPrivate()
+    public function getPrivate(): string
     {
         $this->load();
         if (!isset($this->fields['users_id'])) {
@@ -670,7 +669,7 @@ class Dashboard extends CommonDBTM
         return $this->fields['users_id'] != Session::getLoginUserID();
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-dashboard";
     }

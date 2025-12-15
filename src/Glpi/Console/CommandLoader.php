@@ -74,14 +74,12 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @var Command[]|null
      */
-    private $commands = null;
+    private ?array $commands = null;
 
     /**
      * Plugins info services
-     *
-     * @var Plugin|null
      */
-    private $plugin = null;
+    private ?\Plugin $plugin;
 
     /**
      * @param bool          $include_plugins
@@ -127,7 +125,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return void
      */
-    public function setIncludePlugins(bool $include_plugins)
+    public function setIncludePlugins(bool $include_plugins): void
     {
         $this->include_plugins = $include_plugins;
 
@@ -212,7 +210,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return void
      */
-    private function findPluginCommands()
+    private function findPluginCommands(): void
     {
 
         if ($this->plugin === null) {
@@ -371,7 +369,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return void
      */
-    private function registerCommand(Command $command)
+    private function registerCommand(Command $command): void
     {
 
         $this->commands[$command->getName()] = $command;
@@ -391,7 +389,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * @return null|Command
      */
-    private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
+    private function getCommandFromFile(SplFileInfo $file, string $basedir, array $prefixes = []): ?Command
     {
 
         // Check if file is readable
@@ -448,7 +446,7 @@ class CommandLoader implements CommandLoaderInterface
      * @param string $filepath
      * @return string
      */
-    private function getRelativePath($basedir, $filepath)
+    private function getRelativePath(string $basedir, string $filepath): string
     {
 
         // Strip (multiple) ending directory separator to normalize input

@@ -90,7 +90,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     /**
      * Clean certificate items
      */
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
 
         $this->deleteChildrenAndRelationsFromDb(
@@ -100,7 +100,10 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         );
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
 
         $tab = [];
@@ -393,7 +396,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
         $name = static::getTypeName(Session::getPluralNumber());
@@ -492,7 +495,10 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         return $tab;
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
@@ -541,7 +547,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return bool item found
      **/
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         $this->initForm($ID, $options);
 
@@ -620,7 +626,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         $certif_item = new Certificate_Item();
 
@@ -710,7 +716,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return array
      */
-    public static function cronInfo($name)
+    public static function cronInfo($name): array
     {
         return ['description' => __('Send alarms on expired certificate')];
     }
@@ -722,7 +728,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
      *
      * @return int 0 : nothing to do 1 : done with success
      */
-    public static function cronCertificate($task = null)
+    public static function cronCertificate($task = null): int
     {
         global $CFG_GLPI, $DB;
 
@@ -848,13 +854,13 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     }
 
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-certificate";
     }
 
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         $this->post_updateItemAssignableItem($history);
         $this->cleanAlerts([Alert::END]);

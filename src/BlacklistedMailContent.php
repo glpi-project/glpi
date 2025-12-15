@@ -71,7 +71,7 @@ class BlacklistedMailContent extends CommonDropdown
     }
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'  => 'content',
@@ -101,7 +101,7 @@ class BlacklistedMailContent extends CommonDropdown
         return $tab;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-mail-x";
     }

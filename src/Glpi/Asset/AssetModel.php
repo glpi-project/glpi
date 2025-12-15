@@ -232,7 +232,7 @@ abstract class AssetModel extends CommonDCModelDropdown
                 'datatype' => 'bool',
             ];
         } else {
-            $options = array_filter($options, static function ($option) {
+            $options = array_filter($options, static function (array $option): bool {
                 $field = $option['field'] ?? null;
                 return $field !== 'picture_front' && $field !== 'picture_rear';
             });
@@ -304,7 +304,7 @@ abstract class AssetModel extends CommonDCModelDropdown
                 'label'  => __('Is half rack'),
             ];
         } else {
-            $fields = array_filter($fields, static fn($option) => $option['name'] !== 'picture_front' && $option['name'] !== 'picture_rear');
+            $fields = array_filter($fields, static fn(array $option): bool => $option['name'] !== 'picture_front' && $option['name'] !== 'picture_rear');
         }
 
         return $fields;

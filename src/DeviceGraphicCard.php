@@ -43,7 +43,7 @@ class DeviceGraphicCard extends CommonDevice
         return _n('Graphics card', 'Graphics cards', $nb);
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -196,7 +196,7 @@ class DeviceGraphicCard extends CommonDevice
         return $cell;
     }
 
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation' => 'equal',
@@ -209,7 +209,7 @@ class DeviceGraphicCard extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 

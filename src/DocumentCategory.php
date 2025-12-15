@@ -45,7 +45,7 @@ class DocumentCategory extends CommonTreeDropdown
     }
 
 
-    public function cleanRelationData()
+    public function cleanRelationData(): void
     {
 
         parent::cleanRelationData();
@@ -79,7 +79,7 @@ class DocumentCategory extends CommonTreeDropdown
      *
      * @return bool
      */
-    private function isUsedAsDefaultCategoryForTickets()
+    private function isUsedAsDefaultCategoryForTickets(): bool
     {
 
         $config_values = Config::getConfigurationValues('core', ['documentcategories_id_forticket']);
@@ -88,7 +88,7 @@ class DocumentCategory extends CommonTreeDropdown
          && $config_values['documentcategories_id_forticket'] == $this->fields['id'];
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-tags";
     }

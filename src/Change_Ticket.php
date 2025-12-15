@@ -82,7 +82,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         return '';
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         switch ($item::class) {
             case Change::class:
@@ -126,7 +126,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         switch ($ma->getAction()) {
             case 'add_task':
@@ -208,7 +208,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * @param Change $change
      * @return void
      **/
-    public static function showForChange(Change $change)
+    public static function showForChange(Change $change): void
     {
         global $DB;
 
@@ -251,7 +251,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             $used[$data['id']]    = $data['id'];
         }
 
-        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+        $link_types = array_map(static fn(array $link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
 
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -274,7 +274,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         }
 
         [$columns, $formatters] = array_values(Ticket::getCommonDatatableColumns());
-        $entries = Ticket::getDatatableEntries(array_map(static function ($t) {
+        $entries = Ticket::getDatatableEntries(array_map(static function (array $t): array {
             $t['itemtype'] = Ticket::class;
             $t['item_id'] = $t['id'];
             return $t;
@@ -309,7 +309,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * @param Ticket $ticket object
      * @return void
      **/
-    public static function showForTicket(Ticket $ticket)
+    public static function showForTicket(Ticket $ticket): void
     {
         global $DB;
 
@@ -352,7 +352,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
             $used[$data['id']]    = $data['id'];
         }
 
-        $link_types = array_map(static fn($link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
+        $link_types = array_map(static fn(array $link_type) => $link_type['name'], CommonITILObject_CommonITILObject::getITILLinkTypes());
 
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -376,7 +376,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         }
 
         [$columns, $formatters] = array_values(Change::getCommonDatatableColumns());
-        $entries = Change::getDatatableEntries(array_map(static function ($c) {
+        $entries = Change::getDatatableEntries(array_map(static function (array $c): array {
             $c['itemtype'] = Change::class;
             $c['item_id'] = $c['id'];
             return $c;

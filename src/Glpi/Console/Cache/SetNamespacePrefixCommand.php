@@ -59,9 +59,8 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
 
     /**
      * Cache manager.
-     * @var CacheManager
      */
-    private $cache_manager;
+    private \Glpi\Cache\CacheManager $cache_manager;
 
     public function __construct()
     {

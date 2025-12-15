@@ -193,7 +193,7 @@ abstract class AbstractRightsDropdown
      */
     protected static function getValueNames(array $values): array
     {
-        return array_map(function ($value) {
+        return array_map(function ($value): string {
             $data = explode("-", $value);
             $items_id = $data[1];
             $item = getItemForForeignKeyField($data[0]);

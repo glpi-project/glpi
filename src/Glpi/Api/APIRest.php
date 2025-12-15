@@ -66,7 +66,7 @@ class APIRest extends API
      *
      * @return void
      */
-    public function manageUploadedFiles()
+    public function manageUploadedFiles(): void
     {
         foreach (array_keys($_FILES) as $filename) {
             // Randomize files names
@@ -125,7 +125,7 @@ class APIRest extends API
      *
      * @return void
      */
-    public function call()
+    public function call(): void
     {
 
         //parse http request and find parts
@@ -405,7 +405,7 @@ class APIRest extends API
      *
      * @return false|class-string<CommonDBTM>
      */
-    private function getItemtype($index = 0, $recursive = true, $all_assets = false)
+    private function getItemtype(int $index = 0, bool $recursive = true, bool $all_assets = false)
     {
 
         if (isset($this->url_elements[$index])) {
@@ -462,7 +462,7 @@ class APIRest extends API
      *
      * @return int|bool id of current itemtype (or false if not found)
      */
-    private function getId()
+    private function getId(): int|false
     {
 
         $id            = isset($this->url_elements[1]) && is_numeric($this->url_elements[1])
@@ -489,7 +489,7 @@ class APIRest extends API
      *
      * @return void
      */
-    public function parseIncomingParams($is_inline_doc = false)
+    public function parseIncomingParams($is_inline_doc = false): void
     {
 
         $parameters = [];
@@ -639,7 +639,7 @@ class APIRest extends API
     }
 
 
-    public function returnResponse($response, $httpcode = 200, $additionalheaders = [])
+    public function returnResponse($response, $httpcode = 200, $additionalheaders = []): void
     {
 
         if (empty($httpcode)) {
@@ -675,7 +675,7 @@ class APIRest extends API
      *
      * @return void
      */
-    public function inlineDocumentation($file = "apirest.md")
+    public function inlineDocumentation($file = "apirest.md"): void
     {
 
         if ($this->format == "html") {

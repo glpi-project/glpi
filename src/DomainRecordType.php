@@ -206,7 +206,7 @@ class DomainRecordType extends CommonDropdown
     ];
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return [
             [
@@ -217,7 +217,7 @@ class DomainRecordType extends CommonDropdown
         ];
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
         $field_name  = $field['name'];
         $field_type  = $field['type'];
@@ -258,7 +258,7 @@ class DomainRecordType extends CommonDropdown
         return parent::prepareInputForUpdate($input);
     }
 
-    public function post_updateItem($history = true)
+    public function post_updateItem($history = true): void
     {
         global $DB;
 
@@ -292,7 +292,7 @@ class DomainRecordType extends CommonDropdown
      *
      * @return bool
      */
-    private function validateFieldsDescriptor($fields_str): bool
+    private function validateFieldsDescriptor(string $fields_str): bool
     {
         if (!is_string($fields_str)) {
             Session::addMessageAfterRedirect(__s('Invalid JSON used to define fields.'), true, ERROR);
@@ -358,10 +358,10 @@ class DomainRecordType extends CommonDropdown
     /**
      * @return array
      */
-    public static function getDefaults()
+    public static function getDefaults(): array
     {
         return array_map(
-            static function ($e) {
+            static function (array $e): array {
                 $e['is_recursive'] = 1;
                 $e['fields'] = json_encode($e['fields']);
                 return $e;
@@ -378,7 +378,7 @@ class DomainRecordType extends CommonDropdown
      *
      * @return void
      */
-    public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
+    public function showDataAjaxForm(string $str_input_id, string $obj_input_id): void
     {
         $fields = json_decode($this->fields['fields'] ?? '[]', true);
         if (empty($fields)) {

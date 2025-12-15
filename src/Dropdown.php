@@ -116,7 +116,7 @@ class Dropdown
      *
      * @since 9.5.0 Usage of string in condition option is removed
      **/
-    public static function show($itemtype, $options = [])
+    public static function show($itemtype, $options = []): false|int|string
     {
         global $CFG_GLPI;
 
@@ -517,7 +517,7 @@ class Dropdown
      *
      * @return string
      */
-    public static function addNewCondition(array $condition)
+    public static function addNewCondition(array $condition): string
     {
         $sha1 = sha1(serialize($condition));
         $_SESSION['glpicondition'][$sha1] = $condition;
@@ -844,7 +844,7 @@ class Dropdown
      *
      * @return array containing the value of the dropdown or &nbsp; if not exists
      **/
-    public static function getDropdownArrayNames($table, $ids)
+    public static function getDropdownArrayNames($table, $ids): array
     {
         global $DB;
 
@@ -977,7 +977,7 @@ class Dropdown
      *    void if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function dropdownIcons($myname, $value, $store_path = '', $display = true, $options = [])
+    public static function dropdownIcons(string $myname, $value, $store_path = '', $display = true, $options = []): void
     {
         if (!empty($store_path)) {
             Toolbox::deprecated('The store_path parameter is no longer used.');
@@ -1089,7 +1089,7 @@ HTML;
      *
      * @return void
      **/
-    public static function showGMT($name, $value = '')
+    public static function showGMT($name, $value = ''): void
     {
         $values = self::getGMTValues();
         Dropdown::showFromArray($name, $values, ['value' => $value]);
@@ -1109,7 +1109,7 @@ HTML;
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function showYesNo($name, $value = 0, $restrict_to = -1, $params = [])
+    public static function showYesNo(string $name, $value = 0, $restrict_to = -1, array $params = [])
     {
         $options = [];
 
@@ -1514,7 +1514,7 @@ HTML;
      * @param array $optgroup (group of dropdown) of array (itemtype => localized name)
      * @return void
      */
-    public static function showItemTypeList($optgroup)
+    public static function showItemTypeList($optgroup): void
     {
         Html::requireJs('masonry');
         echo TemplateRenderer::getInstance()->render(
@@ -1536,7 +1536,7 @@ HTML;
      *
      * @return int|string
      **/
-    public static function showLanguages($myname, $options = [])
+    public static function showLanguages($myname, array $options = [])
     {
         $values = [];
         if (isset($options['display_emptychoice']) && ($options['display_emptychoice'])) {
@@ -1559,7 +1559,7 @@ HTML;
      *
      * @return array
      */
-    public static function getLanguages()
+    public static function getLanguages(): array
     {
         global $CFG_GLPI;
 
@@ -1814,7 +1814,7 @@ HTML;
      *
      * @return int|string randomized value used to generate HTML IDs or html contents
      **/
-    public static function showSelectItemFromItemtypes(array $options = [])
+    public static function showSelectItemFromItemtypes(array $options = []): int|string
     {
         global $CFG_GLPI;
 
@@ -1960,7 +1960,7 @@ HTML;
      *
      * @return int|string
      */
-    public static function showNumber($myname, $options = [])
+    public static function showNumber(string $myname, $options = [])
     {
         global $CFG_GLPI;
 
@@ -2291,7 +2291,7 @@ HTML;
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
-    public static function showFromArray($name, array $elements, $options = [])
+    public static function showFromArray(string $name, array $elements, $options = []): int|string
     {
 
         $param['value']               = '';
@@ -2422,7 +2422,7 @@ HTML;
             if (!empty($param['add_data_attributes'])) {
                 if (is_array($param['add_data_attributes'])) {
                     $output .= ' ' . implode(' ', array_map(
-                        fn($key, $value) => htmlescape('data-' . $key) . '="' . htmlescape($value) . '"',
+                        fn($key, $value): string => htmlescape('data-' . $key) . '="' . htmlescape($value) . '"',
                         array_keys($param['add_data_attributes']),
                         $param['add_data_attributes']
                     ));
@@ -2571,7 +2571,7 @@ HTML;
      *
      * @return void
      **/
-    public static function showFrequency($name, $value = 0, $options = [])
+    public static function showFrequency($name, $value = 0, $options = []): void
     {
 
         $tab = [];
@@ -2618,7 +2618,7 @@ HTML;
      *
      * @return void
      **/
-    public static function showGlobalSwitch($ID, $attrs = [])
+    public static function showGlobalSwitch($ID, $attrs = []): void
     {
         $params['management_restrict'] = 0;
         $params['value']               = 0;
@@ -2692,7 +2692,7 @@ HTML;
      *
      * @return bool|int ID of the new item or false on error
      **/
-    public static function import($itemtype, $input)
+    public static function import($itemtype, array $input)
     {
 
         if (
@@ -2727,7 +2727,7 @@ HTML;
         $itemtype,
         $value,
         $entities_id = -1,
-        $external_params = [],
+        array $external_params = [],
         $comment = '',
         $add = true
     ) {
@@ -2777,7 +2777,7 @@ HTML;
      *
      * @return void
      */
-    public static function showOutputFormat($itemtype = null)
+    public static function showOutputFormat($itemtype = null): void
     {
         global $CFG_GLPI;
 
@@ -2868,7 +2868,7 @@ HTML;
      *
      * @return string|array|false
      */
-    public static function getDropdownValue($post, $json = true)
+    public static function getDropdownValue($post, $json = true): false|string|array
     {
         global $CFG_GLPI, $DB;
 
@@ -3776,7 +3776,7 @@ HTML;
      *
      * @return string|array|false
      */
-    public static function getDropdownConnect($post, $json = true)
+    public static function getDropdownConnect($post, $json = true): false|string|array
     {
         global $CFG_GLPI, $DB;
 
@@ -3974,7 +3974,7 @@ HTML;
      *
      * @return string|array|false
      */
-    public static function getDropdownFindNum($post, $json = true)
+    public static function getDropdownFindNum($post, $json = true): false|string|array
     {
         global $CFG_GLPI, $DB;
 
@@ -4134,7 +4134,7 @@ HTML;
      *
      * @return string|array
      */
-    public static function getDropdownMyDevices($post, $json = true)
+    public static function getDropdownMyDevices($post, $json = true): string|array
     {
         global $CFG_GLPI, $DB;
 
@@ -4683,7 +4683,7 @@ HTML;
      *
      * @return string|array
      */
-    public static function getDropdownNumber($post, $json = true)
+    public static function getDropdownNumber($post, $json = true): string|array
     {
         global $CFG_GLPI;
 
@@ -4795,7 +4795,7 @@ HTML;
      *
      * @return string|array|false
      */
-    public static function getDropdownUsers($post, $json = true)
+    public static function getDropdownUsers($post, $json = true): false|string|array
     {
         global $CFG_GLPI;
 
@@ -4926,7 +4926,7 @@ HTML;
      *
      * @return false|($json is true ? string : array)
      */
-    public static function getDropdownActors($post, $json = true)
+    public static function getDropdownActors($post, $json = true): false|string|array
     {
         global $CFG_GLPI;
 

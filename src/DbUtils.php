@@ -62,7 +62,7 @@ final class DbUtils
      *      field name used for a foreign key to the parameter table,
      *      or an empty string if the table name does match the GLPI table name pattern
      */
-    public function getForeignKeyFieldForTable($table)
+    public function getForeignKeyFieldForTable($table): string
     {
         if (!str_starts_with($table, 'glpi_')) {
             return "";
@@ -78,7 +78,7 @@ final class DbUtils
      *
      * @return bool
      */
-    public function isForeignKeyField($field)
+    public function isForeignKeyField($field): bool
     {
         //check empty, then strpos, then regexp; for performances
         return !empty($field) && str_contains(substr($field, 1), '_id') && preg_match("/._id(_.+)?$/", $field);
@@ -94,7 +94,7 @@ final class DbUtils
      *      table name corresponding to a foreign key name
      *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
      */
-    public function getTableNameForForeignKeyField($fkname)
+    public function getTableNameForForeignKeyField($fkname): string
     {
         if (!$this->isForeignKeyField($fkname)) {
             return '';
@@ -396,7 +396,7 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
+    public function fixItemtypeCase(string $itemtype, string $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
     {
         global $GLPI_CACHE;
 
@@ -549,7 +549,7 @@ final class DbUtils
      * @param class-string<T>|string $itemtype
      * @return ($itemtype is class-string<T> ? T : false)
      */
-    public function getItemForItemtype($itemtype)
+    public function getItemForItemtype(string $itemtype): false|\CommonGLPI
     {
         $classname = $this->getClassForItemtype($itemtype);
         if ($classname === null) {
@@ -581,7 +581,7 @@ final class DbUtils
      *
      * @return int Number of elements in table
      */
-    public function countElementsInTable($table, $condition = [])
+    public function countElementsInTable($table, $condition = []): int
     {
         global $DB;
 
@@ -735,7 +735,7 @@ final class DbUtils
      *
      * @return bool
      */
-    public function isIndex($table, $field)
+    public function isIndex($table, $field): bool
     {
         global $DB;
 
@@ -764,7 +764,7 @@ final class DbUtils
      *
      * @return bool
      */
-    public function isForeignKeyContraint($table, $keyname)
+    public function isForeignKeyContraint($table, $keyname): bool
     {
         global $DB;
 
@@ -799,13 +799,13 @@ final class DbUtils
      * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
      */
     public function getEntitiesRestrictRequest(
-        $separator = "AND",
+        string $separator = "AND",
         $table = "",
         $field = "",
         $value = '',
         $is_recursive = false,
         $complete_request = false
-    ) {
+    ): string {
         global $DB;
 
         $query = $separator . " ( ";
@@ -908,7 +908,7 @@ final class DbUtils
         $value = '',
         $is_recursive = false,
         $complete_request = false
-    ) {
+    ): array {
 
         // !='0' needed because consider as empty
         if (
@@ -990,7 +990,7 @@ final class DbUtils
      *
      * @return int[] IDs of the sons
      */
-    public function getSonsOf($table, $IDf)
+    public function getSonsOf(string $table, $IDf)
     {
         global $DB, $GLPI_CACHE;
 
@@ -1138,14 +1138,14 @@ final class DbUtils
         if (!is_array($items_id)) {
             $items_id = (array) $items_id;
         }
-        $ids_needed_to_fetch = array_map(static fn($id) => (int) $id, $items_id);
+        $ids_needed_to_fetch = array_map(static fn($id): int => (int) $id, $items_id);
 
         if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
             // If we only need to get ancestors for a single item, we can use the cached values if they exist
             return $ancestors;
         } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
-            $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id): string => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
             foreach ($ids_needed_to_fetch as $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
@@ -1282,7 +1282,7 @@ final class DbUtils
      *
      * @return int[] IDs of the sons and the ancestors
      */
-    public function getSonsAndAncestorsOf($table, $IDf)
+    public function getSonsAndAncestorsOf($table, $IDf): float|int|array
     {
         return $this->getAncestorsOf($table, $IDf) + $this->getSonsOf($table, $IDf);
     }
@@ -1513,7 +1513,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
+    public function getTreeValueName($table, $ID, $wholename = "", $level = 0): array
     {
         global $DB;
 
@@ -1553,7 +1553,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function getTreeForItem($table, $IDf)
+    public function getTreeForItem($table, $IDf): array
     {
         global $DB;
 
@@ -1617,7 +1617,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function constructTreeFromList($list, $root)
+    public function constructTreeFromList(array $list, $root): array
     {
 
         $tree = [];
@@ -1641,7 +1641,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function constructListFromTree($tree, $parent = 0)
+    public function constructListFromTree($tree, $parent = 0): array
     {
         $list = [];
         foreach ($tree as $root => $data) {
@@ -1677,7 +1677,7 @@ final class DbUtils
      * @since 11.0 `$link` parameter is deprecated
      * @since 11.0 `$cut` parameter is ignored
      */
-    public function formatUserName($ID, $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
+    public function formatUserName($ID, ?string $login, $realname, $firstname, $link = 0, $cut = 0, $force_config = false)
     {
         if ((bool) $cut) {
             trigger_error('`$cut` parameter is now ignored.', E_USER_WARNING);
@@ -1846,7 +1846,7 @@ final class DbUtils
      *
      * @return string new auto string
      */
-    public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
+    public function autoName($objectName, string|\Glpi\DBAL\QueryExpression $field, $isTemplate, $itemtype, $entities_id = -1)
     {
         global $CFG_GLPI, $DB;
 
@@ -2007,7 +2007,7 @@ final class DbUtils
      *
      * @return array
      */
-    public function getDateCriteria($field, $begin, $end)
+    public function getDateCriteria($field, $begin, $end): array
     {
         global $DB;
 
@@ -2044,7 +2044,7 @@ final class DbUtils
      *
      * @return string containing encoded array
      */
-    public function exportArrayToDB($array)
+    public function exportArrayToDB($array): string
     {
         return json_encode($array);
     }
@@ -2090,7 +2090,7 @@ final class DbUtils
      *
      * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
-    public function getHourFromSql($time)
+    public function getHourFromSql($time): string
     {
         $t = explode(" ", $time);
         $p = explode(":", $t[1]);
@@ -2103,7 +2103,7 @@ final class DbUtils
      *
      * @return array<string, array<string, string|list<string|array{0: string, 1: string}>>>
      */
-    public function getDbRelations()
+    public function getDbRelations(): array
     {
         $RELATION = []; // Redefined inside /inc/relation.constant.php
 

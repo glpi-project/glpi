@@ -83,7 +83,7 @@ trait CommonDeprecatedTrait
      */
     public function updateSearchOptionsUids(array &$soptions)
     {
-        $soptions = array_map(function ($soption) {
+        $soptions = array_map(function (array $soption): array {
             if (isset($soption['uid'])) {
                 $new_uid = str_replace(
                     $this->getType(),
@@ -107,7 +107,7 @@ trait CommonDeprecatedTrait
      */
     public function updateSearchOptionsTables(array &$soptions)
     {
-        $soptions = array_map(function ($soption) {
+        $soptions = array_map(function (array $soption): array {
             if (isset($soption['table'])) {
                 $new_table = str_replace(
                     getTableForItemType($this->getType()),

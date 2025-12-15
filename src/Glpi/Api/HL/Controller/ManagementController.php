@@ -147,7 +147,7 @@ final class ManagementController extends AbstractController
         $schemas = [];
 
         $management_types = self::getManagementTypes(false);
-        $fn_get_assignable_restriction = static function (string $itemtype) {
+        $fn_get_assignable_restriction = static function (string $itemtype): bool|array {
             if (method_exists($itemtype, 'getAssignableVisiblityCriteria')) {
                 $criteria = $itemtype::getAssignableVisiblityCriteria('_');
                 if (count($criteria) === 1 && isset($criteria[0]) && is_numeric((string) $criteria[0])) {
@@ -181,7 +181,7 @@ final class ManagementController extends AbstractController
 
             if (method_exists($m_class, 'getAssignableVisiblityCriteria')) {
                 $schemas[$m_name]['x-rights-conditions'] = [
-                    'read' => static fn() => $fn_get_assignable_restriction($m_class),
+                    'read' => static fn(): array|bool => $fn_get_assignable_restriction($m_class),
                 ];
             }
 
@@ -338,7 +338,7 @@ final class ManagementController extends AbstractController
         $schemas['Document']['properties']['filepath'] = [
             'type' => Doc\Schema::TYPE_STRING,
             'x-mapped-from' => 'id',
-            'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
+            'x-mapper' => static fn($v): string => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
         ];
         $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
         $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
@@ -369,7 +369,7 @@ final class ManagementController extends AbstractController
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
-                    'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
+                    'x-mapper' => static fn($v): string => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
                 ],
                 'timeline_position' => [
                     'x-version-introduced' => '2.1.0',

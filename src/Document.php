@@ -115,7 +115,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         );
     }
 
-    public static function getMenuShorcut()
+    public static function getMenuShorcut(): string
     {
         return 'd';
     }
@@ -157,7 +157,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return false;
     }
 
-    public function cleanDBonPurge()
+    public function cleanDBonPurge(): void
     {
         $this->deleteChildrenAndRelationsFromDb(
             [
@@ -202,7 +202,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -295,7 +298,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $input;
     }
 
-    public function post_addItem()
+    public function post_addItem(): void
     {
         if (
             isset($this->input["items_id"], $this->input["itemtype"]) && (($this->input["items_id"] > 0)
@@ -357,7 +360,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $input;
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -380,7 +383,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return string
      **/
-    public static function getMaxUploadSize()
+    public static function getMaxUploadSize(): string
     {
         global $CFG_GLPI;
 
@@ -534,7 +537,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      **/
-    public function canViewFile(array $options = [])
+    public function canViewFile(array $options = []): bool
     {
 
         // Check if it is my doc
@@ -721,7 +724,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      * @param int $items_id
      * @return bool
      */
-    private function canViewFileFromItilObject($itemtype, $items_id)
+    private function canViewFileFromItilObject(string $itemtype, $items_id)
     {
 
         global $DB;
@@ -764,7 +767,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool
      */
-    private function canViewFileFromItem($itemtype, $items_id): bool
+    private function canViewFileFromItem(\CommonDBTM|string $itemtype, $items_id): bool
     {
         global $DB;
 
@@ -807,7 +810,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype = null)
+    public static function rawSearchOptionsToAdd($itemtype = null): array
     {
         $tab = [];
 
@@ -833,7 +836,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $tab;
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -985,7 +991,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool : success
      **/
-    public static function renameForce($srce, $dest)
+    public static function renameForce(string $srce, $dest): bool
     {
         // File already present
         if (is_file($dest)) {
@@ -1010,7 +1016,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool for success / $input array is updated
      **/
-    public function moveUploadedDocument(array &$input, $filename)
+    public function moveUploadedDocument(array &$input, $filename): bool
     {
         if (str_contains($filename, '/') || str_contains($filename, '\\')) {
             // Filename is not supposed to contains directory separators.
@@ -1130,7 +1136,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return bool for success / $input array is updated
      **/
-    public static function moveDocument(array &$input, $filename)
+    public static function moveDocument(array &$input, $filename): bool
     {
         if (str_contains($filename, '/') || str_contains($filename, '\\')) {
             // Filename is not supposed to contains directory separators.
@@ -1239,7 +1245,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return string
      **/
-    public static function getUploadFileValidLocationName($dir, $sha1sum)
+    public static function getUploadFileValidLocationName(?string $dir, $sha1sum): string
     {
         if (empty($dir)) {
             $message = __s('Unauthorized file type');
@@ -1305,7 +1311,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     /**
      * @return array Array of uploaded files to be used in a dropdown
      */
-    private static function getUploadedFiles()
+    private static function getUploadedFiles(): array
     {
         $uploaded_files = [];
         if ($handle = opendir(GLPI_UPLOAD_DIR)) {
@@ -1518,7 +1524,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $itemtype,
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
         $action_prefix = 'Document_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
 
         if (self::canApplyOn($itemtype)) {
@@ -1543,7 +1549,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *
      * @return string
      **/
-    public static function getImageTag($string): string
+    public static function getImageTag(string $string): string
     {
         return self::$tag_prefix . $string . self::$tag_prefix;
     }
@@ -1695,7 +1701,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return ($nb > 0 ? 1 : 0);
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-files";
     }

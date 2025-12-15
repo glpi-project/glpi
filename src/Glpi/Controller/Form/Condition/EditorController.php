@@ -97,7 +97,7 @@ final class EditorController extends AbstractController
         $question_uuid = $form_data->getSelectedItemUuid();
         $question_name = current(array_filter(
             $form_data->getQuestionsData(),
-            fn(QuestionData $question) => $question->getUuid() === $question_uuid
+            fn(QuestionData $question): bool => $question->getUuid() === $question_uuid
         ))->getName();
 
         // Retrieve the conditions data
@@ -173,7 +173,7 @@ final class EditorController extends AbstractController
 
             // Convert ValueOperator enums to their string values
             $operators = array_map(
-                fn($operator) => $operator->value,
+                fn(\Glpi\Form\Condition\ValueOperator $operator) => $operator->value,
                 $supported_operators
             );
 

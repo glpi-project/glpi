@@ -90,7 +90,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         );
     }
 
-    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0): bool
     {
         if ($item::class === Domain::class) {
             self::showForDomain($item);
@@ -98,7 +98,10 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return true;
     }
 
-    public function rawSearchOptions()
+    /**
+     * @return mixed[]
+     */
+    public function rawSearchOptions(): array
     {
         $tab = [];
 
@@ -269,7 +272,10 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
          );
     }
 
-    public function defineTabs($options = [])
+    /**
+     * @return mixed[]
+     */
+    public function defineTabs($options = []): array
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
@@ -291,7 +297,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      *
      * @return array|false
      */
-    private function prepareInput($input, $add = false)
+    private function prepareInput($input, bool $add = false)
     {
         if (($add && empty($input['domains_id'])) || (isset($input['domains_id']) && empty($input['domains_id']))) {
             Session::addMessageAfterRedirect(
@@ -367,7 +373,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         return $this->prepareInput($input);
     }
 
-    public function pre_updateInDB()
+    public function pre_updateInDB(): void
     {
 
         if (
@@ -381,7 +387,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
         }
     }
 
-    public function showForm($ID, array $options = [])
+    public function showForm($ID, array $options = []): bool
     {
         if ($ID > 0) {
             $this->check($ID, READ);
@@ -539,7 +545,7 @@ TWIG, $twig_params);
      *
      * @return string
      */
-    public static function getDisplayName(Domain $domain, $name)
+    public static function getDisplayName(Domain $domain, $name): string
     {
         $name_txt = rtrim(
             str_replace(
@@ -556,7 +562,7 @@ TWIG, $twig_params);
         return $name_txt;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-file-search";
     }

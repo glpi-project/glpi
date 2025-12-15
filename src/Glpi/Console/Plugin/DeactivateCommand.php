@@ -119,7 +119,7 @@ class DeactivateCommand extends AbstractPluginCommand
      *
      * @return bool
      */
-    private function canRunDeactivateMethod($directory)
+    private function canRunDeactivateMethod($directory): bool
     {
 
         $plugin = new Plugin();
@@ -160,7 +160,10 @@ class DeactivateCommand extends AbstractPluginCommand
         return __('Which plugin(s) do you want to deactivate (comma separated values)?');
     }
 
-    protected function getDirectoryChoiceChoices()
+    /**
+     * @return mixed[]
+     */
+    protected function getDirectoryChoiceChoices(): array
     {
 
         $choices = [];

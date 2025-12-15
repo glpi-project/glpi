@@ -229,10 +229,10 @@ final class RoutePath
      *
      * @return bool
      */
-    public function isValidPath($path): bool
+    public function isValidPath(string $path): bool
     {
         // Ensure no placeholders are left
-        $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static fn($v, $k) => is_callable($v), ARRAY_FILTER_USE_BOTH);
+        $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static fn($v, $k): bool => is_callable($v), ARRAY_FILTER_USE_BOTH);
         $leftover_placeholders = [];
         preg_match_all('/\{([^}]+)\}/', $path, $leftover_placeholders);
         // Remove dynamic expandable placeholders
@@ -317,13 +317,13 @@ final class RoutePath
         $this->hydrate();
         $controller_doc_attrs = array_filter(
             $this->controller->getAttributes(),
-            static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)
+            static fn(\ReflectionAttribute $attr): bool => is_a($attr->getName(), Doc\Route::class, true)
         );
         /** @var Doc\Route $controller_doc_attr */
         $controller_doc_attr = count($controller_doc_attrs) ? reset($controller_doc_attrs)->newInstance() : null;
         $doc_attrs = array_filter(
             $this->getMethod()->getAttributes(),
-            static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)
+            static fn(\ReflectionAttribute $attr): bool => is_a($attr->getName(), Doc\Route::class, true)
         );
         $docs = [];
 
@@ -443,7 +443,7 @@ final class RoutePath
         $compiled_path = $this->getRoutePath();
 
         // Replace all placeholders with their matching requirement or a default pattern (letters,  numbers, underscore only)
-        $compiled_path = preg_replace_callback('/(\{[^}]+\})/', function ($matches) {
+        $compiled_path = preg_replace_callback('/(\{[^}]+\})/', function ($matches): string {
             $name = $matches[1];
             $name = substr($name, 1, -1);
             if (isset($this->route->requirements[$name])) {
@@ -479,7 +479,7 @@ final class RoutePath
         // Set parameters to defaults if not provided and a default is available
         $params = $request->getParameters();
         $docs = $this->getRouteDocs();
-        $matched_doc = array_filter($docs, static fn(Doc\Route $doc) => !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true));
+        $matched_doc = array_filter($docs, static fn(Doc\Route $doc): bool => !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true));
         if (count($matched_doc)) {
             $route_params = $matched_doc[0]->getParameters();
             /** @var Doc\Parameter $param */

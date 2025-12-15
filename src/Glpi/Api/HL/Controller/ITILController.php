@@ -287,7 +287,7 @@ final class ITILController extends AbstractController
             $schemas[$itil_type]['x-version-introduced'] = '2.0';
 
             $schemas[$itil_type]['x-rights-conditions'] = [
-                'read' => static function () use ($itil_type) {
+                'read' => static function () use ($itil_type): array|bool {
                     if (Session::haveRight($itil_type::$rightname, CommonITILObject::READALL)) {
                         return true; // Can see all. No extra SQL conditions needed.
                     }
@@ -544,7 +544,7 @@ final class ITILController extends AbstractController
                 'type' => Doc\Schema::TYPE_ARRAY,
                 'items' => [
                     'x-mapped-from' => 'id',
-                    'x-mapper' => function ($v) use ($itil_type) {
+                    'x-mapper' => function ($v) use ($itil_type): array {
                         $item = $itil_type::getById($v);
                         if ($item) {
                             return self::getCleanTeam($item);
@@ -579,7 +579,7 @@ final class ITILController extends AbstractController
         $base_task_schema = [
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-rights-conditions' => [ // Object-level extra permissions
-                'read' => static function () {
+                'read' => static function (): array|true {
                     if (!Session::haveRight(CommonITILTask::$rightname, CommonITILTask::SEEPRIVATE)) {
                         return [
                             'WHERE' => [
@@ -751,7 +751,7 @@ final class ITILController extends AbstractController
             'x-itemtype' => ITILFollowup::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'x-rights-conditions' => [ // Object-level extra permissions
-                'read' => static function () {
+                'read' => static function (): array|true {
                     if (!Session::haveRight(ITILFollowup::$rightname, ITILFollowup::SEEPRIVATE)) {
                         return [
                             'WHERE' => [
@@ -1782,7 +1782,7 @@ final class ITILController extends AbstractController
         $role_id = self::getRoleName($request->getAttribute('role'));
 
         $team = self::getCleanTeam($item);
-        $team = array_filter($team, static fn($v) => $v['role'] === $role_id, ARRAY_FILTER_USE_BOTH);
+        $team = array_filter($team, static fn($v): bool => $v['role'] === $role_id, ARRAY_FILTER_USE_BOTH);
         return new JSONResponse($team);
     }
 

@@ -62,14 +62,14 @@ if (
     $specificities = $linktype::getSpecificities();
     $specificities = array_filter(
         $specificities,
-        static fn($spec) => ($spec['datatype'] ?? '') !== 'dropdown' && (!isset($spec['nodisplay']) || !$spec['nodisplay'])
+        static fn(array $spec): bool => ($spec['datatype'] ?? '') !== 'dropdown' && (!isset($spec['nodisplay']) || !$spec['nodisplay'])
     );
 
     if (count($specificities)) {
         $keys = array_keys($specificities);
         $name_field = QueryFunction::concat_ws(
             separator: new QueryExpression($DB::quoteValue(' - ')),
-            params: array_map(static fn($k) => QueryFunction::ifnull($k, new QueryExpression($DB::quoteValue(''))), $keys),
+            params: array_map(static fn($k): \Glpi\DBAL\QueryExpression => QueryFunction::ifnull($k, new QueryExpression($DB::quoteValue(''))), $keys),
             alias: 'name'
         );
         $label_pattern = implode(' - ', array_map(

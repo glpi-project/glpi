@@ -38,6 +38,7 @@ use Rector\Config\RectorConfig;
 use Rector\DeadCode\Rector as DeadCode;
 use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 use Rector\ValueObject\PhpVersion;
+use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -108,4 +109,7 @@ return RectorConfig::configure()
         DeadCode\Assign\RemoveUnusedVariableAssignRector::class,
     ])
     ->withPhpSets(php74: true) // apply PHP sets up to PHP 7.4
+    ->withSets([
+        SetList::TYPE_DECLARATION,
+    ])
 ;

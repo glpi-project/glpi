@@ -61,7 +61,7 @@ class Fieldblacklist extends CommonDropdown
 
 
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
 
         return [['name'  => 'itemtype',
@@ -217,7 +217,7 @@ class Fieldblacklist extends CommonDropdown
         return $input;
     }
 
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
+    public function displaySpecificTypeField($ID, $field = [], array $options = []): void
     {
 
         switch ($field['type']) {
@@ -241,7 +241,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return void
      **/
-    public function showItemtype()
+    public function showItemtype(): void
     {
         global $CFG_GLPI;
 
@@ -285,7 +285,7 @@ class Fieldblacklist extends CommonDropdown
     /**
      * @return void
      */
-    public function selectCriterias()
+    public function selectCriterias(): void
     {
         global $CFG_GLPI;
 
@@ -375,7 +375,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return void
      **/
-    public function selectValues($field = '')
+    public function selectValues($field = ''): void
     {
         if ($field == '') {
             $field = $this->fields['field'];
@@ -406,7 +406,7 @@ class Fieldblacklist extends CommonDropdown
      *
      * @return bool true is value if blacklisted, false otherwise
      **/
-    public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value)
+    public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value): bool
     {
         global $DB;
 

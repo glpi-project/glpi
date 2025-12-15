@@ -62,7 +62,7 @@ final class GraphQLGenerator
     /**
      * @return string
      */
-    public function getSchema()
+    public function getSchema(): string
     {
         Profiler::getInstance()->start('GraphQLGenerator::loadTypes', Profiler::CATEGORY_HLAPI);
         $this->loadTypes();
@@ -172,7 +172,7 @@ final class GraphQLGenerator
         foreach ($schema['properties'] as $name => $property) {
             $fields[$name] = [
                 'type' => $this->convertRESTPropertyToGraphQLType($property, $name, $schema_name),
-                'resolve' => fn() => '',
+                'resolve' => fn(): string => '',
             ];
         }
         return new ObjectType([
@@ -188,7 +188,7 @@ final class GraphQLGenerator
      *
      * @return Type|ListOfType<Type|Closure>|Closure|null
      */
-    private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = '')
+    private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = ''): \GraphQL\Type\Definition\ScalarType|\GraphQL\Type\Definition\ListOfType|\Closure|\GraphQL\Type\Definition\ObjectType|null
     {
         $type = $property['type'] ?? 'string';
         $graphql_type = match ($type) {
@@ -215,7 +215,7 @@ final class GraphQLGenerator
             foreach ($properties as $prop_name => $prop_value) {
                 $fields[$prop_name] = [
                     'type' => $this->convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix),
-                    'resolve' => fn() => '',
+                    'resolve' => fn(): string => '',
                 ];
             }
             if (isset($property['x-full-schema'])) {

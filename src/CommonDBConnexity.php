@@ -121,7 +121,7 @@ abstract class CommonDBConnexity extends CommonDBTM
      * @param int $items_id  id of the item
      * @return void
      **/
-    public function cleanDBonItemDelete($itemtype, $items_id)
+    public function cleanDBonItemDelete($itemtype, $items_id): void
     {
         global $DB;
 
@@ -544,7 +544,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         $itemtype,
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
+    ): void {
 
         $unaffect = false;
         $affect   = false;
@@ -742,7 +742,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
+    ): void {
 
         if (!$item instanceof CommonDBConnexity) {
             parent::processMassiveActionsForOneItemtype($ma, $item, $ids);

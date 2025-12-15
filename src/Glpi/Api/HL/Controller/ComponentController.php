@@ -548,7 +548,7 @@ class ComponentController extends AbstractController
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'properties' => array_filter($common_item_device_properties + [
                     'camera' => self::getDropdownTypeSchema(class: DeviceCamera::class, name_field: 'designation', full_schema: 'Camera'),
-                ], static fn($key) => !in_array($key, ['status', 'location', 'serial', 'otherserial']), ARRAY_FILTER_USE_KEY), // Cameras don't follow the general schema of the others
+                ], static fn($key): bool => !in_array($key, ['status', 'location', 'serial', 'otherserial']), ARRAY_FILTER_USE_KEY), // Cameras don't follow the general schema of the others
             ],
             'CaseItem' => [
                 'x-version-introduced' => '2.0',

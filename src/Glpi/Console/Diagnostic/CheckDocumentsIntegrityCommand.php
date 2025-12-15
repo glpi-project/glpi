@@ -49,7 +49,7 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
     private const ERROR_MISSING_FILE = 1;
     private const ERROR_UNEXPECTED_CONTENT = 2;
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -66,7 +66,7 @@ final class CheckDocumentsIntegrityCommand extends AbstractCommand
         $has_error = false;
 
         // Validate each documents
-        $progress_message = (fn(array $document_row) => sprintf(
+        $progress_message = (fn(array $document_row): string => sprintf(
             __('Checking document #%s "%s" (%s)...'),
             $document_row['id'],
             $document_row['name'],

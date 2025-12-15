@@ -50,7 +50,7 @@ class DeviceNetworkCard extends CommonDevice
      *
      * @since 0.84
      **/
-    public function getImportCriteria()
+    public function getImportCriteria(): array
     {
         return [
             'designation' => 'equal',
@@ -58,7 +58,7 @@ class DeviceNetworkCard extends CommonDevice
         ];
     }
 
-    public function getAdditionalFields()
+    public function getAdditionalFields(): array
     {
         return array_merge(
             parent::getAdditionalFields(),
@@ -156,7 +156,7 @@ class DeviceNetworkCard extends CommonDevice
         ?CommonDBTM $item = null,
         ?HTMLTableCell $father = null,
         array $options = []
-    ) {
+    ): void {
 
         $column_name = self::class;
 
@@ -218,7 +218,7 @@ class DeviceNetworkCard extends CommonDevice
      * @param array $main_joinparams
      * @return array
      */
-    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
+    public static function rawSearchOptionsToAdd($itemtype, $main_joinparams): array
     {
         $tab = [];
 
