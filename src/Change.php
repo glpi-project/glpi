@@ -819,16 +819,16 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
      * @param CommonDBTM $item
      * @param int    $withtemplate
      *
-     * @return void|false
+     * @return void
      **/
-    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         if (!Session::haveRightsOr(self::$rightname, [self::READALL])) {
-            return false;
+            return ;
         }
 
         if ($item->isNewID($item->getID())) {
-            return false;
+            return;
         }
 
         $options = [

@@ -5295,7 +5295,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      *                               (false by default)
      * @param bool $inobject       display in ITIL object ? (true by default)
      *
-     * @return void|bool Nothing if displayed, false if not applicable
+     * @return void
      **/
     public function showActorAddForm(
         $type,
@@ -5305,7 +5305,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         bool $withgroup = true,
         bool $withsupplier = false,
         bool $inobject = true
-    ): void|bool {
+    ): void {
         global $CFG_GLPI;
 
         $types = ['user'  => User::getTypeName(1)];
@@ -5357,7 +5357,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 break;
 
             default:
-                return false;
+                return;
         }
 
         echo "<div " . ($inobject ? "style='display:none'" : '') . " id='itilactor" . htmlescape($rand_type) . "' class='actor-dropdown'>";

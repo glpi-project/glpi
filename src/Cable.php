@@ -477,19 +477,18 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
      *     - target for the Form
      *     - withtemplate : template or basic item
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public function showForm(int $ID, array $options = []): void|bool
+    public function showForm(int $ID, array $options = []): void
     {
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/assets/cable.html.twig', [
             'item'   => $this,
             'params' => $options,
         ]);
-        return true;
     }
 
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-line";
     }

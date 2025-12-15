@@ -4831,9 +4831,9 @@ JAVASCRIPT;
      * @param CommonDBTM $item         CommonDBTM object
      * @param int    $withtemplate (default 0)
      *
-     * @return void|false (display a table)
+     * @return void
      **/
-    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
+    public static function showListForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         if (
             !Session::haveRightsOr(
@@ -4842,11 +4842,11 @@ JAVASCRIPT;
             )
             && !Session::haveRightsOr(TicketValidation::$rightname, TicketValidation::getValidateRights())
         ) {
-            return false;
+            return;
         }
 
         if ($item->isNewID($item->getID())) {
-            return false;
+            return;
         }
 
         $options = [

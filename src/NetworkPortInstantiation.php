@@ -597,19 +597,19 @@ TWIG, $twig_params);
      * @param NetworkPort $netport  to be displayed
      * @param bool     $edit     permit to edit ? (false by default)
      *
-     * @return void|false
+     * @return void
      */
-    public static function showConnection(NetworkPort $netport, bool $edit = false): void|bool
+    public static function showConnection(NetworkPort $netport, bool $edit = false): void
     {
         $ID = $netport->getID();
         if (static::isNewID($ID)) {
-            return false;
+            return;
         }
 
         $device1 = $netport->getItem();
 
         if (!$device1->can($device1->getID(), READ)) {
-            return false;
+            return;
         }
         $canedit      = $device1->canEdit($device1->fields["id"]);
         $relations_id = 0;

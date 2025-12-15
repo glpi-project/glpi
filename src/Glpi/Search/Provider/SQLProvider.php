@@ -4937,10 +4937,10 @@ final class SQLProvider implements SearchProviderInterface
     }
 
     #[Override]
-    public static function constructData(array &$data, $onlycount = false)
+    public static function constructData(array &$data, $onlycount = false): void
     {
         if (!isset($data['sql']) || !isset($data['sql']['search'])) {
-            return false;
+            return;
         }
         $data['data'] = [];
 

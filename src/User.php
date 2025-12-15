@@ -4494,14 +4494,13 @@ HTML;
     /**
      * Show simple add user form for external auth.
      *
-     * @return void|bool false if user does not have rights to import users from external sources,
-     *    print form otherwise
+     * @return void
      */
-    public static function showAddExtAuthForm(): void|bool
+    public static function showAddExtAuthForm(): void
     {
 
         if (!Session::haveRight("user", self::IMPORTEXTAUTHUSERS)) {
-            return false;
+            return;
         }
 
         echo "<div class='center'>\n";

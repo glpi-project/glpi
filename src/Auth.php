@@ -1531,14 +1531,14 @@ class Auth extends CommonGLPI
      *
      * @param string $redirect redirect string if exists, if null, check in $_POST or $_GET
      *
-     * @return void|bool nothing if redirect is true, else false
+     * @return void
      */
-    public static function redirectIfAuthenticated(?string $redirect = null): void|bool
+    public static function redirectIfAuthenticated(?string $redirect = null): void
     {
         global $CFG_GLPI;
 
         if (!Session::getLoginUserID()) {
-            return false;
+            return;
         }
 
         if (Session::mustChangePassword()) {
@@ -1629,14 +1629,14 @@ class Auth extends CommonGLPI
     /**
      * Show form for authentication configuration.
      *
-     * @return void|bool False if the form is not shown due to right error. Form is directly printed.
+     * @return void
      */
-    public static function showOtherAuthList(): void|bool
+    public static function showOtherAuthList(): void
     {
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
-            return false;
+            return;
         }
         TemplateRenderer::getInstance()->display('pages/setup/authentication/other_ext_setup.html.twig', [
             'config' => $CFG_GLPI,

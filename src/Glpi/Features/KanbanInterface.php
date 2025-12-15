@@ -65,9 +65,9 @@ interface KanbanInterface
      * Show Kanban for a single item, or a global view for the itemtype.
      * @since 9.5.0
      * @param int $ID ID of the item or -1 for a global view.
-     * @return void|bool
+     * @return void
      **/
-    public static function showKanban(int $ID): void|bool;
+    public static function showKanban(int $ID): void;
 
     /**
      * Get a list of all items to be included in the 'switch board' dropdown.

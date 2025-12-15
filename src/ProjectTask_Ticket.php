@@ -153,13 +153,13 @@ class ProjectTask_Ticket extends CommonDBRelation
      * Show tickets for a projecttask
      *
      * @param ProjectTask $projecttask object
-     * @return void|false
+     * @return void
      **/
-    public static function showForProjectTask(ProjectTask $projecttask): void|bool
+    public static function showForProjectTask(ProjectTask $projecttask): void
     {
         $ID = $projecttask->getField('id');
         if (!$projecttask->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $projecttask->canEdit($ID);
@@ -229,15 +229,15 @@ class ProjectTask_Ticket extends CommonDBRelation
      * Show projecttasks for a ticket
      *
      * @param Ticket $ticket object
-     * @return void|false
+     * @return void
      **/
-    public static function showForTicket(Ticket $ticket): void|bool
+    public static function showForTicket(Ticket $ticket): void
     {
         global $CFG_GLPI, $DB;
 
         $ID = $ticket->getField('id');
         if (!$ticket->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $ticket->canEdit($ID);

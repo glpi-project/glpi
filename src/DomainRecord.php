@@ -401,9 +401,9 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
      *
      * @param Domain $domain Domain object
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showForDomain(Domain $domain): void|bool
+    public static function showForDomain(Domain $domain): void
     {
         global $DB;
 

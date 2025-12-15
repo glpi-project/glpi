@@ -204,15 +204,15 @@ class Domain_Item extends CommonDBRelation
      *
      * @param Domain $domain Domain object
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showForDomain(Domain $domain): void|bool
+    public static function showForDomain(Domain $domain): void
     {
         global $DB;
 
         $instID = $domain->fields['id'];
         if (!$domain->can($instID, READ)) {
-            return false;
+            return;
         }
         $canedit = $domain->can($instID, UPDATE);
         $rand    = mt_rand();
@@ -469,20 +469,20 @@ TWIG, $twig_params);
      * @param CommonDBTM $item      Object for which associated domains must be displayed
      * @param int $withtemplate
      *
-     * @return void|false
+     * @return void
      */
-    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void|bool
+    public static function showForItem(CommonDBTM $item, int $withtemplate = 0): void
     {
         global $DB;
 
         $ID = $item->getField('id');
 
         if ($item->isNewID($ID) || !Session::haveRight('domain', READ)) {
-            return false;
+            return;
         }
 
         if (!$item->can($item->fields['id'], READ)) {
-            return false;
+            return;
         }
 
         if ($withtemplate < 0) {

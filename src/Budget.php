@@ -131,9 +131,9 @@ class Budget extends CommonDropdown
      *     - target for the Form
      *     - withtemplate : template or basic item
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public function showForm(int $ID, array $options = []): void|bool
+    public function showForm(int $ID, array $options = []): void
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [
             'item' => $this,
@@ -142,7 +142,6 @@ class Budget extends CommonDropdown
                 'canedit' => $this->canUpdateItem(),
             ],
         ]);
-        return true;
     }
 
     public function prepareInputForAdd($input)

@@ -190,12 +190,12 @@ class AuthMail extends CommonDBTM
      * @param int $ID      ID of the item
      * @param array   $options Options
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      */
-    public function showForm(int $ID, array $options = []): void|bool
+    public function showForm(int $ID, array $options = []): void
     {
         if (!$this->can($ID, UPDATE)) {
-            return false;
+            return;
         }
 
         $protocol_choices = [];

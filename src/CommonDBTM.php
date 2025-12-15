@@ -539,9 +539,9 @@ class CommonDBTM extends CommonGLPI
      *     - target for the Form
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
-     * @return bool true if displayed  false if item not found or not right to display
+     * @return void
      */
-    public function showForm(int $ID, array $options = []): bool
+    public function showForm(int $ID, array $options = []): void
     {
         global $CFG_GLPI;
 
@@ -558,7 +558,6 @@ class CommonDBTM extends CommonGLPI
             'cluster' => $cluster,
             'field_order' => $this->getFormFields(),
         ]);
-        return true;
     }
 
     /**

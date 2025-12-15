@@ -257,7 +257,7 @@ class Search
      *
      * @return void|false May return false if the search request data is invalid
      **/
-    public static function constructSQL(array &$data): void|bool
+    public static function constructSQL(array &$data)
     {
         return SQLProvider::constructSQL($data);
     }
@@ -321,11 +321,11 @@ class Search
      * @param array   $data      array of search data prepared to get data
      * @param bool $onlycount If we just want to count results
      *
-     * @return void|false May return false if the SQL data in $data is not valid
+     * @return void
      **/
-    public static function constructData(array &$data, bool $onlycount = false): void|bool
+    public static function constructData(array &$data, bool $onlycount = false): void
     {
-        return SQLProvider::constructData($data, $onlycount);
+        SQLProvider::constructData($data, $onlycount);
     }
 
 

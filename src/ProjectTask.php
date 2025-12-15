@@ -1209,16 +1209,16 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @param Project|ProjectTask $item
      *
-     * @return void|false
+     * @return void
      **/
-    public static function showFor(Project|ProjectTask $item): void|bool
+    public static function showFor(Project|ProjectTask $item): void
     {
         global $DB;
 
         $ID = $item->getID();
 
         if (!$item->canViewItem()) {
-            return false;
+            return;
         }
 
         $columns = [

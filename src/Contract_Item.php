@@ -395,16 +395,16 @@ TWIG, $twig_params);
      * @param Contract $contract     Contract object
      * @param int  $withtemplate (default 0)
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showForContract(Contract $contract, int $withtemplate = 0): void|bool
+    public static function showForContract(Contract $contract, int $withtemplate = 0): void
     {
         global $DB, $CFG_GLPI;
 
         $instID = $contract->fields['id'];
 
         if (!$contract->can($instID, READ)) {
-            return false;
+            return;
         }
         $canedit = $contract->can($instID, UPDATE);
         $rand    = mt_rand();

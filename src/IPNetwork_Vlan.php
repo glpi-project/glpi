@@ -94,15 +94,15 @@ class IPNetwork_Vlan extends CommonDBRelation
     /**
      * @param IPNetwork $port
      *
-     * @return void|false
+     * @return void
      */
-    public static function showForIPNetwork(IPNetwork $port): void|bool
+    public static function showForIPNetwork(IPNetwork $port): void
     {
         global $DB;
 
         $ID = $port->getID();
         if (!$port->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $port->canEdit($ID);

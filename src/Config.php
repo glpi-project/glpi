@@ -1570,14 +1570,14 @@ class Config extends CommonDBTM
      *
      * @since 9.3
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      */
-    public function showFormLogs(): void|bool
+    public function showFormLogs(): void
     {
         global $CFG_GLPI;
 
         if (!static::canUpdate()) {
-            return false;
+            return;
         }
         TemplateRenderer::getInstance()->display('pages/setup/general/logs_setup.html.twig', [
             'config' => $CFG_GLPI,
@@ -1631,14 +1631,14 @@ class Config extends CommonDBTM
      *
      * @since 9.5.0
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      */
-    public function showFormSecurity(): void|bool
+    public function showFormSecurity(): void
     {
         global $CFG_GLPI;
 
         if (!Config::canUpdate()) {
-            return false;
+            return;
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/general/security_setup.html.twig', [
@@ -1652,14 +1652,14 @@ class Config extends CommonDBTM
      *
      * @since 10.0.0
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      */
-    public function showFormManagement(): void|bool
+    public function showFormManagement(): void
     {
         global $CFG_GLPI;
 
         if (!self::canView()) {
-            return false;
+            return;
         }
         TemplateRenderer::getInstance()->display('pages/setup/general/management_setup.html.twig', [
             'config' => $CFG_GLPI,

@@ -442,12 +442,12 @@ class AuthLDAP extends CommonDBTM
      * @param array   $options Options
      *     - target for the form
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      */
-    public function showForm(int $ID, array $options = []): void|bool
+    public function showForm(int $ID, array $options = []): void
     {
         if (!Config::canUpdate()) {
-            return false;
+            return;
         }
 
         // warning and no form if can't read keyfile
@@ -455,7 +455,7 @@ class AuthLDAP extends CommonDBTM
         if ($glpi_encryption_key->hasReadErrors()) {
             $glpi_encryption_key->showReadErrors();
 
-            return false;
+            return;
         }
 
         if (empty($ID)) {

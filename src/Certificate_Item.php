@@ -198,13 +198,13 @@ class Certificate_Item extends CommonDBRelation
      *
      * @param Certificate $certificate Certificate object
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showForCertificate(Certificate $certificate): void|bool
+    public static function showForCertificate(Certificate $certificate): void
     {
         $instID = $certificate->fields['id'];
         if (!$certificate->can($instID, READ)) {
-            return false;
+            return;
         }
         $canedit = $certificate->can($instID, UPDATE);
 

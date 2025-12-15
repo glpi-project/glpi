@@ -339,9 +339,9 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
      *
      * @param Datacenter $datacenter Datacenter object
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showForDatacenter(Datacenter $datacenter): void|bool
+    public static function showForDatacenter(Datacenter $datacenter): void
     {
         global $DB;
 
@@ -352,7 +352,7 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
             !$datacenter->getFromDB($ID)
             || !$datacenter->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $canedit = $datacenter->canEdit($ID);
 

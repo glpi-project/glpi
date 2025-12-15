@@ -161,9 +161,9 @@ class Item_Line extends CommonDBRelation
      * This includes directly linked items and items linked by a simcard.
      * It allows linking items directly to a line.
      *
-     * @return void|false False if the line is not valid or the user does not have the right to view the line
+     * @return void
      **/
-    public static function showItemsForLine(Line $line): void|bool
+    public static function showItemsForLine(Line $line): void
     {
         global $DB;
 
@@ -173,7 +173,7 @@ class Item_Line extends CommonDBRelation
             !$line->getFromDB($ID)
             || !$line->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $canedit = $line->canEdit($ID);
 
@@ -291,9 +291,9 @@ class Item_Line extends CommonDBRelation
      * It allows linking lines directly to an item.
      *
      * @param CommonDBTM $item
-     * @return void|false False if the item is not valid or the user does not have the right to view the item
+     * @return void
      **/
-    public static function showLinesForItem(CommonDBTM $item): void|bool
+    public static function showLinesForItem(CommonDBTM $item): void
     {
         global $DB;
 
@@ -304,7 +304,7 @@ class Item_Line extends CommonDBRelation
             !$item->getFromDB($ID)
             || !$item->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $canedit = $item->canEdit($ID);
 

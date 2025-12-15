@@ -505,13 +505,13 @@ class Supplier extends CommonDBTM
     /**
      * Print the HTML array for infocoms linked
      *
-     * @return void|false
+     * @return void
      **/
-    public function showInfocoms(): void|bool
+    public function showInfocoms(): void
     {
         $instID = $this->fields['id'];
         if (!$this->can($instID, READ)) {
-            return false;
+            return;
         }
 
         $types_iterator = Infocom::getTypes(['suppliers_id' => $instID]);

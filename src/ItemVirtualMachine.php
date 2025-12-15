@@ -255,9 +255,9 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param CommonDBTM $asset Asset instance
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showForAsset(CommonDBTM $asset): void|bool
+    public static function showForAsset(CommonDBTM $asset): void
     {
 
         $ID = $asset->fields['id'];

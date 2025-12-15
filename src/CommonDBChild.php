@@ -860,26 +860,26 @@ abstract class CommonDBChild extends CommonDBConnexity
      * @param bool      $display     true display or false to return the button HTML code
      *
      *
-     * @return void|false|string the button HTML code if $display is true, void otherwise
+     * @return void|string the button HTML code if $display is true, void otherwise
      **/
     public static function showAddChildButtonForItemForm(
         CommonDBTM $item,
         string $field_name,
         ?bool $canedit = null,
         bool $display = true
-    ): void|bool|string {
+    ) {
 
         $items_id = $item->getID();
 
         if (is_null($canedit)) {
             if ($item->isNewItem()) {
                 if (!$item->canCreate()) {
-                    return false;
+                    return;
                 }
                 $canedit = $item->canUpdate();
             } else {
                 if (!$item->can($items_id, READ)) {
-                    return false;
+                    return;
                 }
 
                 $canedit = $item->can($items_id, UPDATE);
@@ -923,11 +923,11 @@ abstract class CommonDBChild extends CommonDBConnexity
      *
      * @param CommonDBTM   $item        the item on which to add the current CommonDBChild
      * @param string       $field_name  the name of the HTML field inside Item's form
-     * @param bool|null $canedit     boolean to force rights, NULL to use default behaviour
+     * @param bool|null $canedit     boolean to force rights, NULL to use default behavior
      *
-     * @return void|bool|string (display) Returns false if there is a right error.
+     * @return void|string (display) Returns false if there is a right error.
      **/
-    public static function showChildsForItemForm(CommonDBTM $item, string $field_name, ?bool $canedit = null, bool $display = true): void|bool|string
+    public static function showChildsForItemForm(CommonDBTM $item, string $field_name, ?bool $canedit = null, bool $display = true)
     {
         global $DB;
 
@@ -936,12 +936,12 @@ abstract class CommonDBChild extends CommonDBConnexity
         if (is_null($canedit)) {
             if ($item->isNewItem()) {
                 if (!$item->canCreate()) {
-                    return false;
+                    return;
                 }
                 $canedit = $item->canUpdate();
             } else {
                 if (!$item->can($items_id, READ)) {
-                    return false;
+                    return;
                 }
 
                 $canedit = $item->can($items_id, UPDATE);

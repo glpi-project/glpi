@@ -186,9 +186,9 @@ abstract class CommonItilObject_Item extends CommonDBRelation
      *    - _users_id_requester : ID of the requester user
      *    - items_id            : array of elements (itemtype => array(id1, id2, id3, ...))
      *
-     * @return void|false
+     * @return void
      */
-    protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = []): void|bool
+    protected static function displayItemAddForm(CommonITILObject|CommonITILRecurrent $obj, array $options = []): void
     {
         if (!(is_a($obj, static::$itemtype_1))) {
             return false;

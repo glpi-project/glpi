@@ -109,9 +109,9 @@ class Appliance_Item extends CommonDBRelation
      *
      * @param Appliance $appliance  Appliance object wanted
      *
-     * @return void|bool (display) Returns false if there is a rights error.
+     * @return void
      **/
-    public static function showItems(Appliance $appliance): void|bool
+    public static function showItems(Appliance $appliance): void
     {
         global $DB;
 
@@ -122,7 +122,7 @@ class Appliance_Item extends CommonDBRelation
             !$appliance->getFromDB($ID)
             || !$appliance->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $canedit = $appliance->canEdit($ID);
 

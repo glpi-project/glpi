@@ -61,15 +61,15 @@ class Calendar_Holiday extends CommonDBRelation
      *
      * @param Calendar $calendar object
      *
-     * @return void|bool (HTML display) False if there is a rights error.
+     * @return void
      */
-    public static function showForCalendar(Calendar $calendar): void|bool
+    public static function showForCalendar(Calendar $calendar): void
     {
         global $DB;
 
         $ID = $calendar->getField('id');
         if (!$calendar->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $calendar->can($ID, UPDATE);
@@ -154,7 +154,7 @@ class Calendar_Holiday extends CommonDBRelation
         ]);
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         if (!$withtemplate) {
             $nb = 0;

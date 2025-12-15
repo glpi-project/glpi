@@ -58,7 +58,7 @@ interface SearchProviderInterface
      * @param array $data Array of search data prepared to generate SQL
      * @return false|void
      */
-    public static function constructSQL(array &$data): bool|void;
+    public static function constructSQL(array &$data);
 
     /**
      * Retrieve data from DB : construct data array containing columns definitions and rows data
@@ -70,7 +70,7 @@ interface SearchProviderInterface
      * @param array   $data      array of search data prepared to get data
      * @param bool $onlycount If we just want to count results
      *
-     * @return void|false
+     * @return void
      **/
-    public static function constructData(array &$data, bool $onlycount = false): void|bool;
+    public static function constructData(array &$data, bool $onlycount = false): void;
 }

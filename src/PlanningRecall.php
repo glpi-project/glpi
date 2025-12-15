@@ -132,9 +132,9 @@ class PlanningRecall extends CommonDBChild
      *
      * @param array $data array of data to manage
      *
-     * @return void|false
+     * @return void
      */
-    public static function manageDatas(array $data): void|bool
+    public static function manageDatas(array $data): void
     {
         // Check data information
         if (
@@ -144,7 +144,7 @@ class PlanningRecall extends CommonDBChild
             || !isset($data['before_time'])
             || !isset($data['field'])
         ) {
-            return false;
+            return;
         }
 
         $pr = new self();
@@ -184,7 +184,7 @@ class PlanningRecall extends CommonDBChild
                 }
             }
         } else {
-            // Recall does not exists : create it
+            // Recall does not exist: create it
             if ($pr->can(-1, CREATE, $data)) {
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     $item->getFromDB($data['items_id']);
@@ -270,9 +270,9 @@ class PlanningRecall extends CommonDBChild
      *    - value    : integer preselected value for before_time
      *    - field    : string  field used as time mark (default begin)
      *
-     * @return void|false print out an HTML select box or return false if mandatory fields are not ok
+     * @return void
      **/
-    public static function dropdown(array $options = []): void|bool
+    public static function dropdown(array $options = []): void
     {
         // Default values
         $p['itemtype'] = '';
@@ -288,7 +288,7 @@ class PlanningRecall extends CommonDBChild
             }
         }
         if (!(getItemForItemtype($p['itemtype']))) {
-            return false;
+            return;
         }
 
         $pr = new self();

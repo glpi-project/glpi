@@ -383,9 +383,9 @@ class Database extends CommonDBChild
      *
      * @param DatabaseInstance $instance Database object
      *
-     * @return void|bool
+     * @return void
      **/
-    public static function showForInstance(DatabaseInstance $instance): void|bool
+    public static function showForInstance(DatabaseInstance $instance): void
     {
 
         $ID = $instance->getID();

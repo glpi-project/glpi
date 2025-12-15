@@ -1072,9 +1072,9 @@ class Session
      *
      * @see https://wiki.php.net/rfc/strict_sessions
      *
-     * @return void|true
+     * @return void
      **/
-    public static function checkValidSessionId(): void|bool
+    public static function checkValidSessionId(): void
     {
         global $DB;
 

@@ -255,14 +255,14 @@ class DisplayPreference extends CommonDBTM
      *
      * @param $input  array parameter (itemtype,users_id)
      *
-     * @return void|false
+     * @return void
      */
-    public function activatePerso(array $input): void|bool
+    public function activatePerso(array $input): void
     {
         global $DB;
 
         if (!Session::haveRight(self::$rightname, self::PERSONAL)) {
-            return false;
+            return;
         }
 
         $iterator = $DB->request([
@@ -364,9 +364,9 @@ class DisplayPreference extends CommonDBTM
      * @param array  $input  array parameter (id,itemtype,users_id)
      * @param string $action       up or down
      *
-     * @return void|false
+     * @return void
      */
-    public function orderItem(array $input, string $action): void|bool
+    public function orderItem(array $input, string $action): void
     {
         global $DB;
 
@@ -387,7 +387,7 @@ class DisplayPreference extends CommonDBTM
             'WHERE'  => $criteria,
         ])->current();
         if (!$result) {
-            return false;
+            return;
         }
         $rank1  = $result['rank'];
         $input['id'] = $result['id'];
@@ -441,9 +441,9 @@ class DisplayPreference extends CommonDBTM
     /**
      * @param string $itemtype The itemtype
      * @param bool $global True if global config, false if personal config
-     * @return void|false
+     * @return void
      */
-    private function showConfigForm(string $itemtype, bool $global, string $interface = 'central'): void|bool
+    private function showConfigForm(string $itemtype, bool $global, string $interface = 'central'): void
     {
         global $DB;
 
@@ -455,7 +455,7 @@ class DisplayPreference extends CommonDBTM
             $available_itemtype = false;
         }
         if (!is_array($searchopt)) {
-            return false;
+            return;
         }
 
         $IDuser = $global ? 0 : Session::getLoginUserID();
