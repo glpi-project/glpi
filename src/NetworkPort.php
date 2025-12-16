@@ -276,7 +276,7 @@ class NetworkPort extends CommonDBChild
                     $DB->request([
                         'FROM' => 'glpi_networknames',
                         'WHERE' => [
-                            'itemtype' => 'NetworkPort',
+                            'itemtype' => NetworkPort::class,
                             'items_id' => $this->getID(),
                         ],
                     ]) as $dataname
@@ -285,7 +285,7 @@ class NetworkPort extends CommonDBChild
                         $DB->request([
                             'FROM' => 'glpi_ipaddresses',
                             'WHERE' => [
-                                'itemtype' => 'NetworkName',
+                                'itemtype' => NetworkName::class,
                                 'items_id' => $dataname['id'],
                             ],
                         ]) as $data
@@ -1221,7 +1221,7 @@ class NetworkPort extends CommonDBChild
                             $names_iterator = $DB->request([
                                 'FROM'   => 'glpi_networknames',
                                 'WHERE'  => [
-                                    'itemtype'  => 'NetworkPort',
+                                    'itemtype'  => NetworkPort::class,
                                     'items_id'  => $port['id'],
                                 ],
                             ]);

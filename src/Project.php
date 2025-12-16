@@ -1468,7 +1468,7 @@ TWIG, $twig_params);
                     foreach ($project->team[$type] as $data) {
                         $item->getFromDB($data['items_id']);
                         $entries[] = [
-                            'itemtype' => 'ProjectTeam',
+                            'itemtype' => ProjectTeam::class,
                             'id' => $data['id'],
                             'type' => $item::getTypeName(1),
                             'member' => $item->getLink(),
@@ -2106,7 +2106,7 @@ TWIG, $twig_params);
             'max_team_images'             => 3,
             'column_field'                => $column_field,
             'item'                        => [
-                'itemtype'  => 'Project',
+                'itemtype'  => Project::class,
                 'items_id'  => $ID,
             ],
             'supported_filters'           => [
@@ -2270,7 +2270,7 @@ TWIG, $twig_params);
                 'FROM' => ProjectTeam::getTable(),
                 'WHERE' => [
                     'OR' => [
-                        ['itemtype' => 'Group', 'items_id' => $groups_id],
+                        ['itemtype' => Group::class, 'items_id' => $groups_id],
                     ],
                 ],
             ]);
@@ -2339,11 +2339,11 @@ TWIG, $twig_params);
 
         if ($search_in_team) {
             $crit = [
-                ['itemtype' => 'User', 'items_id' => $users_id],
+                ['itemtype' => User::class, 'items_id' => $users_id],
             ];
 
             if ($search_in_groups) {
-                $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
+                $crit[] = ['itemtype' => Group::class, 'items_id' => $groups_sub_query];
             }
 
             $team_sub_query = new QuerySubQuery([

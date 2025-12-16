@@ -473,7 +473,7 @@ class Provider
             'label'      => $params['label'],
             'icon'       => $params['icon'],
             's_criteria' => $search_criteria,
-            'itemtype'   => 'Ticket',
+            'itemtype'   => Ticket::class,
         ];
     }
 

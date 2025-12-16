@@ -43,7 +43,7 @@ if (
     !$CFG_GLPI['notifications_mailing']
     || !countElementsInTable(
         'glpi_notifications',
-        ['itemtype' => 'User', 'event' => 'passwordinit', 'is_active' => 1]
+        ['itemtype' => User::class, 'event' => 'passwordinit', 'is_active' => 1]
     )
 ) {
     Session::addMessageAfterRedirect(

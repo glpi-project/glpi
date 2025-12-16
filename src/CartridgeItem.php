@@ -503,7 +503,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
 
                         $input = [
                             'type'     => Alert::THRESHOLD,
-                            'itemtype' => 'CartridgeItem',
+                            'itemtype' => CartridgeItem::class,
                         ];
 
                         // add alerts

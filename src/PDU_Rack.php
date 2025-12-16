@@ -222,7 +222,7 @@ class PDU_Rack extends CommonDBRelation
                 'SELECT' => 'items_id',
                 'FROM'   => Item_Rack::getTable(),
                 'WHERE'  => [
-                    'itemtype' => 'PDU',
+                    'itemtype' => PDU::class,
                 ],
             ]) as $racked
         ) {
@@ -395,7 +395,7 @@ class PDU_Rack extends CommonDBRelation
             'FROM' => Item_Rack::getTable(),
             'WHERE' => [
                 'racks_id' => $rack->getID(),
-                'itemtype' => 'PDU',
+                'itemtype' => PDU::class,
             ],
         ]);
         foreach ($iterator as $current) {

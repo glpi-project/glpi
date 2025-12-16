@@ -223,7 +223,7 @@ final class FakeProvider extends Provider
             'label'      => $label,
             'icon'       => $icon,
             's_criteria' => [],
-            'itemtype'   => 'Ticket',
+            'itemtype'   => Ticket::class,
         ];
     }
 

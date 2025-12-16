@@ -533,7 +533,7 @@ class CronTask extends CommonDBTM
                 'FROM'      => 'glpi_alerts',
                 'WHERE'     => [
                     'items_id' => $this->fields['id'],
-                    'itemtype' => 'CronTask',
+                    'itemtype' => CronTask::class,
                     'date'     => ['>',
                         QueryFunction::dateSub(
                             date: QueryFunction::now(),
@@ -582,13 +582,13 @@ class CronTask extends CommonDBTM
 
             // Delete existing outdated alerts
             $alert = new Alert();
-            $alert->deleteByCriteria(['itemtype' => 'CronTask', 'items_id' => $this->fields['id']], true);
+            $alert->deleteByCriteria(['itemtype' => CronTask::class, 'items_id' => $this->fields['id']], true);
 
             // Create a new alert
             $alert->add(
                 [
                     'type'     => Alert::THRESHOLD,
-                    'itemtype' => 'CronTask',
+                    'itemtype' => CronTask::class,
                     'items_id' => $this->fields['id'],
                 ]
             );
@@ -1844,7 +1844,7 @@ TWIG, ['msg' => __('Last run list')]);
 
         if (count($crontasks)) {
             $task = new self();
-            $task->getFromDBByCrit(['itemtype' => 'CronTask', 'name' => 'watcher']);
+            $task->getFromDBByCrit(['itemtype' => CronTask::class, 'name' => 'watcher']);
             if (NotificationEvent::raiseEvent("alert", $task, ['items' => $crontasks])) {
                 $task->addVolume(1);
             }

@@ -536,7 +536,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ],
             [
                 'items_id' => $this->fields['id'],
-                'itemtype' => 'User',
+                'itemtype' => User::class,
             ]
         );
 
@@ -5984,7 +5984,7 @@ HTML;
                 // Add an alert to not warn user for at least one day
                 $alert->add(
                     [
-                        'itemtype' => 'User',
+                        'itemtype' => User::class,
                         'items_id' => $user_id,
                         'type'     => Alert::NOTICE,
                     ]

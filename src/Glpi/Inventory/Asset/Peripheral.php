@@ -150,7 +150,7 @@ class Peripheral extends InventoryAsset
 
         foreach ($value as $key => $val) {
             $input = [
-                'itemtype'     => 'Peripheral',
+                'itemtype'     => Peripheral::class,
                 'name'         => $val->name ?? '',
                 'serial'       => $val->serial ?? '',
                 'entities_id'  => $this->item->fields['entities_id'],

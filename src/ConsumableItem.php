@@ -438,7 +438,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
 
                         $input = [
                             'type'     => Alert::THRESHOLD,
-                            'itemtype' => 'ConsumableItem',
+                            'itemtype' => ConsumableItem::class,
                         ];
 
                         // add alerts

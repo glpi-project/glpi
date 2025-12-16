@@ -235,7 +235,7 @@ class NetworkName extends FQDNLabel
             && (is_array($this->input['_ipaddresses']))
         ) {
             $input = [
-                'itemtype' => 'NetworkName',
+                'itemtype' => NetworkName::class,
                 'items_id' => $this->getID(),
             ];
             foreach ($this->input['_ipaddresses'] as $id => $ip) {
@@ -281,14 +281,14 @@ class NetworkName extends FQDNLabel
                     $DB->request([
                         'FROM' => 'glpi_ipaddresses',
                         'WHERE' => [
-                            'itemtype' => 'NetworkName',
+                            'itemtype' => NetworkName::class,
                             'items_id' => $this->getID(),
                         ],
                     ]) as $data
                 ) {
                     $ip->update([
                         'id'       => $data['id'],
-                        'itemtype' => 'NetworkName',
+                        'itemtype' => NetworkName::class,
                         'items_id' => $this->getID(),
                     ]);
                 }
@@ -383,7 +383,7 @@ class NetworkName extends FQDNLabel
                 'SELECT' => 'id',
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype'     => 'NetworkPort',
+                    'itemtype'     => NetworkPort::class,
                     'items_id'     => $networkPortID,
                     'is_deleted'   => 0,
                 ],

@@ -2155,12 +2155,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             'item' => $entity,
             'inheritance_labels' => $inheritance_labels,
             'closeticket_disabled' => (bool) $crontask->getFromDBByCrit([
-                'itemtype'  => 'Ticket',
+                'itemtype'  => Ticket::class,
                 'name'      => 'closeticket',
                 'state'     => CronTask::STATE_DISABLE,
             ]),
             'purgeticket_disabled' => (bool) $crontask->getFromDBByCrit([
-                'itemtype'  => 'Ticket',
+                'itemtype'  => Ticket::class,
                 'name'      => 'purgeticket',
                 'state'     => CronTask::STATE_DISABLE,
             ]),

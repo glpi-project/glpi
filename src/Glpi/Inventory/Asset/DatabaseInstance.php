@@ -114,7 +114,7 @@ class DatabaseInstance extends InventoryAsset
 
         foreach ($value as $key => $val) {
             $input = [
-                'itemtype'     => 'DatabaseInstance',
+                'itemtype'     => DatabaseInstance::class,
                 'name'         => $val->name ?? '',
                 'entities_id'  => $this->item->fields['entities_id'],
                 'linked_item' => [

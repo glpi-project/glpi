@@ -121,7 +121,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'User',
+                'itemtype'        => User::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -151,7 +151,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'Group',
+                'itemtype'        => Group::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -176,7 +176,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
-                'itemtype'    => 'Group',
+                'itemtype'    => Group::class,
                 'projects_id' => $this->obj->fields['projects_id'],
             ],
         ]);
@@ -200,7 +200,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'Contact',
+                'itemtype'        => Contact::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -230,7 +230,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'Supplier',
+                'itemtype'        => Supplier::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);

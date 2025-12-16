@@ -1695,7 +1695,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
             $toadd = ['type'       => $type,
                 'items_id' => $this->fields['id'],
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
             ];
 
             $toadd["content"] = $this->input["_followup"]['content'];
@@ -5763,7 +5763,7 @@ JAVASCRIPT;
                     }
                     //Build followup from the original ticket
                     $input = [
-                        'itemtype'        => 'Ticket',
+                        'itemtype'        => Ticket::class,
                         'items_id'        => $merge_target_id,
                         'content'         => htmlescape($ticket->fields['name']) . "<br /><br />" . $ticket->fields['content'],
                         'users_id'        => $ticket->fields['users_id_recipient'],
@@ -5780,7 +5780,7 @@ JAVASCRIPT;
                         // Copy any followups to the ticket
                         $tomerge = $fup->find([
                             'items_id' => $id,
-                            'itemtype' => 'Ticket',
+                            'itemtype' => Ticket::class,
                         ]);
                         foreach ($tomerge as $fup2) {
                             $fup2['items_id'] = $merge_target_id;
@@ -5819,14 +5819,14 @@ JAVASCRIPT;
                             throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                         }
                         $tomerge = $document_item->find([
-                            'itemtype' => 'Ticket',
+                            'itemtype' => Ticket::class,
                             'items_id' => $id,
                             'NOT' => [
                                 'documents_id' => new QuerySubQuery([
                                     'SELECT' => 'documents_id',
                                     'FROM'   => $document_item->getTable(),
                                     'WHERE'  => [
-                                        'itemtype' => 'Ticket',
+                                        'itemtype' => Ticket::class,
                                         'items_id' => $merge_target_id,
                                     ],
                                 ]),

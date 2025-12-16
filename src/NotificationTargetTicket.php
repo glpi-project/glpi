@@ -481,7 +481,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
 
             // Approbation of solution
             $solution_restrict = [
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'items_id' => $item->getField('id'),
             ];
             $replysolved = getAllDataFromTable(

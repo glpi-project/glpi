@@ -552,7 +552,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 15,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class;,
                 'name' => 'closeticket',
                 'frequency' => 12 * HOUR_TIMESTAMP,
                 'param' => null,
@@ -564,7 +564,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 16,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class;,
                 'name' => 'alertnotclosed',
                 'frequency' => 12 * HOUR_TIMESTAMP,
                 'param' => null,
@@ -588,7 +588,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 18,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class;,
                 'name' => 'createinquest',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -780,7 +780,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 34,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class;,
                 'name' => 'purgeticket',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -1601,11 +1601,11 @@ $empty_data_builder = new class {
                 'num' => '11',
                 'rank' => '1',
             ], [
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class;,
                 'num' => '12',
                 'rank' => '1',
             ], [
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class;,
                 'num' => '19',
                 'rank' => '2',
             ], [
