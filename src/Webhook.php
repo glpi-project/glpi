@@ -1150,19 +1150,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 return;
             }
 
-            $supported = self::getAPIItemtypeData();
-            $supported_types = [];
-            foreach ($supported as $categories) {
-                foreach ($categories as $types) {
-                    $supported_types = array_merge($supported_types, array_keys($types));
-                }
-            }
-
-            // Ignore raising if the item type is not supported
-            if (!in_array($item->getType(), $supported_types, true)) {
-                return;
-            }
-
+            // Get all active webhooks for the given event and item type
             $it = $DB->request([
                 'SELECT' => ['id', 'entities_id', 'is_recursive'],
                 'FROM' => self::getTable(),
@@ -1173,6 +1161,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 ],
             ]);
             if ($it->count() === 0) {
+                return;
+            }
+
+            $supported = self::getAPIItemtypeData();
+            $supported_types = [];
+            foreach ($supported as $categories) {
+                foreach ($categories as $types) {
+                    $supported_types = array_merge($supported_types, array_keys($types));
+                }
+            }
+
+            // Ignore raising if the item type is not supported
+            if (!in_array($item->getType(), $supported_types, true)) {
                 return;
             }
 
