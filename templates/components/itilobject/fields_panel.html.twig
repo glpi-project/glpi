@@ -233,7 +233,7 @@
                ) }}
             {% endif %}
 
-            {% if item.getType() != 'Ticket' or item.isNewItem() %}
+            {% if (item.getType() == 'Ticket' and item.isNewItem()) or (item.getType() != 'Ticket' and not item.isNewItem()) %}
                {{ fields.dropdownTimestampField(
                   'actiontime',
                   item.fields['actiontime'],
