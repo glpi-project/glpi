@@ -115,7 +115,7 @@
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
-               {% if not anonymous or menu|length > 0 %}
+               {% if not anonymous or (menu|length > 0 and menu.home is not defined) %}
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
                   {% if not anonymous %}
