@@ -36,6 +36,7 @@
 namespace Glpi\Console\Migration;
 
 use Change_Item;
+use Computer;
 use Contract_Item;
 use Database;
 use DatabaseInstance;

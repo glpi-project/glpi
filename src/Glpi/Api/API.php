@@ -72,6 +72,7 @@ use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
+use Project;
 use RuntimeException;
 use SavedSearch;
 use Search;

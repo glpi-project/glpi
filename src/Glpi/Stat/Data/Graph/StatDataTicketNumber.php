@@ -37,6 +37,7 @@ namespace Glpi\Stat\Data\Graph;
 
 use Glpi\Stat\StatDataAlwaysDisplay;
 use Session;
+use Ticket;
 
 class StatDataTicketNumber extends StatDataAlwaysDisplay
 {

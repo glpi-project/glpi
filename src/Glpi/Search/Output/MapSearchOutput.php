@@ -35,7 +35,10 @@
 
 namespace Glpi\Search\Output;
 
+use Entity;
 use Glpi\Toolbox\URL;
+use Location;
+use Ticket;
 use Toolbox;
 
 /**
