@@ -45,6 +45,7 @@ use Glpi\Kernel\Listener\PostBootListener\LoadLanguage;
 use Glpi\Kernel\Listener\PostBootListener\LoadLegacyConfiguration;
 use Glpi\Kernel\Listener\PostBootListener\ProfilerStart;
 use Glpi\Kernel\Listener\PostBootListener\SessionStart;
+use Glpi\Kernel\Listener\PostBootListener\SetDbSessionVars;
 use Glpi\Kernel\Listener\RequestListener\CatchInventoryAgentRequestListener;
 use Glpi\Kernel\Listener\RequestListener\CheckDatabaseStatusListener;
 use Glpi\Kernel\Listener\RequestListener\CheckMaintenanceListener;
@@ -69,6 +70,7 @@ final class ListenersPriority
         CheckPluginsStates::class =>                  150,
         BootPlugins::class =>                         140,
         SessionStart::class =>                        130,
+        SetDbSessionVars::class =>                    125,
         LoadLanguage::class =>                        120,
         InitializePlugins::class =>                   110,
         CustomObjectsBoot::class =>                   100,

@@ -1408,15 +1408,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function post_updateItem($history = true)
     {
-        //handle timezone change for current user
-        if ($this->fields['id'] == Session::getLoginUserID()) {
-            if (null == $this->fields['timezone'] || 'null' === strtolower($this->fields['timezone'])) {
-                unset($_SESSION['glpi_tz']);
-            } else {
-                $_SESSION['glpi_tz'] = $this->fields['timezone'];
-            }
-        }
-
         $this->updateUserEmails();
         $this->syncLdapGroups();
         $this->syncDynamicEmails();

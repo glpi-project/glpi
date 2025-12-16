@@ -1172,8 +1172,6 @@ class Auth extends CommonGLPI
         }
 
         if ($this->auth_succeded && !empty($this->user->fields['timezone']) && 'null' !== strtolower($this->user->fields['timezone'])) {
-            //set user timezone, if any
-            $_SESSION['glpi_tz'] = $this->user->fields['timezone'];
             $DB->setTimezone($this->user->fields['timezone']);
         }
 
