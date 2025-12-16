@@ -104,7 +104,7 @@ $empty_data_builder = new class {
             ],
         ];
 
-        if ($add_e2e_data) {
+        if ($add_playwright_data) {
             // White list docker internal host
             $tables['glpi_apiclients'][] = [
                 'id' => 2,
