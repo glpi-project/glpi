@@ -110,4 +110,39 @@ describe('User form', () => {
         cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
         cy.getDropdownByLabelText('Approval substitutes').should('have.text', '');
     });
+
+    it('can change own picture', () => {
+        cy.changeProfile('Self-Service');
+        cy.visit('/front/preference.php');
+        cy.get('.nav-item').contains('Main').click();
+        cy.findByTitle('Change picture').click();
+
+        let has_existing_picture = false;
+        cy.findByRole('dialog').should('be.visible').within(() => {
+            if (Cypress.$('input[name="_blank_picture"]').length) {
+                has_existing_picture = true;
+                cy.findByLabelText('Clear').click();
+                cy.findByRole('button', {name: 'Close'}).click();
+            }
+        });
+        cy.findByRole('tabpanel').then(() => {
+            if (has_existing_picture) {
+                cy.findByRole('button', {name: 'Save'}).click();
+                cy.findByRole('alert').should('contain.text', 'Item successfully updated: E2E Tests');
+                cy.findByTitle('Change picture').click();
+            }
+        });
+
+        cy.findByRole('dialog').should('be.visible').within(() => {
+            cy.get('img[alt="Preview"]').should('not.be.visible').invoke('attr', 'src').then((old_src) => {
+                cy.get('input[type="file"]').selectFile('fixtures/uploads/foo.png');
+                cy.findByAltText('Preview').invoke('attr', 'src').then((new_src) => {
+                    expect(new_src).to.not.equal(old_src);
+                    cy.findByRole('button', { name: 'Close' }).click();
+                });
+            });
+        });
+        cy.findByRole('button', {name: 'Save'}).click();
+        cy.findByRole('alert').should('contain.text', 'Item successfully updated: E2E Tests');
+    });
 });

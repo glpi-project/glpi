@@ -95,6 +95,12 @@ abstract class AbstractCommonItilObject_ItemTest extends DbTestCase
             'Items 2', // 2 is the value from the last test, no change
             strip_tags($link->getTabNameForItem($itil_item)),
         );
+
+        $_SESSION['glpiactiveprofile']['helpdesk_item_type'] = [];
+        $this->assertEquals(
+            'Items',
+            strip_tags($link->getTabNameForItem($itil_item)),
+        );
     }
 
     public function testGetTabNameForItemUser(): void
