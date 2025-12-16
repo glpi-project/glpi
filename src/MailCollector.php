@@ -2314,7 +2314,7 @@ class MailCollector extends CommonDBTM
         if (preg_match($old_pattern_2, $header, $values) === 1) {
             return [
                 'uuid'     => null,
-                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : (!empty($values['items_id']) ? 'Ticket' : null),
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : (!empty($values['items_id']) ? Ticket::class : null),
                 'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
                 'event'    => null,
             ];

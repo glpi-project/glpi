@@ -692,7 +692,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             'name'               => self::getTypeName(Session::getPluralNumber()),
         ];
 
-        if ($itemtype == "Ticket") {
+        if ($itemtype == Ticket::class) {
             $tab[] = [
                 'id'                 => '210',
                 'table'              => 'glpi_changes_tickets',
@@ -708,7 +708,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
             ];
         }
 
-        if ($itemtype == "Problem") {
+        if ($itemtype == Problem::class) {
             $tab[] = [
                 'id'                 => '211',
                 'table'              => 'glpi_changes_problems',

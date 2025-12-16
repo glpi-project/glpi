@@ -505,7 +505,7 @@ class NotificationTargetProject extends NotificationTarget
                 ],
             ],
             'WHERE'     => [
-                'glpi_documents_items.itemtype'  => 'Project',
+                'glpi_documents_items.itemtype'  => Project::class,
                 'glpi_documents_items.items_id'  => $item->fields['id'],
             ],
         ]);
@@ -760,14 +760,15 @@ class NotificationTargetProject extends NotificationTarget
         }
 
         //Tags with just lang
-        $tags = ['project.entity'   => Entity::getTypeName(1),
+        $tags = [
+            'project.entity'   => Entity::getTypeName(1),
             'project.log'      => __('Historical'),
             'project.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
             'project.team'     => ProjectTeam::getTypeName(1),
             'project.costs'    => _n('Cost', 'Costs', Session::getPluralNumber()),
-            'project.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
+            'project.changes'  => Change::getTypeName(Session::getPluralNumber()),
             'project.problems' => Problem::getTypeName(Session::getPluralNumber()),
-            'project.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'project.tickets'  => Ticket::getTypeName(Session::getPluralNumber()),
             'project.items'    => _n('Item', 'Items', Session::getPluralNumber()),
         ];
 
@@ -780,12 +781,13 @@ class NotificationTargetProject extends NotificationTarget
         }
 
         //Foreach global tags
-        $tags = ['log'         => __('Historical'),
+        $tags = [
+            'log'         => __('Historical'),
             'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
             'costs'       => _n('Cost', 'Costs', Session::getPluralNumber()),
-            'changes'     => _n('Change', 'Changes', Session::getPluralNumber()),
+            'changes'     => Change::getTypeName(Session::getPluralNumber()),
             'problems'    => Problem::getTypeName(Session::getPluralNumber()),
-            'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'tickets'     => Ticket::getTypeName(Session::getPluralNumber()),
             'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()),
             'items'       => _n('Item', 'Items', Session::getPluralNumber()),
         ];

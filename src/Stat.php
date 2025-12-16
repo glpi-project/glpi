@@ -1127,7 +1127,7 @@ class Stat extends CommonGLPI
                             'glpi_itilsolutions'   => 'items_id',
                             'glpi_tickets'               => 'id', [
                                 'AND' => [
-                                    'glpi_itilsolutions.itemtype' => 'Ticket',
+                                    'glpi_itilsolutions.itemtype' => Ticket::class,
                                 ],
                             ],
                         ],
@@ -1535,7 +1535,7 @@ class Stat extends CommonGLPI
      * @param class-string<CommonITILObject> $itil_type
      * @return array
      */
-    public static function getAssetsWithITIL($start_date, $end_date, $itil_type = 'Ticket'): array
+    public static function getAssetsWithITIL($start_date, $end_date, $itil_type = Ticket::class): array
     {
         global $DB;
 
@@ -1626,7 +1626,7 @@ class Stat extends CommonGLPI
         }
         $date1 .= " 00:00:00";
 
-        $assets = self::getAssetsWithITIL($date1, $date2, $itemtype ?? 'Ticket');
+        $assets = self::getAssetsWithITIL($date1, $date2, $itemtype ?? Ticket::class);
         $numrows = count($assets);
 
         if ($numrows > 0) {

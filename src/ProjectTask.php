@@ -1278,10 +1278,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $canedit = $item::class === Project::class && $item->canEdit($ID);
 
         switch ($item::class) {
-            case 'Project':
+            case Project::class:
                 $criteria['WHERE']['glpi_projecttasks.projects_id'] = $ID;
                 break;
-            case 'ProjectTask':
+            case ProjectTask::class:
                 $criteria['WHERE']['glpi_projecttasks.projecttasks_id'] = $ID;
                 break;
             default: // Not available type

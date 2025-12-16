@@ -322,7 +322,7 @@ class ProjectCost extends CommonDBChild
             echo "<script type='text/javascript' >\n";
             echo "function viewAddCost" . $ID . "_$rand() {\n";
             $params = ['type'         => self::class,
-                'parenttype'   => 'Project',
+                'parenttype'   => Project::class,
                 'projects_id' => $ID,
                 'id'           => -1,
             ];
@@ -389,7 +389,7 @@ class ProjectCost extends CommonDBChild
                         url: $CFG_GLPI["root_doc"] . "/ajax/viewsubitem.php",
                         parameters: [
                             'type'        => self::class,
-                            'parenttype'  => 'Project',
+                            'parenttype'  => Project::class,
                             'projects_id' => $project_id,
                             'id'          => $cost_id,
                             'display'     => false,

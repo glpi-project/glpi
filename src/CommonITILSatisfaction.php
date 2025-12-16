@@ -151,7 +151,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 'url' => $url,
             ]);
         } else { // for internal inquest => form
-            $config_suffix = $item->getType() === 'Ticket' ? '' : ('_' . strtolower($item->getType()));
+            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item->getType()));
 
             if ($add_form_header) {
                 $this->showFormHeader($options);
@@ -186,7 +186,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             $itemtype     = static::getItemInstance()::class;
             $entities_id  = $this->getItemEntity($itemtype, $this->fields[$itemtype::getForeignKeyField()]);
 
-            $config_suffix = $itemtype === 'Ticket' ? '' : ('_' . strtolower($itemtype));
+            $config_suffix = $itemtype === Ticket::class ? '' : ('_' . strtolower($itemtype));
             $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config' . $config_suffix, $entities_id, 'inquest_mandatory_comment' . $config_suffix);
             if ($inquest_mandatory_comment && ($satisfaction <= $inquest_mandatory_comment) && empty($comment)) {
                 Session::addMessageAfterRedirect(

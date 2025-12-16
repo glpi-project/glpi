@@ -42,6 +42,7 @@ use Change;
 use CommonDBTM;
 use CommonITILObject;
 use CommonTreeDropdown;
+use Computer;
 use Contract;
 use Document;
 use Domain;
@@ -652,7 +653,7 @@ final class SearchOption implements ArrayAccess
         $todel   = [];
 
         if (
-            !Session::haveRight('infocom', $action)
+            !Session::haveRight(Infocom::$rightname, $action)
             && Infocom::canApplyOn($itemtype)
         ) {
             $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
@@ -660,7 +661,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if (
-            !Session::haveRight('contract', $action)
+            !Session::haveRight(Contract::$rightname, $action)
             && in_array($itemtype, $CFG_GLPI["contract_types"])
         ) {
             $itemstodel = Contract::getSearchOptionsToAdd();
@@ -668,7 +669,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if (
-            !Session::haveRight('document', $action)
+            !Session::haveRight(Document::$rightname, $action)
             && Document::canApplyOn($itemtype)
         ) {
             $itemstodel = Document::getSearchOptionsToAdd();
@@ -677,14 +678,14 @@ final class SearchOption implements ArrayAccess
 
         // do not show priority if you don't have right in profile
         if (
-            ($itemtype == 'Ticket')
+            ($itemtype == Ticket::class)
             && ($action == UPDATE)
-            && !Session::haveRight('ticket', Ticket::CHANGEPRIORITY)
+            && !Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY)
         ) {
             $todel[] = 3;
         }
 
-        if ($itemtype == 'Computer') {
+        if ($itemtype == Computer::class) {
             if (!Session::haveRight('networking', $action)) {
                 $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));

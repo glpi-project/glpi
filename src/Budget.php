@@ -297,24 +297,24 @@ class Budget extends CommonDropdown
             'FROM'            => 'glpi_infocoms',
             'WHERE'           => [
                 'budgets_id'   => $budgets_id,
-                'NOT'          => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
+                'NOT'          => ['itemtype' => [ConsumableItem::class, CartridgeItem::class, Software::class]],
             ],
             'ORDER'           => 'itemtype',
         ]);
         $itemtypes = [
             // These types shouldn't be in the glpi_infocoms table, but have their costs elsewhere
-            'Contract', 'Ticket', 'Problem', 'Change', 'Project',
+            Contract::class, Ticket::class, Problem::class, Change::class, Project::class,
         ];
         foreach ($iterator as $row) {
             $itemtypes[] = $row['itemtype'];
         }
         $infocom_itemtypes = [];
         $other_cost_tables = [
-            'Contract' => ContractCost::getTable(),
-            'Ticket' => TicketCost::getTable(),
-            'Problem' => ProblemCost::getTable(),
-            'Change' => ChangeCost::getTable(),
-            'Project' => ProjectCost::getTable(),
+            Contract::class => ContractCost::getTable(),
+            Ticket::class => TicketCost::getTable(),
+            Problem::class => ProblemCost::getTable(),
+            Change::class => ChangeCost::getTable(),
+            Project::class => ProjectCost::getTable(),
         ];
         foreach ($itemtypes as $itemtype) {
             if (in_array($itemtype, $infocom_itemtypes)) {
@@ -325,7 +325,7 @@ class Budget extends CommonDropdown
                 continue;
             }
 
-            if (!in_array($itemtype, ['Contract', 'Ticket', 'Problem', 'Change', 'Project'], true)) {
+            if (!in_array($itemtype, [Contract::class, Ticket::class, Problem::class, Change::class, Project::class], true)) {
                 $infocom_itemtypes[] = $itemtype;
             }
         }
@@ -418,7 +418,7 @@ class Budget extends CommonDropdown
             $criteria['ORDERBY'][] = $item_table . '.name';
 
             $criteria['SELECT'][] = match ($itemtype) {
-                'Ticket', 'Problem', 'Change' => QueryFunction::sum(
+                Ticket::class, Problem::class, Change::class => QueryFunction::sum(
                     expression: new QueryExpression($DB::quoteName("$cost_table.actiontime") . " * " . $DB::quoteName("$cost_table.cost_time") . "/" . HOUR_TIMESTAMP . "
                                       + " . $DB::quoteName("$cost_table.cost_fixed") . "
                                       + " . $DB::quoteName("$cost_table.cost_material")),

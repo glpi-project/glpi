@@ -66,7 +66,7 @@ class Document_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
-        if ($this->fields['itemtype'] === 'Ticket') {
+        if ($this->fields['itemtype'] === Ticket::class) {
             $ticket = new Ticket();
             // Not item linked for closed tickets
             if (

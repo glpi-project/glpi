@@ -89,7 +89,7 @@ final class MapSearchOutput extends HTMLSearchOutput
             array_pop($criteria);
             $criteria[] = [
                 'link'         => 'AND',
-                'field'        => ($itemtype === 'Location' || $itemtype === 'Entity') ? 1 : (($itemtype === 'Ticket') ? 83 : 3),
+                'field'        => ($itemtype === Location::class || $itemtype === Entity::class) ? 1 : (($itemtype === Ticket::class) ? 83 : 3),
                 'searchtype'   => 'equals',
                 'value'        => 'CURLOCATION',
             ];

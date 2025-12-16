@@ -2271,7 +2271,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      **/
     public static function generateLinkSatisfaction($item)
     {
-        $config_suffix = $item::getType() === 'Ticket' ? '' : ('_' . strtolower($item::getType()));
+        $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::getType()));
         $url = self::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_URL' . $config_suffix);
 
         $tag_prefix = strtoupper($item::getType());
@@ -2299,7 +2299,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             $url = str_replace("[{$tag_prefix}_SOLVEDATE]", $item->fields['solvedate'], $url);
         }
 
-        if ($item::getType() === 'Ticket') {
+        if ($item instanceof Ticket) {
             if (strstr($url, "[REQUESTTYPE_ID]")) {
                 $url = str_replace("[REQUESTTYPE_ID]", $item->fields['requesttypes_id'], $url);
             }
@@ -2358,7 +2358,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             );
         }
 
-        if ($item::getType() === 'Ticket') {
+        if ($item instanceof Ticket) {
             if (strstr($url, "[TICKETTYPE_ID]")) {
                 $url = str_replace("[TICKETTYPE_ID]", $item->fields['type'], $url);
             }
@@ -2387,7 +2387,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             );
         }
 
-        if ($item::getType() === 'Ticket') {
+        if ($item instanceof Ticket) {
             if (strstr($url, "[SLA_TTO_ID]")) {
                 $url = str_replace("[SLA_TTO_ID]", $item->fields['slas_id_tto'], $url);
             }

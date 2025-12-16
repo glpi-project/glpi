@@ -38,9 +38,25 @@ namespace Glpi\Dashboard;
 use CommonDBTM;
 use CommonDevice;
 use CommonITILObject;
+use Computer;
+use Document;
+use Entity;
 use Group;
 use InvalidArgumentException;
+use KnowbaseItem;
+use Location;
+use Manufacturer;
+use Monitor;
+use NetworkEquipment;
+use Phone;
+use Printer;
+use Profile;
+use Project;
+use Rack;
 use Session;
+use Software;
+use SoftwareLicense;
+use Supplier;
 use Ticket;
 use User;
 
@@ -83,24 +99,24 @@ final class FakeProvider extends Provider
         global $CFG_GLPI;
 
         $values = [
-            'Software' => 114700,
-            'Computer' => 5400,
-            'NetworkEquipment' => 1200,
-            'Phone' => 1500,
-            'SoftwareLicense' => 130,
-            'Monitor' => 3800,
-            'Rack' => 12,
-            'Printer' => 1350,
-            'User' => 4225,
-            'Group' => 129,
-            'Supplier' => 56,
-            'Document' => 37950,
-            'Entity' => 67,
-            'Profile' => 15,
-            'KnowledgebaseItem' => 261,
-            'Project' => 7,
-            'Manufacturer' => 12,
-            'Location' => 12,
+            Software::class => 114700,
+            Computer::class => 5400,
+            NetworkEquipment::class => 1200,
+            Phone::class => 1500,
+            SoftwareLicense::class => 130,
+            Monitor::class => 3800,
+            Rack::class => 12,
+            Printer::class => 1350,
+            User::class => 4225,
+            Group::class => 129,
+            Supplier::class => 56,
+            Document::class => 37950,
+            Entity::class => 67,
+            Profile::class => 15,
+            KnowbaseItem::class => 261,
+            Project::class => 7,
+            Manufacturer::class => 12,
+            Location::class => 12,
         ];
 
         foreach (CommonDevice::getDeviceTypes() as $device_type) {

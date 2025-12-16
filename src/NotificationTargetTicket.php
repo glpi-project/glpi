@@ -733,7 +733,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         $tags = [
             'validations'   => CommonITILValidation::getTypeName(Session::getPluralNumber()),
             'problems'      => Problem::getTypeName(Session::getPluralNumber()),
-            'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
+            'changes'       => Change::getTypeName(Session::getPluralNumber()),
             'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
             'documents'     => Document::getTypeName(Session::getPluralNumber()),
         ];
@@ -749,7 +749,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         //Tags with just lang
         $tags = [
             'ticket.problems'         => Problem::getTypeName(Session::getPluralNumber()),
-            'ticket.changes'          => _n('Change', 'Changes', Session::getPluralNumber()),
+            'ticket.changes'          => Change::getTypeName(Session::getPluralNumber()),
             'ticket.autoclosewarning'
                      => sprintf(
                          _n(

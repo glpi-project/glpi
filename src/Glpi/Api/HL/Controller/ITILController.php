@@ -93,7 +93,7 @@ use function Safe\json_decode;
     parameters: [
         new Doc\Parameter(
             name: 'itemtype',
-            schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: ['Ticket', 'Change', 'Problem']),
+            schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING, enum: [Ticket::class, Change::class, Problem::class]),
             location: Doc\Parameter::LOCATION_PATH,
         ),
         new Doc\Parameter(
@@ -111,9 +111,9 @@ final class ITILController extends AbstractController
     {
         $schemas = [];
 
-        $schemas['ITILCategory'] = [
+        $schemas[ITILCategory::class] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => 'ITILCategory',
+            'x-itemtype' => ITILCategory::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => [
                 'id' => [

@@ -1523,13 +1523,13 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     $tmp['##linked' . strtolower($itemtype) . '.content##'] = $link_item->getField('content');
 
                     switch ($itemtype) {
-                        case 'Ticket':
+                        case Ticket::class:
                             $data['linkedtickets'][] = $tmp;
                             break;
-                        case 'Change':
+                        case Change::class:
                             $data['linkedchanges'][] = $tmp;
                             break;
-                        case 'Problem':
+                        case Problem::class:
                             $data['linkedproblems'][] = $tmp;
                             break;
                     }
@@ -1657,7 +1657,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $data["documents"] = [];
             $addtodownloadurl   = '';
-            if ($item->getType() == 'Ticket') {
+            if ($item instanceof Ticket) {
                 $addtodownloadurl = "&tickets_id=" . $item->fields['id'];
             }
             foreach ($iterator as $row) {

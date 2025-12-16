@@ -1105,13 +1105,13 @@ class MassiveAction
                         $options = $ma->POST['options'];
                     }
                     switch ($item->getType()) {
-                        case 'Change':
+                        case Change::class:
                             $search['condition'][] = 'is_change';
                             break;
-                        case 'Problem':
+                        case Problem::class:
                             $search['condition'][] = 'is_problem';
                             break;
-                        case 'Ticket':
+                        case Ticket::class:
                             if ($DB->fieldExists($search['table'], 'is_incident') || $DB->fieldExists($search['table'], 'is_request')) {
                                 $search['condition'][] = [
                                     'OR' => [
