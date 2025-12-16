@@ -92,7 +92,7 @@
       {% endif %}
                </button>
 
-               {% if create_link %}
+         {% if create_link ?? false %}
                   {% set target_form_path = (target_itemtype|itemtype_form_path ~ "?_" ~ source_itemtype|itemtype_foreign_key ~ "=" ~ source_items_id) %}
                   {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
                   <a href="{{ create_url }}" class="btn btn-primary">

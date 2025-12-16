@@ -368,6 +368,7 @@ TWIG, $twig_params);
                     'used'        => $used,
                 ],
                 'add_button_label' => _x('button', 'Associate'),
+                'form_label' => '',
             ]);
         }
 
