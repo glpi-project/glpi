@@ -112,7 +112,15 @@
         },
         "sort-packages": true,
         "audit": {
-            "abandoned": "report"
+            "block-abandoned": false,
+            "block-insecure": false,
+            "ignore-abandoned": {
+                "container-interop/container-interop": "Used by `laminas/laminas-mail`",
+                "laminas/laminas-loader": "Used by `laminas/laminas-mail`",
+                "laminas/laminas-mail": "No replacement package found yet",
+                "laminas/laminas-mime": "Used by `laminas/laminas-mail`",
+                "true/punycode": "Replacement done in GLPI 11.0"
+            }
         }
     },
     "autoload": {
