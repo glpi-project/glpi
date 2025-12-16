@@ -35,6 +35,7 @@
 
 namespace Glpi\FuzzyMatcher;
 
+use Normalizer;
 use function Safe\preg_split;
 
 final class FuzzyMatcher
@@ -60,6 +61,14 @@ final class FuzzyMatcher
         ) {
             return true;
         }
+
+        // Normalize strings to remove accents
+        // The normalizer decomposes the string (FORM_D), which then allows
+        // the preg_replace to remove the accents (identified by \p{Mn})
+        $subject = Normalizer::normalize($subject, Normalizer::FORM_D);
+        $subject = preg_replace('/\p{Mn}/u', '', $subject);
+        $filter = Normalizer::normalize($filter, Normalizer::FORM_D);
+        $filter = preg_replace('/\p{Mn}/u', '', $filter);
 
         // Some strategies might disable fuzzy matching for short filters
         // as it may lead too many results that are not really relevant.

@@ -60,6 +60,11 @@ final class FuzzyMatcherTest extends GLPITestCase
         yield [$subject, "requesst servedr", true];
         yield [$subject, "requesst z servedr", true];
         yield [$subject, "requesst service", false];
+        $subject = "référence";
+        yield [$subject, "référence", true];
+        yield [$subject, "reference", true];
+        yield [$subject, "réferenec", true];
+        yield [$subject, "réféernec", false];
     }
 
     #[DataProvider('partialMatchStrategyProvider')]
