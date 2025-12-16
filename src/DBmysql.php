@@ -313,6 +313,10 @@ class DBmysql
         if ($this->use_timezones) {
             if (isset($_SESSION['glpitimezone'])) {
                 $zone = $_SESSION['glpitimezone'];
+                if ($zone === '0') {
+                    // '0' is for 'Use server configuration'
+                    $zone = date_default_timezone_get();
+                }
             } else {
                 $conf_tz = ['value' => null];
                 if (
