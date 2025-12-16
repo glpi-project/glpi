@@ -138,8 +138,8 @@
                                 {% endif %}
                             >
                             <span class="form-check-label">
-                                <i class="{{ call(type ~ "::getIcon", []) }}"></i>
-                                {{ call(type ~ "::getTypeName", [2]) }}
+                                <i class="{{ type|itemtype_icon }}"></i>
+                                {{ type|itemtype_name(2) }}
                             </span>
                         </label>
                     {% endfor %}
