@@ -993,9 +993,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
 
         return (($this->fields["users_id_recipient"] === Session::getLoginUserID())
-              || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-              || (isset($_SESSION["glpigroups"])
-                  && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
+            || $this->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
+            || (isset($_SESSION["glpigroups"])
+                && $this->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"])));
     }
 
     /**
@@ -1198,12 +1198,12 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
 
         return ((Session::haveRight(static::$rightname, UPDATE)
-               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && static::isAllowedStatus($this->fields['status'], self::SOLVED)
-              // No edition on closed status
-              && !in_array($this->fields['status'], static::getClosedStatusArray()));
+            || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            || (isset($_SESSION["glpigroups"])
+                && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
+            && static::isAllowedStatus($this->fields['status'], self::SOLVED)
+            // No edition on closed status
+            && !in_array($this->fields['status'], static::getClosedStatusArray()));
     }
 
     /**
@@ -1215,10 +1215,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
 
         return ((Session::haveRight(static::$rightname, UPDATE)
-               || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
-               || (isset($_SESSION["glpigroups"])
-                   && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
-              && static::isAllowedStatus($this->fields['status'], self::SOLVED));
+            || $this->isUser(CommonITILActor::ASSIGN, Session::getLoginUserID())
+            || (isset($_SESSION["glpigroups"])
+                && $this->haveAGroup(CommonITILActor::ASSIGN, $_SESSION["glpigroups"])))
+            && static::isAllowedStatus($this->fields['status'], self::SOLVED));
     }
 
 
@@ -1806,8 +1806,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (
             !Session::isCron()
             && (!Session::haveRight(static::$rightname, UPDATE)
-            // Closed tickets
-            || in_array($this->fields['status'], static::getClosedStatusArray()))
+                // Closed tickets
+                || in_array($this->fields['status'], static::getClosedStatusArray()))
         ) {
             $allowed_fields                    = ['id'];
             $check_allowed_fields_for_template = true;
@@ -1896,7 +1896,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     (!$check_allowed_fields_for_template || in_array($key, $allowed_fields))
                     && (
                         isset($input[$key])
-                    && (empty($input[$key]) || ($input[$key] == 'NULL'))
+                        && (empty($input[$key]) || ($input[$key] == 'NULL'))
                     )
                 ) {
                     $mandatory_missing[$key] = $fieldsname[$val];
@@ -2096,7 +2096,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                             if (
                                 (isset($input['_itil_requester']['alternative_email'])
-                                && $input['_itil_requester']['alternative_email'])
+                                    && $input['_itil_requester']['alternative_email'])
                                 || ($input['_itil_requester']['users_id'] > 0)
                             ) {
                                 $useractors = $this->getActorObjectForItem(User::class);
@@ -2166,7 +2166,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             }
                             if (
                                 (isset($input['_itil_observer']['alternative_email'])
-                                && $input['_itil_observer']['alternative_email'])
+                                    && $input['_itil_observer']['alternative_email'])
                                 || ($input['_itil_observer']['users_id'] > 0)
                             ) {
                                 $useractors = $this->getActorObjectForItem(User::class);
@@ -2228,8 +2228,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         if (
                             !empty($this->userlinkclass)
                             && ((isset($input['_itil_assign']['alternative_email'])
-                            && $input['_itil_assign']['alternative_email'])
-                            || $input['_itil_assign']['users_id'] > 0)
+                                && $input['_itil_assign']['alternative_email'])
+                                || $input['_itil_assign']['users_id'] > 0)
                         ) {
                             $useractors = $this->getActorObjectForItem(User::class);
                             if (
@@ -2240,9 +2240,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 $input['_forcenotif']                  = true;
                                 if (
                                     ((!isset($input['status'])
-                                    && in_array($this->fields['status'], static::getNewStatusArray()))
-                                    || (isset($input['status'])
-                                    && in_array($input['status'], static::getNewStatusArray())))
+                                        && in_array($this->fields['status'], static::getNewStatusArray()))
+                                        || (isset($input['status'])
+                                            && in_array($input['status'], static::getNewStatusArray())))
                                     && !$this->isStatusComputationBlocked($input)
                                 ) {
                                     if (in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
@@ -2268,9 +2268,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 $input['_forcenotif']                  = true;
                                 if (
                                     ((!isset($input['status'])
-                                    && (in_array($this->fields['status'], static::getNewStatusArray())))
-                                    || (isset($input['status'])
-                                    && (in_array($input['status'], static::getNewStatusArray()))))
+                                        && (in_array($this->fields['status'], static::getNewStatusArray())))
+                                        || (isset($input['status'])
+                                            && (in_array($input['status'], static::getNewStatusArray()))))
                                     && !$this->isStatusComputationBlocked($input)
                                 ) {
                                     if (in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
@@ -2285,8 +2285,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         if (
                             !empty($this->supplierlinkclass)
                             && ((isset($input['_itil_assign']['alternative_email'])
-                            && $input['_itil_assign']['alternative_email'])
-                            || $input['_itil_assign']['suppliers_id'] > 0)
+                                && $input['_itil_assign']['alternative_email'])
+                                || $input['_itil_assign']['suppliers_id'] > 0)
                         ) {
                             $supplieractors = $this->getActorObjectForItem(Supplier::class);
                             if (
@@ -2297,9 +2297,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 $input['_forcenotif']                  = true;
                                 if (
                                     ((!isset($input['status'])
-                                    && (in_array($this->fields['status'], static::getNewStatusArray())))
-                                    || (isset($input['status'])
-                                    && (in_array($input['status'], static::getNewStatusArray()))))
+                                        && (in_array($this->fields['status'], static::getNewStatusArray())))
+                                        || (isset($input['status'])
+                                            && (in_array($input['status'], static::getNewStatusArray()))))
                                     && !$this->isStatusComputationBlocked($input)
                                 ) {
                                     if (in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))) {
@@ -2614,16 +2614,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             && ($key = array_search('status', $this->updates)) !== false
             && (
                 $this->oldvalues['status'] == self::WAITING
-            // From solved to another state than closed
-            || (
-                in_array($this->oldvalues["status"], static::getSolvedStatusArray())
-               && !in_array($this->fields["status"], static::getClosedStatusArray())
-            )
-            // From closed to any open state
-            || (
-                in_array($this->oldvalues["status"], static::getClosedStatusArray())
-               && in_array($this->fields["status"], static::getNotSolvedStatusArray())
-            )
+                // From solved to another state than closed
+                || (
+                    in_array($this->oldvalues["status"], static::getSolvedStatusArray())
+                    && !in_array($this->fields["status"], static::getClosedStatusArray())
+                )
+                // From closed to any open state
+                || (
+                    in_array($this->oldvalues["status"], static::getClosedStatusArray())
+                    && in_array($this->fields["status"], static::getNotSolvedStatusArray())
+                )
             )
         ) {
             // Compute ticket waiting time use calendar if exists
@@ -2643,7 +2643,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 );
             } else { // Not calendar defined
                 $delay_time = strtotime($_SESSION["glpi_currenttime"])
-                           - strtotime($this->fields['begin_waiting_date']);
+                    - strtotime($this->fields['begin_waiting_date']);
             }
 
             // SLA case: compute sla_ttr duration
@@ -2742,7 +2742,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $this->fields['internal_time_to_resolve'] = date(
                             'Y-m-d H:i:s',
                             $delay_time
-                            + strtotime($this->fields['internal_time_to_resolve'])
+                                + strtotime($this->fields['internal_time_to_resolve'])
                         );
                     }
                 }
@@ -2760,7 +2760,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if (
             (($key = array_search('status', $this->updates)) !== false)
             && (($this->fields['status'] == self::WAITING)
-              || in_array($this->fields["status"], static::getSolvedStatusArray()))
+                || in_array($this->fields["status"], static::getSolvedStatusArray()))
         ) {
             $this->updates[]                    = "begin_waiting_date";
             $this->fields["begin_waiting_date"] = $_SESSION["glpi_currenttime"];
@@ -3019,7 +3019,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 if (
                                     empty($input[$key]) || ($input[$key] == 'NULL')
                                     || (is_array($input[$key])
-                                    && ($input[$key] === [0 => "0"]))
+                                        && ($input[$key] === [0 => "0"]))
                                 ) {
                                     $mandatory_missing[$key] = $fieldsname[$val];
                                 }
@@ -4216,7 +4216,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     "dropdown_actortype$rand",
                     "show_massiveaction_field",
                     $CFG_GLPI["root_doc"]
-                                             . "/ajax/dropdownMassiveActionAddActor.php",
+                        . "/ajax/dropdownMassiveActionAddActor.php",
                     $paramsmassaction
                 );
                 echo "<span id='show_massiveaction_field'>&nbsp;</span>\n";
@@ -5370,7 +5370,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'actortype'       => $typename,
             'itemtype'        => $this->getType(),
             'allow_email'     => (($type == CommonITILActor::OBSERVER)
-                                            || $type == CommonITILActor::REQUESTER),
+                || $type == CommonITILActor::REQUESTER),
             'entity_restrict' => $entities_id,
             'use_notif'       => Entity::getUsedConfig('is_notif_enable_default', $entities_id, '', 1),
         ];
@@ -5586,7 +5586,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $this->fields['date'],
                     $this->fields['solvedate']
                 )
-                                                            - $this->fields["waiting_duration"]);
+                    - $this->fields["waiting_duration"]);
             }
             // Not calendar defined
             try {
@@ -5629,7 +5629,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $this->fields['date'],
                     $this->fields['closedate']
                 )
-                                                             - $this->fields["waiting_duration"]);
+                    - $this->fields["waiting_duration"]);
             }
             // Not calendar defined
             try {
@@ -6865,7 +6865,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (count($items)) {
                     $eleventh_column = "<span class='pointer'
                                  id='" . htmlescape($item::class . $item->fields["id"]) . "planning$rand'>"
-                                 . $eleventh_column . '</span>';
+                        . $eleventh_column . '</span>';
                     $eleventh_column = sprintf(
                         __s('%1$s %2$s'),
                         $eleventh_column,
@@ -7812,9 +7812,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     ],
                     'itiltype' => 'Validation',
                     'class'    => 'validation-request '
-                    . ($validation_row['status'] == CommonITILValidation::WAITING ? "validation-waiting" : "")
-                    . ($validation_row['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "")
-                    . ($validation_row['status'] == CommonITILValidation::REFUSED ? "validation-refused" : ""),
+                        . ($validation_row['status'] == CommonITILValidation::WAITING ? "validation-waiting" : "")
+                        . ($validation_row['status'] == CommonITILValidation::ACCEPTED ? "validation-accepted" : "")
+                        . ($validation_row['status'] == CommonITILValidation::REFUSED ? "validation-refused" : ""),
                     'item_action' => 'validation-request',
                     'object'      => $validation,
                 ];
@@ -8184,7 +8184,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public function isTakeIntoAccountComputationBlocked($input)
     {
         return array_key_exists('_do_not_compute_takeintoaccount', $input)
-         && $input['_do_not_compute_takeintoaccount'];
+            && $input['_do_not_compute_takeintoaccount'];
     }
 
 
@@ -8198,7 +8198,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public function isStatusComputationBlocked(array $input)
     {
         return array_key_exists('_do_not_compute_status', $input)
-         && $input['_do_not_compute_status'];
+            && $input['_do_not_compute_status'];
     }
 
 
@@ -9300,8 +9300,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     : sprintf('_additional_%ss_%ss', strtolower($actor_itemtype), $actor_type);
 
                 $get_unique_key = (fn(array $actor): string
-                    // Use alternative_email in value key for "email" actors
-                    => sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? ''));
+                // Use alternative_email in value key for "email" actors
+                => sprintf('%s_%s', $actors_id_input_key, $actor['items_id'] ?: $actor['alternative_email'] ?? ''));
 
                 if (array_key_exists($actors_id_input_key, $this->input)) {
                     if (is_array($this->input[$actors_id_input_key])) {
@@ -9523,6 +9523,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $actor_obj->getItilObjectForeignKey() => $this->fields['id'],
                     $actor_obj->getActorForeignKey()      => $actor['items_id'],
                 ]);
+
+                if (
+                    $actor['type'] === CommonITILActor::ASSIGN
+                    && !$this->isTakeIntoAccountComputationBlocked($this->input)
+                ) {
+                    $compute_takeintoaccount_delay_stat = true;
+                }
+
                 if (
                     $actor['type'] === CommonITILActor::ASSIGN
                     && (
@@ -9532,16 +9540,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     && in_array(self::ASSIGNED, array_keys(static::getAllStatusArray()))
                     && !$this->isStatusComputationBlocked($this->input)
                 ) {
-                    $self = new static();
-                    $self->update(
-                        [
-                            'id'                              => $this->getID(),
-                            'status'                          => self::ASSIGNED,
-                            '_do_not_compute_takeintoaccount' => $this->isTakeIntoAccountComputationBlocked($this->input),
-                            '_from_assignment'                => true,
-                        ]
-                    );
-                    $this->fields['status'] = $self->fields['status'];
+                    $new_status = self::ASSIGNED;
                 }
             }
             // Update existing actors
@@ -9564,6 +9563,41 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $actor_obj = $this->getActorObjectForItem($actor['itemtype']);
                     $actor_obj->delete(['id' => $actor['id']]);
                 }
+            }
+        }
+
+        $update_input = [];
+        if (isset($new_status)) {
+            $update_input['status'] = $new_status;
+            $update_input['_from_assignment'] = true;
+            $update_input['_do_not_compute_takeintoaccount'] = $this->isTakeIntoAccountComputationBlocked($this->input);
+        }
+
+        if (count($added) || count($updated)) {
+            $update_input['date_mod'] = $_SESSION["glpi_currenttime"];
+
+            // Compute stats if needed (Replicating Ticket::updateDateMod logic)
+            if (($compute_takeintoaccount_delay_stat ?? false)
+                && method_exists($this, 'computeTakeIntoAccountDelayStat')
+                && method_exists($this, 'isAlreadyTakenIntoAccount')
+                && method_exists($this, 'canTakeIntoAccount')
+            ) {
+                if (!$this->isAlreadyTakenIntoAccount() && ($this->canTakeIntoAccount() || isCommandLine())) {
+                    $update_input['takeintoaccount_delay_stat'] = $this->computeTakeIntoAccountDelayStat();
+                    $update_input['takeintoaccountdate'] = $_SESSION["glpi_currenttime"];
+                }
+            }
+        }
+
+        if (count($update_input) > 0) {
+            $update_input['id'] = $this->getID();
+            if (!isset($update_input['status'])) {
+                $update_input['_disablenotif'] = true; // Disable notif if only updating date_mod/stats
+            }
+            $self = new static();
+            $self->update($update_input);
+            if (isset($update_input['status'])) {
+                $this->fields['status'] = $self->fields['status'];
             }
         }
 

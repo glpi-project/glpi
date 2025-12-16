@@ -301,10 +301,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-    * Return a list of default events.
-    *
-    * @return array
-    */
+     * Return a list of default events.
+     *
+     * @return array
+     */
     public static function getDefaultEventsList(): array
     {
         return [
@@ -327,10 +327,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-    * Return a list of HTTP methods.
-    *
-    * @return array
-    */
+     * Return a list of HTTP methods.
+     *
+     * @return array
+     */
     public static function getHttpMethod(): array
     {
         return [
@@ -343,12 +343,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-    * Return status icon
+     * Return status icon
      *
      * @param string $status
-    *
-    * @return string
-    */
+     *
+     * @return string
+     */
     public static function getStatusIcon($status): string
     {
         if ($status) {
@@ -452,10 +452,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
     }
 
     /**
-    * Return a list of GLPI itemtypes available through HL API.
-    *
-    * @return array<array>
-    */
+     * Return a list of GLPI itemtypes available through HL API.
+     *
+     * @return array<array>
+     */
     public static function getItemtypesDropdownValues(): array
     {
         $values = [];
@@ -1145,19 +1145,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 return;
             }
 
-            $supported = self::getAPIItemtypeData();
-            $supported_types = [];
-            foreach ($supported as $categories) {
-                foreach ($categories as $types) {
-                    $supported_types = array_merge($supported_types, array_keys($types));
-                }
-            }
-
-            // Ignore raising if the item type is not supported
-            if (!in_array($item->getType(), $supported_types, true)) {
-                return;
-            }
-
             $it = $DB->request([
                 'SELECT' => ['id', 'entities_id', 'is_recursive'],
                 'FROM' => self::getTable(),
@@ -1168,6 +1155,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 ],
             ]);
             if ($it->count() === 0) {
+                return;
+            }
+
+            $supported = self::getAPIItemtypeData();
+            $supported_types = [];
+            foreach ($supported as $categories) {
+                foreach ($categories as $types) {
+                    $supported_types = array_merge($supported_types, array_keys($types));
+                }
+            }
+
+            // Ignore raising if the item type is not supported
+            if (!in_array($item->getType(), $supported_types, true)) {
                 return;
             }
 

@@ -174,15 +174,15 @@ abstract class CommonITILActor extends CommonDBRelation
     public function canUpdateItem(): bool
     {
         return (parent::canUpdateItem()
-              || (isset($this->fields['users_id'])
-                  && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
+            || (isset($this->fields['users_id'])
+                && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
     }
 
     public function canDeleteItem(): bool
     {
         return (parent::canDeleteItem()
-              || (isset($this->fields['users_id'])
-                  && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
+            || (isset($this->fields['users_id'])
+                && ((int) $this->fields['users_id'] === Session::getLoginUserID())));
     }
 
     public function post_deleteFromDB()
@@ -303,7 +303,7 @@ abstract class CommonITILActor extends CommonDBRelation
 
     public function post_addItem()
     {
-        $item = getItemForItemtype(static::$itemtype_1);
+        $item = $this->getConnexityItem(static::$itemtype_1, static::getItilObjectForeignKey());
 
         if (!($item instanceof CommonITILObject)) {
             throw new RuntimeException();
@@ -314,7 +314,10 @@ abstract class CommonITILActor extends CommonDBRelation
             // Compute "take into account delay" unless "do not compute" flag was set by business rules
             $no_stat_computation = $item->isTakeIntoAccountComputationBlocked($this->input);
         }
-        $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
+
+        if (!isset($this->input['_from_object'])) {
+            $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
+        }
 
         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
             // Check object status and update it if needed
