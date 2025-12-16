@@ -862,9 +862,29 @@ class Session
         }
         arsort($accepted_languages); // sort by qfactor
 
+        $supported_locales = array_keys($CFG_GLPI['languages'] ?? []);
         foreach (array_keys($accepted_languages) as $language) {
-            if (array_key_exists($language, $CFG_GLPI['languages'])) {
+            // Direct match with locale key
+            if (in_array($language, $supported_locales, true)) {
                 return $language;
+            }
+
+            // Fallback for short language codes (pl -> pl_PL)
+            if (!str_contains($language, '_')) {
+                // First using language_LANGUAGE
+                $canonical_locale = $language . '_' . strtoupper($language);
+                if (in_array($canonical_locale, $supported_locales, true)) {
+                    return $canonical_locale;
+                }
+
+                // Otherwise fallback to the first matching locale
+                // e.g., 'en' -> 'en_GB' (since en_EN doesn't exist)
+                $prefix = $language . '_';
+                foreach ($supported_locales as $locale_key) {
+                    if (str_starts_with($locale_key, $prefix)) {
+                        return $locale_key;
+                    }
+                }
             }
         }
 
