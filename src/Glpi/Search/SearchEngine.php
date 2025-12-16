@@ -86,8 +86,8 @@ use Session;
 use Software;
 use Ticket;
 use Toolbox;
-
 use User;
+
 use function Safe\preg_match;
 
 /**

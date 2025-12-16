@@ -1921,7 +1921,7 @@ HTML;
         $params = [
             'entity' => $_SESSION['glpiactive_entity'],
         ];
-        if (static::$itemtype == ::classTicket::class) {
+        if (static::$itemtype == Ticket::class) {
             $params['right']  = ['validate_request', 'validate_incident'];
         } else {
             $params['right']  = ['validate'];
