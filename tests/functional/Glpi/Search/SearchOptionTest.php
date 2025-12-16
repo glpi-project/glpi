@@ -117,30 +117,24 @@ class SearchOptionTest extends DbTestCase
             ]
         );
 
-        // Verify we have results
+        // Verify we have exactly one result
         $this->assertArrayHasKey('data', $result);
         $this->assertArrayHasKey('rows', $result['data']);
-        $this->assertGreaterThan(0, $result['data']['totalcount']);
+        $this->assertEquals(1, $result['data']['totalcount'], 'Should find exactly one computer with this technical group');
 
-        // Find our computer in the results
-        $found_computer = false;
-        foreach ($result['data']['rows'] as $row) {
-            if (isset($row['AllAssets_1']['displayname'])
-                && strpos($row['AllAssets_1']['displayname'], 'Test Computer ' . __FUNCTION__) !== false) {
+        // Get the single result
+        $row = $result['data']['rows'][0];
 
-                $found_computer = true;
+        // Verify the computer name
+        $this->assertArrayHasKey('AllAssets_1', $row);
+        $this->assertStringContainsString('Test Computer ' . __FUNCTION__, $row['AllAssets_1']['displayname']);
 
-                // Verify the group is correctly displayed
-                $this->assertArrayHasKey('AllAssets_49', $row);
-                $this->assertStringContainsString(
-                    'Test Tech Group ' . __FUNCTION__,
-                    $row['AllAssets_49']['displayname']
-                );
-                break;
-            }
-        }
-
-        $this->assertTrue($found_computer, 'Computer with technical group should be found in AllAssets search results');
+        // Verify the group is correctly displayed
+        $this->assertArrayHasKey('AllAssets_49', $row);
+        $this->assertStringContainsString(
+            'Test Tech Group ' . __FUNCTION__,
+            $row['AllAssets_49']['displayname']
+        );
 
         // Test search by group name - this should also work without SQL error
         $result2 = \Search::getDatas(
