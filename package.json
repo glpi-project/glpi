@@ -102,6 +102,7 @@
         "@vue/test-utils": "^2.4.6",
         "@vue/vue3-jest": "^29.2.6",
         "axe-core": "^4.10.3",
+        "axios": "^1.13.2",
         "clean-webpack-plugin": "^4.0.0",
         "copy-webpack-plugin": "^13.0.1",
         "css-loader": "^7.1.2",
