@@ -20,6 +20,7 @@ PLAYWRIGHT = docker run \
 	-it \
 	--rm \
 	--ipc=host \
+	--user=$(shell id -u):$(shell id -g) \
 	-v .:/app \
 	-w /app \
 	-p 9323:9323 \
