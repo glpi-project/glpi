@@ -163,7 +163,7 @@ class StatTest extends DbTestCase
         $date = "2023-06-15 15:00:00";
         $_SESSION['glpi_currenttime'] = $date;
 
-        $itemtype = Ticket::class;
+        $itemtype = \Ticket::class;
         $begin = '2023-01-01';
         $end = '2023-12-31';
         $value = getItemByTypeName(\User::class, 'tech', true);
