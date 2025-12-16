@@ -10064,6 +10064,7 @@ CREATE TABLE `glpi_assets_assetmodels` (
   `depth` float NOT NULL DEFAULT '1',
   `power_connections` int NOT NULL DEFAULT '0',
   `power_consumption` int NOT NULL DEFAULT '0',
+  `max_power` int NOT NULL DEFAULT '0',
   `is_half_rack` tinyint NOT NULL DEFAULT '0',
   `picture_front` text,
   `picture_rear` text,
