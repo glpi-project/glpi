@@ -39,7 +39,7 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
 use Glpi\Dashboard\Grid;
-use Glpi\Debug\Profile;
+use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -1228,7 +1228,7 @@ TWIG,
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $tpl_vars['glpi_request_id'] = Profile::getCurrent()->getID();
+            $tpl_vars['glpi_request_id'] = DebugProfile::getCurrent()->getID();
         }
 
         if ($display) {
@@ -1752,7 +1752,7 @@ TWIG,
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
             && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
         ) {
-            $tpl_vars['debug_info'] = Profile::getCurrent()->getDebugInfo();
+            $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
         }
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);
