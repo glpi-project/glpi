@@ -35,8 +35,8 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\DBAL\JsonFieldInterface;
 use CommonDBTM;
+use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
 final class QuestionTypeActorsExtraDataConfig implements JsonFieldInterface
