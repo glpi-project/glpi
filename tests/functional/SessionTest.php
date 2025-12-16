@@ -251,6 +251,40 @@ class SessionTest extends DbTestCase
         unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo');
     }
 
+    public function testTranslationOverrideCacheInvalidation()
+    {
+        if (!file_exists(GLPI_LOCAL_I18N_DIR . '/core')) {
+            mkdir(GLPI_LOCAL_I18N_DIR . '/core');
+        }
+
+        \Session::loadLanguage('en_GB');
+        $this->assertEquals('Login', __('Login'));
+
+        $php_override = GLPI_LOCAL_I18N_DIR . '/core/en_GB.php';
+        file_put_contents(
+            $php_override,
+            "<?php\n\$lang['Login'] = 'First override';\nreturn \$lang;"
+        );
+
+        \Session::loadLanguage('en_GB');
+        $this->assertEquals('First override', __('Login'));
+
+        sleep(1);
+
+        file_put_contents(
+            $php_override,
+            "<?php\n\$lang['Login'] = 'Second override';\nreturn \$lang;"
+        );
+
+        \Session::loadLanguage('en_GB');
+        $this->assertEquals('Second override', __('Login'));
+
+        @unlink($php_override);
+
+        \Session::loadLanguage('en_GB');
+        $this->assertEquals('Login', __('Login'));
+    }
+
     public static function mustChangePasswordProvider()
     {
         $tests = [];
