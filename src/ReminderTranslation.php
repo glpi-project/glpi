@@ -43,7 +43,7 @@ use Glpi\RichText\RichText;
  **/
 class ReminderTranslation extends CommonDBChild
 {
-    public static $itemtype = 'Reminder';
+    public static $itemtype = Reminder::class;
     public static $items_id = 'reminders_id';
     public $dohistory       = true;
     public static $logs_for_parent = false;

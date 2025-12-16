@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Ticket_Contract extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Ticket';
+    public static $itemtype_1 = Ticket::class;
     public static $items_id_1 = 'tickets_id';
 
-    public static $itemtype_2 = 'Contract';
+    public static $itemtype_2 = Contract::class;
     public static $items_id_2 = 'contracts_id';
     public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
     public static $check_entity_coherency = false;

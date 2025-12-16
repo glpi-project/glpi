@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Certificate_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1    = "Certificate";
+    public static $itemtype_1 = Certificate::class;
     public static $items_id_1    = 'certificates_id';
     public static $take_entity_1 = false;
 

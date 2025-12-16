@@ -38,9 +38,9 @@
 class KnowbaseItem_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'KnowbaseItem';
+    public static $itemtype_1 = KnowbaseItem::class;
     public static $items_id_1          = 'knowbaseitems_id';
-    public static $itemtype_2          = 'User';
+    public static $itemtype_2 = User::class;
     public static $items_id_2          = 'users_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;

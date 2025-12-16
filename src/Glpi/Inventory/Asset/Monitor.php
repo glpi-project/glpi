@@ -158,7 +158,7 @@ class Monitor extends InventoryAsset
 
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = 'Monitor';
+                $itemtype = Monitor::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add monitor
                     $val->entities_id = $entities_id;

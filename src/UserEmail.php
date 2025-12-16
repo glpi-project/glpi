@@ -42,7 +42,7 @@ class UserEmail extends CommonDBChild
     public $auto_message_on_action = false;
 
     // From CommonDBChild
-    public static $itemtype        = 'User';
+    public static $itemtype = User::class;
     public static $items_id        = 'users_id';
     public $dohistory              = true;
 

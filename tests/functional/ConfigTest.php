@@ -841,7 +841,7 @@ class ConfigTest extends DbTestCase
 
     public function testConfigLogNotEmpty()
     {
-        $itemtype = 'Config';
+        $itemtype = Config::class;
         $config_id = Config::getConfigIDForContext('core');
         $this->assertGreaterThan(0, $config_id);
         $total_number = countElementsInTable("glpi_logs", ['items_id' => $config_id, 'itemtype' => $itemtype]);

@@ -38,9 +38,9 @@
 class Profile_Reminder extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'Reminder';
+    public static $itemtype_1 = Reminder::class;
     public static $items_id_1          = 'reminders_id';
-    public static $itemtype_2          = 'Profile';
+    public static $itemtype_2 = Profile::class;
     public static $items_id_2          = 'profiles_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;

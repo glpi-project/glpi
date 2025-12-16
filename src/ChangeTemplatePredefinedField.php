@@ -43,7 +43,7 @@
 class ChangeTemplatePredefinedField extends ITILTemplatePredefinedField
 {
     // From CommonDBChild
-    public static $itemtype = 'ChangeTemplate';
+    public static $itemtype = ChangeTemplate::class;
     public static $items_id = 'changetemplates_id';
     public static $itiltype = 'Change';
 }

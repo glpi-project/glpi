@@ -45,7 +45,7 @@ use Glpi\Plugin\Hooks;
 class SavedSearch_Alert extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'SavedSearch';
+    public static $itemtype = SavedSearch::class;
     public static $items_id = 'savedsearches_id';
     public $dohistory       = true;
     protected $displaylist  = false;

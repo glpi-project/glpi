@@ -37,7 +37,7 @@ use Glpi\DBAL\QueryExpression;
 
 class Appliance_Item_Relation extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Appliance_Item';
+    public static $itemtype_1 = Appliance_Item::class;
     public static $items_id_1 = 'appliances_items_id';
     //static public $take_entity_1 = false;
 

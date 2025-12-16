@@ -159,7 +159,7 @@ class Peripheral extends InventoryAsset
 
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = 'Peripheral';
+                $itemtype = Peripheral::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $handled_input = $this->handleInput($val, $peripheral) + ['entities_id' => $this->entities_id];

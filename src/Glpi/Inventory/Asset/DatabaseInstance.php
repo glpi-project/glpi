@@ -128,7 +128,7 @@ class DatabaseInstance extends InventoryAsset
                 $databases = $val->databases ?? [];
 
                 $items_id = null;
-                $itemtype = 'DatabaseInstance';
+                $itemtype = DatabaseInstance::class;
                 if ($data['found_inventories'][0] == 0) {
                     $input = $this->handleInput($val, $instance);
                     // add instance

@@ -52,7 +52,7 @@ class ProjectTeam extends CommonDBRelation
     public $no_form_page               = true;
 
     // From CommonDBRelation
-    public static $itemtype_1          = 'Project';
+    public static $itemtype_1 = Project::class;
     public static $items_id_1          = 'projects_id';
 
     public static $itemtype_2          = 'itemtype';

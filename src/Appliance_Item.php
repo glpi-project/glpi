@@ -41,7 +41,7 @@ class Appliance_Item extends CommonDBRelation
     /** @use Clonable<static> */
     use Clonable;
 
-    public static $itemtype_1 = 'Appliance';
+    public static $itemtype_1 = Appliance::class;
     public static $items_id_1 = 'appliances_id';
     public static $take_entity_1 = false;
 

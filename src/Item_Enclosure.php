@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Enclosure extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Enclosure';
+    public static $itemtype_1 = Enclosure::class;
     public static $items_id_1 = 'enclosures_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';

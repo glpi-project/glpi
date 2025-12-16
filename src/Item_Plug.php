@@ -39,7 +39,7 @@ class Item_Plug extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = 'Plug';
+    public static $itemtype_2 = Plug::class;
     public static $items_id_2 = 'plugs_id';
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
     public static $mustBeAttached_1      = false;

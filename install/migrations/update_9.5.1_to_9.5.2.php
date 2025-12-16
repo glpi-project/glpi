@@ -191,13 +191,13 @@ function update951to952()
             $itemtype = null;
             switch ($row['relationtype']) {
                 case 1:
-                    $itemtype = 'Location';
+                    $itemtype = Location::class;
                     break;
                 case 2:
-                    $itemtype = 'Network';
+                    $itemtype = Network::class;
                     break;
                 case 3:
-                    $itemtype = 'Domain';
+                    $itemtype = Domain::class;
                     break;
             }
 

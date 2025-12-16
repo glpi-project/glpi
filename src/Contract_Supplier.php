@@ -41,10 +41,10 @@ use function Safe\preg_match;
 class Contract_Supplier extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'Contract';
+    public static $itemtype_1 = Contract::class;
     public static $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = 'Supplier';
+    public static $itemtype_2 = Supplier::class;
     public static $items_id_2 = 'suppliers_id';
 
     public function getForbiddenStandardMassiveAction()

@@ -38,7 +38,7 @@
  **/
 class Item_DeviceMotherboard extends Item_Devices
 {
-    public static $itemtype_2 = 'DeviceMotherboard';
+    public static $itemtype_2 = DeviceMotherboard::class;
     public static $items_id_2 = 'devicemotherboards_id';
 
     protected static $notable = false;

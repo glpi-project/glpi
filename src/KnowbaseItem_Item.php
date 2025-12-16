@@ -45,7 +45,7 @@ use Glpi\Application\View\TemplateRenderer;
 class KnowbaseItem_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'KnowbaseItem';
+    public static $itemtype_1 = KnowbaseItem::class;
     public static $items_id_1          = 'knowbaseitems_id';
     public static $itemtype_2          = 'itemtype';
     public static $items_id_2          = 'items_id';

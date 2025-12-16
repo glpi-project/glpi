@@ -38,7 +38,7 @@
 class ProjectCost extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'Project';
+    public static $itemtype = Project::class;
     public static $items_id = 'projects_id';
     public $dohistory       = true;
 
