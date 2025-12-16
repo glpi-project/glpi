@@ -65,6 +65,13 @@ final class ChangeEntityController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
+        // If the profile change was made with an AJAX request, this mean this
+        // was some background script and we do not need to redirect it to
+        // another page.
+        if ($request->headers->contains('X-Requested-With', 'XMLHttpRequest')) {
+            return new Response();
+        }
+
         // Redirect to previous page
         $redirect = Html::getBackUrl();
         return new RedirectResponse($redirect);

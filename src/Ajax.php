@@ -347,6 +347,7 @@ class Ajax
                 $tab_content_url = $val['url'] . (isset($val['params']) ? '?' . $val['params'] : '');
                 $selected = $active_id == $target ? 'selected' : '';
                 $title = $val['title'];
+                $title_clean = strip_tags($title);
 
                 // Compute direct link that user can reach in a new tab using
                 // middle mouse click.
@@ -370,6 +371,7 @@ class Ajax
                                 data-glpi-ajax-content='" . htmlescape($tab_content_url) . "'
                                 href='" . htmlescape($direct_link_url) . "'
                                 data-bs-target='#" . htmlescape($target) . "'
+                                aria-label='{$title_clean}'
                             >{$title}</a>
                         </li>
                     ";

@@ -260,7 +260,8 @@ $empty_data_builder = new class {
             'use_slave_for_search' => '0',
             'proxy_passwd' => '',
             'smtp_passwd' => '',
-            'show_count_on_tabs' => '1',
+            // Avoid counters for e2e tests to improve performances.
+            'show_count_on_tabs' => $add_playwright_data ? '0' : '1',
             'refresh_views' => '0',
             'set_default_tech' => '1',
             'set_followup_tech' => '0',
