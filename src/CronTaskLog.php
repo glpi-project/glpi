@@ -40,7 +40,7 @@ use Glpi\DBAL\QueryExpression;
  **/
 class CronTaskLog extends CommonDBChild
 {
-    public static $itemtype  = 'CronTask';
+    public static $itemtype = CronTask::class;
     public static $items_id  = 'crontasks_id';
 
     // Class constant

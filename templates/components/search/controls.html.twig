@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% if showmassiveactions and count > 0 %}
     <div class="massiveactions-control card-header search-header ps-3 animate__animated animate__faster d-none">
         {% do call('Html::showMassiveActions', [massiveactionparams]) %}
@@ -111,7 +113,7 @@
             {% endif %}
 
             {% if mainform and showaction %}
-                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                {{ fields.csrfField() }}
                 </form>
             {% endif %}
 

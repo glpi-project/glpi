@@ -77,10 +77,17 @@ class Plugins
 
     public function __construct()
     {
-        // init guzzle client with base options
-        $this->httpClient = Toolbox::getGuzzleClient([
+        global $CFG_GLPI;
+
+        $eopts = [
             'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
-        ]);
+        ];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+
+        // init guzzle client with base options
+        $this->httpClient = Toolbox::getGuzzleClient($eopts);
     }
 
 
@@ -182,7 +189,7 @@ class Plugins
 
 
     /**
-     * Return the full list of avaibles plugins on services API
+     * Return the full list of available plugins on services API
      *
      * @param bool   $force_refresh if false, we will return results stored in local cache
      * @param string $tag_filter filter the plugin list by given tag
@@ -291,7 +298,7 @@ class Plugins
      * @param string $tag_filter filter the plugin list by given tag
      * @param string $string_filter filter the plugin list by given string
      * @param int    $page which page to query
-     * @param int    $nb_per_page how manyu per page we want
+     * @param int    $nb_per_page how many per page we want
      * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
      * @param int    $total Total count of plugin found with given filters
      *
@@ -392,7 +399,7 @@ class Plugins
 
 
     /**
-     * get a plugins collection for the givent tag
+     * get a plugins collection for the given tag
      *
      * @param string $tag to filter plugins
      * @param bool $force_refresh if false, we will return results stored in local cache
@@ -424,7 +431,7 @@ class Plugins
      * Download plugin archive and follow progress with a session var `marketplace_dl_progress`
      *
      * @param string $url where is the plugin
-     * @param string $dest  where we store it it
+     * @param string $dest  where we store it
      * @param string $plugin_key plugin system name
      *
      * @return bool

@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryFunction;
 class Domain_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = "Domain";
+    public static $itemtype_1 = Domain::class;
     public static $items_id_1 = 'domains_id';
 
     public static $itemtype_2 = 'itemtype';

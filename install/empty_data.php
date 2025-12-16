@@ -198,6 +198,7 @@ $empty_data_builder = new class {
             'proxy_name' => '',
             'proxy_port' => '8080',
             'proxy_user' => '',
+            'proxy_exclusions' => '',
             'add_followup_on_update_ticket' => '1',
             'keep_tickets_on_delete' => '0',
             'time_step' => '5',
@@ -382,7 +383,7 @@ $empty_data_builder = new class {
             'plugins_execution_mode' => Plugin::EXECUTION_MODE_ON,
             'glpinetwork_registration_key' => null,
             'impact_assets_list' => '[]',
-            'timezone' => null,
+            'timezone' => '0',
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
         ];
@@ -551,7 +552,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 15,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'name' => 'closeticket',
                 'frequency' => 12 * HOUR_TIMESTAMP,
                 'param' => null,
@@ -563,7 +564,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 16,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'name' => 'alertnotclosed',
                 'frequency' => 12 * HOUR_TIMESTAMP,
                 'param' => null,
@@ -587,7 +588,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 18,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'name' => 'createinquest',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -779,7 +780,7 @@ $empty_data_builder = new class {
                 'hourmax' => 6,
             ], [
                 'id' => 34,
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'name' => 'purgeticket',
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
@@ -1600,11 +1601,11 @@ $empty_data_builder = new class {
                 'num' => '11',
                 'rank' => '1',
             ], [
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'num' => '12',
                 'rank' => '1',
             ], [
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
                 'num' => '19',
                 'rank' => '2',
             ], [

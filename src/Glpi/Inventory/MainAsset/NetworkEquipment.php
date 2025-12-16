@@ -271,7 +271,7 @@ class NetworkEquipment extends MainAsset
 
         // Get networkname
         $netname = new NetworkName();
-        if ($netname->getFromDBByCrit(['itemtype' => 'NetworkPort', 'items_id' => $netports_id])) {
+        if ($netname->getFromDBByCrit(['itemtype' => NetworkPort::class, 'items_id' => $netports_id])) {
             if ($netname->fields['name'] != $port->name) {
                 $netname->update([
                     'id'     => $netname->getID(),
@@ -280,7 +280,7 @@ class NetworkEquipment extends MainAsset
             }
         } else {
             $netname->add([
-                'itemtype'  => 'NetworkPort',
+                'itemtype'  => NetworkPort::class,
                 'items_id'  => $netports_id,
                 'name'      => $port->name,
             ]);

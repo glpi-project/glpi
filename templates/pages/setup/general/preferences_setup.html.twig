@@ -378,10 +378,10 @@
 
    {% if get_current_interface() == 'central' and config('lock_use_lock_item') %}
       {{ fields.smallTitle(__('Item locks'), 'ti ti-lock') }}
-      {{ fields.dropdownYesNo('lock_autolock_mode', config('lock_autolock_mode'), __('Auto-lock Mode'), field_options) }}
+      {{ fields.dropdownYesNo('lock_autolock_mode', config['lock_autolock_mode'], __('Auto-lock Mode'), field_options) }}
       {{ fields.dropdownYesNo(
          'lock_directunlock_notification',
-         config('lock_directunlock_notification'),
+         config['lock_directunlock_notification'],
          __('Direct Notification (requester for unlock will be the notification sender)'),
          field_options
       ) }}

@@ -340,7 +340,7 @@ final class LinkedITILObjectsField extends AbstractConfigField implements Destin
                 $specific_destination_ids = [];
                 $specific_question_ids = [];
                 $specific_itilobject = [];
-                if (in_array($linked_itilobject['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                if (in_array($linked_itilobject['itemtype'], [Ticket::class, Change::class, Problem::class])) {
                     $strategy = LinkedITILObjectsFieldStrategy::SPECIFIC_VALUES;
                     $specific_itilobject = [
                         'itemtype' => $linked_itilobject['itemtype'],

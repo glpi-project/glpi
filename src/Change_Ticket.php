@@ -43,10 +43,10 @@ use Glpi\Application\View\TemplateRenderer;
 class Change_Ticket extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1   = 'Change';
+    public static $itemtype_1 = Change::class;
     public static $items_id_1   = 'changes_id';
 
-    public static $itemtype_2   = 'Ticket';
+    public static $itemtype_2 = Ticket::class;
     public static $items_id_2   = 'tickets_id';
 
 

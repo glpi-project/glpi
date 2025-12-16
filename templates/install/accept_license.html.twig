@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <div class="container text-center license-container">
     <textarea id="license" style="height:250px" readonly="readonly" class="form-control">{{ copying }}</textarea>
 
@@ -48,6 +50,6 @@
             <i class="ti ti-chevron-right ms-1"></i>
         </button>
 
-        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+        {{ fields.csrfField() }}
     </form>
 </div>

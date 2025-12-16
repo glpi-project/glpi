@@ -278,7 +278,8 @@ class RuleAction extends CommonDBChild
                     $rule = getItemForItemtype($generic_rule->fields["sub_type"]);
                     if ($rule instanceof Rule) {
                         /// TODO review it : need to pass display param and others...
-                        return (new static())->displayActionSelectPattern($values);
+                        (new static())->displayActionSelectPattern($values);
+                        return '';
                     }
                 }
                 break;
@@ -483,7 +484,7 @@ class RuleAction extends CommonDBChild
     /**
      * @param array $options
      *
-     * FIXME: should return a string, since method result is used... Or remove usage.
+     * @return void
      */
     public function displayActionSelectPattern($options = [])
     {

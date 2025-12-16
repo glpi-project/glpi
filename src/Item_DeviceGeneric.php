@@ -35,7 +35,7 @@
 
 class Item_DeviceGeneric extends Item_Devices
 {
-    public static $itemtype_2 = 'DeviceGeneric';
+    public static $itemtype_2 = DeviceGeneric::class;
     public static $items_id_2 = 'devicegenerics_id';
 
     protected static $notable = false;

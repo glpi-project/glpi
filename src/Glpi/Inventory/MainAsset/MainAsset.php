@@ -82,7 +82,7 @@ abstract class MainAsset extends InventoryAsset
     ];
     /** @var mixed */
     protected $raw_data;
-    /* @var array */
+    /** @var stdClass */
     protected $hardware;
     /** @var ?int */
     protected $states_id_default;

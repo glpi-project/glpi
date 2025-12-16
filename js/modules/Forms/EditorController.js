@@ -129,6 +129,7 @@ export class GlpiFormEditorController
         this.#adjustContainerHeight();
         this.#initEventHandlers();
         this.#refreshUX();
+        this.#initRadioUncheck();
 
         // These computations are only needed if the form will be edited.
         if (!this.#is_readonly) {
@@ -156,6 +157,26 @@ export class GlpiFormEditorController
         // This is fixed by re-checking them after the state has been computed.
         // Not sure if there is a better solution for this, it doesn't feel great.
         this.#refreshCheckedInputs();
+    }
+
+    #initRadioUncheck() {
+        $(this.#target).on('mousedown', '[data-glpi-form-radio-uncheckable]', function() {
+            const $this = $(this);
+            if ($this.is(':checked')) {
+                $this.data('was-checked', true);
+            } else {
+                $this.data('was-checked', false);
+            }
+        });
+
+        $(this.#target).on('click', '[data-glpi-form-radio-uncheckable]', function() {
+            const $this = $(this);
+            if ($this.data('was-checked')) {
+                $this.prop('checked', false);
+                $this.data('was-checked', false);
+                $this.trigger('change');
+            }
+        });
     }
 
     /**

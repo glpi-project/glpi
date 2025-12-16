@@ -52,7 +52,7 @@ final class ServiceCatalogManager
     /** @var int */
     public const ITEMS_PER_PAGE = 12;
 
-    /** @var ItemProviderInterface[] */
+    /** @var ItemProviderInterface<covariant ServiceCatalogItemInterface>[] */
     private array $providers;
 
     public function __construct()
@@ -64,6 +64,10 @@ final class ServiceCatalogManager
         ];
     }
 
+    /**
+     * @param ItemProviderInterface<covariant ServiceCatalogItemInterface> $provider
+     * @return void
+     */
     public function registerPluginProvider(
         ItemProviderInterface $provider
     ): void {

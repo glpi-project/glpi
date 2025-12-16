@@ -133,7 +133,7 @@ if (isset($_POST["add"]) || isset($_POST["execute_single"]) || isset($_POST["exe
     }
     Html::back();
 } else {
-    $itemtype = "Computer";
+    $itemtype = Computer::class;
     if ($_GET['id'] != '') {
         $socket->getFromDB($_GET['id']);
     }

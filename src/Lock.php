@@ -258,7 +258,7 @@ TWIG;
                     // ex: Item_Software have
                     // $itemtype_1 = 'itemtype';
                     // $items_id_1 = 'items_id';
-                    // $itemtype_2 = 'SoftwareVersion';
+                    // $itemtype_2 = SoftwareVersion::class;
                     // $items_id_2 = 'softwareversions_id';
                     if (str_starts_with($row['itemtype']::$itemtype_1, 'itemtype')) {
                         $default_itemtype =  $row['itemtype']::$itemtype_2;
@@ -266,7 +266,7 @@ TWIG;
                         $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
                     } else {
                         // ex: Item_OperatingSystem have
-                        // $itemtype_1 = 'OperatingSystem';
+                        // $itemtype_1 = OperatingSystem::class;
                         // $items_id_1 = 'operatingsystems_id';
                         // $itemtype_2 = 'itemtype';
                         // $items_id_2 = 'items_id';

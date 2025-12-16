@@ -252,6 +252,10 @@ class CalendarTest extends DbTestCase
             '2019-05-02'   => false,
             '2019-07-01'   => false,
             '2019-07-12'   => true,
+            ''             => false,
+            '2020-07-05'   => false,
+            '2020-08-15'   => false,
+            '2020-09-15'   => false,
         ];
 
         //no holiday by default
@@ -296,9 +300,27 @@ class CalendarTest extends DbTestCase
             ])
         );
 
+        $holiday->add([
+            'name'   => 'No beginning',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'begin_date'   => '',
+            'end_date'     => '2020-09-01',
+            'is_perpetual' => 0,
+        ]);
+        $holiday->add([
+            'name'   => 'No end',
+            'entities_id'  => 0,
+            'is_recursive' => 1,
+            'begin_date'   => '2020-07-08',
+            'end_date'     => '',
+            'is_perpetual' => 0,
+        ]);
+
         foreach ($dates as $date => $expected) {
-            $this->assertSame($expected, $calendar->isHoliday($date));
+            $this->assertSame($expected, $calendar->isHoliday($date), "$date was expected to be " . ($expected ? "a holiday" : "not a holiday"));
         }
+        $this->assertFalse($calendar->isHoliday(null));
     }
 
     public function testClone()

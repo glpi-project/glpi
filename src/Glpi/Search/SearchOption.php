@@ -42,12 +42,14 @@ use Change;
 use CommonDBTM;
 use CommonITILObject;
 use CommonTreeDropdown;
+use Computer;
 use Contract;
 use Document;
 use Domain;
 use Entity;
 use Glpi\Socket;
 use Group;
+use Group_Item;
 use Infocom;
 use Link;
 use Location;
@@ -270,9 +272,20 @@ final class SearchOption implements ArrayAccess
 
                 $search[$itemtype][49]['table']          = 'glpi_groups';
                 $search[$itemtype][49]['field']          = 'completename';
-                $search[$itemtype][49]['linkfield']      = 'groups_id_tech';
+                $search[$itemtype][49]['linkfield']      = 'groups_id';
                 $search[$itemtype][49]['name']           = __('Group in charge');
                 $search[$itemtype][49]['condition']      = ['is_assign' => 1];
+                $search[$itemtype][49]['joinparams']     = [
+                    'beforejoin'         => [
+                        'table'              => 'glpi_groups_items',
+                        'joinparams'         => [
+                            'jointype'           => 'itemtype_item',
+                            'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                        ],
+                    ],
+                ];
+                $search[$itemtype][49]['forcegroupby']   = true;
+                $search[$itemtype][49]['massiveaction']  = false;
                 $search[$itemtype][49]['datatype']       = 'dropdown';
 
                 $search[$itemtype][80]['table']         = 'glpi_entities';
@@ -652,7 +665,7 @@ final class SearchOption implements ArrayAccess
         $todel   = [];
 
         if (
-            !Session::haveRight('infocom', $action)
+            !Session::haveRight(Infocom::$rightname, $action)
             && Infocom::canApplyOn($itemtype)
         ) {
             $itemstodel = Infocom::getSearchOptionsToAdd($itemtype);
@@ -660,7 +673,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if (
-            !Session::haveRight('contract', $action)
+            !Session::haveRight(Contract::$rightname, $action)
             && in_array($itemtype, $CFG_GLPI["contract_types"])
         ) {
             $itemstodel = Contract::getSearchOptionsToAdd();
@@ -668,7 +681,7 @@ final class SearchOption implements ArrayAccess
         }
 
         if (
-            !Session::haveRight('document', $action)
+            !Session::haveRight(Document::$rightname, $action)
             && Document::canApplyOn($itemtype)
         ) {
             $itemstodel = Document::getSearchOptionsToAdd();
@@ -677,14 +690,14 @@ final class SearchOption implements ArrayAccess
 
         // do not show priority if you don't have right in profile
         if (
-            ($itemtype == 'Ticket')
+            ($itemtype == Ticket::class)
             && ($action == UPDATE)
-            && !Session::haveRight('ticket', Ticket::CHANGEPRIORITY)
+            && !Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY)
         ) {
             $todel[] = 3;
         }
 
-        if ($itemtype == 'Computer') {
+        if ($itemtype == Computer::class) {
             if (!Session::haveRight('networking', $action)) {
                 $itemstodel = NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));

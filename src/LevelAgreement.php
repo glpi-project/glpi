@@ -49,7 +49,7 @@ abstract class LevelAgreement extends CommonDBChild
     public static $rightname       = 'slm';
 
     // From CommonDBChild
-    public static $itemtype = 'SLM';
+    public static $itemtype = SLM::class;
     public static $items_id = 'slms_id';
 
     /** @var string  */

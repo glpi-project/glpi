@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Config\ProxyExclusions;
 use Glpi\Marketplace\Controller;
 use Glpi\Socket;
 use Glpi\SocketModel;
@@ -434,7 +435,7 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'default_dashboard_helpdesk', 'default_dashboard_mini_ticket', 'default_central_tab',
     'fold_menu', 'savedsearches_pinned', 'richtext_layout', 'timeline_order',
     'itil_layout', 'toast_location', 'timeline_action_btn_layout', 'timeline_date_format', 'is_notif_enable_default',
-    'show_search_form', 'search_pagination_on_top',
+    'show_search_form', 'search_pagination_on_top', 'timezone',
 ];
 
 $CFG_GLPI['lock_lockable_objects'] = [Budget::class,  Change::class, Contact::class, Contract::class, Document::class,
@@ -648,3 +649,6 @@ $CFG_GLPI['admin_types'] = [
 
 $CFG_GLPI['process_types'] = [Computer::class];
 $CFG_GLPI['environment_types'] = [Computer::class];
+
+
+$CFG_GLPI['possible_proxy_exclusions'] = new ProxyExclusions();

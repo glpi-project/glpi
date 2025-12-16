@@ -61,7 +61,7 @@ final class RecordSet
         return $this->search->getContext()->getJoinNameForProperty($fkey);
     }
 
-    private function getPropertiesToHydrate(string $fkey)
+    private function getPropertiesToHydrate(string $fkey): array
     {
         if ($fkey === 'id') {
             // Main item
@@ -94,10 +94,10 @@ final class RecordSet
 
     /**
      * Returns the row with only the parts that were already hydrated by the initial {@link Search::getMatchingRecords()} call.
-     * @param $row
+     * @param array $row
      * @return array
      */
-    private function getHydratedPartsOfMainRecord($row)
+    private function getHydratedPartsOfMainRecord(array $row): array
     {
         $hydrated_row = [];
         $context = $this->search->getContext();

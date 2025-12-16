@@ -41,7 +41,7 @@
 class Item_Problem extends CommonItilObject_Item
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'Problem';
+    public static $itemtype_1 = Problem::class;
     public static $items_id_1          = 'problems_id';
 
     public static $itemtype_2          = 'itemtype';

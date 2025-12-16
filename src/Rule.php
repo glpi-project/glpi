@@ -1063,7 +1063,7 @@ class Rule extends CommonDBTM
      **/
     public function maxActionsCount()
     {
-        return count(array_filter($this->getAllActions(), static fn($action_obj) => !isset($action_obj['duplicatewith'])));
+        return count(array_filter($this->getAllActions(), static fn($action_obj) => is_array($action_obj) && !isset($action_obj['duplicatewith'])));
     }
 
     /**
@@ -1401,10 +1401,25 @@ TWIG, $twig_params);
             }
         }
 
-        $items = [];
+        $items      = [];
+        $group      = [];
+        $groupname  = _n('Action', 'Actions', Session::getPluralNumber());
         foreach ($actions as $ID => $act) {
-            $items[$ID] = $act['name'];
+            // Manage group system
+            if (!is_array($act)) {
+                if (count($group)) {
+                    $items[$groupname] = $group;
+                }
+                $group     = [];
+                $groupname = $act;
+            } else {
+                $group[$ID] = $act['name'];
+            }
         }
+        if (count($group)) {
+            $items[$groupname] = $group;
+        }
+
         return Dropdown::showFromArray($p['name'], $items, $p);
     }
 
@@ -2875,7 +2890,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array
+     * @return array<int|string, array<mixed>|string> If the value is defined as a string, it will create a new section in the dropdown
      */
     public function getCriterias()
     {
@@ -2892,7 +2907,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array
+     * @return array<int|string, array<mixed>|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
      */
     public function getActions()
     {

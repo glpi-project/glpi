@@ -177,6 +177,9 @@ class QueuedWebhook extends CommonDBChild
         $guzzle_options = [
             'timeout' => 5,
         ];
+        if (in_array(Webhook::class, $CFG_GLPI['proxy_exclusions'])) {
+            $options['proxy_excluded'] = true;
+        }
 
         $webhook = new Webhook();
         if (!$webhook->getFromDB($queued_webhook->fields['webhooks_id'])) {

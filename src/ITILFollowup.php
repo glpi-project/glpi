@@ -478,7 +478,7 @@ class ITILFollowup extends CommonDBChild
 
         $itemtype = $input['itemtype'];
 
-        if ($itemtype == 'Ticket' && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
+        if ($itemtype == Ticket::class && $_SESSION['glpiset_followup_tech'] && !$input['is_private']) {
             Ticket::assignToMe($this->input["items_id"], $input["users_id"]);
         }
 
@@ -882,7 +882,7 @@ class ITILFollowup extends CommonDBChild
         }
         switch ($field) {
             case 'itemtype':
-                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                if (in_array($values['itemtype'], [Ticket::class, Change::class, Problem::class])) {
                     return htmlescape($values['itemtype']::getTypeName(1));
                 }
                 return htmlescape($values['itemtype']);
@@ -901,9 +901,9 @@ class ITILFollowup extends CommonDBChild
         switch ($field) {
             case 'itemtype':
                 return Dropdown::showFromArray($field, [
-                    'Ticket' => Ticket::getTypeName(1),
-                    'Change' => Change::getTypeName(1),
-                    'Problem' => Problem::getTypeName(1),
+                    Ticket::class => Ticket::getTypeName(1),
+                    Change::class => Change::getTypeName(1),
+                    Problem::class => Problem::getTypeName(1),
                 ], $options);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -1074,7 +1074,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         // We need to do some specific checks for tickets
-        if ($itemtype == "Ticket") {
+        if ($itemtype == Ticket::class) {
             // Default condition
             $condition = "(`itemtype` = '$itemtype' AND (0 = 1 ";
             return $condition . Ticket::buildCanViewCondition("items_id") . ")) ";

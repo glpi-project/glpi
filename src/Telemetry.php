@@ -91,15 +91,15 @@ class Telemetry extends CommonGLPI
             'default_language'   => $CFG_GLPI['language'],
             'install_mode'       => GLPI_INSTALL_MODE,
             'usage'              => [
-                'avg_entities'          => self::getAverage('Entity'),
-                'avg_computers'         => self::getAverage('Computer'),
-                'avg_networkequipments' => self::getAverage('NetworkEquipment'),
-                'avg_tickets'           => self::getAverage('Ticket'),
-                'avg_problems'          => self::getAverage('Problem'),
-                'avg_changes'           => self::getAverage('Change'),
-                'avg_projects'          => self::getAverage('Project'),
-                'avg_users'             => self::getAverage('User'),
-                'avg_groups'            => self::getAverage('Group'),
+                'avg_entities'          => self::getAverage(Entity::class),
+                'avg_computers'         => self::getAverage(Computer::class),
+                'avg_networkequipments' => self::getAverage(NetworkEquipment::class),
+                'avg_tickets'           => self::getAverage(Ticket::class),
+                'avg_problems'          => self::getAverage(Problem::class),
+                'avg_changes'           => self::getAverage(Change::class),
+                'avg_projects'          => self::getAverage(Project::class),
+                'avg_users'             => self::getAverage(User::class),
+                'avg_groups'            => self::getAverage(Group::class),
                 'ldap_enabled'          => AuthLDAP::useAuthLdap(),
                 'mailcollector_enabled' => (MailCollector::countActiveCollectors() > 0),
                 'notifications_modes'   => [],
@@ -304,6 +304,8 @@ class Telemetry extends CommonGLPI
      */
     public static function cronTelemetry($task): ?int
     {
+        global $CFG_GLPI;
+
         $data = self::getTelemetryInfos();
         $infos = json_encode(['data' => $data]);
 
@@ -312,6 +314,9 @@ class Telemetry extends CommonGLPI
             CURLOPT_POSTFIELDS      => $infos,
             CURLOPT_HTTPHEADER      => ['Content-Type:application/json'],
         ];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $opts['proxy_excluded'] = true;
+        }
 
         $errstr = null;
         $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));

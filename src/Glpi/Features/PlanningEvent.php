@@ -66,6 +66,9 @@ use function Safe\strtotime;
 
 trait PlanningEvent
 {
+    /**
+     * @return void
+     */
     public function post_getEmpty()
     {
         if ($this->isField("users_id")) {
@@ -118,6 +121,10 @@ trait PlanningEvent
     }
 
 
+    /**
+     * @param array $input
+     * @return array
+     */
     public function prepareInputForAdd($input)
     {
         global $DB;
@@ -182,6 +189,10 @@ trait PlanningEvent
     }
 
 
+    /**
+     * @param array $input
+     * @return array
+     */
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareGuestsInput($input);
@@ -254,6 +265,10 @@ trait PlanningEvent
         return $input;
     }
 
+    /**
+     * @param array $rrule
+     * @return array|string
+     */
     public function encodeRrule(array $rrule = [])
     {
 
@@ -330,7 +345,11 @@ trait PlanningEvent
      * Delete a specific instance of a serie
      * Add an exception into the serie
      *
+     * @param int $id
+     * @param string $day
+     *
      * @see addInstanceException
+     * @return void
      */
     public function deleteInstance(int $id = 0, string $day = "")
     {
@@ -396,7 +415,7 @@ trait PlanningEvent
     /**
      * Populate the planning with planned event
      *
-     * @param $options   array of possible options:
+     * @param array $options array of possible options:
      *    - who          ID of the user (0 = undefined)
      *    - whogroup     ID of the group of users (0 = undefined)
      *    - begin        Date
@@ -984,6 +1003,9 @@ trait PlanningEvent
     }
 
 
+    /**
+     * @return array[]
+     */
     public function rawSearchOptions()
     {
         $tab = [

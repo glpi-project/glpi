@@ -43,7 +43,7 @@
  */
 class OlaLevelAction extends RuleAction
 {
-    public static $itemtype  = 'OlaLevel';
+    public static $itemtype = OlaLevel::class;
     public static $items_id  = 'olalevels_id';
     public $dohistory = true;
 

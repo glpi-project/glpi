@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <h3>{{ __("Collect data") }}</h3>
 
 <hr>
@@ -50,5 +52,5 @@
    </button>
 
    <input type="hidden" name="install" value="Etape_5">
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 </form>

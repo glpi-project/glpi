@@ -115,6 +115,7 @@ trait FormTesterTrait
                     'vertical_rank'     => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
+                    'extra_data', // Might be changed by some prepare methods
                 ]);
             }
 

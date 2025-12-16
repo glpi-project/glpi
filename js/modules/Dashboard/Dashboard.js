@@ -761,7 +761,7 @@ class GLPIDashboard {
                 card_id: options.card_id,
                 x: $(v).attr('gs-x') ?? 0,
                 y: $(v).attr('gs-y') ?? 0,
-                width: $(v).attr('gs-w'),
+                width: $(v).attr('gs-w') ?? 1,
                 height: $(v).attr('gs-h') ?? 1,
                 card_options: options
             } : null;

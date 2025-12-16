@@ -76,6 +76,8 @@ final class OauthConfig
      */
     public function getSmtpOauthProvider(): (ProviderInterface&AbstractProvider)|null
     {
+        global $CFG_GLPI;
+
         $config = Config::getConfigurationValues(
             'core',
             [
@@ -110,7 +112,7 @@ final class OauthConfig
             //no error
         }
 
-        if ($config['proxy_name'] !== '') {
+        if ($config['proxy_name'] !== '' && !in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
             // Connection using proxy
             $provider_options['proxy'] = $config['proxy_user'] !== ''
                 ? sprintf(

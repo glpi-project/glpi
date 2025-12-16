@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Cluster extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Cluster';
+    public static $itemtype_1 = Cluster::class;
     public static $items_id_1 = 'clusters_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';

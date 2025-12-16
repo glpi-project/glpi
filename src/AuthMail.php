@@ -274,7 +274,7 @@ class AuthMail extends CommonDBTM
                         }) }}
                         {{ fields.hiddenField('imap_string', connect_string) }}
                         <div>
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {{ fields.csrfField() }}
                             <button type="submit" name="test" class="btn btn-primary">{{ test }}</button>
                         </div>
                     </div>

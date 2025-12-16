@@ -46,7 +46,7 @@ class Database extends CommonDBChild
     public static $mustBeAttached  = false;
 
     // From CommonDBChild
-    public static $itemtype = 'DatabaseInstance';
+    public static $itemtype = DatabaseInstance::class;
     public static $items_id = 'databaseinstances_id';
 
     public static function getTypeName($nb = 0)

@@ -31,6 +31,7 @@
  #}
 
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% set show_legend = show_legend|default(false) %}
 {% set can_edit = has_profile_right('profile', constant('CREATE')) or has_profile_right('profile', constant('UPDATE')) or has_profile_right('profile', constant('PURGE')) %}
@@ -59,7 +60,7 @@
     {% if can_edit %}
         <form method="post" action="{{ 'Profile'|itemtype_form_path }}" data-track-changes="true">
             <input type="hidden" name="id" value="{{ item.getID() }}">
-            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+            {{ fields.csrfField() }}
     {% endif %}
             <div>
                 <div class="card-body p-0">

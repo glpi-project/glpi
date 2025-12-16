@@ -40,7 +40,7 @@ class KnowbaseTest extends DbTestCase
 {
     public function testGetTreeCategoryList()
     {
-        $itemtype = 'KnowbaseItem';
+        $itemtype = \KnowbaseItem::class;
 
         // Create empty categories
         $kbcat = new \KnowbaseItemCategory();

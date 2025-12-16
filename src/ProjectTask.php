@@ -65,7 +65,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public $dohistory = true;
 
     // From CommonDBChild
-    public static $itemtype     = 'Project';
+    public static $itemtype = Project::class;
     public static $items_id     = 'projects_id';
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
@@ -1278,10 +1278,10 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         $canedit = $item::class === Project::class && $item->canEdit($ID);
 
         switch ($item::class) {
-            case 'Project':
+            case Project::class:
                 $criteria['WHERE']['glpi_projecttasks.projects_id'] = $ID;
                 break;
-            case 'ProjectTask':
+            case ProjectTask::class:
                 $criteria['WHERE']['glpi_projecttasks.projecttasks_id'] = $ID;
                 break;
             default: // Not available type
@@ -1507,7 +1507,7 @@ TWIG, $twig_params);
                     foreach ($task->team[$type] as $data) {
                         $item->getFromDB($data['items_id']);
                         $entries[] = [
-                            'itemtype' => 'ProjectTaskTeam',
+                            'itemtype' => ProjectTaskTeam::class,
                             'id' => $data['id'],
                             'type' => $item::getTypeName(1),
                             'member' => $item->getLink(),
@@ -1580,7 +1580,7 @@ TWIG, $twig_params);
                     ],
                     'FROM' => ProjectTaskTeam::getTable(),
                     'WHERE' => [
-                        ['itemtype' => 'Group', 'items_id' => $groups_id],
+                        ['itemtype' => Group::class, 'items_id' => $groups_id],
                         'OR' => [
                             [ProjectState::getTable() . '.is_finished' => 0],
                             [ProjectState::getTable() . '.is_finished' => null],
@@ -1619,11 +1619,11 @@ TWIG, $twig_params);
         ]);
 
         $crit = [
-            ['itemtype' => 'User', 'items_id' => $users_id],
+            ['itemtype' => User::class, 'items_id' => $users_id],
         ];
 
         if ($search_in_groups) {
-            $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
+            $crit[] = ['itemtype' => Group::class, 'items_id' => $groups_sub_query];
         }
 
         $req = [

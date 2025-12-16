@@ -45,7 +45,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Item_Project extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'Project';
+    public static $itemtype_1 = Project::class;
     public static $items_id_1          = 'projects_id';
 
     public static $itemtype_2          = 'itemtype';

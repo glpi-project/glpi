@@ -41,7 +41,7 @@
 class ChangeCost extends CommonITILCost
 {
     // From CommonDBChild
-    public static $itemtype  = 'Change';
+    public static $itemtype = Change::class;
     public static $items_id  = 'changes_id';
 
 

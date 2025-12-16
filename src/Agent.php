@@ -694,6 +694,8 @@ class Agent extends CommonDBTM
      */
     public function requestAgent($endpoint): Response
     {
+        global $CFG_GLPI;
+
         if (self::$found_address !== false) {
             $addresses = [self::$found_address];
         } else {
@@ -706,6 +708,10 @@ class Agent extends CommonDBTM
             $options = [
                 'base_uri'        => $address,
             ];
+
+            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+                $options['proxy_excluded'] = true;
+            }
 
             // init guzzle client with base options
             $httpClient = Toolbox::getGuzzleClient($options);

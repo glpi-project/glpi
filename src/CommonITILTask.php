@@ -850,7 +850,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             Log::HISTORY_ADD_SUBITEM
         );
 
-        if ($this->input["_job"]->getType() == 'Ticket') {
+        if ($this->input["_job"] instanceof Ticket) {
             self::addToMergedTickets();
         }
 
@@ -1954,15 +1954,15 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             if ($DB->fieldExists($job->getTable(), 'tickets_id')) {
                 $item_link = new Ticket();
                 $item_link->getFromDB($job->fields['tickets_id']);
-                $tab_name = "Ticket";
+                $tab_name = Ticket::class;
             } elseif ($DB->fieldExists($job->getTable(), 'problems_id')) {
                 $item_link = new Problem();
                 $item_link->getFromDB($job->fields['problems_id']);
-                $tab_name = "ProblemTask";
+                $tab_name = ProblemTask::class;
             } elseif ($DB->fieldExists($job->getTable(), 'changes_id')) {
                 $item_link = new Change();
                 $item_link->getFromDB($job->fields['changes_id']);
-                $tab_name = "ChangeTask";
+                $tab_name = ChangeTask::class;
             } else {
                 throw new RuntimeException(sprintf('Unexpected `%s` itemtype.', $itemtype));
             }

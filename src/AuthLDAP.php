@@ -591,7 +591,7 @@ TWIG, ['authldaps_id' => $ID]);
             $entries = [];
             foreach ($iterator as $ldap_replicate) {
                 $entries[] = [
-                    'itemtype' => 'AuthLdapReplicate',
+                    'itemtype' => AuthLdapReplicate::class,
                     'id'       => $ldap_replicate["id"],
                     'name'     => $ldap_replicate["name"],
                     'replicate' => $ldap_replicate["host"] . ':' . $ldap_replicate["port"],

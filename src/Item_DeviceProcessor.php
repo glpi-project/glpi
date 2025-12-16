@@ -38,7 +38,7 @@
  **/
 class Item_DeviceProcessor extends Item_Devices
 {
-    public static $itemtype_2 = 'DeviceProcessor';
+    public static $itemtype_2 = DeviceProcessor::class;
     public static $items_id_2 = 'deviceprocessors_id';
 
     protected static $notable = false;

@@ -51,8 +51,13 @@ if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]
     Session::loadLanguage(with_plugins: false);
 }
 
-//Print a correct  Html header for application
-function header_html($etape)
+/**
+ * Print a correct  HTML header for application
+ *
+ * @param string $etape
+ * @return void
+ */
+function header_html(string $etape): void
 {
     // Send UTF8 Headers
     header("Content-Type: text/html; charset=UTF-8");
@@ -86,15 +91,19 @@ function header_html($etape)
 }
 
 
-//Display a great footer.
-function footer_html()
+/**
+ * Display a great footer.
+ */
+function footer_html(): void
 {
     echo "</div></div></body></html>";
 }
 
 
-// choose language
-function choose_language()
+/**
+ * Choose language
+ */
+function choose_language(): void
 {
     global $CFG_GLPI;
 
@@ -111,7 +120,7 @@ function choose_language()
 }
 
 
-function acceptLicense()
+function acceptLicense(): void
 {
     TemplateRenderer::getInstance()->display('install/accept_license.html.twig', [
         'copying' => file_get_contents(GLPI_ROOT . "/LICENSE"),
@@ -120,14 +129,14 @@ function acceptLicense()
 
 
 //confirm install form
-function step0()
+function step0(): void
 {
     TemplateRenderer::getInstance()->display('install/step0.html.twig');
 }
 
 
 //Step 1 checking some compatibility issue and some write tests.
-function step1($update)
+function step1(string $update): void
 {
     $config_files_to_update = [
         GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . 'config_db.php',
@@ -147,8 +156,10 @@ function step1($update)
 }
 
 
-//step 2 import mysql settings.
-function step2($update)
+/**
+ * Step 2 import mysql settings.
+ */
+function step2(string $update): void
 {
     TemplateRenderer::getInstance()->display('install/step2.html.twig', [
         'update' => $update,
@@ -156,8 +167,10 @@ function step2($update)
 }
 
 
-//step 3 test mysql settings and select database.
-function step3($host, $user, $password, $update)
+/**
+ * Step 3 test mysql settings and select database.
+ */
+function step3(string $host, string $user, string $password, string $update): void
 {
 
     mysqli_report(MYSQLI_REPORT_OFF);
@@ -182,7 +195,7 @@ function step3($host, $user, $password, $update)
         ];
 
         $db = new class ($link) extends DBmysql {
-            public function __construct($dbh)
+            public function __construct(mysqli $dbh)
             {
                 $this->dbh = $dbh;
             }
@@ -223,8 +236,10 @@ function step3($host, $user, $password, $update)
 }
 
 
-//Step 4 Create and fill database.
-function step4($databasename, $newdatabasename)
+/**
+ * Step 4 Create and fill database.
+ */
+function step4(string $databasename, string $newdatabasename): void
 {
     global $CFG_GLPI;
 
@@ -279,7 +294,7 @@ function step4($databasename, $newdatabasename)
     }
 
     $db = new class ($link) extends DBmysql {
-        public function __construct($dbh)
+        public function __construct(mysqli $dbh)
         {
             $this->dbh = $dbh;
         }
@@ -354,8 +369,10 @@ function step4($databasename, $newdatabasename)
     }
 }
 
-//send telemetry information
-function step6()
+/**
+ * send telemetry information
+ */
+function step6(): void
 {
     global $DB;
 
@@ -370,7 +387,7 @@ function step6()
     ]);
 }
 
-function step7()
+function step7(): void
 {
     TemplateRenderer::getInstance()->display('install/step7.html.twig', [
         'glpinetwork'     => GLPINetwork::showInstallMessage(),
@@ -378,8 +395,10 @@ function step7()
     ]);
 }
 
-// finish installation
-function step8()
+/**
+ * Finish installation
+ */
+function step8(): void
 {
     include_once(GLPI_CONFIG_DIR . "/config_db.php");
     /** @var DB&DBmysql $DB */
@@ -414,7 +433,7 @@ function step8()
 }
 
 
-function update1($dbname)
+function update1(string $dbname): void
 {
     $host     = $_SESSION['db_access']['host'];
     $user     = $_SESSION['db_access']['user'];
@@ -456,10 +475,7 @@ function update1($dbname)
     }
 }
 
-/**
- * @since 0.84.2
- **/
-function checkConfigFile()
+function checkConfigFile(): void
 {
     global $CFG_GLPI;
 

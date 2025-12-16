@@ -44,6 +44,7 @@ use Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 use Profile_User;
+use Supplier;
 use User;
 
 abstract class AbstractQuestionTypeActorsTest extends DbTestCase
@@ -212,5 +213,210 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
             json_encode(new QuestionTypeActorsDefaultValueConfig()),
             $question->fields['default_value'],
         );
+    }
+
+    public function testIsTypeEnabledWithNullQuestion(): void
+    {
+        $question_type = new (static::getQuestionType())();
+
+        $result = $question_type->isTypeEnabled(null, User::class);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsTypeEnabledWithEnabledType(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            "",
+            json_encode([
+                QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => true,
+                QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                    User::class => 1,
+                    Group::class => 1,
+                ],
+            ])
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+        $question_type = new (static::getQuestionType())();
+
+        $result = $question_type->isTypeEnabled($question, User::class);
+
+        $this->assertTrue($result);
+    }
+
+    public function testIsTypeEnabledWithDisabledType(): void
+    {
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            "Question",
+            static::getQuestionType(),
+            "",
+            json_encode([
+                QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => true,
+                QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                    User::class => 1,
+                    Group::class => 0,
+                ],
+            ])
+        );
+        $form = $this->createForm($builder);
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+        $question_type = new (static::getQuestionType())();
+
+        $result = $question_type->isTypeEnabled($question, Group::class);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateExtraDataInputWithValidMultipleActors(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => true,
+        ];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertTrue($result);
+    }
+
+    public function testValidateExtraDataInputWithValidEnabledTypes(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [User::class, Group::class],
+        ];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertTrue($result);
+    }
+
+    public function testValidateExtraDataInputWithValidBothFields(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => false,
+            QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [User::class],
+        ];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertTrue($result);
+    }
+
+    public function testValidateExtraDataInputWithInvalidMultipleActors(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => 'invalid',
+        ];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateExtraDataInputWithInvalidEnabledTypes(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => 'not_an_array',
+        ];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateExtraDataInputWithUnexpectedKeys(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => true,
+            'unexpected_key' => 'value',
+        ];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateExtraDataInputWithEmptyInput(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [];
+
+        $result = $question_type->validateExtraDataInput($input);
+
+        $this->assertTrue($result);
+    }
+
+    public function testPrepareExtraDataWithEnabledTypes(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                User::class => 1,
+                Group::class => 0,
+                Supplier::class => 1,
+            ],
+        ];
+
+        $result = $question_type->prepareExtraData($input);
+
+        $this->assertArrayHasKey(QuestionTypeActorsExtraDataConfig::ENABLED_TYPES, $result);
+        $this->assertCount(2, $result[QuestionTypeActorsExtraDataConfig::ENABLED_TYPES]);
+        $this->assertContains(User::class, $result[QuestionTypeActorsExtraDataConfig::ENABLED_TYPES]);
+        $this->assertContains(Supplier::class, $result[QuestionTypeActorsExtraDataConfig::ENABLED_TYPES]);
+        $this->assertNotContains(Group::class, $result[QuestionTypeActorsExtraDataConfig::ENABLED_TYPES]);
+    }
+
+    public function testPrepareExtraDataWithNoEnabledTypes(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => true,
+        ];
+
+        $result = $question_type->prepareExtraData($input);
+
+        $this->assertEquals($input, $result);
+    }
+
+    public function testPrepareExtraDataWithAllTypesDisabled(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                User::class => 0,
+                Group::class => 0,
+            ],
+        ];
+
+        $result = $question_type->prepareExtraData($input);
+
+        $this->assertArrayHasKey(QuestionTypeActorsExtraDataConfig::ENABLED_TYPES, $result);
+        $this->assertEmpty($result[QuestionTypeActorsExtraDataConfig::ENABLED_TYPES]);
+    }
+
+    public function testPrepareExtraDataPreservesOtherFields(): void
+    {
+        $question_type = new (static::getQuestionType())();
+        $input = [
+            QuestionTypeActorsExtraDataConfig::ENABLED_TYPES => [
+                User::class => 1,
+            ],
+            QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS => false,
+        ];
+
+        $result = $question_type->prepareExtraData($input);
+
+        $this->assertArrayHasKey(QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS, $result);
+        $this->assertFalse($result[QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS]);
     }
 }

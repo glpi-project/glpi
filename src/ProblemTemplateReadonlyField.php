@@ -38,7 +38,7 @@
 class ProblemTemplateReadonlyField extends ITILTemplateReadonlyField
 {
     // From CommonDBChild
-    public static $itemtype  = 'ProblemTemplate';
+    public static $itemtype = ProblemTemplate::class;
     public static $items_id  = 'problemtemplates_id';
-    public static $itiltype = 'Problem';
+    public static $itiltype = Problem::class;
 }

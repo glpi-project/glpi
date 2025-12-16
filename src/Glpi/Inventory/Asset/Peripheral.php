@@ -150,7 +150,7 @@ class Peripheral extends InventoryAsset
 
         foreach ($value as $key => $val) {
             $input = [
-                'itemtype'     => 'Peripheral',
+                'itemtype'     => GPeripheral::class,
                 'name'         => $val->name ?? '',
                 'serial'       => $val->serial ?? '',
                 'entities_id'  => $this->item->fields['entities_id'],
@@ -159,7 +159,7 @@ class Peripheral extends InventoryAsset
 
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = 'Peripheral';
+                $itemtype = GPeripheral::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $handled_input = $this->handleInput($val, $peripheral) + ['entities_id' => $this->entities_id];

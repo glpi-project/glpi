@@ -56,13 +56,7 @@
 
         {% set period_field %}
             {% if params.rand_user is defined %}
-                <span id="user_available{{ params.rand_user }}">
-                    {% do call('Planning::showCheckPlanning', [_post|merge({
-                        parent_itemtype: params.parent_itemtype|default(''),
-                        parent_items_id: params.parent_items_id|default(''),
-                        parent_fk_field: params.parent_fk_field|default(''),
-                    })]) %}
-                </span>
+                <span id="user_available{{ params.rand_user }}"></span>
             {% endif %}
 
             {% if default_delay <= 180000 %}

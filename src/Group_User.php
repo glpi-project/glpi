@@ -45,10 +45,10 @@ use Glpi\Event;
 class Group_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1                 = 'User';
+    public static $itemtype_1 = User::class;
     public static $items_id_1                 = 'users_id';
 
-    public static $itemtype_2                 = 'Group';
+    public static $itemtype_2 = Group::class;
     public static $items_id_2                 = 'groups_id';
 
     /**

@@ -45,7 +45,7 @@ use function Safe\strtotime;
 class Reservation extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype          = 'ReservationItem';
+    public static $itemtype = ReservationItem::class;
     public static $items_id          = 'reservationitems_id';
 
     public static $rightname                = 'reservation';

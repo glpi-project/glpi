@@ -49,7 +49,7 @@ class ProjectTaskTeam extends CommonDBRelation
     public $no_form_page               = true;
 
     // From CommonDBRelation
-    public static $itemtype_1          = 'ProjectTask';
+    public static $itemtype_1 = ProjectTask::class;
     public static $items_id_1          = 'projecttasks_id';
 
     public static $itemtype_2          = 'itemtype';

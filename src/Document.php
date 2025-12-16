@@ -278,7 +278,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
         // Set default category for document linked to tickets
         if (
-            isset($input['itemtype']) && ($input['itemtype'] === 'Ticket')
+            isset($input['itemtype']) && ($input['itemtype'] === Ticket::class)
             && (!isset($input['documentcategories_id']) || ($input['documentcategories_id'] == 0))
         ) {
             $input['documentcategories_id'] = $CFG_GLPI["documentcategories_id_forticket"];
@@ -559,15 +559,15 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         $items_id = $options['items_id'] ?? null;
 
         // legacy options
-        $changes_id  = $itemtype === null ? ($options['changes_id'] ?? null) : ($itemtype === 'Change' ? $items_id : null);
-        $problems_id = $itemtype === null ? ($options['problems_id'] ?? null) : ($itemtype === 'Problem' ? $items_id : null);
-        $tickets_id  = $itemtype === null ? ($options['tickets_id'] ?? null) : ($itemtype === 'Ticket' ? $items_id : null);
+        $changes_id  = $itemtype === null ? ($options['changes_id'] ?? null) : ($itemtype === Change::class ? $items_id : null);
+        $problems_id = $itemtype === null ? ($options['problems_id'] ?? null) : ($itemtype === Problem::class ? $items_id : null);
+        $tickets_id  = $itemtype === null ? ($options['tickets_id'] ?? null) : ($itemtype === Ticket::class ? $items_id : null);
 
-        if ($changes_id !== null && $this->canViewFileFromItilObject('Change', $changes_id)) {
+        if ($changes_id !== null && $this->canViewFileFromItilObject(Change::class, $changes_id)) {
             return true;
         }
 
-        if ($problems_id !== null && $this->canViewFileFromItilObject('Problem', $problems_id)) {
+        if ($problems_id !== null && $this->canViewFileFromItilObject(Problem::class, $problems_id)) {
             return true;
         }
 
@@ -583,7 +583,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         // The following case should be reachable from the API
         self::loadAPISessionIfExist();
 
-        if ($tickets_id !== null && $this->canViewFileFromItilObject('Ticket', $tickets_id)) {
+        if ($tickets_id !== null && $this->canViewFileFromItilObject(Ticket::class, $tickets_id)) {
             return true;
         }
 
@@ -591,7 +591,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     }
 
     /**
-     * Try to load the session from the API Tolen
+     * Try to load the session from the API Token
      *
      * @return void
      * @since 9.5

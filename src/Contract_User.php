@@ -38,10 +38,10 @@ use Glpi\Application\View\TemplateRenderer;
 class Contract_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'Contract';
+    public static $itemtype_1 = Contract::class;
     public static $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = 'User';
+    public static $itemtype_2 = User::class;
     public static $items_id_2 = 'users_id';
 
     public static $check_entity_coherency = false; // `entities_id`/`is_recursive` fields from user should not be used here

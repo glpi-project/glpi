@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <h3>{{ __('Database connection setup') }}</h3>
 
 <form action="install.php" method="post" data-submit-once>
@@ -56,5 +58,5 @@
 
    <input type="hidden" name="update" value="{{ update }}">
    <input type="hidden" name="install" value="Etape_2">
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 </form>

@@ -256,7 +256,11 @@ class NotificationTemplate extends CommonDBTM
             // set timezone from user, and reload object
             $orig_tz = null;
             if (isset($user_infos['additionnaloption']['timezone'])) {
-                $orig_tz = $DB->guessTimezone();
+                $orig_tz = $_SESSION['glpitimezone'] ?? '0';
+                if ($orig_tz === '0') {
+                    $orig_tz = date_default_timezone_get();
+                }
+
                 $DB->setTimezone($user_infos['additionnaloption']['timezone']);
 
                 if ($options['item'] instanceof CommonDBTM) {

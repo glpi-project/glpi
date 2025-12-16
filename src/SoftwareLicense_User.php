@@ -42,10 +42,10 @@ use Glpi\Application\View\TemplateRenderer;
 class SoftwareLicense_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'User';
+    public static $itemtype_1 = User::class;
     public static $items_id_1 = 'users_id';
 
-    public static $itemtype_2 = 'SoftwareLicense';
+    public static $itemtype_2 = SoftwareLicense::class;
     public static $items_id_2 = 'softwarelicenses_id';
 
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;

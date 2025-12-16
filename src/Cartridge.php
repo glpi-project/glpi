@@ -55,10 +55,10 @@ class Cartridge extends CommonDBRelation
 
     public static $rightname = 'cartridge';
 
-    public static $itemtype_1 = 'CartridgeItem';
+    public static $itemtype_1 = CartridgeItem::class;
     public static $items_id_1 = 'cartridgeitems_id';
 
-    public static $itemtype_2 = 'Printer';
+    public static $itemtype_2 = Printer::class;
     public static $items_id_2 = 'printers_id';
     public static $mustBeAttached_2 = false;
 

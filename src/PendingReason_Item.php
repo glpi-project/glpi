@@ -39,7 +39,7 @@ use Safe\DateTime;
 
 class PendingReason_Item extends CommonDBRelation
 {
-    public static $itemtype_1 = 'PendingReason';
+    public static $itemtype_1 = PendingReason::class;
     public static $items_id_1 = 'pendingreasons_id';
     public static $take_entity_1 = false;
 

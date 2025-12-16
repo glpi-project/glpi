@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Features;
 
 use Domain;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
 use Glpi\Tests\DbTestCase;
 use Group_Item;
@@ -252,5 +253,104 @@ class AssignableItemTest extends DbTestCase
         $this->testLoadGroupsFromDb($class);
         $this->testGetEmpty($class);
         $this->testAddUpdateWithIntGroups($class);
+    }
+
+    /**
+     * @param class-string<AssignableItem> $class
+     * @return void
+     */
+    #[DataProvider('itemtypeProvider')]
+    public function testGetAssignableVisiblityCriteria(string $class): void
+    {
+        global $DB, $CFG_GLPI;
+
+        $this->logOut();
+
+        // Bypassing rights should return all items
+        $this->assertEquals(
+            [[new QueryExpression('1')]],
+            \Session::callAsSystem(static function () use ($class) {
+                return array_values($class::getAssignableVisiblityCriteria());
+            })
+        );
+
+        // Cron context should return all items
+        $_SESSION["glpicronuserrunning"] = 1;
+        $this->assertEquals([[new QueryExpression('1')]], array_values($class::getAssignableVisiblityCriteria()));
+
+        // Test getAssignableVisiblityCriteriaForHelpdesk
+        if (!in_array($class, $CFG_GLPI['ticket_types'])) {
+            return;
+        }
+        $this->login('post-only', 'postonly');
+        // No helpdesk_item_types = No items
+        // Need to modify the profile directly in the DB because the check doesn't use the session info for some reason
+        $DB->update(
+            'glpi_profiles',
+            ['helpdesk_item_type' => '[]'],
+            ['id' => $_SESSION['glpiactiveprofile']['id']]
+        );
+        $this->assertEquals(
+            [[new QueryExpression('0')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        // All helpdesk_hardware = all items
+        $DB->update(
+            'glpi_profiles',
+            [
+                'helpdesk_item_type' => exportArrayToDB(array_keys(\Profile::getHelpdeskItemtypes())),
+                'helpdesk_hardware' => 2 ** \CommonITILObject::HELPDESK_ALL_HARDWARE,
+            ],
+            ['id' => $_SESSION['glpiactiveprofile']['id']]
+        );
+        $this->assertEquals(
+            [[new QueryExpression('1')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        // My hardware only = items assigned to the user
+        $DB->update(
+            'glpi_profiles',
+            ['helpdesk_hardware' => 2 ** \CommonITILObject::HELPDESK_MY_HARDWARE],
+            ['id' => $_SESSION['glpiactiveprofile']['id']]
+        );
+        $this->assertNotEquals(
+            [[new QueryExpression('0')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        $this->assertNotEquals(
+            [[new QueryExpression('1')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+
+        // Test getAssignableVisiblityCriteriaForCentral
+        $this->login();
+        $_SESSION['glpiactiveprofile'][$class::$rightname] = 0;
+        $this->assertEquals(
+            [[new QueryExpression('0')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        $_SESSION['glpiactiveprofile'][$class::$rightname] = READ;
+        $this->assertEquals(
+            [[new QueryExpression('1')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        $_SESSION['glpiactiveprofile'][$class::$rightname] = READ_ASSIGNED;
+        $this->assertNotEquals(
+            [[new QueryExpression('0')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        $this->assertNotEquals(
+            [[new QueryExpression('1')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        $_SESSION['glpiactiveprofile'][$class::$rightname] = READ_OWNED;
+        $this->assertNotEquals(
+            [[new QueryExpression('0')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
+        $this->assertNotEquals(
+            [[new QueryExpression('1')]],
+            array_values($class::getAssignableVisiblityCriteria())
+        );
     }
 }

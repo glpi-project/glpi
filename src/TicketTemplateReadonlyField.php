@@ -38,7 +38,7 @@
 class TicketTemplateReadonlyField extends ITILTemplateReadonlyField
 {
     // From CommonDBChild
-    public static $itemtype  = 'TicketTemplate';
+    public static $itemtype = TicketTemplate::class;
     public static $items_id  = 'tickettemplates_id';
-    public static $itiltype = 'Ticket';
+    public static $itiltype = Ticket::class;
 }

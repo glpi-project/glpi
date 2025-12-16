@@ -2413,6 +2413,7 @@ class Session
 
     public static function getCurrentProfile(): Profile
     {
+        //FIXME: Why are we loading the full profile from the DB again when the callers of this just use information that is already in the session?
         $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
         if ($profile_id === null) {
             throw new RuntimeException("No active session");

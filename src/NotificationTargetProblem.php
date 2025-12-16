@@ -219,8 +219,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         }
 
         //Foreach global tags
-        $tags = ['tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-            'changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
+        $tags = [
+            'tickets'  => Ticket::getTypeName(Session::getPluralNumber()),
+            'changes'  => Change::getTypeName(Session::getPluralNumber()),
             'items'    => _n('Item', 'Items', Session::getPluralNumber()),
         ];
 
@@ -233,8 +234,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         }
 
         //Tags with just lang
-        $tags = ['problem.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
-            'problem.changes'  => _n('Change', 'Changes', Session::getPluralNumber()),
+        $tags = [
+            'problem.tickets'  => Ticket::getTypeName(Session::getPluralNumber()),
+            'problem.changes'  => Change::getTypeName(Session::getPluralNumber()),
             'problem.items'    => _n('Item', 'Items', Session::getPluralNumber()),
         ];
 

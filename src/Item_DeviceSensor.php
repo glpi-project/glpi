@@ -38,7 +38,7 @@
  */
 class Item_DeviceSensor extends Item_Devices
 {
-    public static $itemtype_2 = 'DeviceSensor';
+    public static $itemtype_2 = DeviceSensor::class;
     public static $items_id_2 = 'devicesensors_id';
 
     protected static $notable = false;

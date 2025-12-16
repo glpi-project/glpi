@@ -669,7 +669,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        global $GLPI_CACHE;
+        global $GLPI_CACHE, $CFG_GLPI;
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);
@@ -681,7 +681,11 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
             $error_msg  = null;
             $curl_error = null;
-            $raw_data = Toolbox::callCurl($url, [], $error_msg, $curl_error, true);
+            $eopts = [];
+            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+                $eopts['proxy_excluded'] = true;
+            }
+            $raw_data = Toolbox::callCurl($url, $eopts, $error_msg, $curl_error, true);
             if (empty($raw_data)) {
                 return false;
             }

@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% if config_write_denied %}
     <h3>{{ __("Checking write access to configuration files") }}</h3>
     <div class="alert alert-danger" role="alert">
@@ -55,7 +57,7 @@
 {% set common_hiddens %}
    <input type="hidden" name="language" value="{{ session('glpilanguage') }}">
    <input type="hidden" name="update" value="{{ update }}">
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 {% endset %}
 
 {% set continue_form %}

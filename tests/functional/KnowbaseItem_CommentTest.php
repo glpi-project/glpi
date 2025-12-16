@@ -65,11 +65,11 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $nb = countElementsInTable(
             'glpi_knowbaseitems_comments'
         );
-        $this->assertSame(10, $nb);
+        $this->assertSame(12, $nb);
 
         // second, test what we retrieve
         $comments = \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
-        $this->assertCount(2, $comments);
+        $this->assertCount(3, $comments);
         $this->assertCount(10, $comments[0]);
         $this->assertCount(2, $comments[0]['answers']);
         $this->assertCount(1, $comments[0]['answers'][0]['answers']);
@@ -123,6 +123,14 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $input['parent_comment_id'] = $kbcom11;
         $kbcom111 = $kbcom->add($input);
         $this->assertTrue($kbcom111 > $kbcom12);
+
+        // comment from non-existent user to simulate deleted user
+        $this->assertGreaterThan(0, $kbcom->add([
+            'knowbaseitems_id' => $kb->getID(),
+            'users_id'         => 9999999,
+            'comment'          => 'Comment 3 for KB1',
+            'language'         => $lang,
+        ]));
     }
 
     public function testGetTabNameForItemNotLogged()
@@ -144,11 +152,11 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $kbcom = new \KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
-        $this->assertSame("Comments 5", strip_tags($name));
+        $this->assertSame("Comments 6", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $name = $kbcom->getTabNameForItem($kb1);
-        $this->assertSame("Comments 5", strip_tags($name));
+        $this->assertSame("Comments 6", strip_tags($name));
 
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $name = $kbcom->getTabNameForItem($kb1);
@@ -176,7 +184,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $html = ob_get_clean();
 
         preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
-        $this->assertCount(2, $results[0]);
+        $this->assertCount(3, $results[0]);
 
         preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
@@ -185,7 +193,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertCount(4, $results[0]);
 
         preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
-        $this->assertCount(5, $results[0]);
+        $this->assertCount(6, $results[0]);
 
         //same tests, from another user
         $auth = new \Auth();
@@ -197,7 +205,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $html = ob_get_clean();
 
         preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
-        $this->assertCount(2, $results[0]);
+        $this->assertCount(3, $results[0]);
 
         preg_match_all("/li id=\"kbcomment\d+\" class=\"comment subcomment timeline-item KnowbaseItemComment /", $html, $results);
         $this->assertCount(3, $results[0]);
@@ -206,6 +214,6 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertCount(1, $results[0]);
 
         preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
-        $this->assertCount(5, $results[0]);
+        $this->assertCount(6, $results[0]);
     }
 }

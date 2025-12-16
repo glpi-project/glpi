@@ -36,9 +36,12 @@ use Glpi\Api\HL\Router;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Cache\CacheManager;
+use Glpi\Config\ProxyExclusion;
+use Glpi\Config\ProxyExclusions;
 use Glpi\Dashboard\Grid;
 use Glpi\Event;
 use Glpi\Helpdesk\HelpdeskTranslation;
+use Glpi\Mail\SMTP\OauthConfig;
 use Glpi\Plugin\Hooks;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\System\RequirementsManager;
@@ -273,6 +276,12 @@ class Config extends CommonDBTM
         if (isset($input['devices_in_menu'])) {
             $input['devices_in_menu'] = exportArrayToDB(
                 ArrayNormalizer::normalizeValues($input['devices_in_menu'] ?: [], 'strval')
+            );
+        }
+
+        if (isset($input['proxy_exclusions'])) {
+            $input['proxy_exclusions'] = exportArrayToDB(
+                ArrayNormalizer::normalizeValues($input['proxy_exclusions'] ?: [], 'strval')
             );
         }
 
@@ -867,9 +876,39 @@ class Config extends CommonDBTM
             return;
         }
 
+        /** @var ProxyExclusions $proxy_exclusions */
+        $proxy_exclusions = $CFG_GLPI['possible_proxy_exclusions'];
+        $proxy_exclusions->addExclusions([
+            new ProxyExclusion(
+                Agent::class,
+                Agent::getTypeName()
+            ),
+            new ProxyExclusion(
+                GLPINetwork::class,
+                GLPINetwork::getTypeName(),
+                __('GLPI network related calls (marketplace, versions check, telemetry, ...')
+            ),
+            new ProxyExclusion(
+                RSSFeed::class,
+                RSSFeed::getTypeName()
+            ),
+            new ProxyExclusion(
+                Planning::class,
+                Planning::getTypeName()
+            ),
+            new ProxyExclusion(
+                OauthConfig::class,
+                __('SMTP OAuth Authentication')
+            ),
+            new ProxyExclusion(
+                Webhook::class,
+                Webhook::getTypeName()
+            ),
+        ]);
         TemplateRenderer::getInstance()->display('pages/setup/general/systeminfo_form.html.twig', [
             'config' => $CFG_GLPI,
             'canedit' => static::canUpdate(),
+            'possible_proxy_exclusions' => $proxy_exclusions,
         ]);
         self::showSystemInfoTable();
     }
@@ -1382,6 +1421,12 @@ class Config extends CommonDBTM
             $CFG_GLPI['lock_item_list'] = importArrayFromDB($CFG_GLPI['lock_item_list']);
         }
 
+        if (isset($CFG_GLPI['proxy_exclusions'])) {
+            $CFG_GLPI['proxy_exclusions'] = importArrayFromDB($CFG_GLPI['proxy_exclusions']);
+        } else {
+            $CFG_GLPI['proxy_exclusions'] = [];
+        }
+
         if (
             isset($CFG_GLPI['lock_lockprofile_id'])
             && $CFG_GLPI['lock_use_lock_item']
@@ -1742,6 +1787,7 @@ class Config extends CommonDBTM
                 'lock_item_list',
                 'planning_work_days',
                 Impact::CONF_ENABLED,
+                'proxy_exclusions',
             ];
             if (in_array($this->fields['name'], $array_fields, true)) {
                 $CFG_GLPI[$this->fields['name']] = importArrayFromDB($newvalue);

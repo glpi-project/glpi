@@ -64,4 +64,101 @@ class SearchOptionTest extends DbTestCase
             SearchOption::getDefaultToView($itemtype)
         );
     }
+
+    /**
+     * Test that AllAssets search results work correctly with Group in charge option (field 49)
+     */
+    public function testAllAssetsGroupInChargeSearchResults(): void
+    {
+        $this->login();
+
+        // Create a technical group
+        $group = $this->createItem(
+            \Group::class,
+            [
+                'name'       => 'Test Tech Group ' . __FUNCTION__,
+                'is_assign'  => 1,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Create a computer
+        $computer = $this->createItem(
+            \Computer::class,
+            [
+                'name'        => 'Test Computer ' . __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+            ]
+        );
+
+        // Assign the technical group to the computer
+        $this->createItem(
+            \Group_Item::class,
+            [
+                'groups_id'   => $group->getID(),
+                'itemtype'    => \Computer::class,
+                'items_id'    => $computer->getID(),
+                'type'        => \Group_Item::GROUP_TYPE_TECH,
+            ]
+        );
+
+        // Test search by group ID - this should not throw SQL error
+        $result = \Search::getDatas(
+            \AllAssets::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 49, // Group in charge
+                        'searchtype' => 'equals',
+                        'value'      => $group->getID(),
+                    ],
+                ],
+                'forcetoview' => [1, 49], // Name and Group in charge
+            ]
+        );
+
+        // Verify we have exactly one result
+        $this->assertArrayHasKey('data', $result);
+        $this->assertArrayHasKey('rows', $result['data']);
+        $this->assertEquals(1, $result['data']['totalcount'], 'Should find exactly one computer with this technical group');
+
+        // Get the single result
+        $row = $result['data']['rows'][0];
+
+        // Verify the computer name
+        $this->assertArrayHasKey('AllAssets_1', $row);
+        $this->assertStringContainsString('Test Computer ' . __FUNCTION__, $row['AllAssets_1']['displayname']);
+
+        // Verify the group is correctly displayed
+        $this->assertArrayHasKey('AllAssets_49', $row);
+        $this->assertStringContainsString(
+            'Test Tech Group ' . __FUNCTION__,
+            $row['AllAssets_49']['displayname']
+        );
+
+        // Test search by group name - this should also work without SQL error
+        $result2 = \Search::getDatas(
+            \AllAssets::class,
+            [
+                'criteria' => [
+                    [
+                        'field'      => 49, // Group in charge
+                        'searchtype' => 'contains',
+                        'value'      => 'Test Tech Group ' . __FUNCTION__,
+                    ],
+                ],
+                'forcetoview' => [1, 49],
+            ]
+        );
+
+        // This search should also return results
+        $this->assertArrayHasKey('data', $result2);
+        $this->assertArrayHasKey('rows', $result2['data']);
+        $this->assertGreaterThan(0, $result2['data']['totalcount']);
+
+        // Test regression: ensure no SQL error occurs during search
+        // The old bug would throw: "Unknown column 'glpi_computers.groups_id_tech' in 'field list'"
+        // If we reach this point, the SQL was successful
+        $this->assertTrue(true, 'Search completed without SQL error - fix is working');
+    }
 }

@@ -37,9 +37,9 @@
 class NetworkPort_NetworkPort extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1           = 'NetworkPort';
+    public static $itemtype_1 = NetworkPort::class;
     public static $items_id_1           = 'networkports_id_1';
-    public static $itemtype_2           = 'NetworkPort';
+    public static $itemtype_2 = NetworkPort::class;
     public static $items_id_2           = 'networkports_id_2';
 
     public static $log_history_1_add    = Log::HISTORY_CONNECT_DEVICE;

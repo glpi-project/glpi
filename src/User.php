@@ -540,7 +540,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             ],
             [
                 'items_id' => $this->fields['id'],
-                'itemtype' => 'User',
+                'itemtype' => User::class,
             ]
         );
 
@@ -1412,15 +1412,6 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
     public function post_updateItem($history = true)
     {
-        //handle timezone change for current user
-        if ($this->fields['id'] == Session::getLoginUserID()) {
-            if (null == $this->fields['timezone'] || 'null' === strtolower($this->fields['timezone'])) {
-                unset($_SESSION['glpi_tz']);
-            } else {
-                $_SESSION['glpi_tz'] = $this->fields['timezone'];
-            }
-        }
-
         $this->updateUserEmails();
         $this->syncLdapGroups();
         $this->syncDynamicEmails();
@@ -5987,7 +5978,7 @@ HTML;
                 // Add an alert to not warn user for at least one day
                 $alert->add(
                     [
-                        'itemtype' => 'User',
+                        'itemtype' => User::class,
                         'items_id' => $user_id,
                         'type'     => Alert::NOTICE,
                     ]

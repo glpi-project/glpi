@@ -30,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 <h2>{{ __("One last thing before starting") }}</h2>
 
 <p>
@@ -46,5 +48,5 @@
    </p>
 
    <input type='hidden' name='install' value='Etape_6'>
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
 </form>

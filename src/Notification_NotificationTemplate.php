@@ -43,9 +43,9 @@ use Glpi\Application\View\TemplateRenderer;
 class Notification_NotificationTemplate extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1       = 'Notification';
+    public static $itemtype_1 = Notification::class;
     public static $items_id_1       = 'notifications_id';
-    public static $itemtype_2       = 'NotificationTemplate';
+    public static $itemtype_2 = NotificationTemplate::class;
     public static $items_id_2       = 'notificationtemplates_id';
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 

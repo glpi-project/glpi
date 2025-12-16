@@ -81,8 +81,8 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
      * Prepare the extra data for the question.
      * This method is called before saving the question.
      *
-     * @param array $input The input data to prepare.
-     * @return array The prepared extra data.
+     * @param array<string, mixed> $input The input data to prepare.
+     * @return array<string, mixed> The prepared extra data.
      */
     public function prepareExtraData(array $input): array;
 

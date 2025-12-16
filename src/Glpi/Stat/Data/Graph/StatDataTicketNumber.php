@@ -37,6 +37,7 @@ namespace Glpi\Stat\Data\Graph;
 
 use Glpi\Stat\StatDataAlwaysDisplay;
 use Session;
+use Ticket;
 
 class StatDataTicketNumber extends StatDataAlwaysDisplay
 {
@@ -75,7 +76,7 @@ class StatDataTicketNumber extends StatDataAlwaysDisplay
             ],
         ];
 
-        if ($params['itemtype'] == 'Ticket') {
+        if ($params['itemtype'] == Ticket::class) {
             $avgtaketime = $this->getDataByType($params, "inter_avgtakeaccount");
             foreach ($avgtaketime as $key => &$val) {
                 $val = round($val / HOUR_TIMESTAMP, 2);

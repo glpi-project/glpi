@@ -401,4 +401,43 @@ describe("Ticket Form", () => {
             cy.getDropdownByLabelText('Priority').should('contain.text', 'Very high');
         });
     });
+
+    it('Add followup', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'Answer' }).click();
+
+        cy.get('.ITILFollowup.show').within(() => {
+            cy.get('textarea[name="content"]').awaitTinyMCE().type('Test followup content');
+            cy.get('select[name="requesttypes_id"] + .select2 [role=combobox]:visible').selectDropdownValue('Direct');
+            cy.get('input[type="checkbox"][name="is_private"]').click();
+            cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.get('.itil-timeline div[data-itemtype="ITILFollowup"]:last').within(() => {
+            cy.get('.read-only-content .rich_text_container').should('contain.text', 'Test followup content');
+            cy.findByTitle('Source of followup').should('contain.text', 'Direct');
+            cy.get('.timeline-header .is-private .ti-eye-off').should('be.visible');
+        });
+    });
+
+    it('Add task', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Create a task').click();
+
+        cy.get('.ITILTask.show').within(() => {
+            cy.get('textarea[name="content"]').awaitTinyMCE().type('Test task content');
+            cy.get('select[name="state"]').select('Done', { force: true });
+            cy.get('input[type="checkbox"][name="is_private"]').click();
+            cy.get('select[name="actiontime"]').select('1h30', { force: true });
+            cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.get('.itil-timeline div[data-itemtype="TicketTask"]:last').within(() => {
+            cy.get('.read-only-content .rich_text_container').should('contain.text', 'Test task content');
+            cy.get('.todo-list-state .state').should('have.attr', 'title', 'Done');
+            cy.get('.timeline-header .is-private .ti-eye-off').should('be.visible');
+            cy.get('span.actiontime').should('contain.text', '1 hours 30 minutes 0 seconds');
+        });
+    });
 });

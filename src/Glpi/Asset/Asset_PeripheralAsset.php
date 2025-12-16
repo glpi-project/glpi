@@ -352,7 +352,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                     <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
                         {{ fields.hiddenField('items_id_asset', asset.getID()) }}
                         {{ fields.hiddenField('itemtype_asset', asset.getType()) }}
-                        {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+                        {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         {{ fields.dropdownItemTypes('itemtype_peripheral', 0, label, {
                             types: config('directconnect_types'),
@@ -525,7 +525,7 @@ TWIG, $twig_params);
                         {{ fields.dropdownItemsFromItemtypes('', label, dropdown_params) }}
                         {{ fields.hiddenField('items_id_peripheral', peripheral.getID()) }}
                         {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
-                        {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+                        {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
                             <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>

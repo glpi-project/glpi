@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f2f626c1440e140184fd6fd9a6365e52",
+    "content-hash": "948bd2ce9a94352cc516809496147a21",
     "packages": [
         {
             "name": "altcha-org/altcha",
-            "version": "v1.2.0",
+            "version": "v1.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/altcha-org/altcha-lib-php.git",
-                "reference": "725e604719a47fa9187a795bf5ca6f945342b017"
+                "reference": "9e9e70c864a9db960d071c77c778be0c9ff1a4d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/725e604719a47fa9187a795bf5ca6f945342b017",
-                "reference": "725e604719a47fa9187a795bf5ca6f945342b017",
+                "url": "https://api.github.com/repos/altcha-org/altcha-lib-php/zipball/9e9e70c864a9db960d071c77c778be0c9ff1a4d0",
+                "reference": "9e9e70c864a9db960d071c77c778be0c9ff1a4d0",
                 "shasum": ""
             },
             "require": {
@@ -49,9 +49,9 @@
             ],
             "support": {
                 "issues": "https://github.com/altcha-org/altcha-lib-php/issues",
-                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.2.0"
+                "source": "https://github.com/altcha-org/altcha-lib-php/tree/v1.3.1"
             },
-            "time": "2025-11-17T00:15:21+00:00"
+            "time": "2025-12-13T10:03:53+00:00"
         },
         {
             "name": "apereo/phpcas",

@@ -44,7 +44,7 @@ use Glpi\DBAL\QueryExpression;
 class Document_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1    = 'Document';
+    public static $itemtype_1 = Document::class;
     public static $items_id_1    = 'documents_id';
     public static $take_entity_1 = true;
 
@@ -66,7 +66,7 @@ class Document_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
-        if ($this->fields['itemtype'] === 'Ticket') {
+        if ($this->fields['itemtype'] === Ticket::class) {
             $ticket = new Ticket();
             // Not item linked for closed tickets
             if (
@@ -180,7 +180,7 @@ class Document_Item extends CommonDBRelation
                     countElementsInTable(
                         static::getTable(),
                         ['items_id' => $this->fields['items_id'],
-                            'itemtype' => 'Ticket',
+                            'itemtype' => Ticket::class,
                         ]
                     ) === 1
                 ) {
@@ -272,8 +272,8 @@ class Document_Item extends CommonDBRelation
             case Document::class:
                 $ong = [];
                 if ($_SESSION['glpishow_count_on_tabs'] && !$item->isNewItem()) {
-                    $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => 'Document']]);
-                    $nbitem = self::countForMainItem($item, ['itemtype' => 'Document']);
+                    $nbdoc  = self::countForMainItem($item, ['NOT' => ['itemtype' => Document::class]]);
+                    $nbitem = self::countForMainItem($item, ['itemtype' => Document::class]);
                 }
                 $ong[1] = self::createTabEntry(_n(
                     'Associated item',
@@ -339,7 +339,7 @@ class Document_Item extends CommonDBRelation
         // for a document,
         // don't show here others documents associated to this one,
         // it's done for both directions in self::showAssociated
-        $types_iterator = self::getDistinctTypes($instID, ['NOT' => ['itemtype' => 'Document']]);
+        $types_iterator = self::getDistinctTypes($instID, ['NOT' => ['itemtype' => Document::class]]);
 
         $rand   = mt_rand();
         if ($canedit) {
