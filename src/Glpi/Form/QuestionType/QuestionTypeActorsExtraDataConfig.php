@@ -36,6 +36,7 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use CommonDBTM;
 use Override;
 
 final class QuestionTypeActorsExtraDataConfig implements JsonFieldInterface
@@ -44,6 +45,9 @@ final class QuestionTypeActorsExtraDataConfig implements JsonFieldInterface
     public const IS_MULTIPLE_ACTORS = "is_multiple_actors";
     public const ENABLED_TYPES = "enabled_types";
 
+    /**
+     * @param array<class-string<CommonDBTM>> $enabled_types
+     */
     public function __construct(
         private bool $is_multiple_actors = false,
         private ?array $enabled_types = null,
