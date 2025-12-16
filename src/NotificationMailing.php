@@ -100,7 +100,15 @@ class NotificationMailing implements NotificationInterface
             ];
         }
 
-        $mmail = new GLPIMailer();
+        try {
+            $mmail = new GLPIMailer();
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'error'   => sprintf(__('Cannot initialize mailer, error is: %s'), "\n" . $e->getMessage()),
+                'debug'   => null,
+            ];
+        }
         $mail = $mmail->getEmail();
 
         $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-generated');
