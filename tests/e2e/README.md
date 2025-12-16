@@ -99,3 +99,8 @@ npx playwright show-report tests/e2e/results
 ```sh
 npx playwright test --ui
 ```
+
+## Debugging CI failures
+
+If the CI fails, download the `playwright-report` artifact on github.  
+Then, extract it and submit the files from the `data` folder on https://trace.playwright.dev/.
