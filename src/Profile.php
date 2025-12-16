@@ -1607,7 +1607,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'name'               => _n('Network', 'Networks', Session::getPluralNumber()),
             'datatype'           => 'right',
             'rightclass'         => Network::class,
-            'rightname'          => Network::$rightname,
+            'rightname'          => 'networking',
             'joinparams'         => [
                 'jointype'           => 'child',
                 'condition'          => ['NEWTABLE.name' => 'networking'],
