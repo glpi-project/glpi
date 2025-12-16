@@ -157,7 +157,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
         $documents = new Document_Item();
         $associateddocuments = $documents->find([
             'items_id' => $knowbase->getID(),
-            'itemtype' => 'KnowbaseItem',
+            'itemtype' => KnowbaseItem::class,
         ]);
         $this->data['##knowbaseitem.numberofdocuments##']      = (string) count($associateddocuments);
         foreach ($associateddocuments as $docid) {

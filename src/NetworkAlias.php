@@ -42,7 +42,7 @@
 class NetworkAlias extends FQDNLabel
 {
     // From CommonDBChild
-    public static $itemtype           = 'NetworkName';
+    public static $itemtype = NetworkName::class;
     public static $items_id           = 'networknames_id';
     public $dohistory                 = true;
 

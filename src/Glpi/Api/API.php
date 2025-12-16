@@ -72,6 +72,7 @@ use NetworkEquipment;
 use NetworkPort;
 use Notepad;
 use Problem;
+use Project;
 use RuntimeException;
 use SavedSearch;
 use Search;
@@ -2663,7 +2664,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
 
         //specific case
         switch ($itemtype) {
-            case 'Ticket':
+            case Ticket::class:
                 $hclasses[] = "TicketTask";
                 $hclasses[] = "TicketValidation";
                 $hclasses[] = "TicketCost";
@@ -2678,7 +2679,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 $hclasses[] = "Supplier_Ticket";
                 break;
 
-            case 'Problem':
+            case Problem::class:
                 $hclasses[] = "ProblemTask";
                 $hclasses[] = "ProblemCost";
                 $hclasses[] = "Change_Problem";
@@ -2692,7 +2693,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 $hclasses[] = "Supplier_Problem";
                 break;
 
-            case 'Change':
+            case Change::class:
                 $hclasses[] = "ChangeTask";
                 $hclasses[] = "ChangeCost";
                 $hclasses[] = "Itil_Project";
@@ -2707,7 +2708,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 $hclasses[] = "Supplier_Change";
                 break;
 
-            case 'Project':
+            case Project::class:
                 $hclasses[] = "ProjectTask";
                 $hclasses[] = "ProjectCost";
                 $hclasses[] = "Itil_Project";

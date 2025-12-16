@@ -597,7 +597,7 @@ class Central extends CommonGLPI
                 Config::getConfigurationValue('core', 'use_notifications')
                 && countElementsInTable('glpi_pendingreasons_items', ['pendingreasons_id' => ['>', 0]]) > 0
                 && !count($notification->find([
-                    'itemtype' => 'Ticket',
+                    'itemtype' => Ticket::class,
                     'event'     => 'auto_reminder',
                     'is_active'  => true,
                 ]))

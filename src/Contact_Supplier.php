@@ -40,10 +40,10 @@ use function Safe\preg_match;
 class Contact_Supplier extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'Contact';
+    public static $itemtype_1 = Contact::class;
     public static $items_id_1 = 'contacts_id';
 
-    public static $itemtype_2 = 'Supplier';
+    public static $itemtype_2 = Supplier::class;
     public static $items_id_2 = 'suppliers_id';
 
 

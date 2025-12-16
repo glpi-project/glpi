@@ -43,10 +43,10 @@ use Glpi\DBAL\QueryExpression;
 class IPAddress_IPNetwork extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'IPAddress';
+    public static $itemtype_1 = IPAddress::class;
     public static $items_id_1 = 'ipaddresses_id';
 
-    public static $itemtype_2 = 'IPNetwork';
+    public static $itemtype_2 = IPNetwork::class;
     public static $items_id_2 = 'ipnetworks_id';
 
 

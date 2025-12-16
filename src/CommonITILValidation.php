@@ -921,7 +921,7 @@ abstract class CommonITILValidation extends CommonDBChild
             'validation_class' => static::class,
             'validatortype'    => '__VALUE__',
             'entity'           => $_SESSION['glpiactive_entity'],
-            'right'            => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'            => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
         Ajax::updateItemOnSelectEvent(
@@ -1402,7 +1402,7 @@ HTML;
             'field'              => 'name',
             'name'               => __('Approval requester'),
             'datatype'           => 'itemlink',
-            'right'              => static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate',
+            'right'              => static::$itemtype == Ticket::class ? 'create_ticket_validate' : 'create_validate',
         ];
 
         $tab[] = [
@@ -1412,7 +1412,7 @@ HTML;
             'linkfield'          => 'users_id_validate',
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
-            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
         ];
 
         $tab[] = [
@@ -1522,7 +1522,7 @@ HTML;
             'field'              => 'name',
             'name'               => _n('Requester', 'Requesters', 1),
             'datatype'           => 'itemlink',
-            'right'              => (static::$itemtype == 'Ticket' ? 'create_ticket_validate' : 'create_validate'),
+            'right'              => (static::$itemtype == Ticket::class ? 'create_ticket_validate' : 'create_validate'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
@@ -1542,7 +1542,7 @@ HTML;
             'linkfield'          => 'items_id_target',
             'name'               => __('Approver'),
             'datatype'           => 'itemlink',
-            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
@@ -1566,7 +1566,7 @@ HTML;
             'name'               => __('Approver substitute'),
             'datatype'           => 'itemlink',
             'right'              => (
-                static::$itemtype == 'Ticket'
+                static::$itemtype == Ticket::class
                 ? ['validate_request', 'validate_incident']
                 : 'validate'
             ),
@@ -1648,7 +1648,7 @@ HTML;
             'name'               => __('Substitute of a member of approver group'),
             'datatype'           => 'itemlink',
             'right'              => (
-                static::$itemtype == 'Ticket'
+                static::$itemtype == Ticket::class
                 ? ['validate_request', 'validate_incident']
                 : 'validate'
             ),
@@ -1828,7 +1828,7 @@ HTML;
             'id'                 => 0,
             'parents_id'         => null,
             'entity'             => $_SESSION['glpiactive_entity'],
-            'right'              => static::$itemtype == 'Ticket' ? ['validate_request', 'validate_incident'] : 'validate',
+            'right'              => static::$itemtype == Ticket::class ? ['validate_request', 'validate_incident'] : 'validate',
             'groups_id'          => 0,
             'itemtype_target'    => '',
             'items_id_target'    => 0,
@@ -1921,7 +1921,7 @@ HTML;
         $params = [
             'entity' => $_SESSION['glpiactive_entity'],
         ];
-        if (static::$itemtype == 'Ticket') {
+        if (static::$itemtype == Ticket::class) {
             $params['right']  = ['validate_request', 'validate_incident'];
         } else {
             $params['right']  = ['validate'];

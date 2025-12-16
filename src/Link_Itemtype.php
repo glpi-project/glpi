@@ -36,7 +36,7 @@
 class Link_Itemtype extends CommonDBChild
 {
     // From CommonDbChild
-    public static $itemtype = 'Link';
+    public static $itemtype = Link::class;
     public static $items_id = 'links_id';
 
     public function getForbiddenStandardMassiveAction()

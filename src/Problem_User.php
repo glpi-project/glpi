@@ -37,8 +37,8 @@
 class Problem_User extends CommonITILActor
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'Problem';
+    public static $itemtype_1 = Problem::class;
     public static $items_id_1 = 'problems_id';
-    public static $itemtype_2 = 'User';
+    public static $itemtype_2 = User::class;
     public static $items_id_2 = 'users_id';
 }

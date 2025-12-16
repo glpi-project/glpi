@@ -473,7 +473,7 @@ class Provider
             'label'      => $params['label'],
             'icon'       => $params['icon'],
             's_criteria' => $search_criteria,
-            'itemtype'   => 'Ticket',
+            'itemtype'   => Ticket::class,
         ];
     }
 
@@ -1214,7 +1214,7 @@ class Provider
         $monthsyears = [];
         foreach ($series as $stat_type => &$serie) {
             $values = Stat::constructEntryValues(
-                'Ticket',
+                Ticket::class,
                 $stat_type,
                 $begin,
                 $end,
@@ -1521,7 +1521,7 @@ class Provider
                 'INNER JOIN' => [
                     $li_table => [
                         'ON' => [
-                            $li_table => getForeignKeyFieldForItemType("Ticket"),
+                            $li_table => getForeignKeyFieldForItemType(Ticket::class),
                             $t_table  => 'id',
                             [
                                 'AND' => [

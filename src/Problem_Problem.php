@@ -43,10 +43,10 @@
 class Problem_Problem extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1   = 'Problem';
+    public static $itemtype_1 = Problem::class;
     public static $items_id_1   = 'problems_id_1';
 
-    public static $itemtype_2   = 'Problem';
+    public static $itemtype_2 = Problem::class;
     public static $items_id_2   = 'problems_id_2';
 
     public static function getTypeName($nb = 0)

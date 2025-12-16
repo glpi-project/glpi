@@ -4065,7 +4065,7 @@ final class SQLProvider implements SearchProviderInterface
                             }
                             $addaltemail = "";
                             if (
-                                in_array($itemtype, ['Ticket', 'Change', 'Problem'])
+                                in_array($itemtype, [Ticket::class, Change::class, Problem::class])
                                 && isset($searchopt[$ID]['joinparams']['beforejoin']['table'])
                                 && in_array($searchopt[$ID]['joinparams']['beforejoin']['table'], ['glpi_tickets_users', 'glpi_changes_users', 'glpi_problems_users'])
                             ) { // For tickets_users

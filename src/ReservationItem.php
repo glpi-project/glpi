@@ -473,7 +473,7 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE'     => [
-                'itemtype'           => 'Peripheral',
+                'itemtype'           => Peripheral::class,
                 'is_active'          => 1,
                 'peripheraltypes_id' => ['>', 0],
             ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),

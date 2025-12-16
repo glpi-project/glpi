@@ -42,7 +42,7 @@ use Glpi\RichText\RichText;
 class NotificationTemplateTranslation extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype  = 'NotificationTemplate';
+    public static $itemtype = NotificationTemplate::class;
     public static $items_id  = 'notificationtemplates_id';
 
     public $dohistory = true;
@@ -444,8 +444,16 @@ TWIG, $twig_params);
             return;
         }
 
-        $oktypes = ['CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'CronTask',
-            'Problem', 'Project', 'Ticket', 'User',
+        $oktypes = [
+            CartridgeItem::class,
+            Change::class,
+            ConsumableItem::class,
+            Contract::class,
+            CronTask::class,
+            Problem::class,
+            Project::class,
+            Ticket::class,
+            User::class,
         ];
 
         $can_preview = in_array($itemtype, $oktypes, true);

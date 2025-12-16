@@ -181,7 +181,7 @@ final class DropdownController extends AbstractController
                     'fkey' => 'id',
                     'field' => 'items_id',
                     'condition' => [
-                        'itemtype' => 'State',
+                        'itemtype' => State::class,
                         'visible_itemtype' => $state_type,
                     ],
                 ],

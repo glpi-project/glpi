@@ -318,7 +318,7 @@ trait InventoryNetworkPort
             'is_dynamic'   => 1,
             'items_id'     => $items_id,
             'is_recursive' => 0,
-            'itemtype'     => 'NetworkPort',
+            'itemtype'     => NetworkPort::class,
         ];
 
         if ($name !== null) {
@@ -345,7 +345,7 @@ trait InventoryNetworkPort
             if ('' != $blacklist->process(Blacklist::IP, $ip)) {
                 $input = [
                     'items_id'     => $items_id,
-                    'itemtype'     => 'NetworkName',
+                    'itemtype'     => NetworkName::class,
                     'name'         => $ip,
                     'is_dynamic'   => 1,
                 ];
@@ -460,7 +460,7 @@ trait InventoryNetworkPort
                             'SELECT' => 'id',
                             'FROM'   => NetworkName::getTable(),
                             'WHERE'  => [
-                                'itemtype'  => 'NetworkPort',
+                                'itemtype'  => NetworkPort::class,
                                 'items_id'  => new QueryParam(),
                             ],
                         ];
@@ -500,7 +500,7 @@ trait InventoryNetworkPort
                         'FROM'   => 'glpi_ipaddresses',
                         'WHERE'  => [
                             'items_id'  => $netname_id,
-                            'itemtype'  => 'NetworkName',
+                            'itemtype'  => NetworkName::class,
                         ],
                     ]);
 

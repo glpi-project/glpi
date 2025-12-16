@@ -41,7 +41,7 @@ use Safe\DateTime;
  */
 class NetworkPortMetrics extends CommonDBChild
 {
-    public static $itemtype        = 'NetworkPort';
+    public static $itemtype = NetworkPort::class;
     public static $items_id        = 'networkports_id';
     public $dohistory              = false;
 

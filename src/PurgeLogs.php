@@ -116,7 +116,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'SoftwareVersion',
+                    'itemtype'        => SoftwareVersion::class,
                     'linked_action'   => [
                         Log::HISTORY_INSTALL_SOFTWARE,
                         Log::HISTORY_UNINSTALL_SOFTWARE,
@@ -133,19 +133,19 @@ class PurgeLogs extends CommonDBTM
                 [
                     'OR' => [
                         [
-                            'itemtype'        => 'Computer',
+                            'itemtype'        => Computer::class,
                             'itemtype_link'   => 'Software',
                         ],
                         [
-                            'itemtype'        => 'Software',
+                            'itemtype'        => Software::class,
                             'itemtype_link'   => 'SoftwareVersion',
                         ],
                         [
-                            'itemtype'        => 'Software',
+                            'itemtype'        => Software::class,
                             'itemtype_link'   => 'Item_SoftwareVersion',
                         ],
                         [
-                            'itemtype'        => 'SoftwareVersion',
+                            'itemtype'        => SoftwareVersion::class,
                             'itemtype_link'   => 'Item_SoftwareVersion',
                         ],
                     ],
@@ -174,7 +174,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'Software',
+                    'itemtype'        => Software::class,
                     'itemtype_link'   => 'Infocom',
                     'linked_action'   => Log::HISTORY_ADD_SUBITEM,
                 ] + $month
@@ -183,7 +183,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'Infocom',
+                    'itemtype'        => Infocom::class,
                     'linked_action'   => Log::HISTORY_CREATE_ITEM,
                 ] + $month
             );
@@ -205,7 +205,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'User',
+                    'itemtype'        => User::class,
                     'itemtype_link'   => 'Profile_User',
                     'linked_action'   => [
                         Log::HISTORY_ADD_SUBITEM,
@@ -222,7 +222,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'User',
+                    'itemtype'        => User::class,
                     'itemtype_link'   => 'Group_User',
                     'linked_action'   => [
                         Log::HISTORY_ADD_SUBITEM,
@@ -239,7 +239,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'User',
+                    'itemtype'        => User::class,
                     'linked_action'   => Log::HISTORY_LOG_SIMPLE_MESSAGE,
                 ] + $month
             );
@@ -251,7 +251,7 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'User',
+                    'itemtype'        => User::class,
                     'linked_action'   => Log::HISTORY_ADD_RELATION,
                 ] + $month
             );

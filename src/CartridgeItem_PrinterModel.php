@@ -40,10 +40,10 @@
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'CartridgeItem';
+    public static $itemtype_1 = CartridgeItem::class;
     public static $items_id_1          = 'cartridgeitems_id';
 
-    public static $itemtype_2          = 'PrinterModel';
+    public static $itemtype_2 = PrinterModel::class;
     public static $items_id_2          = 'printermodels_id';
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 

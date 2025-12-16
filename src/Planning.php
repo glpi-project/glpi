@@ -578,7 +578,7 @@ JAVASCRIPT;
                     'title'      => $group->getName(),
                     'eventAllow' => false,
                     'is_visible' => $planning['display'],
-                    'itemtype'   => 'Group_User',
+                    'itemtype'   => Group_User::class,
                     'items_id'   => $group_id,
                 ];
                 foreach (array_keys($planning['users']) as $planning_id_user) {
@@ -591,7 +591,7 @@ JAVASCRIPT;
                         'id'         => $planning_id_user,
                         'title'      => $user->getName(),
                         'is_visible' => $planning['display'],
-                        'itemtype'   => 'User',
+                        'itemtype'   => User::class,
                         'items_id'   => $users_id,
                         'parentId'   => $planning_id,
                     ];

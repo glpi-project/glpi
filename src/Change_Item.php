@@ -41,7 +41,7 @@
 class Change_Item extends CommonItilObject_Item
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'Change';
+    public static $itemtype_1 = Change::class;
     public static $items_id_1          = 'changes_id';
 
     public static $itemtype_2          = 'itemtype';

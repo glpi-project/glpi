@@ -39,9 +39,9 @@ use function Safe\preg_match;
 
 class PDU_Rack extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Rack';
+    public static $itemtype_1 = Rack::class;
     public static $items_id_1 = 'racks_id';
-    public static $itemtype_2 = 'PDU';
+    public static $itemtype_2 = PDU::class;
     public static $items_id_2 = 'pdus_id';
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
     public static $mustBeAttached_1      = false;
@@ -222,7 +222,7 @@ class PDU_Rack extends CommonDBRelation
                 'SELECT' => 'items_id',
                 'FROM'   => Item_Rack::getTable(),
                 'WHERE'  => [
-                    'itemtype' => 'PDU',
+                    'itemtype' => PDU::class,
                 ],
             ]) as $racked
         ) {
@@ -395,7 +395,7 @@ class PDU_Rack extends CommonDBRelation
             'FROM' => Item_Rack::getTable(),
             'WHERE' => [
                 'racks_id' => $rack->getID(),
-                'itemtype' => 'PDU',
+                'itemtype' => PDU::class,
             ],
         ]);
         foreach ($iterator as $current) {

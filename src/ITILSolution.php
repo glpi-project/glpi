@@ -307,8 +307,8 @@ class ITILSolution extends CommonDBChild
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         // Add solution to duplicates
-        if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
-            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->item->getID(), [
+        if ($this->item instanceof Ticket && !isset($this->input['_linked_ticket'])) {
+            CommonITILObject_CommonITILObject::manageLinksOnChange(Ticket::class, $this->item->getID(), [
                 '_solution' => $this,
             ]);
         }
@@ -338,7 +338,7 @@ class ITILSolution extends CommonDBChild
         }
 
         if (
-            $this->input["itemtype"] == 'Ticket'
+            $this->input["itemtype"] == Ticket::class
             && $_SESSION['glpiset_solution_tech']
             && ($this->input['_disable_auto_assign'] ?? false) === false
         ) {
@@ -393,7 +393,7 @@ class ITILSolution extends CommonDBChild
 
                 return htmlescape($statuses[$value] ?? $value);
             case 'itemtype':
-                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
+                if (in_array($values['itemtype'], [Ticket::class, Change::class, Problem::class])) {
                     return htmlescape($values['itemtype']::getTypeName(1));
                 }
                 return htmlescape($values['itemtype']);
@@ -420,9 +420,9 @@ class ITILSolution extends CommonDBChild
                 return Dropdown::showFromArray($name, self::getStatuses(), $options);
             case 'itemtype':
                 return Dropdown::showFromArray($field, [
-                    'Ticket' => Ticket::getTypeName(1),
-                    'Change' => Change::getTypeName(1),
-                    'Problem' => Problem::getTypeName(1),
+                    Ticket::class => Ticket::getTypeName(1),
+                    Change::class => Change::getTypeName(1),
+                    Problem::class => Problem::getTypeName(1),
                 ], $options);
         }
 

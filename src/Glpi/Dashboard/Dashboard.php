@@ -520,7 +520,7 @@ class Dashboard extends CommonDBTM
      * IN
      * [
      *    [
-     *       'itemtype' => 'Entity'
+     *       'itemtype' => Entity::class
      *       'items_id' => yyy
      *    ], [
      *       ...

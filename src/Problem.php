@@ -581,7 +581,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
         ];
 
         if (Session::haveRight('change', READ)) {
-            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Problem'));
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd(self::class));
         }
 
         return $tab;
@@ -598,7 +598,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
 
         $tab = [];
 
-        if ($itemtype == "Ticket") {
+        if ($itemtype == Ticket::class) {
             $tab[] = [
                 'id'                 => 'problem',
                 'name'               => __('Problems'),

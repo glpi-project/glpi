@@ -39,7 +39,7 @@ use function Safe\preg_match;
 
 class Printer_CartridgeInfo extends CommonDBChild
 {
-    public static $itemtype        = 'Printer';
+    public static $itemtype = Printer::class;
     public static $items_id        = 'printers_id';
     public $dohistory              = true;
 

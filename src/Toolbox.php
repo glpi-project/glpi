@@ -1199,10 +1199,10 @@ class Toolbox
             $item = str_replace('\\', '/', strtolower($plug['class']));
         } else { // Standard case
             if ($itemtype == 'Cartridge') {
-                $itemtype = 'CartridgeItem';
+                $itemtype = CartridgeItem::class;
             }
             if ($itemtype == 'Consumable') {
-                $itemtype = 'ConsumableItem';
+                $itemtype = ConsumableItem::class;
             }
             $item = strtolower($itemtype);
             if (str_starts_with($itemtype, NS_GLPI)) {

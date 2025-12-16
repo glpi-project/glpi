@@ -36,6 +36,7 @@
 namespace Glpi\Console\Migration;
 
 use Change_Item;
+use Computer;
 use Contract_Item;
 use Database;
 use DatabaseInstance;
@@ -510,7 +511,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
                 'FROM'  => 'glpi_plugin_databases_databases_items',
                 'WHERE' => [
                     'plugin_databases_databases_id' => $instance_data['id'],
-                    'itemtype' => 'Computer',
+                    'itemtype' => Computer::class,
                 ],
             ]);
 

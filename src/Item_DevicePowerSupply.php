@@ -38,7 +38,7 @@
  **/
 class Item_DevicePowerSupply extends Item_Devices
 {
-    public static $itemtype_2 = 'DevicePowerSupply';
+    public static $itemtype_2 = DevicePowerSupply::class;
     public static $items_id_2 = 'devicepowersupplies_id';
 
     protected static $notable = false;

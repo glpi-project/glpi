@@ -43,7 +43,7 @@
  **/
 class Item_DevicePci extends Item_Devices
 {
-    public static $itemtype_2 = 'DevicePci';
+    public static $itemtype_2 = DevicePci::class;
     public static $items_id_2 = 'devicepcis_id';
 
     protected static $notable = false;

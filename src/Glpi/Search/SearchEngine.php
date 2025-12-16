@@ -36,6 +36,8 @@
 namespace Glpi\Search;
 
 use AllAssets;
+use Appliance;
+use Budget;
 use Change;
 use CommonDBTM;
 use CommonITILObject;
@@ -44,6 +46,7 @@ use CommonITILValidation;
 use Computer;
 use DisplayPreference;
 use Dropdown;
+use Enclosure;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -64,6 +67,8 @@ use Glpi\Search\Output\Xlsx;
 use Glpi\Search\Provider\SearchProviderInterface;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Socket;
+use Group;
+use Infocom;
 use ITILFollowup;
 use ITILSolution;
 use KnowbaseItem;
@@ -73,12 +78,15 @@ use Phone;
 use Plugin;
 use Printer;
 use Problem;
+use Project;
+use Rack;
 use RuntimeException;
 use Search;
 use Session;
 use Software;
 use Ticket;
 use Toolbox;
+use User;
 
 use function Safe\preg_match;
 
@@ -201,14 +209,14 @@ final class SearchEngine
         }
 
         $key_to_itemtypes = [
-            'appliance_types'      => ['Appliance'],
+            'appliance_types'      => [Appliance::class],
             'directconnect_types'  => Asset_PeripheralAsset::getPeripheralHostItemtypes(),
-            'infocom_types'        => ['Budget', 'Infocom'],
-            'assignable_types'     => ['Group', 'User'],
-            'project_asset_types'  => ['Project'],
-            'rackable_types'       => ['Enclosure', 'Rack'],
+            'infocom_types'        => [Budget::class, Infocom::class],
+            'assignable_types'     => [Group::class, User::class],
+            'project_asset_types'  => [Project::class],
+            'rackable_types'       => [Enclosure::class, Rack::class],
             'socket_types'         => [Socket::class],
-            'ticket_types'         => ['Change', 'Problem', 'Ticket'],
+            'ticket_types'         => [Change::class, Problem::class, Ticket::class],
         ];
 
         if (array_key_exists($config_key, $key_to_itemtypes)) {

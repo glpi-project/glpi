@@ -38,9 +38,9 @@
 class Group_RSSFeed extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'RSSFeed';
+    public static $itemtype_1 = RSSFeed::class;
     public static $items_id_1          = 'rssfeeds_id';
-    public static $itemtype_2          = 'Group';
+    public static $itemtype_2 = Group::class;
     public static $items_id_2          = 'groups_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;

@@ -94,7 +94,7 @@ if (!empty($targets)) {
     $items_id_target = array_column($targets, 'items_id');
 
     if (isset($target['groups_id'])) {
-        $itemtype = 'Group_User';
+        $itemtype = Group_User::class;
     }
 
     $approver_input = [

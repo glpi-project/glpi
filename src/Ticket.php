@@ -1404,7 +1404,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             && (in_array($this->input['status'], static::getSolvedStatusArray())
               || in_array($this->input['status'], static::getClosedStatusArray()))
         ) {
-            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->getID(), [
+            CommonITILObject_CommonITILObject::manageLinksOnChange(self::class, $this->getID(), [
                 'status'       => $this->input['status'],
             ]);
         }
@@ -1695,7 +1695,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
             $toadd = ['type'       => $type,
                 'items_id' => $this->fields['id'],
-                'itemtype' => 'Ticket',
+                'itemtype' => Ticket::class,
             ];
 
             $toadd["content"] = $this->input["_followup"]['content'];
@@ -2221,7 +2221,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 $rand = mt_rand();
                 $mergeparam = [
                     'name'         => "_mergeticket",
-                    'used'         => $ma->getItems()['Ticket'],
+                    'used'         => $ma->getItems()[self::class],
                     'displaywith'  => ['id'],
                     'rand'         => $rand,
                 ];
@@ -3094,7 +3094,7 @@ JAVASCRIPT;
         }
 
         if (Session::haveRight('change', READ)) {
-            $tab = array_merge($tab, Change::rawSearchOptionsToAdd('Ticket'));
+            $tab = array_merge($tab, Change::rawSearchOptionsToAdd(self::class));
         }
 
         $tab[] = [
@@ -3768,8 +3768,8 @@ JAVASCRIPT;
         // If a link is specified in the old format, convert it to the new one
         if (isset($options['_link']) && isset($options['_link']['tickets_id_2'])) {
             $options['_link'] = [
-                'itemtype_1' => 'Ticket',
-                'itemtype_2' => 'Ticket',
+                'itemtype_1' => self::class,
+                'itemtype_2' => self::class,
                 'items_id_2' => $options['_link']['tickets_id_2'],
             ];
         }
@@ -3941,7 +3941,7 @@ JAVASCRIPT;
                     'FROM'   => 'glpi_itilsolutions AS last_solution',
                     'WHERE'  => [
                         'last_solution.items_id'   => new QueryExpression($DB->quoteName('glpi_tickets.id')),
-                        'last_solution.itemtype'   => 'Ticket',
+                        'last_solution.itemtype'   => self::class,
                     ],
                     'ORDER'  => 'last_solution.id DESC',
                     'LIMIT'  => 1,
@@ -4790,7 +4790,7 @@ JAVASCRIPT;
         $number = count($iterator);
 
         if ($number > 0) {
-            Session::initNavigateListItems('Ticket');
+            Session::initNavigateListItems(self::class);
 
             $options = [
                 'criteria' => [],
@@ -4810,7 +4810,7 @@ JAVASCRIPT;
             self::commonListHeader();
 
             foreach ($iterator as $data) {
-                Session::addToNavigateListItems('Ticket', $data["id"]);
+                Session::addToNavigateListItems(self::class, $data["id"]);
                 self::showShort($data["id"]);
             }
             echo "</table></div>";
@@ -5763,7 +5763,7 @@ JAVASCRIPT;
                     }
                     //Build followup from the original ticket
                     $input = [
-                        'itemtype'        => 'Ticket',
+                        'itemtype'        => Ticket::class,
                         'items_id'        => $merge_target_id,
                         'content'         => htmlescape($ticket->fields['name']) . "<br /><br />" . $ticket->fields['content'],
                         'users_id'        => $ticket->fields['users_id_recipient'],
@@ -5780,7 +5780,7 @@ JAVASCRIPT;
                         // Copy any followups to the ticket
                         $tomerge = $fup->find([
                             'items_id' => $id,
-                            'itemtype' => 'Ticket',
+                            'itemtype' => Ticket::class,
                         ]);
                         foreach ($tomerge as $fup2) {
                             $fup2['items_id'] = $merge_target_id;
@@ -5819,14 +5819,14 @@ JAVASCRIPT;
                             throw new RuntimeException(sprintf(__('Not enough rights to merge tickets %d and %d'), $merge_target_id, $id), 2);
                         }
                         $tomerge = $document_item->find([
-                            'itemtype' => 'Ticket',
+                            'itemtype' => Ticket::class,
                             'items_id' => $id,
                             'NOT' => [
                                 'documents_id' => new QuerySubQuery([
                                     'SELECT' => 'documents_id',
                                     'FROM'   => $document_item->getTable(),
                                     'WHERE'  => [
-                                        'itemtype' => 'Ticket',
+                                        'itemtype' => Ticket::class,
                                         'items_id' => $merge_target_id,
                                     ],
                                 ]),

@@ -41,7 +41,7 @@
 class Item_Ticket extends CommonItilObject_Item
 {
     // From CommonDBRelation
-    public static $itemtype_1          = 'Ticket';
+    public static $itemtype_1 = Ticket::class;
     public static $items_id_1          = 'tickets_id';
 
     public static $itemtype_2          = 'itemtype';

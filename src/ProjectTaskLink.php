@@ -43,10 +43,10 @@
 class ProjectTaskLink extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'ProjectTask';
+    public static $itemtype_1 = ProjectTask::class;
     public static $items_id_1 = 'projecttasks_id_source';
 
-    public static $itemtype_2 = 'ProjectTask';
+    public static $itemtype_2 = ProjectTask::class;
     public static $items_id_2 = 'projecttasks_id_target';
 
     /**

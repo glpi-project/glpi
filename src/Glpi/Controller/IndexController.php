@@ -45,6 +45,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;
+use User;
 
 final class IndexController extends AbstractController
 {
@@ -119,7 +120,7 @@ final class IndexController extends AbstractController
             'text_login'          => $CFG_GLPI['text_login'],
             'show_lost_password'  => $CFG_GLPI["notifications_mailing"]
                 && countElementsInTable('glpi_notifications', [
-                    'itemtype' => 'User',
+                    'itemtype' => User::class,
                     'event' => 'passwordforget',
                     'is_active' => 1,
                 ]),

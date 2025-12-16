@@ -39,7 +39,7 @@
 class ChangeValidation extends CommonITILValidation
 {
     // From CommonDBChild
-    public static $itemtype           = 'Change';
+    public static $itemtype = Change::class;
     public static $items_id           = 'changes_id';
 
     public static $rightname                 = 'changevalidation';

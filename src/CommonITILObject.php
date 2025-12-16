@@ -721,7 +721,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'] ?? null;
         $ticket = new Ticket();
         $ticket->getEmpty();
-        if (in_array($this->getType(), ['Change', 'Problem']) && $tickets_id) {
+        if (in_array($this->getType(), [Change::class, Problem::class]) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
 
             // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
@@ -760,7 +760,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $problems_id = $options['problems_id'] ?? $options['_problems_id'] ?? null;
         $problem = new Problem();
         $problem->getEmpty();
-        if ($this->getType() == "Change" && $problems_id) {
+        if ($this instanceof Change && $problems_id) {
             $problem->getFromDB($problems_id);
 
             $options['content']             = $problem->fields['content'];
@@ -2915,7 +2915,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         $canpriority = true;
-        if ($this->getType() == 'Ticket') {
+        if ($this instanceof Ticket) {
             $canpriority = Session::haveRight(Ticket::$rightname, Ticket::CHANGEPRIORITY);
         }
 
@@ -6798,7 +6798,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item_ticket = new Item_Ticket();
                 $data = $item_ticket->find(['tickets_id' => $item->fields['id']]);
 
-                if ($item->getType() == 'Ticket') {
+                if ($item instanceof Ticket) {
                     if (!empty($data)) {
                         foreach ($data as $val) {
                             if (!empty($val["itemtype"]) && ($val["items_id"] > 0)) {
@@ -6956,7 +6956,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $items[__('Assigned')]           = "users_id_assign";
 
         if (!$ticket_stats) {
-            if (static::getType() == 'Ticket') {
+            if (static::class == Ticket::class) {
                 $items[_n('Associated element', 'Associated elements', Session::getPluralNumber())] = "";
             }
             $items[_n('Category', 'Categories', 1)]           = "glpi_itilcategories.completename";
@@ -8158,7 +8158,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
 
         $RESTRICT = [];
-        if ($with_private !== true && $this->getType() == 'Ticket') {
+        if ($with_private !== true && $this instanceof Ticket) {
             //No private tasks for Problems and Changes
             $RESTRICT['is_private'] = 0;
         }
@@ -8482,13 +8482,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $fk = self::getForeignKeyField();
         $gtable = str_replace('glpi_', 'glpi_groups_', static::getTable());
         $itable = str_replace('glpi_', 'glpi_items_', static::getTable());
-        if (self::getType() == 'Change') {
+        if (static::class == Change::class) {
             $gtable = 'glpi_changes_groups';
             $itable = 'glpi_changes_items';
         }
         $utable = static::getTable() . '_users';
         $stable = static::getTable() . '_suppliers';
-        if (self::getType() == 'Ticket') {
+        if (static::class == Ticket::class) {
             $stable = 'glpi_suppliers_tickets';
         }
         $table = static::getTable();
@@ -8740,15 +8740,15 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public static function getItemsTable()
     {
-        switch (static::getType()) {
-            case 'Change':
+        switch (static::class) {
+            case Change::class:
                 return 'glpi_changes_items';
-            case 'Problem':
+            case Problem::class:
                 return 'glpi_items_problems';
-            case 'Ticket':
+            case Ticket::class:
                 return 'glpi_items_tickets';
             default:
-                throw new RuntimeException('Unknown ITIL type ' . static::getType());
+                throw new RuntimeException('Unknown ITIL type ' . static::class);
         }
     }
 
@@ -10758,7 +10758,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $tabentities = [];
 
         // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
-        $config_suffix = static::getType() === 'Ticket' ? '' : ('_' . strtolower(static::getType()));
+        $config_suffix = static::class === Ticket::class ? '' : ('_' . strtolower(static::class));
 
         $rate = Entity::getUsedConfig('inquest_config' . $config_suffix, 0, 'inquest_rate' . $config_suffix);
         if ($rate > 0) {
@@ -10941,7 +10941,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
-        $config_suffix = $this->getType() === 'Ticket' ? '' : ('_' . strtolower($this->getType()));
+        $config_suffix = $this instanceof Ticket ? '' : ('_' . strtolower($this->getType()));
         $rate          = Entity::getUsedConfig(
             'inquest_config' . $config_suffix,
             $this->fields['entities_id'],

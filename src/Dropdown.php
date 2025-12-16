@@ -4491,14 +4491,14 @@ HTML;
                                     $all_devices['Software'] = [
                                         'text' => __('Installed software'),
                                         'children' => [],
-                                        'itemtype' => 'Software',
+                                        'itemtype' => Software::class,
                                     ];
                                 }
 
                                 $all_devices['Software']['children'][] = [
                                     'id' => "Software_" . $data["id"],
                                     'text' => $output,
-                                    'itemtype' => 'Software',
+                                    'itemtype' => Software::class,
                                     'items_id' => $data["id"],
                                 ];
                             }
@@ -4800,7 +4800,7 @@ HTML;
         global $CFG_GLPI;
 
         // check if asked itemtype is the one originaly requested by the form
-        if (!Session::validateIDOR($post + ['itemtype' => 'User', 'right' => ($post['right'] ?? "")])) {
+        if (!Session::validateIDOR($post + ['itemtype' => User::class, 'right' => ($post['right'] ?? "")])) {
             return false;
         }
 
@@ -5012,7 +5012,7 @@ HTML;
             $group_idor = Session::getNewIDORToken('Group', ['entity_restrict' => $entity_restrict, 'condition' => $post['condition']]);
 
             $groups = Dropdown::getDropdownValue([
-                'itemtype'            => 'Group',
+                'itemtype'            => Group::class,
                 '_idor_token'         => $group_idor,
                 'display_emptychoice' => false,
                 'searchText'          => $post['searchText'],

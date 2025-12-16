@@ -41,7 +41,7 @@
 class ProblemCost extends CommonITILCost
 {
     // From CommonDBChild
-    public static $itemtype  = 'Problem';
+    public static $itemtype = Problem::class;
     public static $items_id  = 'problems_id';
 
 

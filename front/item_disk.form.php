@@ -113,7 +113,7 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    $itemtype = "computer";
+    $itemtype = Computer::class;
     if ($_GET['id'] != '') {
         $disk->getFromDB($_GET['id']);
     }

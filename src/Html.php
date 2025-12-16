@@ -39,7 +39,7 @@ use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Console\Application;
 use Glpi\Dashboard\Grid;
-use Glpi\Debug\Profile;
+use Glpi\Debug\Profile as DebugProfile;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
@@ -1228,7 +1228,7 @@ TWIG,
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
 
         if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
-            $tpl_vars['glpi_request_id'] = Profile::getCurrent()->getID();
+            $tpl_vars['glpi_request_id'] = DebugProfile::getCurrent()->getID();
         }
 
         if ($display) {
@@ -1279,8 +1279,8 @@ TWIG,
             'helpdesk' => [
                 'title' => __('Assistance'),
                 'types' => [
-                    'Ticket', ServiceCatalog::class, 'Problem', 'Change',
-                    'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange',
+                    Ticket::class, ServiceCatalog::class, Problem::class, Change::class,
+                    Planning::class, Stat::class, TicketRecurrent::class, RecurrentChange::class,
                 ],
                 'icon'    => 'ti ti-headset',
             ],
@@ -1294,18 +1294,18 @@ TWIG,
             'management' => [
                 'title' => __('Management'),
                 'types' => [
-                    'SoftwareLicense', 'Budget', 'Supplier', 'Contact', 'Contract',
-                    'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
-                    'Appliance', 'Database',
+                    SoftwareLicense::class, Budget::class, Supplier::class, Contact::class, Contract::class,
+                    Document::class, Line::class, Certificate::class, Datacenter::class, Cluster::class, Domain::class,
+                    Appliance::class, Database::class,
                 ],
                 'icon'  => 'ti ti-wallet',
             ],
             'tools' => [
                 'title' => __('Tools'),
                 'types' => [
-                    'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
-                    'ReservationItem', 'Report',
-                    'SavedSearch', 'Impact',
+                    Project::class, Reminder::class, RSSFeed::class, KnowbaseItem::class,
+                    ReservationItem::class, Report::class,
+                    SavedSearch::class, Impact::class,
                 ],
                 'icon' => 'ti ti-briefcase',
             ],
@@ -1317,8 +1317,8 @@ TWIG,
             'admin' => [
                 'title' => __('Administration'),
                 'types' => [
-                    'User', 'Group', 'Entity', 'Rule',
-                    'Profile', 'QueuedNotification', LogViewer::class,
+                    User::class, Group::class, Entity::class, Rule::class,
+                    Profile::class, QueuedNotification::class, LogViewer::class,
                     Inventory::class, Form::class,
                 ],
                 'icon'  => 'ti ti-shield-check',
@@ -1327,9 +1327,9 @@ TWIG,
                 'title' => __('Setup'),
                 'types' => [
                     AssetDefinition::class,
-                    'CommonDropdown', 'CommonDevice', 'Notification', 'Webhook',
-                    'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
-                    'OAuthClient', 'MailCollector', 'Link', 'Plugin',
+                    CommonDropdown::class, CommonDevice::class, Notification::class, Webhook::class,
+                    SLM::class, Config::class, FieldUnicity::class, CronTask::class, Auth::class,
+                    OAuthClient::class, MailCollector::class, Link::class, Plugin::class,
                 ],
                 'icon'  => 'ti ti-settings',
             ],
@@ -1505,7 +1505,7 @@ TWIG,
         ) {
             $menu['tickets'] = [
                 'default' => '/front/ticket.php',
-                'title'   => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+                'title'   => Ticket::getTypeName(Session::getPluralNumber()),
                 'icon'    => Ticket::getIcon(),
                 'content' => [
                     'ticket' => [
@@ -1752,7 +1752,7 @@ TWIG,
             $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
             && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
         ) {
-            $tpl_vars['debug_info'] = Profile::getCurrent()->getDebugInfo();
+            $tpl_vars['debug_info'] = DebugProfile::getCurrent()->getDebugInfo();
         }
 
         TemplateRenderer::getInstance()->display('layout/parts/page_footer.html.twig', $tpl_vars);

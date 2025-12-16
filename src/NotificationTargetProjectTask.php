@@ -121,7 +121,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'User',
+                'itemtype'        => User::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -151,7 +151,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'Group',
+                'itemtype'        => Group::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -176,7 +176,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projectteams',
             'WHERE'  => [
-                'itemtype'    => 'Group',
+                'itemtype'    => Group::class,
                 'projects_id' => $this->obj->fields['projects_id'],
             ],
         ]);
@@ -200,7 +200,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'Contact',
+                'itemtype'        => Contact::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -230,7 +230,7 @@ class NotificationTargetProjectTask extends NotificationTarget
             'SELECT' => 'items_id',
             'FROM'   => 'glpi_projecttaskteams',
             'WHERE'  => [
-                'itemtype'        => 'Supplier',
+                'itemtype'        => Supplier::class,
                 'projecttasks_id' => $this->obj->fields['id'],
             ],
         ]);
@@ -685,11 +685,12 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
 
         //Tags with just lang
-        $tags = ['projecttask.entity'   => Entity::getTypeName(1),
+        $tags = [
+            'projecttask.entity'   => Entity::getTypeName(1),
             'projecttask.log'      => __('Historical'),
             'projecttask.tasks'    => _n('Task', 'Tasks', Session::getPluralNumber()),
             'projecttask.team'     => ProjectTeam::getTypeName(1),
-            'projecttask.tickets'  => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'projecttask.tickets'  => Ticket::getTypeName(Session::getPluralNumber()),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -701,9 +702,10 @@ class NotificationTargetProjectTask extends NotificationTarget
         }
 
         //Foreach global tags
-        $tags = ['log'         => __('Historical'),
+        $tags = [
+            'log'         => __('Historical'),
             'tasks'       => _n('Task', 'Tasks', Session::getPluralNumber()),
-            'tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
+            'tickets'     => Ticket::getTypeName(Session::getPluralNumber()),
             'teammembers' => _n('Team member', 'Team members', Session::getPluralNumber()),
         ];
 

@@ -44,7 +44,7 @@ class Item_DeviceSimcard extends Item_Devices implements AssignableItemInterface
 {
     use AssignableItem;
 
-    public static $itemtype_2 = 'DeviceSimcard';
+    public static $itemtype_2 = DeviceSimcard::class;
     public static $items_id_2 = 'devicesimcards_id';
 
     protected static $notable = false;

@@ -762,9 +762,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         ];
 
         $itil_count_types = [
-            'Change'  => _x('quantity', 'Number of changes'),
-            'Problem' => _x('quantity', 'Number of problems'),
-            'Ticket'  => _x('quantity', 'Number of tickets'),
+            Change::class  => _x('quantity', 'Number of changes'),
+            Problem::class => _x('quantity', 'Number of problems'),
+            Ticket::class  => _x('quantity', 'Number of tickets'),
         ];
         $index = 92;
         foreach ($itil_count_types as $itil_type => $label) {
@@ -1468,7 +1468,7 @@ TWIG, $twig_params);
                     foreach ($project->team[$type] as $data) {
                         $item->getFromDB($data['items_id']);
                         $entries[] = [
-                            'itemtype' => 'ProjectTeam',
+                            'itemtype' => ProjectTeam::class,
                             'id' => $data['id'],
                             'type' => $item::getTypeName(1),
                             'member' => $item->getLink(),
@@ -1726,14 +1726,14 @@ TWIG, $twig_params);
 
         foreach ($projects as $subproject) {
             $item = array_merge($subproject, [
-                '_itemtype' => 'Project',
+                '_itemtype' => self::class,
                 '_team'     => [],
                 '_steps'    => ProjectTask::getAllForProject($subproject['id']),
             ]);
             if ($ID <= 0 && $subproject['projects_id'] > 0) {
                 if (isset($projects[$subproject['projects_id']])) {
                     $item['_parents_id'] = $projects[$subproject['projects_id']]['id'];
-                    $item['_parent_itemtype'] = 'Project';
+                    $item['_parent_itemtype'] = self::class;
                     $item['_parent_name'] = $projects[$subproject['projects_id']]['name'];
                 }
             }
@@ -1777,7 +1777,7 @@ TWIG, $twig_params);
             ]);
             if ($ID <= 0) {
                 $item['_parents_id'] = $projects[$subtask['projects_id']]['id'];
-                $item['_parent_itemtype'] = 'Project';
+                $item['_parent_itemtype'] = self::class;
                 $item['_parent_name'] = $projects[$subtask['projects_id']]['name'];
             }
 
@@ -1867,7 +1867,7 @@ TWIG, $twig_params);
             // Core content
             $content .= "<div class='kanban-core-content'>";
             if (isset($item['_parents_id'])) {
-                $childref = $itemtype === 'Project' ? __('Subproject') : __('Subtask');
+                $childref = $itemtype === Project::class ? __('Subproject') : __('Subtask');
                 $parentname = $item['_parent_name'] ?? $item['_parents_id'];
 
                 $content .= "<div>";
@@ -1979,7 +1979,7 @@ TWIG, $twig_params);
         // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
         unset($team_roles[Team::ROLE_OWNER]);
 
-        $supported_itemtypes['Project'] = [
+        $supported_itemtypes[Project::class] = [
             'name'   => self::getTypeName(1),
             'icon'   => self::getIcon(),
             'fields' => [
@@ -2021,7 +2021,7 @@ TWIG, $twig_params);
         // Owner cannot be set from the Kanban view yet because it is a special case (One owner user and one owner group)
         unset($team_roles[Team::ROLE_OWNER]);
 
-        $supported_itemtypes['ProjectTask'] = [
+        $supported_itemtypes[ProjectTask::class] = [
             'name'   => ProjectTask::getTypeName(1),
             'icon'   => ProjectTask::getIcon(),
             'fields' => [
@@ -2059,7 +2059,7 @@ TWIG, $twig_params);
             'allow_bulk_add'  => $ID > 0,
         ];
         if ($ID <= 0) {
-            $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
+            $supported_itemtypes[ProjectTask::class]['fields']['projects_id'] = [
                 'type'   => 'raw',
                 'value'  => self::dropdown([
                     'display' => false,
@@ -2106,7 +2106,7 @@ TWIG, $twig_params);
             'max_team_images'             => 3,
             'column_field'                => $column_field,
             'item'                        => [
-                'itemtype'  => 'Project',
+                'itemtype'  => Project::class,
                 'items_id'  => $ID,
             ],
             'supported_filters'           => [
@@ -2270,7 +2270,7 @@ TWIG, $twig_params);
                 'FROM' => ProjectTeam::getTable(),
                 'WHERE' => [
                     'OR' => [
-                        ['itemtype' => 'Group', 'items_id' => $groups_id],
+                        ['itemtype' => Group::class, 'items_id' => $groups_id],
                     ],
                 ],
             ]);
@@ -2339,11 +2339,11 @@ TWIG, $twig_params);
 
         if ($search_in_team) {
             $crit = [
-                ['itemtype' => 'User', 'items_id' => $users_id],
+                ['itemtype' => User::class, 'items_id' => $users_id],
             ];
 
             if ($search_in_groups) {
-                $crit[] = ['itemtype' => 'Group', 'items_id' => $groups_sub_query];
+                $crit[] = ['itemtype' => Group::class, 'items_id' => $groups_sub_query];
             }
 
             $team_sub_query = new QuerySubQuery([
