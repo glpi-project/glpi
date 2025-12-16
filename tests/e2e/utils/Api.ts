@@ -54,7 +54,7 @@ export class Api
         return response.data;
     }
 
-     public async createItem(itemtype: string, fields: object): Promise<number>
+    public async createItem(itemtype: string, fields: object): Promise<number>
     {
         const response = await this.doCrudRequest('POST', itemtype, fields);
         if (response.status !== 201) {
