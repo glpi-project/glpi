@@ -30,6 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
+import { randomUUID } from 'crypto';
 import { test, expect } from '../fixtures/glpi_fixture';
 import { Profiles } from '../utils/Profiles';
 
@@ -90,5 +91,18 @@ test('logged and anonymous page in the same test', async ({page, profile, anonym
 
     await anonymousPage.goto('');
     await expect(anonymousPage).toHaveTitle("Authentication - GLPI");
+});
+
+test('create a computer with the API', async ({page, profile, api}) => {
+    const computer_name = `My computer ${randomUUID()}`;
+    const id = await api.createItem("Computer", {
+        name: computer_name,
+        is_recursive: true,
+    });
+
+    await profile.set(Profiles.SuperAdmin);
+    await page.goto(`/front/computer.form.php?id=${id}`);
+    const name_input = page.getByRole('main').getByRole('textbox', {name: "Name", exact: true});
+    await expect(name_input).toHaveValue(computer_name);
 });
 
