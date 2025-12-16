@@ -26,8 +26,10 @@ phpunit.xml
 /nbproject
 .composer.hash
 /**/*.min.css
+!/tests/**/*.min.css
 /css/lib/
 /**/*.min.js
+!/tests/**/*.min.js
 /node_modules/
 .package.hash
 /public/build/
