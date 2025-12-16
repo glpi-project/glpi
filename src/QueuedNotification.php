@@ -631,6 +631,11 @@ class QueuedNotification extends CommonDBTM
         }
         $cron_status = 0;
 
+        $memory_limit = (int) Toolbox::getMemoryLimit();
+        if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
+            Toolbox::safeIniSet('memory_limit', '512M');
+        }
+
         // Send notifications at least 1 minute after adding in queue to be sure that process on it is finished
         $send_time = date("Y-m-d H:i:s", strtotime("+1 minutes"));
 

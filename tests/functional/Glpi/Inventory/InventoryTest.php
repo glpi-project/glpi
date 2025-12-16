@@ -5916,9 +5916,6 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $rule = new \Rule();
         $criteria = new \RuleCriteria();
         $action = new \RuleAction();
-        $collection = new \RuleDictionnaryManufacturerCollection();
-        $manufacturer = new \Manufacturer();
-        //$manufacturers_id = $manufacturer->importExternal('Mozilla');
 
         $rules_id = $rule->add(['name' => 'Set manufacturer',
             'is_active' => 1,
@@ -9641,5 +9638,91 @@ JSON;
 
         //check no location has been added
         $this->assertCount($count_locations, $location->find());
+    }
+
+    public function testManufacturersRegexpRules()
+    {
+        //create rule
+        $input_rule = [
+            'is_active' => 1,
+            'name'      => 'Reword manufacturers',
+            'match'     => 'AND',
+            'sub_type'  => \RuleDictionnaryManufacturer::class,
+        ];
+
+        $rule = new \Rule();
+        $rules_id = $rule->add($input_rule);
+        $this->assertGreaterThan(0, $rules_id);
+
+        //create criteria
+        $input_criteria = [
+            'rules_id'  => $rules_id,
+            'criteria'      => 'name',
+            'condition' => \Rule::REGEX_MATCH,
+            'pattern' => '/(.*)-/',
+        ];
+        $rule_criteria = new \RuleCriteria();
+        $rule_criteria_id = $rule_criteria->add($input_criteria);
+        $this->assertGreaterThan(0, $rule_criteria_id);
+
+        //create action
+        $input_action = [
+            'rules_id'  => $rules_id,
+            'action_type' => 'regex_result',
+            'field' => 'name',
+            'value' => '#0',
+        ];
+        $rule_action = new \RuleAction();
+        $rule_action_id = $rule_action->add($input_action);
+        $this->assertGreaterThan(0, $rule_action_id);
+
+        $test_manufacturer = '-Manufacturer-XYZ';
+        $json_source_orig = <<<JSON
+{
+    "content": {
+        "bios": {
+            "assettag": "COMP1",
+            "bdate": "2016-01-03",
+            "bmanufacturer": "%manufacturer%",
+            "bversion": "1.3.3",
+            "mmanufacturer": "%manufacturer%",
+            "mmodel": "07TYC2",
+            "msn": "\/2FAGP34\/CN124536460043\/",
+            "skunumber": "0704",
+            "smanufacturer": "%manufacturer%",
+            "smodel": "XPS 13 9350",
+            "ssn": "2FAGP34"
+        },
+        "hardware": {
+            "name": "Test manufacturer PC",
+            "uuid": "4BDRGGFE-0046-4710-8047-B2C04F503732"
+        },
+        "versionclient": "GLPI-Agent_v1.10-dev"
+    },
+    "deviceid": "acomputer-2021-01-26-14-32-36",
+    "action": "inventory",
+    "itemtype": "Computer"
+}
+JSON;
+
+        $json_source = str_replace('%manufacturer%', $test_manufacturer, $json_source_orig);
+        $inv = $this->doInventory(json_decode($json_source));
+
+        //check created computer
+        $computer = $inv->getItem();
+        $manufacturer = new \Manufacturer();
+        $this->assertSame(0, $computer->fields['manufacturers_id']);
+
+        $test_manufacturer = 'AnotherManufacturer-TestInc-1234';
+        $json_source = str_replace('%manufacturer%', $test_manufacturer, $json_source_orig);
+        $inv = $this->doInventory(json_decode($json_source));
+
+        //check created computer
+        $computer = $inv->getItem();
+        $manufacturer = new \Manufacturer();
+        $this->assertNotEquals(0, $computer->fields['manufacturers_id']);
+        $this->assertTrue($manufacturer->getFromDB($computer->fields['manufacturers_id']));
+        $this->assertSame('AnotherManufacturer', $manufacturer->fields['name']);
+
     }
 }
