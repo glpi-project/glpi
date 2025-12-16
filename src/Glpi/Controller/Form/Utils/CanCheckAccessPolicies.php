@@ -35,6 +35,7 @@
 namespace Glpi\Controller\Form\Utils;
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\SessionExpiredException;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Form;
@@ -59,9 +60,19 @@ trait CanCheckAccessPolicies
                 url_parameters: $url_parameters,
             );
         }
-
+        // If the user is not logged in and the form require a valid session,
+        // redirect him to the login page instead.
+        // Note that the session validity will still be checked by the `canAnswerForm`
+        if (
+            !Session::isAuthenticated()
+            && !$form_access_manager->allowUnauthenticatedAccess($form)
+        ) {
+            // Will trigger a redirection to the loggin page
+            throw new SessionExpiredException();
+        }
         // Must be authenticated here
         if (!$form_access_manager->canAnswerForm($form, $parameters)) {
+
             throw new AccessDeniedHttpException();
         }
     }
