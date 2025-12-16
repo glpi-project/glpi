@@ -966,29 +966,36 @@ class Session
     {
         global $CFG_GLPI;
 
-        // Extract accepted languages from headers
-        // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
-        $accepted_languages = [];
-        $values = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
-        foreach ($values as $value) {
-            $parts = explode(';q=', trim($value));
-            $language = str_replace('-', '_', $parts[0]);
-            $qfactor  = $parts[1] ?? 1; //q-factor defaults to 1
-            $accepted_languages[$language] = $qfactor;
-        }
-        arsort($accepted_languages); // sort by qfactor
+        $supported_locales = array_keys($CFG_GLPI['languages'] ?? []);
 
-        foreach (array_keys($accepted_languages) as $language) {
-            // Direct match with locale key (e.g., 'pl_PL')
-            if (array_key_exists($language, $CFG_GLPI['languages'])) {
-                return $language;
-            }
+        if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            // Use Symfony Request to parse Accept-Language header
+            // Will normalizes language tags (pl-PL -> pl_PL)
+            $request = Request::createFromGlobals();
+            $accepted_languages = $request->getLanguages();
 
-            // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
-            if (isset($CFG_GLPI['main_languages'][$language])) {
-                $main_lang = $CFG_GLPI['main_languages'][$language];
-                if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
-                    return $main_lang;
+            foreach ($accepted_languages as $language) {
+                // Direct match with locale key
+                if (in_array($language, $supported_locales, true)) {
+                    return $language;
+                }
+
+                // Fallback for short language codes (pl -> pl_PL)
+                if (!str_contains($language, '_')) {
+                    // First using language_LANGUAGE
+                    $canonical_locale = $language . '_' . strtoupper($language);
+                    if (in_array($canonical_locale, $supported_locales, true)) {
+                        return $canonical_locale;
+                    }
+
+                    // Otherwise fallback to the first matching locale
+                    // e.g., 'en' -> 'en_GB' (since en_EN doesn't exist)
+                    $prefix = $language . '_';
+                    foreach ($supported_locales as $locale_key) {
+                        if (str_starts_with($locale_key, $prefix)) {
+                            return $locale_key;
+                        }
+                    }
                 }
             }
         }
