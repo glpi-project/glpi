@@ -168,6 +168,7 @@ $CFG_GLPI['main_languages'] = [
     'mn' => 'mn_MN',
     'nl' => 'nl_NL',
     'nb' => 'nb_NO',
+    'nn' => 'nn_NO',
     'fa' => 'fa_IR',
     'pl' => 'pl_PL',
     'pt' => 'pt_PT',
