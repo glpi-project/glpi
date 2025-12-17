@@ -160,7 +160,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             [
                 'entities_id' => $root_entity_id,
                 'softwareversions_id' => $software_version->getID(),
-                'itemtype' => $item_1->getType(),
+                'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
             ]
         );
@@ -169,7 +169,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             [
                 'entities_id' => $root_entity_id,
                 'softwareversions_id' => $software_version->getID(),
-                'itemtype' => $item_2->getType(),
+                'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
             ]
         );
@@ -185,7 +185,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             Item_SoftwareLicense::class,
             [
                 'softwarelicenses_id' => $software_license->getID(),
-                'itemtype' => $item_1->getType(),
+                'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
             ]
         );
@@ -193,7 +193,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             Item_SoftwareLicense::class,
             [
                 'softwarelicenses_id' => $software_license->getID(),
-                'itemtype' => $item_2->getType(),
+                'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
             ]
         );
@@ -263,7 +263,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             [
                 'entities_id' => $entity,
                 'softwareversions_id' => $software_version->getID(),
-                'itemtype' => $asset->getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getID(),
             ]
         );
@@ -279,7 +279,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             Item_SoftwareLicense::class,
             [
                 'softwarelicenses_id' => $software_license->getID(),
-                'itemtype' => $asset->getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getID(),
             ]
         );
@@ -350,7 +350,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             [
                 'entities_id' => $entity,
                 'softwareversions_id' => $software_version->getID(),
-                'itemtype' => $asset->getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getID(),
             ]
         );
@@ -365,7 +365,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             Item_SoftwareLicense::class,
             [
                 'softwarelicenses_id' => $software_license->getID(),
-                'itemtype' => $asset->getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getID(),
             ]
         );
@@ -477,13 +477,13 @@ class HasSoftwaresCapacityTest extends DbTestCase
                     [
                         'entities_id' => $entity,
                         'softwareversions_id' => $software1_version1->getID(),
-                        'itemtype' => $asset->getType(),
+                        'itemtype' => $asset::class,
                         'items_id' => $asset->getID(),
                     ],
                     [
                         'entities_id' => $entity,
                         'softwareversions_id' => $software1_version2->getID(),
-                        'itemtype' => $asset->getType(),
+                        'itemtype' => $asset::class,
                         'items_id' => $asset->getID(),
                     ],
                 ]
@@ -508,7 +508,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
                 [
                     'entities_id' => $entity,
                     'softwareversions_id' => $software2_version->getID(),
-                    'itemtype' => $asset->getType(),
+                    'itemtype' => $asset::class,
                     'items_id' => $asset->getID(),
                 ]
             );
@@ -516,7 +516,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
                 Item_SoftwareLicense::class,
                 [
                     'softwarelicenses_id' => $software2_license->getID(),
-                    'itemtype' => $asset->getType(),
+                    'itemtype' => $asset::class,
                     'items_id' => $asset->getID(),
                 ]
             );
@@ -540,12 +540,12 @@ class HasSoftwaresCapacityTest extends DbTestCase
                 [
                     [
                         'softwarelicenses_id' => $software3_license1->getID(),
-                        'itemtype' => $asset->getType(),
+                        'itemtype' => $asset::class,
                         'items_id' => $asset->getID(),
                     ],
                     [
                         'softwarelicenses_id' => $software3_license2->getID(),
-                        'itemtype' => $asset->getType(),
+                        'itemtype' => $asset::class,
                         'items_id' => $asset->getID(),
                     ],
                 ]

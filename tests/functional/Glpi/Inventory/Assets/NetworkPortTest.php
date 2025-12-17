@@ -479,7 +479,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //no lock
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($networkport));
-        $this->assertEmpty($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']));
+        $this->assertEmpty($lockedfield->getLockedValues($networkport::class, $networkport->fields['id']));
 
         //change 'date' to yesterday to get new metric after reimport (2nd step)
         $currentDate = new DateTime(date('Y-m-d'));
@@ -536,7 +536,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //no lock
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($networkport));
-        $this->assertEmpty($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']));
+        $this->assertEmpty($lockedfield->getLockedValues($networkport::class, $networkport->fields['id']));
 
         //Third step : import NetworkEquipement again but with new metrics
         //check that the previous data are updated
@@ -585,7 +585,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         //no lock
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($networkport));
-        $this->assertEmpty($lockedfield->getLockedValues($networkport->getType(), $networkport->fields['id']));
+        $this->assertEmpty($lockedfield->getLockedValues($networkport::class, $networkport->fields['id']));
     }
 
     public function testVlanChange()
@@ -1521,7 +1521,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertCount(9, $unmanaged->find());
 
         $port = new \NetworkPort();
-        $this->assertTrue($port->getFromDBByCrit(['itemtype' => $unmanaged->getType(), 'mac' => '00:01:23:45:67:89']));
+        $this->assertTrue($port->getFromDBByCrit(['itemtype' => $unmanaged::class, 'mac' => '00:01:23:45:67:89']));
         $this->assertTrue($unmanaged->getFromDB($port->fields['items_id']));
 
         //convert to NetworkEquipment

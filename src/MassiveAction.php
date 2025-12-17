@@ -621,7 +621,7 @@ class MassiveAction
                 return false;
             }
         } elseif ($item instanceof CommonDBTM) {
-            $itemtype = $item->getType();
+            $itemtype = $item::class;
         } else {
             return false;
         }
@@ -1075,14 +1075,14 @@ class MassiveAction
 
                 $plugdisplay = false;
                 if (
-                    ($plug = isPluginItemType($item->getType()))
+                    ($plug = isPluginItemType($item::class))
                     // Specific for plugin which add link to core object
                     || ($plug = isPluginItemType(getItemTypeForTable($search['table'])))
                 ) {
                     $plugdisplay = Plugin::doOneHook(
                         $plug['plugin'],
                         Hooks::AUTO_MASSIVE_ACTIONS_FIELDS_DISPLAY,
-                        ['itemtype' => $item->getType(),
+                        ['itemtype' => $item::class,
                             'options'  => $search,
                         ]
                     );
@@ -1104,7 +1104,7 @@ class MassiveAction
                     if (isset($ma->POST['options'])) {
                         $options = $ma->POST['options'];
                     }
-                    switch ($item->getType()) {
+                    switch ($item::class) {
                         case Change::class:
                             $search['condition'][] = 'is_change';
                             break;
@@ -1346,13 +1346,13 @@ class MassiveAction
                 foreach ($ids as $id) {
                     if ($item->can($id, DELETE)) {
                         if ($item->delete(["id" => $id])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -1362,13 +1362,13 @@ class MassiveAction
                 foreach ($ids as $id) {
                     if ($item->can($id, DELETE)) {
                         if ($item->restore(["id" => $id])) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -1397,7 +1397,7 @@ class MassiveAction
                             if ($item->haveChildren()) {
                                 if ($action != 'purge_but_item_linked') {
                                     $force = false;
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage(__s("You can't delete that item by massive actions, because it has sub-items"));
                                     $ma->addMessage(__s("but you can do it by the form of the item"));
                                     continue;
@@ -1406,7 +1406,7 @@ class MassiveAction
                             if ($item->isUsed()) {
                                 if ($action != 'purge_but_item_linked') {
                                     $force = false;
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage(__s("You can't delete that item, because it is used for one or more items"));
                                     $ma->addMessage(__s("but you can do it by the form of the item"));
                                     continue;
@@ -1414,13 +1414,13 @@ class MassiveAction
                             }
                         }
                         if ($item->delete($delete_array, $force)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -1429,16 +1429,16 @@ class MassiveAction
             case 'update':
                 if (
                     (!isset($ma->POST['search_options']))
-                    || (!isset($ma->POST['search_options'][$item->getType()]))
+                    || (!isset($ma->POST['search_options'][$item::class]))
                 ) {
                     return false;
                 }
-                $index     = $ma->POST['search_options'][$item->getType()];
-                $searchopt = Search::getCleanedOptions($item->getType(), UPDATE);
+                $index     = $ma->POST['search_options'][$item::class];
+                $searchopt = Search::getCleanedOptions($item::class, UPDATE);
                 $input     = $ma->POST;
                 if (isset($searchopt[$index])) {
                     // Infocoms case
-                    if (Search::isInfocomOption($item->getType(), $index)) {
+                    if (Search::isInfocomOption($item::class, $index)) {
                         $ic               = new Infocom();
                         $link_entity_type = -1;
                         $is_recursive     = 0;
@@ -1466,17 +1466,17 @@ class MassiveAction
                                 ) {
                                     $input2 = [
                                         'items_id'  => $key,
-                                        'itemtype'  => $item->getType(),
+                                        'itemtype'  => $item::class,
                                     ];
 
                                     if ($ic->can(-1, CREATE, $input2)) {
                                         // Add infocom if not exists
-                                        if (!$ic->getFromDBforDevice($item->getType(), $key)) {
+                                        if (!$ic->getFromDBforDevice($item::class, $key)) {
                                             $input2["items_id"] = $key;
-                                            $input2["itemtype"] = $item->getType();
+                                            $input2["itemtype"] = $item::class;
                                             $ic->fields = [];
                                             $ic->add($input2);
-                                            $ic->getFromDBforDevice($item->getType(), $key);
+                                            $ic->getFromDBforDevice($item::class, $key);
                                         }
                                         $id = $ic->fields["id"];
                                         $ic->fields = [];
@@ -1485,28 +1485,28 @@ class MassiveAction
                                                 $input["field"] => $input[$input["field"]],
                                             ])
                                         ) {
-                                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                         } else {
-                                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                         }
                                     } else {
-                                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                                     }
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                             }
                         }
                     } else { // Not infocoms
                         $link_entity_type = [];
                         // Specific entity item
-                        $itemtable = getTableForItemType($item->getType());
+                        $itemtable = getTableForItemType($item::class);
                         $itemtype2 = getItemTypeForTable($searchopt[$index]["table"]);
 
                         $field_name  = $input["field"];
@@ -1537,7 +1537,7 @@ class MassiveAction
                                         // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
                                         // Use getConnexityItem() to dynamically resolve the related object based on the main itemtype and id (items_id)
                                     } elseif ($item2 instanceof CommonDBConnexity) {
-                                        $related_item = $item2->getConnexityItem($item->getType(), $key);
+                                        $related_item = $item2->getConnexityItem($item::class, $key);
                                     }
 
                                     if (!is_null($related_item)) {
@@ -1579,17 +1579,17 @@ class MassiveAction
                                             $field_name => $field_value,
                                         ])
                                     ) {
-                                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                     } else {
-                                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                     }
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         }
@@ -1614,21 +1614,21 @@ class MassiveAction
                                 method_exists($item, "cloneMultiple")
                                 && $item->cloneMultiple($input["nb_copy"] ?? 1, $override_input, true, $clone_as_template)
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 break;
 
             case 'add_transfer_list':
-                $itemtype = $item->getType();
+                $itemtype = $item::class;
                 if (!isset($_SESSION['glpitransfer_list'])) {
                     $_SESSION['glpitransfer_list'] = [];
                 }
@@ -1637,7 +1637,7 @@ class MassiveAction
                 }
                 foreach ($ids as $id) {
                     $_SESSION['glpitransfer_list'][$itemtype][$id] = $id;
-                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                 }
                 $ma->setRedirect($CFG_GLPI['root_doc'] . '/front/transfer.action.php');
                 break;
@@ -1660,7 +1660,7 @@ class MassiveAction
 
                     // Check rights
                     if (!$item->canUpdateItem()) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         continue;
                     }
@@ -1682,10 +1682,10 @@ class MassiveAction
                     ]);
 
                     if (!$success) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;
@@ -1713,10 +1713,10 @@ class MassiveAction
                     ]);
 
                     if (!$success) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
 

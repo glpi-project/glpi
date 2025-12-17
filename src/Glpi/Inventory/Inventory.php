@@ -444,7 +444,7 @@ class Inventory
 
             $item_start = microtime(true);
             $main->prepare();
-            $this->addBench($this->item->getType(), 'prepare', $item_start);
+            $this->addBench($this->item::class, 'prepare', $item_start);
 
             $this->mainasset = $main;
             if (isset($this->data['hardware'])) {
@@ -482,11 +482,11 @@ class Inventory
                 if (count($items)) {
                     $extra = 'Inventoried assets: ';
                     foreach ($items as $item) {
-                        $extra .= $item->getType() . ' #' . $item->getId() . ', ';
+                        $extra .= $item::class . ' #' . $item->getId() . ', ';
                     }
                     $extra = rtrim($extra, ', ') . "\n";
                 }
-                $this->addBench($this->item->getType(), 'full', $main_start, $extra);
+                $this->addBench($this->item::class, 'full', $main_start, $extra);
                 $this->printBenchResults();
             }
         }
@@ -538,7 +538,7 @@ class Inventory
             $items = $this->getItems();
 
             foreach ($items as $item) {
-                $itemtype = $item->getType();
+                $itemtype = $item::class;
                 if (!isset($item->fields['id']) || empty($item->fields['id'])) {
                     throw new RuntimeException('Item ID is missing :(');
                 }
@@ -854,7 +854,7 @@ class Inventory
             $item_start = microtime(true);
             $this->mainasset->handle();
             $this->item = $this->mainasset->getItem();
-            $this->addBench($this->item->getType(), 'handle', $item_start);
+            $this->addBench($this->item::class, 'handle', $item_start);
         }
         return;
     }

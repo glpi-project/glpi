@@ -663,7 +663,7 @@ class ProviderTest extends DbTestCase
     {
         $this->login();
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $data = [
             Provider::bigNumberItem($item),
             call_user_func(['\\Glpi\\Dashboard\\Provider', "bigNumber$itemtype"]),

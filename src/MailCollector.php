@@ -1536,7 +1536,7 @@ class MailCollector extends CommonDBTM
             ) {
                 return; // Ignore attachements with no content-type
             }
-            $content_type = $content_type_header->getType();
+            $content_type = $content_type_header::class;
 
             if (!$part->getHeaders()->has('content-disposition') && preg_match('/^text\/.+/', $content_type)) {
                 // Ignore attachements with no content-disposition only if they corresponds to a text part.
@@ -1719,7 +1719,7 @@ class MailCollector extends CommonDBTM
                 $part->getHeaders()->has('content-type')
                 && (($content_type_obj = $part->getHeader('content-type')) instanceof ContentType)
             ) {
-                $content_type = strtolower($content_type_obj->getType());
+                $content_type = strtolower($content_type_obj::class);
             }
             if ($content_type === 'text/html') {
                 $this->body_is_html = true;
@@ -2432,7 +2432,7 @@ class MailCollector extends CommonDBTM
         if (
             !$part->getHeaders()->has('content-type')
             || !(($content_type = $part->getHeader('content-type')) instanceof ContentType)
-            || preg_match('/^text\//', $content_type->getType()) !== 1
+            || preg_match('/^text\//', $content_type::class) !== 1
         ) {
             return $contents; // No charset conversion content type header is not set or content is not text/*
         }

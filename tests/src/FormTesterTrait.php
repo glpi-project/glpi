@@ -643,14 +643,14 @@ trait FormTesterTrait
         $form_translation = new FormTranslation();
         if (
             $form_translation->getFromDBByCrit([
-                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$itemtype => $item::class,
                 FormTranslation::$items_id  => $item->getID(),
                 'language'                  => $language,
                 'key'                       => $key,
             ]) === false
         ) {
             $form_translation = $this->createItem(FormTranslation::class, [
-                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$itemtype => $item::class,
                 FormTranslation::$items_id  => $item->getID(),
                 'language'                  => $language,
                 'key'                       => $key,

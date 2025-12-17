@@ -494,7 +494,7 @@ TWIG, $twig_params);
     {
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'SLM':
                     /** @var SLM $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {

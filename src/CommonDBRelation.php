@@ -209,7 +209,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      **/
     public static function getOpposite(CommonDBTM $item, &$relations_id = null)
     {
-        return static::getOppositeByTypeAndID($item->getType(), $item->getID(), $relations_id);
+        return static::getOppositeByTypeAndID($item::class, $item->getID(), $relations_id);
     }
 
 
@@ -327,14 +327,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         // Check item 1 type
         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-            $wheres[static::$itemtype_1] = $item1->getType();
+            $wheres[static::$itemtype_1] = $item1::class;
         } elseif (!is_a($item1, static::$itemtype_1)) {
             return false;
         }
 
         // Check item 1 type
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-            $wheres[static::$itemtype_2] = $item2->getType();
+            $wheres[static::$itemtype_2] = $item2::class;
         } elseif (!is_a($item2, static::$itemtype_2)) {
             return false;
         }
@@ -856,9 +856,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item1->getID(),
-                    $item1->getType(),
+                    $item1::class,
                     $changes,
-                    $item2->getType(),
+                    $item2::class,
                     static::$log_history_1_add
                 );
             }
@@ -871,9 +871,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item2->getID(),
-                    $item2->getType(),
+                    $item2::class,
                     $changes,
-                    $item1->getType(),
+                    $item1::class,
                     static::$log_history_2_add
                 );
             }
@@ -926,7 +926,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             ) {
                 Log::history(
                     $new1->getID(),
-                    $new1->getType(),
+                    $new1::class,
                     $changes,
                     static::class . '#' . $field,
                     static::$log_history_1_update
@@ -938,7 +938,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             ) {
                 Log::history(
                     $new2->getID(),
-                    $new2->getType(),
+                    $new2::class,
                     $changes,
                     static::class . '#' . $field,
                     static::$log_history_2_update
@@ -960,9 +960,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $changes[2] = "";
                 Log::history(
                     $previous1->getID(),
-                    $previous1->getType(),
+                    $previous1::class,
                     $changes,
-                    $previous2->getType(),
+                    $previous2::class,
                     static::$log_history_1_delete
                 );
             }
@@ -980,9 +980,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $changes[2] = "";
                 Log::history(
                     $previous2->getID(),
-                    $previous2->getType(),
+                    $previous2::class,
                     $changes,
-                    $previous1->getType(),
+                    $previous1::class,
                     static::$log_history_2_delete
                 );
             }
@@ -997,9 +997,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $changes[2] = $this->getHistoryNameForItem1($new2, 'update item next');
                 Log::history(
                     $new1->getID(),
-                    $new1->getType(),
+                    $new1::class,
                     $changes,
-                    $new2->getType(),
+                    $new2::class,
                     static::$log_history_1_add
                 );
             }
@@ -1014,9 +1014,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $changes[2] = $this->getHistoryNameForItem2($new1, 'update item next');
                 Log::history(
                     $new2->getID(),
-                    $new2->getType(),
+                    $new2::class,
                     $changes,
-                    $new1->getType(),
+                    $new1::class,
                     static::$log_history_2_add
                 );
             }
@@ -1054,9 +1054,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
                     Log::history(
                         $item1->getID(),
-                        $item1->getType(),
+                        $item1::class,
                         $changes,
-                        $item2->getType(),
+                        $item2::class,
                         static::$log_history_1_lock
                     );
                 }
@@ -1072,9 +1072,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     ];
                     Log::history(
                         $item2->getID(),
-                        $item2->getType(),
+                        $item2::class,
                         $changes,
-                        $item1->getType(),
+                        $item1::class,
                         static::$log_history_2_lock
                     );
                 }
@@ -1112,9 +1112,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     ];
                     Log::history(
                         $item1->getID(),
-                        $item1->getType(),
+                        $item1::class,
                         $changes,
-                        $item2->getType(),
+                        $item2::class,
                         static::$log_history_1_unlock
                     );
                 }
@@ -1130,9 +1130,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     ];
                     Log::history(
                         $item2->getID(),
-                        $item2->getType(),
+                        $item2::class,
                         $changes,
-                        $item1->getType(),
+                        $item1::class,
                         static::$log_history_2_unlock
                     );
                 }
@@ -1166,9 +1166,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item1->getID(),
-                    $item1->getType(),
+                    $item1::class,
                     $changes,
-                    $item2->getType(),
+                    $item2::class,
                     static::$log_history_1_delete
                 );
             }
@@ -1184,9 +1184,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 ];
                 Log::history(
                     $item2->getID(),
-                    $item2->getType(),
+                    $item2::class,
                     $changes,
-                    $item1->getType(),
+                    $item1::class,
                     static::$log_history_2_delete
                 );
             }
@@ -1263,7 +1263,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $item = $father->getItem();
         }
 
-        $criteria = self::getSQLCriteriaToSearchForItem($item->getType(), $item->getID());
+        $criteria = self::getSQLCriteriaToSearchForItem($item::class, $item->getID());
         if ($criteria !== null) {
             $relation = new static();
             $iterator = $DB->request($criteria);
@@ -1572,7 +1572,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         // If the fields provided by showMassiveActionsSubForm are not valid then quit !
         if (!isset($item_number)) {
-            $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+            $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
             $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
             return;
         }
@@ -1590,7 +1590,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if (preg_match('/^itemtype/', $itemtype)) {
-            $input2[$itemtype] = $item->getType();
+            $input2[$itemtype] = $item::class;
         }
 
         // Get the peer from the $input2 and the name of its fields
@@ -1599,7 +1599,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         // $peer not valid => not in DB or try to remove all at once !
         if (!($peer instanceof CommonDBTM) || $peer->isNewItem()) {
             if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
-                $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 if ($peer instanceof CommonDBTM) {
                     $ma->addMessage($peer->getErrorMessage(ERROR_NOT_FOUND));
                 } else {
@@ -1630,13 +1630,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
             case 'add':
                 // remove all at once only available for remove !
                 if (!$peer) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                     return;
                 }
                 foreach ($ids as $key) {
                     if (!$item->getFromDB($key)) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         continue;
                     }
@@ -1645,13 +1645,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     if ($specificities['can_link_several_times']) {
                         if ($link->can(-1, CREATE, $input2)) {
                             if ($link->add($input2)) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
@@ -1666,20 +1666,20 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         }
                         if (!$link->isNewItem()) {
                             if (!$specificities['update_if_different']) {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($link->getErrorMessage(ERROR_ALREADY_DEFINED));
                                 continue;
                             }
                             $input2[static::getIndexName()] = $link->getID();
                             if ($link->can($link->getID(), UPDATE, $input2)) {
                                 if ($link->update($input2)) {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                             }
                             // if index defined, then cannot not add any other link due to index unicity
@@ -1687,13 +1687,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         } else {
                             if ($link->can(-1, CREATE, $input2)) {
                                 if ($link->add($input2)) {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                             }
                         }
@@ -1705,10 +1705,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 foreach ($ids as $key) {
                     // First, get the query to find all occurences of the link item<=>key
                     if (!$peer) {
-                        $criteria = static::getSQLCriteriaToSearchForItem($item->getType(), $key);
+                        $criteria = static::getSQLCriteriaToSearchForItem($item::class, $key);
                     } else {
                         if (!$item->getFromDB($key)) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                             continue;
                         }
@@ -1718,10 +1718,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                             static::$items_id_2  => $item_2->getID(),
                         ];
                         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-                            $WHERE[static::$itemtype_1] = $item_1->getType();
+                            $WHERE[static::$itemtype_1] = $item_1::class;
                         }
                         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-                            $WHERE[static::$itemtype_2] = $item_2->getType();
+                            $WHERE[static::$itemtype_2] = $item_2::class;
                         }
 
                         if (
@@ -1733,10 +1733,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
                                 static::$items_id_2 => $item_2->getID(),
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
-                                $ORWHERE[static::$itemtype_1] = $item_2->getType();
+                                $ORWHERE[static::$itemtype_1] = $item_2::class;
                             }
                             if (preg_match('/^itemtype/', static::$itemtype_2)) {
-                                $ORWHERE[static::$itemtype_2] = $item_2->getType();
+                                $ORWHERE[static::$itemtype_2] = $item_2::class;
                             }
                             $WHERE = [
                                 'OR' => [
@@ -1755,7 +1755,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $request        = $DB->request($criteria);
                     $number_results = count($request);
                     if ($number_results == 0) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
                         continue;
                     }
@@ -1776,12 +1776,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         }
                     }
                     if ($ok == $number_results) {
-                        $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $key, MassiveAction::ACTION_OK);
                     } else {
                         if ($noright > 0) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_NORIGHT);
                         } elseif ($ko > 0) {
-                            $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $key, MassiveAction::ACTION_KO);
                         }
                     }
                 }
@@ -1822,7 +1822,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 throw new RuntimeException(
                     sprintf(
                         'Cannot use getListForItemParams() for a %s',
-                        $item->getType()
+                        $item::class
                     )
                 );
             }
@@ -1861,7 +1861,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if ($DB->fieldExists(static::getTable(), 'itemtype')) {
-            $params['WHERE'][static::getTable() . '.itemtype'] = $item->getType();
+            $params['WHERE'][static::getTable() . '.itemtype'] = $item::class;
         }
 
         if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {

@@ -103,19 +103,19 @@ class Item_Rack extends CommonDBRelation
                 foreach ($ids as $id) {
                     if ($item->can($id, UPDATE, $input)) {
                         $relation_criteria = [
-                            'itemtype' => $item->getType(),
+                            'itemtype' => $item::class,
                             'items_id' => $item->getID(),
                         ];
                         if (countElementsInTable(Item_Rack::getTable(), $relation_criteria) > 0) {
                             if ($item_rack->deleteByCriteria($relation_criteria)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }

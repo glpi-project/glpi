@@ -644,7 +644,7 @@ class NetworkPort extends CommonDBChild
             'FROM'   => $netport_table,
             'WHERE'  => [
                 "$netport_table.items_id"  => $item->getID(),
-                "$netport_table.itemtype"  => $item->getType(), [
+                "$netport_table.itemtype"  => $item::class, [
                     'OR' => [
                         ["$netport_table.name" => ['!=', 'Management']],
                         ["$netport_table.name" => null],
@@ -839,7 +839,7 @@ class NetworkPort extends CommonDBChild
             'FROM'   => $netport::getTable(),
             'WHERE'  => [
                 'items_id'  => $item->getID(),
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'name'      => 'Management',
             ] + $deleted_criteria,
         ];
@@ -1326,7 +1326,7 @@ class NetworkPort extends CommonDBChild
             $link .= '<br/>' . htmlescape($asset->fields['mac']);
         }
 
-        $ips_iterator = $this->getIpsForPort($asset->getType(), $asset->getID());
+        $ips_iterator = $this->getIpsForPort($asset::class, $asset->getID());
         $ips = '';
         foreach ($ips_iterator as $ipa) {
             $ips .= ' ' . htmlescape($ipa['name']);

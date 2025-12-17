@@ -63,7 +63,7 @@ final class Item_Environment extends CommonDBChild
                 self::getTable(),
                 [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                 ]
             );
             if ($nb == 0) {
@@ -100,7 +100,7 @@ final class Item_Environment extends CommonDBChild
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $start       = intval($_GET["start"] ?? 0);

@@ -443,7 +443,7 @@ class FormTest extends DbTestCase
         int $expected_logs_count
     ): void {
         $logs = (new Log())->find([
-            'itemtype' => $form->getType(),
+            'itemtype' => $form::class,
             'items_id' => $form->getID(),
         ]);
 

@@ -341,7 +341,7 @@ class NotificationTarget extends CommonDBChild
     public function getMessageID()
     {
         return self::getMessageIdForEvent(
-            $this->obj instanceof CommonDBTM ? $this->obj->getType() : null,
+            $this->obj instanceof CommonDBTM ? $this->obj::class : null,
             $this->obj instanceof CommonDBTM ? $this->obj->getID() : null,
             $this->raiseevent
         );

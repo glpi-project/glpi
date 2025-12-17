@@ -108,7 +108,7 @@ class Log extends CommonDBTM
         ) {
             $nb = countElementsInTable(
                 'glpi_logs',
-                ['itemtype' => $item->getType(),
+                ['itemtype' => $item::class,
                     'items_id' => $item->getID(),
                 ]
             );
@@ -172,7 +172,7 @@ class Log extends CommonDBTM
                         $changes          =  [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     }
                 } elseif (
-                    ($val2['linkfield'] == $key && $real_type === $item->getType())
+                    ($val2['linkfield'] == $key && $real_type === $item::class)
                        || ($key == $val2['field'] && $val2['table'] == $item->getTable())
                        || ($val2['linkfield'] == $key && $item instanceof Infocom)
                 ) {
@@ -320,7 +320,7 @@ class Log extends CommonDBTM
             return;
         }
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $start       = intval(($_GET["start"] ?? 0));
@@ -382,7 +382,7 @@ class Log extends CommonDBTM
     {
         $DBread = DBConnection::getReadConnection();
 
-        $itemtype  = $item->getType();
+        $itemtype  = $item::class;
         $items_id  = $item->getField('id');
         $itemtable = $item->getTable();
 
@@ -938,7 +938,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([
@@ -979,7 +979,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $affected_fields = ['linked_action', 'itemtype_link', 'id_search_option'];
@@ -1153,7 +1153,7 @@ class Log extends CommonDBTM
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $iterator = $DB->request([

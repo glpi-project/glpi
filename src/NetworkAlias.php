@@ -410,7 +410,7 @@ class NetworkAlias extends FQDNLabel
             echo "</tr>";
 
             Session::initNavigateListItems(
-                $item->getType(),
+                $item::class,
                 //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
                 sprintf(
                     __('%1$s = %2$s'),
@@ -442,7 +442,7 @@ class NetworkAlias extends FQDNLabel
             ]);
 
             foreach ($iterator as $data) {
-                Session::addToNavigateListItems($alias->getType(), $data["alias_id"]);
+                Session::addToNavigateListItems($alias::class, $data["alias_id"]);
                 if ($address->getFromDB($data["address_id"])) {
                     echo "<tr class='tab_bg_1'>";
                     echo "<td><a href='" . htmlescape($alias->getFormURLWithID($data['alias_id'])) . "'>"

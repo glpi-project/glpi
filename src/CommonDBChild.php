@@ -549,7 +549,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             ];
             Log::history(
                 $item->getID(),
-                $item->getType(),
+                $item::class,
                 $changes,
                 static::class,
                 static::$log_history_add
@@ -597,7 +597,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                     }
                     Log::history(
                         $item->getID(),
-                        $item->getType(),
+                        $item::class,
                         $changes,
                         static::class,
                         static::$log_history_update
@@ -620,7 +620,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                     $changes[2] = '';
                     Log::history(
                         $prevItem->getID(),
-                        $prevItem->getType(),
+                        $prevItem::class,
                         $changes,
                         static::class,
                         static::$log_history_delete
@@ -636,7 +636,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                     $changes[2] = $this->getHistoryNameForItem($newItem, 'update item next');
                     Log::history(
                         $newItem->getID(),
-                        $newItem->getType(),
+                        $newItem::class,
                         $changes,
                         static::class,
                         static::$log_history_add
@@ -682,7 +682,7 @@ abstract class CommonDBChild extends CommonDBConnexity
             }
             Log::history(
                 $item->getID(),
-                $item->getType(),
+                $item::class,
                 $changes,
                 static::class,
                 static::$log_history_delete
@@ -725,7 +725,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                 ];
                 Log::history(
                     $item->getID(),
-                    $item->getType(),
+                    $item::class,
                     $changes,
                     static::class,
                     static::$log_history_lock
@@ -769,7 +769,7 @@ abstract class CommonDBChild extends CommonDBConnexity
                 ];
                 Log::history(
                     $item->getID(),
-                    $item->getType(),
+                    $item::class,
                     $changes,
                     static::class,
                     static::$log_history_unlock
@@ -959,7 +959,7 @@ abstract class CommonDBChild extends CommonDBConnexity
         ];
 
         if (preg_match('/^itemtype/', static::$itemtype)) {
-            $query['WHERE']['itemtype'] = $item->getType();
+            $query['WHERE']['itemtype'] = $item::class;
         }
 
         $current_item = new static();

@@ -46,7 +46,7 @@ class NetworkPortConnectionLogTest extends DbTestCase
         $nb_log = (int) countElementsInTable('glpi_logs');
         $ports_id = $port->add([
             'items_id'           => $asset->getID(),
-            'itemtype'           => $asset->getType(),
+            'itemtype'           => $asset::class,
             'entities_id'        => $asset->fields['entities_id'],
             'is_recursive'       => 0,
             'logical_number'     => 1,

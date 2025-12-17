@@ -411,11 +411,11 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         if (
             ($item instanceof CommonDBTM)
             && self::canView()
-            && in_array($item->getType(), self::getTypes(true))
+            && in_array($item::class, self::getTypes(true))
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = countElementsInTable(self::getTable(), ['itemtype' => $item->getType(), 'items_id' => $item->fields['id']]);
+                $nb = countElementsInTable(self::getTable(), ['itemtype' => $item::class, 'items_id' => $item->fields['id']]);
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
@@ -428,9 +428,9 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             return false;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             default:
-                if (in_array($item->getType(), self::getTypes())) {
+                if (in_array($item::class, self::getTypes())) {
                     self::showInstances($item, $withtemplate);
                 }
         }
@@ -451,7 +451,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->fields['id'],
             ],
         ]);

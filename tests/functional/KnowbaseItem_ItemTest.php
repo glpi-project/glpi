@@ -163,7 +163,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
 
         $kb_ids = [];
         foreach ($kbs as $kb) {
-            $this->assertSame($ticket3->getType(), $kb['itemtype']);
+            $this->assertSame($ticket3::class, $kb['itemtype']);
             $this->assertSame($ticket3->getID(), $kb['items_id']);
             $kb_ids[] = $kb['knowbaseitems_id'];
         }
@@ -182,7 +182,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $this->assertCount(1, $kbs);
 
         foreach ($kbs as $kb) {
-            $this->assertSame($ticket1->getType(), $kb['itemtype']);
+            $this->assertSame($ticket1::class, $kb['itemtype']);
             $this->assertSame($ticket1->getID(), $kb['items_id']);
         }
 
@@ -191,7 +191,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         $this->assertCount(1, $kbs);
 
         foreach ($kbs as $kb) {
-            $this->assertSame($computer21->getType(), $kb['itemtype']);
+            $this->assertSame($computer21::class, $kb['itemtype']);
             $this->assertSame($computer21->getID(), $kb['items_id']);
         }
 

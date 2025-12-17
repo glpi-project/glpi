@@ -842,7 +842,7 @@ class NetworkPort extends InventoryAsset
                 //remove all port management ports
                 $networkport = new GlobalNetworkPort();
                 $networkport->deleteByCriteria([
-                    "itemtype"           => $this->item->getType(),
+                    "itemtype"           => $this->item::class,
                     "items_id"           => $this->item->getID(),
                     "instantiation_type" => NetworkPortAggregate::getType(),
                     "name"               => "Management",

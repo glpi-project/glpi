@@ -135,7 +135,7 @@ class Item_Line extends CommonDBRelation
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
             'items_id' => $item->getID(),
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'NOT'   => [
                 'lines_id' => 0,
             ],

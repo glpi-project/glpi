@@ -433,7 +433,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         // Report logs to the parent form
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
             static::class,
             static::$log_history_add
@@ -472,7 +472,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
             Log::history(
                 $form->getID(),
-                $form->getType(),
+                $form::class,
                 $changes,
                 static::class,
                 static::$log_history_update
@@ -502,7 +502,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
             static::class,
             static::$log_history_delete

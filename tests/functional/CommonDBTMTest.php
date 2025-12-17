@@ -1068,7 +1068,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $computer_1_id);
         $relation_item_1_id = $relation_item->add(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer_1_id,
             ] + $linked_item_input
         );
@@ -1085,7 +1085,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $computer_2_id);
         $relation_item_2_id = $relation_item->add(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer_2_id,
             ] + $linked_item_input
         );
@@ -1093,7 +1093,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($relation_item->getFromDB($relation_item_2_id));
 
         $cfg_backup = $CFG_GLPI;
-        $CFG_GLPI[$config_name] = [$computer->getType()];
+        $CFG_GLPI[$config_name] = [$computer::class];
         $computer->delete(['id' => $computer_1_id], true);
         $CFG_GLPI = $cfg_backup;
 
@@ -1485,7 +1485,7 @@ class CommonDBTMTest extends DbTestCase
         // Check the document exists and is linked to the computer
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
         $document = new Document();
         $this->assertTrue(
@@ -1548,7 +1548,7 @@ class CommonDBTMTest extends DbTestCase
         // Check the document is linked to the computer
         $document_item = new Document_Item();
         $this->assertTrue(
-            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+            $document_item->getFromDbByCrit(['itemtype' => $item::class, 'items_id' => $item->getID()])
         );
 
         // Check that first document has been updated

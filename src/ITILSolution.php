@@ -70,7 +70,7 @@ class ITILSolution extends CommonDBChild
             $nb    = 0;
             $title = self::getTypeName(Session::getPluralNumber());
             if ($_SESSION['glpishow_count_on_tabs']) {
-                $nb = self::countFor($item->getType(), $item->getID());
+                $nb = self::countFor($item::class, $item->getID());
             }
             return self::createTabEntry($title, $nb, $item::getType());
         }

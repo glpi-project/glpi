@@ -672,7 +672,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
     public function getApiPath(CommonDBTM $item): string
     {
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $id = $item->getID();
         $itemtypes = self::getAPIItemtypeData();
 
@@ -1154,7 +1154,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
 
             // Ignore raising if the item type is not supported
-            if (!in_array($item->getType(), $supported_types, true)) {
+            if (!in_array($item::class, $supported_types, true)) {
                 return;
             }
 
@@ -1163,7 +1163,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 'FROM' => self::getTable(),
                 'WHERE' => [
                     'event' => $event,
-                    'itemtype' => $item->getType(),
+                    'itemtype' => $item::class,
                     'is_active' => 1,
                 ],
             ]);

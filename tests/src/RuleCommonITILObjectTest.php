@@ -113,7 +113,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      */
     protected function getITILLinkClass(string $other_type): ?string
     {
-        $itil_class_name = $this->getITILObjectInstance()->getType();
+        $itil_class_name = $this->getITILObjectInstance()::class;
         // Guess order the class names are in the link class name
         $link_class_name = $itil_class_name . '_' . $other_type;
         if (!class_exists($link_class_name)) {

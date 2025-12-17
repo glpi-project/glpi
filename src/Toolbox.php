@@ -2526,7 +2526,7 @@ class Toolbox
                             $docitem->add(['documents_id'  => $image['id'],
                                 '_do_notif'     => false,
                                 '_disablenotif' => true,
-                                'itemtype'      => $item->getType(),
+                                'itemtype'      => $item::class,
                                 'items_id'      => $item->fields['id'],
                             ]);
                         }

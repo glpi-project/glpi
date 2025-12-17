@@ -49,7 +49,7 @@ class AlertTest extends DbTestCase
 
         // Add
         $id = $alert->add([
-            'itemtype' => $comp->getType(),
+            'itemtype' => $comp::class,
             'items_id' => $comp->getID(),
             'type'     => \Alert::END,
             'date'     => $date,
@@ -58,21 +58,21 @@ class AlertTest extends DbTestCase
         $this->assertGreaterThan($nb, countElementsInTable($alert->getTable()));
 
         // Getters
-        $this->assertFalse(\Alert::alertExists($comp->getType(), $comp->getID(), \Alert::NOTICE));
-        $this->assertSame($id, (int) \Alert::alertExists($comp->getType(), $comp->getID(), \Alert::END));
-        $this->assertSame($date, \Alert::getAlertDate($comp->getType(), $comp->getID(), \Alert::END));
+        $this->assertFalse(\Alert::alertExists($comp::class, $comp->getID(), \Alert::NOTICE));
+        $this->assertSame($id, (int) \Alert::alertExists($comp::class, $comp->getID(), \Alert::END));
+        $this->assertSame($date, \Alert::getAlertDate($comp::class, $comp->getID(), \Alert::END));
 
         // Display
         ob_start();
-        \Alert::displayLastAlert($comp->getType(), $comp->getID());
+        \Alert::displayLastAlert($comp::class, $comp->getID());
         $output = ob_get_clean();
         $this->assertSame(sprintf('Alert sent on %s', \Html::convDateTime($date)), $output);
 
         // Delete
-        $this->assertTrue($alert->clear($comp->getType(), $comp->getID(), \Alert::END));
+        $this->assertTrue($alert->clear($comp::class, $comp->getID(), \Alert::END));
         $this->assertSame(0, countElementsInTable($alert->getTable()));
 
         // Still true, nothing to delete but no error
-        $this->assertTrue($alert->clear($comp->getType(), $comp->getID(), \Alert::END));
+        $this->assertTrue($alert->clear($comp::class, $comp->getID(), \Alert::END));
     }
 }

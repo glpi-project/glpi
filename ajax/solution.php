@@ -78,7 +78,7 @@ if ($parents_id > 0 && !empty($parents_itemtype) && is_a($parents_itemtype, Comm
 
     $content = DropdownTranslation::getTranslatedValue(
         $template->getID(),
-        $template->getType(),
+        $template::class,
         'content',
         $_SESSION['glpilanguage'],
         $template->fields['content']

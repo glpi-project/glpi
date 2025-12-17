@@ -933,7 +933,7 @@ class SearchTest extends DbTestCase
             $item = new $class();
 
             //load all options; so rawSearchOptionsToAdd to be tested
-            $options = \Search::getCleanedOptions($item->getType());
+            $options = \Search::getCleanedOptions($item::class);
 
             $multi_criteria = [];
             foreach ($options as $key => $data) {
@@ -1064,7 +1064,7 @@ class SearchTest extends DbTestCase
         if ((array_key_exists('nosearch', $so_data) && $so_data['nosearch'])) {
             return null;
         }
-        $actions = \Search::getActionsFor($item->getType(), $so_key);
+        $actions = \Search::getActionsFor($item::class, $so_key);
         $searchtype = array_keys($actions)[0];
 
         switch ($so_data['datatype'] ?? null) {
@@ -2457,7 +2457,7 @@ class SearchTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $ddtrans->add([
-                'itemtype'  => $state->getType(),
+                'itemtype'  => $state::class,
                 'items_id'  => $state->fields['id'],
                 'language'  => 'fr_FR',
                 'field'     => 'completename',
@@ -2465,7 +2465,7 @@ class SearchTest extends DbTestCase
             ])
         );
 
-        $_SESSION['glpi_dropdowntranslations'] = [$state->getType() => ['completename' => '']];
+        $_SESSION['glpi_dropdowntranslations'] = [$state::class => ['completename' => '']];
 
         $search_params = [
             'is_deleted'   => 0,
@@ -4481,22 +4481,22 @@ class SearchTest extends DbTestCase
             [
                 [
                     'documents_id' => $document_1->getID(),
-                    'itemtype'     => $asset_1_1->getType(),
+                    'itemtype'     => $asset_1_1::class,
                     'items_id'     => $asset_1_1->getID(),
                 ],
                 [
                     'documents_id' => $document_1->getID(),
-                    'itemtype'     => $asset_1_2->getType(),
+                    'itemtype'     => $asset_1_2::class,
                     'items_id'     => $asset_1_2->getID(),
                 ],
                 [
                     'documents_id' => $document_2->getID(),
-                    'itemtype'     => $asset_1_2->getType(),
+                    'itemtype'     => $asset_1_2::class,
                     'items_id'     => $asset_1_2->getID(),
                 ],
                 [
                     'documents_id' => $document_1->getID(),
-                    'itemtype'     => $asset_2_1->getType(),
+                    'itemtype'     => $asset_2_1::class,
                     'items_id'     => $asset_2_1->getID(),
                 ],
             ]

@@ -70,7 +70,7 @@ class ManualLink extends CommonDBChild
             $count += countElementsInTable(
                 'glpi_manuallinks',
                 [
-                    'itemtype'  => $item->getType(),
+                    'itemtype'  => $item::class,
                     'items_id'  => $item->fields[$item->getIndexName()],
                 ]
             );
@@ -79,7 +79,7 @@ class ManualLink extends CommonDBChild
                     ['glpi_links_itemtypes', 'glpi_links'],
                     [
                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                        'glpi_links_itemtypes.itemtype'  => $item::class,
                     ] + getEntitiesRestrictCriteria('glpi_links', '', '', false)
                 );
             }
@@ -159,7 +159,7 @@ class ManualLink extends CommonDBChild
         $iterator = $DB->request([
             'FROM'         => 'glpi_manuallinks',
             'WHERE'        => [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->fields[$item->getIndexName()],
             ],
             'ORDERBY'      => 'name',

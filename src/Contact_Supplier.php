@@ -68,7 +68,7 @@ class Contact_Supplier extends CommonDBRelation
 
         if (!$withtemplate && Session::haveRight("contact_enterprise", READ)) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'Supplier':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb =  self::countForItem($item);

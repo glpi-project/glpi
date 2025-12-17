@@ -422,7 +422,7 @@ class ChangeTest extends DbTestCase
                 'value' => $change_id,
             ],
         ];
-        $data   = \Search::getDatas($change->getType(), ["criteria" => $criteria], [72,73,74]);
+        $data   = \Search::getDatas($change::class, ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
         $change_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($change_id, $change_with_so['id']);

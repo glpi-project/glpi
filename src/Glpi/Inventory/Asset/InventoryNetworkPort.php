@@ -124,7 +124,7 @@ trait InventoryNetworkPort
             return;
         }
 
-        $this->itemtype = $itemtype ?? $this->item->getType();
+        $this->itemtype = $itemtype ?? $this->item::class;
         $this->items_id = $items_id ?? $this->item->fields['id'];
 
         if (!$this->isMainPartial()) {

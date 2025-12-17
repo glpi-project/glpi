@@ -136,7 +136,7 @@ class InventoryTest extends InventoryTestCase
         unset($remote['id']);
         $this->assertSame(
             [
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer->fields['id'],
                 'remoteid' => '123456789',
                 'type' => 'teamviewer',
@@ -1091,7 +1091,7 @@ class InventoryTest extends InventoryTestCase
 
         $expected = [
             'items_id' => $computer->fields['id'],
-            'itemtype' => $computer->getType(),
+            'itemtype' => $computer::class,
             'devicebatteries_id' => 104,
             'manufacturing_date' => '2019-07-06',
             'is_deleted' => 0,
@@ -6434,7 +6434,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
 
         $lockedfield = new Lockedfield();
         $this->assertTrue($lockedfield->isHandled($computer));
-        $this->assertSame([], $lockedfield->getLockedValues($computer->getType(), $computers_id));
+        $this->assertSame([], $lockedfield->getLockedValues($computer::class, $computers_id));
 
         //set agent inventory date in past
         $invdate = new \DateTime($agent['last_contact']);
@@ -6457,7 +6457,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $this->assertSame($cleaned_states_id, $computer->fields['states_id']);
 
         $this->assertTrue($lockedfield->isHandled($computer));
-        $this->assertSame([], $lockedfield->getLockedValues($computer->getType(), $computers_id));
+        $this->assertSame([], $lockedfield->getLockedValues($computer::class, $computers_id));
     }
 
 

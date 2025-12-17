@@ -111,7 +111,7 @@ class NetworkPort_NetworkPortTest extends DbTestCase
         $this->assertTrue($netport->getFromDB($opposites_id));
 
         $this->assertSame($hubs_id, $netport->fields['items_id']);
-        $this->assertSame($unmanaged->getType(), $netport->fields['itemtype']);
+        $this->assertSame($unmanaged::class, $netport->fields['itemtype']);
         $this->assertSame('Hub link', $netport->fields['name']);
         $this->assertSame(\NetworkPortEthernet::getType(), $netport->fields['instantiation_type']);
     }

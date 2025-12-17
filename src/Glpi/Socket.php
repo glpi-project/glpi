@@ -623,11 +623,11 @@ class Socket extends CommonDBChild
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                 default:
                     /** @var CommonDBTM $item */
-                    if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
+                    if (in_array($item::class, $CFG_GLPI['socket_types'])) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb =  countElementsInTable(
                                 $this->getTable(),
-                                ['itemtype' => $item->getType(),
+                                ['itemtype' => $item::class,
                                     'items_id' => $item->getID(),
                                 ]
                             );
@@ -690,7 +690,7 @@ class Socket extends CommonDBChild
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'itemtype'   => $item->getType(),
+                'itemtype'   => $item::class,
                 'items_id'   => $item->getID(),
             ],
         ]);
@@ -735,7 +735,7 @@ class Socket extends CommonDBChild
             $item_id = '';
             if ($has_cable) {
                 if (
-                    $cable->fields['itemtype_endpoint_a'] === $item->getType()
+                    $cable->fields['itemtype_endpoint_a'] === $item::class
                     && $cable->fields['items_id_endpoint_a'] === $item->getID()
                 ) {
                     $itemtype = $cable->fields['itemtype_endpoint_b'];

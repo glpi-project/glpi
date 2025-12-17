@@ -1254,9 +1254,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $user->getID(),
-                $user->getType(),
+                $user::class,
                 $changes,
-                $profile->getType(),
+                $profile::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }
@@ -1274,9 +1274,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $profile->getID(),
-                $profile->getType(),
+                $profile::class,
                 $changes,
-                $user->getType(),
+                $user::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }
@@ -1294,9 +1294,9 @@ TWIG, $avatar_params) . $username;
             ];
             Log::history(
                 $entity->getID(),
-                $entity->getType(),
+                $entity::class,
                 $changes,
-                $user->getType(),
+                $user::class,
                 constant(sprintf('Log::HISTORY_%s_SUBITEM', strtoupper($type)))
             );
         }

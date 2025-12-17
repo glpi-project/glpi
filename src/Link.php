@@ -105,7 +105,7 @@ class Link extends CommonDBTM
                     ['glpi_links_itemtypes','glpi_links'],
                     [
                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
+                        'glpi_links_itemtypes.itemtype'  => $item::class,
                     ] + $entity_criteria
                 );
             }

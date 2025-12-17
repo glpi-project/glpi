@@ -4258,13 +4258,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     }
                     if ($item->can($id, UPDATE)) {
                         if ($item->update($input2)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -4289,9 +4289,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             }
                         }
 
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
@@ -4299,7 +4299,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
             case 'add_task':
                 if (!($task = $item->getTaskClassInstance())) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                     break;
                 }
 
@@ -4326,17 +4326,17 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             )
                         ) {
                             if ($task->add($input)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                     }
                 }
@@ -6651,7 +6651,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         RichText::getEnhancedHtml($item->fields['content']),
                         [
                             'display' => false,
-                            'applyto' => $item->getType() . $item->fields["id"] . $rand,
+                            'applyto' => $item::class . $item->fields["id"] . $rand,
                         ]
                     )
                 );
@@ -6873,7 +6873,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             implode('<br>', $planned_info),
                             [
                                 'display' => false,
-                                'applyto' => $item->getType() . $item->fields["id"] . "planning" . $rand,
+                                'applyto' => $item::class . $item->fields["id"] . "planning" . $rand,
                             ]
                         )
                     );

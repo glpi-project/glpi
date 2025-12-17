@@ -91,7 +91,7 @@ class ItemVirtualMachine extends CommonDBChild
                 $nb = countElementsInTable(
                     self::getTable(),
                     [
-                        'itemtype' => $item->getType(),
+                        'itemtype' => $item::class,
                         'items_id' => $item->getID(),
                         'is_deleted' => 0,
                     ]
@@ -194,7 +194,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $ID = $asset->fields['id'];
 
-        if (!in_array($asset->getType(), $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
+        if (!in_array($asset::class, $CFG_GLPI['itemvirtualmachines_types']) || !$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return;
         }
 
@@ -261,7 +261,7 @@ class ItemVirtualMachine extends CommonDBChild
     {
 
         $ID = $asset->fields['id'];
-        $itemtype = $asset->getType();
+        $itemtype = $asset::class;
 
         if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
             return false;

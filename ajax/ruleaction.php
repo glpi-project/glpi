@@ -58,7 +58,7 @@ if (isset($_POST["sub_type"]) && class_exists($_POST["sub_type"])) {
         $ra           = getItemForItemtype($item->getRuleActionClass());
         $used         = $ra->getAlreadyUsedForRuleID(
             $_POST[$item->getRuleIdField()],
-            $item->getType()
+            $item::class
         );
         $already_used = in_array($_POST["field"], $used);
     }

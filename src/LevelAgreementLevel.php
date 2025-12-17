@@ -368,7 +368,7 @@ abstract class LevelAgreementLevel extends RuleTicket
     {
         if (!$withtemplate) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case static::$parentclass:
                     if (
                         $_SESSION['glpishow_count_on_tabs']

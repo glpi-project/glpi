@@ -1011,7 +1011,7 @@ class Reservation extends CommonDBChild
         ReservationItem::showActivationFormForItem($item);
 
         $ri = new ReservationItem();
-        if (!$ri->getFromDBbyItem($item->getType(), $item->getID())) {
+        if (!$ri->getFromDBbyItem($item::class, $item->getID())) {
             return;
         }
 
@@ -1335,14 +1335,14 @@ JAVASCRIPT;
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
                         // Treat as OK
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
                         $result = $reservation_item->add([
-                            'itemtype' => $item->getType(),
+                            'itemtype' => $item::class,
                             'items_id' => $id,
                             'is_active' => 1,
                         ]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     }
                 }
                 break;
@@ -1350,9 +1350,9 @@ JAVASCRIPT;
                 foreach ($ids as $id) {
                     if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
                         $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;
@@ -1363,9 +1363,9 @@ JAVASCRIPT;
                             'id' => $reservation_item->getID(),
                             'is_active' => 1,
                         ]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;
@@ -1376,9 +1376,9 @@ JAVASCRIPT;
                             'id' => $reservation_item->getID(),
                             'is_active' => 0,
                         ]);
-                        $ma->itemDone($item->getType(), $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     }
                 }
                 break;

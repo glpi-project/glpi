@@ -661,7 +661,7 @@ class TicketTest extends DbTestCase
                 'value' => $ticket_id,
             ],
         ];
-        $data   = Search::getDatas($ticket->getType(), ["criteria" => $criteria], [72,73,74]);
+        $data   = Search::getDatas($ticket::class, ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
         $ticket_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($ticket_id, $ticket_with_so['id']);
@@ -8348,7 +8348,7 @@ HTML,
         $item_ticket = new \Item_Ticket();
         $item_ticket->add([
             'tickets_id' => $ticket->getID(),
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
         $this->assertFalse($item_ticket->isNewItem());

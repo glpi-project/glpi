@@ -583,7 +583,7 @@ class PendingReasonTest extends DbTestCase
 
             // Set the item as pending with a reason
             $followup = $this->createItem('ITILFollowup', [
-                'itemtype'                      => $item->getType(),
+                'itemtype'                      => $item::class,
                 'items_id'                      => $item->getID(),
                 'content'                       => 'Followup with pending reason',
                 'pending'                       => true,

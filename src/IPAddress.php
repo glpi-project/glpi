@@ -333,7 +333,7 @@ class IPAddress extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'IPNetwork':
                 self::showForItem($item, $withtemplate);
                 break;
@@ -350,7 +350,7 @@ class IPAddress extends CommonDBChild
     {
         global $DB;
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'IPNetwork':
                 $result = $DB->request([
                     'COUNT'  => 'cpt',
@@ -1037,7 +1037,7 @@ class IPAddress extends CommonDBChild
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType(),
+                            "itemtype" => $item::class,
                         ];
                         unset($addressesWithItems);
                         return $result;
@@ -1412,7 +1412,7 @@ class IPAddress extends CommonDBChild
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                     'is_deleted'   => 0,
                 ],
             ]);

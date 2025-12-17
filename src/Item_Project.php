@@ -210,7 +210,7 @@ class Item_Project extends CommonDBRelation
                     if (
                         Project::canView()
                         && $item instanceof CommonDBTM
-                        && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+                        && in_array($item::class, $CFG_GLPI["project_asset_types"])
                     ) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             // Direct one
@@ -251,7 +251,7 @@ class Item_Project extends CommonDBRelation
 
         if (
             Project::canView()
-            && in_array($item->getType(), $CFG_GLPI["project_asset_types"])
+            && in_array($item::class, $CFG_GLPI["project_asset_types"])
         ) {
             return self::showForAsset($item);
         }

@@ -72,7 +72,7 @@ class ContractTest extends DbTestCase
         $this->assertGreaterThan(0, $link_id);
 
         $this->assertTrue($link_supplier->getFromDB($link_id));
-        $relation_items = $link_supplier->getItemsAssociatedTo($contract->getType(), $cid);
+        $relation_items = $link_supplier->getItemsAssociatedTo($contract::class, $cid);
         $this->assertCount(1, $relation_items, 'Original Contract_Supplier not found!');
 
         $citem = new \Contract_Item();
@@ -84,7 +84,7 @@ class ContractTest extends DbTestCase
         $this->assertGreaterThan(0, $citems_id);
 
         $this->assertTrue($citem->getFromDB($citems_id));
-        $relation_items = $citem->getItemsAssociatedTo($contract->getType(), $cid);
+        $relation_items = $citem->getItemsAssociatedTo($contract::class, $cid);
         $this->assertCount(1, $relation_items, 'Original Contract_Item not found!');
 
         $cloned = $contract->clone();
@@ -228,7 +228,7 @@ class ContractTest extends DbTestCase
         $this->assertGreaterThan(0, $link_id);
 
         $this->assertTrue($link_user->getFromDB($link_id));
-        $relation_items = $link_user->getItemsAssociatedTo($contract->getType(), $cid);
+        $relation_items = $link_user->getItemsAssociatedTo($contract::class, $cid);
         $this->assertCount(1, $relation_items, 'Original Contract_User not found!');
     }
 }

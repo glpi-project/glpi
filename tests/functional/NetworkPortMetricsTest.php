@@ -60,7 +60,7 @@ class NetworkPortMetricsTest extends DbTestCase
             'instanciation_type' => 'NetworkPortEthernet',
             'entities_id'  => 0,
             'items_id'     => $neteq_id,
-            'itemtype'     => $neteq->getType(),
+            'itemtype'     => $neteq::class,
             'is_dynamic'   => 1,
             'ifmtu'        => 1000,
         ];

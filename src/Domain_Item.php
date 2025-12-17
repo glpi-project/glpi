@@ -59,7 +59,7 @@ class Domain_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(
-            ['itemtype' => $item->getType(),
+            ['itemtype' => $item::class,
                 'items_id' => $item->getField('id'),
             ]
         );

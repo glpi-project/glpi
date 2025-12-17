@@ -498,7 +498,7 @@ class ToolboxTest extends DbTestCase
 
             $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
             if ($item instanceof \CommonDBTM) {
-                $img_url .= '&itemtype=' . $item->getType();
+                $img_url .= '&itemtype=' . $item::class;
                 $img_url .= '&items_id=' . $item->fields['id'];
             }
 
@@ -574,7 +574,7 @@ class ToolboxTest extends DbTestCase
         $item->fields['id'] = mt_rand(1, 50);
 
         $img_url = '/front/document.send.php?docid={docid}'; //{docid} to replace by generated doc id
-        $img_url .= '&itemtype=' . $item->getType();
+        $img_url .= '&itemtype=' . $item::class;
         $img_url .= '&items_id=' . $item->fields['id'];
 
         return [
@@ -674,7 +674,7 @@ class ToolboxTest extends DbTestCase
         $expected_result = '';
         foreach ($doc_data as $doc_id => $doc) {
             $expected_url    = '/front/document.send.php?docid=' . $doc_id;
-            $expected_url    .= '&itemtype=' . $item->getType();
+            $expected_url    .= '&itemtype=' . $item::class;
             $expected_url    .= '&items_id=' . $item->fields['id'];
             $content_text    .= '<img id="' . $doc['tag'] . '" width="10" height="10" />';
             $expected_result .= '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $doc['tag'] . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
@@ -718,11 +718,11 @@ class ToolboxTest extends DbTestCase
 
         $content_text    = '<img id="' . $img_tag . '" width="10" height="10" />';
         $expected_url_1    = '/front/document.send.php?docid=' . $doc_id_1;
-        $expected_url_1     .= '&itemtype=' . $item->getType();
+        $expected_url_1     .= '&itemtype=' . $item::class;
         $expected_url_1     .= '&items_id=' . $item->fields['id'];
         $expected_result_1 = '<a href="' . htmlescape($expected_url_1) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url_1) . '" /></a>';
         $expected_url_2    = '/front/document.send.php?docid=' . $doc_id_2;
-        $expected_url_2     .= '&itemtype=' . $item->getType();
+        $expected_url_2     .= '&itemtype=' . $item::class;
         $expected_url_2     .= '&items_id=' . $item->fields['id'];
         $expected_result_2 = '<a href="' . htmlescape($expected_url_2) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url_2) . '" /></a>';
 
@@ -760,7 +760,7 @@ class ToolboxTest extends DbTestCase
         $content_text     = '<img id="' . $img_tag . '" width="10" height="10" />';
         $content_text    .= $content_text;
         $expected_url     = '/front/document.send.php?docid=' . $doc_id;
-        $expected_url    .= '&itemtype=' . $item->getType();
+        $expected_url    .= '&itemtype=' . $item::class;
         $expected_url    .= '&items_id=' . $item->fields['id'];
         $expected_result  = '<a href="' . htmlescape($expected_url) . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . htmlescape($expected_url) . '" /></a>';
         $expected_result .= $expected_result;
@@ -808,13 +808,13 @@ HTML;
         $image_1_src = sprintf(
             '/front/document.send.php?docid=%d&amp;itemtype=%s&amp;items_id=%d',
             $document_1->getID(),
-            $item->getType(),
+            $item::class,
             $item->fields['id']
         );
         $image_2_src = sprintf(
             '/front/document.send.php?docid=%d&amp;itemtype=%s&amp;items_id=%d',
             $document_2->getID(),
-            $item->getType(),
+            $item::class,
             $item->fields['id']
         );
         $expected_result  = <<<HTML

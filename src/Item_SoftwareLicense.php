@@ -247,18 +247,18 @@ class Item_SoftwareLicense extends CommonDBRelation
                                            => $input['softwarelicenses_id'],
                                 ])
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
 
@@ -286,19 +286,19 @@ class Item_SoftwareLicense extends CommonDBRelation
                                 if ($csv->can(-1, CREATE, $params)) {
                                     //Process rules
                                     if ($csv->add($params)) {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                     } else {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     }
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 }
                             } else {
                                 Session::addMessageAfterRedirect(__s('A version is required!'), false, ERROR);
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     }
                 }
@@ -321,7 +321,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                                 && $number >= $license->getField('number')
                                 && !$license->getField('allow_overquota')
                             ) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage(sprintf(__s('Maximum number of items reached for license "%s".'), htmlescape($license->getName())));
                                 continue;
                             }
@@ -340,15 +340,15 @@ class Item_SoftwareLicense extends CommonDBRelation
 
                         if ($item_licence->can(-1, UPDATE, $input_data)) {
                             if ($item_licence->add($input_data)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                     }
                 }
                 return;

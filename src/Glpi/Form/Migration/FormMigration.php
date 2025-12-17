@@ -1314,14 +1314,14 @@ class FormMigration extends AbstractPluginMigration
                             FormTranslation::class,
                             [
                                 FormTranslation::$items_id => $handler->getItem()->getID(),
-                                FormTranslation::$itemtype => $handler->getItem()->getType(),
+                                FormTranslation::$itemtype => $handler->getItem()::class,
                                 'key'                      => $handler->getKey(),
                                 'language'                 => $raw_language['name'],
                                 'translations'             => [$plural_key => $translations[$handler->getValue()]],
                             ],
                             [
                                 FormTranslation::$items_id => $handler->getItem()->getID(),
-                                FormTranslation::$itemtype => $handler->getItem()->getType(),
+                                FormTranslation::$itemtype => $handler->getItem()::class,
                                 'key'                      => $handler->getKey(),
                                 'language'                 => $raw_language['name'],
                             ]

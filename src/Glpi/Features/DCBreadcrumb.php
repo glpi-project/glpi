@@ -91,7 +91,7 @@ trait DCBreadcrumb
             // Add Enclosure part of breadcrumb
             $enclosure_types = $types;
             unset($enclosure_types[array_search('Enclosure', $enclosure_types)]);
-            if (in_array($item->getType(), $enclosure_types) && $enclosure = $item->getParentEnclosure()) {
+            if (in_array($item::class, $enclosure_types) && $enclosure = $item->getParentEnclosure()) {
                 $location = Location::getFromItem($enclosure) ?: null;
                 $breadcrumb[Enclosure::getType()] = [
                     'link'     => $enclosure->getLink(
@@ -108,7 +108,7 @@ trait DCBreadcrumb
             }
 
             // Add Rack part of breadcrumb
-            if (in_array($item->getType(), $types) && $rack = $item->getParentRack()) {
+            if (in_array($item::class, $types) && $rack = $item->getParentRack()) {
                 $location = Location::getFromItem($rack) ?: null;
                 $breadcrumb[Rack::getType()] = [
                     'link'     => $rack->getLink(

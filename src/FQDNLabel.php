@@ -333,7 +333,7 @@ abstract class FQDNLabel extends CommonDBChild
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType(),
+                            "itemtype" => $item::class,
                         ];
                         unset($labels_with_items);
                         return $result;

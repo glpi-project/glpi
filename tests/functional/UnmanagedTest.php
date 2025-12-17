@@ -232,7 +232,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
         // * Add networkport
         $netport = new \NetworkPort();
         $networkports_id = $netport->add([
-            'itemtype' => $unmanaged->getType(),
+            'itemtype' => $unmanaged::class,
             'items_id' => $unmanageds_id,
             'instantiation_type' => 'NetworkPortEthernet',
             'name' => 'general',
@@ -243,7 +243,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
 
         $netname = new \NetworkName();
         $networknames_id = $netname->add([
-            'itemtype' => $netport->getType(),
+            'itemtype' => $netport::class,
             'items_id' => $networkports_id,
             'name' => '',
             'is_dynamic' => 1,
@@ -255,7 +255,7 @@ Compiled Fri 26-Mar-10 09:14 by prod_rel_team</DESCRIPTION>
             0,
             $ip->add([
                 'entities_id' => 0,
-                'itemtype' => $netname->getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $networknames_id,
                 'name' => '192.168.20.1',
                 'is_dynamic' => 1,

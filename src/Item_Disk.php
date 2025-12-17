@@ -86,7 +86,7 @@ class Item_Disk extends CommonDBChild
                     self::getTable(),
                     [
                         'items_id'     => $item->getID(),
-                        'itemtype'     => $item->getType(),
+                        'itemtype'     => $item::class,
                         'is_deleted'   => 0,
                     ]
                 );
@@ -198,7 +198,7 @@ class Item_Disk extends CommonDBChild
                 ],
             ],
             'WHERE'     => [
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->fields['id'],
             ],
         ]);

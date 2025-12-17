@@ -77,7 +77,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
 
         if (!$withtemplate && Printer::canView()) {
             $nb = 0;
-            switch ($item->getType()) {
+            switch ($item::class) {
                 case 'CartridgeItem':
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForItem($item);

@@ -66,7 +66,7 @@ class LogTest extends DbTestCase
         $log_data = array_merge(
             [
                 'items_id'         => $item->fields['id'],
-                'itemtype'         => $item->getType(),
+                'itemtype'         => $item::class,
                 'itemtype_link'    => '',
                 'linked_action'    => 0,
                 'user_name'        => 'someuser',

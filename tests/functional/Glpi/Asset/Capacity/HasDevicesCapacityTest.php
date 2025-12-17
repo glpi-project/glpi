@@ -199,7 +199,7 @@ class HasDevicesCapacityTest extends DbTestCase
             Item_DeviceHardDrive::class,
             [
                 'deviceharddrives_id' => $device->getID(),
-                'itemtype'            => $item_1->getType(),
+                'itemtype'            => $item_1::class,
                 'items_id'            => $item_1->getID(),
             ]
         );
@@ -207,7 +207,7 @@ class HasDevicesCapacityTest extends DbTestCase
             Item_DeviceHardDrive::class,
             [
                 'deviceharddrives_id' => $device->getID(),
-                'itemtype'            => $item_2->getType(),
+                'itemtype'            => $item_2::class,
                 'items_id'            => $item_2->getID(),
             ]
         );

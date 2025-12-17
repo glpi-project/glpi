@@ -238,7 +238,7 @@ class Unmanaged extends MainAsset
         if ($need_to_add) {
             $agent = new Agent();
             $agent->deleteByCriteria([
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
                 'items_id' => $items_id,
                 'NOT' => [
                     'id' => $this->agent->fields['id'],

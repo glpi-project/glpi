@@ -63,7 +63,7 @@ class Item_Process extends CommonDBChild
                 self::getTable(),
                 [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                 ]
             );
             if ($nb == 0) {
@@ -99,7 +99,7 @@ class Item_Process extends CommonDBChild
     {
         global $DB;
 
-        $itemtype = $item->getType();
+        $itemtype = $item::class;
         $items_id = $item->getField('id');
 
         $start       = intval($_GET["start"] ?? 0);

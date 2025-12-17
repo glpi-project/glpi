@@ -110,7 +110,7 @@ final class GraphQLGenerator
                 continue;
             }
             try {
-                $type_str .= "  $field_name: {$field->getType()}\n";
+                $type_str .= sprintf("  %1\$s: %2\$s\n", $field_name, $field::class);
             } catch (Throwable $e) {
                 global $PHPLOGGER;
                 $PHPLOGGER->error(

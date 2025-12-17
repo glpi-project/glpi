@@ -204,7 +204,7 @@ class DeviceHardDrive extends CommonDevice
             return $father;
         }
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'Computer':
                 Manufacturer::getHTMLTableCellsForItem($row, $this, null, $options);
                 if ($this->fields["rpm"]) {

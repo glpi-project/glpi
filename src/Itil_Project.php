@@ -75,7 +75,7 @@ class Itil_Project extends CommonDBRelation
                         $nb = countElementsInTable(
                             self::getTable(),
                             [
-                                'itemtype' => $item->getType(),
+                                'itemtype' => $item::class,
                                 'items_id' => $item->getID(),
                             ]
                         );
@@ -280,7 +280,7 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE'           => [
-                "{$selfTable}.itemtype" => $itil->getType(),
+                "{$selfTable}.itemtype" => $itil::class,
                 "{$selfTable}.items_id" => $ID,
                 'NOT'                   => ["{$projectTable}.id" => null],
             ],

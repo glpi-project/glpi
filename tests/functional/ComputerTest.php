@@ -84,9 +84,9 @@ class ComputerTest extends DbTestCase
         // Create the link
         $link = new Asset_PeripheralAsset();
         $in = [
-            'itemtype_asset' => $computer->getType(),
+            'itemtype_asset' => $computer::class,
             'items_id_asset' => $computer->getField('id'),
-            'itemtype_peripheral' => $printer->getType(),
+            'itemtype_peripheral' => $printer::class,
             'items_id_peripheral' => $printer->getID(),
         ];
         $this->assertGreaterThan(0, (int) $link->add($in));
@@ -332,9 +332,9 @@ class ComputerTest extends DbTestCase
         // Create the link
         $link = new Asset_PeripheralAsset();
         $in2 = [
-            'itemtype_asset' => $computer->getType(),
+            'itemtype_asset' => $computer::class,
             'items_id_asset' => $computer->getField('id'),
-            'itemtype_peripheral' => $printer->getType(),
+            'itemtype_peripheral' => $printer::class,
             'items_id_peripheral' => $printer->getID(),
         ];
         $this->assertGreaterThan(0, (int) $link->add($in2));
@@ -844,7 +844,7 @@ class ComputerTest extends DbTestCase
         $this->createItem(
             Asset_PeripheralAsset::class,
             [
-                'itemtype_asset' => $computer->getType(),
+                'itemtype_asset' => $computer::class,
                 'items_id_asset' => $computer->getID(),
                 'itemtype_peripheral' => \Printer::class,
                 'items_id_peripheral' => $printer1->fields['id'],
@@ -854,7 +854,7 @@ class ComputerTest extends DbTestCase
         $this->createItem(
             Asset_PeripheralAsset::class,
             [
-                'itemtype_asset' => $computer->getType(),
+                'itemtype_asset' => $computer::class,
                 'items_id_asset' => $computer->getID(),
                 'itemtype_peripheral' => \Printer::class,
                 'items_id_peripheral' => $printer2->fields['id'],

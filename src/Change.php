@@ -883,7 +883,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
 
             default:
                 $restrict['glpi_changes_items.items_id'] = $item->getID();
-                $restrict['glpi_changes_items.itemtype'] = $item->getType();
+                $restrict['glpi_changes_items.itemtype'] = $item::class;
                 // you can only see your tickets
                 if (!Session::haveRight(self::$rightname, self::READALL)) {
                     $or = [

@@ -96,7 +96,7 @@ class ImpactTest extends DbTestCase
     {
         $em = new ImpactItem();
         $id = $em->add([
-            'itemtype'  => $item->getType(),
+            'itemtype'  => $item::class,
             'items_id'  => $item->fields['id'],
             'parent_id' => $parent,
         ]);
@@ -109,9 +109,9 @@ class ImpactTest extends DbTestCase
     {
         $em = new ImpactRelation();
         $id = $em->add([
-            'itemtype_source'   => $source->getType(),
+            'itemtype_source'   => $source::class,
             'items_id_source'   => $source->fields['id'],
-            'itemtype_impacted' => $impacted->getType(),
+            'itemtype_impacted' => $impacted::class,
             'items_id_impacted' => $impacted->fields['id'],
         ]);
 

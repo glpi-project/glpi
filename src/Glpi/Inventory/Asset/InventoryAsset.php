@@ -428,7 +428,7 @@ abstract class InventoryAsset
     protected function setItem(CommonDBTM $item): self
     {
         $this->item = $item;
-        $this->itemtype = $item->getType();
+        $this->itemtype = $item::class;
         return $this;
     }
 
@@ -510,7 +510,7 @@ abstract class InventoryAsset
 
         if ($item !== null) {
             $lockeds = new Lockedfield();
-            $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
+            $locks = $lockeds->getLockedNames($item::class, $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
         foreach ($value as $key => $val) { // @phpstan-ignore foreach.nonIterable

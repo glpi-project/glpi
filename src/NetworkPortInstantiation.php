@@ -237,7 +237,7 @@ class NetworkPortInstantiation extends CommonDBChild
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType(),
+                            "itemtype" => $item::class,
                         ];
                         unset($macs_with_items);
                         return $result;
@@ -506,7 +506,7 @@ TWIG, $twig_params);
                 'FROM'   => 'glpi_networkports AS port',
                 'WHERE'  => [
                     'items_id'           => $lastItem->getID(),
-                    'itemtype'           => $lastItem->getType(),
+                    'itemtype'           => $lastItem::class,
                     'instantiation_type' => $netport_type,
                 ],
                 'ORDER'  => ['logical_number', 'name'],

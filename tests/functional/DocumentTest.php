@@ -147,7 +147,7 @@ class DocumentTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $cid);
 
-        $input['itemtype'] = $item->getType();
+        $input['itemtype'] = $item::class;
         $input['items_id'] = $cid;
 
         //will fail because document has not been uploaded
@@ -188,7 +188,7 @@ class DocumentTest extends DbTestCase
      * $mdoc = new \mock\Document();
      * $this->calling($mdoc)->moveUploadedDocument = true;
      * $input['upload_file'] = 'filename.ext';
-     * $input['itemtype'] = $item->getType();
+     * $input['itemtype'] = $item::class;
      * $input['items_id'] = $cid;
      *
      * $docid = (int)$mdoc->add($input);
@@ -270,7 +270,7 @@ class DocumentTest extends DbTestCase
         $mdoc->method('moveUploadedDocument')->willReturn(true);
 
         $input['upload_file'] = 'filename.ext';
-        $input['itemtype'] = $item->getType();
+        $input['itemtype'] = $item::class;
         $input['items_id'] = $cid;
         $input['documentcategories_id'] = 1;
 
@@ -769,8 +769,8 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($inlinedDocument->canViewFile());
         $this->assertFalse($basicDocument->canViewFile([$fkey => $item->getID()]));
         $this->assertFalse($inlinedDocument->canViewFile([$fkey => $item->getID()]));
-        $this->assertFalse($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
-        $this->assertFalse($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
+        $this->assertFalse($basicDocument->canViewFile(['itemtype' => $item::class, 'items_id' => $item->getID()]));
+        $this->assertFalse($inlinedDocument->canViewFile(['itemtype' => $item::class, 'items_id' => $item->getID()]));
 
         // post-only can see documents linked to its own ITIL (ITIL content)
         $itil_user_class = $itemtype . '_User';
@@ -788,8 +788,8 @@ class DocumentTest extends DbTestCase
         $this->assertFalse($inlinedDocument->canViewFile()); // False without params
         $this->assertTrue($basicDocument->canViewFile([$fkey => $item->getID()]));
         $this->assertTrue($inlinedDocument->canViewFile([$fkey => $item->getID()]));
-        $this->assertTrue($basicDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
-        $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $item->getType(), 'items_id' => $item->getID()]));
+        $this->assertTrue($basicDocument->canViewFile(['itemtype' => $item::class, 'items_id' => $item->getID()]));
+        $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $item::class, 'items_id' => $item->getID()]));
     }
 
     /**
@@ -893,7 +893,7 @@ class DocumentTest extends DbTestCase
         $_SESSION["glpiactiveprofile"][$itil::$rightname] = READ; // force READ write for tested ITIL type
         $this->assertFalse($inlinedDocument->canViewFile());
         $this->assertFalse($inlinedDocument->canViewFile([$fkey => $itil->getID()]));
-        $this->assertFalse($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]));
+        $this->assertFalse($inlinedDocument->canViewFile(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
 
         // post-only can see documents linked to its own ITIL
         $itil_user_class = $itil_itemtype . '_User';
@@ -909,7 +909,7 @@ class DocumentTest extends DbTestCase
 
         $this->assertFalse($inlinedDocument->canViewFile()); // False without params
         $this->assertTrue($inlinedDocument->canViewFile([$fkey => $itil->getID()]));
-        $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $itil->getType(), 'items_id' => $itil->getID()]));
+        $this->assertTrue($inlinedDocument->canViewFile(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
     }
 
     /**

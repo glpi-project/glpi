@@ -72,7 +72,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         $itemtype = $item::getType();
         $items_id = $item->getID();
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case NetworkEquipment::getType():
             case NetworkEquipmentModel::getType():
                 $stencil = new NetworkEquipmentModelStencil();

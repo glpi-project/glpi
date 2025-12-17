@@ -629,7 +629,7 @@ TWIG, $twig_params);
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'items_id_peripheral' => $item->getID(),
-                'itemtype_peripheral' => $item->getType(),
+                'itemtype_peripheral' => $item::class,
             ],
         ]);
 
@@ -774,7 +774,7 @@ TWIG, $twig_params);
                 ],
                 'FROM' => self::getTable(),
                 'WHERE' => [
-                    'itemtype_asset' => $item->getType(),
+                    'itemtype_asset' => $item::class,
                     'items_id_asset' => $item->getID(),
                 ],
                 'GROUP' => 'itemtype_peripheral',
@@ -811,7 +811,7 @@ TWIG, $twig_params);
                 ],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype_peripheral' => $item->getType(),
+                    'itemtype_peripheral' => $item::class,
                     'items_id_peripheral' => $item->fields['id'],
                 ],
                 'GROUP'  => 'itemtype_peripheral',

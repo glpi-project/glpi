@@ -441,7 +441,7 @@ trait PlanningEvent
 
         $events    = [];
         $event_obj = new static();
-        $itemtype  = $event_obj->getType();
+        $itemtype  = $event_obj::class;
         $item_fk   = getForeignKeyFieldForItemType($itemtype);
         $table     = static::getTable();
         $has_bg    = $DB->fieldExists($table, 'background');

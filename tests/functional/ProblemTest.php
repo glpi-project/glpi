@@ -298,7 +298,7 @@ class ProblemTest extends DbTestCase
                 'value' => $problem_id,
             ],
         ];
-        $data   = \Search::getDatas($problem->getType(), ["criteria" => $criteria], [72,73,74]);
+        $data   = \Search::getDatas($problem::class, ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
         $problem_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($problem_id, $problem_with_so['id']);

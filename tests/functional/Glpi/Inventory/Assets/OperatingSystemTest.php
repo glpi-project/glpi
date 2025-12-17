@@ -1213,7 +1213,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         //no lock
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($computer));
-        $this->assertEmpty($lockedfield->getLockedValues($computer->getType(), $computers_id));
+        $this->assertEmpty($lockedfield->getLockedValues($computer::class, $computers_id));
     }
 
     public function testOSAsSoftware()
