@@ -141,7 +141,7 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public static function getType()
     {
-        Toolbox::deprecated('Use ClassName::class, or static::class or equivalent.');
+        //Toolbox::deprecated('Use ClassName::class, or static::class or equivalent.');
         return static::class;
     }
 
