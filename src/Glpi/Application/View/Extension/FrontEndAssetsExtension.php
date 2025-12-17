@@ -127,33 +127,49 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-        $file_path = parse_url($path, PHP_URL_PATH); // Strip potential quey string from path
+        $clean_path = parse_url($path, PHP_URL_PATH); // Strip potential quey string from path
 
         $extra_params = parse_url($path, PHP_URL_QUERY) ?: '';
 
         if (
-            preg_match('/\.scss$/', $file_path)
-            || (str_contains($extra_params, 'is_custom_theme=1')
-                && ThemeManager::getInstance()->getTheme($file_path))
+            preg_match('/\.scss$/', $clean_path)
+            || (
+                str_contains($extra_params, 'is_custom_theme=1')
+                && ThemeManager::getInstance()->getTheme($clean_path)
+            )
         ) {
-            $compiled_file = Html::getScssCompilePath($file_path, $this->root_dir);
+            // FIXME Compiled SCSS is not supported for plugins, should we support it?
+            $compiled_file = Html::getScssCompilePath($clean_path, $this->root_dir);
 
             if (!$is_debug && file_exists($compiled_file)) {
                 $path = str_replace($this->root_dir . '/public', '', $compiled_file);
             } else {
-                $path = '/front/css.php?file=' . $file_path;
+                $path = '/front/css.php?file=' . $clean_path;
                 if ($is_debug) {
                     $extra_params .= ($extra_params !== '' ? '&' : '') . 'debug=1';
                 }
             }
         } else {
-            $minified_path = str_replace('.css', '.min.css', $file_path);
+            if (!str_starts_with($clean_path, '/')) {
+                $clean_path = '/' . $clean_path; // be sure to have a path starting with `/`
 
-            if (!$is_debug && file_exists($this->root_dir . '/' . $minified_path)) {
-                $path = $minified_path;
-            } else {
-                $path = $file_path;
+                // FIXME Trigger a warning in GLPI 12.0.
             }
+
+            if (!$is_debug) {
+                $path_matches = [];
+                if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $clean_path, $path_matches) === 1) {
+                    $fs_path  = Plugin::getPhpDir($path_matches['plugin_key']) . '/public' . $path_matches['plugin_resource'];
+                } else {
+                    $fs_path  = $this->root_dir . '/public' . $clean_path;
+                }
+
+                if (file_exists(str_replace('.css', '.min.css', $fs_path))) {
+                    $clean_path = str_replace('.css', '.min.css', $clean_path);
+                }
+            }
+
+            $path = $clean_path;
         }
 
         if ($extra_params !== '') {
@@ -179,10 +195,23 @@ class FrontEndAssetsExtension extends AbstractExtension
     {
         $is_debug = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE;
 
-        $minified_path = str_replace('.js', '.min.js', $path);
+        if (!str_starts_with($path, '/')) {
+            $path = '/' . $path; // be sure to have a path starting with `/`
 
-        if (!$is_debug && file_exists($this->root_dir . '/' . $minified_path)) {
-            $path = $minified_path;
+            // FIXME Trigger a warning in GLPI 12.0.
+        }
+
+        if (!$is_debug) {
+            $path_matches = [];
+            if (preg_match(Plugin::PLUGIN_RESOURCE_PATTERN, $path, $path_matches) === 1) {
+                $fs_path  = Plugin::getPhpDir($path_matches['plugin_key']) . '/public' . $path_matches['plugin_resource'];
+            } else {
+                $fs_path  = $this->root_dir . '/public' . $path;
+            }
+
+            if (file_exists(str_replace('.js', '.min.js', $fs_path))) {
+                $path = str_replace('.js', '.min.js', $path);
+            }
         }
 
         $path = Html::getPrefixedUrl($path);
