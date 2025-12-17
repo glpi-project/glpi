@@ -6293,9 +6293,13 @@ JS);
     {
         global $CFG_GLPI;
         $prefix = $CFG_GLPI['root_doc'];
+
+        // Prevent double `/` between prefix and path.
+        $prefix = rtrim($prefix, '/');
         if (!str_starts_with($url, '/')) {
-            $prefix .= '/';
+            $url = '/' . $url;
         }
+
         return $prefix . $url;
     }
 
