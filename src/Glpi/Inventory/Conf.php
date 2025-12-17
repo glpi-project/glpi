@@ -321,7 +321,7 @@ class Conf extends CommonGLPI
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             /** @var self $item */
             switch ($tabnum) {
                 case 1:

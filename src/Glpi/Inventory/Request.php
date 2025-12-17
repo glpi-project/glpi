@@ -553,7 +553,7 @@ class Request extends AbstractRequest
             // Defines 'itemtype' only if all items has same type
             $itemtype = null;
             foreach ($items as $item) {
-                if ($itemtype === null && $item->getType() != Unmanaged::class) {
+                if ($itemtype === null && !$item instanceof Unmanaged) {
                     $itemtype = $item->getType();
                 } elseif ($itemtype !== $item->getType()) {
                     $itemtype = false;

@@ -928,8 +928,8 @@ abstract class MainAsset extends InventoryAsset
 
         //Ports are handled a different way on network equipments and printers
         if (
-            $this->item->getType() != 'NetworkEquipment'
-            && $this->item->getType() != 'Printer'
+            !$this->item instanceof NetworkEquipment
+            && !$this->item instanceof Printer
         ) {
             if (!$this->isPartial() || count($this->ports)) {
                 $this->handlePorts();

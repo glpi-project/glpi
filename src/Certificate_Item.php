@@ -82,7 +82,7 @@ class Certificate_Item extends CommonDBRelation
 
         if (!$withtemplate) {
             if (
-                $item->getType() == 'Certificate'
+                $item instanceof Certificate
                 && count(Certificate::getTypes(false))
             ) {
                 $nb = 0;

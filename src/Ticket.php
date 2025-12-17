@@ -779,7 +779,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                         break;
 
                     default:
-                        if ($item->getType() != self::class) {
+                        if (!$item instanceof self) {
                             // Deprecated, these items should use the Item_Ticket tab instead
                             Toolbox::deprecated("You should register the `Item_Ticket` tab instead of the `Ticket` tab");
                             return (new Item_Ticket())->getTabNameForItem($item, $withtemplate);
@@ -788,7 +788,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 }
             }
             // Not for Ticket class
-            if ($item->getType() != self::class) {
+            if (!$item instanceof self) {
                 return self::createTabEntry($title, $nb, $item::getType());
             }
         }
