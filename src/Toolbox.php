@@ -2185,8 +2185,6 @@ class Toolbox
      */
     public static function createSchema($lang = 'en_GB', ?DBmysql $database = null, ?AbstractProgressIndicator $progress_indicator = null)
     {
-        $_SESSION['is_creating_glpi_schema'] = true;
-
         if (null === $database) {
             // Use configured DB if no $db is defined in parameters
             if (!class_exists('DB', false)) {
@@ -2317,8 +2315,6 @@ class Toolbox
         $progress_indicator?->setProgressBarMessage('');
         $progress_indicator?->addMessage(MessageType::Success, __('Installation done.'));
         $progress_indicator?->finish();
-
-        unset($_SESSION['is_creating_glpi_schema']);
     }
 
 
