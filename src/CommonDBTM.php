@@ -2664,8 +2664,7 @@ class CommonDBTM extends CommonGLPI
 
         // Doc links to this item
         if (
-            ($this->getType() > 0)
-            && countElementsInTable(
+            countElementsInTable(
                 ['glpi_documents_items', 'glpi_documents'],
                 ['glpi_documents_items.items_id' => $ID,
                     'glpi_documents_items.itemtype' => $this->getType(),
