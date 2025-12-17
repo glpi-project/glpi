@@ -30,26 +30,33 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Dashboard', () => {
-    beforeEach(() => {
-        cy.login();
-    });
+import { test, expect } from '../../fixtures/glpi_fixture';
+import { FormPage } from '../../pages/FormPage';
+import { Profiles } from '../../utils/Profiles';
+import { getWorkerEntityId } from '../../utils/WorkerEntities';
 
-    const dashboards = new Map([
-        ['Asset', '/front/dashboard_assets.php'],
-        ['Assistance', '/front/dashboard_helpdesk.php'],
-        ['Central', '/front/central.php'],
-        ['Tickets Mini', '/front/ticket.php'],
-    ]);
+test('Tabs are refreshed on update', async ({page, profile, api}) => {
+    await profile.set(Profiles.SuperAdmin);
 
-    dashboards.forEach((value, key) => {
-        it(`${key} Dashboard Loads`, () => {
-            cy.visit(value);
-            cy.get('.grid-stack-item .g-chart, .grid-stack-item .big-number').should('be.visible');
-            // grid-stack-items should have reasonable height
-            cy.get('.grid-stack-item:not(.lock-bottom)').each(($el) => {
-                cy.get($el).invoke('height').should('be.gt', 30);
-            });
-        });
+    // Create an item that use the ajax controller and go to its page
+    const id = await api.createItem("Glpi\\Form\\Form", {
+        name: "My form",
+        entities_id: getWorkerEntityId(),
+        is_active: false,
     });
+    const form_page = new FormPage(page);
+    await form_page.goto(id);
+
+    // Load the history tab and count the history
+    await form_page.doGoToTab("Historical");
+    await expect(form_page.history_rows).toHaveCount(5);
+
+    // Go back to the form and trigger an update, then go back to the history
+    await form_page.doGoToTab("Form");
+    await form_page.editor_active_checkbox.check();
+    await form_page.doSaveFormEditor();
+    await form_page.doGoToTab("Historical");
+
+    // The history should be updated
+    await expect(form_page.history_rows).toHaveCount(7);
 });

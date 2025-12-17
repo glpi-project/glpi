@@ -41,12 +41,14 @@ import { ProfileSwitcher } from '../utils/ProfileSwitcher';
 import { CsrfFetcher } from '../utils/CsrfFetcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
+import { EntitySwitcher } from '../utils/EntitySwitcher';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
     // Test scoped fixtures, these object will be created for each tests.
     anonymousPage: Page,
     profile: ProfileSwitcher,
+    entity: EntitySwitcher,
     csrf: CsrfFetcher,
     api: Api,
 }, {
@@ -139,6 +141,13 @@ export const test = baseTest.extend<{
     // Service used to switch profiles as needed.
     profile: [async ({ request, csrf, workerSessionCache }, use) => {
         await use(new ProfileSwitcher(request, csrf, workerSessionCache));
+    }, { scope: 'test' }],
+
+    // Service used to switch entites.
+    // Unlike the profile service, this shouldn't be needed on most tests, it is
+    // only required when testing very specific entity related actions
+    entity:  [async ({ request, csrf }, use) => {
+        await use(new EntitySwitcher(request, csrf));
     }, { scope: 'test' }],
 
     // Service used to send API request to GLPI.
