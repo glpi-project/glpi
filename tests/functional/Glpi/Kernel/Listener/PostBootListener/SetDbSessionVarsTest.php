@@ -97,4 +97,24 @@ class SetDbSessionVarsTest extends GLPITestCase
 
         $this->assertEquals($expected_timezone, $result['tz']);
     }
+
+    public function testOnPostBootWithDisconnectedDatabase(): void
+    {
+        global $DB;
+
+        $db_backup = $DB;
+
+        try {
+            $DB = null;
+
+            $_SESSION['glpitimezone'] = 'Europe/Paris';
+
+            $listener = new SetDbSessionVars();
+            $listener->onPostBoot();
+
+            $this->assertTrue(true);
+        } finally {
+            $DB = $db_backup;
+        }
+    }
 }

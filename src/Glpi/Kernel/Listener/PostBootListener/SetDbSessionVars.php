@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
+use DBConnection;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -56,7 +57,7 @@ final class SetDbSessionVars implements EventSubscriberInterface
 
         Profiler::getInstance()->start('SetDbSessionVars::execute', Profiler::CATEGORY_BOOT);
 
-        if ($DB->use_timezones) {
+        if (DBConnection::isDbAvailable() && $DB->use_timezones) {
             $timezone = $this->getConfiguredTimezone();
             $DB->setTimezone($timezone);
         }
