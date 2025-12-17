@@ -600,15 +600,15 @@ class Event extends CommonDBTM
 
             return '<i class="text-muted me-1 ' . \htmlescape($icon) . '"></i><span>' . \htmlescape($display_value) . '</span>';
         } elseif ($field === 'message') {
-            $message = $values['message'];
+            $message = $values['message'] ?? '';
 
             // List of known standards for dynamic translation
             $message_patterns = [
-                '/Failed login for (.*) from IP (.*)/' 
+                '/Failed login for (.*) from IP (.*)/'
                     => __('Failed login for %1$s from IP %2$s'),
-                '/Login for (.*) denied by authorization rules from IP (.*)/' 
+                '/Login for (.*) denied by authorization rules from IP (.*)/'
                     => __('Login for %1$s denied by authorization rules from IP %2$s'),
-                '/(.*) log in from IP (.*)/' 
+                '/(.*) log in from IP (.*)/'
                     => __('%1$s log in from IP %2$s'),
             ];
 
