@@ -966,8 +966,6 @@ class Session
     {
         global $CFG_GLPI;
 
-        $supported_locales = array_keys($CFG_GLPI['languages'] ?? []);
-
         if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
             // Use Symfony Request to parse Accept-Language header
             // Will normalizes language tags (pl-PL -> pl_PL)
@@ -975,26 +973,16 @@ class Session
             $accepted_languages = $request->getLanguages();
 
             foreach ($accepted_languages as $language) {
-                // Direct match with locale key
-                if (in_array($language, $supported_locales, true)) {
+                // Direct match with locale key (e.g., 'pl_PL')
+                if (array_key_exists($language, $CFG_GLPI['languages'])) {
                     return $language;
                 }
 
-                // Fallback for short language codes (pl -> pl_PL)
-                if (!str_contains($language, '_')) {
-                    // First using language_LANGUAGE
-                    $canonical_locale = $language . '_' . strtoupper($language);
-                    if (in_array($canonical_locale, $supported_locales, true)) {
-                        return $canonical_locale;
-                    }
-
-                    // Otherwise fallback to the first matching locale
-                    // e.g., 'en' -> 'en_GB' (since en_EN doesn't exist)
-                    $prefix = $language . '_';
-                    foreach ($supported_locales as $locale_key) {
-                        if (str_starts_with($locale_key, $prefix)) {
-                            return $locale_key;
-                        }
+                // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
+                if (isset($CFG_GLPI['main_languages'][$language])) {
+                    $main_lang = $CFG_GLPI['main_languages'][$language];
+                    if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
+                        return $main_lang;
                     }
                 }
             }
