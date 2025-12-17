@@ -1140,7 +1140,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         global $DB;
 
         // Do not trigger webhooks during initial installation
-        if (isset($_SESSION['is_creating_glpi_schema'])) {
+        if (!DBConnection::isDbAvailable() || !Config::isLegacyConfigurationLoaded() || Update::isUpdateMandatory()) {
             return;
         }
 
