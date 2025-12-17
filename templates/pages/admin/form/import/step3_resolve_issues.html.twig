@@ -75,7 +75,7 @@
                                 {{ fields.dropdownField(
                                     issue.itemtype,
                                     'replacements[' ~ replacement_index ~ '][replacement_id]',
-                                    issue.replacement_id|default(''),
+                                    issue.replacement_id|default(issue.itemtype == 'Entity' ? session('glpiactive_entity') : 0),
                                     '',
                                     {
                                         'field_class': 'col-12',
