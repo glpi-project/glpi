@@ -170,6 +170,14 @@ class AjaxMock {
             }
         }
         if (result !== undefined) {
+            if (settings.async === false) {
+                if (resolve_type === 'success' && settings.success) {
+                    settings.success(result);
+                } else if (resolve_type !== 'success' && settings.error) {
+                    settings.error(result);
+                }
+                return Promise.resolve();
+            }
             if (resolve_type === 'success') {
                 result = Promise.resolve(result);
             } else {
