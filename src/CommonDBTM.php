@@ -3518,7 +3518,7 @@ class CommonDBTM extends CommonGLPI
             ];
         }
 
-        if ($this->isField('states_id') && $this->getType() != 'State') {
+        if ($this->isField('states_id') && !$this instanceof State) {
             $name = Dropdown::getDropdownName('glpi_states', $this->fields['states_id']);
             if ((string) $name !== '') {
                 $toadd[] = [
@@ -3528,7 +3528,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        if ($this->isField('locations_id') && $this->getType() != 'Location') {
+        if ($this->isField('locations_id') && !$this instanceof Location) {
             $name = Dropdown::getDropdownName("glpi_locations", $this->fields['locations_id']);
             if ((string) $name !== '') {
                 $toadd[] = [
@@ -3548,7 +3548,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        if ($this->isField('groups_id') && $this->getType() != 'Group') {
+        if ($this->isField('groups_id') && !$this instanceof Group) {
             $groups = $this->fields['groups_id'];
             if (!is_array($groups)) {
                 $groups = [$groups];

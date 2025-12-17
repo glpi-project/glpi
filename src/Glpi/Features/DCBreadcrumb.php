@@ -127,7 +127,7 @@ trait DCBreadcrumb
             // Add DCRoom part of breadcrumb
             $dcroom = new DCRoom();
             if (
-                $item->getType() == Rack::getType()
+                $item instanceof Rack
                 && $item->fields['dcrooms_id'] > 0
                 && $dcroom->getFromDB($item->fields['dcrooms_id'])
             ) {
@@ -148,7 +148,7 @@ trait DCBreadcrumb
             // Add Datacenter part of breadcrumb
             $datacenter = new Datacenter();
             if (
-                $item->getType() == DCRoom::getType()
+                $item instanceof DCRoom
                 && $item->fields['datacenters_id'] > 0
                 && $datacenter->getFromDB($item->fields['datacenters_id'])
             ) {

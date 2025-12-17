@@ -70,7 +70,7 @@ class Appliance_Item extends CommonDBRelation
         }
 
         $nb = 0;
-        if ($item->getType() == Appliance::class) {
+        if ($item instanceof Appliance) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 if (!$item->isNewItem()) {
                     $nb = self::countForMainItem($item);

@@ -161,7 +161,7 @@ class Log extends CommonDBTM
                 }
                 // specific for profile
                 if (
-                    ($item->getType() == 'ProfileRight')
+                    ($item instanceof ProfileRight)
                     && ($key == 'rights')
                 ) {
                     if (
@@ -174,7 +174,7 @@ class Log extends CommonDBTM
                 } elseif (
                     ($val2['linkfield'] == $key && $real_type === $item->getType())
                        || ($key == $val2['field'] && $val2['table'] == $item->getTable())
-                       || ($val2['linkfield'] == $key && $item->getType() == 'Infocom')
+                       || ($val2['linkfield'] == $key && $item instanceof Infocom)
                 ) {
                     // Linkfield or standard field not massive action enable
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION

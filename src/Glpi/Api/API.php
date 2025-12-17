@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
@@ -1291,7 +1292,7 @@ abstract class API
         }
 
         // filter with entity
-        if ($item->getType() == 'Entity') {
+        if ($item instanceof Entity) {
             $criteria['WHERE'][] = getEntitiesRestrictCriteria($itemtype::getTable());
         } elseif (
             $item->isEntityAssign()
