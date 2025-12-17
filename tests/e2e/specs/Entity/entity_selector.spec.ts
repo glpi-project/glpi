@@ -80,7 +80,7 @@ test('Can search for entities', async ({ page, profile }) => {
 
     // Only one entity should be shown
     await expect(entity_05).toBeVisible();
-    await expect(entity_04).not.toBeVisible(); // Does not match the search
+    await expect(entity_04).toBeHidden(); // Does not match the search
 });
 
 test('Can fold/unfold tree', async ({ page, profile }) => {
@@ -105,7 +105,7 @@ test('Can fold/unfold tree', async ({ page, profile }) => {
     await page.locator('.fancytree-expander').first().click();
 
     // Now only the root entity should be shown
-    await expect(child_entity).not.toBeVisible();
+    await expect(child_entity).toBeHidden();
     await expect(root_entity).toBeVisible();
 });
 
