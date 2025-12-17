@@ -2012,7 +2012,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $input[$tpl_class::getForeignKeyField()] = (int) $input[static::getTemplateFormFieldName()];
         }
 
-        if ($this->getType() !== Ticket::getType()) {
+        if (!$this instanceof Ticket) {
             //cannot be handled here for tickets. @see Ticket::prepareInputForUpdate()
             $input = $this->handleTemplateFields($input);
             if ($input === false) {
@@ -8269,7 +8269,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $itilcategories_id = 0,
         $entities_id = -1
     ) {
-        if (!$type && $this->getType() != Ticket::getType()) {
+        if (!$type && !$this instanceof Ticket) {
             $type = true;
         }
         // Load template if available :

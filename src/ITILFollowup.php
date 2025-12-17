@@ -614,7 +614,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         // Fail if loaded item's type doesn't match our expected parent itemtype
-        if ($this->item->getType() !== $this->fields['itemtype']) {
+        if (!$this->item instanceof $this->fields['itemtype']) {
             return false;
         }
 

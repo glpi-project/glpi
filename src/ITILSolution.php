@@ -130,7 +130,7 @@ class ITILSolution extends CommonDBChild
         // TODO: replace by proper lazy loading
         if (
             $this->item == null // No item loaded
-            || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
+            || !$this->item instanceof $this->fields['itemtype'] // Another item is loaded
             || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
         ) {
             $item = getItemForItemtype($this->fields['itemtype']);
