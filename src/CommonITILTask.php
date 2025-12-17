@@ -360,7 +360,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     {
         /** @var CommonDBTM $item */
         if (
-            ($item->getType() == static::getItilObjectItemType())
+            ($item::class == static::getItilObjectItemType())
             && static::canView()
         ) {
             $nb = 0;

@@ -2746,8 +2746,7 @@ class CommonDBTM extends CommonGLPI
 
         // Doc links to this item
         if (
-            ($this->getType() > 0)
-            && countElementsInTable(
+            countElementsInTable(
                 ['glpi_documents_items', 'glpi_documents'],
                 ['glpi_documents_items.items_id' => $ID,
                     'glpi_documents_items.itemtype' => static::class,
@@ -3095,7 +3094,6 @@ class CommonDBTM extends CommonGLPI
             throw new NotFoundHttpException();
         } else {
             if (!$this->can($ID, $right, $input)) {
-                /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = static::class;
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
                 $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
@@ -3169,7 +3167,6 @@ class CommonDBTM extends CommonGLPI
     public function checkGlobal(int $right): void
     {
         if (!$this->canGlobal($right)) {
-            /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = static::class;
             $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
             $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
@@ -6660,7 +6657,7 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
 
-        $confname = strtolower($this->gettype()) . 's_management_restrict';
+        $confname = strtolower(static::class) . 's_management_restrict';
         if (Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANAGEMENT) {
             $is_global = true;
         } elseif (Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {

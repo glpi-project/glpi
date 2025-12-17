@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Entity;
 use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
@@ -651,6 +652,7 @@ abstract class API
         $item = \getItemForItemtype($itemtype);
         if ($item === false || !$item->getFromDB($id)) {
             $this->messageNotfoundError();
+            return [];
         }
         if (!$item->can($id, READ)) {
             $this->messageRightError();
@@ -1140,6 +1142,7 @@ abstract class API
         $item = \getItemForItemtype($itemtype);
         if ($item === false) {
             $this->messageNotfoundError();
+            return;
         }
 
         if (!$itemtype::canView()) {

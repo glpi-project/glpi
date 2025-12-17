@@ -157,7 +157,7 @@ final class EditorManager
                 $raw_config = $itemData->getExtraData();
 
                 // Replace the question data with the question type
-                $itemData = $itemData::class;
+                $itemData = $itemData->getType();
 
                 // Load question type config
                 $config = $raw_config ? $itemData->getExtraDataConfig($raw_config) : null;
@@ -207,7 +207,7 @@ final class EditorManager
                 $raw_config = $itemData->getExtraData();
 
                 // Replace the question data with the question type
-                $itemData = $itemData::class;
+                $itemData = $itemData->getType();
 
                 // Load question type config
                 $config = $raw_config ? $itemData->getExtraDataConfig($raw_config) : null;

@@ -461,10 +461,7 @@ class CommonGLPI implements CommonGLPIInterface
                 }
             }
         } else {
-            if (
-                !method_exists($type, 'canView')
-                || $item->canView()
-            ) {
+            if ($item->canView()) {
                 $menu['title']           = $item->getMenuName();
                 $menu['shortcut']        = $item->getMenuShorcut();
                 $menu['page']            = $item->getSearchURL(false);

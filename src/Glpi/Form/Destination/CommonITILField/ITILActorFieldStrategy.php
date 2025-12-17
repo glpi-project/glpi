@@ -238,7 +238,7 @@ enum ITILActorFieldStrategy: string
             return null;
         }
 
-        if ($answer::class instanceof AbstractQuestionTypeActors) {
+        if ($answer->getType() instanceof AbstractQuestionTypeActors) {
             $values = $answer->getRawAnswer();
             return array_reduce($values, function ($carry, $value) use ($itil_actor_field) {
                 if (
@@ -254,7 +254,7 @@ enum ITILActorFieldStrategy: string
                 ];
                 return $carry;
             }, []);
-        } elseif ($answer::class instanceof QuestionTypeEmail) {
+        } elseif ($answer->getType() instanceof QuestionTypeEmail) {
             $value = $answer->getRawAnswer();
             if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 return [
@@ -266,7 +266,7 @@ enum ITILActorFieldStrategy: string
                     ],
                 ];
             }
-        } elseif ($answer::class instanceof QuestionTypeItem) {
+        } elseif ($answer->getType() instanceof QuestionTypeItem) {
             $value = $answer->getRawAnswer();
             if (
                 !in_array(

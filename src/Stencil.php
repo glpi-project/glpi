@@ -347,7 +347,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         TemplateRenderer::getInstance()->display('stencil/editor.html.twig', [
             'item'              => $item,
             'stencil'           => $this,
-            'itemtype'          => $item->gettype(),
+            'itemtype'          => $item::class,
             'items_id'          => $item->getID(),
             'id'                => $self->fields['id'] ?? 0,
             'zones_json'        => $self->fields['zones'] ?? '{}',

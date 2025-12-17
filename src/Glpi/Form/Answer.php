@@ -87,7 +87,7 @@ final readonly class Answer implements JsonSerializable
 
     public function getFormattedAnswer(): ?string
     {
-        $type = static::class;
+        $type = $this->getType();
         if ($type === null) {
             return null;
         }

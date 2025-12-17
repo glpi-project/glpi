@@ -1405,6 +1405,9 @@ class IPAddress extends CommonDBChild
                     return;
                 }
                 $item = $father->getItem();
+                if (!$item) {
+                    return;
+                }
             }
 
             $iterator = $DB->request([

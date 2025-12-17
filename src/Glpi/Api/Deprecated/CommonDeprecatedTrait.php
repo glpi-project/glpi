@@ -45,7 +45,7 @@ trait CommonDeprecatedTrait
     abstract public function getType(): string;
 
     /**
-     * Get the class short name for the deprecated itemtpe
+     * Get the class short name for the deprecated itemtype
      *
      * @return string
      */
@@ -110,7 +110,7 @@ trait CommonDeprecatedTrait
         $soptions = array_map(function ($soption) {
             if (isset($soption['table'])) {
                 $new_table = str_replace(
-                    getTableForItemType(static::class),
+                    getTableForItemType($this->getType()),
                     getTableForItemType($this->getDeprecatedClass()),
                     $soption['table']
                 );

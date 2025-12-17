@@ -173,12 +173,12 @@ class NotificationTargetPlanningRecall extends NotificationTarget
             ($target_object instanceof CommonDBChild)
             || ($target_object instanceof CommonITILTask)
         ) {
-            $item2   = $target_object->getItem();
-            $this->data['##recall.item.url##']
-                  = $this->formatURL(
-                      $options['additionnaloption']['usertype'],
-                      $item2::class . "_" . $item2->getID()
-                  );
+            if ($item2   = $target_object->getItem()) {
+                $this->data['##recall.item.url##'] = $this->formatURL(
+                    $options['additionnaloption']['usertype'],
+                    $item2::class . "_" . $item2->getID()
+                );
+            }
         } else {
             $this->data['##recall.item.url##']
                   = $this->formatURL(

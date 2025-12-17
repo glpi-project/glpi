@@ -139,6 +139,9 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
             }
         }
         foreach ($targets as $target) {
+            if (!$target) {
+                continue;
+            }
             $this->data['targets'][] = [
                 '##target.url##'             => $target->getLink(),
                 '##target.name##'            => $target->fields['name'],

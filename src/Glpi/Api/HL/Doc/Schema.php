@@ -165,9 +165,9 @@ class Schema implements ArrayAccess
         if ($this->getPattern()) {
             $r['pattern'] = $this->getPattern();
         }
-        if ($this::class === self::TYPE_OBJECT) {
+        if ($this->getType() === self::TYPE_OBJECT) {
             $r['properties'] = $this->getProperties();
-        } elseif ($this::class === self::TYPE_ARRAY) {
+        } elseif ($this->getType() === self::TYPE_ARRAY) {
             $items = $this->getItems();
             if ($items !== null) {
                 $r['items'] = $items->toArray();

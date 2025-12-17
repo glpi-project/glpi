@@ -1261,6 +1261,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 return;
             }
             $item = $father->getItem();
+            if ($item === false) {
+                return;
+            }
         }
 
         $criteria = self::getSQLCriteriaToSearchForItem($item::class, $item->getID());
@@ -1659,7 +1662,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         if (!$link->getFromDBForItems($item_1, $item_2)) {
                             if (
                                 ($specificities['check_both_items_if_same_type'])
-                                && ($item_1 instanceof $item_2)
+                                && ($item_1::class === $item_2::class) //@phpstan-ignore classConstant.nonObject,classConstant.nonObject ($item_1 and $item_2 may be false, that's an error to manage properly)
                             ) {
                                 $link->getFromDBForItems($item_2, $item_1);
                             }
@@ -1718,25 +1721,25 @@ abstract class CommonDBRelation extends CommonDBConnexity
                             static::$items_id_2  => $item_2->getID(),
                         ];
                         if (preg_match('/^itemtype/', static::$itemtype_1)) {
-                            $WHERE[static::$itemtype_1] = $item_1::class;
+                            $WHERE[static::$itemtype_1] = $item_1::class; //@phpstan-ignore classConstant.nonObject ($item_1 may be false, that's an error to manage properly)
                         }
                         if (preg_match('/^itemtype/', static::$itemtype_2)) {
-                            $WHERE[static::$itemtype_2] = $item_2::class;
+                            $WHERE[static::$itemtype_2] = $item_2::class; //@phpstan-ignore classConstant.nonObject ($item_2 may be false, that's an error to manage properly)
                         }
 
                         if (
                             ($specificities['check_both_items_if_same_type'])
-                            && ($item_1 instanceof $item_2)
+                            && ($item_1::class === $item_2::class) //@phpstan-ignore classConstant.nonObject,classConstant.nonObject ($item_1 and $item_2 may be false, that's an error to manage properly)
                         ) {
                             $ORWHERE = [
                                 static::$items_id_1 => $item_2->getID(),
                                 static::$items_id_2 => $item_2->getID(),
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
-                                $ORWHERE[static::$itemtype_1] = $item_2::class;
+                                $ORWHERE[static::$itemtype_1] = $item_2::class; //@phpstan-ignore classConstant.nonObject ($item_2 may be false, that's an error to manage properly)
                             }
                             if (preg_match('/^itemtype/', static::$itemtype_2)) {
-                                $ORWHERE[static::$itemtype_2] = $item_2::class;
+                                $ORWHERE[static::$itemtype_2] = $item_2::class; //@phpstan-ignore classConstant.nonObject ($item_2 may be false, that's an error to manage properly)
                             }
                             $WHERE = [
                                 'OR' => [
@@ -1810,7 +1813,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $noent = true;
         }
 
-        $inverse = $item instanceof static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
+        $inverse = $item::class === static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
 
         $link_type  = static::$itemtype_1;
         $link_id    = static::$items_id_1;

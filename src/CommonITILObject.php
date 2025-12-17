@@ -7591,7 +7591,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             return [];
         }
 
-        /** @var CommonITILObject $objType */
         $objType    = static::class;
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
