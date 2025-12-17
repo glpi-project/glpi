@@ -49,13 +49,15 @@
                     {% if not is_outdated %}
                         <form method="post" action="{{ path('install/update.php') }}" class="p-2">
                             {{ fields.csrfField() }}
+                            <input type="hidden" name="from_update" value="1">
+                            <input type="hidden" name="continuer" value="1">
                             {% if not is_stable_release %}
                                 {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
                             {% endif %}
                             <p class="my-2 alert alert-important alert-warning">
                                 {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
                             </p>
-                            <button type="submit" name="from_update" value="1" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="ti ti-check"></i>{{ _x('button', 'Upgrade') }}
                             </button>
                         </form>
