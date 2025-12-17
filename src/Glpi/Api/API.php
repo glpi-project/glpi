@@ -1291,7 +1291,7 @@ abstract class API
         }
 
         // filter with entity
-        if ($item->getType() == 'Entity') {
+        if ($item instanceof Entity) {
             $criteria['WHERE'][] = getEntitiesRestrictCriteria($itemtype::getTable());
         } elseif (
             $item->isEntityAssign()

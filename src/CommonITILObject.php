@@ -747,8 +747,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 if (
                     $category->getFromDB($ticket->fields['itilcategories_id'])
                     && (
-                        ($this->getType() === Change::class && $category->fields['is_change'])
-                        || ($this->getType() === Problem::class && $category->fields['is_problem'])
+                        ($this instanceof Change && $category->fields['is_change'])
+                        || ($this instanceof Problem && $category->fields['is_problem'])
                     )
                 ) {
                     $options['itilcategories_id'] = $ticket->fields['itilcategories_id'];
@@ -8003,7 +8003,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         if ($item instanceof Document_Item) {
             Document_Item::showAddFormForItem($params['parent'], 0);
-        } elseif ($item->getType() == $params['parent']->getType()) {
+        } elseif ($item instanceof $params['parent']) {
             self::showEditDescriptionForm($params['parent']);
         } elseif ($item->can(-1, CREATE, $params)) {
             $item->showForm($id, $params);
@@ -9101,7 +9101,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         if ($key === 'group') {
                             foreach ($value as $groups_id) {
                                 $validation_right = 'validate';
-                                if ($this->getType() === Ticket::class) {
+                                if ($this instanceof Ticket) {
                                     $validation_right = isset($input['type']) && $input['type'] == Ticket::DEMAND_TYPE
                                         ? 'validate_request'
                                         : 'validate_incident';

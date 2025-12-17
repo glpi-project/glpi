@@ -69,7 +69,7 @@ class Central extends CommonGLPI
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             $tabs = [
                 1 => self::createTabEntry(__('Personal View'), 0, null, User::getIcon()),
                 2 => self::createTabEntry(__('Group View'), 0, null, Group::getIcon()),

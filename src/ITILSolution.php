@@ -317,7 +317,7 @@ class ITILSolution extends CommonDBChild
             $status = $item::SOLVED;
 
             //handle autoclose, for tickets only
-            if ($item->getType() == Ticket::getType()) {
+            if ($item instanceof Ticket) {
                 $autoclosedelay =  Entity::getUsedConfig(
                     'autoclose_delay',
                     $this->item->getEntityID(),

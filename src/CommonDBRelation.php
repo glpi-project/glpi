@@ -1659,7 +1659,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         if (!$link->getFromDBForItems($item_1, $item_2)) {
                             if (
                                 ($specificities['check_both_items_if_same_type'])
-                                && ($item_1->getType() == $item_2->getType())
+                                && ($item_1 instanceof $item_2)
                             ) {
                                 $link->getFromDBForItems($item_2, $item_1);
                             }
@@ -1726,7 +1726,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
                         if (
                             ($specificities['check_both_items_if_same_type'])
-                            && ($item_1->getType() == $item_2->getType())
+                            && ($item_1 instanceof $item_2)
                         ) {
                             $ORWHERE = [
                                 static::$items_id_1 => $item_2->getID(),
@@ -1810,7 +1810,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $noent = true;
         }
 
-        $inverse = $item->getType() == static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
+        $inverse = $item instanceof static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
 
         $link_type  = static::$itemtype_1;
         $link_id    = static::$items_id_1;

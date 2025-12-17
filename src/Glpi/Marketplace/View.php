@@ -120,7 +120,7 @@ class View extends CommonGLPI
         if (!Controller::isWebAllowed()) {
             return '';
         }
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             return [
                 self::createTabEntry(__("Installed")),
                 self::createTabEntry(__("Discover")),
@@ -135,7 +135,7 @@ class View extends CommonGLPI
         if (!Controller::isWebAllowed()) {
             return false;
         }
-        if ($item->getType() == self::class) {
+        if ($item instanceof self) {
             switch ($tabnum) {
                 case 0:
                     self::installed();
