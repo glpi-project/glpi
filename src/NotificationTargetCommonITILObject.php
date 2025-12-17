@@ -1211,9 +1211,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
     /**
      * Get data from an item
      *
-     * @param CommonITILObject $item    Object instance
-     * @param array            $options Options
-     * @param bool          $simple  (false by default)
+     * @param T     $item    Object instance
+     * @param array $options Options
+     * @param bool  $simple  (false by default)
      *
      * @return array
      **/

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,26 +32,40 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Group_Ticket Class
- *
- * @since 0.85
- *
- * Relation between Groups and Tickets
- **/
-class Group_Ticket extends CommonITILActor
+namespace Glpi\Form\Destination\CommonITILField;
+
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AnswersSet;
+use InvalidArgumentException;
+use Override;
+
+abstract class OLAField extends SLMField
 {
-    // From CommonDBRelation
-    public static $itemtype_1 = Ticket::class;
-    public static $items_id_1 = 'tickets_id';
-    public static $itemtype_2 = Group::class;
-    public static $items_id_2 = 'groups_id';
+    #[Override]
+    public function applyConfiguratedValueToInputUsingAnswers(
+        JsonFieldInterface $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array {
+        if (!$config instanceof SLMFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
 
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
 
-    public function post_purgeItem()
-    {
-        Item_Ola::computeGroupAssigneeRemoval((int) $this->fields['tickets_id'], (int) $this->fields['groups_id']);
+        // Compute value according to strategy
+        $slm_id = $strategy->getSLMID($config);
 
-        parent::post_purgeItem();
+        // Do not edit input if invalid value was found
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
+            return $input;
+        }
+
+        $input['_olas_id'] = [$slm_id];
+        $input['_la_update'] = true;
+
+        return $input;
     }
 }

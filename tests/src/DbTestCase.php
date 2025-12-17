@@ -393,6 +393,19 @@ class DbTestCase extends GLPITestCase
     }
 
     /**
+     * @template T of CommonDBTM
+     * @param T $item
+     * @return T
+     */
+    protected function reloadItem(CommonDBTM $item): CommonDBTM
+    {
+        $new = new ($item::class);
+        $new->getFromDB($item->getID());
+
+        return $new;
+    }
+
+    /**
      * Adds a new rule
      *
      * @param string $name     New rule name

@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\ITILTrait;
+use Glpi\Tests\RuleBuilder;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use Rule;
@@ -47,6 +49,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class RuleTest extends DbTestCase
 {
+    use ITILTrait;
+
     public function testGetTable()
     {
         $table = Rule::getTable('RuleDictionnarySoftware');
@@ -281,7 +285,7 @@ class RuleTest extends DbTestCase
         $this->assertSame(1, $rule->maxActionsCount());
 
         $rule = new RuleTicket();
-        $this->assertSame(45, $rule->maxActionsCount());
+        $this->assertSame(42, $rule->maxActionsCount());
 
         $rule = new \RuleDictionnarySoftware();
         $this->assertSame(7, $rule->maxActionsCount());
@@ -1048,6 +1052,58 @@ class RuleTest extends DbTestCase
         // Assert: make sure some options are defined
         $crawler = new Crawler($output);
         $this->assertCount(5, $crawler->filter('option'));
+    }
+
+    /**
+     * - create a ticket
+     * - create a rule on ticket update with a criteria on the entity
+     * - check it's applied on the ticket
+     */
+    public function testEntityIsInChangedFieldsOnUpdate(): void
+    {
+        $this->login();
+        $user_entity = \Session::getActiveEntity();
+        $new_priority = 4;
+
+        // arrange
+        $ticket = $this->createTicket();
+        assert($ticket->fields['priority'] !== $new_priority);
+
+        $builder = new RuleBuilder('Change priority on update', RuleTicket::class);
+        $builder->addCriteria('entities_id', Rule::PATTERN_IS, $user_entity);
+        $builder->addAction('assign', 'priority', $new_priority);
+        $this->createRule($builder);
+
+        // act
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['name' => 'Updated ticket']);
+
+        // assert
+        $this->assertEquals($new_priority, $ticket->fields['priority']);
+    }
+
+    public function testEntityIsInChangedFieldsOnUpdateFailure(): void
+    {
+        $this->login();
+        $user_entity = \Session::getActiveEntity();
+        $another_entity = 77;
+        $new_priority = 4;
+        assert($another_entity !== $user_entity);
+
+        // arrange
+        $ticket = $this->createTicket();
+        $initial_priority = $ticket->fields['priority'];
+        assert($ticket->fields['priority'] !== $new_priority);
+
+        $builder = new RuleBuilder('Change priority on update', RuleTicket::class);
+        $builder->addCriteria('entities_id', Rule::PATTERN_IS, $another_entity);
+        $builder->addAction('assign', 'priority', $new_priority);
+        $this->createRule($builder);
+
+        // act
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['name' => 'Updated ticket']);
+
+        // assert
+        $this->assertEquals($initial_priority, $ticket->fields['priority']);
     }
 }
 

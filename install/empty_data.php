@@ -756,7 +756,7 @@ $empty_data_builder = new class {
                 'hourmax' => 24,
             ], [
                 'id' => 32,
-                'itemtype' => 'OlaLevel_Ticket',
+                'itemtype' => 'Item_Ola',
                 'name' => 'olaticket',
                 'frequency' => 5 * MINUTE_TIMESTAMP,
                 'param' => null,

@@ -47,13 +47,69 @@ class SLA extends LevelAgreement
      * @var string
      */
     protected static $prefix            = 'sla';
-    /**
-     * @var string
-     */
-    protected static $prefixticket      = '';
     protected static $levelclass        = SlaLevel::class;
     protected static $levelticketclass  = SlaLevel_Ticket::class;
     protected static $forward_entity_to = [SlaLevel::class];
+
+    /**
+     * @param Ticket $ticket
+     * @param int $levels_id
+     * @return void
+     */
+    public function addLevelToDo(Ticket $ticket, $levels_id = 0)
+    {
+        $pre = static::$prefix;
+
+        if (!$levels_id && isset($ticket->fields[$pre . 'levels_id_ttr'])) {
+            $levels_id = $ticket->fields[$pre . "levels_id_ttr"];
+        }
+
+        if ($levels_id) {
+
+            $date = $this->computeExecutionDate(
+                $ticket->fields['date'],
+                $levels_id,
+                $ticket->fields[$pre . '_waiting_duration']
+            );
+
+            $toadd = [];
+            if ($date !== null) {
+                $toadd['date']           = $date;
+                $toadd[$pre . 'levels_id'] = $levels_id;
+                $toadd['tickets_id']     = $ticket->fields["id"];
+                $levelticket             = getItemForItemtype(static::$levelticketclass);
+                $levelticket->add($toadd);
+            }
+        }
+    }
+
+    /**
+     * remove a level to do for a ticket
+     *
+     * @param Ticket $ticket object
+     *
+     * @return void
+     **/
+    public static function deleteLevelsToDo(Ticket $ticket)
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $ticketfield = static::$prefix . "levels_id_ttr";
+
+        if ($ticket->fields[$ticketfield] > 0) {
+            $levelticket = getItemForItemtype(static::$levelticketclass);
+            $iterator = $DB->request([
+                'SELECT' => 'id',
+                'FROM'   => $levelticket::getTable(),
+                'WHERE'  => ['tickets_id' => $ticket->fields['id']],
+            ]);
+
+            foreach ($iterator as $data) {
+                $levelticket->delete(['id' => $data['id']]);
+            }
+        }
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -74,6 +130,34 @@ class SLA extends LevelAgreement
     public static function getIcon()
     {
         return SLM::getIcon();
+    }
+
+    public function cleanDBonPurge()
+    {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        // Clean levels
+        $fk        = getForeignKeyFieldForItemType(static::class);
+        $level     = getItemForItemtype(static::$levelclass);
+        $level->deleteByCriteria([$fk => $this->getID()]);
+
+        // Update tickets : clean SLA
+        [, $laField] = static::getFieldNames($this->fields['type']);
+        $iterator =  $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_tickets',
+            'WHERE'  => [$laField => $this->fields['id']],
+        ]);
+
+        if (count($iterator)) {
+            $ticket = new Ticket();
+            foreach ($iterator as $data) {
+                $ticket->deleteLevelAgreement(static::class, $data['id'], $this->fields['type']);
+            }
+        }
+
+        Rule::cleanForItemAction($this);
     }
 
     public function showFormWarning() {}

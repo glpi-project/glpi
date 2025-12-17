@@ -34,19 +34,29 @@
 
 namespace tests\units;
 
+use Entity;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\SLMTrait;
+use Group;
+use InvalidArgumentException;
 use NotificationTarget;
+use NotificationTargetTicket;
+use PHPUnit\Framework\Attributes\TestWith;
+use Session;
+use SLM;
+use Ticket;
 
 /* Test for inc/notificationtargetticket.class.php */
 
 class NotificationTargetTicketTest extends DbTestCase
 {
+    use SLMTrait;
     public function testgetDataForObject()
     {
         global $CFG_GLPI;
 
         $tkt = getItemByTypeName('Ticket', '_ticket01');
-        $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
+        $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $tkt);
         $notiftargetticket->getTags();
 
         // basic test for ##ticket.externalid## tag
@@ -173,7 +183,7 @@ class NotificationTargetTicketTest extends DbTestCase
         );
 
         // test of the getDataForObject for default language fr_FR
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('fr_FR');
+        $_SESSION["glpilanguage"] = Session::loadLanguage('fr_FR');
         $_SESSION['glpi_dropdowntranslations'] = \DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
 
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -200,9 +210,69 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertSame($expected, $ret['tasks']);
 
         // switch back to default language
-        $_SESSION["glpilanguage"] = \Session::loadLanguage('en_GB');
+        $_SESSION["glpilanguage"] = Session::loadLanguage('en_GB');
     }
 
+    #[TestWith(['ola_tto'])]
+    #[TestWith(['ola_ttr'])]
+    public function testGetDataForObjectOLA($notification_field): void
+    {
+        $ola_type = match ($notification_field) {
+            'ola_tto' => SLM::TTO,
+            'ola_ttr' => SLM::TTR,
+            default => throw new InvalidArgumentException("Invalid OLA type: $notification_field"),
+        };
+
+        $this->login();
+        // arrange
+        $ticket = getItemByTypeName('Ticket', '_ticket01');
+        $notification_target_ticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
+        // act
+        $notification_target_ticket->getTags();
+
+        // assert definition is as expected
+
+        // assert values are as expected - new format
+        $names = [$this->getUniqueString(), $this->getUniqueString()];
+        $comments = [$this->getUniqueString(), $this->getUniqueString()];
+        $group_name = '_test_group_1';
+        $group = getItemByTypeName(Group::class, $group_name);
+
+        ['ola' => $ola_1] = $this->createOLA(['name' => $names[0], 'comment' => $comments[0],], $ola_type, $group);
+        ['ola' => $ola_2] = $this->createOLA(['name' => $names[1], 'comment' => $comments[1],], $ola_type, $group);
+        $now = Session::getCurrentTime();
+
+        $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola_1->getID(), $ola_2->getID()]]);
+        // notice, the order of olas is important, retrieved data are in reversed order compared to the current assignation
+
+        $computed_values = $notification_target_ticket->getDataForObject($ticket, ['additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]]);
+        $this->assertCount(2, $computed_values[$notification_field]);
+
+        // order of returned data is not consistent on tto and ttr, so test is done on array of data + a check data are not the same on each computed value
+        foreach ($computed_values[$notification_field] as $ola_index => $computed_value) {
+            $this->assertContains($computed_value["##ticket.{$notification_field}.name##"], $names);
+            $this->assertContains($computed_value["##ticket.{$notification_field}.comment##"], $comments);
+
+            $this->assertEquals($now, $computed_value["##ticket.{$notification_field}.start_time##"]);
+            $this->assertEquals(null, $computed_value["##ticket.{$notification_field}.end_time##"]);
+            $this->assertEquals(0, $computed_value["##ticket.{$notification_field}.waiting_time##"]);
+            // due_time : just check it's not empty, business logic is tested in OLA test
+            // if this test gets hard to maintain, we could do the same for previous assertions.
+            $this->assertNotEmpty($computed_value["##ticket.{$notification_field}.due_time##"]);
+        }
+        $this->assertNotSame($computed_values[$notification_field][0]["##ticket.{$notification_field}.name##"], $computed_values[$notification_field][1]["##ticket.{$notification_field}.name##"]);
+        $this->assertNotSame($computed_values[$notification_field][0]["##ticket.{$notification_field}.comment##"], $computed_values[$notification_field][1]["##ticket.{$notification_field}.comment##"]);
+
+
+        // assert old format - backward compatibility - name is now a concatenation of all OLA names
+        $this->assertContains(
+            $computed_values["##ticket.{$notification_field}##"],
+            [
+                $names[1] . ' / ' . $names[0],
+                $names[0] . ' / ' . $names[1],
+            ]
+        );
+    }
 
     public function testTimelineTag()
     {
@@ -210,7 +280,7 @@ class NotificationTargetTicketTest extends DbTestCase
         global $DB;
         // Build test ticket
         $this->login('tech', 'tech');
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $tickets_id = $ticket->add($input = [
             'name'             => 'test',
             'content'          => 'test',
@@ -322,7 +392,7 @@ class NotificationTargetTicketTest extends DbTestCase
             ],
         ];
 
-        $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
+        $notiftargetticket = new NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
         //get all task / solution / followup (because is tech)
@@ -483,7 +553,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $parent  = getItemByTypeName('Entity', '_test_root_entity', true);
 
         // test entity url (with default url)
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
         $root_tickets_id = $ticket->add([
             'name'        => 'test',
             'content'     => 'test',
@@ -499,7 +569,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'show_private'    => true,
             ],
         ];
-        $notiftargetticket = new \NotificationTargetTicket($root, 'new', $ticket);
+        $notiftargetticket = new NotificationTargetTicket($root, 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
 
@@ -513,7 +583,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $this->assertEquals($root_expected_url, $ret['##ticket.url##']);
 
         // test sub entity with changed url
-        $entity  = new \Entity();
+        $entity  = new Entity();
         $this->assertTrue($entity->update([
             'id'       => $parent,
             'url_base' => "parent.tld",
@@ -527,7 +597,7 @@ class NotificationTargetTicketTest extends DbTestCase
             'entities_id' => $parent,
         ]);
 
-        $notiftargetticket = new \NotificationTargetTicket($parent, 'new', $ticket);
+        $notiftargetticket = new NotificationTargetTicket($parent, 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
 
         $parent_expected_url = str_replace([

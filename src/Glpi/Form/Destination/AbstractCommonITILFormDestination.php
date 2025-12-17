@@ -453,6 +453,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
 
         $fields = $predefined_fields->getPredefinedFields($template->fields['id']);
         foreach ($fields as $field => $value) {
+            $field = in_array($field, ['_olas_id_tto','_olas_id_ttr']) ? '_olas_id' : $field;
             $field_definition = $fields_definition[$field] ?? null;
             if (
                 $field_definition
@@ -475,6 +476,11 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             } else {
                 $input[$field] = $value;
             }
+        }
+
+        // If the template has a predefined OLA, we set the _la_update flag to update them
+        if (isset($input['_olas_id'])) {
+            $input['_la_update'] = true;
         }
 
         return $input;

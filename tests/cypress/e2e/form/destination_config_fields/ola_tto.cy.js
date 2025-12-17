@@ -44,6 +44,10 @@ describe('OLA TTO configuration', () => {
 
         cy.createWithAPI('SLM', {}).as('slm_id');
         cy.get('@slm_id').then((slm_id) => {
+            cy.createWithAPI('Group', {
+                'name': 'a group',
+                'is_assign': 1,
+            });
             const ola_name = `OLA TTO - ${slm_id}`;
             cy.createWithAPI('OLA', {
                 'name': ola_name,
@@ -51,6 +55,7 @@ describe('OLA TTO configuration', () => {
                 'number_time': 1,
                 'definition_time': 'hour',
                 'slms_id': slm_id,
+                'groups_id': 1,
             });
         });
 
