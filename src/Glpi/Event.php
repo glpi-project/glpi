@@ -609,9 +609,9 @@ class Event extends CommonDBTM
                 '/Login for (.*) denied by authorization rules from IP (.*)/' 
                     => __('Login for %1$s denied by authorization rules from IP %2$s'),
                 '/(.*) log in from IP (.*)/' 
-                    => __('%1$s log in from IP %2$s')
+                    => __('%1$s log in from IP %2$s'),
             ];
-            
+
             foreach ($message_patterns as $pattern => $translation) {
                 if (preg_match($pattern, $message, $matches)) {
                     // $matches[1] is the login, $matches[2] is the IP
