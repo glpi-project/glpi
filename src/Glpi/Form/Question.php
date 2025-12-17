@@ -435,7 +435,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             $form->getID(),
             $form::class,
             $changes,
-            static::class,
+            self::class,
             static::$log_history_add
         );
 
@@ -474,7 +474,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $form->getID(),
                 $form::class,
                 $changes,
-                static::class,
+                self::class,
                 static::$log_history_update
             );
         }
@@ -504,7 +504,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             $form->getID(),
             $form::class,
             $changes,
-            static::class,
+            self::class,
             static::$log_history_delete
         );
 
