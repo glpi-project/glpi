@@ -779,7 +779,7 @@ class DBConnection extends CommonGLPI
         }
 
         return [
-            'label' => self::getTypeName(Session::getPluralNumber()),
+            'label' => 'SQL replicas',
             'content' => $content,
         ];
     }
