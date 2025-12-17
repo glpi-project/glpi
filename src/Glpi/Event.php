@@ -360,12 +360,30 @@ class Event extends CommonDBTM
             'rows'   => [],
         ];
 
+        // List of known standards for dynamic translation
+        $message_patterns = [
+            '/Failed login for (.*) from IP (.*)/' 
+                => __('Failed login for %1$s from IP %2$s'),
+            '/Login for (.*) denied by authorization rules from IP (.*)/' 
+                => __('Login for %1$s denied by authorization rules from IP %2$s'),
+            '/(.*) log in from IP (.*)/' 
+                => __('%1$s log in from IP %2$s')
+        ];
+
         foreach ($iterator as $data) {
             $items_id = $data['items_id'];
             $type     = $data['type'];
             $date     = $data['date'];
             $service  = $data['service'];
             $message  = $data['message'];
+            
+            foreach ($message_patterns as $pattern => $translation) {
+                if (preg_match($pattern, $message, $matches)) {
+                    // $matches[1] is the login, $matches[2] is the IP
+                    $message = sprintf($translation, $matches[1], $matches[2]);
+                    break; 
+                }
+            }
 
             $itemtype = "&nbsp;";
             if (isset($logItemtype[$type])) {
