@@ -1,4 +1,10 @@
 <script setup>
+    /*!
+     * GLPI - Gestionnaire Libre de Parc Informatique
+     * SPDX-License-Identifier: GPL-3.0-or-later
+     * SPDX-FileCopyrightText: 2015-2025 Teclib' and contributors.
+     */
+
     import {computed, ref} from "vue";
 
     const props = defineProps({
