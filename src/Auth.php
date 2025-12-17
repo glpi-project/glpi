@@ -1129,21 +1129,21 @@ class Auth extends CommonGLPI
             if ($this->auth_succeded) {
                 //TRANS: %1$s is the login of the user and %2$s its IP address
                 Event::log(0, "system", 3, "login", sprintf(
-                    __('%1$s log in from IP %2$s'),
+                    '%1$s log in from IP %2$s',
                     $login_name,
                     $ip
                 ));
             } else {
                 if ($this->denied_by_rule) {
                     Event::log(0, "system", 3, "login", sprintf(
-                        __('Login for %1$s denied by authorization rules from IP %2$s'),
+                        'Login for %1$s denied by authorization rules from IP %2$s',
                         $login_name,
                         $ip
                     ));
                 } else {
                     //TRANS: %1$s is the login of the user and %2$s its IP address
                     Event::log(0, "system", 3, "login", sprintf(
-                        __('Failed login for %1$s from IP %2$s'),
+                        'Failed login for %1$s from IP %2$s',
                         $login_name,
                         $ip
                     ));
