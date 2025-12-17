@@ -140,7 +140,7 @@ $CFG_GLPI['languages'] = [
 
 // Mapping of short language codes to their main locale
 $CFG_GLPI['main_languages'] = [
-    'ar' => 'ar_SA',
+    // 'ar' => 'ar_SA', // not sure about the default region for arabic language
     'az' => 'az_AZ',
     'bg' => 'bg_BG',
     'bn' => 'bn_BD',
