@@ -41,7 +41,10 @@
 
     {% if is_recursive %}
         <form method="POST" action="{{ path('/Session/ChangeEntity') }}">
-            <button class="btn btn-outline-secondary p-0 ms-1">
+            <button
+                class="btn btn-outline-secondary p-0 ms-1"
+                aria-label="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
+            >
                 <i
                     class="ti ti-chevrons-down"
                     data-bs-toggle="tooltip"
