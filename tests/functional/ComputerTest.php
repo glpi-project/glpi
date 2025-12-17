@@ -205,7 +205,7 @@ class ComputerTest extends DbTestCase
         $linkid = $link->add(
             [
                 'items_id'              => $computer->getID(),
-                'itemtype'              => \Computer::getType(),
+                'itemtype'              => \Computer::class,
                 'deviceprocessors_id'   => $cpuid,
                 'locations_id'          => $computer->getField('locations_id'),
                 'states_id'             => $computer->getField('states_id'),
@@ -368,7 +368,7 @@ class ComputerTest extends DbTestCase
         $linkid = $link->add(
             [
                 'items_id'              => $computer->getID(),
-                'itemtype'              => \Computer::getType(),
+                'itemtype'              => \Computer::class,
                 'deviceprocessors_id'   => $cpuid,
             ]
         );

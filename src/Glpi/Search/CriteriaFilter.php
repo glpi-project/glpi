@@ -78,7 +78,7 @@ final class CriteriaFilter extends CommonDBChild
         return self::createTabEntry(
             self::getTypeName($nb),
             $nb,
-            $item::getType(),
+            $item::class,
             'ti ti-adjustments-horizontal'
         );
     }

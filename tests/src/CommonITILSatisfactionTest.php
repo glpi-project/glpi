@@ -66,7 +66,7 @@ abstract class CommonITILSatisfactionTest extends DbTestCase
         $tested_class = $this->getTestedClass();
         $item = $tested_class::getItemInstance();
         $itemtype = $item::class;
-        $tag_prefix = strtoupper($item::getType());
+        $tag_prefix = strtoupper($item::class);
         $items_id = $item->add([
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,

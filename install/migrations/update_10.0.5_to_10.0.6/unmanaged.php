@@ -49,7 +49,7 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
             'name'      => 'Unmanaged update (by name)',
             'uuid'      => 'glpi_rule_import_asset_unmanaged_update_name',
             'match'     => 'AND',
-            'sub_type'  => RuleImportAsset::getType(),
+            'sub_type'  => 'RuleImportAsset',
             'is_active' => 1,
         ],
         [
@@ -83,7 +83,7 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
             'name'      => 'Unmanaged import (by name)',
             'uuid'      => 'glpi_rule_import_asset_unmanaged_import_name',
             'match'     => 'AND',
-            'sub_type'  => RuleImportAsset::getType(),
+            'sub_type'  => 'RuleImportAsset',
             'is_active' => 1,
         ],
         [
@@ -112,7 +112,7 @@ if (countElementsInTable(Rule::getTable(), ['sub_type' => 'RuleImportAsset']) > 
             'name'      => 'Unmanaged import denied',
             'uuid'      => 'glpi_rule_import_asset_unmanaged_import_denied',
             'match'     => 'AND',
-            'sub_type'  => RuleImportAsset::getType(),
+            'sub_type'  => 'RuleImportAsset',
             'is_active' => 1,
         ],
         [

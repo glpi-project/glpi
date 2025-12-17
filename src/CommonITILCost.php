@@ -80,7 +80,7 @@ abstract class CommonITILCost extends CommonDBChild
                     [$item::getForeignKeyField() => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -508,7 +508,7 @@ abstract class CommonITILCost extends CommonDBChild
                 'cancreate' => static::canCreate(),
                 'id'        => $ID,
                 'rand'      => $rand,
-                'type'      => static::getType(),
+                'type'      => static::class,
                 'parenttype' => static::$itemtype,
                 'items_id'  => static::$items_id,
                 'add_new_label' => __('Add a new cost'),
@@ -577,7 +577,7 @@ TWIG, $twig_params);
                 $budget_links[$data['budgets_id']] = $budget->getLink();
             }
             $entry = [
-                'itemtype' => static::getType(),
+                'itemtype' => static::class,
                 'id'       => $data['id'],
                 'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip($data['comment'], ['display' => false])),
                 'begin_date' => $data['begin_date'],

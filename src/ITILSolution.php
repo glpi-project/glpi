@@ -72,7 +72,7 @@ class ITILSolution extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countFor($item::class, $item->getID());
             }
-            return self::createTabEntry($title, $nb, $item::getType());
+            return self::createTabEntry($title, $nb, $item::class);
         }
         return '';
     }
@@ -249,7 +249,7 @@ class ITILSolution extends CommonDBChild
             $status = CommonITILValidation::ACCEPTED;
 
             //handle autoclose, for tickets only
-            if ($input['itemtype'] == Ticket::getType()) {
+            if ($input['itemtype'] == Ticket::class) {
                 $autoclosedelay =  Entity::getUsedConfig(
                     'autoclose_delay',
                     $this->item->getEntityID(),

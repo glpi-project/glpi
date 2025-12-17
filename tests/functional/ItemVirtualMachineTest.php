@@ -103,9 +103,9 @@ class ItemVirtualMachineTest extends DbTestCase
         $this->assertTrue($obj->getFromDB($id));
         $this->assertSame($uuid, $obj->fields['uuid']);
 
-        $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'name' => 'Virtu Hall']));
+        $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::class, 'name' => 'Virtu Hall']));
         //a machine exists yet
-        $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::getType(), 'uuid' => $uuid]));
+        $this->assertFalse($obj->findVirtualMachine(['itemtype' => \Computer::class, 'uuid' => $uuid]));
 
         $this->assertGreaterThan(
             0,
@@ -116,6 +116,6 @@ class ItemVirtualMachineTest extends DbTestCase
             ])
         );
 
-        $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::getType(),'uuid' => $uuid]));
+        $this->assertEquals($cid, $obj->findVirtualMachine(['itemtype' => \Computer::class,'uuid' => $uuid]));
     }
 }

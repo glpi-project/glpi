@@ -579,7 +579,7 @@ class CommonDBTM extends CommonGLPI
             && !$this->isNewItem()
             && $lockedfield->isHandled($this)
         ) {
-            $locks = $lockedfield->getLockedValues(static::getType(), $this->fields['id']);
+            $locks = $lockedfield->getLockedValues(static::class, $this->fields['id']);
         }
 
         return $locks;
@@ -703,7 +703,7 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getLogTypeID()
     {
-        return [static::getType(), $this->fields['id']];
+        return [static::class, $this->fields['id']];
     }
 
     /**
@@ -897,7 +897,7 @@ class CommonDBTM extends CommonGLPI
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'  => static::getType(),
+                    'itemtype'  => static::class,
                     'items_id'  => $this->fields['id'],
                 ]
             );
@@ -3096,7 +3096,7 @@ class CommonDBTM extends CommonGLPI
         } else {
             if (!$this->can($ID, $right, $input)) {
                 /** @var class-string<CommonDBTM> $itemtype */
-                $itemtype = static::getType();
+                $itemtype = static::class;
                 $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
                 $info = "User failed a can* method check for right $right ($right_name) on item Type: $itemtype ID: $ID";
                 throw new AccessDeniedHttpException($info);
@@ -3170,7 +3170,7 @@ class CommonDBTM extends CommonGLPI
     {
         if (!$this->canGlobal($right)) {
             /** @var class-string<CommonDBTM> $itemtype */
-            $itemtype = static::getType();
+            $itemtype = static::class;
             $right_name = Session::getRightNameForError($itemtype::$rightname, $right);
             $info = "User failed a global can* method check for right $right ($right_name) on item Type: $itemtype";
             throw new AccessDeniedHttpException($info);
@@ -4132,7 +4132,7 @@ class CommonDBTM extends CommonGLPI
 
         $actions = ['MassiveAction:add_transfer_list'];
 
-        if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+        if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
             $actions[] = 'Item_Rack:delete';
         }
 
@@ -4168,12 +4168,12 @@ class CommonDBTM extends CommonGLPI
                 MassiveAction::getAddTransferList($actions);
             }
 
-            if (in_array(static::getType(), Appliance::getTypes(true))) {
+            if (in_array(static::class, Appliance::getTypes(true))) {
                 $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
                 = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
-            if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+            if (in_array(static::class, $CFG_GLPI['rackable_types'])) {
                 $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
                 = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
@@ -4242,7 +4242,7 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (!$this->searchopt) {
-            $this->searchopt = SearchOption::getOptionsForItemtype(static::getType());
+            $this->searchopt = SearchOption::getOptionsForItemtype(static::class);
         }
 
         return $this->searchopt;
@@ -5414,7 +5414,7 @@ class CommonDBTM extends CommonGLPI
         }
         // Fill forward_entity_to array with itemtypes coming from plugins
         if (
-            isset(static::$plugins_forward_entity[static::getType()])
+            isset(static::$plugins_forward_entity[static::class])
             && in_array($itemtype, static::$plugins_forward_entity[static::class], true)
         ) {
             return true;
@@ -6249,7 +6249,7 @@ class CommonDBTM extends CommonGLPI
                         '_is_model_img'   => isset($model),
                     ] + $p;
                 } else {
-                    $owner_type = isset($model) ? $model::getType() : $itemtype;
+                    $owner_type = isset($model) ? $model::class : $itemtype;
                     $owner_id = isset($model) ? $model->getID() : $this->getID();
 
                     trigger_error(

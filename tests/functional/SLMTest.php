@@ -2316,7 +2316,7 @@ class SLMTest extends DbTestCase
         $actions = $sla_level->getSpecificMassiveActions();
 
         // Check that the export action is not available
-        $this->assertArrayNotHasKey(Rule::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'export', $actions);
+        $this->assertArrayNotHasKey(Rule::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'export', $actions);
     }
 
     public function testCloneSLA()

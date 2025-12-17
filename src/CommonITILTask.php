@@ -378,7 +378,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 }
                 $nb = countElementsInTable($this->getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -1734,7 +1734,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         $prep_req = ['SELECT' => self::getTable() . '.id', 'FROM' => self::getTable()];
 
-        $itemtype = str_replace('Task', '', self::getType());
+        $itemtype = str_replace('Task', '', self::class);
         $fk_table = getTableForItemType($itemtype);
         $fk_field = Toolbox::strtolower(getPlural($itemtype)) . '_id';
 

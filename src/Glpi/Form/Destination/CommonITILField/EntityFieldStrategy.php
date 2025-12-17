@@ -107,7 +107,7 @@ enum EntityFieldStrategy: string
         }
 
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== Entity::getType() || !is_numeric($value['items_id'])) {
+        if ($value['itemtype'] !== Entity::class || !is_numeric($value['items_id'])) {
             return $this->getFormFillerEntityID();
         }
 
@@ -121,7 +121,7 @@ enum EntityFieldStrategy: string
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
             ),
-            fn($answer) => $answer->getRawAnswer()['itemtype'] === Entity::getType()
+            fn($answer) => $answer->getRawAnswer()['itemtype'] === Entity::class
         );
 
         if (count($valid_answers) == 0) {

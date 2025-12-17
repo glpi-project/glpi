@@ -323,7 +323,7 @@ class CommonGLPI implements CommonGLPIInterface
 
         // Object with class with 'addtabon' attribute
         if (!$this->isNewItem()) {
-            $othertabs = self::getOtherTabs(static::getType());
+            $othertabs = self::getOtherTabs(static::class);
             foreach ($othertabs as $typetab) {
                 $this->addStandardTab($typetab, $onglets, $options);
             }
@@ -410,7 +410,7 @@ class CommonGLPI implements CommonGLPIInterface
             $icon = static::getIcon();
         }
         $icon = $icon ? "<i class='" . htmlescape($icon) . " me-2'></i>" : '';
-        $ong[static::getType() . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
+        $ong[static::class . '$main'] = '<span>' . $icon . htmlescape(static::getTypeName(1)) . '</span>';
         return $this;
     }
 
@@ -425,7 +425,7 @@ class CommonGLPI implements CommonGLPIInterface
     {
         $menu       = [];
 
-        $type       = static::getType();
+        $type       = static::class;
         $item       = new static();
         $forbidden  = $item->getForbiddenActionsForMenu();
 
@@ -797,14 +797,14 @@ class CommonGLPI implements CommonGLPIInterface
         global $CFG_GLPI;
 
         if (!empty($_GET['withtemplate'])) {
-            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::getType();
+            return $CFG_GLPI["root_doc"] . "/front/setup.templates.php?add=0&itemtype=" . static::class;
         }
 
         if (
-            isset($_SESSION['glpilisturl'][static::getType()])
-            && !empty($_SESSION['glpilisturl'][static::getType()])
+            isset($_SESSION['glpilisturl'][static::class])
+            && !empty($_SESSION['glpilisturl'][static::class])
         ) {
-            return $_SESSION['glpilisturl'][static::getType()];
+            return $_SESSION['glpilisturl'][static::class];
         }
 
         return static::getSearchURL();
@@ -969,7 +969,7 @@ class CommonGLPI implements CommonGLPIInterface
                 $tab_params,
                 [
                     '_target' => $target,
-                    '_itemtype' => static::getType(),
+                    '_itemtype' => static::class,
                     'id' => $ID,
                 ]
             );
@@ -1002,7 +1002,7 @@ class CommonGLPI implements CommonGLPIInterface
                 'tabspanel',
                 'tabcontent',
                 $tabs,
-                static::getType(),
+                static::class,
                 $ID,
                 $this->taborientation,
                 $options
@@ -1055,12 +1055,12 @@ class CommonGLPI implements CommonGLPIInterface
 
         if (
             !static::isNewID($ID)
-            && static::getType()
+            && static::class
             && $this->displaylist
         ) {
-            $glpilistitems = & $_SESSION['glpilistitems'][static::getType()];
-            $glpilisttitle = & $_SESSION['glpilisttitle'][static::getType()];
-            $glpilisturl   = & $_SESSION['glpilisturl'][static::getType()];
+            $glpilistitems = & $_SESSION['glpilistitems'][static::class];
+            $glpilisttitle = & $_SESSION['glpilisttitle'][static::class];
+            $glpilisturl   = & $_SESSION['glpilisturl'][static::class];
             if ($this instanceof CommonDBChild && $parent = $this->getItem(true, false)) {
                 $glpilisturl = $parent::getFormURLWithID($parent->fields['id'], true);
             }
@@ -1280,7 +1280,7 @@ class CommonGLPI implements CommonGLPIInterface
         echo "<div class='row'>";
         if ($this instanceof CommonDBTM) {
             TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
-                'itemtype' => static::getType(),
+                'itemtype' => static::class,
             ]);
         }
         echo "<div class='col'>";
@@ -1345,7 +1345,7 @@ class CommonGLPI implements CommonGLPIInterface
             'FROM'   => KnowbaseItem::getTable(),
             'WHERE'  => [
                 KnowbaseItem_Item::getTable() . '.items_id'  => $this->fields['id'],
-                KnowbaseItem_Item::getTable() . '.itemtype'  => static::getType(),
+                KnowbaseItem_Item::getTable() . '.itemtype'  => static::class,
             ],
             'INNER JOIN'   => [
                 KnowbaseItem_Item::getTable() => [

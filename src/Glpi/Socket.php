@@ -582,7 +582,7 @@ class Socket extends CommonDBChild
         if ($this->fields['networkports_id'] > 0) {
             $iter = $DB->request([
                 'SELECT' => 'id',
-                'FROM'  => getTableForItemType(self::getType()),
+                'FROM'  => getTableForItemType(self::class),
                 'WHERE' => [
                     'networkports_id' => $this->fields['networkports_id'],
                     ['NOT' => ['id' => $this->fields['id']]],
@@ -620,7 +620,7 @@ class Socket extends CommonDBChild
                             ['locations_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 default:
                     /** @var CommonDBTM $item */
                     if (in_array($item::class, $CFG_GLPI['socket_types'])) {
@@ -632,7 +632,7 @@ class Socket extends CommonDBChild
                                 ]
                             );
                         }
-                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
             }
         }
@@ -747,7 +747,7 @@ class Socket extends CommonDBChild
             }
             $endpoint = getItemForItemtype($itemtype);
             if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
-                $itemtype_label = $endpoint::getType();
+                $itemtype_label = $endpoint::class;
                 $item_label = sprintf(
                     '<a href="%s">%s</a>',
                     htmlescape($endpoint->getLinkURL()),

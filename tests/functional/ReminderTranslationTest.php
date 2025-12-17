@@ -61,7 +61,7 @@ class ReminderTranslationTest extends DbTestCase
         $added = $reminder->add($data);
         $this->assertGreaterThan(0, (int) $added);
 
-        $reminder1 = getItemByTypeName(\Reminder::getType(), '_test_reminder01');
+        $reminder1 = getItemByTypeName(\Reminder::class, '_test_reminder01');
 
         //first, set data
         $text_orig = 'Translation 1 for Reminder1';

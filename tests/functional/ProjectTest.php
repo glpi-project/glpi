@@ -487,14 +487,14 @@ PLAINTEXT;
             $state1,
             $state2,
             $state3
-        ] = $this->createItems(ProjectState::getType(), [
+        ] = $this->createItems(ProjectState::class, [
             ['name' => 'state1', 'color' => '#000001'],
             ['name' => 'state2', 'color' => '#000002'],
             ['name' => 'state3', 'color' => '#000003'],
         ]);
 
         // Create projects using these states
-        $this->createItems(\Project::getType(), [
+        $this->createItems(\Project::class, [
             ['name' => 'project1a', 'projectstates_id' => $state1->getID(), 'entities_id' => $entity],
             ['name' => 'project2a', 'projectstates_id' => $state2->getID(), 'entities_id' => $entity],
             ['name' => 'project2b', 'projectstates_id' => $state2->getID(), 'entities_id' => $entity],
@@ -507,7 +507,7 @@ PLAINTEXT;
         $params = [
             'display_type' => Search::HTML_OUTPUT,
             'criteria'     => [],
-            'item_type'    => \Project::getType(),
+            'item_type'    => \Project::class,
             'is_deleted'   => 0,
             'as_map'       => 0,
             'forcedisplay' => [/* State */ 12],
@@ -532,13 +532,13 @@ PLAINTEXT;
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create a user
-        $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . 'user']);
+        $user = $this->createItem(\User::class, ['name' => __FUNCTION__ . 'user']);
 
         // Check if a user with no projects returns an empty array
         $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()]));
 
         // Create a project
-        $project = $this->createItem(\Project::getType(), [
+        $project = $this->createItem(\Project::class, [
             'name'         => 'project',
             'entities_id'  => $entity,
             'users_id'     => $user->getID(),
@@ -548,16 +548,16 @@ PLAINTEXT;
         $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
 
         // Create a group
-        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
+        $group = $this->createItem(\Group::class, ['name' => __FUNCTION__ . 'group']);
 
         // Link user to group
-        $group_user = $this->createItem(\Group_User::getType(), [
+        $group_user = $this->createItem(\Group_User::class, [
             'users_id' => $user->getID(),
             'groups_id' => $group->getID(),
         ]);
 
         // Link project to group
-        $this->updateItem(\Project::getType(), $project->getID(), [
+        $this->updateItem(\Project::class, $project->getID(), [
             'users_id' => 0, // Remove user from project
             'groups_id' => $group->getID(),
         ]);
@@ -573,7 +573,7 @@ PLAINTEXT;
         $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false));
 
         // Create a user team
-        $user_team = $this->createItem(ProjectTeam::getType(), [
+        $user_team = $this->createItem(ProjectTeam::class, [
             'projects_id' => $project->getID(),
             'itemtype'    => \User::class,
             'items_id'    => $user->getID(),
@@ -586,14 +586,14 @@ PLAINTEXT;
         $this->assertEmpty(\Project::getActiveProjectIDsForUser([$user->getID()], false, false));
 
         // Create a group team
-        $group_team = $this->createItem(ProjectTeam::getType(), [
+        $group_team = $this->createItem(ProjectTeam::class, [
             'projects_id' => $project->getID(),
             'itemtype'    => \Group::class,
             'items_id'    => $group->getID(),
         ]);
 
         // Delete user team
-        $this->deleteItem(ProjectTeam::getType(), $user_team->getID());
+        $this->deleteItem(ProjectTeam::class, $user_team->getID());
 
         // Check if a user with a project, assigned to a group project team, returns the project id when $search_in_team and $search_in_groups are true
         $this->assertEquals([['id' => $project->getID()]], \Project::getActiveProjectIDsForUser([$user->getID()]));
@@ -608,13 +608,13 @@ PLAINTEXT;
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create a group
-        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
+        $group = $this->createItem(\Group::class, ['name' => __FUNCTION__ . 'group']);
 
         // Check if a group with no projects returns an empty array
         $this->assertEmpty(\Project::getActiveProjectIDsForGroup([$group->getID()]));
 
         // Create a project
-        $project = $this->createItem(\Project::getType(), [
+        $project = $this->createItem(\Project::class, [
             'name'         => 'project',
             'entities_id'  => $entity,
             'groups_id'    => $group->getID(),
@@ -627,14 +627,14 @@ PLAINTEXT;
         );
 
         // Create a group team
-        $group_team = $this->createItem(ProjectTeam::getType(), [
+        $group_team = $this->createItem(ProjectTeam::class, [
             'projects_id' => $project->getID(),
             'itemtype'    => \Group::class,
             'items_id'    => $group->getID(),
         ]);
 
         // Remove group from project
-        $this->updateItem(\Project::getType(), $project->getID(), [
+        $this->updateItem(\Project::class, $project->getID(), [
             'groups_id' => 0,
         ]);
 

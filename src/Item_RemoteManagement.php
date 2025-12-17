@@ -135,7 +135,7 @@ class Item_RemoteManagement extends CommonDBChild
             $entries[] = [
                 'id'        => $mgmt->getID(),
                 'items_id'  => $mgmt->fields['items_id'],
-                'itemtype'  => self::getType(),
+                'itemtype'  => self::class,
                 'remoteid'  => $mgmt->getRemoteLink(),
                 'type'      => $mgmt->fields['type'],
                 'comment'   => Dropdown::getYesNo($data['is_dynamic']),

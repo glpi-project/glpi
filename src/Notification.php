@@ -200,7 +200,7 @@ class Notification extends CommonDBTM implements FilterableInterface
             $menu['options'][Notification::class]['links']['search'] = Notification::getSearchURL(false);
             //saved search list
             $menu['options'][Notification::class]['links']['lists']  = "";
-            $menu['options'][Notification::class]['lists_itemtype']  = Notification::getType();
+            $menu['options'][Notification::class]['lists_itemtype']  = Notification::class;
 
             $menu['options'][NotificationTemplate::class]['title']
                         = _n('Notification template', 'Notification templates', Session::getPluralNumber());
@@ -212,7 +212,7 @@ class Notification extends CommonDBTM implements FilterableInterface
                         = NotificationTemplate::getSearchURL(false);
             //saved search list
             $menu['options'][NotificationTemplate::class]['links']['lists']  = "";
-            $menu['options'][NotificationTemplate::class]['lists_itemtype']  = NotificationTemplate::getType();
+            $menu['options'][NotificationTemplate::class]['lists_itemtype']  = NotificationTemplate::class;
         }
         if (count($menu)) {
             return $menu;
@@ -499,13 +499,13 @@ class Notification extends CommonDBTM implements FilterableInterface
                             'notifications_id'         => $id,
                         ];
                         if ($notification_notificationtemplate->getFromDBByCrit($data)) {
-                            $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
+                            $ma->itemDone(Notification::class, $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
                         } else {
                             $notification_notificationtemplate->add($data);
-                            $ma->itemDone(Notification::getType(), $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
+                            $ma->itemDone(Notification::class, $ma->POST['notificationtemplates_id'], MassiveAction::ACTION_OK);
                         }
                     } else {
-                        $ma->itemDone(Notification::getType(), 0, MassiveAction::ACTION_KO);
+                        $ma->itemDone(Notification::class, 0, MassiveAction::ACTION_KO);
                         $ma->addMessage($notification->getErrorMessage(ERROR_COMPAT) . " (" . $notification_template->getLink() . ")");
                     }
                 }
@@ -519,7 +519,7 @@ class Notification extends CommonDBTM implements FilterableInterface
                     //delete all links between notification and template
                     $notification_notificationtemplate = new Notification_NotificationTemplate();
                     $notification_notificationtemplate->deleteByCriteria(['notifications_id' => $id]);
-                    $ma->itemDone(Notification::getType(), $id, MassiveAction::ACTION_OK);
+                    $ma->itemDone(Notification::class, $id, MassiveAction::ACTION_OK);
                 }
                 return;
         }

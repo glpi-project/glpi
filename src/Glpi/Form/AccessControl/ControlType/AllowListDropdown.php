@@ -83,9 +83,9 @@ final class AllowListDropdown extends AbstractRightsDropdown
     protected static function getTypes(array $options = []): array
     {
         return [
-            User::getType(),
-            Profile::getType(),
-            Group::getType(),
+            User::class,
+            Profile::class,
+            Group::class,
         ];
     }
 

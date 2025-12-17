@@ -140,7 +140,7 @@ class KnowbaseItem_Item extends CommonDBRelation
                 $linked_item = getItemForItemtype($data['itemtype']);
                 $linked_item->getFromDB($data['items_id']);
             } else {
-                $linked_item = getItemForItemtype(KnowbaseItem::getType());
+                $linked_item = getItemForItemtype(KnowbaseItem::class);
                 $linked_item->getFromDB($data['knowbaseitems_id']);
             }
             $type = $linked_item::getTypeName(1);

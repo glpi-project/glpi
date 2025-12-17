@@ -335,7 +335,7 @@ abstract class CommonDBVisible extends CommonDBTM
     {
         $params = [
             'type'          => '__VALUE__',
-            'right'         => strtolower($this::getType()) . '_public',
+            'right'         => strtolower($this::class) . '_public',
         ];
         if (isset($this->fields['entities_id'])) {
             $params['entity'] = $this->fields['entities_id'];

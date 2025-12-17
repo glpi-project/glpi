@@ -1864,7 +1864,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $params['WHERE'][static::getTable() . '.itemtype'] = $item::class;
         }
 
-        if ($noent === false && $link->isEntityAssign() && $link_type != Entity::getType()) {
+        if ($noent === false && $link->isEntityAssign() && $link_type != Entity::class) {
             $params['SELECT'][] = 'glpi_entities.id AS entity';
             $params['INNER JOIN']['glpi_entities'] = [
                 'FKEY'   => [
@@ -2024,7 +2024,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $params['WHERE'][$item->getTable() . '.is_template'] = 0;
         }
 
-        if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::getType()) {
+        if ($noent === false && $item->isEntityAssign() && $itemtype != Entity::class) {
             $params['SELECT'][] = 'glpi_entities.id AS entity';
             $params['LEFT JOIN']['glpi_entities'] = [
                 'FKEY'   => [

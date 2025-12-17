@@ -305,7 +305,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 }
                 $nb = countElementsInTable(static::getTable(), $restrict);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }

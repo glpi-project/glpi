@@ -90,7 +90,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $ticket->getID(),
                 'content'   => "Current friendly ticket\r\nis solved!",
             ])
@@ -109,7 +109,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $follow->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'   => $ticket->getID(),
                 'add_close'    => '1',
             ])
@@ -124,7 +124,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $follow->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $ticket->getID(),
                 'add_reopen'   => '1',
                 'content'      => 'This is required',
@@ -139,7 +139,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $ticket->getID(),
                 'content'   => 'Another solution proposed!',
             ])
@@ -202,7 +202,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $problem::getType(),
+                'itemtype'  => $problem::class,
                 'items_id'  => $problem->getID(),
                 'content'   => "Current friendly problem\r\nis solved!",
             ])
@@ -240,7 +240,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $change::getType(),
+                'itemtype'  => $change::class,
                 'items_id'  => $change->getID(),
                 'content'   => "Current friendly change\r\nis solved!",
             ])
@@ -295,7 +295,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $duplicate,
                 'content'   => 'Solve from main ticket',
             ])
@@ -333,7 +333,7 @@ class ITILSolutionTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $ticket->getID(),
                 'content'   => '1st solution, should be accepted!',
             ])
@@ -345,7 +345,7 @@ class ITILSolutionTest extends DbTestCase
         // try to add directly another solution, it should be refused
         $this->assertFalse(
             $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $ticket->getID(),
                 'content'   => '2nd solution, should be refused!',
             ])
@@ -448,7 +448,7 @@ HTML,
         // Solve all created tickets
         foreach ($tickets as $ticket) {
             $id = $em_solution->add([
-                'itemtype' => $ticket::getType(),
+                'itemtype' => $ticket::class,
                 'items_id' => $ticket->fields['id'],
                 'content'  => 'test',
             ]);
@@ -549,7 +549,7 @@ HTML,
         $this->login('tech', 'tech');
         $solution = new \ITILSolution();
         $solution_id = (int) $solution->add([
-            'itemtype'           => $ticket::getType(),
+            'itemtype'           => $ticket::class,
             'items_id'           => $ticket->getID(),
             'content'            => 'a solution',
         ]);
@@ -563,7 +563,7 @@ HTML,
         $this->login('post-only', 'postonly');
         $follow = new \ITILFollowup();
         $follow_id = (int) $follow->add([
-            'itemtype'  => $ticket::getType(),
+            'itemtype'  => $ticket::class,
             'items_id'   => $ticket->getID(),
             'add_reopen'   => '1',
             'content'      => 'This is required',
@@ -580,7 +580,7 @@ HTML,
         $this->login('tech', 'tech');
         $solution = new \ITILSolution();
         $solution_id = (int) $solution->add([
-            'itemtype'           => $ticket::getType(),
+            'itemtype'           => $ticket::class,
             'items_id'           => $ticket->getID(),
             'content'            => 'a solution',
         ]);
@@ -596,7 +596,7 @@ HTML,
         $this->assertTrue($ticket->needReopen());
         $follow = new \ITILFollowup();
         $follow_id = (int) $follow->add([
-            'itemtype'  => $ticket::getType(),
+            'itemtype'  => $ticket::class,
             'items_id'   => $ticket->getID(),
             'add_close'    => '1',
         ]);
@@ -623,7 +623,7 @@ HTML,
 
         $solution = new \ITILSolution();
         $solution_id = $solution->add([
-            'itemtype'           => $ticket::getType(),
+            'itemtype'           => $ticket::class,
             'items_id'           => $ticket->getID(),
             'content'            => '',
         ]);

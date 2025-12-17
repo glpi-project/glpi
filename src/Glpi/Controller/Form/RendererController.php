@@ -105,7 +105,7 @@ final class RendererController extends AbstractController
 
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
-            'menu' => ['helpdesk', ServiceCatalog::getType()],
+            'menu' => ['helpdesk', ServiceCatalog::class],
             'form' => $form,
             'unauthenticated_user' => $is_unauthenticated_user,
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),

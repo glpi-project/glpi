@@ -1777,7 +1777,7 @@ TWIG, $twig_params);
         return countElementsInTable(
             static::getTable(),
             [
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $asset->getId(),
             ]
         ) > 0;

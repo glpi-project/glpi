@@ -81,7 +81,7 @@ class ProjectTaskTest extends DbTestCase
         $team = new \ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
-            'itemtype'        => \User::getType(),
+            'itemtype'        => \User::class,
             'items_id'        => $users_id,
         ]);
         $this->hasNoSessionMessages([ERROR, WARNING]);
@@ -102,7 +102,7 @@ class ProjectTaskTest extends DbTestCase
         $team = new \ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
-            'itemtype'        => \User::getType(),
+            'itemtype'        => \User::class,
             'items_id'        => $users_id,
         ]);
 
@@ -132,7 +132,7 @@ class ProjectTaskTest extends DbTestCase
         $team = new \ProjectTaskTeam();
         $tid = (int) $team->add([
             'projecttasks_id' => $ptask->fields['id'],
-            'itemtype'        => \User::getType(),
+            'itemtype'        => \User::class,
             'items_id'        => $users_id,
         ]);
         $this->hasNoSessionMessages([ERROR, WARNING]);
@@ -832,13 +832,13 @@ class ProjectTaskTest extends DbTestCase
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create user
-        $user = $this->createItem(\User::getType(), ['name' => __FUNCTION__ . 'user']);
+        $user = $this->createItem(\User::class, ['name' => __FUNCTION__ . 'user']);
 
         // Check if a user with no project returns an empty array
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project
-        $project = $this->createItem(Project::getType(), [
+        $project = $this->createItem(Project::class, [
             'name'         => 'project',
             'entities_id'  => $entity,
         ]);
@@ -847,7 +847,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create project task
-        $project_task = $this->createItem(\ProjectTask::getType(), [
+        $project_task = $this->createItem(\ProjectTask::class, [
             'projects_id' => $project->getID(),
             'name'        => 'project task',
         ]);
@@ -856,7 +856,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForUser([$user->getID()]));
 
         // Create user team
-        $user_team = $this->createItem(\ProjectTaskTeam::getType(), [
+        $user_team = $this->createItem(\ProjectTaskTeam::class, [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \User::class,
             'items_id'        => $user->getID(),
@@ -869,20 +869,20 @@ class ProjectTaskTest extends DbTestCase
         );
 
         // Create group
-        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
+        $group = $this->createItem(\Group::class, ['name' => __FUNCTION__ . 'group']);
 
         // Add user to group
-        $this->createItem(\Group_User::getType(), ['groups_id' => $group->getID(), 'users_id' => $user->getID()]);
+        $this->createItem(\Group_User::class, ['groups_id' => $group->getID(), 'users_id' => $user->getID()]);
 
         // Create group team
-        $this->createItem(\ProjectTaskTeam::getType(), [
+        $this->createItem(\ProjectTaskTeam::class, [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \Group::class,
             'items_id'        => $group->getID(),
         ]);
 
         // Remove user team
-        $this->deleteItem(\ProjectTaskTeam::getType(), $user_team->getID());
+        $this->deleteItem(\ProjectTaskTeam::class, $user_team->getID());
 
         // Check if a user with a project with tasks, where the user is a member of the group and the group is a member of the team, returns an array with the task ID if $search_in_groups is true
         $this->assertEquals(
@@ -895,7 +895,7 @@ class ProjectTaskTest extends DbTestCase
 
         // Templates should be excluded
         $project = $this->updateItem(
-            Project::getType(),
+            Project::class,
             $project->getID(),
             ['is_template' => true]
         );
@@ -908,13 +908,13 @@ class ProjectTaskTest extends DbTestCase
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
         // Create group
-        $group = $this->createItem(\Group::getType(), ['name' => __FUNCTION__ . 'group']);
+        $group = $this->createItem(\Group::class, ['name' => __FUNCTION__ . 'group']);
 
         // Check if a group with no project returns an empty array
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project
-        $project = $this->createItem(Project::getType(), [
+        $project = $this->createItem(Project::class, [
             'name'         => 'project',
             'entities_id'  => $entity,
             'groups_id'    => $group->getID(),
@@ -924,7 +924,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create project task
-        $project_task = $this->createItem(\ProjectTask::getType(), [
+        $project_task = $this->createItem(\ProjectTask::class, [
             'projects_id' => $project->getID(),
             'name'        => 'project task',
         ]);
@@ -933,7 +933,7 @@ class ProjectTaskTest extends DbTestCase
         $this->assertEmpty(\ProjectTask::getActiveProjectTaskIDsForGroup([$group->getID()]));
 
         // Create group team
-        $this->createItem(\ProjectTaskTeam::getType(), [
+        $this->createItem(\ProjectTaskTeam::class, [
             'projecttasks_id' => $project_task->getID(),
             'itemtype'        => \Group::class,
             'items_id'        => $group->getID(),
@@ -947,7 +947,7 @@ class ProjectTaskTest extends DbTestCase
 
         // Templates should be excluded
         $project = $this->updateItem(
-            Project::getType(),
+            Project::class,
             $project->getID(),
             ['is_template' => true]
         );

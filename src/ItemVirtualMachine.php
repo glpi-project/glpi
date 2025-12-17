@@ -83,7 +83,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         if (
             !$withtemplate
-            && in_array($item::getType(), $CFG_GLPI['itemvirtualmachines_types'])
+            && in_array($item::class, $CFG_GLPI['itemvirtualmachines_types'])
             && $item::canView()
         ) {
             $nb = 0;
@@ -97,7 +97,7 @@ class ItemVirtualMachine extends CommonDBChild
                     ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(), $nb, $item::class);
         }
         return '';
     }

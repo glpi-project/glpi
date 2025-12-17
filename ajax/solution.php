@@ -92,7 +92,7 @@ if ($parents_id > 0 && !empty($parents_itemtype) && is_a($parents_itemtype, Comm
 $template->fields['solutiontypes_name'] = "";
 if ($template->fields['solutiontypes_id']) {
     $entityRestrict = getEntitiesRestrictCriteria(
-        getTableForItemType(SolutionType::getType()),
+        getTableForItemType(SolutionType::class),
         "",
         $parent->fields['entities_id'] ?? 0,
         true
@@ -105,7 +105,7 @@ if ($template->fields['solutiontypes_id']) {
         ] + $entityRestrict)
     ) {
         $template->fields['solutiontypes_name'] = Dropdown::getDropdownName(
-            getTableForItemType(SolutionType::getType()),
+            getTableForItemType(SolutionType::class),
             $template->fields['solutiontypes_id'],
             false,
             true,

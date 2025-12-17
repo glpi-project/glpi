@@ -189,7 +189,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
 
                 case Group::class:
                     $nb = 0;
@@ -204,7 +204,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created problems'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created problems'), $nb, $item::class);
             }
         }
         return '';

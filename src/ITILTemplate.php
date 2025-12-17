@@ -744,8 +744,8 @@ abstract class ITILTemplate extends CommonDropdown
         global $DB;
 
         $to_merge = [];
-        switch (static::getType()) {
-            case Ticket::getType():
+        switch (static::class) {
+            case Ticket::class:
                 $to_merge = ['tickettemplates_id_incident', 'tickettemplates_id_demand'];
                 break;
             default:
@@ -955,6 +955,6 @@ abstract class ITILTemplate extends CommonDropdown
      */
     public static function getITILObjectClass(): string
     {
-        return preg_replace("/Template$/i", "", static::getType());
+        return preg_replace("/Template$/i", "", static::class);
     }
 }

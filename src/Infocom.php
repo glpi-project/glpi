@@ -158,7 +158,7 @@ class Infocom extends CommonDBChild
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForSupplier($item);
                     }
-                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
 
                 default:
                     if ($_SESSION['glpishow_count_on_tabs']) {
@@ -169,7 +169,7 @@ class Infocom extends CommonDBChild
                             ]
                         );
                     }
-                    return self::createTabEntry(__('Management'), $nb, $item::getType());
+                    return self::createTabEntry(__('Management'), $nb, $item::class);
             }
         }
         return '';
@@ -668,7 +668,7 @@ class Infocom extends CommonDBChild
                             'glpi_alerts'  => 'items_id',
                             $table         => 'id', [
                                 'AND' => [
-                                    'glpi_alerts.itemtype'  => self::getType(),
+                                    'glpi_alerts.itemtype'  => self::class,
                                     'glpi_alerts.type'      => Alert::END,
                                 ],
                             ],

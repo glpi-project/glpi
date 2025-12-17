@@ -674,7 +674,7 @@ class ProviderTest extends DbTestCase
             $this->assertArrayHasKey('url', $result);
             $this->assertArrayHasKey('label', $result);
             $this->assertArrayHasKey('icon', $result);
-            if ($item::getType() !== 'Item_DeviceSimcard') {
+            if ($item::class !== 'Item_DeviceSimcard') {
                 // Ignore count for simcards. None are added in Bootstrap process and is here for regression testing only.
                 $this->assertGreaterThan(0, $result['number']);
             }
@@ -901,7 +901,7 @@ class ProviderTest extends DbTestCase
 
         // Change author to someone else
         $tech = getItemByTypeName(User::class, 'tech');
-        $this->updateItem($reminder::getType(), $reminder->getID(), [
+        $this->updateItem($reminder::class, $reminder->getID(), [
             'users_id'  => $tech->getID(),
         ]);
         yield ['expected' => 0];

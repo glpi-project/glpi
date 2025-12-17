@@ -390,7 +390,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         );
 
         // The next part only applies to tickets
-        if ($itil::getType() === 'Ticket') {
+        if ($itil::class === 'Ticket') {
             // Check ITIL Object that trigger rule on update
             $itil = $this->getITILObjectInstance();
             $itil_id = $itil->add($itil_input = [
@@ -563,7 +563,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $itilSolution = new \ITILSolution();
         $this->assertTrue($itilSolution->getFromDBByCrit([
             'items_id' => $itil_id,
-            'itemtype' => $itil::getType(),
+            'itemtype' => $itil::class,
         ]));
 
         $this->assertGreaterThan(0, (int) $itilSolution->getID());
@@ -1965,7 +1965,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         $this->checkInput($applianceTest1, $appliancetest1_id, $applianceTest1_input);
 
         //add appliance to ITIL Object type
-        $CFG_GLPI["ticket_types"][] = \Appliance::getType();
+        $CFG_GLPI["ticket_types"][] = \Appliance::class;
 
         // Add rule for create / update trigger (and assign action)
         $rule_itil = $this->getRuleInstance();
@@ -2015,7 +2015,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             1,
             countElementsInTable(
                 $itil_item_table,
-                ['itemtype'  =>  \Appliance::getType(),
+                ['itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilCreate_id,
                 ]
@@ -2035,7 +2035,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             0,
             countElementsInTable(
                 $itil_item_table,
-                ['itemtype'  =>  \Appliance::getType(),
+                ['itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilUpdate_id,
                 ]
@@ -2056,7 +2056,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             1,
             countElementsInTable(
                 $itil_item_table,
-                ['itemtype'  =>  \Appliance::getType(),
+                ['itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilUpdate_id,
                 ]
@@ -2129,7 +2129,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             1,
             countElementsInTable(
                 $itil_item_table,
-                ['itemtype'  =>  \Appliance::getType(),
+                ['itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilCreate_id,
                 ]
@@ -2149,7 +2149,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             0,
             countElementsInTable(
                 $itil_item_table,
-                ['itemtype'  =>  \Appliance::getType(),
+                ['itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilUpdate_id,
                 ]
@@ -2169,7 +2169,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             1,
             countElementsInTable(
                 $itil_item_table,
-                ['itemtype'  =>  \Appliance::getType(),
+                ['itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilUpdate_id,
                 ]
@@ -2261,7 +2261,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype'  =>  \Appliance::getType(),
+                    'itemtype'  =>  \Appliance::class,
                     $itil_fk => $itilCreate_id,
                 ]
             )
@@ -2281,7 +2281,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype'  =>  \Appliance::getType(),
+                    'itemtype'  =>  \Appliance::class,
                     'items_id'   => $appliancetest1_id,
                     $itil_fk => $itilUpdate_id,
                 ]
@@ -2302,7 +2302,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             countElementsInTable(
                 $itil_item_table,
                 [
-                    'itemtype'  =>  \Appliance::getType(),
+                    'itemtype'  =>  \Appliance::class,
                     $itil_fk => $itilUpdate_id,
                 ]
             )
@@ -2411,12 +2411,12 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     protected function testActionProvider(): Generator
     {
         // Test 'regex_result' action on the ticket category completename
-        $root_category = $this->createItem(ITILCategory::getType(), [
+        $root_category = $this->createItem(ITILCategory::class, [
             'name' => 'Category root',
         ]);
 
         // Test 'regex_result' action on the ticket category
-        $sub_root_category = $this->createItem(ITILCategory::getType(), [
+        $sub_root_category = $this->createItem(ITILCategory::class, [
             'name' => 'Category sub',
             'itilcategories_id' => $root_category->fields['id'],
         ]);
@@ -2443,7 +2443,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ];
 
         // Test 'regex_result' action on the ticket category
-        $category = $this->createItem(ITILCategory::getType(), [
+        $category = $this->createItem(ITILCategory::class, [
             'name' => 'Category from regex',
         ]);
         yield [
@@ -2463,11 +2463,11 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ];
 
         // Test 'regex_result' action on the ticket requester group by completename
-        $root_requester_group_completename = $this->createItem(Group::getType(), [
+        $root_requester_group_completename = $this->createItem(Group::class, [
             'name' => 'Requester group root',
         ]);
 
-        $sub_requester_group_completename = $this->createItem(Group::getType(), [
+        $sub_requester_group_completename = $this->createItem(Group::class, [
             'name' => 'Requester group sub',
             'groups_id' => $root_requester_group_completename->fields['id'],
         ]);
@@ -2502,7 +2502,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ];
 
         // Test 'regex_result' action on the ticket requester group
-        $requester_group = $this->createItem(Group::getType(), [
+        $requester_group = $this->createItem(Group::class, [
             'name' => 'Requester group from regex',
         ]);
         yield [
@@ -2536,11 +2536,11 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
 
         // Test 'regex_result' action on the ticket observer group by completename
-        $root_observer_group_completename = $this->createItem(Group::getType(), [
+        $root_observer_group_completename = $this->createItem(Group::class, [
             'name' => 'Observer group root',
         ]);
 
-        $sub_observer_group_completename = $this->createItem(Group::getType(), [
+        $sub_observer_group_completename = $this->createItem(Group::class, [
             'name' => 'Observer group sub',
             'groups_id' => $root_observer_group_completename->fields['id'],
         ]);
@@ -2576,7 +2576,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
 
         // Test 'regex_result' action on the ticket observer group
-        $observer_group = $this->createItem(Group::getType(), [
+        $observer_group = $this->createItem(Group::class, [
             'name' => 'Observer group from regex',
         ]);
         yield [
@@ -2609,11 +2609,11 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ];
 
         // Test 'regex_result' action on the ticket observer group by completename
-        $root_assign_group_completename = $this->createItem(Group::getType(), [
+        $root_assign_group_completename = $this->createItem(Group::class, [
             'name' => 'Assign group root',
         ]);
 
-        $sub_assign_group_completename = $this->createItem(Group::getType(), [
+        $sub_assign_group_completename = $this->createItem(Group::class, [
             'name' => 'Assign group sub',
             'groups_id' => $root_assign_group_completename->fields['id'],
         ]);
@@ -2648,7 +2648,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
         ];
 
         // Test 'regex_result' action on the ticket assigned group
-        $tech_group = $this->createItem(Group::getType(), [
+        $tech_group = $this->createItem(Group::class, [
             'name' => 'Tech group from regex',
         ]);
         yield [
@@ -2734,7 +2734,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             $this->assertEquals(0, $active_rules);
 
             // Create the rule
-            $rule_ticket = $this->createItem(\RuleTicket::getType(), [
+            $rule_ticket = $this->createItem(\RuleTicket::class, [
                 'name' => __FUNCTION__,
                 'match' => 'AND',
                 'is_active' => true,
@@ -2743,7 +2743,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             ]);
 
             // Add the condition
-            $this->createItem(RuleCriteria::getType(), [
+            $this->createItem(RuleCriteria::class, [
                 'rules_id' => $rule_ticket->getID(),
                 'criteria' => $criteria['field'],
                 'condition' => $criteria['condition'],
@@ -2751,7 +2751,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             ]);
 
             // Add the action
-            $this->createItem(RuleAction::getType(), [
+            $this->createItem(RuleAction::class, [
                 'rules_id' => $rule_ticket->getID(),
                 'action_type' => $action['action_type'],
                 'field' => $action['field'],
@@ -2767,7 +2767,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             // (control test) and the second should trigger the rule.
 
             // Create the control test subject
-            $control_item = $this->createItem(Ticket::getType(), [
+            $control_item = $this->createItem(Ticket::class, [
                 'name' => $control_test_value,
                 'content' => 'testAction',
             ]);
@@ -2782,7 +2782,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             );
 
             // Create the real test subject
-            $real_item = $this->createItem(Ticket::getType(), [
+            $real_item = $this->createItem(Ticket::class, [
                 'name' => $real_test_value,
                 'content' => 'testAction',
             ]);
@@ -2801,7 +2801,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             // not match the rule, then update it to the real value
 
             // Create the test subject
-            $item = $this->createItem(Ticket::getType(), [
+            $item = $this->createItem(Ticket::class, [
                 'name' => $control_test_value,
                 'content' => 'testAction',
             ]);
@@ -2816,7 +2816,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             );
 
             // Updatea the test subject to the value expected by the rule
-            $this->updateItem(Ticket::getType(), $item->fields['id'], [
+            $this->updateItem(Ticket::class, $item->fields['id'], [
                 'name' => $real_test_value,
             ]);
             $item->getFromDb($item->fields['id']);

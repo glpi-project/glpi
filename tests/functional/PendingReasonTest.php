@@ -405,7 +405,7 @@ class PendingReasonTest extends DbTestCase
         if ($action_item instanceof ITILFollowup) {
             return [
                 'items_id' => $item->getID(),
-                'itemtype' => $item::getType(),
+                'itemtype' => $item::class,
             ];
         } elseif ($action_item instanceof TicketTask) {
             return ['tickets_id' => $item->getID()];
@@ -1024,7 +1024,7 @@ class PendingReasonTest extends DbTestCase
                 // Check that pending data is attached to the correct followup
                 $correct_timeline_item = $items[$expected['pending_timeline_index']];
                 $this->assertEquals(
-                    $correct_timeline_item::getType(),
+                    $correct_timeline_item::class,
                     $last_timeline_item_pending_data->fields['itemtype']
                 );
                 $this->assertEquals(
@@ -1403,7 +1403,7 @@ class PendingReasonTest extends DbTestCase
         $pri = new PendingReason_Item();
         $this->assertTrue($pri->getFromDBByCrit([
             'items_id' => $ticket->getID(),
-            'itemtype' => $ticket::getType(),
+            'itemtype' => $ticket::class,
         ]));
         $this->assertTrue($pri->update([
             'id' => $pri->getID(),

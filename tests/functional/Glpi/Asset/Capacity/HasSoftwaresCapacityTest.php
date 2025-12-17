@@ -289,7 +289,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             1,
             getAllDataFromTable(Item_SoftwareVersion::getTable(), [
                 'softwareversions_id' => $software_version->getID(),
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
             ])
         );
@@ -297,7 +297,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             1,
             getAllDataFromTable(Item_SoftwareLicense::getTable(), [
                 'softwarelicenses_id' => $software_license->getID(),
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
             ])
         );

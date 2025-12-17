@@ -329,13 +329,13 @@ class InventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);
@@ -1173,21 +1173,21 @@ class InventoryTest extends InventoryTestCase
         ];
 
         $monitor_criteria = $criteria;
-        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::class];
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $printer_criteria = $criteria;
-        $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
+        $printer_criteria['WHERE'] = ['itemtype' => \Printer::class];
         $iterator = $DB->request($printer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $criteria;
-        $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
+        $computer_criteria['WHERE'] = ['itemtype' => \Computer::class];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
@@ -1244,14 +1244,14 @@ class InventoryTest extends InventoryTestCase
         ];
 
         $monitor_criteria = $mrules_criteria;
-        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::class];
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $mrules_criteria;
-        $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
+        $computer_criteria['WHERE'] = ['itemtype' => \Computer::class];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
@@ -1885,14 +1885,14 @@ class InventoryTest extends InventoryTestCase
         $this->assertCount(3, $found);
 
         $monitor_criteria = $mrules_criteria;
-        $monitor_criteria['WHERE'][] = ['itemtype' => \Monitor::getType()];
+        $monitor_criteria['WHERE'][] = ['itemtype' => \Monitor::class];
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor update (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $mrules_criteria;
-        $computer_criteria['WHERE'][] = ['itemtype' => \Computer::getType()];
+        $computer_criteria['WHERE'][] = ['itemtype' => \Computer::class];
         $iterator = $DB->request($computer_criteria);
 
         $this->assertCount(2, $iterator);
@@ -2093,13 +2093,13 @@ class InventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);
@@ -2233,7 +2233,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $neteq_criteria = $mrules_criteria;
-        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::class];
         $iterator = $DB->request($neteq_criteria);
         $this->assertCount(1, $iterator);
         foreach ($iterator as $neteq) {
@@ -2243,7 +2243,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         $unmanaged_criteria = $mrules_criteria;
-        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::class];
         $iterator = $DB->request($unmanaged_criteria);
         $this->assertCount(5, $iterator);
         foreach ($iterator as $unmanaged) {
@@ -2516,13 +2516,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                             'ON'  => [
                                 \IPAddress::getTable()     => 'items_id',
                                 \NetworkName::getTable()   => 'id', [
-                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE'  => [
-                        \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                        \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                         \NetworkName::getTable() . '.items_id'  => $ports_id,
                     ],
                 ]);
@@ -2735,7 +2735,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $neteq_criteria = $mrules_criteria;
-        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::class];
         $iterator = $DB->request($neteq_criteria);
         $this->assertCount($expected_eq_count, $iterator);
         foreach ($iterator as $neteq) {
@@ -2744,7 +2744,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         $unmanaged_criteria = $mrules_criteria;
-        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::class];
         $iterator = $DB->request($unmanaged_criteria);
         $this->assertCount(43, $iterator);
     }
@@ -2888,7 +2888,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $neteq_criteria = $mrules_criteria;
-        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::class];
         $iterator = $DB->request($neteq_criteria);
         $this->assertCount($expected_eq_count, $iterator);
         foreach ($iterator as $neteq) {
@@ -3099,13 +3099,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                             'ON'  => [
                                 \IPAddress::getTable()     => 'items_id',
                                 \NetworkName::getTable()   => 'id', [
-                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE'  => [
-                        \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                        \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                         \NetworkName::getTable() . '.items_id'  => $ports_id,
                     ],
                 ]);
@@ -3560,7 +3560,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $neteq_criteria = $mrules_criteria;
-        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::class];
         $iterator = $DB->request($neteq_criteria);
         $this->assertCount(1, $iterator);
         foreach ($iterator as $neteq) {
@@ -3570,7 +3570,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         $unmanaged_criteria = $mrules_criteria;
-        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::class];
         $iterator = $DB->request($unmanaged_criteria);
         $this->assertCount(60, $iterator);
     }
@@ -3794,13 +3794,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                             'ON'  => [
                                 \IPAddress::getTable()     => 'items_id',
                                 \NetworkName::getTable()   => 'id', [
-                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                    'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                                 ],
                             ],
                         ],
                     ],
                     'WHERE'  => [
-                        \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                        \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                         \NetworkName::getTable() . '.items_id'  => $ports_id,
                     ],
                 ]);
@@ -3943,7 +3943,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $neteq_criteria = $mrules_criteria;
-        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::getType()];
+        $neteq_criteria['WHERE'][] = ['itemtype' => \NetworkEquipment::class];
         $iterator = $DB->request($neteq_criteria);
         $this->assertCount($expected_eq_count, $iterator);
         foreach ($iterator as $neteq) {
@@ -3952,7 +3952,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         }
 
         $unmanaged_criteria = $mrules_criteria;
-        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::getType()];
+        $unmanaged_criteria['WHERE'][] = ['itemtype' => \Unmanaged::class];
         $iterator = $DB->request($unmanaged_criteria);
         $this->assertCount(count($unmanageds), $iterator);
         foreach ($iterator as $unmanaged) {
@@ -4164,13 +4164,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);
@@ -4521,21 +4521,21 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         ];
 
         $monitor_criteria = $criteria;
-        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::class];
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $printer_criteria = $criteria;
-        $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
+        $printer_criteria['WHERE'] = ['itemtype' => \Printer::class];
         $iterator = $DB->request($printer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $computer_criteria = $criteria;
-        $computer_criteria['WHERE'] = ['itemtype' => \Computer::getType()];
+        $computer_criteria['WHERE'] = ['itemtype' => \Computer::class];
         $iterator = $DB->request($computer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Computer import (by serial + uuid)', $iterator->current()['name']);
@@ -5352,7 +5352,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     ],
                 ],
             ],
-            'WHERE' => ['itemtype' => \Phone::getType()],
+            'WHERE' => ['itemtype' => \Phone::class],
         ];
 
         $iterator = $DB->request($criteria);
@@ -5577,13 +5577,13 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);
@@ -6674,7 +6674,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Computer::getType(),
+            'pattern' => \Computer::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -6788,7 +6788,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Computer::getType(),
+            'pattern' => \Computer::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -6915,7 +6915,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Computer::getType(),
+            'pattern' => \Computer::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7042,7 +7042,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \NetworkEquipment::getType(),
+            'pattern' => \NetworkEquipment::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7175,7 +7175,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \NetworkEquipment::getType(),
+            'pattern' => \NetworkEquipment::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7318,7 +7318,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \NetworkEquipment::getType(),
+            'pattern' => \NetworkEquipment::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7463,7 +7463,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id'  => $rules_id,
             'criteria'      => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Printer::getType(),
+            'pattern' => \Printer::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7592,7 +7592,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Printer::getType(),
+            'pattern' => \Printer::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -7733,7 +7733,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
             'rules_id' => $rules_id,
             'criteria' => '_itemtype',
             'condition' => \Rule::PATTERN_IS,
-            'pattern' => \Printer::getType(),
+            'pattern' => \Printer::class,
         ];
         $rule_criteria = new \RuleCriteria();
         $rule_criteria_id = $rule_criteria->add($input_criteria);
@@ -8547,14 +8547,14 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8610,14 +8610,14 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8699,14 +8699,14 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8738,7 +8738,7 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
@@ -8746,7 +8746,7 @@ JSON;
         $this->assertCount(1, $ip->find(), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8778,7 +8778,7 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
@@ -8786,7 +8786,7 @@ JSON;
         $this->assertCount(1, $ip->find(), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8850,14 +8850,14 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
         $ip = new \IPAddress();
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8890,7 +8890,7 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
@@ -8898,7 +8898,7 @@ JSON;
         $this->assertCount(1, $ip->find(), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );
@@ -8931,7 +8931,7 @@ JSON;
         $netname = new \NetworkName();
         $this->assertTrue(
             $netname->getFromDBByCrit([
-                'itemtype' => \NetworkPort::getType(),
+                'itemtype' => \NetworkPort::class,
                 'items_id' => $nport['id'],
             ])
         );
@@ -8939,7 +8939,7 @@ JSON;
         $this->assertCount(1, $ip->find(), 'More than one IP found :/');
         $this->assertTrue(
             $ip->getFromDBByCrit([
-                'itemtype' => $netname::getType(),
+                'itemtype' => $netname::class,
                 'items_id' => $netname->getID(),
             ])
         );

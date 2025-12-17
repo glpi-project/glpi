@@ -110,7 +110,7 @@ class CartridgeTest extends DbTestCase
 
         $infocom = new \Infocom();
         $infocom_id = (int) $infocom->add([
-            'itemtype'  => \CartridgeItem::getType(),
+            'itemtype'  => \CartridgeItem::class,
             'items_id'  => $cu_id,
             'buy_date'  => '2020-10-21',
             'value'     => '500',
@@ -124,7 +124,7 @@ class CartridgeTest extends DbTestCase
 
         $infocom2 = new \Infocom();
         $infocom2_id = (int) $infocom2->getFromDBByCrit([
-            'itemtype'  => \Cartridge::getType(),
+            'itemtype'  => \Cartridge::class,
             'items_id'  => $cartridge_id,
         ]);
         $this->assertGreaterThan(0, $infocom2_id);

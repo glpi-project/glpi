@@ -155,12 +155,12 @@ class HasContractsCapacityTest extends DbTestCase
         // Link contracts to asset
         $this->createItems(Contract_Item::class, [
             [
-                'itemtype'     => $subject::getType(),
+                'itemtype'     => $subject::class,
                 'items_id'     => $subject->getID(),
                 'contracts_id' => $contract1->getID(),
             ],
             [
-                'itemtype'     => $subject::getType(),
+                'itemtype'     => $subject::class,
                 'items_id'     => $subject->getID(),
                 'contracts_id' => $contract2->getID(),
             ],
@@ -168,7 +168,7 @@ class HasContractsCapacityTest extends DbTestCase
 
         // Ensure contracts are properly linked to our subject
         $items = (new Contract_Item())->find([
-            'itemtype' => $subject::getType(),
+            'itemtype' => $subject::class,
             'items_id' => $subject->getID(),
         ]);
         $this->assertCount(2, $items);
@@ -179,7 +179,7 @@ class HasContractsCapacityTest extends DbTestCase
             $this->getTargetCapacity()
         );
         $items = (new Contract_Item())->find([
-            'itemtype' => $subject::getType(),
+            'itemtype' => $subject::class,
             'items_id' => $subject->getID(),
         ]);
         $this->assertCount(0, $items);
@@ -216,20 +216,20 @@ class HasContractsCapacityTest extends DbTestCase
         ]);
 
         // Edit the contract name
-        $this->updateItem($contract::getType(), $contract->getID(), [
+        $this->updateItem($contract::class, $contract->getID(), [
             'name' => 'Contract 1 (edited)',
         ]);
 
         // Link contract to subject
         $this->createItem(Contract_Item::class, [
-            'itemtype'       => $subject::getType(),
+            'itemtype'       => $subject::class,
             'items_id'       => $subject->getID(),
             'contracts_id' => $contract->getID(),
         ]);
 
         // Also update some internal fields to make sure their history entries
         // are not deleted when the capacity is disabled
-        $this->updateItem($subject::getType(), $subject->getId(), [
+        $this->updateItem($subject::class, $subject->getId(), [
             'name' => 'Test asset (edited)',
         ]);
 
@@ -238,7 +238,7 @@ class HasContractsCapacityTest extends DbTestCase
         // - 1 log for $contract update
         // - 1 log for link with $subject
         $count_logs = countElementsInTable(Log::getTable(), [
-            'itemtype' => $contract::getType(),
+            'itemtype' => $contract::class,
         ]);
         $this->assertEquals(3, $count_logs);
 
@@ -258,7 +258,7 @@ class HasContractsCapacityTest extends DbTestCase
             $this->getTargetCapacity()
         );
         $count_logs = countElementsInTable(Log::getTable(), [
-            'itemtype' => $contract::getType(),
+            'itemtype' => $contract::class,
         ]);
         $this->assertEquals(2, $count_logs); // $contract creation + update
         $count_logs = countElementsInTable(Log::getTable(), [
@@ -290,12 +290,12 @@ class HasContractsCapacityTest extends DbTestCase
         // Set display preferences
         $this->createItems(DisplayPreference::class, [
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
                 'num'      => '29', // Linked contract name
                 'users_id' => 0,
             ],
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
                 'num'      => '129', // Linked contract type
                 'users_id' => 0,
             ],
@@ -305,7 +305,7 @@ class HasContractsCapacityTest extends DbTestCase
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
             ]
         );
         $this->assertEquals(9, $count_display_preferences);
@@ -320,7 +320,7 @@ class HasContractsCapacityTest extends DbTestCase
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
             ]
         );
         $this->assertEquals(7, $count_display_preferences);
@@ -346,7 +346,7 @@ class HasContractsCapacityTest extends DbTestCase
         ]);
 
         $this->createItem(Contract_Item::class, [
-            'itemtype'     => $asset::getType(),
+            'itemtype'     => $asset::class,
             'items_id'     => $asset->getID(),
             'contracts_id' => $contract->getID(),
         ]);
@@ -356,7 +356,7 @@ class HasContractsCapacityTest extends DbTestCase
             1,
             getAllDataFromTable(Contract_Item::getTable(), [
                 'contracts_id' => $contract->getID(),
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
             ])
         );

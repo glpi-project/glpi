@@ -367,14 +367,14 @@ class User extends CommonDBTM implements TreeBrowseInterface
         switch ($item::class) {
             case self::class:
                 $ong    = [];
-                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::getType(), 'ti ti-package');
-                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::getType(), 'ti ti-package');
+                $ong[1] = self::createTabEntry(__('Used items'), 0, $item::class, 'ti ti-package');
+                $ong[2] = self::createTabEntry(__('Managed items'), 0, $item::class, 'ti ti-package');
 
                 if (
                     $item->fields['authtype'] === Auth::LDAP
                     && Session::haveRight(self::$rightname, self::READAUTHENT)
                 ) {
-                    $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::getType(), AuthLDAP::getIcon());
+                    $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::class, AuthLDAP::getIcon());
                 }
                 return $ong;
 
@@ -4421,7 +4421,7 @@ HTML;
 
             $paramscomment = [
                 'value'    => '__VALUE__',
-                'itemtype' => User::getType(),
+                'itemtype' => User::class,
             ];
 
             if ($view_users) {
@@ -5897,7 +5897,7 @@ HTML;
                             self::getTable()  => 'id',
                             [
                                 'AND' => [
-                                    Alert::getTableField('itemtype') => self::getType(),
+                                    Alert::getTableField('itemtype') => self::class,
                                 ],
                             ],
                         ],

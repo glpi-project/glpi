@@ -303,7 +303,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Appliance::getType()][] = $action->fields["value"];
+                            $output["items_id"][Appliance::class][] = $action->fields["value"];
                         }
 
                         // Remove values that may have been added by any "append" rule action on same actor field.
@@ -337,7 +337,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                             if (!array_key_exists("items_id", $output) || $output['items_id'] == '0') {
                                 $output["items_id"] = [];
                             }
-                            $output["items_id"][Appliance::getType()][] = $value;
+                            $output["items_id"][Appliance::class][] = $value;
                         } else {
                             $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         }
@@ -606,7 +606,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                 }
 
                                 foreach ($target_appliances as $value) {
-                                    $output["items_id"][Appliance::getType()][] = $value['id'];
+                                    $output["items_id"][Appliance::class][] = $value['id'];
                                 }
                             }
                         } elseif ($field == "itilcategories_id") {

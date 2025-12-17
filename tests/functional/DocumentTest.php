@@ -284,7 +284,7 @@ class DocumentTest extends DbTestCase
         $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
 
         // Verify that the ticket and document item are linked.
-        $this->assertSame(\Ticket::getType(), $doc_item->fields['itemtype']);
+        $this->assertSame(\Ticket::class, $doc_item->fields['itemtype']);
         $this->assertEquals($doc_item->fields['items_id'], $cid);
 
         /**

@@ -108,7 +108,7 @@ trait CapacityUsageTestTrait
 
             $table = $relation_classname::getTable();
             if ($DB->fieldExists($table, 'itemtype')) {
-                $relation_fields['itemtype'] = $subject::getType();
+                $relation_fields['itemtype'] = $subject::class;
             }
             if ($DB->fieldExists($table, 'items_id')) {
                 $relation_fields['items_id'] = $subject->getID();
@@ -175,7 +175,7 @@ trait CapacityUsageTestTrait
         if ($relation_classname !== null) {
             $table = $relation_classname::getTable();
             if ($DB->fieldExists($table, 'itemtype')) {
-                $relation_fields['itemtype'] = $subject::getType();
+                $relation_fields['itemtype'] = $subject::class;
             }
             if ($DB->fieldExists($table, 'items_id')) {
                 $relation_fields['items_id'] = $subject->getID();
@@ -218,7 +218,7 @@ trait CapacityUsageTestTrait
         if ($relation_classname !== null) {
             $table = $relation_classname::getTable();
             if ($DB->fieldExists($table, 'itemtype')) {
-                $relation_fields['itemtype'] = $subject2::getType();
+                $relation_fields['itemtype'] = $subject2::class;
             }
             if ($DB->fieldExists($table, 'items_id')) {
                 $relation_fields['items_id'] = $subject2->getID();

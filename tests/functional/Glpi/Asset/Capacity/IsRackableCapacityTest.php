@@ -148,7 +148,7 @@ class IsRackableCapacityTest extends DbTestCase
         $rack_item_1 = $this->createItem(
             Item_Rack::class,
             [
-                'itemtype'     => $item_1::getType(),
+                'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
                 'racks_id'     => $rack->getID(),
                 'position'     => 1,
@@ -158,7 +158,7 @@ class IsRackableCapacityTest extends DbTestCase
         $rack_item_2 = $this->createItem(
             Item_Rack::class,
             [
-                'itemtype'     => $item_2::getType(),
+                'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
                 'racks_id'     => $rack->getID(),
                 'position'     => 2,

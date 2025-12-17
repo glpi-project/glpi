@@ -95,7 +95,7 @@ final class ITILTaskFieldTest extends DbTestCase
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [ITILTaskField::getKey() => $config->jsonSerialize()]],
             ["config"],

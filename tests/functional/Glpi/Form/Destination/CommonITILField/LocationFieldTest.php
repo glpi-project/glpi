@@ -165,11 +165,11 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             ),
             answers: [
                 "Location 1" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[0]->getID(),
                 ],
                 "Location 2" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[1]->getID(),
                 ],
             ],
@@ -185,11 +185,11 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             ),
             answers: [
                 "Location 1" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[0]->getID(),
                 ],
                 "Location 2" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[1]->getID(),
                 ],
             ],
@@ -216,11 +216,11 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer_config,
             answers: [
                 "Location 1" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[0]->getID(),
                 ],
                 "Location 2" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[1]->getID(),
                 ],
             ],
@@ -233,7 +233,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer_config,
             answers: [
                 "Location 1" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[0]->getID(),
                 ],
             ],
@@ -246,7 +246,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer_config,
             answers: [
                 "Location 2" => [
-                    'itemtype' => Location::getType(),
+                    'itemtype' => Location::class,
                     'items_id' => $locations[1]->getID(),
                 ],
             ],
@@ -349,7 +349,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         $destination = current($destinations);
         if ($config) {
             $this->updateItem(
-                $destination::getType(),
+                $destination::class,
                 $destination->getId(),
                 ['config' => [LocationField::getKey() => $config->jsonSerialize()]],
                 ["config"],
@@ -386,10 +386,10 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
         $this->login();
 
         $extra_data_config = (new QuestionTypeItemDropdownExtraDataConfig(
-            itemtype: Location::getType(),
+            itemtype: Location::class,
         ));
         $category_config = (new QuestionTypeItemDropdownExtraDataConfig(
-            itemtype: ITILCategory::getType(),
+            itemtype: ITILCategory::class,
         ));
 
         $builder = new FormBuilder();

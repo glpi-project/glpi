@@ -72,7 +72,7 @@ trait DCBreadcrumb
                     && $rack->getFromDB($pdu_rack->fields['racks_id'])
                 ) {
                     $location = Location::getFromItem($rack) ?: null;
-                    $breadcrumb[Rack::getType()] = [
+                    $breadcrumb[Rack::class] = [
                         'link'     => $rack->getLink(
                             [
                                 'class' => $rack->isDeleted() ? 'target-deleted' : '',
@@ -93,7 +93,7 @@ trait DCBreadcrumb
             unset($enclosure_types[array_search('Enclosure', $enclosure_types)]);
             if (in_array($item::class, $enclosure_types) && $enclosure = $item->getParentEnclosure()) {
                 $location = Location::getFromItem($enclosure) ?: null;
-                $breadcrumb[Enclosure::getType()] = [
+                $breadcrumb[Enclosure::class] = [
                     'link'     => $enclosure->getLink(
                         [
                             'class' => $enclosure->isDeleted() ? 'target-deleted' : '',
@@ -110,7 +110,7 @@ trait DCBreadcrumb
             // Add Rack part of breadcrumb
             if (in_array($item::class, $types) && $rack = $item->getParentRack()) {
                 $location = Location::getFromItem($rack) ?: null;
-                $breadcrumb[Rack::getType()] = [
+                $breadcrumb[Rack::class] = [
                     'link'     => $rack->getLink(
                         [
                             'class' => $rack->isDeleted() ? 'target-deleted' : '',
@@ -132,7 +132,7 @@ trait DCBreadcrumb
                 && $dcroom->getFromDB($item->fields['dcrooms_id'])
             ) {
                 $location = Location::getFromItem($dcroom) ?: null;
-                $breadcrumb[DCRoom::getType()] = [
+                $breadcrumb[DCRoom::class] = [
                     'link'     => $dcroom->getLink(
                         [
                             'class' => $dcroom->isDeleted() ? 'target-deleted' : '',
@@ -153,7 +153,7 @@ trait DCBreadcrumb
                 && $datacenter->getFromDB($item->fields['datacenters_id'])
             ) {
                 $location = Location::getFromItem($datacenter) ?: null;
-                $breadcrumb[Datacenter::getType()] = [
+                $breadcrumb[Datacenter::class] = [
                     'link'     => $datacenter->getLink(
                         [
                             'class' => $datacenter->isDeleted() ? 'target-deleted' : '',

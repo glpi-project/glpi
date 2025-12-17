@@ -163,7 +163,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [OLATTRField::getKey() => $config->jsonSerialize()]],
             ["config"],

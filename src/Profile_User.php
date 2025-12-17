@@ -1035,7 +1035,7 @@ TWIG, $avatar_params) . $username;
                             ])->current();
                             $nb        = $count['cpt'];
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), User::getIcon());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class, User::getIcon());
                     }
                     break;
 
@@ -1044,7 +1044,7 @@ TWIG, $avatar_params) . $username;
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb = self::countForItem($item);
                         }
-                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(User::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
                     break;
 
@@ -1056,7 +1056,7 @@ TWIG, $avatar_params) . $username;
                         'Authorization',
                         'Authorizations',
                         Session::getPluralNumber()
-                    ), $nb, $item::getType());
+                    ), $nb, $item::class);
             }
         }
         return '';

@@ -1685,12 +1685,12 @@ HTML;
         }
 
         $post = [
-            'itemtype'              => $location::getType(),
+            'itemtype'              => $location::class,
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0]),
+            '_idor_token'           => Session::getNewIDORToken($location::class, ['entity_restrict' => 0]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1745,13 +1745,13 @@ HTML;
 
         //use a array condition
         $post = [
-            'itemtype'              => $location::getType(),
+            'itemtype'              => $location::class,
             'condition'             => ['name' => ['LIKE', "%3%"]],
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
+            '_idor_token'           => Session::getNewIDORToken($location::class, ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1761,13 +1761,13 @@ HTML;
 
         //use a WHERE array condition
         $post = [
-            'itemtype'              => $location::getType(),
+            'itemtype'              => $location::class,
             'condition'             => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]],
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
+            '_idor_token'           => Session::getNewIDORToken($location::class, ['entity_restrict' => 0, 'condition' => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1777,13 +1777,13 @@ HTML;
 
         //use a "multiple" WHERE array condition
         $post = [
-            'itemtype'              => $location::getType(),
+            'itemtype'              => $location::class,
             'condition'             => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]],
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
+            '_idor_token'           => Session::getNewIDORToken($location::class, ['entity_restrict' => 0, 'condition' => [0 => ['WHERE' => ['glpi_locations.name' => ['LIKE', "%3%"]]]]]),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
@@ -1796,7 +1796,7 @@ HTML;
         $condition_key = sha1(serialize($post['condition']));
         $_SESSION['glpicondition'][$condition_key] = $post['condition'];
         $post['condition']   = $condition_key;
-        $post['_idor_token'] = Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
+        $post['_idor_token'] = Session::getNewIDORToken($location::class, ['entity_restrict' => 0, 'condition' => $condition_key]);
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);
 
@@ -1805,13 +1805,13 @@ HTML;
 
         //use a condition that does not exist in session
         $post = [
-            'itemtype'              => $location::getType(),
+            'itemtype'              => $location::class,
             'condition'             => '`name` LIKE "%4%"',
             'display_emptychoice'   => true,
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
+            '_idor_token'           => Session::getNewIDORToken($location::class, ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
         ];
         $values = Dropdown::getDropdownValue($post);
         $values = (array) json_decode($values);

@@ -297,7 +297,7 @@ class SlaLevel_TicketTest extends DbTestCase
             1,
             countElementsInTable(
                 \ITILFollowup::getTable(),
-                ['itemtype' => \Ticket::getType(), 'items_id' => $tickets_id]
+                ['itemtype' => \Ticket::class, 'items_id' => $tickets_id]
             )
         );
     }

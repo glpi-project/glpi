@@ -48,7 +48,7 @@ class RuleAssetTest extends DbTestCase
     {
         // Test case 1 for last_inventory_update -> Precise date
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => "2022-02-28 22:05:30",
@@ -63,7 +63,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 2 for last_inventory_update -> Precise date
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => "2022-02-28 22:05:30",
@@ -78,7 +78,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 3 for last_inventory_update -> Today
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => $_SESSION["glpi_currenttime"],
@@ -93,7 +93,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 4 for last_inventory_update -> Today
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => "2022-02-28 22:05:30",
@@ -108,7 +108,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 5 for last_inventory_update -> before relative date
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => date('Y-m-d H:i:s', time() - 18000),
@@ -123,7 +123,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 6 for last_inventory_update -> before relative date
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => $_SESSION["glpi_currenttime"],
@@ -138,7 +138,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 7 for last_inventory_update -> after fixed date
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => "2022-04-15 17:34:47",
@@ -153,7 +153,7 @@ class RuleAssetTest extends DbTestCase
 
         // Test case 8 for last_inventory_update -> after fixed date
         yield [
-            'itemtype' => Computer::getType(),
+            'itemtype' => Computer::class,
             'input' => [
                 'name'                  => 'testLastInventoryUpdateCriteria1',
                 'last_inventory_update' => "2022-02-26 20:23:18",
@@ -197,7 +197,7 @@ class RuleAssetTest extends DbTestCase
             $this->assertEquals(0, $active_rules);
 
             // Create the rule
-            $rule_asset = $this->createItem(\RuleAsset::getType(), [
+            $rule_asset = $this->createItem(\RuleAsset::class, [
                 'name' => 'testLastInventoryUpdateCriteria',
                 'match' => 'AND',
                 'is_active' => true,
@@ -206,7 +206,7 @@ class RuleAssetTest extends DbTestCase
             ]);
 
             // Add the condition
-            $this->createItem(RuleCriteria::getType(), [
+            $this->createItem(RuleCriteria::class, [
                 'rules_id' => $rule_asset->getID(),
                 'criteria' => $criteria_field,
                 'condition' => $condition,
@@ -214,7 +214,7 @@ class RuleAssetTest extends DbTestCase
             ]);
 
             // Add the action
-            $this->createItem(RuleAction::getType(), [
+            $this->createItem(RuleAction::class, [
                 'rules_id' => $rule_asset->getID(),
                 'action_type' => "assign",
                 'field' => $action_field,

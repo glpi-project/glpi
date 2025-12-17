@@ -353,7 +353,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'SELECT' => ['id'],
             'FROM' => NetworkPort::getTable(),
             'WHERE' => [
-                'itemtype' => self::getType(),
+                'itemtype' => self::class,
                 'items_id' => $items_id,
             ],
         ]);
@@ -362,7 +362,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'SELECT' => ['id'],
             'FROM' => RuleMatchedLog::getTable(),
             'WHERE' => [
-                'itemtype' => self::getType(),
+                'itemtype' => self::class,
                 'items_id' => $items_id,
             ],
         ]);
@@ -371,7 +371,7 @@ class Unmanaged extends CommonDBTM implements AssignableItemInterface, StateInte
             'SELECT' => ['id'],
             'FROM' => Lockedfield::getTable(),
             'WHERE' => [
-                'itemtype' => self::getType(),
+                'itemtype' => self::class,
                 'items_id' => $items_id,
             ],
         ]);

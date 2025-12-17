@@ -212,7 +212,7 @@ class PrinterTest extends DbTestCase
         // Check infocoms
         $infocom = new \Infocom();
         $infocom->getFromDBByCrit([
-            'itemtype' => \Printer::getType(),
+            'itemtype' => \Printer::class,
             'items_id' => $printer_id,
         ]);
         $this->assertTrue($infocom->getFromDB($infocom->getID()));
@@ -247,7 +247,7 @@ class PrinterTest extends DbTestCase
         // Check infocoms
         $infocom = new \Infocom();
         $infocom->getFromDBByCrit([
-            'itemtype' => \Printer::getType(),
+            'itemtype' => \Printer::class,
             'items_id' => $printer_id,
         ]);
         $this->assertTrue($infocom->getFromDB($infocom->getID()));

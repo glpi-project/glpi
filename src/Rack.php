@@ -386,7 +386,7 @@ class Rack extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbIn
                 return self::createTabEntry(
                     self::getTypeName(Session::getPluralNumber()),
                     $nb,
-                    $item::getType()
+                    $item::class
                 );
         }
         return '';

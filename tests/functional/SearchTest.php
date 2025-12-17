@@ -984,7 +984,7 @@ class SearchTest extends DbTestCase
         // extract metacriteria
         $itemtype_criteria = [];
         foreach ($classes as $class) {
-            $itemtype = $class::getType();
+            $itemtype = $class::class;
             $itemtype_criteria[$itemtype] = [];
             $metaList = \Search::getMetaItemtypeAvailable($itemtype);
             foreach ($metaList as $metaitemtype) {

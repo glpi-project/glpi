@@ -56,7 +56,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
     public function testSpecificITILCategory(): void
     {
         $form = $this->createAndGetFormWithMultipleITILCategoryQuestions();
-        $itilcategory = $this->createItem(ITILCategory::getType(), [
+        $itilcategory = $this->createItem(ITILCategory::class, [
             'name' => 'Test ITILCategory for specific value',
         ]);
 
@@ -86,10 +86,10 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
     public function testSpecificITILCategoryWithSpecificTemplate(): void
     {
         $form = $this->createAndGetFormWithMultipleITILCategoryQuestions();
-        $ticket_template = $this->createItem(TicketTemplate::getType(), [
+        $ticket_template = $this->createItem(TicketTemplate::class, [
             'name' => 'Test TicketTemplate for specific value',
         ]);
-        $itilcategory = $this->createItem(ITILCategory::getType(), [
+        $itilcategory = $this->createItem(ITILCategory::class, [
             'name'                        => 'Test ITILCategory for specific value',
             'tickettemplates_id_incident' => $ticket_template->getID(),
         ]);
@@ -113,7 +113,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
         $default_template = (new Ticket())->getITILTemplateToUse(
             entities_id: $_SESSION["glpiactive_entity"]
         );
-        $itilcategory = $this->createItem(ITILCategory::getType(), [
+        $itilcategory = $this->createItem(ITILCategory::class, [
             'name' => 'Test ITILCategory for specific value',
         ]);
 
@@ -133,7 +133,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
     public function testITILCategoryFromSpecificQuestion(): void
     {
         $form = $this->createAndGetFormWithMultipleITILCategoryQuestions();
-        $itilcategories = $this->createItems(ITILCategory::getType(), [
+        $itilcategories = $this->createItems(ITILCategory::class, [
             ['name' => 'Test ITILCategory 1 for specific question'],
             ['name' => 'Test ITILCategory 2 for specific question'],
         ]);
@@ -147,11 +147,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             ),
             answers: [
                 "ITILCategory 1" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
@@ -167,11 +167,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             ),
             answers: [
                 "ITILCategory 1" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
@@ -182,7 +182,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
     public function testITILCategoryFromLastValidQuestion(): void
     {
         $form = $this->createAndGetFormWithMultipleITILCategoryQuestions();
-        $itilcategories = $this->createItems(ITILCategory::getType(), [
+        $itilcategories = $this->createItems(ITILCategory::class, [
             ['name' => 'Test ITILCategory 1 for last valid answer'],
             ['name' => 'Test ITILCategory 2 for last valid answer'],
             ['name' => 'Test ITILCategory 3 for last valid answer'],
@@ -197,11 +197,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer_config,
             answers: [
                 "ITILCategory 1" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
@@ -214,7 +214,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer_config,
             answers: [
                 "ITILCategory 1" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[0]->getID(),
                 ],
             ],
@@ -227,7 +227,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer_config,
             answers: [
                 "ITILCategory 2" => [
-                    'itemtype' => ITILCategory::getType(),
+                    'itemtype' => ITILCategory::class,
                     'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
@@ -314,7 +314,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [ITILCategoryField::getKey() => $config->jsonSerialize()]],
             ["config"],
@@ -353,7 +353,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
         $this->login();
 
         $extra_data_config = (new QuestionTypeItemDropdownExtraDataConfig(
-            itemtype: ITILCategory::getType(),
+            itemtype: ITILCategory::class,
         ));
 
         $builder = new FormBuilder();

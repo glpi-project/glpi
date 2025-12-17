@@ -79,11 +79,11 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         return [
             'answers' => [
                 "Entity 1"    => [
-                    'itemtype' => Entity::getType(),
+                    'itemtype' => Entity::class,
                     'items_id' => $entities[0]->getId(),
                 ],
                 "Entity 2"    => [
-                    'itemtype' => Entity::getType(),
+                    'itemtype' => Entity::class,
                     'items_id' => $entities[1]->getId(),
                 ],
             ],
@@ -140,7 +140,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
             ['name' => 'New entity', 'entities_id' => $this->getTestRootEntity(true)]
         );
         $this->updateItem(
-            $form::getType(),
+            $form::class,
             $form->getId(),
             ['entities_id' => $new_entity->getId()]
         );
@@ -481,7 +481,7 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [EntityField::getKey() => $config->jsonSerialize()]],
             ["config"],
@@ -516,13 +516,13 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
     {
         $builder = new FormBuilder();
         $builder->addQuestion("Entity 1", QuestionTypeItem::class, 0, json_encode([
-            'itemtype' => Entity::getType(),
+            'itemtype' => Entity::class,
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,
         ]));
         $builder->addQuestion("Entity 2", QuestionTypeItem::class, 0, json_encode([
-            'itemtype' => Entity::getType(),
+            'itemtype' => Entity::class,
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,

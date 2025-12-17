@@ -64,7 +64,7 @@ class Item_OperatingSystem extends CommonDBRelation
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForItem($item);
                 }
-                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(OperatingSystem::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
     }
 
@@ -257,7 +257,7 @@ class Item_OperatingSystem extends CommonDBRelation
             if ($_SESSION["glpiis_ids_visible"] || empty($data["name"])) {
                 $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["assocID"]);
             }
-            $link = Toolbox::getItemTypeFormURL(self::getType());
+            $link = Toolbox::getItemTypeFormURL(self::class);
             $name = "<a href=\"" . htmlescape($link) . "?id=" . (int) $data["assocID"] . "\">" . htmlescape($linkname) . "</a>";
 
             echo "<tr class='tab_bg_1'>";

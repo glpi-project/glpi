@@ -1268,7 +1268,7 @@ class ComputerTest extends AbstractInventoryAsset
         $networkcards = $DB->request([
             'FROM' => \NetworkPort::getTable(),
             'WHERE' => [
-                'itemtype' => \Computer::getType(),
+                'itemtype' => \Computer::class,
                 'items_id' => $computers_id,
             ],
         ]);
@@ -1277,7 +1277,7 @@ class ComputerTest extends AbstractInventoryAsset
         $item_networkcard = $DB->request([
             'FROM' => \Item_DeviceNetworkCard::getTable(),
             'WHERE' => [
-                'itemtype' => \Computer::getType(),
+                'itemtype' => \Computer::class,
                 'items_id' => $computers_id,
             ],
         ]);

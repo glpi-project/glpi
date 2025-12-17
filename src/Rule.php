@@ -2938,7 +2938,7 @@ TWIG, $twig_params);
         global $PLUGIN_HOOKS;
 
         if (empty($itemtype)) {
-            $itemtype = static::getType();
+            $itemtype = static::class;
         }
 
         //Agregate all plugins criteria for this rules engine
@@ -3343,13 +3343,13 @@ TWIG, ['label' => $this->getTitle()]);
                         $ong[1] = self::createTabEntry(
                             RuleCriteria::getTypeName(Session::getPluralNumber()),
                             $nbcriteria,
-                            $item::getType(),
+                            $item::class,
                             RuleCriteria::getIcon()
                         );
                         $ong[2] = self::createTabEntry(
                             RuleAction::getTypeName(Session::getPluralNumber()),
                             $nbaction,
-                            $item::getType(),
+                            $item::class,
                             RuleAction::getIcon()
                         );
                         return $ong;
@@ -3548,7 +3548,7 @@ TWIG, ['label' => $this->getTitle()]);
             );
         }
         foreach ($xml->xpath($xpath) as $rulexml) {
-            if ((string) $rulexml->sub_type !== self::getType()) {
+            if ((string) $rulexml->sub_type !== self::class) {
                 trigger_error(
                     sprintf(
                         'Unexpected rule type %s for rule `%s`.',
@@ -3584,7 +3584,7 @@ TWIG, ['label' => $this->getTitle()]);
 
             $rule_input = [
                 'entities_id'  => 0, // Always add default rules to root entity
-                'sub_type'     => self::getType(),
+                'sub_type'     => self::class,
                 'ranking'      => (int) $rulexml->ranking + $ranking_increment,
                 'name'         => (string) $rulexml->name,
                 'description'  => (string) $rulexml->description,

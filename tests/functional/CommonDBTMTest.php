@@ -1005,25 +1005,25 @@ class CommonDBTMTest extends DbTestCase
     {
         return [
             [
-                'relation_itemtype' => \Infocom::getType(),
+                'relation_itemtype' => \Infocom::class,
                 'config_name'       => 'infocom_types',
             ],
             [
-                'relation_itemtype' => \ReservationItem::getType(),
+                'relation_itemtype' => \ReservationItem::class,
                 'config_name'       => 'reservation_types',
             ],
             [
-                'relation_itemtype' => \Contract_Item::getType(),
+                'relation_itemtype' => \Contract_Item::class,
                 'config_name'       => 'contract_types',
                 'linked_itemtype'   => \Contract::class,
             ],
             [
-                'relation_itemtype' => Document_Item::getType(),
+                'relation_itemtype' => Document_Item::class,
                 'config_name'       => 'document_types',
                 'linked_itemtype'   => Document::class,
             ],
             [
-                'relation_itemtype' => \KnowbaseItem_Item::getType(),
+                'relation_itemtype' => \KnowbaseItem_Item::class,
                 'config_name'       => 'kb_types',
                 'linked_itemtype'   => \KnowbaseItem::class,
             ],

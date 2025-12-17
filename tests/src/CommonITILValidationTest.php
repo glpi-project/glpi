@@ -1066,7 +1066,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             2,
             countElementsInTable(
                 Document_Item::getTable(),
-                ['itemtype' =>  $this->getValidationClassname()::getType()]
+                ['itemtype' =>  $this->getValidationClassname()::class]
             )
         );
 

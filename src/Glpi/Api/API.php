@@ -1810,7 +1810,7 @@ abstract class API
             }
 
             // if all asset, provide type in returned data
-            if ($itemtype == AllAssets::getType()) {
+            if ($itemtype == AllAssets::class) {
                 $current_line['id']       = $raw['id'];
                 $current_line['itemtype'] = $raw['TYPE'];
             }
@@ -3294,14 +3294,14 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
     {
         // Return massive actions for a given item
         $actions = MassiveAction::getAllMassiveActions(
-            $item::getType(),
+            $item::class,
             $item->isDeleted(),
             $item,
             $item->getID()
         );
         if ($actions === false) {
             $this->returnError(
-                "Unable to get massive actions for item of type '{$item::getType()}'. Please check that it is a valid itemtype.",
+                sprintf('Unable to get massive actions for item of type \'%1$s\'. Please check that it is a valid itemtype.', $item::class),
                 400,
                 "ERROR_MASSIVEACTION_NOT_FOUND"
             );

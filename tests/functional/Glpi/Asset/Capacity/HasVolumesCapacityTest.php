@@ -170,7 +170,7 @@ class HasVolumesCapacityTest extends DbTestCase
             Item_Disk::class,
             [
                 'name'         => 'disk item 1',
-                'itemtype'     => $item_1::getType(),
+                'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -178,7 +178,7 @@ class HasVolumesCapacityTest extends DbTestCase
             Item_Disk::class,
             [
                 'name'         => 'disk item 2',
-                'itemtype'     => $item_2::getType(),
+                'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
             ]
         );
@@ -248,7 +248,7 @@ class HasVolumesCapacityTest extends DbTestCase
             Item_Disk::class,
             [
                 'name'         => 'disk item 1',
-                'itemtype'     => $asset::getType(),
+                'itemtype'     => $asset::class,
                 'items_id'     => $asset->getID(),
             ]
         );
@@ -257,7 +257,7 @@ class HasVolumesCapacityTest extends DbTestCase
         $this->assertCount(
             1,
             getAllDataFromTable(Item_Disk::getTable(), [
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
             ])
         );

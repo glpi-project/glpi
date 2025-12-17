@@ -244,7 +244,7 @@ class IPNetwork_Vlan extends CommonDBRelation
                             ['ipnetworks_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::getType());
+                    return self::createTabEntry(Vlan::getTypeName(), $nb, $item::class);
             }
         }
         return '';

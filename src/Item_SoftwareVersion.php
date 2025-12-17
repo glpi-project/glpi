@@ -221,7 +221,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                             if (
                                 $itemtoadd->add([
                                     'items_id'              => $id,
-                                    'itemtype'              => $item::getType(),
+                                    'itemtype'              => $item::class,
                                     'softwareversions_id'   => $_POST['peer_softwareversions_id'],
                                 ])
                             ) {
@@ -1654,7 +1654,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         unset($params['SELECT'], $params['ORDER']);
         $params['WHERE'] = [
             $table . '.items_id'   => $item->getID(),
-            $table . '.itemtype'   => $item::getType(),
+            $table . '.itemtype'   => $item::class,
             $table . '.is_deleted' => 0,
         ];
         if ($noent === false) {

@@ -234,7 +234,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                         $satisfaction->getFromDB($item->getID())
                         && in_array($item->fields['status'], self::getClosedStatusArray())
                     ) {
-                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+                        $ong[3] = ChangeSatisfaction::createTabEntry(__('Satisfaction'), 0, static::class);
                     }
 
                     return $ong;
@@ -252,7 +252,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created changes'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created changes'), $nb, $item::class);
 
                 case Group::class:
                     $nb = 0;
@@ -267,7 +267,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
                             ] + getEntitiesRestrictCriteria(self::getTable())
                         );
                     }
-                    return self::createTabEntry(__('Created changes'), $nb, $item::getType());
+                    return self::createTabEntry(__('Created changes'), $nb, $item::class);
             }
         }
         return '';

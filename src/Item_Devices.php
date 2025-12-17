@@ -611,7 +611,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 return self::createTabEntry(
                     _n('Component', 'Components', Session::getPluralNumber()),
                     $nb,
-                    $item::getType()
+                    $item::class
                 );
             }
             if ($item instanceof CommonDevice) {
@@ -627,7 +627,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                         ]
                     );
                 }
-                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::getType());
+                return self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
@@ -719,7 +719,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
         if ($is_device) {
             Session::initNavigateListItems(
-                static::getType(),
+                static::class,
                 sprintf(
                     __('%1$s = %2$s'),
                     $item->getTypeName(1),
@@ -1036,7 +1036,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
         /** @var CommonDevice $device */
         $device = getItemForItemtype($device_type);
         foreach ($iterator as $link) {
-            Session::addToNavigateListItems(static::getType(), $link["id"]);
+            Session::addToNavigateListItems(static::class, $link["id"]);
             $this->getFromDB($link['id']);
             $current_row  = $table_group->createRow();
             if ((is_null($peer)) || ($link[$fk] != $peer->getID())) {

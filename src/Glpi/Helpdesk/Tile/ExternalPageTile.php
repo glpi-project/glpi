@@ -128,7 +128,7 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     public function listTranslationsHandlers(): array
     {
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
         if (!empty($this->getTitle())) {
             $handlers[$key][] = new TranslationHandler(

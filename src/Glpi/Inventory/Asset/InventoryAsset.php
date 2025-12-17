@@ -474,7 +474,7 @@ abstract class InventoryAsset
             $relation = new Asset_PeripheralAsset();
             $relation->deleteByCriteria(
                 [
-                    'itemtype_asset' => Computer::getType(),
+                    'itemtype_asset' => Computer::class,
                     'itemtype_peripheral' => $input['itemtype_peripheral'],
                     'items_id_peripheral' => $input['items_id_peripheral'],
                 ],

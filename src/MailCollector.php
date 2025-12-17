@@ -2114,7 +2114,7 @@ class MailCollector extends CommonDBTM
 
                 // Handle old format MessageId where itemtype was not in header
                 if (empty($itemtype) && !empty($items_id)) {
-                    $itemtype = Ticket::getType();
+                    $itemtype = Ticket::class;
                 }
 
                 if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {

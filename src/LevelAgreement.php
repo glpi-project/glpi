@@ -503,7 +503,7 @@ TWIG, $twig_params);
                             ['slms_id' => $item->getField('id')]
                         );
                     }
-                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());
+                    return self::createTabEntry(static::getTypeName($nb), $nb, $item::class);
             }
         }
         return '';

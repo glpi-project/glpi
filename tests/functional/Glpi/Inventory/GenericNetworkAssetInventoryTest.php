@@ -403,13 +403,13 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);

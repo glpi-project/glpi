@@ -47,7 +47,7 @@ if (isset($_POST["projects_id"])) {
         $condition['glpi_projecttasks.projects_id'] = $_POST['projects_id'];
     }
 
-    $p = ['itemtype'     => ProjectTask::getType(),
+    $p = ['itemtype'     => ProjectTask::class,
         'entity_restrict' => Session::getMatchingActiveEntities($_POST['entity_restrict']),
         'myname'          => $_POST["myname"],
         'condition'       => $condition,

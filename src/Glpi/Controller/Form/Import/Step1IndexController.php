@@ -55,7 +55,7 @@ final class Step1IndexController extends AbstractController
 
         return $this->render("pages/admin/form/import/step1_index.html.twig", [
             'title' => __("Import form"),
-            'menu'  => ['admin', Form::getType()],
+            'menu'  => ['admin', Form::class],
         ]);
     }
 }

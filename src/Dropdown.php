@@ -3542,7 +3542,7 @@ HTML;
                     ];
                     break;
 
-                case KnowbaseItem::getType():
+                case KnowbaseItem::class:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'DISTINCT'        => true,
@@ -3583,7 +3583,7 @@ HTML;
                     }
                     break;
 
-                case Project::getType():
+                case Project::class:
                     $visibility = Project::getVisibilityCriteria();
                     if (count($visibility['LEFT JOIN'])) {
                         $ljoin = array_merge($ljoin, $visibility['LEFT JOIN']);

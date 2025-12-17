@@ -68,7 +68,7 @@ class ItemAntivirus extends CommonDBChild
                     ['itemtype' => $item::class, 'items_id' => $item->getID(), 'is_deleted' => 0 ]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }

@@ -868,7 +868,7 @@ trait FormTesterTrait
         $new_config = array_merge($original_config, $added_config);
 
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             [
                 'config' => $new_config,

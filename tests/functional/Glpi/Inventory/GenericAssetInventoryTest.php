@@ -499,13 +499,13 @@ class GenericAssetInventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);
@@ -1025,14 +1025,14 @@ class GenericAssetInventoryTest extends InventoryTestCase
         ];
 
         $monitor_criteria = $criteria;
-        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::getType()];
+        $monitor_criteria['WHERE'] = ['itemtype' => \Monitor::class];
         $iterator = $DB->request($monitor_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Monitor import (by serial)', $iterator->current()['name']);
         $this->assertSame(Request::INVENT_QUERY, $iterator->current()['method']);
 
         $printer_criteria = $criteria;
-        $printer_criteria['WHERE'] = ['itemtype' => \Printer::getType()];
+        $printer_criteria['WHERE'] = ['itemtype' => \Printer::class];
         $iterator = $DB->request($printer_criteria);
         $this->assertCount(1, $iterator);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
@@ -1261,13 +1261,13 @@ class GenericAssetInventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::class],
                             ],
                         ],
                     ],
                 ],
                 'WHERE'  => [
-                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
+                    \NetworkName::getTable() . '.itemtype'  => \NetworkPort::class,
                     \NetworkName::getTable() . '.items_id'  => $ports_id,
                 ],
             ]);

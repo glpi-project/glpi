@@ -765,7 +765,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [(new ObserverField())->getKey() => $config->jsonSerialize()]],
             ["config"],

@@ -716,7 +716,7 @@ trait PlanningEvent
         $rand     = mt_rand();
         $users_id = "";  // show users_id reminder
         $img      = "rdv_private.png"; // default icon for reminder
-        $item_fk  = getForeignKeyFieldForItemType(static::getType());
+        $item_fk  = getForeignKeyFieldForItemType(static::class);
 
         if ($val["users_id"] != Session::getLoginUserID()) {
             $users_id = "<br>" . htmlescape(sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"])));

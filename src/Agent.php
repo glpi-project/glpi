@@ -602,7 +602,7 @@ class Agent extends CommonDBTM
                             'netnames'  => 'items_id',
                             'netports'  => 'id', [
                                 'AND' => [
-                                    'netnames.itemtype'  => NetworkPort::getType(),
+                                    'netnames.itemtype'  => NetworkPort::class,
                                 ],
                             ],
                         ],
@@ -612,7 +612,7 @@ class Agent extends CommonDBTM
                             'ips'       => 'items_id',
                             'netnames'  => 'id', [
                                 'AND' => [
-                                    'ips.itemtype' => NetworkName::getType(),
+                                    'ips.itemtype' => NetworkName::class,
                                 ],
                             ],
                         ],

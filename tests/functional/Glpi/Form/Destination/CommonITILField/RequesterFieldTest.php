@@ -714,7 +714,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [(new RequesterField())->getKey() => $config->jsonSerialize()]],
             ["config"],

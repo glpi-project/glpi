@@ -158,7 +158,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         }
 
         $handlers = [];
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         if (count($form->getSections()) > 1) {
             $handlers[$key][] = new TranslationHandler(

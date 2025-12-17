@@ -97,7 +97,7 @@ final class ITILFollowupFieldTest extends DbTestCase
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [ITILFollowupField::getKey() => $config->jsonSerialize()]],
             ["config"],
@@ -121,7 +121,7 @@ final class ITILFollowupFieldTest extends DbTestCase
             countElementsInTable(
                 ITILFollowup::getTable(),
                 [
-                    'itemtype' => Ticket::getType(),
+                    'itemtype' => Ticket::class,
                     'items_id' => $ticket->getID(),
                 ]
             ),
@@ -130,7 +130,7 @@ final class ITILFollowupFieldTest extends DbTestCase
 
         $itilfollowup  = new ITILFollowup();
         $itilfollowups = $itilfollowup->find([
-            'itemtype' => Ticket::getType(),
+            'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
         ]);
 

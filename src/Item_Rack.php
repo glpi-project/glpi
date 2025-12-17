@@ -394,7 +394,7 @@ class Item_Rack extends CommonDBRelation
 
         if ($canedit) {
             Session::initNavigateListItems(
-                self::getType(),
+                self::class,
                 //TRANS : %1$s is the itemtype name,
                 //        %2$s is the name of the item (used for headings of a list)
                 sprintf(

@@ -120,7 +120,7 @@ class AssetDefinitionManagerTest extends DbTestCase
             'content' => 'Test ticket content',
         ]);
         $this->createItem(Item_Ticket::class, [
-            'itemtype'   => $subject::getType(),
+            'itemtype'   => $subject::class,
             'items_id'   => $subject->getID(),
             'tickets_id' => $ticket->getID(),
         ]);
@@ -136,7 +136,7 @@ class AssetDefinitionManagerTest extends DbTestCase
             'content' => 'Test problem content',
         ]);
         $this->createItem(Item_Problem::class, [
-            'itemtype'    => $subject::getType(),
+            'itemtype'    => $subject::class,
             'items_id'    => $subject->getID(),
             'problems_id' => $problem->getID(),
         ]);
@@ -152,7 +152,7 @@ class AssetDefinitionManagerTest extends DbTestCase
             'content' => 'Test change content',
         ]);
         $this->createItem(Change_Item::class, [
-            'itemtype'    => $subject::getType(),
+            'itemtype'    => $subject::class,
             'items_id'    => $subject->getID(),
             'changes_id'  => $change->getID(),
         ]);

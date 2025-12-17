@@ -84,7 +84,7 @@ class ManualLink extends CommonDBChild
                 );
             }
         }
-        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::getType());
+        return self::createTabEntry(_n('Link', 'Links', Session::getPluralNumber()), $count, $item::class);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

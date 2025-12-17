@@ -734,7 +734,7 @@ class NetworkPort extends CommonDBChild
             <span class='sr-only'>" . __s('Select default items to show') . "</span></span>";
 
             $pref_url = $CFG_GLPI["root_doc"] . "/front/displaypreference.form.php?itemtype="
-                     . self::getType();
+                     . self::class;
             $search_config_top .= Ajax::createIframeModalWindow(
                 'search_config_top',
                 $pref_url,
@@ -1861,7 +1861,7 @@ class NetworkPort extends CommonDBChild
                         $table       => 'items_id',
                         Unmanaged::getTable()   => 'id', [
                             'AND' => [
-                                $table . '.itemtype' => Unmanaged::getType(),
+                                $table . '.itemtype' => Unmanaged::class,
                             ],
                         ],
                     ],

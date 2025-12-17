@@ -60,7 +60,7 @@ class IsRackableCapacity extends AbstractCapacity
 
     public function getSearchOptions(string $classname): array
     {
-        return Rack::rawSearchOptionsToAdd($classname::getType());
+        return Rack::rawSearchOptionsToAdd($classname);
     }
 
     public function isUsed(string $classname): bool

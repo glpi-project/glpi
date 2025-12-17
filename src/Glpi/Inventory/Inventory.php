@@ -419,6 +419,15 @@ class Inventory
             $this->agent->handleAgent($this->metadata);
 
             $this->item = getItemForItemtype($this->agent->fields['itemtype']);
+            if (!$this->item) {
+                throw new RuntimeException(
+                    sprintf(
+                        'Invalid itemtype %s for agent %s',
+                        $this->agent->fields['itemtype'],
+                        $this->agent->fields['name']
+                    )
+                );
+            }
 
             //load existing itemtype, if any
             if (!empty($this->agent->fields['items_id'])) {
@@ -1054,7 +1063,7 @@ class Inventory
             /** @var class-string<CommonDBTM> $itemtype */
             $itemtype = str_replace(GLPI_INVENTORY_DIR . '/', '', $existing_type);
             // use `getItemForItemtype` to fix classname case (i.e. `refusedequipement` -> `RefusedEquipement`)
-            $itemtype = getItemForItemtype($itemtype)::getType();
+            $itemtype = getItemForItemtype($itemtype)::class;
             $inventory_files = new RegexIterator(
                 new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($existing_type)

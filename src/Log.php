@@ -113,7 +113,7 @@ class Log extends CommonDBTM
                 ]
             );
         }
-        return self::createTabEntry(self::getTypeName(1), $nb, $item::getType());
+        return self::createTabEntry(self::getTypeName(1), $nb, $item::class);
     }
 
 
@@ -355,7 +355,7 @@ class Log extends CommonDBTM
             : [],
             'csv_url'           => $CFG_GLPI['root_doc'] . "/front/log/export.php?" . http_build_query([
                 'filter'   => $filters,
-                'itemtype' => $item::getType(),
+                'itemtype' => $item::class,
                 'id'       => $item->getId(),
             ]),
         ]);

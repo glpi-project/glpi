@@ -198,7 +198,7 @@ class TemplateManagerTest extends DbTestCase
 
         // Create commonitil with specified task template
         /** @var \CommonITILObject $common_itil_object */
-        $common_itil_object = $this->createItem($common_itil_object::getType(), [
+        $common_itil_object = $this->createItem($common_itil_object::class, [
             'entities_id'       => $entities_id,
             'name'              => 'test commonitil',
             'content'           => 'test commonitil',

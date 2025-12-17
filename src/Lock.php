@@ -1090,7 +1090,7 @@ TWIG);
             && $item->isDynamic()
             && $item->can($item->fields['id'], UPDATE)
         ) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
         return '';
     }

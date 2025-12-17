@@ -329,7 +329,7 @@ class Central extends CommonGLPI
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
                 'params'    => $card_params + [
-                    'itemtype'      => User::getType(),
+                    'itemtype'      => User::class,
                     '_idor_token'  => $idor,
                 ],
             ];
@@ -340,7 +340,7 @@ class Central extends CommonGLPI
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
                 'params'    => $card_params + [
-                    'itemtype'      => User::getType(),
+                    'itemtype'      => User::class,
                     '_idor_token'  => $idor,
                 ],
             ];
@@ -491,7 +491,7 @@ class Central extends CommonGLPI
                 'itemtype'  => Project::class,
                 'widget'    => 'central_list',
                 'params'    => [
-                    'itemtype'    => Group::getType(),
+                    'itemtype'    => Group::class,
                     '_idor_token' => $idor,
                 ],
             ];
@@ -502,7 +502,7 @@ class Central extends CommonGLPI
                 'itemtype'  => ProjectTask::class,
                 'widget'    => 'central_list',
                 'params'    => [
-                    'itemtype'    => Group::getType(),
+                    'itemtype'    => Group::class,
                     '_idor_token' => $idor,
                 ],
             ];

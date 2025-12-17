@@ -62,7 +62,7 @@ class Reservation extends CommonDBChild
             !$withtemplate
             && Session::haveRight("reservation", READ)
         ) {
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), 0, $item::class);
         }
         return '';
     }
@@ -1333,7 +1333,7 @@ JAVASCRIPT;
         switch ($ma->getAction()) {
             case 'enable':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         // Treat as OK
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
@@ -1348,7 +1348,7 @@ JAVASCRIPT;
                 break;
             case 'disable':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         $result = $reservation_item->delete(['id' => $reservation_item->getID()]);
                         $ma->itemDone($item::class, $id, $result ? MassiveAction::ACTION_OK : MassiveAction::ACTION_KO);
                     } else {
@@ -1358,7 +1358,7 @@ JAVASCRIPT;
                 break;
             case 'available':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 1,
@@ -1371,7 +1371,7 @@ JAVASCRIPT;
                 break;
             case 'unavailable':
                 foreach ($ids as $id) {
-                    if ($reservation_item->getFromDBbyItem($item::getType(), $id)) {
+                    if ($reservation_item->getFromDBbyItem($item::class, $id)) {
                         $result = $reservation_item->update([
                             'id' => $reservation_item->getID(),
                             'is_active' => 0,

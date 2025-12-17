@@ -554,7 +554,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [ValidationField::getKey() => array_merge(
                 [

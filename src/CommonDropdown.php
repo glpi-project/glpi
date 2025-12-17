@@ -139,7 +139,7 @@ abstract class CommonDropdown extends CommonDBTM
                         $menu['options'][$key]['links']['search'] = $key::getSearchURL(false);
                         //saved search list
                         $menu['options'][$key]['links']['lists']  = "";
-                        $menu['options'][$key]['lists_itemtype']  = $key::getType();
+                        $menu['options'][$key]['lists_itemtype']  = $key;
                         if ($key::canCreate()) {
                             $menu['options'][$key]['links']['add'] = $key::getFormURL(false);
                         }

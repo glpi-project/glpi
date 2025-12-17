@@ -1829,7 +1829,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = 'status';
                     $allowed_fields[] = '_accepted';
                 }
-                $validation_class = static::getType() . 'Validation';
+                $validation_class = static::class . 'Validation';
                 if (
                     class_exists($validation_class)
                     && (
@@ -1844,7 +1844,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $allowed_fields[] = 'global_validation';
                 }
                 // Manage assign and steal right
-                if (static::getType() === Ticket::getType() && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
+                if (static::class === Ticket::class && Session::haveRightsOr(static::$rightname, [Ticket::ASSIGN, Ticket::STEAL])) {
                     $allowed_fields[] = '_itil_assign';
                     $allowed_fields[] = '_users_id_assign';
                     $allowed_fields[] = '_groups_id_assign';
@@ -2814,7 +2814,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
                 [
                     'WHERE'  => [
-                        'itemtype'  => static::getType(),
+                        'itemtype'  => static::class,
                         'items_id'  => $this->getID(),
                     ],
                     'ORDER'  => [
@@ -2841,7 +2841,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
                 [
                     'WHERE'  => [
-                        'itemtype'  => static::getType(),
+                        'itemtype'  => static::class,
                         'items_id'  => $this->getID(),
                     ],
                     'ORDER'  => [
@@ -3035,7 +3035,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                 unset($mandatory_missing['_add_validation']);
                             }
 
-                            if (static::getType() === Ticket::getType()) {
+                            if (static::class === Ticket::class) {
                                 // For time_to_resolve and time_to_own : check also slas
                                 // For internal_time_to_resolve and internal_time_to_own : check also olas
                                 foreach ([SLM::TTR, SLM::TTO] as $slmType) {
@@ -4644,7 +4644,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'joinparams'         => [
                         'jointype'           => 'child',
                         'linkfield'          => 'items_id',
-                        'condition'          => ['NEWTABLE.itemtype' => self::getType()],
+                        'condition'          => ['NEWTABLE.itemtype' => self::class],
                     ],
                 ],
             ],
@@ -4722,7 +4722,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'FROM'   => ITILSolution::getTable(),
             'WHERE'  => [
                 ITILSolution::getTable() . '.items_id' => new QueryExpression($DB::quoteName('REFTABLE.id')),
-                ITILSolution::getTable() . '.itemtype' => static::getType(),
+                ITILSolution::getTable() . '.itemtype' => static::class,
             ],
             'ORDER'  => ITILSolution::getTable() . '.id DESC',
             'LIMIT'  => 1,
@@ -7387,7 +7387,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         global $PLUGIN_HOOKS;
 
-        $obj_type = static::getType();
+        $obj_type = static::class;
         $foreign_key = static::getForeignKeyField();
 
         //check sub-items rights
@@ -7459,7 +7459,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if ($validation !== null) {
             $itemtypes['validation'] = [
                 'type'          => 'ITILValidation',
-                'class'         => $validation::getType(),
+                'class'         => $validation::class,
                 'icon'          => CommonITILValidation::getIcon(),
                 'label'         => _x('button', 'Ask for approval'),
                 'short_label'   => CommonITILValidation::getTypeName(1),
@@ -7592,7 +7592,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         /** @var CommonITILObject $objType */
-        $objType    = static::getType();
+        $objType    = static::class;
         $foreignKey = static::getForeignKeyField();
         $timeline = [];
 
@@ -7619,7 +7619,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             }
         }
 
-        $restrict_fup['itemtype'] = static::getType();
+        $restrict_fup['itemtype'] = static::class;
         $restrict_fup['items_id'] = $this->getID();
 
         $taskClass = static::getTaskClass();
@@ -7711,7 +7711,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         && $this instanceof Ticket
                         && Ticket::canCreate()
                     ;
-                    $timeline[$tltask::getType() . "_" . $tasks_id] = [
+                    $timeline[$tltask . "_" . $tasks_id] = [
                         'type'     => $taskClass,
                         'item'     => $task_row,
                         'object'   => $tltask,
@@ -7724,7 +7724,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         // Add solutions to timeline
         $solution_obj   = new ITILSolution();
         $solution_items = $solution_obj->find([
-            'itemtype'  => static::getType(),
+            'itemtype'  => static::class,
             'items_id'  => $this->getID(),
         ]);
 
@@ -7783,7 +7783,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $user = new User();
                 $user->getFromDB($validation_row['users_id_validate']);
 
-                $request_key = $validation_obj::getType() . '_' . $validations_id
+                $request_key = $validation_obj::class . '_' . $validations_id
                     . (empty($validation_row['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
 
                 $content = __s('Approval request');
@@ -7820,7 +7820,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ];
 
                 if (!empty($validation_row['validation_date'])) {
-                    $timeline[$validation_obj::getType() . "_" . $validations_id] = [
+                    $timeline[$validation_obj::class . "_" . $validations_id] = [
                         'type' => $validation_class,
                         'item' => [
                             'id'        => $validations_id,
@@ -7881,7 +7881,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     $doc_entry['_is_image'] = true;
                     $doc_entry['_size'] = getimagesize($docpath);
                 }
-                if ($document_item['itemtype'] == static::getType()) {
+                if ($document_item['itemtype'] == static::class) {
                     // document associated directly to itilobject
                     $doc_entry['object'] = $document_obj;
                     $timeline["Document_" . $document_item['documents_id']] = $doc_entry;
@@ -8208,7 +8208,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $nb_elements = count($timeline);
         $label = static::getTypeName(1);
 
-        $ong[static::getType() . '$main'] = static::createTabEntry($label, $nb_elements, static::getType());
+        $ong[static::class . '$main'] = static::createTabEntry($label, $nb_elements, static::class);
         return $this;
     }
 
@@ -8412,8 +8412,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function getTemplateFieldName($type = null): string
     {
-        $field = strtolower(static::getType()) . 'templates_id';
-        if (static::getType() === Ticket::getType()) {
+        $field = strtolower(static::class) . 'templates_id';
+        if (static::class === Ticket::class) {
             switch ($type) {
                 case Ticket::INCIDENT_TYPE:
                     $field .= '_incident';
@@ -8454,7 +8454,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public static function getTemplateClass()
     {
-        return static::getType() . 'Template';
+        return static::class . 'Template';
     }
 
     /**
@@ -8466,7 +8466,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public static function getTemplateFormFieldName()
     {
-        return '_' . strtolower(static::getType()) . 'template';
+        return '_' . strtolower(static::class) . 'template';
     }
 
     /**
@@ -8618,7 +8618,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
             if (count($arr_values) > 0) {
                 $or_crits[] = [
-                    Document_Item::getTableField('itemtype') => ITILFollowup::getType(),
+                    Document_Item::getTableField('itemtype') => ITILFollowup::class,
                     Document_Item::getTableField('items_id') => $arr_values,
                 ];
             }
@@ -8639,14 +8639,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
             if (count($arr_values) > 0) {
                 $or_crits[] = [
-                    Document_Item::getTableField('itemtype') => ITILSolution::getType(),
+                    Document_Item::getTableField('itemtype') => ITILSolution::class,
                     Document_Item::getTableField('items_id') => $arr_values,
                 ];
             }
         }
 
         // documents associated to ticketvalidation
-        $validation_class = static::getType() . 'Validation';
+        $validation_class = static::class . 'Validation';
         $can_view_validations = $user === null ? class_exists($validation_class) && $validation_class::canView() : true;
         if (class_exists($validation_class) && ($bypass_rights ||  $can_view_validations)) {
             // Run the subquery separately. It's better for huge databases
@@ -8660,7 +8660,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
             if (count($arr_values) > 0) {
                 $or_crits[] = [
-                    Document_Item::getTableField('itemtype') => $validation_class::getType(),
+                    Document_Item::getTableField('itemtype') => $validation_class,
                     Document_Item::getTableField('items_id') => $arr_values,
                 ];
             }
@@ -8704,7 +8704,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $arr_values = array_column(iterator_to_array($iterator_tmp, false), 'id');
             if (count($arr_values) > 0) {
                 $or_crits[] = [
-                    'glpi_documents_items.itemtype' => $task_class::getType(),
+                    'glpi_documents_items.itemtype' => $task_class,
                     'glpi_documents_items.items_id' => $arr_values,
                 ];
             }
@@ -9862,7 +9862,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 // Push users
                 $linked_actors[$common_itil_id][] = [
-                    'itemtype'  => User::getType(),
+                    'itemtype'  => User::class,
                     'id'        => $linked_user_row['users_id'],
                     'firstname' => $linked_user_row['firstname'],
                     'realname'  => $linked_user_row['realname'],
@@ -9910,7 +9910,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 // Push groups
                 $linked_actors[$common_itil_id][] = [
-                    'itemtype' => Group::getType(),
+                    'itemtype' => Group::class,
                     'id'       => $linked_group_row['groups_id'],
                     'name'     => $linked_group_row['name'],
                 ];
@@ -9951,7 +9951,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                 // Push groups
                 $linked_actors[$common_itil_id][] = [
-                    'itemtype' => Supplier::getType(),
+                    'itemtype' => Supplier::class,
                     'id'       => $linked_supplier_row['suppliers_id'],
                     'name'     => $linked_supplier_row['name'],
                 ];
@@ -10187,7 +10187,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                             $cat_table => 'id',
                             [
                                 'AND' => [
-                                    $trans_table . '.itemtype' => ITILCategory::getType(),
+                                    $trans_table . '.itemtype' => ITILCategory::class,
                                     $trans_table . '.field' => 'name',
                                     $trans_table . '.language' => $_SESSION['glpilanguage'],
                                 ],
@@ -10312,7 +10312,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     'description' => _x('filters', 'A supplier in the team of the item'),
                     'supported_prefixes' => ['!'],
                 ],
-            ] + self::getKanbanPluginFilters(static::getType()),
+            ] + self::getKanbanPluginFilters(static::class),
         ]);
     }
 
@@ -10745,7 +10745,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         global $DB;
 
-        $inquest_class = static::getType() . 'Satisfaction';
+        $inquest_class = static::class . 'Satisfaction';
 
         if (!class_exists($inquest_class) || !is_a($inquest_class, CommonITILSatisfaction::class, true)) {
             return 0;
@@ -11157,7 +11157,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
     public static function getRuleCollectionClassInstance(int $entity_id): RuleCommonITILObjectCollection
     {
-        $expected = 'Rule' . static::getType() . 'Collection';
+        $expected = 'Rule' . static::class . 'Collection';
         if (is_a($expected, RuleCommonITILObjectCollection::class, true)) {
             return new $expected($entity_id);
         }
@@ -11165,7 +11165,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             sprintf(
                 'Collection class %s does not exists for rule type %s',
                 $expected,
-                static::getType()
+                static::class
             )
         );
     }

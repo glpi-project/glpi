@@ -216,14 +216,14 @@ class ProblemTest extends DbTestCase
 
         $followup = new \ITILFollowup();
         $followup->add([
-            'itemtype'  => $problem::getType(),
+            'itemtype'  => $problem::class,
             'items_id' => $problem_id,
             'content'    => 'followup content',
             'date'       => '2015-01-01 00:00:00',
         ]);
 
         $followup->add([
-            'itemtype'  => $problem::getType(),
+            'itemtype'  => $problem::class,
             'items_id' => $problem_id,
             'content'    => 'followup content',
             'date'       => '2015-02-01 00:00:00',
@@ -261,7 +261,7 @@ class ProblemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $problem::getType(),
+                'itemtype'  => $problem::class,
                 'items_id' => $problem_id,
                 'content'    => 'solution content',
                 'date_creation' => '2017-01-01 00:00:00',
@@ -272,7 +272,7 @@ class ProblemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $followup->add([
-                'itemtype'  => $problem::getType(),
+                'itemtype'  => $problem::class,
                 'items_id'  => $problem_id,
                 'add_reopen'   => '1',
                 'content'      => 'This is required',
@@ -283,7 +283,7 @@ class ProblemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $problem::getType(),
+                'itemtype'  => $problem::class,
                 'items_id' => $problem_id,
                 'content'    => 'solution content',
                 'date_creation' => $last_solution_date,

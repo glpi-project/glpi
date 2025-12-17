@@ -76,7 +76,7 @@ final class TitleFieldTest extends DbTestCase
             $this->assertCount(1, $destinations);
             $destination = current($destinations);
             $this->updateItem(
-                $destination::getType(),
+                $destination::class,
                 $destination->getId(),
                 ['config' => [TitleField::getKey() => $config->jsonSerialize()]],
                 ["config"],

@@ -1416,7 +1416,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $this->assertGreaterThan(
             0,
             $nport->add([
-                'itemtype' => $equipment1::getType(),
+                'itemtype' => $equipment1::class,
                 'items_id' => $id_1,
                 'name' => 'Linked Port',
                 'mac' => '00:01:23:45:67:89',
@@ -1534,7 +1534,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $ma->method('getInput')->willReturn([]);
 
         // Execute method
-        $_POST['itemtype'] = \NetworkEquipment::getType();
+        $_POST['itemtype'] = \NetworkEquipment::class;
         \Unmanaged::processMassiveActionsForOneItemtype($ma, $unmanaged, [$unmanaged->fields['id']]);
 
         //8 connections on port + one hub - 1 converted

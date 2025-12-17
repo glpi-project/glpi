@@ -1822,7 +1822,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             foreach ($timeline as $timeline_data) {
                 $tmptimelineitem = [];
 
-                $tmptimelineitem['##timelineitems.type##']        = $timeline_data['type']::getType();
+                $tmptimelineitem['##timelineitems.type##']        = $timeline_data['type'];
                 $tmptimelineitem['##timelineitems.typename##']    = $tmptimelineitem['##timelineitems.type##']::getTypeName(0);
                 $tmptimelineitem['##timelineitems.date##']        = Html::convDateTime($timeline_data['item']['date']);
                 $tmptimelineitem['##timelineitems.description##'] = $timeline_data['item']['content'];
@@ -1834,7 +1834,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $itilfup = ITILFollowup::getById($timeline_data['item']['id']);
                 if (
                     $item_users_id > 0
-                    && $timeline_data['type'] == ITILFollowup::getType()
+                    && $timeline_data['type'] == ITILFollowup::class
                     && $are_names_anonymized
                     && $itilfup instanceof ITILFollowup
                     && $itilfup->isFromSupportAgent()
@@ -1864,7 +1864,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     // internal inquest
                     if ($inquest->fields['type'] == 1) {
                         $user_type = $options['additionnaloption']['usertype'];
-                        $redirect = "{$objettype}_" . $item->getField("id") . '_' . $item::getType() . '$3';
+                        $redirect = "{$objettype}_" . $item->getField("id") . '_' . $item::class . '$3';
                         $data["##{$objettype}.urlsatisfaction##"] = $this->formatURL($user_type, $redirect);
                     } elseif ($inquest->fields['type'] == 2) { // external inquest
                         $data["##{$objettype}.urlsatisfaction##"] = Entity::generateLinkSatisfaction($item);

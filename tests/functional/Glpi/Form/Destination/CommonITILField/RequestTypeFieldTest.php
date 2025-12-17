@@ -252,7 +252,7 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [RequestTypeField::getKey() => $config->jsonSerialize()]],
             ["config"],

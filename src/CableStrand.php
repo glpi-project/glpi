@@ -80,7 +80,7 @@ class CableStrand extends CommonDropdown
                             ['cablestrands_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
             }
         }
         return '';
@@ -177,7 +177,7 @@ class CableStrand extends CommonDropdown
                 if ($cable->fields["sockets_id_endpoint_b"] > 0) {
                     $sockets_endpoint_b = new Socket();
                     if (!$sockets_endpoint_b->getFromDB($cable->fields["sockets_id_endpoint_b"])) {
-                        trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_b"]), E_USER_WARNING);
+                        trigger_error(sprintf('Unable to load item %s (%s).', Socket::class, $cable->fields["sockets_id_endpoint_b"]), E_USER_WARNING);
                     } else {
                         echo $sockets_endpoint_b->getLink();
                     }
@@ -197,7 +197,7 @@ class CableStrand extends CommonDropdown
                 if ($cable->fields["sockets_id_endpoint_a"] > 0) {
                     $sockets_endpoint_a = new Socket();
                     if (!$sockets_endpoint_a->getFromDB($cable->fields["sockets_id_endpoint_a"])) {
-                        trigger_error(sprintf('Unable to load item %s (%s).', Socket::getType(), $cable->fields["sockets_id_endpoint_a"]), E_USER_WARNING);
+                        trigger_error(sprintf('Unable to load item %s (%s).', Socket::class, $cable->fields["sockets_id_endpoint_a"]), E_USER_WARNING);
                     } else {
                         echo $sockets_endpoint_a->getLink();
                     }

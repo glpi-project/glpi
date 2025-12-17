@@ -1705,7 +1705,7 @@ class MassiveAction
 
                 foreach ($ids as $id) {
                     $success = $em->add([
-                        'itemtype'             => $item::getType(),
+                        'itemtype'             => $item::class,
                         'items_id'             => $id,
                         'content'              => $content,
                         'users_id'             => Session::getLoginUserID(),

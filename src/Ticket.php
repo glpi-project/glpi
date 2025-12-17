@@ -789,7 +789,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
             // Not for Ticket class
             if (!$item instanceof self) {
-                return self::createTabEntry($title, $nb, $item::getType());
+                return self::createTabEntry($title, $nb, $item::class);
             }
         }
 
@@ -803,7 +803,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
                 $satisfaction->getFromDB($item->getID())
                 && $item->fields['status'] == self::CLOSED
             ) {
-                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::getType());
+                $ong[3] = TicketSatisfaction::createTabEntry(__('Satisfaction'), 0, static::class);
             }
             if ($item->canView()) {
                 $ong[4] = static::createTabEntry(__('Statistics'), 0, null, 'ti ti-chart-pie');
@@ -2200,7 +2200,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
 
             if (self::canUpdate()) {
-                $actions[self::getType() . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
+                $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'resolve_tickets']
                 = "<i class='ti ti-check'></i>"
                 . __s("Resolve selected tickets");
             }
@@ -2422,7 +2422,7 @@ JAVASCRIPT;
             case 'link_to_problem':
                 Toolbox::deprecated('Ticket "link_to_problem" massive action is deprecated. Use CommonITILObject_CommonITILObject "add" massive action.');
                 // Skip if not tickets
-                if ($item::getType() !== Ticket::getType()) {
+                if ($item::class !== Ticket::class) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }
@@ -2467,7 +2467,7 @@ JAVASCRIPT;
 
             case 'resolve_tickets':
                 // Skip if not tickets
-                if ($item::getType() !== self::getType()) {
+                if ($item::class !== self::class) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }
@@ -2510,7 +2510,7 @@ JAVASCRIPT;
                     }
 
                     // Add reference to ticket in input
-                    $input['itemtype'] = self::getType();
+                    $input['itemtype'] = self::class;
                     $input['items_id'] = $id;
 
                     // Insert new solution
@@ -2528,7 +2528,7 @@ JAVASCRIPT;
 
             case 'add_contract':
                 // Skip if wrong itemtype
-                if ($item::getType() !== self::getType()) {
+                if ($item::class !== self::class) {
                     $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                     return;
                 }

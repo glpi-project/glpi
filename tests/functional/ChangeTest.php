@@ -340,14 +340,14 @@ class ChangeTest extends DbTestCase
 
         $followup = new \ITILFollowup();
         $followup->add([
-            'itemtype'  => $change::getType(),
+            'itemtype'  => $change::class,
             'items_id' => $change_id,
             'content'    => 'followup content',
             'date'       => '2015-01-01 00:00:00',
         ]);
 
         $followup->add([
-            'itemtype'  => $change::getType(),
+            'itemtype'  => $change::class,
             'items_id' => $change_id,
             'content'    => 'followup content',
             'date'       => '2015-02-01 00:00:00',
@@ -385,7 +385,7 @@ class ChangeTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $change::getType(),
+                'itemtype'  => $change::class,
                 'items_id' => $change_id,
                 'content'    => 'solution content',
                 'date_creation' => '2017-01-01 00:00:00',
@@ -396,7 +396,7 @@ class ChangeTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $followup->add([
-                'itemtype'  => $change::getType(),
+                'itemtype'  => $change::class,
                 'items_id'  => $change_id,
                 'add_reopen'   => '1',
                 'content'      => 'This is required',
@@ -407,7 +407,7 @@ class ChangeTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $change::getType(),
+                'itemtype'  => $change::class,
                 'items_id' => $change_id,
                 'content'    => 'solution content',
                 'date_creation' => $last_solution_date,
