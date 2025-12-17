@@ -63,7 +63,7 @@ class ITILFollowup extends CommonDBChild
      */
     public function getItilObjectItemType()
     {
-        return str_replace('Followup', '', $this->getType());
+        return str_replace('Followup', '', static::class);
     }
 
 
@@ -297,7 +297,7 @@ class ITILFollowup extends CommonDBChild
             $this->getField('items_id'),
             get_class($parentitem),
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_ADD_SUBITEM
         );
 
@@ -362,7 +362,7 @@ class ITILFollowup extends CommonDBChild
             $this->getField(self::$items_id),
             $this->fields['itemtype'],
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_DELETE_SUBITEM
         );
 
@@ -484,7 +484,7 @@ class ITILFollowup extends CommonDBChild
 
         // Only calculate timeline_position if not already specified in the input
         if (!isset($input['timeline_position'])) {
-            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], $this->getType(), $input["users_id"]);
+            $input['timeline_position'] = $itemtype::getTimelinePosition($input["items_id"], static::class, $input["users_id"]);
         }
 
         if (!isset($input['date'])) {
@@ -588,7 +588,7 @@ class ITILFollowup extends CommonDBChild
             $this->getField('items_id'),
             $this->fields['itemtype'],
             $changes,
-            $this->getType(),
+            static::class,
             Log::HISTORY_UPDATE_SUBITEM
         );
 

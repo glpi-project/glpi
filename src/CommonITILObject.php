@@ -721,7 +721,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $tickets_id = $options['tickets_id'] ?? $options['_tickets_id'] ?? null;
         $ticket = new Ticket();
         $ticket->getEmpty();
-        if (in_array($this->getType(), [Change::class, Problem::class]) && $tickets_id) {
+        if (in_array(static::class, [Change::class, Problem::class]) && $tickets_id) {
             $ticket->getFromDB($tickets_id);
 
             // copy fields from original ticket, only when fields are not already set by the user (contained in _saved array)
@@ -1960,7 +1960,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 return;
             }
 
-            if ($link['itemtype_1'] == $this->getType() && $link['items_id_1'] == 0) {
+            if ($link['itemtype_1'] == static::class && $link['items_id_1'] == 0) {
                 // Link was added in creation form, ID was not available yet
                 $link['items_id_1'] = $this->getID();
             }
@@ -2032,7 +2032,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $docitem = new Document_Item();
                 if (
                     $docitem->add(['documents_id' => $input["document"],
-                        'itemtype'     => $this->getType(),
+                        'itemtype'     => static::class,
                         'items_id'     => $input["id"],
                     ])
                 ) {
@@ -2343,7 +2343,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             $soltype = new SolutionType();
             $soltype->getFromDB($input['solutiontypes_id']);
             $solution->add([
-                'itemtype'           => $this->getType(),
+                'itemtype'           => static::class,
                 'items_id'           => $this->getID(),
                 'solutiontypes_id'   => $input['solutiontypes_id'],
                 'content'            => 'Solved using type ' . $soltype->getName(),
@@ -3206,7 +3206,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             foreach ($this->input['_documents_id'] as $docID) {
                 $docitem->add(['documents_id' => $docID,
                     '_do_notif'    => false,
-                    'itemtype'     => $this->getType(),
+                    'itemtype'     => static::class,
                     'items_id'     => $this->fields['id'],
                 ]);
             }
@@ -5368,7 +5368,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         );
         $params = ['type'            => '__VALUE__',
             'actortype'       => $typename,
-            'itemtype'        => $this->getType(),
+            'itemtype'        => static::class,
             'allow_email'     => (($type == CommonITILActor::OBSERVER)
                                             || $type == CommonITILActor::REQUESTER),
             'entity_restrict' => $entities_id,
@@ -6238,7 +6238,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 ],
             ],
             'WHERE'           => [
-                ITILSolution::getTable() . ".itemtype" => $this->getType(),
+                ITILSolution::getTable() . ".itemtype" => static::class,
                 "$ctable.is_deleted"                   => 0,
             ] + getEntitiesRestrictCriteria($ctable),
             'ORDERBY'         => 'solutiontypes_id',
@@ -8135,7 +8135,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'COUNT'  => 'cpt',
             'FROM'   => 'glpi_itilfollowups',
             'WHERE'  => [
-                'itemtype'  => $this->getType(),
+                'itemtype'  => static::class,
                 'items_id'  => $this->fields['id'],
             ] + $RESTRICT,
         ])->current();
@@ -8154,7 +8154,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     {
         global $DB;
 
-        $table = 'glpi_' . strtolower($this->getType()) . 'tasks';
+        $table = 'glpi_' . strtolower(static::class) . 'tasks';
 
         $RESTRICT = [];
         if ($with_private !== true && $this instanceof Ticket) {
@@ -8335,9 +8335,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ) {
             // load default entity one if not already loaded
             $template_id = Entity::getUsedConfig(
-                strtolower($this->getType()) . 'templates_strategy',
+                strtolower(static::class) . 'templates_strategy',
                 $entities_id,
-                strtolower($this->getType()) . 'templates_id',
+                strtolower(static::class) . 'templates_id',
                 0
             );
             if ($template_id > 0 && $tt->getFromDBWithData($template_id, true)) {
@@ -8585,7 +8585,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $or_crits = [
             // documents associated to ITIL item directly
             [
-                Document_Item::getTableField('itemtype') => $this->getType(),
+                Document_Item::getTableField('itemtype') => static::class,
                 Document_Item::getTableField('items_id') => $this->getID(),
             ],
         ];
@@ -8594,7 +8594,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $can_view_followups = $user === null ? ITILFollowup::canView() : true;
         if ($bypass_rights || $can_view_followups) {
             $fup_crits = [
-                ITILFollowup::getTableField('itemtype') => $this->getType(),
+                ITILFollowup::getTableField('itemtype') => static::class,
                 ITILFollowup::getTableField('items_id') => $this->getID(),
             ];
             if (!$bypass_rights) {
@@ -8632,7 +8632,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'SELECT' => 'id',
                 'FROM'   => ITILSolution::getTable(),
                 'WHERE'  => [
-                    ITILSolution::getTableField('itemtype') => $this->getType(),
+                    ITILSolution::getTableField('itemtype') => static::class,
                     ITILSolution::getTableField('items_id') => $this->getID(),
                 ],
             ]);
@@ -8880,7 +8880,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         foreach ($this->input['_itilfollowuptemplates_id'] as $fup_templates_id) {
             $values = [
                 '_itilfollowuptemplates_id' => $fup_templates_id,
-                'itemtype'                  => $this->getType(),
+                'itemtype'                  => static::class,
                 'items_id'                  => $this->getID(),
                 '_do_not_compute_status'    => $this->input['_do_not_compute_status'] ?? 0,
                 '_do_not_compute_takeintoaccount' => $this->input['_do_not_compute_takeintoaccount'] ?? 0,
@@ -8904,7 +8904,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         $solution = new ITILSolution();
         $input = [
             '_solutiontemplates_id' => $this->input['_solutiontemplates_id'],
-            'itemtype'              => $this->getType(),
+            'itemtype'              => static::class,
             'items_id'              => $this->getID(),
         ];
         if (isset($this->input['_do_not_compute_status'])) {
@@ -9233,7 +9233,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     if ($add_done) {
                         Event::log(
                             $this->fields['id'],
-                            strtolower($this->getType()),
+                            strtolower(static::class),
                             4,
                             "tracking",
                             sprintf(
@@ -10483,7 +10483,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         ];
 
         // compute itilobject duration
-        $task_class  = $this->getType() . "Task";
+        $task_class  = static::class . "Task";
         $task_table  = getTableForItemType($task_class);
         $foreign_key = $this->getForeignKeyField();
 
@@ -10585,7 +10585,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function countOpenChildrenOfSameType()
     {
-        $itemtype = $this->getType();
+        $itemtype = static::class;
         $link_class = CommonITILObject_CommonITILObject::getLinkClass($itemtype, $itemtype);
 
         if ($link_class === null || $this->isNewItem()) {
@@ -10602,7 +10602,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         );
 
         return $link_class::countLinksByStatus(
-            $this->getType(),
+            static::class,
             $this->getID(),
             $open_statuses,
             [CommonITILObject_CommonITILObject::SON_OF]
@@ -10940,7 +10940,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
-        $config_suffix = $this instanceof Ticket ? '' : ('_' . strtolower($this->getType()));
+        $config_suffix = $this instanceof Ticket ? '' : ('_' . strtolower(static::class));
         $rate          = Entity::getUsedConfig(
             'inquest_config' . $config_suffix,
             $this->fields['entities_id'],

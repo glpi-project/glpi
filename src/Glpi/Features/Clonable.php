@@ -118,7 +118,7 @@ trait Clonable
                 continue;
             }
 
-            $override_input[$classname::getItemField($this->getType())] = $this->getID();
+            $override_input[$classname::getItemField(static::class)] = $this->getID();
 
             // Force entity / recursivity based on cloned parent, with fallback on session values
             if ($classname::$disableAutoEntityForwarding !== true) {
@@ -129,7 +129,7 @@ trait Clonable
             $cloned = []; // Link between old and new ID
             $relation_newitems = [];
 
-            $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+            $relation_items = $classname::getItemsAssociatedTo(static::class, $source->getID());
             /** @var CommonDBTM $relation_item */
             foreach ($relation_items as $relation_item) {
                 if ($source->isTemplate() && isset($relation_item->fields['name'])) {

@@ -1091,7 +1091,7 @@ class CommonDBTM extends CommonGLPI
         if (in_array(static::class, $CFG_GLPI['databaseinstance_types'], true)) {
             // DatabaseInstance does not extends CommonDBConnexity
             $dbinstance = new DatabaseInstance();
-            $dbinstance->deleteByCriteria(['itemtype' => $this->getType(), 'items_id' => $this->getID()], true);
+            $dbinstance->deleteByCriteria(['itemtype' => static::class, 'items_id' => $this->getID()], true);
         }
 
         if (in_array(static::class, $CFG_GLPI['itemdevices_types'], true)) {
@@ -1775,8 +1775,8 @@ class CommonDBTM extends CommonGLPI
                             Plugin::doHook(Hooks::ITEM_UPDATE, $this);
 
                             //Fill forward_entity_to array with itemtypes coming from plugins
-                            if (isset(self::$plugins_forward_entity[$this->getType()])) {
-                                foreach (self::$plugins_forward_entity[$this->getType()] as $itemtype) {
+                            if (isset(self::$plugins_forward_entity[static::class])) {
+                                foreach (self::$plugins_forward_entity[static::class] as $itemtype) {
                                     static::$forward_entity_to[] = $itemtype;
                                 }
                             }
@@ -1849,7 +1849,7 @@ class CommonDBTM extends CommonGLPI
             && $this->input['is_dynamic'] == true)
         ) {
             $lockedfield = new Lockedfield();
-            $locks = $lockedfield->getFullLockedFields($this->getType(), $this->fields['id']);
+            $locks = $lockedfield->getFullLockedFields(static::class, $this->fields['id']);
             foreach ($locks as $lock) {
                 $lock_field = $lock['field'];
                 $idx = array_search($lock_field, $this->updates);
@@ -1857,7 +1857,7 @@ class CommonDBTM extends CommonGLPI
                     //do not update global lock value
                     if (!$lock['is_global']) {
                         $lockedfield->setLastValue(
-                            $this->getType(),
+                            static::class,
                             $this->fields['id'],
                             $lock_field,
                             $this->input['_raw' . $lock_field] ?? $this->input[$lock_field]
@@ -1901,7 +1901,7 @@ class CommonDBTM extends CommonGLPI
                 $DB->buildInsert(
                     $lockedfield->getTable(),
                     [
-                        'itemtype'        => $this->getType(),
+                        'itemtype'        => static::class,
                         'items_id'        => $this->fields['id'],
                         'date_creation'   => $_SESSION["glpi_currenttime"],
                         'field'           => new QueryParam(),
@@ -1944,7 +1944,7 @@ class CommonDBTM extends CommonGLPI
                 $OR = [];
                 if ($item->isField('itemtype')) {
                     $OR[] = [
-                        'itemtype'  => $this->getType(),
+                        'itemtype'  => static::class,
                         'items_id'  => $this->getID(),
                     ];
                 }
@@ -2209,7 +2209,7 @@ class CommonDBTM extends CommonGLPI
 
                         Log::history(
                             $this->fields["id"],
-                            $this->getType(),
+                            static::class,
                             $changes,
                             0,
                             $logaction
@@ -2370,7 +2370,7 @@ class CommonDBTM extends CommonGLPI
                 ) {
                     $logaction = Log::HISTORY_UNLOCK_ITEM;
                 }
-                Log::history($this->input["id"], $this->getType(), $changes, 0, $logaction);
+                Log::history($this->input["id"], static::class, $changes, 0, $logaction);
             }
 
             $this->post_restoreItem();
@@ -2535,7 +2535,7 @@ class CommonDBTM extends CommonGLPI
         if (Infocom::canApplyOn($this)) {
             $infocom = new Infocom();
 
-            if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+            if ($infocom->getFromDBforDevice(static::class, $this->fields['id'])) {
                 return $infocom->canPurge();
             }
         }
@@ -2662,7 +2662,7 @@ class CommonDBTM extends CommonGLPI
                                 $items_id_field = reset($items_id_matches);
                             }
                             $or_criteria[] = [
-                                $tablename . "." . $itemtype_field => $this->getType(),
+                                $tablename . "." . $itemtype_field => static::class,
                                 $tablename . "." . $items_id_field => $this->getID(),
                             ];
                         } else {
@@ -2713,7 +2713,7 @@ class CommonDBTM extends CommonGLPI
                                                 $tablename  => $otheritems_id_field,
                                                 $othertable => 'id',
                                                 [
-                                                    'AND' => [$tablename . '.' . $otheritemtype_field => $this->getType()],
+                                                    'AND' => [$tablename . '.' . $otheritemtype_field => static::class],
                                                 ],
                                             ];
                                         } else {
@@ -2750,7 +2750,7 @@ class CommonDBTM extends CommonGLPI
             && countElementsInTable(
                 ['glpi_documents_items', 'glpi_documents'],
                 ['glpi_documents_items.items_id' => $ID,
-                    'glpi_documents_items.itemtype' => $this->getType(),
+                    'glpi_documents_items.itemtype' => static::class,
                     'FKEY' => ['glpi_documents_items' => 'documents_id','glpi_documents' => 'id'],
                     'NOT'  => ['glpi_documents.entities_id' => $entities],
                 ]
@@ -2762,8 +2762,8 @@ class CommonDBTM extends CommonGLPI
 
         // check connections between assets
         if (
-            in_array($this->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
-            || in_array($this->getType(), $CFG_GLPI["directconnect_types"])
+            in_array(static::class, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)
+            || in_array(static::class, $CFG_GLPI["directconnect_types"])
         ) {
             return Asset_PeripheralAsset::canUnrecursSpecif($this, $entities);
         }
@@ -3612,7 +3612,7 @@ class CommonDBTM extends CommonGLPI
 
         if (Infocom::canApplyOn($this)) {
             $infocom = new Infocom();
-            if ($infocom->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+            if ($infocom->getFromDBforDevice(static::class, $this->fields['id'])) {
                 $toadd[] = [
                     'name'  => __s('Warranty expiration date'),
                     'value' => Infocom::getWarrantyExpir(
@@ -4093,7 +4093,7 @@ class CommonDBTM extends CommonGLPI
 
         if (Infocom::canApplyOn($this)) {
             $ic = new Infocom();
-            if ($ic->getFromDBforDevice($this->getType(), $this->fields['id'])) {
+            if ($ic->getFromDBforDevice(static::class, $this->fields['id'])) {
                 $excluded[] = 'Infocom:activate';
             }
         }
@@ -6646,7 +6646,7 @@ class CommonDBTM extends CommonGLPI
         if (in_array('date_expiration', $this->updates)) {
             $input = [
                 'type'     => $types,
-                'itemtype' => $this->getType(),
+                'itemtype' => static::class,
                 'items_id' => $this->fields['id'],
             ];
             $alert = new Alert();

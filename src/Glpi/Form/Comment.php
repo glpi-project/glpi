@@ -298,7 +298,7 @@ final class Comment extends CommonDBChild implements
             $form->getID(),
             $form->getType(),
             $changes,
-            $this->getType(),
+            static::class,
             static::$log_history_add
         );
 
@@ -337,7 +337,7 @@ final class Comment extends CommonDBChild implements
                 $form->getID(),
                 $form->getType(),
                 $changes,
-                $this->getType(),
+                static::class,
                 static::$log_history_update
             );
         }
@@ -367,7 +367,7 @@ final class Comment extends CommonDBChild implements
             $form->getID(),
             $form->getType(),
             $changes,
-            $this->getType(),
+            static::class,
             static::$log_history_delete
         );
 

@@ -582,7 +582,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
 
         // Alert does not extends CommonDBConnexity
         $alert = new Alert();
-        $alert->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $alert->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
 
@@ -1429,7 +1429,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
             $alert = new Alert();
             $alert->deleteByCriteria(
                 [
-                    'itemtype' => $this->getType(),
+                    'itemtype' => static::class,
                     'items_id' => $this->fields['id'],
                 ],
                 true

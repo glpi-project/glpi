@@ -276,8 +276,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [$this->getForeignKeyField() => $ID],
             ];
-            if (Session::haveTranslations($this->getType(), 'completename')) {
-                DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $ID);
+            if (Session::haveTranslations(static::class, 'completename')) {
+                DropdownTranslation::regenerateAllCompletenameTranslationsFor(static::class, $ID);
             }
 
             foreach ($DB->request($query) as $data) {
@@ -306,8 +306,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ['id' => $data['id']]
                 );
                 // Translations :
-                if (Session::haveTranslations($this->getType(), 'completename')) {
-                    DropdownTranslation::regenerateAllCompletenameTranslationsFor($this->getType(), $data['id']);
+                if (Session::haveTranslations(static::class, 'completename')) {
+                    DropdownTranslation::regenerateAllCompletenameTranslationsFor(static::class, $data['id']);
                 }
 
                 $this->regenerateTreeUnderID($data["id"], $updateName, $changeParent);
@@ -391,9 +391,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ];
             Log::history(
                 $parent,
-                $this->getType(),
+                static::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_ADD_SUBITEM
             );
         }
@@ -425,9 +425,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ];
                     Log::history(
                         $oldParentID,
-                        $this->getType(),
+                        static::class,
                         $changes,
-                        $this->getType(),
+                        static::class,
                         Log::HISTORY_DELETE_SUBITEM
                     );
                 }
@@ -444,9 +444,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
                     ];
                     Log::history(
                         $newParentID,
-                        $this->getType(),
+                        static::class,
                         $changes,
-                        $this->getType(),
+                        static::class,
                         Log::HISTORY_ADD_SUBITEM
                     );
                 }
@@ -460,16 +460,16 @@ abstract class CommonTreeDropdown extends CommonDropdown
                 ];
                 Log::history(
                     $ID,
-                    $this->getType(),
+                    static::class,
                     $changes,
-                    $this->getType(),
+                    static::class,
                     Log::HISTORY_UPDATE_SUBITEM
                 );
             }
 
             // Force DB cache refresh
-            getAncestorsOf(getTableForItemType($this->getType()), $ID);
-            getSonsOf(getTableForItemType($this->getType()), $ID);
+            getAncestorsOf(getTableForItemType(static::class), $ID);
+            getSonsOf(getTableForItemType(static::class), $ID);
         }
     }
 
@@ -486,9 +486,9 @@ abstract class CommonTreeDropdown extends CommonDropdown
             ];
             Log::history(
                 $parent,
-                $this->getType(),
+                static::class,
                 $changes,
-                $this->getType(),
+                static::class,
                 Log::HISTORY_DELETE_SUBITEM
             );
         }

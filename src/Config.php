@@ -1734,7 +1734,7 @@ class Config extends CommonDBTM
 
     public function getLogTypeID()
     {
-        return [$this->getType(), 1];
+        return [static::class, 1];
     }
 
     public function post_addItem()

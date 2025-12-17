@@ -87,7 +87,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
                 'empty_label' => sprintf(__("Select a %s..."), $slm->getTypeName()),
                 'value'       => $config->getSpecificSLMID() ?? 0,
                 'input_name'  => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
-                'type'        => $this->getType(),
+                'type'        => static::class,
             ],
         ]);
     }
@@ -114,7 +114,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
             return $input;
         }
 
-        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
+        $input[$slm::getFieldNames(static::class)[1]] = $slm_id;
 
         return $input;
     }

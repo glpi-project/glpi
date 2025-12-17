@@ -1127,12 +1127,12 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             }
 
             if (
-                countElementsInTable('glpi_infocoms', ['itemtype' => $this->getType(),
+                countElementsInTable('glpi_infocoms', ['itemtype' => static::class,
                     'items_id' => $link['id'],
                 ])
             ) {
                 $content = [['function'   => 'Infocom::showDisplayLink',
-                    'parameters' => [$this->getType(), $link['id']],
+                    'parameters' => [static::class, $link['id']],
                 ],
                 ];
             } else {
@@ -1148,7 +1148,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
                 'WHERE'  => [
                     'OR' => [
                         [
-                            'itemtype'  => $this->getType(),
+                            'itemtype'  => static::class,
                             'items_id'  => $link['id'],
                         ],
                         [
@@ -1180,7 +1180,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
             if ($options['canedit']) {
                 $cell_value = Html::getMassiveActionCheckBox(
-                    $this->getType(),
+                    static::class,
                     $link['id'],
                     ['massive_tags' => $group_checkbox_tag]
                 );

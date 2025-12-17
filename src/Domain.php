@@ -126,7 +126,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'itemlink_type'      => $this->getType(),
+            'itemlink_type'      => static::class,
         ];
 
         $tab[] = [

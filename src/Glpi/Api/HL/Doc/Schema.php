@@ -157,7 +157,7 @@ class Schema implements ArrayAccess
     public function toArray(): array
     {
         $r = [
-            'type' => $this->getType(),
+            'type' => static::class,
         ];
         if ($this->getFormat()) {
             $r['format'] = $this->getFormat();

@@ -181,7 +181,7 @@ trait DCBreadcrumb
         $ien = new Item_Enclosure();
         if (
             !($this instanceof CommonDBTM)
-            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+            || !$ien->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
         ) {
             return null;
         }
@@ -196,7 +196,7 @@ trait DCBreadcrumb
         $ien = new Item_Enclosure();
         if (
             !($this instanceof CommonDBTM)
-            || !$ien->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+            || !$ien->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
         ) {
             return null;
         }
@@ -210,7 +210,7 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         if (
             !($this instanceof CommonDBTM)
-            || !$ira->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
         ) {
             return null;
         }
@@ -225,7 +225,7 @@ trait DCBreadcrumb
         $ira = new Item_Rack();
         if (
             !($this instanceof CommonDBTM)
-            || !$ira->getFromDBByCrit(['itemtype' => $this->getType(), 'items_id' => $this->getID()])
+            || !$ira->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()])
         ) {
             return null;
         }

@@ -561,7 +561,7 @@ class Socket extends CommonDBChild
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = $this->getNameID(['forceid' => true]);
-            Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
+            Log::history($parent, 'Location', $changes, static::class, Log::HISTORY_ADD_SUBITEM);
         }
 
         $this->cleanIfStealNetworkPort();
@@ -603,7 +603,7 @@ class Socket extends CommonDBChild
             $changes[0] = '0';
             $changes[1] = $this->getNameID(['forceid' => true]);
             $changes[2] = '';
-            Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
+            Log::history($parent, 'Location', $changes, static::class, Log::HISTORY_DELETE_SUBITEM);
         }
     }
 

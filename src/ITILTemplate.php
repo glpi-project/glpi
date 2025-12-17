@@ -749,7 +749,7 @@ abstract class ITILTemplate extends CommonDropdown
                 $to_merge = ['tickettemplates_id_incident', 'tickettemplates_id_demand'];
                 break;
             default:
-                $to_merge = [strtolower($this->getType() . 'templates_id')];
+                $to_merge = [strtolower(static::class . 'templates_id')];
                 break;
         }
 

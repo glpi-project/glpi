@@ -109,7 +109,7 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                    $this->getType() => [$this->fields['id']],
+                    static::class => [$this->fields['id']],
                 ]
             );
         }
@@ -314,13 +314,13 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                    $this->getType() => [$this->fields['id']],
+                    static::class => [$this->fields['id']],
                 ]
             );
         }
         if (in_array("begin", $this->updates)) {
             PlanningRecall::managePlanningUpdates(
-                $this->getType(),
+                static::class,
                 $this->getID(),
                 $this->fields["begin"]
             );
@@ -935,7 +935,7 @@ trait PlanningEvent
      **/
     public function getAlreadyPlannedInformation(array $val)
     {
-        $itemtype = $this->getType();
+        $itemtype = static::class;
         if ($item = getItemForItemtype($itemtype)) {
             $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item::getItilObjectItemType() : $itemtype);
 

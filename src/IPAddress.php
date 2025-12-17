@@ -209,7 +209,7 @@ class IPAddress extends CommonDBChild
             || (isset($this->oldvalues['entities_id']))
         ) {
             $link = new IPAddress_IPNetwork();
-            $link->cleanDBonItemDelete($this->getType(), $this->getID());
+            $link->cleanDBonItemDelete(static::class, $this->getID());
             $link->addIPAddress($this);
         }
 

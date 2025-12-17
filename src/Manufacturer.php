@@ -86,7 +86,7 @@ class Manufacturer extends CommonDropdown
             (isset($this->input['_registeredID']))
             && (is_array($this->input['_registeredID']))
         ) {
-            $input = ['itemtype' => $this->getType(),
+            $input = ['itemtype' => static::class,
                 'items_id' => $this->getID(),
             ];
 

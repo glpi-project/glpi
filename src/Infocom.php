@@ -589,7 +589,7 @@ class Infocom extends CommonDBChild
               && ($this->oldvalues['warranty_duration'] < $this->fields['warranty_duration']))
         ) {
             $alert = new Alert();
-            $alert->clear($this->getType(), $this->fields['id'], Alert::END);
+            $alert->clear(static::class, $this->fields['id'], Alert::END);
         }
         // Check budgets link validity
         if (
@@ -623,7 +623,7 @@ class Infocom extends CommonDBChild
     {
 
         $class = new Alert();
-        $class->cleanDBonItemDelete($this->getType(), $this->fields['id']);
+        $class->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
 
