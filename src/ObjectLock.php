@@ -128,6 +128,9 @@ class ObjectLock extends CommonDBTM
                 'users_id' => $this->fields['users_id'],
                 'is_default' => 1,
             ]) && ($CFG_GLPI['notifications_mailing'] == 1);
+        } else {
+            // No locking user found, so the lock is invalid
+            $autolock = false;
         }
 
         if (!$autolock) {
