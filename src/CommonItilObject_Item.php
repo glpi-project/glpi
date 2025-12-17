@@ -699,6 +699,25 @@ TWIG, $twig_params);
         $params['criteria'][0]['value']      = 'all';
         $params['criteria'][0]['link']       = 'AND';
 
+        switch($item->getType()) {
+            case User::class:
+                $params['criteria'][] = [
+                    'link'       => 'AND',
+                    'field'      => 4,
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID(),
+                ];
+                break;
+            case Group::class:
+                $params['criteria'][] = [
+                    'link'       => 'AND',
+                    'field'      => 71,
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID(),
+                ];
+                break;
+        }
+
         $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
         if (method_exists(static::$itemtype_1, 'getCriteriaFromProfile')) {
             $profile_criteria = static::$itemtype_1::getCriteriaFromProfile();
