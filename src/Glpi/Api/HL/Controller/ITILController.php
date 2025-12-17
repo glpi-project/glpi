@@ -450,16 +450,20 @@ final class ITILController extends AbstractController
                 ];
                 $schemas[$itil_type]['properties']['sla_ttr'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_ttr', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
                 $schemas[$itil_type]['properties']['sla_tto'] = self::getDropdownTypeSchema(class: SLA::class, field: 'slas_id_tto', full_schema: 'SLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
                 $schemas[$itil_type]['properties']['sla_level_ttr'] = self::getDropdownTypeSchema(class: SlaLevel::class, field: 'slalevels_id_ttr', full_schema: 'SLALevel') + ['x-version-introduced' => '2.1.0'];
-                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel') + ['x-version-introduced' => '2.1.0'];
                 $schemas[$itil_type]['properties']['sla_waiting_duration'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'readOnly' => true,
                     'description' => 'Total SLA waiting duration in seconds',
                 ];
+                /*
+                 * @FIXME There can be multiple OLAs now, how should we handle this?
+                 * - Should we provide the first element found in API v2.1.x?
+                 *
+                $schemas[$itil_type]['properties']['ola_ttr'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_ttr', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['ola_tto'] = self::getDropdownTypeSchema(class: OLA::class, field: 'olas_id_tto', full_schema: 'OLA') + ['x-version-introduced' => '2.1.0'];
+                $schemas[$itil_type]['properties']['ola_level_ttr'] = self::getDropdownTypeSchema(class: OlaLevel::class, field: 'olalevels_id_ttr', full_schema: 'OLALevel') + ['x-version-introduced' => '2.1.0'];
                 $schemas[$itil_type]['properties']['ola_waiting_duration'] = [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -492,6 +496,7 @@ final class ITILController extends AbstractController
                     'readOnly' => true,
                     'x-field' => 'internal_time_to_own',
                 ];
+                */
             }
             if ($itil_type === Ticket::class || $itil_type === Change::class) {
                 $schemas[$itil_type]['properties']['global_validation'] = [
