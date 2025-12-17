@@ -1621,10 +1621,9 @@ class Session
                 if ($key !== false) {
                     unset($array[$message_type][$key]);
                 }
+                // Reorder keys
+                $array[$message_type] = array_values($array[$message_type]);
             }
-
-            // Reorder keys
-            $array[$message_type] = array_values($array[$message_type]);
         }
     }
 

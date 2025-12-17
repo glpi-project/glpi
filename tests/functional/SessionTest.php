@@ -1064,10 +1064,7 @@ class SessionTest extends DbTestCase
         $this->hasSessionMessages(INFO, ["Test 1", "Test 3"]);
     }
 
-    /**
-     * @see https://github.com/glpi-project/glpi/issues/22391
-     */
-    public function testDeleteMessageAfterRedirectWithNonExistentType(): void
+    public function testDeleteMessageAfterRedirectWithEmptyMessageType(): void
     {
         $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
 
