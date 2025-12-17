@@ -57,7 +57,7 @@ class LockedfieldTest extends DbTestCase
 
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($computer));
-        $this->assertEmpty($lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertEmpty($lockedfield->getLockedValues($computer::class, $cid));
 
         //update computer manually, to add a locked field
         $this->assertTrue(
@@ -65,7 +65,7 @@ class LockedfieldTest extends DbTestCase
         );
 
         $this->assertTrue($computer->getFromDB($cid));
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure new dynamic update does not override otherserial again
         $this->assertTrue(
@@ -78,7 +78,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals('AZERTY', $computer->fields['otherserial']);
-        $this->assertSame(['otherserial' => '789012'], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => '789012'], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure new dynamic update do not set new lock on regular update
         $this->assertTrue(
@@ -91,7 +91,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals('Computer name changed', $computer->fields['name']);
-        $this->assertSame(['otherserial' => '789012'], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => '789012'], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure regular update do work on locked field
         $this->assertTrue(
@@ -115,7 +115,7 @@ class LockedfieldTest extends DbTestCase
 
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($computer));
-        $this->assertEmpty($lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertEmpty($lockedfield->getLockedValues($computer::class, $cid));
 
         //add a global lock on otherserial field
         $this->assertGreaterThan(
@@ -126,7 +126,7 @@ class LockedfieldTest extends DbTestCase
         );
 
         $this->assertTrue($computer->getFromDB($cid));
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure new dynamic update does not override otherserial again
         $this->assertTrue(
@@ -139,7 +139,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals('789012', $computer->fields['otherserial']);
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure new dynamic update do not set new lock on regular update
         $this->assertTrue(
@@ -152,7 +152,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals('Computer name changed', $computer->fields['name']);
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure regular update do work on locked field
         $this->assertTrue(
@@ -192,7 +192,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertTrue($lockedfield->isHandled($computer));
         //lockedfield value must be null because it's a global lock
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure new dynamic update does not override otherserial again
         $this->assertTrue(
@@ -206,7 +206,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals('789012', $computer->fields['otherserial']);
         //lockedfield must be null because it's a global lock
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure new dynamic update do not set new lock on regular update
         $this->assertTrue(
@@ -220,7 +220,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals('Computer name changed', $computer->fields['name']);
         //lockedfield must be null because it's a global lock
-        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         //ensure regular update do work on locked field
         $this->assertTrue(
@@ -305,7 +305,7 @@ class LockedfieldTest extends DbTestCase
                 'locations_id' => $locations_id,
             ])
         );
-        $this->assertSame(['locations_id' => null], $lockedfield->getLockedValues($printer->getType(), $printers_id));
+        $this->assertSame(['locations_id' => null], $lockedfield->getLockedValues($printer::class, $printers_id));
 
         //Replay, with a location
         $xml = "<?xml version=\"1.0\"?>
@@ -349,7 +349,7 @@ class LockedfieldTest extends DbTestCase
         //ensure no new location has been added
         $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
 
-        $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer->getType(), $printers_id));
+        $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer::class, $printers_id));
     }
 
 
@@ -431,7 +431,7 @@ class LockedfieldTest extends DbTestCase
                 'locations_id' => $locations_id,
             ])
         );
-        $this->assertSame(['locations_id' => null], $lockedfield->getLockedValues($printer->getType(), $printers_id));
+        $this->assertSame(['locations_id' => null], $lockedfield->getLockedValues($printer::class, $printers_id));
 
         //Replay, with a location, to ensure location has not been updated, and locked value is correct.
         $data = $converter->convert($xml);
@@ -451,7 +451,7 @@ class LockedfieldTest extends DbTestCase
         //ensure no new location has been added
         $this->assertSame($existing_locations, countElementsInTable(Location::getTable()));
 
-        $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer->getType(), $printers_id));
+        $this->assertSame(['locations_id' => 'Greffe Charron'], $lockedfield->getLockedValues($printer::class, $printers_id));
     }
 
     public function testLockedRelations()
@@ -543,7 +543,7 @@ class LockedfieldTest extends DbTestCase
                 'operatingsystemarchitectures_id' => $newarchs_id,
             ])
         );
-        $this->assertSame(['operatingsystemarchitectures_id' => null], $lockedfield->getLockedValues($cos->getType(), $cos->fields['id']));
+        $this->assertSame(['operatingsystemarchitectures_id' => null], $lockedfield->getLockedValues($cos::class, $cos->fields['id']));
 
         //manually update AV manufacturer field
         $newmanufacturers_id = $manufacturer->add(['name' => 'Crosoft']);
@@ -555,7 +555,7 @@ class LockedfieldTest extends DbTestCase
                 'manufacturers_id' => $newmanufacturers_id,
             ])
         );
-        $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($iav->getType(), $iav->fields['id']));
+        $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($iav::class, $iav->fields['id']));
 
         //replay
         $data = $converter->convert($xml);
@@ -574,7 +574,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertSame(
             ['operatingsystemarchitectures_id' => "x86_64"],
-            $lockedfield->getLockedValues($cos->getType(), $cos->fields['id'])
+            $lockedfield->getLockedValues($cos::class, $cos->fields['id'])
         );
 
         //make sure manufacturer is still the correct one
@@ -583,7 +583,7 @@ class LockedfieldTest extends DbTestCase
 
         $this->assertSame(
             ['manufacturers_id' => "Microsoft Corporation"],
-            $lockedfield->getLockedValues($iav->getType(), $iav->fields['id'])
+            $lockedfield->getLockedValues($iav::class, $iav->fields['id'])
         );
     }
 
@@ -738,7 +738,7 @@ class LockedfieldTest extends DbTestCase
                 'manufacturers_id' => $newmanufacturers_id,
             ])
         );
-        $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($database->getType(), $database->fields['id']));
+        $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($database::class, $database->fields['id']));
 
         $json = json_decode(file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_2_partial_dbs.json'));
         $pgsql = $json->content->databases_services[1];
@@ -762,7 +762,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertSame($newmanufacturers_id, $database->fields['manufacturers_id']);
         $this->assertSame(
             ['manufacturers_id' => "PostgreSQL"],
-            $lockedfield->getLockedValues($database->getType(), $database->fields['id'])
+            $lockedfield->getLockedValues($database::class, $database->fields['id'])
         );
     }
 
@@ -782,7 +782,7 @@ class LockedfieldTest extends DbTestCase
 
         $lockedfield = new \Lockedfield();
         $this->assertTrue($lockedfield->isHandled($computer));
-        $this->assertEmpty($lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertEmpty($lockedfield->getLockedValues($computer::class, $cid));
 
         //update computer manually, to add a locked field
         $this->assertTrue(
@@ -796,7 +796,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(0, $global_lockedfield_id);
 
         $this->assertTrue($computer->getFromDB($cid));
-        $this->assertSame(['manufacturers_id' => null, 'otherserial' => null], $lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['manufacturers_id' => null, 'otherserial' => null], $lockedfield->getLockedValues($computer::class, $cid));
 
         // change to child entity
         $entities_id_child = getItemByTypeName(\Entity::class, '_test_child_1', true);
@@ -905,7 +905,7 @@ class LockedfieldTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $global_lockedfield_id);
 
-        $this->assertSame(['locations_id' => null], $global_lockedfield->getLockedValues($computer->getType(), $cid));
+        $this->assertSame(['locations_id' => null], $global_lockedfield->getLockedValues($computer::class, $cid));
 
         $this->assertEquals($computer->fields['locations_id'], $location_id);
 

@@ -385,7 +385,7 @@ final class FormMigrationTest extends DbTestCase
         ];
 
         $default_value = new QuestionTypeItemDefaultValueConfig(1);
-        $extra_data = new QuestionTypeItemDropdownExtraDataConfig(Location::getType());
+        $extra_data = new QuestionTypeItemDropdownExtraDataConfig(Location::class);
         yield 'Item Dropdown question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -429,7 +429,7 @@ final class FormMigrationTest extends DbTestCase
         ];
 
         $default_value = new QuestionTypeItemDefaultValueConfig(1);
-        $extra_data = new QuestionTypeItemExtraDataConfig(Computer::getType());
+        $extra_data = new QuestionTypeItemExtraDataConfig(Computer::class);
         yield 'GLPI Object question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -2516,7 +2516,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with empty values');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals(ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(ITILCategory::class, $question_type->getDefaultValueItemtype($question));
         $this->assertEquals([], $question_type->getCategoriesFilter($question));
         $this->assertEquals(0, $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
@@ -2653,7 +2653,7 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with advanced options');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals(ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(ITILCategory::class, $question_type->getDefaultValueItemtype($question));
         $this->assertEquals(['request'], $question_type->getCategoriesFilter($question));
         $this->assertEquals($itilcategory->getId(), $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));

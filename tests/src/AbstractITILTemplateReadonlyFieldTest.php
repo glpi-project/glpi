@@ -57,7 +57,7 @@ abstract class AbstractITILTemplateReadonlyFieldTest extends DbTestCase
     protected function createTemplateAndCategory(array $readonly = [], array $predefined = []): int
     {
         $itil_object = $this->getITILClass();
-        $itil_type = $itil_object->getType();
+        $itil_type = $itil_object::class;
 
         // Create Template
         $template_class = $itil_type . 'Template';

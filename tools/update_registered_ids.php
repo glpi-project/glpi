@@ -77,7 +77,7 @@ foreach (
                     $input = ['name' => $name];
                     $manufacturer->add($input);
                 }
-                $input = ['itemtype'    => $manufacturer->getType(),
+                $input = ['itemtype'    => $manufacturer::class,
                     'items_id'    => $manufacturer->getID(),
                     'device_type' => $type,
                     'name'        => $id,

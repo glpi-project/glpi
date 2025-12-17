@@ -163,7 +163,7 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [SLATTRField::getKey() => $config->jsonSerialize()]],
             ["config"],

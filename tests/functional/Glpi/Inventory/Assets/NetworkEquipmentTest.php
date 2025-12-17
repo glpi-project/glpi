@@ -401,7 +401,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
             $this->assertTrue(
                 $networkPort->getFromDBByCrit([
-                    'itemtype' => $networkEquipment->getType(),
+                    'itemtype' => $networkEquipment::class,
                     'items_id' => $networkEquipment->getID(),
                     'logical_number' => $logical_number,
                 ]),
@@ -3033,7 +3033,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             );
 
             $found_np = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ]);
             //53 because XML have 312 port with iftype 6 -> 52 port
@@ -3195,7 +3195,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             );
 
             $found_np = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ]);
             $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
@@ -3238,7 +3238,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             );
 
             $found_np = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ]);
             $this->assertCount($nb_port, $found_np, 'Must have ' . $nb_port . ' ports');
@@ -3287,7 +3287,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $this->assertSame($row['name'], $networkEquipment->fields['name']);
 
             $found_np = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ]);
             $this->assertCount($row['nb_ports'], $found_np, 'Must have ' . $row['nb_ports'] . ' ports');
@@ -3318,7 +3318,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $this->assertSame($row['name'], $networkEquipment->fields['name']);
 
             $found_np = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ]);
             $this->assertCount($row['nb_ports'], $found_np, 'Must have ' . $row['nb_ports'] . ' ports');
@@ -3769,7 +3769,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $this->assertCount(
             $stack_1_ports, //3x1/0/x + 1 management port
             $ports = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ])
         );
@@ -3790,7 +3790,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $this->assertCount(
             $stack_2_ports, //5x2/0/x + 1 management port
             $ports = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ])
         );
@@ -3811,7 +3811,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $this->assertCount(
             $stack_3_ports, //6x3/0/x + 1 management port
             $ports = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ])
         );
@@ -4128,7 +4128,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $this->assertCount(
             $stack_2_ports,
             $ports = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ])
         );
@@ -4148,7 +4148,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $this->assertCount(
             $stack_3_ports,
             $ports = $networkPort->find([
-                'itemtype' => $networkEquipment->getType(),
+                'itemtype' => $networkEquipment::class,
                 'items_id' => $networkEquipment->getID(),
             ])
         );

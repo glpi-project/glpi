@@ -133,17 +133,17 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                             ];
                             if ($task->can(-1, CREATE, $input2)) {
                                 if ($task->add($input2)) {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     }

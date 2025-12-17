@@ -122,7 +122,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $mgmt = new \Item_RemoteManagement();
         $this->assertFalse(
             $mgmt->getFromDbByCrit([
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer->fields['id'],
             ]),
             'A remote management is already linked to computer!'
@@ -146,7 +146,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $asset->handle();
         $this->assertTrue(
             $mgmt->getFromDbByCrit([
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer->fields['id'],
             ]),
             'Remote Management has not been linked to computer :('
@@ -163,7 +163,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $mgmt = new \Item_RemoteManagement();
         $this->assertTrue(
             $mgmt->getFromDbByCrit([
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer->fields['id'],
             ]),
             'No remote management linked to computer!'
@@ -189,7 +189,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $asset->handle();
         $this->assertTrue(
             $mgmt->getFromDbByCrit([
-                'itemtype' => $computer->getType(),
+                'itemtype' => $computer::class,
                 'items_id' => $computer->fields['id'],
             ])
         );

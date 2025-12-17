@@ -403,13 +403,13 @@ class APIRest extends API
      *                            (default true)
      * @param bool $all_assets if we can have allasset virtual type (default false)
      *
-     * @return false|class-string<CommonDBTM>
+     * @return false|class-string<CommonDBTM>|class-string<AllAssets>
      */
     private function getItemtype($index = 0, $recursive = true, $all_assets = false)
     {
 
         if (isset($this->url_elements[$index])) {
-            $all_assets = $all_assets && $this->url_elements[$index] == AllAssets::getType();
+            $all_assets = $all_assets && $this->url_elements[$index] == AllAssets::class;
             $valid_class = Toolbox::isCommonDBTM($this->url_elements[$index])
             || Toolbox::isAPIDeprecated($this->url_elements[$index]);
 
@@ -426,7 +426,7 @@ class APIRest extends API
 
                 // AllAssets
                 if ($all_assets) {
-                    return AllAssets::getType();
+                    return AllAssets::class;
                 }
 
                 // Load namespace for deprecated

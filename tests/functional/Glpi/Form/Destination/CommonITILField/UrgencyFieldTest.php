@@ -298,7 +298,7 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [UrgencyField::getKey() => $config->jsonSerialize()]],
             ["config"],

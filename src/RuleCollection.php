@@ -311,7 +311,7 @@ class RuleCollection extends CommonDBTM
 
             if (count($iterator)) {
                 $this->RuleList->list = [];
-                $active_tab = Session::getActiveTab($this->getType());
+                $active_tab = Session::getActiveTab(static::class);
 
                 foreach ($iterator as $rule) {
                     //For each rule, get a Rule object with all the criterias and actions

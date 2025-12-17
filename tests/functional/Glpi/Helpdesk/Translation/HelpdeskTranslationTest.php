@@ -137,7 +137,7 @@ class HelpdeskTranslationTest extends DbTestCase
                 $translations = HelpdeskTranslation::getTranslationsForItem($handler->getItem());
                 if (!empty($translations)) {
                     $item = $handler->getItem();
-                    $translation_items[$item->getType() . $item->getID()] = $item;
+                    $translation_items[$item::class . $item->getID()] = $item;
                 }
             }
         );
@@ -154,21 +154,31 @@ class HelpdeskTranslationTest extends DbTestCase
             $remaining_translations = HelpdeskTranslation::getTranslationsForItem($item);
             $this->assertEmpty(
                 $remaining_translations,
-                "Translations were not cascade deleted for {$item->getType()} {$item->getID()}. Found " . count($remaining_translations) . " remaining translations."
+                sprintf(
+                    'Translations were not cascade deleted for %1$s %2$s. Found %3$s remaining translations.',
+                    $item::class,
+                    $item->getID(),
+                    count($remaining_translations)
+                )
             );
 
             // Also verify by direct database query
             $translation_count = countElementsInTable(
                 HelpdeskTranslation::getTable(),
                 [
-                    HelpdeskTranslation::$itemtype => $item->getType(),
+                    HelpdeskTranslation::$itemtype => $item::class,
                     HelpdeskTranslation::$items_id => $item->getID(),
                 ]
             );
             $this->assertEquals(
                 0,
                 $translation_count,
-                "Database still contains {$translation_count} translations for deleted {$item->getType()} {$item->getID()}"
+                sprintf(
+                    'Database still contains %1$s translations for deleted %2$s %3$s',
+                    $translation_count,
+                    $item::class,
+                    $item->getID()
+                )
             );
         }
     }

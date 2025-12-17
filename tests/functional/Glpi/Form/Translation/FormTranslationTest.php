@@ -233,7 +233,7 @@ class FormTranslationTest extends DbTestCase
 
         // Verify that all translations have been cascade deleted
         foreach ($translation_items as $item) {
-            $item_type = $item->getType();
+            $item_type = $item::class;
             $item_id = $item->getID();
 
             // Verify that all translations for this item have been cascade deleted

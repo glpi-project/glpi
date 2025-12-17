@@ -87,9 +87,9 @@ class PendingReasonCron extends CommonDBTM
         }
 
         $targets = [
-            Ticket::getType(),
-            Change::getType(),
-            Problem::getType(),
+            Ticket::class,
+            Change::class,
+            Problem::class,
         ];
 
         $now = $_SESSION['glpi_currenttime'];
@@ -160,7 +160,7 @@ class PendingReasonCron extends CommonDBTM
                 // Add reminder (new ITILReminder)
                 $reminder = new ITILReminder();
                 $reminder->add([
-                    'itemtype' => $item::getType(),
+                    'itemtype' => $item::class,
                     'items_id' => $item->getID(),
                     'pendingreasons_id' => $pending_reason->getID(),
                     'name' => $pending_reason->fields['name'],
@@ -181,7 +181,7 @@ class PendingReasonCron extends CommonDBTM
                 // Add solution
                 $solution = new ITILSolution();
                 $solution->add([
-                    'itemtype'             => $item::getType(),
+                    'itemtype'             => $item::class,
                     'items_id'             => $item->getID(),
                     'solutiontypes_id'     => $solution_template->fields['solutiontypes_id'],
                     'content'              => $solution_template->getRenderedContent($item),

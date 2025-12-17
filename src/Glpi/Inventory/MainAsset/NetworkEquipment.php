@@ -492,7 +492,7 @@ class NetworkEquipment extends MainAsset
                     $ipaddress = new IPAddress($ip);
                     $criteria = [
                         'mainitems_id' => $item->fields['id'],
-                        'mainitemtype' => $item::getType(),
+                        'mainitemtype' => $item::class,
                         'is_dynamic'   => 1,
                         'name'         => $ipaddress->getTextual(),
                     ];

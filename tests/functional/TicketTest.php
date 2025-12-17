@@ -579,14 +579,14 @@ class TicketTest extends DbTestCase
 
         $followup = new ITILFollowup();
         $followup->add([
-            'itemtype'  => $ticket::getType(),
+            'itemtype'  => $ticket::class,
             'items_id' => $ticket_id,
             'content'    => 'followup content',
             'date'       => '2015-01-01 00:00:00',
         ]);
 
         $followup->add([
-            'itemtype'  => $ticket::getType(),
+            'itemtype'  => $ticket::class,
             'items_id' => $ticket_id,
             'content'    => 'followup content',
             'date'       => '2015-02-01 00:00:00',
@@ -624,7 +624,7 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id' => $ticket_id,
                 'content'    => 'solution content',
                 'date_creation' => '2017-01-01 00:00:00',
@@ -635,7 +635,7 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $followup->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'  => $ticket_id,
                 'add_reopen'   => '1',
                 'content'      => 'This is required',
@@ -646,7 +646,7 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $solution->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id' => $ticket_id,
                 'content'    => 'solution content',
                 'date_creation' => $last_solution_date,
@@ -661,7 +661,7 @@ class TicketTest extends DbTestCase
                 'value' => $ticket_id,
             ],
         ];
-        $data   = Search::getDatas($ticket->getType(), ["criteria" => $criteria], [72,73,74]);
+        $data   = Search::getDatas($ticket::class, ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
         $ticket_with_so = $data['data']['rows'][0]['raw'];
         $this->assertEquals($ticket_id, $ticket_with_so['id']);
@@ -2324,7 +2324,7 @@ class TicketTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             (int) $fup->add([
-                'itemtype'  => $ticket::getType(),
+                'itemtype'  => $ticket::class,
                 'items_id'   => $ticket->getID(),
                 'users_id'     => $uid,
                 'content'      => 'A simple followup',
@@ -8348,7 +8348,7 @@ HTML,
         $item_ticket = new \Item_Ticket();
         $item_ticket->add([
             'tickets_id' => $ticket->getID(),
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
         $this->assertFalse($item_ticket->isNewItem());
@@ -8705,7 +8705,7 @@ HTML,
         $this->assertGreaterThan(0, $tickets_id);
 
         $this->createItem('ITILFollowup', [
-            'itemtype'               => $ticket::getType(),
+            'itemtype'               => $ticket::class,
             'items_id'               => $tickets_id,
             'content'                => 'do not compute status followup content',
             'date'                   => '2015-01-01 00:00:00',
@@ -8718,7 +8718,7 @@ HTML,
         $this->assertEquals(CommonITILObject::WAITING, $ticket->fields['status']);
 
         $this->createItem('ITILFollowup', [
-            'itemtype'               => $ticket::getType(),
+            'itemtype'               => $ticket::class,
             'items_id'               => $tickets_id,
             'content'                => 'simple followup content',
             'date'                   => '2015-01-01 00:00:00',

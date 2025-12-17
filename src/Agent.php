@@ -582,7 +582,7 @@ class Agent extends CommonDBTM
                 'SELECT' => ['ips.name', 'ips.version'],
                 'FROM'   => NetworkPort::getTable() . ' AS netports',
                 'WHERE'  => [
-                    'netports.itemtype'  => $item->getType(),
+                    'netports.itemtype'  => $item::class,
                     'netports.items_id'  => $item->getID(),
                     'NOT'       => [
                         'OR'  => [
@@ -602,7 +602,7 @@ class Agent extends CommonDBTM
                             'netnames'  => 'items_id',
                             'netports'  => 'id', [
                                 'AND' => [
-                                    'netnames.itemtype'  => NetworkPort::getType(),
+                                    'netnames.itemtype'  => NetworkPort::class,
                                 ],
                             ],
                         ],
@@ -612,7 +612,7 @@ class Agent extends CommonDBTM
                             'ips'       => 'items_id',
                             'netnames'  => 'id', [
                                 'AND' => [
-                                    'ips.itemtype' => NetworkName::getType(),
+                                    'ips.itemtype' => NetworkName::class,
                                 ],
                             ],
                         ],
@@ -635,7 +635,7 @@ class Agent extends CommonDBTM
                 'SELECT' => ['d.name'],
                 'FROM'   => Domain_Item::getTable(),
                 'WHERE'  => [
-                    'itemtype'  => $item->getType(),
+                    'itemtype'  => $item::class,
                     'items_id'  => $item->getID(),
                 ],
                 'INNER JOIN'   => [

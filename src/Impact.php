@@ -145,7 +145,7 @@ class Impact extends CommonGLPI
             $total = 0;
         }
 
-        return self::createTabEntry(__("Impact analysis"), $total, $item::getType());
+        return self::createTabEntry(__("Impact analysis"), $total, $item::class);
     }
 
     public static function displayTabContentForItem(
@@ -1705,7 +1705,7 @@ TWIG, $twig_params);
         global $DB;
 
         // Skip if not a valid impact type
-        if (!self::isEnabled($item::getType())) {
+        if (!self::isEnabled($item::class)) {
             return;
         }
 
@@ -1825,7 +1825,7 @@ TWIG, $twig_params);
         global $CFG_GLPI;
 
         // Form head
-        $action = htmlescape(Toolbox::getItemTypeFormURL(Config::getType()));
+        $action = htmlescape(Toolbox::getItemTypeFormURL(Config::class));
         echo "<form name='form' action='$action' method='post'>";
 
         // Table head

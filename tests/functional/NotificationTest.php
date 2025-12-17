@@ -214,7 +214,7 @@ HTML,
             \Document_Item::class,
             [
                 'documents_id' => $ticket_doc->getID(),
-                'itemtype'     => $ticket->getType(),
+                'itemtype'     => $ticket::class,
                 'items_id'     => $ticket->getID(),
             ]
         );
@@ -223,7 +223,7 @@ HTML,
         $filename = $this->createUploadedImage($prefix = uniqid('', true));
         $followup = new \ITILFollowup();
         $followup_id = $followup->add([
-            'itemtype'     => $ticket->getType(),
+            'itemtype'     => $ticket::class,
             'items_id'     => $ticket->getID(),
             'content'     => <<<HTML
 <p>Test followup with image</p>
@@ -248,7 +248,7 @@ HTML,
             \Document_Item::class,
             [
                 'documents_id' => $followup_doc->getID(),
-                'itemtype'     => $followup->getType(),
+                'itemtype'     => $followup::class,
                 'items_id'     => $followup->getID(),
             ]
         );
@@ -281,7 +281,7 @@ HTML,
             \Document_Item::class,
             [
                 'documents_id' => $task_doc->getID(),
-                'itemtype'     => $task->getType(),
+                'itemtype'     => $task::class,
                 'items_id'     => $task->getID(),
             ]
         );

@@ -201,7 +201,7 @@ class DropdownTranslation extends CommonDBChild
         return countElementsInTable(
             getTableForItemType(self::class),
             [
-                'itemtype' => $item->getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->getID(),
                 'NOT'      => ['field' => 'completename' ],
             ]
@@ -385,7 +385,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'FROM'   => getTableForItemType(self::class),
             'WHERE'  => [
-                'itemtype'  => $item->getType(),
+                'itemtype'  => $item::class,
                 'items_id'  => $item->getID(),
                 'field'     => ['<>', 'completename'],
             ],

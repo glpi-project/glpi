@@ -161,7 +161,7 @@ class HasDocumentsCapacityTest extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $item_1::getType(),
+                'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -169,7 +169,7 @@ class HasDocumentsCapacityTest extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $item_2::getType(),
+                'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
             ]
         );
@@ -246,7 +246,7 @@ class HasDocumentsCapacityTest extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $item::getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->getID(),
             ]
         );
@@ -278,7 +278,7 @@ class HasDocumentsCapacityTest extends DbTestCase
             Document_Item::class,
             [
                 'documents_id' => $document->getID(),
-                'itemtype'     => $asset::getType(),
+                'itemtype'     => $asset::class,
                 'items_id'     => $asset->getID(),
             ]
         );
@@ -288,7 +288,7 @@ class HasDocumentsCapacityTest extends DbTestCase
             1,
             getAllDataFromTable(Document_Item::getTable(), [
                 'documents_id' => $document->getID(),
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
             ])
         );

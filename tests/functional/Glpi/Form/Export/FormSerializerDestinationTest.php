@@ -1023,7 +1023,7 @@ final class FormSerializerDestinationTest extends DbTestCase
         $destinations = $form->getDestinations();
         $destination = end($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [$key => $config->jsonSerialize()]],
             ["config"],

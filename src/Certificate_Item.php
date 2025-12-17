@@ -69,7 +69,7 @@ class Certificate_Item extends CommonDBRelation
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
-        $temp->deleteByCriteria(['itemtype' => $item->getType(),
+        $temp->deleteByCriteria(['itemtype' => $item::class,
             'items_id' => $item->getField('id'),
         ]);
     }
@@ -82,16 +82,16 @@ class Certificate_Item extends CommonDBRelation
 
         if (!$withtemplate) {
             if (
-                $item->getType() == 'Certificate'
+                $item instanceof Certificate
                 && count(Certificate::getTypes(false))
             ) {
                 $nb = 0;
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = self::countForMainItem($item);
                 }
-                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
+                return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
             } elseif (
-                in_array($item->getType(), Certificate::getTypes(true))
+                in_array($item::class, Certificate::getTypes(true))
                 && Certificate::canView()
             ) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
@@ -115,7 +115,7 @@ class Certificate_Item extends CommonDBRelation
 
         if ($item instanceof Certificate) {
             self::showForCertificate($item);
-        } elseif (in_array($item->getType(), Certificate::getTypes(true))) {
+        } elseif (in_array($item::class, Certificate::getTypes(true))) {
             self::showForItem($item);
         }
         return true;

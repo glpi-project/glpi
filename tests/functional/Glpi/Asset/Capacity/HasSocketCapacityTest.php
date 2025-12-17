@@ -277,7 +277,7 @@ class HasSocketCapacityTest extends DbTestCase
         $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
         $this->array(getAllDataFromTable(Socket::getTable(), [
             'id' => $networkport->getID(),
-            'itemtype' => $asset::getType(),
+            'itemtype' => $asset::class,
             'items_id' => $clone_id,
         ]))->hasSize(1);
     }

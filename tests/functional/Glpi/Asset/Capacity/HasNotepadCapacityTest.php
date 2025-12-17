@@ -162,7 +162,7 @@ class HasNotepadCapacityTest extends DbTestCase
         $notepad_1 = $this->createItem(
             Notepad::class,
             [
-                'itemtype' => $item_1::getType(),
+                'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
                 'content'  => 'A note related to asset 1',
             ]
@@ -170,7 +170,7 @@ class HasNotepadCapacityTest extends DbTestCase
         $notepad_2 = $this->createItem(
             Notepad::class,
             [
-                'itemtype' => $item_2::getType(),
+                'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
                 'content'  => 'A note related to asset 2',
             ]
@@ -242,7 +242,7 @@ class HasNotepadCapacityTest extends DbTestCase
         $notepad_1 = $this->createItem(
             Notepad::class,
             [
-                'itemtype' => $item::getType(),
+                'itemtype' => $item::class,
                 'items_id' => $item->getID(),
                 'content'  => 'A note related to the asset',
             ]
@@ -302,7 +302,7 @@ class HasNotepadCapacityTest extends DbTestCase
         ]);
 
         $this->createItem(Notepad::class, [
-            'itemtype' => $asset::getType(),
+            'itemtype' => $asset::class,
             'items_id' => $asset->getID(),
             'content'  => 'A note related to the asset',
         ]);
@@ -311,7 +311,7 @@ class HasNotepadCapacityTest extends DbTestCase
         $this->assertCount(
             1,
             getAllDataFromTable(Notepad::getTable(), [
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
                 'content'  => 'A note related to the asset',
             ])

@@ -126,7 +126,7 @@ final class ContentFieldTest extends DbTestCase
             $this->assertCount(1, $destinations);
             $destination = current($destinations);
             $this->updateItem(
-                $destination::getType(),
+                $destination::class,
                 $destination->getId(),
                 [
                     'config' => [

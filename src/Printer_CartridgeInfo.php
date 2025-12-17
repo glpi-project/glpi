@@ -165,7 +165,7 @@ HTML;
         $tab = [];
 
         $tab[] = [
-            'id' => strtolower(self::getType()),
+            'id' => strtolower(self::class),
             'name' => self::getTypeName(1),
         ];
 

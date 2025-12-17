@@ -81,7 +81,7 @@ class SavedSearch_Alert extends CommonDBChild
                     ['savedsearches_id' => $item->getID()]
                 );
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -181,7 +181,7 @@ class SavedSearch_Alert extends CommonDBChild
         $notifications = $DB->request([
             'FROM'   => Notification::getTable(),
             'WHERE'  => [
-                'itemtype'  => self::getType(),
+                'itemtype'  => self::class,
                 'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID()),
             ],
         ]);

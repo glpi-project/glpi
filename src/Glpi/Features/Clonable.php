@@ -118,7 +118,7 @@ trait Clonable
                 continue;
             }
 
-            $override_input[$classname::getItemField($this->getType())] = $this->getID();
+            $override_input[$classname::getItemField(static::class)] = $this->getID();
 
             // Force entity / recursivity based on cloned parent, with fallback on session values
             if ($classname::$disableAutoEntityForwarding !== true) {
@@ -129,7 +129,7 @@ trait Clonable
             $cloned = []; // Link between old and new ID
             $relation_newitems = [];
 
-            $relation_items = $classname::getItemsAssociatedTo($this->getType(), $source->getID());
+            $relation_items = $classname::getItemsAssociatedTo(static::class, $source->getID());
             /** @var CommonDBTM $relation_item */
             foreach ($relation_items as $relation_item) {
                 if ($source->isTemplate() && isset($relation_item->fields['name'])) {
@@ -137,7 +137,7 @@ trait Clonable
                     $override_input['name'] = $relation_item->fields['name'];
                 }
                 $origin_id = $relation_item->getID();
-                $itemtype = $relation_item->getType();
+                $itemtype = $relation_item::class;
                 if (method_exists($relation_item, 'clone')) {
                     $method = new ReflectionMethod($relation_item, 'clone');
 
@@ -171,7 +171,7 @@ trait Clonable
             }
             // Update relations between cloned items
             foreach ($relation_newitems as $relation_newitem) {
-                $itemtype = $relation_newitem->getType();
+                $itemtype = $relation_newitem::class;
                 $foreignkey = getForeignKeyFieldForItemType($itemtype);
                 if ($relation_newitem->isField($foreignkey) && isset($cloned[$itemtype][$relation_newitem->fields[$foreignkey]])) {
                     $relation_newitem->update([

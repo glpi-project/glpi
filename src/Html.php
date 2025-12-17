@@ -2033,7 +2033,7 @@ TWIG,
             $p['extraparams']['add_actions'] = $p['add_actions'];
         }
         if ($p['item'] instanceof CommonDBTM) {
-            $p['extraparams']['item_itemtype'] = $p['item']->getType();
+            $p['extraparams']['item_itemtype'] = $p['item']::class;
             $p['extraparams']['item_items_id'] = $p['item']->getID();
         }
 

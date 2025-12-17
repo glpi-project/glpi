@@ -109,7 +109,7 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                    $this->getType() => [$this->fields['id']],
+                    static::class => [$this->fields['id']],
                 ]
             );
         }
@@ -314,13 +314,13 @@ trait PlanningEvent
                 $this->fields["begin"],
                 $this->fields["end"],
                 [
-                    $this->getType() => [$this->fields['id']],
+                    static::class => [$this->fields['id']],
                 ]
             );
         }
         if (in_array("begin", $this->updates)) {
             PlanningRecall::managePlanningUpdates(
-                $this->getType(),
+                static::class,
                 $this->getID(),
                 $this->fields["begin"]
             );
@@ -441,7 +441,7 @@ trait PlanningEvent
 
         $events    = [];
         $event_obj = new static();
-        $itemtype  = $event_obj->getType();
+        $itemtype  = $event_obj::class;
         $item_fk   = getForeignKeyFieldForItemType($itemtype);
         $table     = static::getTable();
         $has_bg    = $DB->fieldExists($table, 'background');
@@ -716,7 +716,7 @@ trait PlanningEvent
         $rand     = mt_rand();
         $users_id = "";  // show users_id reminder
         $img      = "rdv_private.png"; // default icon for reminder
-        $item_fk  = getForeignKeyFieldForItemType(static::getType());
+        $item_fk  = getForeignKeyFieldForItemType(static::class);
 
         if ($val["users_id"] != Session::getLoginUserID()) {
             $users_id = "<br>" . htmlescape(sprintf(__('%1$s: %2$s'), __('By'), getUserName($val["users_id"])));
@@ -935,7 +935,7 @@ trait PlanningEvent
      **/
     public function getAlreadyPlannedInformation(array $val)
     {
-        $itemtype = $this->getType();
+        $itemtype = static::class;
         if ($item = getItemForItemtype($itemtype)) {
             $objectitemtype = (method_exists($item, 'getItilObjectItemType') ? $item::getItilObjectItemType() : $itemtype);
 

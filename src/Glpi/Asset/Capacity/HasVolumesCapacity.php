@@ -60,7 +60,7 @@ class HasVolumesCapacity extends AbstractCapacity
 
     public function getSearchOptions(string $classname): array
     {
-        return Item_Disk::rawSearchOptionsToAdd($classname::getType());
+        return Item_Disk::rawSearchOptionsToAdd($classname);
     }
 
     public function getCloneRelations(): array

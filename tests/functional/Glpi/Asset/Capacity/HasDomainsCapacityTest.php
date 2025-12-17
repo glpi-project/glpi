@@ -172,7 +172,7 @@ class HasDomainsCapacityTest extends DbTestCase
             Domain_Item::class,
             [
                 'domains_id'         => $domain->getID(),
-                'itemtype'           => $item_1->getType(),
+                'itemtype'           => $item_1::class,
                 'items_id'           => $item_1->getID(),
                 'domainrelations_id' => DomainRelation::BELONGS,
             ]
@@ -182,7 +182,7 @@ class HasDomainsCapacityTest extends DbTestCase
             Domain_Item::class,
             [
                 'domains_id'         => $domain->getID(),
-                'itemtype'           => $item_2->getType(),
+                'itemtype'           => $item_2::class,
                 'items_id'           => $item_2->getID(),
                 'domainrelations_id' => DomainRelation::BELONGS,
             ]

@@ -249,7 +249,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
                         'FROM'   => Asset_PeripheralAsset::getTable(),
                         'WHERE'  => [
                             'itemtype_peripheral' => $type,
-                            'itemtype_asset'      => self::getType(),
+                            'itemtype_asset'      => self::class,
                             'items_id_asset'      => $this->fields["id"],
                             'is_deleted'          => 0,
                         ],
@@ -291,7 +291,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
                             'SELECT' => ['id'],
                             'FROM'   => $item::getTable(),
                             'WHERE'  => [
-                                'itemtype'     => self::getType(),
+                                'itemtype'     => self::class,
                                 'items_id'     => $this->fields["id"],
                                 'is_deleted'   => 0,
                             ],
@@ -381,7 +381,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
-                'itemtype_asset' => self::getType(),
+                'itemtype_asset' => self::class,
                 'items_id_asset' => $this->getID(),
             ],
         ]);

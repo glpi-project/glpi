@@ -974,7 +974,7 @@ final class FormCloneHelperTest extends DbTestCase
             $this->getQuestionId($form, "Test question"),
         );
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             [
                 'config' => [
@@ -1096,7 +1096,7 @@ final class FormCloneHelperTest extends DbTestCase
             $this->getQuestionId($form, "Test question"),
         );
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             [
                 'config' => [

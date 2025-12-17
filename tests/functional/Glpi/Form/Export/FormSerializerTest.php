@@ -1038,7 +1038,7 @@ final class FormSerializerTest extends DbTestCase
         $destinations = $form->getDestinations();
         $destination = end($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             [
                 'config' => [
@@ -1418,7 +1418,7 @@ final class FormSerializerTest extends DbTestCase
 
         // Transfer the form to the test root entity
         $transfer = new \Transfer();
-        $transfer->moveItems([Form::getType() => [$forms_id]], $this->getTestRootEntity(only_id: true), []);
+        $transfer->moveItems([Form::class => [$forms_id]], $this->getTestRootEntity(only_id: true), []);
 
         // Export and import the form
         $form = Form::getById($forms_id);

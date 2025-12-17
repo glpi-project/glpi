@@ -607,7 +607,7 @@ HTML,
             'content'     => '',
         ]);
         $followup = $this->createItem('ITILFollowup', [
-            'itemtype' => Ticket::getType(),
+            'itemtype' => Ticket::class,
             'items_id' => $parent_1->getID(),
             'content'  => 'Test followup',
         ]);

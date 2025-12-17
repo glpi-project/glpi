@@ -827,7 +827,7 @@ class Provider
 
         $c_table     = $item::getTable();
         $fk_table    = $fk_item::getTable();
-        $fk_itemtype = $fk_item::getType();
+        $fk_itemtype = $fk_item::class;
 
         // try to autodetect searchoption id
         $searchoptions = $item->rawSearchOptions();

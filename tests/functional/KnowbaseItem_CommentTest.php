@@ -56,7 +56,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
 
     public function testGetCommentsForKbItem()
     {
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01');
 
         //first, set data
         $this->addComments($kb1);
@@ -136,7 +136,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
     public function testGetTabNameForItemNotLogged()
     {
         //we are not logged, we should not see comment tab
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01');
         $kbcom = new \KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
@@ -147,7 +147,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
     {
         $this->login();
 
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01');
         $this->addComments($kb1);
         $kbcom = new \KnowbaseItem_Comment();
 
@@ -176,7 +176,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
     public function testDisplayComments()
     {
         //TODO This should be part of an E2E test
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01');
         $this->addComments($kb1);
 
         ob_start();

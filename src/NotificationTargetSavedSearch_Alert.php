@@ -49,7 +49,7 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
             'SELECT'          => 'event',
             'DISTINCT'        => true,
             'FROM'            => Notification::getTable(),
-            'WHERE'           => ['itemtype' => SavedSearch_Alert::getType()],
+            'WHERE'           => ['itemtype' => SavedSearch_Alert::class],
         ]);
 
         if ($iterator->numRows()) {

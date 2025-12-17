@@ -54,7 +54,7 @@ trait FilterableTrait
         }
 
         // The ID is not always search option 2
-        $opts = SearchOption::getOptionsForItemtype($item::getType());
+        $opts = SearchOption::getOptionsForItemtype($item::class);
         $item_table = $item::getTable();
         $id_field = $item::getIndexName();
         $id_opt_num = null;
@@ -66,7 +66,14 @@ trait FilterableTrait
         }
 
         if ($id_opt_num === null) {
-            trigger_error("Could not find {$id_field} option for itemtype {$item::getType()}. Cannot use FilterableTrait on this itemtype.", E_USER_WARNING);
+            trigger_error(
+                sprintf(
+                    'Could not find %1$s option for itemtype %2$s. Cannot use FilterableTrait on this itemtype.',
+                    $id_field,
+                    $item::class
+                ),
+                E_USER_WARNING
+            );
             return false;
         }
 
@@ -88,7 +95,7 @@ trait FilterableTrait
         ];
 
         // Execute search
-        $data = SearchEngine::getData($item::getType(), [
+        $data = SearchEngine::getData($item::class, [
             'criteria' => $criteria,
         ]);
 
@@ -115,7 +122,7 @@ trait FilterableTrait
             // Create a new filter
             $filter = new CriteriaFilter();
             $id = $filter->add([
-                'itemtype'        => self::getType(),
+                'itemtype'        => self::class,
                 'items_id'        => $this->getID(),
                 'search_itemtype' => $search_itemtype,
                 'search_criteria' => $search_criteria,

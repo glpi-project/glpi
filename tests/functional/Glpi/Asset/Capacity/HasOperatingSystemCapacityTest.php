@@ -191,14 +191,14 @@ class HasOperatingSystemCapacityTest extends DbTestCase
 
         // Create an Item_OperatingSystem linked to our asset
         $this->createItem(Item_OperatingSystem::class, [
-            'itemtype'       => $subject::getType(),
+            'itemtype'       => $subject::class,
             'items_id'       => $subject->getID(),
             'license_number' => '012345',
         ]);
 
         // Ensure item is properly linked to our subject
         $items = (new Item_OperatingSystem())->find([
-            'itemtype' => $subject::getType(),
+            'itemtype' => $subject::class,
             'items_id' => $subject->getID(),
         ]);
         $this->assertCount(1, $items);
@@ -209,7 +209,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
             $this->getTargetCapacity()
         );
         $items = (new Item_OperatingSystem())->find([
-            'itemtype' => $subject::getType(),
+            'itemtype' => $subject::class,
             'items_id' => $subject->getID(),
         ]);
         $this->assertCount(0, $items);
@@ -240,20 +240,20 @@ class HasOperatingSystemCapacityTest extends DbTestCase
 
         // Create and update the linked OS in order to generate history entries
         $item = $this->createItem(Item_OperatingSystem::class, [
-            'itemtype'       => $subject::getType(),
+            'itemtype'       => $subject::class,
             'items_id'       => $subject->getID(),
             'license_number' => '012345',
         ]);
-        $this->updateItem($item::getType(), $item->getId(), [
+        $this->updateItem($item::class, $item->getId(), [
             'license_number' => '0123456',
         ]);
-        $this->updateItem($item::getType(), $item->getId(), [
+        $this->updateItem($item::class, $item->getId(), [
             'license_number' => '01234567',
         ]);
 
         // Also update some internal fields to make sure they are not deleted
         // when the capacity is disabled
-        $this->updateItem($subject::getType(), $subject->getId(), [
+        $this->updateItem($subject::class, $subject->getId(), [
             'name' => 'Test asset (edited)',
         ]);
 
@@ -303,12 +303,12 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Set display preferences
         $this->createItems(DisplayPreference::class, [
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
                 'num'      => '45', // Linked OS name
                 'users_id' => 0,
             ],
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
                 'num'      => '46', // Linked OS version
                 'users_id' => 0,
             ],
@@ -318,7 +318,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
             ]
         );
         $this->assertEquals(9, $count_display_preferences);
@@ -334,7 +334,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $count_display_preferences = countElementsInTable(
             DisplayPreference::getTable(),
             [
-                'itemtype' => $subject::getType(),
+                'itemtype' => $subject::class,
             ]
         );
         $this->assertEquals(7, $count_display_preferences);
@@ -355,7 +355,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         ]);
 
         $this->createItem(Item_OperatingSystem::class, [
-            'itemtype'       => $asset::getType(),
+            'itemtype'       => $asset::class,
             'items_id'       => $asset->getID(),
             'license_number' => '012345',
         ]);
@@ -364,7 +364,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $this->assertCount(
             1,
             getAllDataFromTable(Item_OperatingSystem::getTable(), [
-                'itemtype' => $asset::getType(),
+                'itemtype' => $asset::class,
                 'items_id' => $clone_id,
                 'license_number' => '012345',
             ])

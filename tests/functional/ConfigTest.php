@@ -623,7 +623,7 @@ class ConfigTest extends DbTestCase
                 ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
             )
         );
-        $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
+        $this->assertTrue($crontask->getFromDBbyName(\User::class, 'passwordexpiration'));
         $this->assertSame(0, (int) $crontask->fields['state']);
 
         // check that activation of password expiration reset `password_last_update` to current date
@@ -656,7 +656,7 @@ class ConfigTest extends DbTestCase
                 ['NOT' => ['authtype' => \Auth::DB_GLPI], 'password_last_update' => null]
             )
         );
-        $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
+        $this->assertTrue($crontask->getFromDBbyName(\User::class, 'passwordexpiration'));
         $this->assertSame(1, (int) $crontask->fields['state']);
 
         // check that changing password expiration delay does not reset `password_last_update` to current date

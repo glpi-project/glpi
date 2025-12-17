@@ -175,19 +175,19 @@ final class SearchEngine
             }
 
             foreach (self::getMetaParentItemtypesForTypesConfig($key) as $config_itemtype) {
-                if ($ref_itemtype === $config_itemtype::getType()) {
+                if ($ref_itemtype === $config_itemtype) {
                     // List is related to source itemtype, all types of list are so linked
                     $linked = array_merge($linked, $values);
                 } elseif (in_array($ref_itemtype, $values)) {
                     // Source itemtype is inside list, type corresponding to list is so linked
-                    $linked[] = $config_itemtype::getType();
+                    $linked[] = $config_itemtype;
                 }
             }
         }
 
         // Add entity meta if needed
         if ($item->isField('entities_id') && !($item instanceof Entity)) {
-            $linked[] = Entity::getType();
+            $linked[] = Entity::class;
         }
 
         return array_unique($linked);
@@ -225,7 +225,7 @@ final class SearchEngine
 
         $itemclass = $matches[1];
         if (is_a($itemclass, CommonDBTM::class, true)) {
-            return [$itemclass::getType()];
+            return [$itemclass];
         }
 
         return [];
@@ -396,7 +396,7 @@ final class SearchEngine
         // Instanciate an object to access method
         $data['item'] = null;
 
-        if ($itemtype != AllAssets::getType()) {
+        if ($itemtype != AllAssets::class) {
             $data['item'] = getItemForItemtype($itemtype);
         }
 

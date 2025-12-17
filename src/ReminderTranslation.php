@@ -78,7 +78,7 @@ class ReminderTranslation extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getNumberOfTranslationsForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
 
         return '';

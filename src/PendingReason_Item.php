@@ -62,7 +62,7 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-            'itemtype' => $item::getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 
@@ -91,7 +91,7 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-            'itemtype' => $item::getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 
@@ -104,7 +104,7 @@ class PendingReason_Item extends CommonDBRelation
             $em = new self();
         }
 
-        $fields['itemtype'] = $item::getType();
+        $fields['itemtype'] = $item::class;
         $fields['items_id'] = $item->getID();
         if (!isset($fields['last_bump_date'])) {
             $fields['last_bump_date'] = $_SESSION['glpi_currenttime'];
@@ -130,7 +130,7 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-            'itemtype' => $item::getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 
@@ -159,7 +159,7 @@ class PendingReason_Item extends CommonDBRelation
     {
         $em = new self();
         $find = $em->find([
-            'itemtype' => $item::getType(),
+            'itemtype' => $item::class,
             'items_id' => $item->getID(),
         ]);
 
@@ -275,18 +275,18 @@ class PendingReason_Item extends CommonDBRelation
             'WHERE' => [
                 'OR' => [
                     [
-                        'itemtype' => ITILFollowup::getType(),
+                        'itemtype' => ITILFollowup::class,
                         'items_id' => new QuerySubQuery([
                             'SELECT' => 'id',
                             'FROM'   => ITILFollowup::getTable(),
                             'WHERE'  => [
-                                'itemtype' => $item::getType(),
+                                'itemtype' => $item::class,
                                 'items_id' => $item->getID(),
                             ],
                         ]),
                     ],
                     [
-                        'itemtype' => $task_class::getType(),
+                        'itemtype' => $task_class,
                         'items_id' => new QuerySubQuery([
                             'SELECT' => 'id',
                             'FROM'   => $task_class::getTable(),
@@ -329,7 +329,7 @@ class PendingReason_Item extends CommonDBRelation
 
         return
             $pending_item->fields['items_id'] == $timeline_item->fields['id']
-            && $pending_item->fields['itemtype'] == $timeline_item::getType()
+            && $pending_item->fields['itemtype'] == $timeline_item::class
         ;
     }
 
@@ -445,7 +445,7 @@ class PendingReason_Item extends CommonDBRelation
         // This mean there was no active pending reason before this timeline item was added
         // Nothing to be done here as we don't have any older active pending reason to update
         if (
-            $last_pending->fields['itemtype'] == $new_timeline_item::getType()
+            $last_pending->fields['itemtype'] == $new_timeline_item::class
             && $last_pending->fields['items_id'] == $new_timeline_item->getID()
         ) {
             self::updateForItem($new_timeline_item->input['_job'], $ticket_pending_updates);
@@ -484,10 +484,10 @@ class PendingReason_Item extends CommonDBRelation
         $pending_updates_timeline_item = $ticket_pending_updates;
 
         $pending_updates_timeline_item['items_id'] = $new_timeline_item->getID();
-        $pending_updates_timeline_item['itemtype'] = $new_timeline_item::getType();
+        $pending_updates_timeline_item['itemtype'] = $new_timeline_item::class;
 
         // Update last pending item and parent
-        if ($ticket_pending_updates['pendingreasons_id'] > 0 || $new_timeline_item::getType() !== $last_pending::getType()) {
+        if ($ticket_pending_updates['pendingreasons_id'] > 0 || $new_timeline_item::class !== $last_pending::class) {
             self::createForItem($new_timeline_item, $pending_updates_timeline_item);
         }
         self::updateForItem($new_timeline_item->input['_job'], $ticket_pending_updates);

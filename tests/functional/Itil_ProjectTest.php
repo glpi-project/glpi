@@ -138,7 +138,7 @@ class Itil_ProjectTest extends DbTestCase
 
         // Deletion of ITIL items should delete links with project
         foreach ($items as $item) {
-            $itemtype = $item->getType();
+            $itemtype = $item::class;
             $items_id = $item->fields['id'];
             $this->assertTrue((new $itemtype())->delete(['id' => $items_id], true));
 

@@ -100,7 +100,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content'   => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
             ]),
             'expected_status' => 400,
             'expected_body'   => [
@@ -117,7 +117,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             'user'  => 'normal',  // Switch to another user that can't update the form
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (first update)',
             ]),
@@ -133,7 +133,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $invalid_id,
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (second update)',
             ]),
@@ -149,7 +149,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'update',
                 'name'     => 'Form 1 name (third update)',
             ]),
@@ -173,7 +173,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             'user'  => 'normal',  // Switch to another user that can't delete the form
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'delete',
             ]),
             'expected_status' => 403,
@@ -188,7 +188,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $invalid_id,
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'delete',
             ]),
             'expected_status' => 404,
@@ -203,7 +203,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'delete',
             ]),
             'expected_status' => 200,
@@ -225,7 +225,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             'user'  => 'normal',  // Switch to another user that can't restore the form
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'restore',
             ]),
             'expected_status' => 403,
@@ -240,7 +240,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $invalid_id,
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'restore',
             ]),
             'expected_status' => 404,
@@ -255,7 +255,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'restore',
             ]),
             'expected_status' => 200,
@@ -277,7 +277,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             'user'  => 'normal',  // Switch to another user that can't purge the form
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'purge',
             ]),
             'expected_status' => 403,
@@ -292,7 +292,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $invalid_id,
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'purge',
             ]),
             'expected_status' => 404,
@@ -307,7 +307,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         yield [
             'content' => json_encode([
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType(),
+                'itemtype' => $form_1::class,
                 '_action'  => 'purge',
             ]),
             'expected_status' => 200,

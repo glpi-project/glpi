@@ -231,7 +231,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
                         'SELECT' => 'id',
                         'FROM'   => 'glpi_networkports',
                         'WHERE'  => [
-                            'itemtype'  => $this->getType(),
+                            'itemtype'  => static::class,
                             'items_id'  => $ID,
                         ],
                     ]),

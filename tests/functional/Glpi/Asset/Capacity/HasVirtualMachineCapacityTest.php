@@ -166,7 +166,7 @@ class HasVirtualMachineCapacityTest extends DbTestCase
             ItemVirtualMachine::class,
             [
                 'name'         => 'vm item 1',
-                'itemtype'     => $item_1->getType(),
+                'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -174,7 +174,7 @@ class HasVirtualMachineCapacityTest extends DbTestCase
             ItemVirtualMachine::class,
             [
                 'name'         => 'vm item 2',
-                'itemtype'     => $item_2->getType(),
+                'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
             ]
         );

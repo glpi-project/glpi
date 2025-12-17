@@ -45,7 +45,7 @@ trait CommonDeprecatedTrait
     abstract public function getType(): string;
 
     /**
-     * Get the class short name for the deprecated itemtpe
+     * Get the class short name for the deprecated itemtype
      *
      * @return string
      */
@@ -65,7 +65,7 @@ trait CommonDeprecatedTrait
         foreach ($hateoas as $key => $value) {
             if (isset($value["href"])) {
                 $hateoas[$key]["href"] = str_replace(
-                    $this->getType(),
+                    static::class,
                     $this->getDeprecatedClass(),
                     $value["href"]
                 );
@@ -86,7 +86,7 @@ trait CommonDeprecatedTrait
         $soptions = array_map(function ($soption) {
             if (isset($soption['uid'])) {
                 $new_uid = str_replace(
-                    $this->getType(),
+                    static::class,
                     $this->getDeprecatedClass(),
                     $soption['uid']
                 );

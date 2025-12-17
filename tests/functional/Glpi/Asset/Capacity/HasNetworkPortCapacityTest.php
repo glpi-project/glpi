@@ -164,7 +164,7 @@ class HasNetworkPortCapacityTest extends DbTestCase
             [
                 'name' => 'NetworkPort',
                 'entities_id' => $root_entity_id,
-                'itemtype' => $item_1->getType(),
+                'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
             ]
         );
@@ -174,7 +174,7 @@ class HasNetworkPortCapacityTest extends DbTestCase
             [
                 'name' => 'NetworkPort',
                 'entities_id' => $root_entity_id,
-                'itemtype' => $item_2->getType(),
+                'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
             ]
         );
@@ -252,7 +252,7 @@ class HasNetworkPortCapacityTest extends DbTestCase
         $this->integer($clone_id = $asset->clone())->isGreaterThan(0);
         $this->array(getAllDataFromTable(NetworkPort::getTable(), [
             'id' => $networkport->getID(),
-            'itemtype' => $asset::getType(),
+            'itemtype' => $asset::class,
             'items_id' => $clone_id,
         ]))->hasSize(1);
     }

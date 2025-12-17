@@ -432,7 +432,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                             'Target',
                             'Targets',
                             Session::getPluralNumber()
-                        ), $nb, $item::getType());
+                        ), $nb, $item::class);
                     }
                     return $showtab;
             }

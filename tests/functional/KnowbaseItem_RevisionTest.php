@@ -199,7 +199,7 @@ class KnowbaseItem_RevisionTest extends DbTestCase
 
     private function getNewKbItem()
     {
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01');
         $toadd = $kb1->fields;
         unset($toadd['id']);
         unset($toadd['date_creation']);

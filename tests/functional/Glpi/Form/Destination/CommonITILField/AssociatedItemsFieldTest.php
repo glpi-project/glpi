@@ -64,11 +64,11 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         $specific_values = new AssociatedItemsFieldConfig(
             strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
             specific_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID(),
                     $computers[1]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID(),
                 ],
             ]
@@ -81,14 +81,14 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $specific_values,
             answers: [],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -101,27 +101,27 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $specific_values,
             answers: [
                 "Your Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
                 ],
                 "Your Monitors" => [
-                    'itemtype' => Monitor::getType(),
+                    'itemtype' => Monitor::class,
                     'items_id' => $monitors[1]->getID(),
                 ],
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -152,7 +152,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $specific_answers,
             answers: [],
             expected_associated_items: [
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -171,20 +171,20 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     'Monitor_' . $monitors[1]->getID(),
                 ],
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -220,7 +220,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $specific_answers,
             answers: [],
             expected_associated_items: [
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -239,20 +239,20 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     'Monitor_' . $monitors[1]->getID(),
                 ],
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -278,7 +278,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $last_valid_answer,
             answers: [],
             expected_associated_items: [
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -297,15 +297,15 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     'Monitor_' . $monitors[1]->getID(),
                 ],
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -325,11 +325,11 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 ],
             ],
             expected_associated_items: [
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ],
@@ -355,7 +355,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $all_valid_answers,
             answers: [],
             expected_associated_items: [
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -367,15 +367,15 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: $all_valid_answers,
             answers: [
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -394,20 +394,20 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     'Monitor_' . $monitors[1]->getID(),
                 ],
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                     $computers[1]->getID() => $computers[1]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -426,19 +426,19 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     'Monitor_' . $monitors[1]->getID(),
                 ],
                 "Computer" => [
-                    'itemtype' => Computer::getType(),
+                    'itemtype' => Computer::class,
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -464,7 +464,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS,
                 ],
                 specific_associated_items: [
-                    Computer::getType() => [
+                    Computer::class => [
                         $computers[0]->getID(),
                     ],
                 ],
@@ -482,14 +482,14 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 ],
             ],
             expected_associated_items: [
-                Computer::getType() => [
+                Computer::class => [
                     $computers[0]->getID() => $computers[0]->getID(),
                 ],
-                Monitor::getType() => [
+                Monitor::class => [
                     $monitors[0]->getID() => $monitors[0]->getID(),
                     $monitors[1]->getID() => $monitors[1]->getID(),
                 ],
-                Form::getType() => [
+                Form::class => [
                     $form->getID() => $form->getID(),
                 ],
             ]
@@ -548,7 +548,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 'id'                                  => 1,
                 'plugin_formcreator_targettickets_id' => 12,
                 'link'                                => 0,
-                'itemtype'                            => Computer::getType(),
+                'itemtype'                            => Computer::class,
                 'items_id'                            => $computer_id,
             ]
         );
@@ -562,7 +562,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 'id'                                  => 2,
                 'plugin_formcreator_targettickets_id' => 12,
                 'link'                                => 0,
-                'itemtype'                            => Monitor::getType(),
+                'itemtype'                            => Monitor::class,
                 'items_id'                            => $monitor_id,
             ]
         );
@@ -575,8 +575,8 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             field_config: new AssociatedItemsFieldConfig(
                 strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
                 specific_associated_items: [
-                    Computer::getType() => $computer_id,
-                    Monitor::getType()  => $monitor_id,
+                    Computer::class => $computer_id,
+                    Monitor::class  => $monitor_id,
                 ]
             )
         );
@@ -605,7 +605,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 
         $destination = current($form->getDestinations());
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             [
                 'config' => [
@@ -613,7 +613,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                         'strategies' => [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
                         'specific_associated_items' => [
                             'itemtype' => [
-                                Computer::getType(),
+                                Computer::class,
                                 '0',
                             ],
                             'items_id' => [
@@ -643,7 +643,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
 
         $this->assertEquals(
             [
-                Computer::getType() => [
+                Computer::class => [
                     $computer->getID(),
                 ],
             ],
@@ -662,7 +662,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [AssociatedItemsField::getKey() => $config->jsonSerialize()]],
             ["config"],
@@ -724,7 +724,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             'is_multiple_devices' => true,
         ]));
         $builder->addQuestion("Computer", QuestionTypeItem::class, $computer->getID(), json_encode([
-            'itemtype'             => Computer::getType(),
+            'itemtype'             => Computer::class,
             'root_items_id'        => 0,
             'subtree_depth'        => 0,
             'selectable_tree_root' => false,

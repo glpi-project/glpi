@@ -131,33 +131,33 @@ abstract class AbstractRightsDropdown
         $possible_rights = [];
 
         // Add profiles if enabled
-        if (self::isTypeEnabled(Profile::getType())) {
-            $possible_rights[Profile::getType()] = self::getProfiles($text);
+        if (self::isTypeEnabled(Profile::class)) {
+            $possible_rights[Profile::class] = self::getProfiles($text);
         }
 
         // Add entities if enabled
-        if (self::isTypeEnabled(Entity::getType())) {
-            $possible_rights[Entity::getType()] = self::getEntities($text);
+        if (self::isTypeEnabled(Entity::class)) {
+            $possible_rights[Entity::class] = self::getEntities($text);
         }
 
         // Add users if enabled
-        if (self::isTypeEnabled(User::getType(), $options)) {
-            $possible_rights[User::getType()] = self::getUsers($text, $options);
+        if (self::isTypeEnabled(User::class, $options)) {
+            $possible_rights[User::class] = self::getUsers($text, $options);
         }
 
         // Add groups if enabled
-        if (self::isTypeEnabled(Group::getType(), $options)) {
-            $possible_rights[Group::getType()] = self::getGroups($text, $options);
+        if (self::isTypeEnabled(Group::class, $options)) {
+            $possible_rights[Group::class] = self::getGroups($text, $options);
         }
 
         // Add contacts if enabled
-        if (self::isTypeEnabled(Contact::getType())) {
-            $possible_rights[Contact::getType()] = self::getContacts($text);
+        if (self::isTypeEnabled(Contact::class)) {
+            $possible_rights[Contact::class] = self::getContacts($text);
         }
 
         // Add suppliers if enabled
-        if (self::isTypeEnabled(Supplier::getType())) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
+        if (self::isTypeEnabled(Supplier::class)) {
+            $possible_rights[Supplier::class] = self::getSuppliers($text, $options);
         }
 
         $results = [];

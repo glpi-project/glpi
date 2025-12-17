@@ -138,7 +138,7 @@ abstract class AbstractTranslationController extends AbstractController
         foreach ($handlers_with_sections as $handlers) {
             foreach ($handlers as $handler) {
                 $input = [
-                    'itemtype' => $handler->getItem()->getType(),
+                    'itemtype' => $handler->getItem()::class,
                     'items_id' => $handler->getItem()->getID(),
                     'key'      => $handler->getKey(),
                     'language' => $language,
@@ -169,7 +169,7 @@ abstract class AbstractTranslationController extends AbstractController
         $first_handler = current(current($translation_handlers));
 
         $input = [
-            $translation_instance::$itemtype => $first_handler->getItem()->getType(),
+            $translation_instance::$itemtype => $first_handler->getItem()::class,
             $translation_instance::$items_id => $first_handler->getItem()->getID(),
             'language'                       => $language,
             'key'                           => $first_handler->getKey(),

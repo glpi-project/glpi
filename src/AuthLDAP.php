@@ -372,7 +372,7 @@ class AuthLDAP extends CommonDBTM
                     !Session::haveRight("user", User::UPDATEAUTHENT)
                     || !$group->canGlobal(UPDATE)
                 ) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -394,9 +394,9 @@ class AuthLDAP extends CommonDBTM
                             'type'         => $input['ldap_import_type'][$id],
                         ];
                         if (self::ldapImportGroup($group_dn, $options)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($group_dn)));
                         }
                     }
@@ -408,7 +408,7 @@ class AuthLDAP extends CommonDBTM
             case 'import':
             case 'sync':
                 if (!Session::haveRight("user", User::IMPORTEXTAUTHUSERS)) {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_NORIGHT);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_NORIGHT);
                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     return;
                 }
@@ -423,9 +423,9 @@ class AuthLDAP extends CommonDBTM
                             true
                         )
                     ) {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, htmlescape($id)));
                     }
                 }

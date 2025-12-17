@@ -209,7 +209,7 @@ class IPAddress extends CommonDBChild
             || (isset($this->oldvalues['entities_id']))
         ) {
             $link = new IPAddress_IPNetwork();
-            $link->cleanDBonItemDelete($this->getType(), $this->getID());
+            $link->cleanDBonItemDelete(static::class, $this->getID());
             $link->addIPAddress($this);
         }
 
@@ -333,7 +333,7 @@ class IPAddress extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'IPNetwork':
                 self::showForItem($item, $withtemplate);
                 break;
@@ -350,7 +350,7 @@ class IPAddress extends CommonDBChild
     {
         global $DB;
 
-        switch ($item->getType()) {
+        switch ($item::class) {
             case 'IPNetwork':
                 $result = $DB->request([
                     'COUNT'  => 'cpt',
@@ -375,7 +375,7 @@ class IPAddress extends CommonDBChild
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
         return '';
     }
@@ -1037,7 +1037,7 @@ class IPAddress extends CommonDBChild
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType(),
+                            "itemtype" => $item::class,
                         ];
                         unset($addressesWithItems);
                         return $result;
@@ -1405,6 +1405,9 @@ class IPAddress extends CommonDBChild
                     return;
                 }
                 $item = $father->getItem();
+                if (!$item) {
+                    return;
+                }
             }
 
             $iterator = $DB->request([
@@ -1412,7 +1415,7 @@ class IPAddress extends CommonDBChild
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'items_id'     => $item->getID(),
-                    'itemtype'     => $item->getType(),
+                    'itemtype'     => $item::class,
                     'is_deleted'   => 0,
                 ],
             ]);

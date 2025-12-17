@@ -124,7 +124,7 @@ trait InventoryNetworkPort
             return;
         }
 
-        $this->itemtype = $itemtype ?? $this->item->getType();
+        $this->itemtype = $itemtype ?? $this->item::class;
         $this->items_id = $items_id ?? $this->item->fields['id'];
 
         if (!$this->isMainPartial()) {
@@ -696,7 +696,7 @@ trait InventoryNetworkPort
                 $networkport->deleteByCriteria([
                     "itemtype"           => $this->itemtype,
                     "items_id"           => $this->items_id,
-                    "instantiation_type" => NetworkPortAggregate::getType(),
+                    "instantiation_type" => NetworkPortAggregate::class,
                     "name"               => "Management",
                 ], true);
             }

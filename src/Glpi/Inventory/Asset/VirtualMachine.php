@@ -83,11 +83,11 @@ class VirtualMachine extends InventoryAsset
             'macaddr'     => 'mac',
         ];
 
-        if (!in_array($this->item->getType(), $CFG_GLPI['itemvirtualmachines_types'])) {
+        if (!in_array($this->item::class, $CFG_GLPI['itemvirtualmachines_types'])) {
             throw new RuntimeException(
                 sprintf(
                     'Virtual machines are not handled for %s.',
-                    $this->item->getType()
+                    $this->item::class
                 )
             );
         }
@@ -211,7 +211,7 @@ class VirtualMachine extends InventoryAsset
             'SELECT' => ['id', 'name', 'uuid', 'virtualmachinesystems_id'],
             'FROM'   => ItemVirtualMachine::getTable(),
             'WHERE'  => [
-                'itemtype' => $this->item->getType(),
+                'itemtype' => $this->item::class,
                 'items_id' => $this->item->fields['id'],
                 'is_dynamic'   => 1,
             ],
@@ -281,7 +281,7 @@ class VirtualMachine extends InventoryAsset
         if (count($value) != 0) {
             foreach ($value as $val) {
                 $input = $this->handleInput($val, $itemVirtualmachine);
-                $input['itemtype'] = $this->item->getType();
+                $input['itemtype'] = $this->item::class;
                 $input['items_id'] = $this->item->fields['id'];
                 $input['is_dynamic']  = 1;
                 $itemVirtualmachine->add($input);

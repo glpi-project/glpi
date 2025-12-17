@@ -116,7 +116,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new Item_OperatingSystem();
         $input = [
-            'itemtype'                          => $computer->getType(),
+            'itemtype'                          => $computer::class,
             'items_id'                          => $computer->getID(),
             'operatingsystems_id'               => $objects['']->getID(),
             'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
@@ -152,7 +152,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new Item_OperatingSystem();
         $input = [
-            'itemtype'                          => $computer->getType(),
+            'itemtype'                          => $computer::class,
             'items_id'                          => $computer->getID(),
             'operatingsystems_id'               => $objects['']->getID(),
             'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
@@ -192,7 +192,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new Item_OperatingSystem();
         $input = [
-            'itemtype'                          => $computer->getType(),
+            'itemtype'                          => $computer::class,
             'items_id'                          => $computer->getID(),
             'operatingsystems_id'               => $objects['']->getID(),
             'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
@@ -217,7 +217,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $objects = $this->createDdObjects();
         $ios = new Item_OperatingSystem();
         $input = [
-            'itemtype'                          => $computer->getType(),
+            'itemtype'                          => $computer::class,
             'items_id'                          => $computer->getID(),
             'operatingsystems_id'               => $objects['']->getID(),
             'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),

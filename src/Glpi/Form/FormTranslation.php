@@ -82,7 +82,7 @@ final class FormTranslation extends ItemTranslation
                 $count = countDistinctElementsInTable(
                     static::getTable(),
                     'language',
-                    ['items_id' => $item->getID(), 'itemtype' => $item->getType()]
+                    ['items_id' => $item->getID(), 'itemtype' => $item::class]
                 );
             }
 

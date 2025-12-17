@@ -561,7 +561,7 @@ class Socket extends CommonDBChild
             $changes[0] = '0';
             $changes[1] = '';
             $changes[2] = $this->getNameID(['forceid' => true]);
-            Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_ADD_SUBITEM);
+            Log::history($parent, 'Location', $changes, static::class, Log::HISTORY_ADD_SUBITEM);
         }
 
         $this->cleanIfStealNetworkPort();
@@ -582,7 +582,7 @@ class Socket extends CommonDBChild
         if ($this->fields['networkports_id'] > 0) {
             $iter = $DB->request([
                 'SELECT' => 'id',
-                'FROM'  => getTableForItemType(self::getType()),
+                'FROM'  => getTableForItemType(self::class),
                 'WHERE' => [
                     'networkports_id' => $this->fields['networkports_id'],
                     ['NOT' => ['id' => $this->fields['id']]],
@@ -603,7 +603,7 @@ class Socket extends CommonDBChild
             $changes[0] = '0';
             $changes[1] = $this->getNameID(['forceid' => true]);
             $changes[2] = '';
-            Log::history($parent, 'Location', $changes, $this->getType(), Log::HISTORY_DELETE_SUBITEM);
+            Log::history($parent, 'Location', $changes, static::class, Log::HISTORY_DELETE_SUBITEM);
         }
     }
 
@@ -620,19 +620,19 @@ class Socket extends CommonDBChild
                             ['locations_id' => $item->getID()]
                         );
                     }
-                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                 default:
                     /** @var CommonDBTM $item */
-                    if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
+                    if (in_array($item::class, $CFG_GLPI['socket_types'])) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
                             $nb =  countElementsInTable(
                                 $this->getTable(),
-                                ['itemtype' => $item->getType(),
+                                ['itemtype' => $item::class,
                                     'items_id' => $item->getID(),
                                 ]
                             );
                         }
-                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                        return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
             }
         }
@@ -690,7 +690,7 @@ class Socket extends CommonDBChild
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'itemtype'   => $item->getType(),
+                'itemtype'   => $item::class,
                 'items_id'   => $item->getID(),
             ],
         ]);
@@ -735,7 +735,7 @@ class Socket extends CommonDBChild
             $item_id = '';
             if ($has_cable) {
                 if (
-                    $cable->fields['itemtype_endpoint_a'] === $item->getType()
+                    $cable->fields['itemtype_endpoint_a'] === $item::class
                     && $cable->fields['items_id_endpoint_a'] === $item->getID()
                 ) {
                     $itemtype = $cable->fields['itemtype_endpoint_b'];
@@ -747,7 +747,7 @@ class Socket extends CommonDBChild
             }
             $endpoint = getItemForItemtype($itemtype);
             if ($endpoint !== false && $item_id !== 0 && $endpoint->getFromDB($item_id)) {
-                $itemtype_label = $endpoint::getType();
+                $itemtype_label = $endpoint::class;
                 $item_label = sprintf(
                     '<a href="%s">%s</a>',
                     htmlescape($endpoint->getLinkURL()),

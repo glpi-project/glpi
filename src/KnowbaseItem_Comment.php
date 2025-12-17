@@ -77,7 +77,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                 $where
             );
         }
-        return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
+        return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

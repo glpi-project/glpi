@@ -187,7 +187,7 @@ class HasInfocomCapacityTest extends DbTestCase
         $infocom_1 = $this->createItem(
             Infocom::class,
             [
-                'itemtype' => $item_1->getType(),
+                'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
             ]
         );
@@ -203,7 +203,7 @@ class HasInfocomCapacityTest extends DbTestCase
         $infocom_2 = $this->createItem(
             Infocom::class,
             [
-                'itemtype' => $item_2::getType(),
+                'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
             ]
         );

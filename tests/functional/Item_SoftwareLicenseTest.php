@@ -197,7 +197,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $source_computer = getItemByTypeName('Computer', '_test_pc21');
         $target_computer = getItemByTypeName('Computer', '_test_pc22');
 
-        $item_softwareLicenses = Item_SoftwareLicense::getItemsAssociatedTo($source_computer->getType(), $source_computer->getID());
+        $item_softwareLicenses = Item_SoftwareLicense::getItemsAssociatedTo($source_computer::class, $source_computer->getID());
         $override_input['items_id'] = $target_computer->getID();
         foreach ($item_softwareLicenses as $item_softwareLicense) {
             $item_softwareLicense->clone($override_input);

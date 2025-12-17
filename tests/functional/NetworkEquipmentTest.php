@@ -59,7 +59,7 @@ class NetworkEquipmentTest extends DbTestCase
         //create ports attached
         $netport = new \NetworkPort();
         $input = [
-            'itemtype'           => $device->getType(),
+            'itemtype'           => $device::class,
             'items_id'           => $device->getID(),
             'entities_id'        => 0,
             'logical_number'     => 1256,
@@ -73,7 +73,7 @@ class NetworkEquipmentTest extends DbTestCase
         $this->assertSame('Test port', $netport->fields['name']);
 
         $input = [
-            'itemtype'           => $device->getType(),
+            'itemtype'           => $device::class,
             'items_id'           => $device->getID(),
             'entities_id'        => 0,
             'logical_number'     => 1257,

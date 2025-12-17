@@ -87,7 +87,7 @@ trait Inventoriable
         }
 
         $inventory_dir_path = GLPI_INVENTORY_DIR . '/';
-        $itemtype = $this->agent->fields['itemtype'] ?? $this->getType();
+        $itemtype = $this->agent->fields['itemtype'] ?? static::class;
         $items_id = $this->agent->fields['items_id'] ?? $this->fields['id'];
 
         $conf = new Conf();
@@ -261,7 +261,7 @@ JAVASCRIPT;
         global $DB;
 
         $agent = $this->getMostRecentAgent([
-            'itemtype' => $this->getType(),
+            'itemtype' => static::class,
             'items_id' => $this->getID(),
         ]);
 

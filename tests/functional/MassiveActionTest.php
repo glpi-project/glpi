@@ -304,7 +304,7 @@ class MassiveActionTest extends DbTestCase
         $old_session = $_SESSION['glpiactiveprofile'][$item::$rightname] ?? 0;
         $note_search = [
             'items_id' => $item->fields['id'],
-            'itemtype' => $item->getType(),
+            'itemtype' => $item::class,
             'content'  => $new_note_content,
         ];
 
@@ -758,7 +758,7 @@ class MassiveActionTest extends DbTestCase
         $rows = $domain_item->find([
             'domains_id'            => $manual_domain->fields['id'],
             'items_id'              => $computer->fields['id'],
-            'itemtype'              => $computer->getType(),
+            'itemtype'              => $computer::class,
             'domainrelations_id'    => \DomainRelation::BELONGS,
             'is_deleted'            => false,
         ]);
@@ -781,7 +781,7 @@ class MassiveActionTest extends DbTestCase
                 'domains_id'            => $dynamic_domain->fields['id'],
                 'is_dynamic'            => 1,
                 'items_id'              => $computer->fields['id'],
-                'itemtype'              => $computer->getType(),
+                'itemtype'              => $computer::class,
                 'domainrelations_id'    => \DomainRelation::BELONGS,
                 'is_deleted'            => false,
             ])
@@ -803,7 +803,7 @@ class MassiveActionTest extends DbTestCase
         $rows = $domain_item->find([
             'domains_id'            => $manual_domain->fields['id'],
             'items_id'              => $computer->fields['id'],
-            'itemtype'              => $computer->getType(),
+            'itemtype'              => $computer::class,
             'domainrelations_id'    => \DomainRelation::BELONGS,
         ]);
         $this->assertCount(0, $rows);
@@ -813,7 +813,7 @@ class MassiveActionTest extends DbTestCase
             'domains_id'            => $dynamic_domain->fields['id'],
             'is_dynamic'            => 1,
             'items_id'              => $computer->fields['id'],
-            'itemtype'              => $computer->getType(),
+            'itemtype'              => $computer::class,
             'domainrelations_id'    => \DomainRelation::BELONGS,
             'is_deleted'            => false,
         ]);
@@ -835,7 +835,7 @@ class MassiveActionTest extends DbTestCase
             'domains_id'            => $dynamic_domain->fields['id'],
             'is_dynamic'            => 1,
             'items_id'              => $computer->fields['id'],
-            'itemtype'              => $computer->getType(),
+            'itemtype'              => $computer::class,
             'domainrelations_id'    => \DomainRelation::BELONGS,
             'is_deleted'            => true,
         ]);
@@ -1014,7 +1014,7 @@ class MassiveActionTest extends DbTestCase
                     'locations_id' => $location_id_1,
                     'search_options'
                     => [
-                        $ticket->getType() => 83,
+                        $ticket::class => 83,
                     ],
                     'field' => 'locations_id',
                 ],
@@ -1028,7 +1028,7 @@ class MassiveActionTest extends DbTestCase
                     'locations_id' => $location_id_2,
                     'search_options'
                     => [
-                        $ticket->getType() => 83,
+                        $ticket::class => 83,
                     ],
                     'field' => 'locations_id',
                 ],

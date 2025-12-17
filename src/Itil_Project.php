@@ -75,12 +75,12 @@ class Itil_Project extends CommonDBRelation
                         $nb = countElementsInTable(
                             self::getTable(),
                             [
-                                'itemtype' => $item->getType(),
+                                'itemtype' => $item::class,
                                 'items_id' => $item->getID(),
                             ]
                         );
                     }
-                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+                    $label = self::createTabEntry(Project::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     break;
 
                 case Project::class:
@@ -91,7 +91,7 @@ class Itil_Project extends CommonDBRelation
                     $label = self::createTabEntry(
                         _n('Itil item', 'Itil items', Session::getPluralNumber()),
                         $nb,
-                        $item::getType(),
+                        $item::class,
                         Ticket::getIcon()
                     );
                     break;
@@ -280,7 +280,7 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE'           => [
-                "{$selfTable}.itemtype" => $itil->getType(),
+                "{$selfTable}.itemtype" => $itil::class,
                 "{$selfTable}.items_id" => $ID,
                 'NOT'                   => ["{$projectTable}.id" => null],
             ],

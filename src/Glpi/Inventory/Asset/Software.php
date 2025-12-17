@@ -318,7 +318,7 @@ class Software extends InventoryAsset
                 $item_os = new Item_OperatingSystem();
                 $os_list = $item_os->find([
                     'items_id' => $this->main_asset->item->fields['id'],
-                    'itemtype' => $this->main_asset->item->getType(),
+                    'itemtype' => $this->main_asset->item::class,
                 ]);
                 if (count($os_list) == 1) {
                     $operatingsystems_id = current($os_list)['operatingsystems_id'];
@@ -376,7 +376,7 @@ class Software extends InventoryAsset
             ],
             'WHERE'     => [
                 'glpi_items_softwareversions.items_id' => $this->item->fields['id'],
-                'glpi_items_softwareversions.itemtype'    => $this->item->getType(),
+                'glpi_items_softwareversions.itemtype'    => $this->item::class,
                 'glpi_items_softwareversions.is_dynamic'  => 1,
             ],
         ]);
@@ -950,7 +950,7 @@ class Software extends InventoryAsset
                 'date_install'          => $val->date_install ?? null,
             ];
 
-            $itemtype = $this->item->getType();
+            $itemtype = $this->item::class;
             $stmt->bind_param(
                 'ssssss',
                 $itemtype,
@@ -997,7 +997,7 @@ class Software extends InventoryAsset
         foreach ($this->added_versions as $software_data) {
             Log::history(
                 $this->item->fields['id'],
-                $this->item->getType(),
+                $this->item::class,
                 [0, '', sprintf(__('%1$s - %2$s'), $software_data['name'], $software_data['version'])],
                 'Software',
                 Log::HISTORY_ADD_SUBITEM
@@ -1007,7 +1007,7 @@ class Software extends InventoryAsset
         foreach ($this->updated_versions as $software_data) {
             Log::history(
                 $this->item->fields['id'],
-                $this->item->getType(),
+                $this->item::class,
                 [
                     0,
                     '',
@@ -1028,7 +1028,7 @@ class Software extends InventoryAsset
             // log into asset
             Log::history(
                 $this->item->fields['id'],
-                $this->item->getType(),
+                $this->item::class,
                 [0, sprintf(__('%1$s - %2$s'), $software_name, $version_name), ''],
                 'Software',
                 Log::HISTORY_DELETE_SUBITEM

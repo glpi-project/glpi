@@ -67,7 +67,7 @@ class PrinterLog extends CommonDBChild
         /** @var Printer|Asset $item */
         if (in_array($item::class, $CFG_GLPI['printer_types'])) {
             $cnt = countElementsInTable([static::getTable()], [static::$items_id => $item->getField('id')]);
-            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::getType());
+            $array_ret[] = self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $cnt, $item::class);
         }
         return $array_ret;
     }

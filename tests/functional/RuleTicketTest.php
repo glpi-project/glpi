@@ -215,7 +215,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             'name'         => 'test ' . $header,
             'match'        => 'AND',
             'is_active'    => 1,
-            'sub_type'     => $ruleticket::getType(),
+            'sub_type'     => $ruleticket::class,
             'condition'    => \RuleCommonITILObject::ONADD,
             'is_recursive' => 1,
         ]);
@@ -785,7 +785,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 \Itil_Project::getTable(),
-                ['itemtype'  =>  Ticket::getType(),
+                ['itemtype'  =>  Ticket::class,
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsCreate_id,
                 ]
@@ -805,7 +805,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             0,
             countElementsInTable(
                 \Itil_Project::getTable(),
-                ['itemtype'  =>  Ticket::getType(),
+                ['itemtype'  =>  Ticket::class,
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsUpdate_id,
                 ]
@@ -826,7 +826,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 \Itil_Project::getTable(),
-                ['itemtype'  =>  Ticket::getType(),
+                ['itemtype'  =>  Ticket::class,
                     'projects_id'   => $projecttest1_id,
                     'items_id' => $ticketsUpdate_id,
                 ]
@@ -916,7 +916,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => Ticket::getType(), 'items_id' => $ticket_id]
+                ['itemtype' => Ticket::class, 'items_id' => $ticket_id]
             )
         );
 
@@ -940,7 +940,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             2,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => Ticket::getType(), 'items_id' => $ticket_id]
+                ['itemtype' => Ticket::class, 'items_id' => $ticket_id]
             )
         );
 
@@ -971,7 +971,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             2,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => Ticket::getType(), 'items_id' => $ticket_id]
+                ['itemtype' => Ticket::class, 'items_id' => $ticket_id]
             )
         );
     }
@@ -1336,7 +1336,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         // Create followup without _do_not_compute_status
         $this->createItem('ITILFollowup', [
-            'itemtype'               => $ticket::getType(),
+            'itemtype'               => $ticket::class,
             'items_id'               => $tickets_id,
             'content'                => 'simple followup content',
             'date'                   => '2015-01-01 00:00:00',
@@ -1442,7 +1442,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
             1,
             countElementsInTable(
                 ITILFollowup::getTable(),
-                ['itemtype' => Ticket::getType(), 'items_id' => $tickets_id]
+                ['itemtype' => Ticket::class, 'items_id' => $tickets_id]
             )
         );
     }

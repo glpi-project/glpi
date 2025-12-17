@@ -69,18 +69,18 @@ class Appliance_Item extends CommonDBRelation
         }
 
         $nb = 0;
-        if ($item->getType() == Appliance::class) {
+        if ($item instanceof Appliance) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 if (!$item->isNewItem()) {
                     $nb = self::countForMainItem($item);
                 }
             }
-            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-        } elseif (in_array($item->getType(), Appliance::getTypes(true))) {
+            return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class, 'ti ti-package');
+        } elseif (in_array($item::class, Appliance::getTypes(true))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
-            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
+            return self::createTabEntry(Appliance::getTypeName(Session::getPluralNumber()), $nb, $item::class);
         }
 
         return '';
@@ -97,7 +97,7 @@ class Appliance_Item extends CommonDBRelation
                 self::showItems($item);
                 break;
             default:
-                if (in_array($item->getType(), Appliance::getTypes())) {
+                if (in_array($item::class, Appliance::getTypes())) {
                     self::showForItem($item, $withtemplate);
                 }
         }
@@ -134,7 +134,7 @@ class Appliance_Item extends CommonDBRelation
         ]);
 
         Session::initNavigateListItems(
-            self::getType(),
+            self::class,
             //TRANS : %1$s is the itemtype name,
             //        %2$s is the name of the item (used for headings of a list)
             sprintf(

@@ -132,7 +132,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     #[Override]
     public function listTranslationsHandlers(): array
     {
-        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $key = sprintf('%s_%d', self::class, $this->getID());
         $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
         $handlers = [];
         $handlers[$key][] = new TranslationHandler(
@@ -433,9 +433,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         // Report logs to the parent form
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
-            $this->getType(),
+            self::class,
             static::$log_history_add
         );
 
@@ -472,9 +472,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
             Log::history(
                 $form->getID(),
-                $form->getType(),
+                $form::class,
                 $changes,
-                $this->getType(),
+                self::class,
                 static::$log_history_update
             );
         }
@@ -502,9 +502,9 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
 
         Log::history(
             $form->getID(),
-            $form->getType(),
+            $form::class,
             $changes,
-            $this->getType(),
+            self::class,
             static::$log_history_delete
         );
 

@@ -165,7 +165,7 @@ class HasAntivirusCapacityTest extends DbTestCase
             ItemAntivirus::class,
             [
                 'name'         => 'antivirus item 1',
-                'itemtype'     => $item_1->getType(),
+                'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -173,7 +173,7 @@ class HasAntivirusCapacityTest extends DbTestCase
             ItemAntivirus::class,
             [
                 'name'         => 'antivirus item 2',
-                'itemtype'     => $item_2->getType(),
+                'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
             ]
         );

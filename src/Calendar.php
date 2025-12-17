@@ -148,26 +148,26 @@ class Calendar extends CommonDropdown
                             ) {
                                 if ($item->can(-1, CREATE, $options)) {
                                     if (method_exists($item, 'clone') && $item->clone($options)) {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                                     } else {
-                                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                         $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                                     }
                                 } else {
-                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                                     $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                                 }
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_COMPAT));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
 
@@ -190,18 +190,18 @@ class Calendar extends CommonDropdown
                                 'holidays_id'  => $input['holidays_id'],
                             ];
                             if ($calendar_holiday->add($input)) {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
-                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                         }
                     }
                 } else {
-                    $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
+                    $ma->itemDone($item::class, $ids, MassiveAction::ACTION_KO);
                 }
                 return;
         }

@@ -73,7 +73,7 @@ class ITILTemplateTest extends DbTestCase
             ])
         );
 
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === \Ticket::class) {
             $this->assertGreaterThan(
                 0,
                 (int) $mandat->add([
@@ -105,7 +105,7 @@ class ITILTemplateTest extends DbTestCase
 
         $category = new \ITILCategory();
         $cat_field = strtolower($itiltype) . 'templates_id';
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === \Ticket::class) {
             $cat_field .= '_demand';
         }
         $cat_id = (int) $category->add([
@@ -124,14 +124,14 @@ class ITILTemplateTest extends DbTestCase
             'entities_id'           => 0,
             'locations_id'          => 'NULL',
         ];
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === \Ticket::class) {
             $content['type'] = \Ticket::INCIDENT_TYPE;
         }
         $tid = (int) $object->add($content);
         $this->assertSame(0, $tid);
 
         $err_msg = 'Mandatory fields are not filled. Please correct: Title'
-         . ($itiltype === \Ticket::getType() ? ', Location' : '') . ', Description';
+         . ($itiltype === \Ticket::class ? ', Location' : '') . ', Description';
         $this->hasSessionMessages(ERROR, [$err_msg]);
         $this->assertFalse($object->checkRequiredFieldsFilled());
 
@@ -382,7 +382,7 @@ class ITILTemplateTest extends DbTestCase
 
         $category = new \ITILCategory();
         $cat_field = strtolower($itiltype) . 'templates_id';
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === \Ticket::class) {
             $cat_field .= '_demand';
         }
         $cat_id = (int) $category->add([
@@ -404,7 +404,7 @@ class ITILTemplateTest extends DbTestCase
                 $tid2,
             ],
         ];
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === \Ticket::class) {
             $content['type'] = \Ticket::INCIDENT_TYPE;
         }
 
@@ -439,7 +439,7 @@ class ITILTemplateTest extends DbTestCase
 
         $field = strtolower($itiltype) . 'templates_id';
         $cat_field = $field;
-        if ($itiltype === \Ticket::getType()) {
+        if ($itiltype === \Ticket::class) {
             $cat_field .= '_demand';
         }
         $cat_id = (int) $category->add([

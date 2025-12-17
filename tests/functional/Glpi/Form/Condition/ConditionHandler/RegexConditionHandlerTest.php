@@ -214,14 +214,14 @@ final class RegexConditionHandlerTest extends AbstractConditionHandlerTest
             QuestionTypeUserDevice::class => [
                 [
                     'regex'          => '/^_test_pc01$/',
-                    'valid_answer'   => fn() => Computer::getType() . '_' . getItemByTypeName(Computer::class, "_test_pc01", true),
-                    'invalid_answer' => fn() => Computer::getType() . '_' . getItemByTypeName(Computer::class, "_test_pc02", true),
+                    'valid_answer'   => fn() => Computer::class . '_' . getItemByTypeName(Computer::class, "_test_pc01", true),
+                    'invalid_answer' => fn() => Computer::class . '_' . getItemByTypeName(Computer::class, "_test_pc02", true),
                     'question_extra_data' => new QuestionTypeUserDevicesConfig(false),
                 ],
                 [
                     'regex'          => '/^_test_pc01$/',
-                    'valid_answer'   => fn() => [Computer::getType() . '_' . getItemByTypeName(Computer::class, "_test_pc01", true)],
-                    'invalid_answer' => fn() => [Computer::getType() . '_' . getItemByTypeName(Computer::class, "_test_pc02", true)],
+                    'valid_answer'   => fn() => [Computer::class . '_' . getItemByTypeName(Computer::class, "_test_pc01", true)],
+                    'invalid_answer' => fn() => [Computer::class . '_' . getItemByTypeName(Computer::class, "_test_pc02", true)],
                     'question_extra_data' => new QuestionTypeUserDevicesConfig(true),
                 ],
             ],

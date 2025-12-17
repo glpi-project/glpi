@@ -107,29 +107,29 @@ class StateTest extends DbTestCase
         $this->assertGreaterThan(0, $states_id);
 
         $statevisibility = new DropdownVisibility();
-        $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id]);
+        $visibilities = $statevisibility->find(['itemtype' => \State::class, 'items_id' => $states_id]);
         $this->assertCount(2, $visibilities);
         $this->assertTrue(
             $statevisibility->getFromDBByCrit([
-                'itemtype' => \State::getType(),
+                'itemtype' => \State::class,
                 'items_id' => $states_id,
-                'visible_itemtype' => Computer::getType(),
+                'visible_itemtype' => Computer::class,
                 'is_visible' => 1,
             ])
         );
         $this->assertTrue(
             $statevisibility->getFromDBByCrit([
-                'itemtype' => \State::getType(),
+                'itemtype' => \State::class,
                 'items_id' => $states_id,
-                'visible_itemtype' => Phone::getType(),
+                'visible_itemtype' => Phone::class,
                 'is_visible' => 1,
             ])
         );
         $this->assertFalse(
             $statevisibility->getFromDBByCrit([
-                'itemtype' => \State::getType(),
+                'itemtype' => \State::class,
                 'items_id' => $states_id,
-                'visible_itemtype' => Printer::getType(),
+                'visible_itemtype' => Printer::class,
                 'is_visible' => 0,
             ])
         );
@@ -141,31 +141,31 @@ class StateTest extends DbTestCase
                 'is_visible_printer' => '1',
             ])
         );
-        $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id]);
+        $visibilities = $statevisibility->find(['itemtype' => \State::class, 'items_id' => $states_id]);
         $this->assertCount(3, $visibilities);
-        $visibilities = $statevisibility->find(['itemtype' => \State::getType(), 'items_id' => $states_id, 'is_visible' => 1]);
+        $visibilities = $statevisibility->find(['itemtype' => \State::class, 'items_id' => $states_id, 'is_visible' => 1]);
         $this->assertCount(2, $visibilities);
         $this->assertTrue(
             $statevisibility->getFromDBByCrit([
-                'itemtype' => \State::getType(),
+                'itemtype' => \State::class,
                 'items_id' => $states_id,
-                'visible_itemtype' => Computer::getType(),
+                'visible_itemtype' => Computer::class,
                 'is_visible' => 0,
             ])
         );
         $this->assertTrue(
             $statevisibility->getFromDBByCrit([
-                'itemtype' => \State::getType(),
+                'itemtype' => \State::class,
                 'items_id' => $states_id,
-                'visible_itemtype' => Phone::getType(),
+                'visible_itemtype' => Phone::class,
                 'is_visible' => 1,
             ])
         );
         $this->assertTrue(
             $statevisibility->getFromDBByCrit([
-                'itemtype' => \State::getType(),
+                'itemtype' => \State::class,
                 'items_id' => $states_id,
-                'visible_itemtype' => Printer::getType(),
+                'visible_itemtype' => Printer::class,
                 'is_visible' => 1,
             ])
         );
@@ -277,14 +277,14 @@ class StateTest extends DbTestCase
                             DropdownVisibility::getTable() => 'items_id',
                             \State::getTable() => 'id', [
                                 'AND' => [
-                                    DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                                    DropdownVisibility::getTable() . '.itemtype' => \State::class,
                                 ],
                             ],
                         ],
                     ],
                 ],
                 'WHERE' => [
-                    DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                    DropdownVisibility::getTable() . '.itemtype' => \State::class,
                     DropdownVisibility::getTable() . '.visible_itemtype' => $itemtype,
                     DropdownVisibility::getTable() . '.is_visible' => 1,
                 ],

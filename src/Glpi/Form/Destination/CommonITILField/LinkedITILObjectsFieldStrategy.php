@@ -105,7 +105,7 @@ enum LinkedITILObjectsFieldStrategy: string
             foreach ($created_objects[$destination_id] as $item) {
                 if ($item instanceof CommonITILObject) {
                     $linked_itil_objects[] = [
-                        'itemtype' => $item::getType(),
+                        'itemtype' => $item::class,
                         'items_id' => $item->getID(),
                         'linktype' => $linktype,
                     ];

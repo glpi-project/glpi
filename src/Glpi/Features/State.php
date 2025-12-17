@@ -67,7 +67,7 @@ trait State
         $this->checkSetup();
         $dropdownVisibility = new DropdownVisibility();
         return $dropdownVisibility->getFromDBByCrit([
-            'itemtype' => \State::getType(),
+            'itemtype' => \State::class,
             'items_id' => $id,
             'visible_itemtype' => static::class,
             'is_visible' => 1,
@@ -87,14 +87,14 @@ trait State
                         DropdownVisibility::getTable() => 'items_id',
                         \State::getTable() => 'id', [
                             'AND' => [
-                                DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                                DropdownVisibility::getTable() . '.itemtype' => \State::class,
                             ],
                         ],
                     ],
                 ],
             ],
             'WHERE' => [
-                DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                DropdownVisibility::getTable() . '.itemtype' => \State::class,
                 DropdownVisibility::getTable() . '.visible_itemtype' => static::class,
                 DropdownVisibility::getTable() . '.is_visible' => 1,
             ],

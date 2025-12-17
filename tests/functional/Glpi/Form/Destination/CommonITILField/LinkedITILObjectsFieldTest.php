@@ -486,7 +486,7 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         $this->assertCount(1, $destinations);
         $destination = current($destinations);
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [LinkedITILObjectsField::getKey() => $config->jsonSerialize()]],
             ["config"],
@@ -545,7 +545,7 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         $destination = $destination_values[$destination_index];
 
         $this->updateItem(
-            $destination::getType(),
+            $destination::class,
             $destination->getId(),
             ['config' => [LinkedITILObjectsField::getKey() => $config->jsonSerialize()]],
             ["config"],

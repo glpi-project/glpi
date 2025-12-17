@@ -174,7 +174,7 @@ class HasCertificatesCapacityTest extends DbTestCase
             Certificate_Item::class,
             [
                 'certificates_id' => $certificate->getID(),
-                'itemtype'     => $item_1->getType(),
+                'itemtype'     => $item_1::class,
                 'items_id'     => $item_1->getID(),
             ]
         );
@@ -182,7 +182,7 @@ class HasCertificatesCapacityTest extends DbTestCase
             Certificate_Item::class,
             [
                 'certificates_id' => $certificate->getID(),
-                'itemtype'     => $item_2->getType(),
+                'itemtype'     => $item_2::class,
                 'items_id'     => $item_2->getID(),
             ]
         );

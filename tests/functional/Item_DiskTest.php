@@ -91,7 +91,7 @@ class Item_DiskTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $id = (int) $obj->add([
-                'itemtype'     => $computer->getType(),
+                'itemtype'     => $computer::class,
                 'items_id'     => $computer->fields['id'],
                 'mountpoint'   => '/',
             ])
@@ -113,7 +113,7 @@ class Item_DiskTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $id = (int) $obj->add([
-                'itemtype'     => $computer->getType(),
+                'itemtype'     => $computer::class,
                 'items_id'     => $computer->fields['id'],
                 'mountpoint'   => '/',
             ])
@@ -142,7 +142,7 @@ class Item_DiskTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $id = (int) $obj->add([
-                'itemtype'     => $computer->getType(),
+                'itemtype'     => $computer::class,
                 'items_id'     => $computer->fields['id'],
                 'mountpoint'   => '/',
             ])

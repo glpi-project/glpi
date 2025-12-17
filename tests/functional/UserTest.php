@@ -1357,7 +1357,7 @@ class UserTest extends DbTestCase
         }
 
         $crontask = new \CronTask();
-        $this->assertTrue($crontask->getFromDBbyName(User::getType(), 'passwordexpiration'));
+        $this->assertTrue($crontask->getFromDBbyName(User::class, 'passwordexpiration'));
         $crontask->fields['param'] = $cron_limit;
 
         $cfg_backup = $CFG_GLPI;
@@ -1372,9 +1372,9 @@ class UserTest extends DbTestCase
         $this->assertEquals($expected_result, $result);
         $this->assertEquals(
             $expected_notifications_count,
-            countElementsInTable(\Alert::getTable(), ['itemtype' => User::getType()])
+            countElementsInTable(\Alert::getTable(), ['itemtype' => User::class])
         );
-        $DB->delete(\Alert::getTable(), ['itemtype' => User::getType()]); // reset alerts
+        $DB->delete(\Alert::getTable(), ['itemtype' => User::class]); // reset alerts
 
         $user_crit = [
             'authtype'  => \Auth::DB_GLPI,

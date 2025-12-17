@@ -165,7 +165,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 'url' => $url,
             ]);
         } else { // for internal inquest => form
-            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item->getType()));
+            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item::class));
 
             if ($add_form_header) {
                 $this->showFormHeader($options);

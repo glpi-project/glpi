@@ -42,7 +42,7 @@ Html::header_nocache();
 $itemtype = $_POST['itemtype'];
 $ent = new Entity();
 // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
-$config_suffix = $itemtype::getType() === 'Ticket' ? '' : ('_' . strtolower($itemtype::getType()));
+$config_suffix = $itemtype::class === 'Ticket' ? '' : ('_' . strtolower($itemtype::class));
 
 if (isset($_POST['inquest_config' . $config_suffix], $_POST['entities_id'])) {
     if ($ent->getFromDB($_POST['entities_id'])) {

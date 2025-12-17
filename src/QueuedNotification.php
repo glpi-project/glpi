@@ -146,17 +146,17 @@ class QueuedNotification extends CommonDBTM
                 foreach ($ids as $id) {
                     if ($item->canEdit($id)) {
                         if ($item->fields['mode'] === Notification_NotificationTemplate::MODE_AJAX) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
+                            $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                         } elseif (
                             ($item instanceof QueuedNotification)
                             && $item->sendById($id)
                         ) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                         } else {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
                         }
                     } else {
-                        $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                        $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                     }
                 }
                 return;

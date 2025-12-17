@@ -175,7 +175,7 @@ class ConsumableTest extends DbTestCase
 
         $infocom = new \Infocom();
         $infocom_id = (int) $infocom->add([
-            'itemtype'  => \ConsumableItem::getType(),
+            'itemtype'  => \ConsumableItem::class,
             'items_id'  => $cu_id,
             'buy_date'  => '2020-10-21',
             'value'     => '500',
@@ -189,7 +189,7 @@ class ConsumableTest extends DbTestCase
 
         $infocom2 = new \Infocom();
         $infocom2_id = (int) $infocom2->getFromDBByCrit([
-            'itemtype'  => \Consumable::getType(),
+            'itemtype'  => \Consumable::class,
             'items_id'  => $consumable_id,
         ]);
         $this->assertGreaterThan(0, $infocom2_id);

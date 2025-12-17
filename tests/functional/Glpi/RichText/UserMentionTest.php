@@ -508,7 +508,7 @@ HTML,
         $notifications = getAllDataFromTable(
             'glpi_queuednotifications',
             [
-                'itemtype' => Ticket::getType(),
+                'itemtype' => Ticket::class,
                 'items_id' => $ticket_id,
             ]
         );
@@ -543,7 +543,7 @@ HTML,
         $notifications = getAllDataFromTable(
             'glpi_queuednotifications',
             [
-                'itemtype' => Ticket::getType(),
+                'itemtype' => Ticket::class,
                 'items_id' => $ticket_id,
             ]
         );

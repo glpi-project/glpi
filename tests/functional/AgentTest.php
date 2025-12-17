@@ -246,7 +246,7 @@ class AgentTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $ditem->add([
-                'itemtype'     => $item->getType(),
+                'itemtype'     => $item::class,
                 'items_id'     => $item->getID(),
                 'domains_id'   => $did,
             ])

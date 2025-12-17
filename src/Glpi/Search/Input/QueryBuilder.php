@@ -665,7 +665,7 @@ final class QueryBuilder implements SearchInputInterface
             )
             && ( // Is an asset
                 in_array($itemtype, $CFG_GLPI['asset_types'])
-                || $itemtype == AllAssets::getType()
+                || $itemtype == AllAssets::class
             )
         ) {
             // Disable sort on assets default search request
@@ -708,7 +708,7 @@ final class QueryBuilder implements SearchInputInterface
         //                                  searchtype =>
         //                                  value =>   (contains)
 
-        if ($itemtype != AllAssets::getType() && class_exists($itemtype)) {
+        if ($itemtype != AllAssets::class && class_exists($itemtype)) {
             // retrieve default values for current itemtype
             $itemtype_default_values = [];
             $item = getItemForItemtype($itemtype);
