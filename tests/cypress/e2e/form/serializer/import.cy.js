@@ -102,7 +102,9 @@ describe ('Import forms', () => {
         cy.get("@issues").eq(1).within(() => {
             cy.findByText("Missing entity").should('exist');
             cy.document().within(() => {
-                cy.getDropdownByLabelText("Replacement value for 'Missing entity'").selectDropdownValue("»E2ETestEntity");
+                cy.getDropdownByLabelText("Replacement value for 'Missing entity'")
+                    .should('have.text', 'Root entity > E2ETestEntity')
+                    .selectDropdownValue("»E2ETestEntity");
             });
         });
         cy.get("@issues").eq(2).within(() => {
