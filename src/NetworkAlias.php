@@ -183,7 +183,7 @@ class NetworkAlias extends FQDNLabel
             $item = $father->getItem();
         }
 
-        if ($item->getType() !== NetworkName::class) {
+        if (!$item instanceof NetworkName) {
             return;
         }
 

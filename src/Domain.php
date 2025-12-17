@@ -596,7 +596,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
                 return;
 
             case "duplicate":
-                if ($item->getType() == 'Domain') {
+                if ($item instanceof Domain) {
                     $input     = $ma->getInput();
                     foreach (array_keys($ids) as $key) {
                         $item->getFromDB($key);
