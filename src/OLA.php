@@ -1,5 +1,7 @@
 <?php
 
+use Glpi\DBAL\QueryExpression;
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -106,13 +108,7 @@ class OLA extends LevelAgreement
         Rule::cleanForItemAction($this);
     }
 
-    /**
-     * Get table fields
-     *
-     * @param int $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
-     *
-     * @return array of 'date' and 'sla' field names
-     */
+    #[Override()]
     public static function getFieldNames($subtype)
     {
         throw new LogicException(__FUNCTION__ . '() is not supported by OLA - no olas field in tickets - fix the code');
@@ -174,7 +170,8 @@ class OLA extends LevelAgreement
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
-        self::deleteLevelsTodoByWhereCriteria(['tickets_id' => $ticket->fields['id']]);
+        $levelticket = getItemForItemtype(static::$levelticketclass);
+        $levelticket->deleteByCriteria(['tickets_id' => $ticket->fields['id']]);
     }
 
     /**
@@ -182,24 +179,8 @@ class OLA extends LevelAgreement
      **/
     public static function deleteAllLevelsToDo(): void
     {
-        self::deleteLevelsTodoByWhereCriteria([]);
-    }
-
-    private static function deleteLevelsTodoByWhereCriteria(array $where_criteria): void
-    {
-        /** @var DBmysql $DB */
-        global $DB;
-
         $levelticket = getItemForItemtype(static::$levelticketclass);
-        $iterator = $DB->request([
-            'SELECT' => 'id',
-            'FROM' => $levelticket::getTable(),
-            'WHERE' => $where_criteria,
-        ]);
-
-        foreach ($iterator as $data) {
-            $levelticket->delete(['id' => $data['id']]);
-        }
+        $levelticket->deleteByCriteria([new QueryExpression('true')]);
     }
 
     public static function getTypeName($nb = 0)

@@ -6426,6 +6426,9 @@ JAVASCRIPT;
 
     /**
      * Update Ola data + Manage OLA level
+     *
+     * @param int[] $new_assigned_groups
+     * @param int[] $new_assigned_users
      */
     private function recomputeOlas(array $new_assigned_groups = [], array $new_assigned_users = []): void
     {
@@ -6441,6 +6444,9 @@ JAVASCRIPT;
      * Modify input for Ola to allow backward compatibility
      *
      * olas_id_tto, olas_id_ttr fields are not used anymore
+     *
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
      */
     private function transformOlasInputForBackwardCompatibility(array $input): array
     {
@@ -6471,6 +6477,9 @@ JAVASCRIPT;
         return $input;
     }
 
+    /**
+     * @param array<string, mixed> $input
+     */
     private function failsWithOlaRemovedFields(array $input): void
     {
         $ola_removed_inputs = ['ola_tto_begin_date', 'ola_ttr_begin_date', 'internal_time_to_resolve', 'internal_time_to_own', 'olalevels_id_ttr'];

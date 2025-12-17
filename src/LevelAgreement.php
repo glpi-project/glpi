@@ -81,7 +81,7 @@ abstract class LevelAgreement extends CommonDBChild
      *
      * @param int $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
-     * @return array of 'date' and 'sla' field names
+     * @return string[] of 'date' and 'sla' field names
      */
     public static function getFieldNames($subtype)
     {

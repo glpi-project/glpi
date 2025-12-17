@@ -336,7 +336,7 @@ class Item_Ola extends CommonDBRelation
             $merged_data[] = $this->fillItemOlaData($ola_data, $ticket);
         }
 
-        return  $this->sort($merged_data);
+        return $this->sort($merged_data);
     }
 
     /**
@@ -393,7 +393,7 @@ class Item_Ola extends CommonDBRelation
     }
 
     /**
-     * @param array $ola_data fields from ola + possibly 'linkid' field representing items_olas_id
+     * @param array<string, mixed> $ola_data fields from ola + possibly 'linkid' field representing items_olas_id
      * @param Ticket $ticket
      *
      * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
@@ -485,6 +485,9 @@ class Item_Ola extends CommonDBRelation
 
     /**
      * Sort the merged data by group then type (tto, then ttr)
+     *
+     * @phpstan-param list<ItemOlaData> $merged_data
+     * @phpstan-return list<ItemOlaData>
      */
     private function sort(array $merged_data): array
     {
