@@ -863,8 +863,17 @@ class Session
         arsort($accepted_languages); // sort by qfactor
 
         foreach (array_keys($accepted_languages) as $language) {
+            // Direct match with locale key (e.g., 'pl_PL')
             if (array_key_exists($language, $CFG_GLPI['languages'])) {
                 return $language;
+            }
+
+            // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
+            if (isset($CFG_GLPI['main_languages'][$language])) {
+                $main_lang = $CFG_GLPI['main_languages'][$language];
+                if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
+                    return $main_lang;
+                }
             }
         }
 
