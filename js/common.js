@@ -2014,7 +2014,7 @@ window.toggleNotesAccordion = function(button) {
 
 // Event listener for toggle all notes button
 $(document).on('click', '.toggle-all-notes', function() {
-    toggleNotesAccordion(this);
+    window.toggleNotesAccordion(this);
 });
 
 // Prevent Bootstrap dialog from blocking focusin
