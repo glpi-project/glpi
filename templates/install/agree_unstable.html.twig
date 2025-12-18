@@ -48,7 +48,7 @@
 </div>
 <script>
    $(function() {
-       $('[name=from_update]').on('click', function(event){
+       $('[name="continuer"]').on('click', function(event){
            if (!$('#agree_unstable').is(':checked')) {
                event.preventDefault();
                alert('{{ __('Please check the unstable version checkbox.') }}');

@@ -154,6 +154,11 @@ h3 {
 
 .alert:not(.alert-important) {
     color: #000;
+
+    .text-muted,
+    .alert-icon {
+        color: inherit !important;
+    }
 }
 
 /** Tabler override for install **/
