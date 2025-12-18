@@ -107,6 +107,8 @@ npx playwright test --ui
 The minimal structure for a test looks like this:
 
 ```ts
+# tests/e2e/specs/my_test.spec.ts
+
 import { test, expect } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
 
