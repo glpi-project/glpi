@@ -158,17 +158,17 @@ EOT;
                 'api_version' => '1',
                 'version'    => '1.0.0',
                 'description' => str_replace(PHP_EOL, ' ', $low_level_api_description),
-                'endpoint'   => $CFG_GLPI['url_base'] . '/api.php/v1',
+                'endpoint'   => ($CFG_GLPI['url_base'] ?? '') . '/api.php/v1',
             ],
             [
                 'api_version' => '2',
                 'version' => '2.0.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
+                'endpoint' => ($CFG_GLPI['url_base'] ?? '') . '/api.php/v2.0',
             ],
             [
                 'api_version' => '2',
                 'version' => '2.1.0',
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
+                'endpoint' => ($CFG_GLPI['url_base'] ?? '') . '/api.php/v2.1',
             ],
         ];
     }
