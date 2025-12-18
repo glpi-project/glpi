@@ -1139,6 +1139,11 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         global $DB;
 
+        // Do not trigger webhooks during initial installation
+        if (!DBConnection::isDbAvailable() || !Config::isLegacyConfigurationLoaded() || Update::isUpdateMandatory()) {
+            return;
+        }
+
         try {
             // Ignore raising if the table doesn't exist (happens during install/update)
             if (!$DB->tableExists(self::getTable())) {
