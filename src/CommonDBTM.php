@@ -1424,7 +1424,6 @@ class CommonDBTM extends CommonGLPI
                     // If itemtype is in infocomtype and if states_id field is filled
                     // and item is not a template
                     if (
-                        ($options['disable_infocom_creation'] ?? false) !== true
                         && Infocom::canApplyOn($this)
                         && isset($this->input['states_id'])
                         && (!isset($this->input['is_template'])

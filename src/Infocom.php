@@ -429,6 +429,7 @@ class Infocom extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        \Toolbox::logInFile('migration_debug', debug_print_backtrace());
         if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
             if ($item = static::getItemFromArray(static::$itemtype, static::$items_id, $input)) {
                 $input['alert'] = Entity::getUsedConfig('default_infocom_alert', $item->getEntityID());
@@ -449,6 +450,7 @@ class Infocom extends CommonDBChild
      **/
     public static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true)
     {
+        global $CFG_GLPI;
         $itemtype = get_class($item);
         $changes  = $item->fields;
 
@@ -477,7 +479,7 @@ class Infocom extends CommonDBChild
 
         //One date or more has changed
         if ($add_or_update) {
-            if (!$infocom->getFromDBforDevice($itemtype, $changes['id'])) {
+            if (!$infocom->getFromDBforDevice($itemtype, $changes['id']) && $CFG_GLPI["auto_create_infocoms"]) {
                 $infocom->add($tmp);
             } else {
                 $tmp['id'] = $infocom->fields['id'];
