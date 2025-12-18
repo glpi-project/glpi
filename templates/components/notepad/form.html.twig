@@ -37,15 +37,28 @@
     is_horizontal: false,
 } %}
 
-{% include 'components/tab/addlink_block.html.twig' with {
-    'add_link': 'javascript:return false;',
-    'button_label': _x('button', 'Add a note'),
-    'button_attributes': {
-        'data-bs-toggle': 'modal',
-        'data-bs-target': '#new-note-form',
-        'aria-label': __('Add a note'),
-    }
-} %}
+<div class="firstbloc d-flex justify-content-between align-items-center">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form">
+        <i class="ti ti-link"></i>
+        <span>{{ _x('button', 'Add a note') }}</span>
+    </button>
+
+    {% if notes|length > 0 %}
+        <small class="me-2">
+            <a href="#" class="text-decoration-none text-secondary toggle-all-notes d-flex align-items-center gap-1"
+               style="cursor: pointer; transition: color 0.2s ease;"
+               onmouseover="this.style.color='#0d6efd'"
+               onmouseout="this.style.color=''"
+               data-expand-text="{{ __('Show all') }}"
+               data-collapse-text="{{ __('Collapse all') }}"
+               data-expand-title="{{ __('Show all') }}"
+               data-collapse-title="{{ __('Collapse all') }}">
+                <i class="ti ti-eye-off"></i>
+                <span>{{ __('Show all') }}</span>
+            </a>
+        </small>
+    {% endif %}
+</div>
 
 <div class="my-3">
     <div id="new-note-form" class="modal fade">
