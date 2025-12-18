@@ -36,9 +36,11 @@
 {% set button_icon = button_icon ?? 'ti ti-link' %}
 {% set button_label = button_label ?? _x('button', 'Add') %}
 {% set button_attributes = button_attributes ?? {} %}
+{% set button_role = button_role ?? 'button' %}
 
 <div class="{{ block_class }}">
     <a
+        role="{{ button_role }}"
         class="{{ button_class }}"
 {% if button_id %}
         id="{{ button_id }}"
