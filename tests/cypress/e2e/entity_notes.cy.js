@@ -31,7 +31,7 @@
  */
 
 function addEntityNote(visible_on_tickets = false) {
-    cy.findByRole('a', { name: 'Add a note' }).click();
+    cy.findByRole('button', { name: 'Add a note' }).click();
     cy.findByLabelText('Content').awaitTinyMCE().type('This is a test note');
 
     if (visible_on_tickets) {
@@ -42,7 +42,7 @@ function addEntityNote(visible_on_tickets = false) {
 }
 
 function addEntityNoteWithAttachment(visible_on_tickets = false) {
-    cy.findByRole('a', { name: 'Add a note' }).click();
+    cy.findByRole('button', { name: 'Add a note' }).click();
     cy.findByLabelText('Content').awaitTinyMCE().type('This is a test note');
 
     if (visible_on_tickets) {
