@@ -30,26 +30,21 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Dashboard', () => {
-    beforeEach(() => {
-        cy.login();
-    });
+import { JSDOM } from 'jsdom';
 
-    const dashboards = new Map([
-        ['Asset', '/front/dashboard_assets.php'],
-        ['Assistance', '/front/dashboard_helpdesk.php'],
-        ['Central', '/front/central.php'],
-        ['Tickets Mini', '/front/ticket.php'],
-    ]);
+export class CsrfExtractor
+{
+    public extractToken(body: string): string
+    {
+        const dom = new JSDOM(body);
+        const meta = dom.window.document.querySelector(
+            'meta[property="glpi:csrf_token"]'
+        ) as HTMLMetaElement;
 
-    dashboards.forEach((value, key) => {
-        it(`${key} Dashboard Loads`, () => {
-            cy.visit(value);
-            cy.get('.grid-stack-item .g-chart, .grid-stack-item .big-number').should('be.visible');
-            // grid-stack-items should have reasonable height
-            cy.get('.grid-stack-item:not(.lock-bottom)').each(($el) => {
-                cy.get($el).invoke('height').should('be.gt', 30);
-            });
-        });
-    });
-});
+        if (meta === null || meta.content === null) {
+            throw new Error(`Unexpected body content: ${body}`);
+        }
+
+        return meta.content;
+    }
+}

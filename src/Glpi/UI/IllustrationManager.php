@@ -274,8 +274,17 @@ final class IllustrationManager
 
     private function validateOrInitCustomContentDir(string $dir): void
     {
-        if (!file_exists($dir)) {
-            mkdir($dir);
+        if (file_exists($dir)) {
+            return;
+        }
+
+        try {
+            @mkdir($dir);
+        } catch (FilesystemException $e) {
+            // Race condition: directory may have been created by another concurrent request
+            if (!file_exists($dir)) {
+                throw $e;
+            }
         }
     }
 
