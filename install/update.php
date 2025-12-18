@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/../front/_check_webserver_config.php');
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Toolbox\VersionParser;
 
 /**
  * @var bool $HEADER_LOADED
@@ -118,10 +119,7 @@ echo "<div id='logo_bloc'></div>";
 echo "<h2>" . __s('GLPI setup') . "</h2>";
 echo "<br><h3>" . __s('Upgrade') . "</h3>";
 
-if (
-    ($_SESSION['can_process_update'] ?? false) === false
-    || (empty($_POST["continuer"]) && empty($_POST["from_update"]) && empty($_POST["post_update_step"]))
-) {
+if (($_SESSION['can_process_update'] ?? false) === false) {
     // Unexpected direct access to the form without proper entry point
     echo "<div class='center'>";
     echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span></h3>";
@@ -129,6 +127,21 @@ if (
     echo "<a class='btn btn-primary' href='../index.php'>
         " . __s('Go back to GLPI') . "
      </a></p>";
+    echo "</div>";
+} elseif (empty($_POST["continuer"]) && empty($_POST["from_update"]) && empty($_POST["post_update_step"])) {
+    // Step 1: Confirmation screen (needed for install wizard flow)
+    echo "<div class='center'>";
+    echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
+
+    echo "<form action='update.php' method='post'>";
+    if (!VersionParser::isStableRelease(GLPI_VERSION)) {
+        echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
+    }
+    echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
+         " . __s('Continue') . "
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
+    Html::closeForm();
     echo "</div>";
 } elseif (!empty($_POST["continuer"]) || !empty($_POST["from_update"])) {
     // Step 2
