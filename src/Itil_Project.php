@@ -103,14 +103,6 @@ class Itil_Project extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        // If we are creating a project from a template, show read-only warning
-        if ($withtemplate == 2 && $item instanceof Project) {
-            echo '<div class="alert alert-info mb-3">';
-            echo '<i class="ti ti-info-circle me-2"></i>';
-            echo __s('You are viewing ITIL objects from the template. Save the project first to be able to add or modify linked tickets, problems or changes.');
-            echo '</div>';
-        }
-
         switch ($item::class) {
             case Change::class:
             case Problem::class:
@@ -118,20 +110,19 @@ class Itil_Project extends CommonDBRelation
                 return self::showForItil($item);
 
             case Project::class:
-                return self::showForProject($item, $withtemplate);
+                return self::showForProject($item);
         }
         return false;
     }
 
     /**
-     * ITIL items for a project.
+     * Show ITIL items for a project.
      *
      * @param Project $project
-     * @param int $withtemplate (default 0)
      *
      * @return bool
      **/
-    public static function showForProject(Project $project, int $withtemplate = 0): bool
+    public static function showForProject(Project $project): bool
     {
         global $DB, $CFG_GLPI;
 
@@ -186,7 +177,7 @@ class Itil_Project extends CommonDBRelation
             ];
         }
 
-        if ($canedit && $withtemplate != 2) {
+        if ($canedit) {
             $twig_params = [
                 'btn_msg' => _x('button', 'Add'),
                 'used'    => $used,

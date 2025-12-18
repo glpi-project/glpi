@@ -86,11 +86,10 @@ class Item_Project extends CommonDBRelation
      * Print the HTML array for Items linked to a project
      *
      * @param Project $project
-     * @param int $withtemplate (default 0)
      *
      * @return bool
      **/
-    public static function showForProject(Project $project, int $withtemplate = 0): bool
+    public static function showForProject(Project $project): bool
     {
         $instID = $project->getID();
 
@@ -170,8 +169,7 @@ class Item_Project extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('pages/tools/item_project.html.twig', [
             'item' => $project,
-            'can_edit' => $canedit && $withtemplate != 2,
-            'withtemplate' => $withtemplate,
+            'can_edit' => $canedit,
             'used' => $used,
             'datatable_params' => [
                 'is_tab' => true,
@@ -247,16 +245,8 @@ class Item_Project extends CommonDBRelation
             return false;
         }
 
-        // If we are creating a project from a template, show read-only warning
-        if ($withtemplate == 2 && $item instanceof Project) {
-            echo '<div class="alert alert-info mb-3">';
-            echo '<i class="ti ti-info-circle me-2"></i>';
-            echo __s('You are viewing items from the template. Save the project first to be able to add or modify linked items.');
-            echo '</div>';
-        }
-
         if ($item instanceof Project) {
-            return self::showForProject($item, $withtemplate);
+            return self::showForProject($item);
         }
 
         if (

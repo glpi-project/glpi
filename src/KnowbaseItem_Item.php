@@ -84,14 +84,6 @@ class KnowbaseItem_Item extends CommonDBRelation
             return false;
         }
 
-        // If we are creating a project from a template, show read-only warning
-        if ($withtemplate == 2 && $item instanceof Project) {
-            echo '<div class="alert alert-info mb-3">';
-            echo '<i class="ti ti-info-circle me-2"></i>';
-            echo __s('You are viewing knowledge base items from the template. Save the project first to be able to add or modify linked articles.');
-            echo '</div>';
-        }
-
         self::showForItem($item, $withtemplate);
         return true;
     }
