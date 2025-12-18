@@ -843,7 +843,8 @@ class Session
         $_SESSION['glpiisrtl'] = self::isRTL($trytoload);
 
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
-        $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
+        $i18n_cache = new I18nCache((new CacheManager())->getTranslationsCacheInstance());
+
         $TRANSLATE = new class ($i18n_cache) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
