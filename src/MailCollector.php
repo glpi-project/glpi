@@ -1088,7 +1088,6 @@ class MailCollector extends CommonDBTM
             $tu  = new Ticket_User();
             $st  = new Supplier_Ticket();
 
-
             $tkt['_supplier_email'] = $st->isSupplierEmail(
                         $tkt['tickets_id'],
                         $requester
