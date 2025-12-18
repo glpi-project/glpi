@@ -132,14 +132,10 @@
     });
 </script>
 {% if cancreate %}
-    {% if not add_new_inline %}
-        <div class="firstbloc">
-    {% endif %}
-        <button id="addsubitem{{ rand }}" type="button" class="btn {{ add_new_btn_class|default('btn-primary') }} ms-1" name="add">
-            <i class="ti ti-link"></i>
-            {{ add_new_label }}
-        </button>
-    {% if not add_new_inline %}
-        </div>
-    {% endif %}
+    {% include 'components/tab/addlink_block.html.twig' with {
+        add_link: 'javascript:return false;',
+        button_label: add_new_label,
+        button_id: 'addsubitem' ~ rand,
+        button_class: 'btn ' ~ add_new_btn_class|default('btn-primary') ~ ' ms-1'
+    } %}
 {% endif %}

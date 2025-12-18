@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /// ProjectCost class
 /// since version 0.85
 class ProjectCost extends CommonDBChild
@@ -307,8 +309,6 @@ class ProjectCost extends CommonDBChild
         }
         $canedit = $project->can($ID, UPDATE);
 
-        echo "<div class='center'>";
-
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => ['projects_id' => $ID],
@@ -320,7 +320,9 @@ class ProjectCost extends CommonDBChild
         if ($canedit) {
             echo "<div id='viewcost" . $ID . "_$rand'></div>\n";
             echo "<script type='text/javascript' >\n";
-            echo "function viewAddCost" . $ID . "_$rand() {\n";
+            echo "function viewAddCost" . $ID . "_$rand(btn) {\n";
+            echo "// Hide the triggering button\n";
+            echo "$(btn).hide();\n";
             $params = ['type'         => self::class,
                 'parenttype'   => Project::class,
                 'projects_id' => $ID,
@@ -333,14 +335,18 @@ class ProjectCost extends CommonDBChild
             );
             echo "};";
             echo "</script>";
-            echo "<div class='center firstbloc'>"
-               . "<a class='btn btn-primary' href='javascript:viewAddCost" . $ID . "_$rand();'>";
-            echo __s('Add a new cost') . "</a></div>";
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
+                    'button_label' => __('Add a new cost'),
+                ]
+            );
         }
         $total = 0;
-        echo "<table class='tab_cadre_fixehov'>";
-        echo "<tr class='noHover'><th colspan='5'>" . htmlescape(self::getTypeName(count($iterator)))
-            . "</th></tr>";
+        echo "<table class='table'>";
+        echo "<thead><tr><th colspan='5'>" . htmlescape(self::getTypeName(count($iterator)))
+            . "</th></tr></thead>";
 
         if (count($iterator)) {
             echo "<tr><th>" . __s('Name') . "</th>";
@@ -413,10 +419,9 @@ class ProjectCost extends CommonDBChild
             echo "<td class='right'>" . __s('Total cost') . '</td>';
             echo "<td class='numeric'>" . htmlescape(Html::formatNumber($total)) . '</td></tr>';
         } else {
-            echo "<tr><th colspan='5'>" . __s('No results found') . "</th></tr>";
+            echo "<tr><td colspan='5'><div class='alert alert-info'>" . __s('No results found') . "</div></td></tr>";
         }
         echo "</table>";
-        echo "</div>";
         echo "<div>";
         $ticketcost = TicketCost::showForObject($project);
         echo "</div>";
