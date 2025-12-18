@@ -314,10 +314,6 @@ final class Engine
             $answer = $this->computeItemVisibility($question ?? $item);
         }
 
-        if (($answer ?? null) === null) {
-            return false;
-        }
-
         $condition_handler = array_filter(
             $item->getConditionHandlers($config ?? null),
             fn(ConditionHandlerInterface $handler): bool => in_array(
