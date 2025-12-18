@@ -236,7 +236,7 @@ class Item_Disk extends CommonDBChild
                 'components/tab/addlink_block.html.twig',
                 [
                     'add_link' => $link,
-                    'button_label' => __('Add a volume')
+                    'button_label' => __('Add a volume'),
                 ]
             );
         }

@@ -1293,7 +1293,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 'components/tab/addlink_block.html.twig',
                 [
                     'add_link' => ProjectTask::getFormURL() . '?projects_id=' . $ID,
-                    'button_label' => _x('button', 'Add a task')
+                    'button_label' => _x('button', 'Add a task'),
                 ]
             );
         }

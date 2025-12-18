@@ -276,8 +276,8 @@ class NetworkAlias extends FQDNLabel
             TemplateRenderer::getInstance()->display(
                 'components/tab/addlink_block.html.twig',
                 [
-                    'add_link' => 'javascript:viewAddAlias'. $rand . '();',
-                    'button_label' => __('Add a network alias')
+                    'add_link' => 'javascript:viewAddAlias' . $rand . '();',
+                    'button_label' => __('Add a network alias'),
                 ]
             );
         }

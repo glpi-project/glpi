@@ -339,7 +339,7 @@ class ProjectCost extends CommonDBChild
                 'components/tab/addlink_block.html.twig',
                 [
                     'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
-                    'button_label' => __('Add a new cost')
+                    'button_label' => __('Add a new cost'),
                 ]
             );
         }

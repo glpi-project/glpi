@@ -345,8 +345,8 @@ TWIG, $twig_params);
             TemplateRenderer::getInstance()->display(
                 'components/tab/addlink_block.html.twig',
                 [
-                    'add_link' => 'javascript:showCost'. $rand . '(-1, this);',
-                    'button_label' => __('Add a new cost')
+                    'add_link' => 'javascript:showCost' . $rand . '(-1, this);',
+                    'button_label' => __('Add a new cost'),
                 ]
             );
 

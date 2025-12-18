@@ -400,7 +400,7 @@ class Database extends CommonDBChild
                 'components/tab/addlink_block.html.twig',
                 [
                     'add_link' => static::getFormURL() . "?databaseinstances_id=$ID",
-                    'button_label' => __('Add a database')
+                    'button_label' => __('Add a database'),
                 ]
             );
         }

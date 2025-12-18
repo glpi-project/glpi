@@ -1332,7 +1332,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
                 'components/tab/addlink_block.html.twig',
                 [
                     'add_link' => Project::getFormURL() . '?projects_id=' . $ID,
-                    'button_label' => __('Create a sub project from this project')
+                    'button_label' => __('Create a sub project from this project'),
                 ]
             );
         }
