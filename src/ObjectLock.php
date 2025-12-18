@@ -117,7 +117,12 @@ class ObjectLock extends CommonDBTM
         $autolock = $this->isAutolockReadonlyMode();
 
         $user = new User();
-        if (isset($this->fields['users_id']) && $this->fields['users_id'] > 0 && $user->getFromDB($this->fields['users_id'])) {
+        if (
+            isset($this->fields['users_id'])
+            && $this->fields['users_id'] > 0
+            && $this->fields['users_id'] !== Session::getLoginUserID()
+            && $user->getFromDB($this->fields['users_id'])
+        ) {
             $user_data = [
                 'name' => $user->getName(),
                 'comment' => $user->getInfoCard(),
