@@ -478,8 +478,10 @@ class Infocom extends CommonDBChild
 
         //One date or more has changed
         if ($add_or_update) {
-            if (!$infocom->getFromDBforDevice($itemtype, $changes['id']) && $CFG_GLPI["auto_create_infocoms"]) {
-                $infocom->add($tmp);
+            if (!$infocom->getFromDBforDevice($itemtype, $changes['id'])) {
+                if ($CFG_GLPI["auto_create_infocoms"]) {
+                    $infocom->add($tmp);
+                }
             } else {
                 $tmp['id'] = $infocom->fields['id'];
                 $infocom->update($tmp);
