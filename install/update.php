@@ -128,7 +128,7 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
         " . __s('Go back to GLPI') . "
      </a></p>";
     echo "</div>";
-} elseif (empty($_POST["continuer"]) && empty($_POST["from_update"]) && empty($_POST["post_update_step"])) {
+} elseif (empty($_POST["continuer"]) && empty($_POST["post_update_step"])) {
     // Step 1: Confirmation screen (needed for install wizard flow)
     echo "<div class='center'>";
     echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
@@ -143,7 +143,7 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
       </button>";
     Html::closeForm();
     echo "</div>";
-} elseif (!empty($_POST["continuer"]) || !empty($_POST["from_update"])) {
+} elseif (!empty($_POST["continuer"])) {
     // Step 2
     if ($DB->connected) {
         echo "<h3>" . __s('Database connection successful') . "</h3>";
