@@ -1211,7 +1211,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
      *
      * @return void|false
      **/
-    public static function showFor($item, $withtemplate = 0)
+    public static function showFor($item, int $withtemplate = 0)
     {
         global $DB;
 
