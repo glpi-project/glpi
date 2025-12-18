@@ -115,12 +115,14 @@
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
-               {% if not anonymous %}
+               {% if not anonymous or (menu|length > 0 and menu.home is not defined) %}
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
+                  {% if not anonymous %}
                   <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">
                      {{ include('layout/parts/goto_button.html.twig') }}
                   </span>
+                  {% endif %}
                </div>
                {% endif %}
             {% endif %}
