@@ -1218,7 +1218,7 @@ TWIG, ['authldaps_id' => $ID]);
         }
 
         return [
-            'label' => self::getTypeName(Session::getPluralNumber()),
+            'label' => 'LDAP directories',
             'content' => $content,
         ];
     }
