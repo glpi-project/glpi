@@ -472,6 +472,9 @@ export class GlpiFormRendererController
     }
 
     async #computeItemsVisibilities() {
+        // Update tinymce values
+        this.#saveTinymceEditors();
+
         const results = await this.#condition_engine.computeVisiblity(this.#target);
         this.#applyVisibilityResults(results);
         this.#enableActions();
