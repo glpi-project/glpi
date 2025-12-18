@@ -195,7 +195,7 @@ To get an element on a page, you must use a `Locator`, for example:
 page.getByRole('button', { name: 'Sign in' });
 ```
 
-See all posibilities here: https://playwright.dev/docs/locators.
+See all possibilities here: https://playwright.dev/docs/locators.
 
 ### Doing an action
 
@@ -205,7 +205,7 @@ When you have locator, you can then apply some actions to it, for example:
 await page.getByRole('button', { name: 'Sign in' }).click();
 ```
 
-See all posibilities here: https://playwright.dev/docs/input.
+See all possibilities here: https://playwright.dev/docs/input.
 
 ### Assertions
 
@@ -225,7 +225,7 @@ for (const button of await buttons.all()) {
 }
 ```
 
-See all possibilites here: https://playwright.dev/docs/test-assertions.
+See all possibilities here: https://playwright.dev/docs/test-assertions.
 
 ### Page object models
 
