@@ -349,6 +349,7 @@ jobs:
       - name: Check for PHP errors
         if: ${{ !cancelled() }}
         run: |
+          sed -i '/\*\*\* Test logger/d' tests/e2e/glpi_files/_log/php-errors.log
           if [[ $(wc -l < tests/e2e/glpi_files/_log/php-errors.log) -ge 2 ]]; then
             echo "PHP errors detected in log file"
             exit 1
