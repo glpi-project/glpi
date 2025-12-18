@@ -286,4 +286,56 @@ class Item_SoftwareVersionTest extends DbTestCase
             Item_SoftwareVersion::countForSoftware($soft1->fields['id'])
         );
     }
+
+    public function testCanCreateRightsConsistency()
+    {
+        // Test that rights check requires proper rights on both linked items
+        // User needs UPDATE on software OR computer, AND VIEW on the other
+        $this->login();
+
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
+
+        $inst = new \Item_SoftwareVersion();
+        $input = [
+            'items_id'            => $computer->getID(),
+            'itemtype'            => 'Computer',
+            'softwareversions_id' => $ver,
+        ];
+
+        // With full rights (glpi user), can() should return true
+        $this->assertTrue($inst->can(-1, CREATE, $input));
+
+        // Save current profile rights
+        $original_software = $_SESSION['glpiactiveprofile']['software'] ?? 0;
+        $original_computer = $_SESSION['glpiactiveprofile']['computer'] ?? 0;
+
+        // Test case 1: Software UPDATE + Computer READ = should work
+        $_SESSION['glpiactiveprofile']['software'] = READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['computer'] = READ;
+        $inst1 = new \Item_SoftwareVersion();
+        $this->assertTrue($inst1->can(-1, CREATE, $input), 'Software UPDATE + Computer READ should allow creation');
+
+        // Test case 2: Computer UPDATE + Software READ = should work
+        $_SESSION['glpiactiveprofile']['software'] = READ;
+        $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
+        $inst2 = new \Item_SoftwareVersion();
+        $this->assertTrue($inst2->can(-1, CREATE, $input), 'Computer UPDATE + Software READ should allow creation');
+
+        // Test case 3: Software UPDATE only (no computer rights) = should fail
+        $_SESSION['glpiactiveprofile']['software'] = READ | UPDATE;
+        $_SESSION['glpiactiveprofile']['computer'] = 0;
+        $inst3 = new \Item_SoftwareVersion();
+        $this->assertFalse($inst3->can(-1, CREATE, $input), 'Software UPDATE without Computer READ should deny creation');
+
+        // Test case 4: Computer UPDATE only (no software rights) = should fail
+        $_SESSION['glpiactiveprofile']['software'] = 0;
+        $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
+        $inst4 = new \Item_SoftwareVersion();
+        $this->assertFalse($inst4->can(-1, CREATE, $input), 'Computer UPDATE without Software READ should deny creation');
+
+        // Restore original rights
+        $_SESSION['glpiactiveprofile']['software'] = $original_software;
+        $_SESSION['glpiactiveprofile']['computer'] = $original_computer;
+    }
 }
