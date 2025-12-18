@@ -748,6 +748,15 @@ class MailCollectorTest extends DbTestCase
             'Invalid address "} <}>"',
             LogLevel::WARNING
         );
+        // 50-all-invalid-addresses.eml - All addresses are invalid (From and CC)
+        $this->hasPhpLogRecordThatContains(
+            'Invalid address "< >"',
+            LogLevel::WARNING
+        );
+        $this->hasPhpLogRecordThatContains(
+            'Invalid address "{{{"',
+            LogLevel::WARNING
+        );
 
         // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
         foreach ($expected_logged_errors as $error_message => $error_level) {
@@ -755,7 +764,7 @@ class MailCollectorTest extends DbTestCase
         }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 13;
+        $expected_refused_count          = 14;
         $expected_error_count            = 1;
         $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
@@ -798,6 +807,13 @@ class MailCollectorTest extends DbTestCase
                 'subject' => 'Test email without To header that should be refused',
                 'from'    => 'unknown@glpi-project.org',
                 'to'      => '', // Empty string, not NULL
+                'reason'  => \NotImportedEmail::USER_UNKNOWN,
+            ],
+            [
+                // 50-all-invalid-addresses.eml - All addresses (From and CC) are invalid
+                'subject' => '50 - Message with all invalid addresses',
+                'from'    => '', // Empty string, From address is invalid
+                'to'      => 'unittests@glpi-project.org',
                 'reason'  => \NotImportedEmail::USER_UNKNOWN,
             ],
         ];
