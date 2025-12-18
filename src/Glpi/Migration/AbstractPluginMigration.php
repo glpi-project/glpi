@@ -363,12 +363,7 @@ abstract class AbstractPluginMigration
         }
 
         // Create a new item.
-        try {
-            $created = $item->add($input, options: $options);
-        } catch (Throwable $e) {
-            // If add fails due to existing item (unicity constraint), try to get it.
-            $created = $item->getFromDBByCrit($input);
-        }
+        $created = $item->add($input, options: $options);
 
         $this->addSessionMessagesToResult();
         if ($created === false) {
