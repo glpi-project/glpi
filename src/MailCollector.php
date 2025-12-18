@@ -1088,19 +1088,17 @@ class MailCollector extends CommonDBTM
             $tu  = new Ticket_User();
             $st  = new Supplier_Ticket();
 
-            $tkt['_supplier_email'] = $st->isSupplierEmail(
-                        $tkt['tickets_id'],
-                        $requester
-            );
+            $tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'], $requester);
 
             // Check if ticket  exists and users_id exists in GLPI
             if (
                 $job->getFromDB($tkt['tickets_id'])
                 && ($job->fields['status'] != CommonITILObject::CLOSED)
-                && ($CFG_GLPI['use_anonymous_followups']
-                 || ($tkt['_users_id_requester'] > 0)
-                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $requester)
-                 || $tkt['_supplier_email']
+                && (
+                    $CFG_GLPI['use_anonymous_followups']
+                    || ($tkt['_users_id_requester'] > 0)
+                    || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $requester)
+                    || $tkt['_supplier_email']
                 )
             ) {
                 if ($tkt['_supplier_email']) {
