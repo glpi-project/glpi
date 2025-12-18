@@ -279,7 +279,7 @@ final class IllustrationManager
         }
 
         try {
-            mkdir($dir);
+            @mkdir($dir);
         } catch (FilesystemException $e) {
             // Race condition: directory may have been created by another concurrent request
             if (!file_exists($dir)) {
