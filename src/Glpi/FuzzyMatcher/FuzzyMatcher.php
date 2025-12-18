@@ -36,6 +36,9 @@
 namespace Glpi\FuzzyMatcher;
 
 use Normalizer;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
 use function Safe\preg_split;
 
 final class FuzzyMatcher
@@ -51,8 +54,8 @@ final class FuzzyMatcher
         }
 
         // Cast to lowercase to avoid case issues
-        $subject = strtolower($subject);
-        $filter  = strtolower($filter);
+        $subject = mb_strtolower($subject);
+        $filter  = mb_strtolower($filter);
 
         // Start with a simple string comparison if the strategy allow it.
         if (
@@ -60,6 +63,22 @@ final class FuzzyMatcher
             && str_contains($subject, $filter) !== false
         ) {
             return true;
+        }
+
+        if (
+            preg_match('/^[\p{Latin}\p{P}\s\d]+$/u', $subject) !== 1
+            || preg_match('/^[\p{Latin}\p{P}\s\d]+$/u', $filter) !== 1
+        ) {
+            // `\p{Latin}` -> latin alphabet chars
+            // `\p{P}` -> punctuation chars
+            // `\s` -> spaces
+            // `\d` -> digits
+
+            // `levenshtein` algorithm is not compatible with some languages,
+            // for instance languages written with kanjis cannot be compared by splitting sentences in words.
+            // For the moment, we only handle subject/filters that contains only latin chars,
+            // until someone is able to enhance support of other alphabets.
+            return false;
         }
 
         // Normalize strings to remove accents
