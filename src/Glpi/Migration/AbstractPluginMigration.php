@@ -364,7 +364,6 @@ abstract class AbstractPluginMigration
 
         // Create a new item.
         $created = $item->add($input, options: $options);
-
         $this->addSessionMessagesToResult();
         if ($created === false) {
             throw new MigrationException(
