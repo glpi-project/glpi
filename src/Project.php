@@ -1420,14 +1420,15 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
     /**
      * Show team for a project
      * @param Project $project
+     * @param int $withtemplate (default 0)
      * @return true
      **/
-    public function showTeam(Project $project)
+    public function showTeam(Project $project, $withtemplate = 0)
     {
         $ID      = $project->fields['id'];
         $canedit = $project->can($ID, UPDATE);
 
-        if ($canedit) {
+        if ($canedit && $withtemplate != 2) {
             $twig_params = [
                 'id' => $ID,
                 'label' => __('Add a team member'),
