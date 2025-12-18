@@ -429,7 +429,6 @@ class Infocom extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        \Toolbox::logInFile('migration_debug', debug_print_backtrace());
         if (!$this->getFromDBforDevice($input['itemtype'], $input['items_id'])) {
             if ($item = static::getItemFromArray(static::$itemtype, static::$items_id, $input)) {
                 $input['alert'] = Entity::getUsedConfig('default_infocom_alert', $item->getEntityID());
