@@ -822,7 +822,7 @@ class MailCollector extends CommonDBTM
                         }
                     } elseif (
                         isset($tkt['tickets_id'])
-                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous)
+                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous || $tkt['_supplier_email'])
                     ) {
                         // Followup case
                         $ticket = new Ticket();
@@ -867,6 +867,7 @@ class MailCollector extends CommonDBTM
                         } elseif (
                             !$CFG_GLPI['use_anonymous_followups']
                              && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])
+                             && !$tkt['_supplier_email']
                         ) {
                             $delete[$uid] =  self::REFUSED_FOLDER;
                             $refused++;
@@ -1079,12 +1080,19 @@ class MailCollector extends CommonDBTM
         }
 
         $tkt['_supplier_email'] = false;
+
         // Found ticket link
         if (isset($tkt['tickets_id'])) {
             // it's a reply to a previous ticket
             $job = new Ticket();
             $tu  = new Ticket_User();
             $st  = new Supplier_Ticket();
+
+
+            $tkt['_supplier_email'] = $st->isSupplierEmail(
+                        $tkt['tickets_id'],
+                        $requester
+            );
 
             // Check if ticket  exists and users_id exists in GLPI
             if (
@@ -1093,10 +1101,8 @@ class MailCollector extends CommonDBTM
                 && ($CFG_GLPI['use_anonymous_followups']
                  || ($tkt['_users_id_requester'] > 0)
                  || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $requester)
-                 || ($tkt['_supplier_email'] = $st->isSupplierEmail(
-                     $tkt['tickets_id'],
-                     $requester
-                 )))
+                 || $tkt['_supplier_email']
+                )
             ) {
                 if ($tkt['_supplier_email']) {
                     $tkt['content'] = (
