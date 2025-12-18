@@ -1962,6 +1962,61 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
     });
 });
 
+/**
+ * Toggle all accordions in a notepad container
+ *
+ * @param {Element} button - The button that was clicked
+ */
+window.toggleNotesAccordion = function(button) {
+    // Find the accordion container (it's the sibling div after the firstbloc)
+    const firstbloc = button.closest('.firstbloc');
+    const accordionContainer = firstbloc.parentElement.querySelector('.accordion');
+
+    if (!accordionContainer) {
+        console.warn('Accordion container not found');
+        return;
+    }
+
+    const accordionElements = accordionContainer.querySelectorAll('.accordion-collapse');
+    const buttonText = button.querySelector('span');
+    const buttonIcon = button.querySelector('i');
+    const isExpanding = buttonText.textContent.includes(button.dataset.expandText);
+
+    accordionElements.forEach(function(accordion) {
+        if (isExpanding) {
+            accordion.classList.add('show');
+            const accordionButton = accordion.previousElementSibling.querySelector('.accordion-button');
+            if (accordionButton) {
+                accordionButton.classList.remove('collapsed');
+                accordionButton.setAttribute('aria-expanded', 'true');
+            }
+        } else {
+            accordion.classList.remove('show');
+            const accordionButton = accordion.previousElementSibling.querySelector('.accordion-button');
+            if (accordionButton) {
+                accordionButton.classList.add('collapsed');
+                accordionButton.setAttribute('aria-expanded', 'false');
+            }
+        }
+    });
+
+    // Update button text and icon
+    if (isExpanding) {
+        buttonText.textContent = button.dataset.collapseText;
+        button.title = button.dataset.collapseTitle;
+        buttonIcon.className = 'ti ti-arrows-minimize';
+    } else {
+        buttonText.textContent = button.dataset.expandText;
+        button.title = button.dataset.expandTitle;
+        buttonIcon.className = 'ti ti-arrows-maximize';
+    }
+};
+
+// Event listener for toggle all notes button
+$(document).on('click', '.toggle-all-notes', function() {
+    toggleNotesAccordion(this);
+});
+
 // Prevent Bootstrap dialog from blocking focusin
 // See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
 document.addEventListener('focusin', (e) => {
