@@ -699,7 +699,7 @@ TWIG, $twig_params);
         $params['criteria'][0]['value']      = 'all';
         $params['criteria'][0]['link']       = 'AND';
 
-        switch($item->getType()) {
+        switch ($item->getType()) {
             case User::class:
                 $params['criteria'][] = [
                     'link'       => 'AND',
