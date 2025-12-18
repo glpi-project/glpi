@@ -100,7 +100,7 @@ npx playwright show-report tests/e2e/results
 npx playwright test --ui
 ```
 
-## Writting tests
+## Writing tests
 
 ### Minimal test file
 
@@ -139,7 +139,7 @@ url) and our homemade profile fixture which allow switching to another profile.
 You can see this as some kind of dependency injection, like symfony does in
 controllers with type hinted parameters.
 
-More informations:
+More information:
 * Check the `fixtures/glpi_fixture.ts` file
 * Official documentation: https://playwright.dev/docs/test-fixtures
 
@@ -209,7 +209,7 @@ See all posibilities here: https://playwright.dev/docs/input.
 
 ### Assertions
 
-Assertion are done by calling `expect` on a `Locator` instance.
+Assertions are done by calling `expect` on a `Locator` instance.
 
 Here is an example of an assertion:
 ```ts
@@ -221,7 +221,7 @@ When dealing with a list of objects, you can loop on them like this:
 ```ts
 const buttons = page.getByRole('button');
 for (const button of await buttons.all()) {
-    await expect(widget).toBeVisible();
+    await expect(button).toBeVisible();
 }
 ```
 
@@ -229,7 +229,7 @@ See all possibilites here: https://playwright.dev/docs/test-assertions.
 
 ### Page object models
 
-Take the following test, which do some changes on the Form editor then click
+Take the following test, which does some changes on the Form editor then clicks
 the save button:
 
 ```ts
@@ -323,7 +323,7 @@ test('create a computer with the API', async ({page, profile, api}) => {
 ### Try to only modify your entity data
 
 When the tests is executed, playwright spawn one browser per thread.  
-Each browsers will use a unique user and entity, for exemple the first thread
+Each browsers will use a unique user and entity, for example the first thread
 will use the `E2E worker account 01` user on the `E2E worker entity 01` entity.
 
 When you create items through the API, make sure to create them inside your 
@@ -344,7 +344,7 @@ const id = await api.createItem("Glpi\\Form\\Form", {
 Some tests might require global actions that goes beyond entities (for example,
 editing GLPI's config).
 
-This will need a special treatement to make sure it doesn't impact other workers.
+This will need a special treatment to make sure it doesn't impact other workers.
 
 The documentation will be updated once we encounter such a case to explain how to
 deal with it.
