@@ -43,7 +43,7 @@ use Glpi\Event;
 
 global $CFG_GLPI;
 
-Session::checkRight("networking", READ);
+Session::checkRightsOr("networking", [READ, CREATE, UPDATE]);
 
 $np  = new NetworkPort();
 $nn  = new NetworkPort_NetworkPort();
