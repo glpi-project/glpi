@@ -53,6 +53,7 @@
 
     {% block form_fields %}
         {% set picture_fields = ['picture_front', 'picture_rear', 'pictures'] %}
+        {% set has_picture_field = false %}
 
         {# Show fields common to all dropdowns #}
                 {{ fields.autoNameField(
@@ -81,6 +82,9 @@
             {% endif %}
             {% if field['name'] in picture_fields %}
                 {% set show_field = false %}
+                {% if is_model %}
+                    {% set has_picture_field = true %}
+                {% endif %}
             {% endif %}
             {% if show_field %}
 
@@ -223,6 +227,9 @@
             </div>
         {% else %}
             {# Show pictures at the bottom of the form for current object if needed -> ie DropdownModel#}
+            {% if is_model and has_picture_field %}
+                {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'ti ti-photo') }}
+            {% endif %}
             {% for field in additional_fields %}
                 {% set type = field['type']|default('') %}
                 {% if field['name'] in picture_fields %}

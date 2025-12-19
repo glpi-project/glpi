@@ -373,11 +373,13 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         $fields = $this->getAdditionalFields();
+        $is_model = strpos($this->getType(), 'Model') !== false;
 
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
             'item'   => $this,
             'params' => $options,
             'additional_fields' => $fields,
+            'is_model' => $is_model,
         ]);
 
         return true;
