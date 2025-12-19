@@ -275,6 +275,7 @@ final class Engine
     {
         // Find relevant answer using the question's id
         $type = $condition->getItemType();
+        $answer = null;
         switch ($type) {
             case Type::QUESTION:
                 $question = Question::getByUuid($condition->getItemUuid());
