@@ -321,6 +321,8 @@
         {% if not is_preference_form %}
             {% if no_form_buttons is not defined or no_form_buttons == false %}
                 {{ include('components/form/buttons.html.twig') }}
+            {% else %}
+                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             {% endif %}
             {% if params['formfooter'] ?? true %}
                 <div class="card-footer mx-n2 mb-n2">
