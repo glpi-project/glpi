@@ -330,6 +330,7 @@
                 </div>
             {% endif %}
         {% else %}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                 <button class="btn btn-primary me-2" type="submit" name="update" value="1">
                     <i class="ti ti-device-floppy"></i>
