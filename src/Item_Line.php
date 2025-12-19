@@ -165,7 +165,7 @@ class Item_Line extends CommonDBRelation
      **/
     public static function showItemsForLine(Line $line)
     {
-        global $DB;
+        global $DB, $CFG_GLPI;
 
         $ID = $line->fields['id'];
 
@@ -240,11 +240,20 @@ class Item_Line extends CommonDBRelation
                 $used[$row['itemtype']][$row['items_id']] = $row['items_id'];
             }
 
-            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
-                'from_line' => true,
-                'peer_id' => $line->getID(),
-                'used' => $used,
-                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID(),
+            $rand = mt_rand();
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => $rand,
+                'link_itemtype' => self::class,
+                'source_itemtype' => $line::class,
+                'source_items_id' => $ID,
+                'link_types' => $CFG_GLPI['line_types'],
+                'generic_target' => true,
+                'dropdown_options' => [
+                    'entity'      => $line->getEntityID(),
+                    'entity_sons' => $line->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Add an item'),
             ]);
         }
 
@@ -378,12 +387,19 @@ class Item_Line extends CommonDBRelation
                 $used[] = $row['lines_id'];
             }
 
-            TemplateRenderer::getInstance()->display('pages/management/item_line.html.twig', [
-                'from_line' => false,
-                'peer_itemtype' => $itemtype,
-                'peer_id' => $ID,
-                'used' => $used,
-                'entity_restrict' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => mt_rand(),
+                'link_itemtype' => self::class,
+                'generic_source' => true,
+                'source_itemtype' => $item::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Line::class,
+                'dropdown_options' => [
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Add a phone line'),
             ]);
         }
 
