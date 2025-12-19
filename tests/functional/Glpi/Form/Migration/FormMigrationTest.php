@@ -3877,4 +3877,24 @@ final class FormMigrationTest extends DbTestCase
             $itil_object->getLinkedItems()
         );
     }
+
+    public function testFormMigrationActorsWithNullDefaultValue(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with an actor question without a default value
+        $this->createSimpleFormcreatorForm('Actor test with null default value', [
+            [
+                'name'      => 'Actor',
+                'fieldtype' => 'actor',
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error
+        $this->assertTrue($result->isFullyProcessed());
+    }
 }

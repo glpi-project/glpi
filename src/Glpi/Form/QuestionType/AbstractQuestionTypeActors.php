@@ -229,7 +229,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     #[Override]
     public function convertDefaultValue(array $rawData): mixed
     {
-        $users_ids = json_decode($rawData['default_values'] ?? []);
+        $users_ids = json_decode($rawData['default_values'] ?? "[]");
         return ['users_ids' => $users_ids];
     }
 
