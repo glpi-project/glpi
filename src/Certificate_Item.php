@@ -220,10 +220,10 @@ class Certificate_Item extends CommonDBRelation
                 'generic_target' => true,
                 'dropdown_options' => [
                     'entity'      => $certificate->getEntityID(),
-                    'entity_sons' => $certificate->isRecursive()
+                    'entity_sons' => $certificate->isRecursive(),
                 ],
                 'form_label' => '',
-                'add_button_label' => _x('button', 'Associate')
+                'add_button_label' => _x('button', 'Associate'),
             ]);
         }
 
