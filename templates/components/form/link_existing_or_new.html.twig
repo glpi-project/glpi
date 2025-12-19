@@ -47,7 +47,7 @@
       {% if generic_target ?? false %}
           {{ fields.dropdownItemsFromItemtypes('items_id', '', {
               itemtypes: link_types,
-              used: used,
+              used: used ?? [],
               field_class: 'd-flex',
               width: 'auto',
               mb: '',
