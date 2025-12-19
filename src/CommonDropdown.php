@@ -373,7 +373,7 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         $fields = $this->getAdditionalFields();
-        $is_model = str_contains($this->getType(), 'Model');
+        $is_model = ($this instanceof CommonDeviceModel);
 
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
             'item'   => $this,
