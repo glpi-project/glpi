@@ -1033,101 +1033,130 @@ class TransferTest extends DbTestCase
         ])), 1);
     }
 
-    /**
-     * Test transfer of ticket with document that exists in both entities
-     * This test verifies that duplicate document relations are handled correctly
-     * and don't cause unicity constraint violations.
-     */
-    public function testTicketTransferWithDuplicateDocument()
+    public function testTransferDocumentsHandlesDuplicateLinksCorrectly(): void
     {
         $this->login();
 
-        // Original entity
-        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
-        // Destination entity
-        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
+        $sourceEntity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $destinationEntity = (int)getItemByTypeName('Entity', '_test_child_2', true);
 
-        // Create a document in the destination entity
         $document = new \Document();
-        $doc_id = (int) $document->add([
-            'name' => 'shared_document.pdf',
-            'entities_id' => $dentity,
-            'filename' => 'shared_document.pdf',
+        $docId = (int)$document->add([
+            'name' => 'duplicate_document.pdf',
+            'entities_id' => $destinationEntity,
+            'filename' => 'duplicate_document.pdf',
         ]);
-        $this->assertGreaterThan(0, $doc_id);
+        $this->assertGreaterThan(0, $docId);
 
-        // Create a ticket in the destination entity with this document
-        $ticket_dest = new \Ticket();
-        $ticket_dest_id = (int) $ticket_dest->add([
-            'name' => 'ticket destination',
-            'content' => 'ticket in destination entity',
-            'entities_id' => $dentity,
+        $ticketSource = new \Ticket();
+        $ticketSourceId = (int)$ticketSource->add([
+            'name' => 'source_ticket',
+            'content' => 'source ticket content',
+            'entities_id' => $sourceEntity,
         ]);
-        $this->assertGreaterThan(0, $ticket_dest_id);
+        $this->assertGreaterThan(0, $ticketSourceId);
 
-        // Link the document to the destination ticket
-        $doc_item_dest = new \Document_Item();
-        $doc_item_dest_id = (int) $doc_item_dest->add([
-            'documents_id' => $doc_id,
+        $ticketDestination = new \Ticket();
+        $ticketDestinationId = (int)$ticketDestination->add([
+            'name' => 'destination_ticket',
+            'content' => 'destination ticket content',
+            'entities_id' => $destinationEntity,
+        ]);
+        $this->assertGreaterThan(0, $ticketDestinationId);
+
+        $docItemSource = new \Document_Item();
+        $docItemSourceId = (int)$docItemSource->add([
+            'documents_id' => $docId,
             'itemtype' => \Ticket::class,
-            'items_id' => $ticket_dest_id,
-            'entities_id' => $dentity,
+            'items_id' => $ticketSourceId,
+            'entities_id' => $sourceEntity,
         ]);
-        $this->assertGreaterThan(0, $doc_item_dest_id);
+        $this->assertGreaterThan(0, $docItemSourceId);
 
-        // Create a ticket in the source entity
-        $ticket_source = new \Ticket();
-        $ticket_source_id = (int) $ticket_source->add([
-            'name' => 'ticket source',
-            'content' => 'ticket in source entity',
-            'entities_id' => $fentity,
-        ]);
-        $this->assertGreaterThan(0, $ticket_source_id);
-
-        // Link the SAME document to the source ticket
-        $doc_item_source = new \Document_Item();
-        $doc_item_source_id = (int) $doc_item_source->add([
-            'documents_id' => $doc_id,
+        $docItemDestination = new \Document_Item();
+        $docItemDestinationId = (int)$docItemDestination->add([
+            'documents_id' => $docId,
             'itemtype' => \Ticket::class,
-            'items_id' => $ticket_source_id,
-            'entities_id' => $fentity,
+            'items_id' => $ticketDestinationId,
+            'entities_id' => $destinationEntity,
         ]);
-        $this->assertGreaterThan(0, $doc_item_source_id);
+        $this->assertGreaterThan(0, $docItemDestinationId);
 
-        // Transfer the source ticket to destination entity with keep_document option
         $transfer = new \Transfer();
         $this->assertTrue($transfer->getFromDB(1));
         $transfer->fields['keep_document'] = 1;
-        $transfer->fields['keep_ticket'] = 2; // Transfer tickets
         $this->assertTrue($transfer->update($transfer->fields));
 
-        // This should NOT throw a "Duplicate entry" SQL error
-        $item_to_transfer = [\Ticket::class => [$ticket_source_id => $ticket_source_id]];
-        $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
+        $itemsToTransfer = [\Ticket::class => [$ticketSourceId => $ticketSourceId]];
+        $transfer->moveItems($itemsToTransfer, $destinationEntity, $transfer->fields);
 
-        // Verify the ticket was transferred successfully
-        $this->assertTrue($ticket_source->getFromDB($ticket_source_id));
-        $this->assertEquals($dentity, $ticket_source->fields['entities_id']);
+        $this->assertTrue($ticketSource->getFromDB($ticketSourceId));
+        $this->assertEquals($destinationEntity, $ticketSource->fields['entities_id']);
 
-        // Verify that the document is still linked to the transferred ticket
-        $doc_items = $doc_item_source->find([
-            'documents_id' => $doc_id,
+        $docItems = $docItemSource->find([
+            'documents_id' => $docId,
             'itemtype' => \Ticket::class,
-            'items_id' => $ticket_source_id,
+            'items_id' => $ticketSourceId,
         ]);
-        $this->assertCount(1, $doc_items, 'Document should still be linked to the transferred ticket');
+        $this->assertCount(1, $docItems);
 
-        // Verify that we don't have duplicate entries
         global $DB;
         $count = $DB->request([
             'COUNT' => 'cpt',
             'FROM' => 'glpi_documents_items',
             'WHERE' => [
-                'documents_id' => $doc_id,
+                'documents_id' => $docId,
                 'itemtype' => \Ticket::class,
-                'items_id' => $ticket_source_id,
+                'items_id' => $ticketSourceId,
             ],
         ])->current()['cpt'];
-        $this->assertEquals(1, $count, 'There should be exactly one link between document and transferred ticket');
+        $this->assertEquals(1, $count);
+    }
+
+    public function testTransferDocumentsUnlinksWhenKeepDocumentIsFalse(): void
+    {
+        $this->login();
+
+        $sourceEntity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+
+        $document = new \Document();
+        $docId = (int)$document->add([
+            'name' => 'unlink_document.pdf',
+            'entities_id' => $sourceEntity,
+            'filename' => 'unlink_document.pdf',
+        ]);
+        $this->assertGreaterThan(0, $docId);
+
+        $ticket = new \Ticket();
+        $ticketId = (int)$ticket->add([
+            'name' => 'unlink_ticket',
+            'content' => 'unlink ticket content',
+            'entities_id' => $sourceEntity,
+        ]);
+        $this->assertGreaterThan(0, $ticketId);
+
+        $docItem = new \Document_Item();
+        $docItemId = (int)$docItem->add([
+            'documents_id' => $docId,
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticketId,
+            'entities_id' => $sourceEntity,
+        ]);
+        $this->assertGreaterThan(0, $docItemId);
+
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+        $transfer->fields['keep_document'] = 0;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $itemsToTransfer = [\Ticket::class => [$ticketId => $ticketId]];
+        $transfer->moveItems($itemsToTransfer, $sourceEntity, $transfer->fields);
+
+        $docItems = $docItem->find([
+            'documents_id' => $docId,
+            'itemtype' => \Ticket::class,
+            'items_id' => $ticketId,
+        ]);
+        $this->assertCount(0, $docItems);
     }
 }

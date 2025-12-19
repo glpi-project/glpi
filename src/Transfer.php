@@ -40,6 +40,7 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 use Glpi\Toolbox\URL;
+use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Transfer engine.
@@ -2424,13 +2425,8 @@ final class Transfer extends CommonDBTM
                 // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newdocID) {
-                        // Get timeline_position to check for duplicates
-                        $current_entry = $DB->request([
-                            'SELECT' => ['timeline_position'],
-                            'FROM'   => 'glpi_documents_items',
-                            'WHERE'  => ['id' => $data['id']],
-                        ])->current();
-
+                        Toolbox::logDebug('ICI');
+                        var_dump('ICI');
                         // Check if the target relation already exists
                         $existing = $DB->request([
                             'COUNT'  => 'cpt',
@@ -2439,7 +2435,11 @@ final class Transfer extends CommonDBTM
                                 'documents_id'      => $newdocID,
                                 'itemtype'          => $itemtype,
                                 'items_id'          => $newID,
-                                'timeline_position' => $current_entry['timeline_position'],
+                                'timeline_position' => new QuerySubQuery([
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ]),
                                 'NOT'               => ['id' => $data['id']],
                             ],
                         ])->current();
