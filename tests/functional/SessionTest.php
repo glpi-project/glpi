@@ -251,6 +251,38 @@ class SessionTest extends DbTestCase
         unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo');
     }
 
+    public function testLocalI18nCacheInvalidation()
+    {
+        //create directory for local i18n
+        if (!file_exists(GLPI_LOCAL_I18N_DIR . '/core')) {
+            mkdir(GLPI_LOCAL_I18N_DIR . '/core');
+        }
+
+        //write initial PHP override file
+        file_put_contents(
+            GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
+            "<?php\n\$lang['Password'] = 'Initial Password Override';\nreturn \$lang;"
+        );
+        \Session::loadLanguage('en_GB');
+
+        $this->assertEquals('Initial Password Override', __('Password'));
+
+        //ensure file modification time changes (filesystem may have 1-second resolution)
+        sleep(1);
+
+        //modify the override file with new content
+        file_put_contents(
+            GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
+            "<?php\n\$lang['Password'] = 'Modified Password Override';\nreturn \$lang;"
+        );
+        \Session::loadLanguage('en_GB');
+
+        //verify new translation is loaded (proves cache was invalidated due to hash change)
+        $this->assertEquals('Modified Password Override', __('Password'));
+
+        unlink(GLPI_LOCAL_I18N_DIR . '/core/en_GB.php');
+    }
+
     public static function mustChangePasswordProvider()
     {
         $tests = [];
