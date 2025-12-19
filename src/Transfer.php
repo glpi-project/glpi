@@ -2462,13 +2462,6 @@ final class Transfer extends CommonDBTM
                     // Copy Item -> copy links
                     if ($item_ID != $newdocID) {
                         // Get timeline_position to check for duplicates
-                        $current_entry = $DB->request([
-                            'SELECT' => ['timeline_position'],
-                            'FROM'   => 'glpi_documents_items',
-                            'WHERE'  => ['id' => $data['id']],
-                        ])->current();
-
-                        // Check if the target relation already exists
                         $existing = $DB->request([
                             'COUNT'  => 'cpt',
                             'FROM'   => 'glpi_documents_items',
@@ -2476,7 +2469,11 @@ final class Transfer extends CommonDBTM
                                 'documents_id'      => $newdocID,
                                 'itemtype'          => $itemtype,
                                 'items_id'          => $newID,
-                                'timeline_position' => $current_entry['timeline_position'],
+                                'timeline_position' => new QuerySubQuery([
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ]),
                             ],
                         ])->current();
 
@@ -2495,22 +2492,19 @@ final class Transfer extends CommonDBTM
                         // If relation already exists, we simply skip the insert (no error)
                     } else { // same doc for new item update link
                         // Get timeline_position to check for duplicates
-                        $current_entry = $DB->request([
-                            'SELECT' => ['timeline_position'],
-                            'FROM'   => 'glpi_documents_items',
-                            'WHERE'  => ['id' => $data['id']],
-                        ])->current();
-
-                        // Check if the target relation already exists
                         $existing = $DB->request([
-                            'COUNT'  => 'cpt',
-                            'FROM'   => 'glpi_documents_items',
-                            'WHERE'  => [
-                                'documents_id'      => $item_ID,
-                                'itemtype'          => $itemtype,
-                                'items_id'          => $newID,
-                                'timeline_position' => $current_entry['timeline_position'],
-                                'NOT'               => ['id' => $data['id']],
+                            'COUNT' => 'cpt',
+                            'FROM'  => 'glpi_documents_items',
+                            'WHERE' => [
+                                'documents_id' => $item_ID,
+                                'itemtype'     => $itemtype,
+                                'items_id'     => $newID,
+                                'timeline_position' => [
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ],
+                                'NOT' => ['id' => $data['id']],
                             ],
                         ])->current();
 
