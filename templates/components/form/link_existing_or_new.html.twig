@@ -48,13 +48,13 @@
           {{ fields.dropdownItemsFromItemtypes('items_id', '', {
               itemtypes: link_types,
               used: used,
-              entity_restrict: entity_restrict,
               field_class: 'd-flex',
               width: 'auto',
               mb: '',
               no_label: true,
-          }) }}
+          }|merge(dropdown_options)) }}
       {% else %}
+          {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
           {% if link_types is defined and link_types is not empty %}
                   {{ fields.dropdownArrayField('link', link_types|first, link_types, '', {
                      no_label: true,

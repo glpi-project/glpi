@@ -248,6 +248,7 @@ class Item_Line extends CommonDBRelation
                 'source_items_id' => $ID,
                 'link_types' => $CFG_GLPI['line_types'],
                 'generic_target' => true,
+                'used' => $used,
                 'dropdown_options' => [
                     'entity'      => $line->getEntityID(),
                     'entity_sons' => $line->isRecursive(),
