@@ -1037,11 +1037,11 @@ class TransferTest extends DbTestCase
     {
         $this->login();
 
-        $sourceEntity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
-        $destinationEntity = (int)getItemByTypeName('Entity', '_test_child_2', true);
+        $sourceEntity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        $destinationEntity = (int) getItemByTypeName('Entity', '_test_child_2', true);
 
         $document = new \Document();
-        $docId = (int)$document->add([
+        $docId = (int) $document->add([
             'name' => 'duplicate_document.pdf',
             'entities_id' => $destinationEntity,
             'filename' => 'duplicate_document.pdf',
@@ -1049,7 +1049,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(0, $docId);
 
         $ticketSource = new \Ticket();
-        $ticketSourceId = (int)$ticketSource->add([
+        $ticketSourceId = (int) $ticketSource->add([
             'name' => 'source_ticket',
             'content' => 'source ticket content',
             'entities_id' => $sourceEntity,
@@ -1057,7 +1057,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(0, $ticketSourceId);
 
         $ticketDestination = new \Ticket();
-        $ticketDestinationId = (int)$ticketDestination->add([
+        $ticketDestinationId = (int) $ticketDestination->add([
             'name' => 'destination_ticket',
             'content' => 'destination ticket content',
             'entities_id' => $destinationEntity,
@@ -1065,7 +1065,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(0, $ticketDestinationId);
 
         $docItemSource = new \Document_Item();
-        $docItemSourceId = (int)$docItemSource->add([
+        $docItemSourceId = (int) $docItemSource->add([
             'documents_id' => $docId,
             'itemtype' => \Ticket::class,
             'items_id' => $ticketSourceId,
@@ -1074,7 +1074,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(0, $docItemSourceId);
 
         $docItemDestination = new \Document_Item();
-        $docItemDestinationId = (int)$docItemDestination->add([
+        $docItemDestinationId = (int) $docItemDestination->add([
             'documents_id' => $docId,
             'itemtype' => \Ticket::class,
             'items_id' => $ticketDestinationId,
@@ -1117,10 +1117,10 @@ class TransferTest extends DbTestCase
     {
         $this->login();
 
-        $sourceEntity = (int)getItemByTypeName('Entity', '_test_root_entity', true);
+        $sourceEntity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
 
         $document = new \Document();
-        $docId = (int)$document->add([
+        $docId = (int) $document->add([
             'name' => 'unlink_document.pdf',
             'entities_id' => $sourceEntity,
             'filename' => 'unlink_document.pdf',
@@ -1128,7 +1128,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(0, $docId);
 
         $ticket = new \Ticket();
-        $ticketId = (int)$ticket->add([
+        $ticketId = (int) $ticket->add([
             'name' => 'unlink_ticket',
             'content' => 'unlink ticket content',
             'entities_id' => $sourceEntity,
@@ -1136,7 +1136,7 @@ class TransferTest extends DbTestCase
         $this->assertGreaterThan(0, $ticketId);
 
         $docItem = new \Document_Item();
-        $docItemId = (int)$docItem->add([
+        $docItemId = (int) $docItem->add([
             'documents_id' => $docId,
             'itemtype' => \Ticket::class,
             'items_id' => $ticketId,

@@ -36,11 +36,11 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
 use Glpi\Toolbox\URL;
-use Glpi\DBAL\QuerySubQuery;
 
 /**
  * Transfer engine.
@@ -2425,8 +2425,6 @@ final class Transfer extends CommonDBTM
                 // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newdocID) {
-                        Toolbox::logDebug('ICI');
-                        var_dump('ICI');
                         // Check if the target relation already exists
                         $existing = $DB->request([
                             'COUNT'  => 'cpt',
