@@ -1288,13 +1288,14 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
                 return;
         }
 
-        if ($canedit && $withtemplate != 2) {
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path() }}?projects_id={{ projects_id }}">{{ btn_label }}</a>
-                </div>
-TWIG, ['projects_id' => $ID, 'btn_label' => _x('button', 'Add a task')]);
+        if ($canedit) {
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => ProjectTask::getFormURL() . '?projects_id=' . $ID,
+                    'button_label' => _x('button', 'Add a task'),
+                ]
+            );
         }
 
         if ($item::class === self::class && $item->can($ID, UPDATE) && $withtemplate != 2) {

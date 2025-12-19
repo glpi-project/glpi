@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Computer;
+use Glpi\Cache\CacheManager;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Tests\DbTestCase;
@@ -217,6 +218,9 @@ class SessionTest extends DbTestCase
 
     public function testLocalI18n()
     {
+        $manager = new CacheManager();
+        $cache = $manager->getTranslationsCacheInstance();
+
         //load locales
         \Session::loadLanguage('en_GB');
         $this->assertEquals('Login', __('Login'));
@@ -231,6 +235,7 @@ class SessionTest extends DbTestCase
             __DIR__ . '/../local_en_GB.mo',
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo'
         );
+        $cache->clear();
         \Session::loadLanguage('en_GB');
 
         $this->assertEquals('Login from local gettext', __('Login'));
@@ -241,6 +246,7 @@ class SessionTest extends DbTestCase
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
             "<?php\n\$lang['Login'] = 'Login from local PHP';\n\$lang['Password'] = 'Password from local PHP';\nreturn \$lang;"
         );
+        $cache->clear();
         \Session::loadLanguage('en_GB');
 
         $this->assertEquals('Login from local gettext', __('Login'));
@@ -1062,6 +1068,15 @@ class SessionTest extends DbTestCase
         \Session::addMessageAfterRedirect("Test 3", INFO);
         \Session::deleteMessageAfterRedirect("Test 2", INFO);
         $this->hasSessionMessages(INFO, ["Test 1", "Test 3"]);
+    }
+
+    public function testDeleteMessageAfterRedirectWithEmptyMessageType(): void
+    {
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        \Session::deleteMessageAfterRedirect("Non-existent message", INFO);
+
+        $this->assertSame([], $_SESSION['MESSAGE_AFTER_REDIRECT']);
     }
 
     public static function entitiesRestrictProvider(): iterable

@@ -1139,9 +1139,28 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         global $DB;
 
+        // Do not trigger webhooks during initial installation
+        if (!DBConnection::isDbAvailable() || !Config::isLegacyConfigurationLoaded() || Update::isUpdateMandatory()) {
+            return;
+        }
+
         try {
             // Ignore raising if the table doesn't exist (happens during install/update)
             if (!$DB->tableExists(self::getTable())) {
+                return;
+            }
+
+            // Get all active webhooks for the given event and item type
+            $it = $DB->request([
+                'SELECT' => ['id', 'entities_id', 'is_recursive'],
+                'FROM' => self::getTable(),
+                'WHERE' => [
+                    'event' => $event,
+                    'itemtype' => $item->getType(),
+                    'is_active' => 1,
+                ],
+            ]);
+            if ($it->count() === 0) {
                 return;
             }
 
@@ -1155,19 +1174,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
             // Ignore raising if the item type is not supported
             if (!in_array($item->getType(), $supported_types, true)) {
-                return;
-            }
-
-            $it = $DB->request([
-                'SELECT' => ['id', 'entities_id', 'is_recursive'],
-                'FROM' => self::getTable(),
-                'WHERE' => [
-                    'event' => $event,
-                    'itemtype' => $item->getType(),
-                    'is_active' => 1,
-                ],
-            ]);
-            if ($it->count() === 0) {
                 return;
             }
 

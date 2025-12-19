@@ -451,6 +451,7 @@ class Infocom extends CommonDBChild
      **/
     public static function manageDateOnStatusChange(CommonDBTM $item, $action_add = true)
     {
+        global $CFG_GLPI;
         $itemtype = get_class($item);
         $changes  = $item->fields;
 
@@ -480,7 +481,9 @@ class Infocom extends CommonDBChild
         //One date or more has changed
         if ($add_or_update) {
             if (!$infocom->getFromDBforDevice($itemtype, $changes['id'])) {
-                $infocom->add($tmp);
+                if ($CFG_GLPI["auto_create_infocoms"]) {
+                    $infocom->add($tmp);
+                }
             } else {
                 $tmp['id'] = $infocom->fields['id'];
                 $infocom->update($tmp);

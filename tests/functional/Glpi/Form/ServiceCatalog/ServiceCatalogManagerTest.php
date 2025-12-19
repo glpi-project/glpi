@@ -413,7 +413,7 @@ final class ServiceCatalogManagerTest extends DbTestCase
         ];
         yield 'Partial match on description with spelling mistakes' => [
             'forms_data'           => $forms_data,
-            'filter'               => "cuccummber",
+            'filter'               => "cucummber",
             'expected_forms_names' => ["Vegetable form"],
         ];
         yield 'Too many spelling mistakes' => [

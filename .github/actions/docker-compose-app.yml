@@ -2,6 +2,14 @@ services:
   app:
     container_name: "glpi-test-app"
     image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache:8.3}"
+    environment:
+      # Allow us to compute some settings differently when running on the CI
+      CI: true
+      # Custom path to playwright browsers to avoid file permission issues
+      PLAYWRIGHT_BROWSERS_PATH: /opt/pw-browsers
+      # E2E env is exposed on the 8090 port
+      # See: https://github.com/glpi-project/docker-images/blob/main/githubactions-php-apache/files/etc/apache2/sites-available/000-default.conf
+      E2E_BASE_URL: http://localhost:8090
     volumes:
       - type: "bind"
         source: "${APPLICATION_ROOT}"

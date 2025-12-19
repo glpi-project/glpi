@@ -1,0 +1,22 @@
+diff --git a/src/Header/AbstractAddressList.php b/src/Header/AbstractAddressList.php
+index 1234567..abcdefg 100644
+--- a/src/Header/AbstractAddressList.php
++++ b/src/Header/AbstractAddressList.php
+@@ -118,7 +118,16 @@ abstract class AbstractAddressList implements HeaderInterface
+                     ],
+                     $value
+                 );
+-                return empty($value) ? null : Address::fromString($value, $comments);
++                if (empty($value)) {
++                    return null;
++                }
++                try {
++                    return Address::fromString($value, $comments);
++                } catch (\Laminas\Mail\Exception\InvalidArgumentException $e) {
++                    // Invalid email address, ignore it and add a warning
++                    trigger_error(sprintf('Invalid address "%s"', $value), E_USER_WARNING);
++                    return null;
++                }
+             },
+             $values
+         );

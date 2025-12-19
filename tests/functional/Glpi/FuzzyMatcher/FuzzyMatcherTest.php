@@ -54,6 +54,24 @@ final class FuzzyMatcherTest extends GLPITestCase
         yield [$subject, "Carrot and oranges", false];
         yield [$subject, "apzple", true]; // Small typo is OK
         yield [$subject, "apzywple", false]; // Too much wrong chars is NOT OK
+
+        $subject = "request a server";
+        yield [$subject, "server", true];
+        yield [$subject, "service", false];
+        yield [$subject, "requesst servedr", true];
+        yield [$subject, "requesst z servedr", true];
+        yield [$subject, "requesst service", false];
+
+        $subject = "référence";
+        yield [$subject, "référence", true];
+        yield [$subject, "reference", true];
+        yield [$subject, "réferenec", true];
+        yield [$subject, "réféernec", false];
+
+        $subject = "メールサーバー";
+        yield [$subject, "メール", true];
+        yield [$subject, "サーバー", true];
+        yield [$subject, "メサバー", false];
     }
 
     #[DataProvider('partialMatchStrategyProvider')]

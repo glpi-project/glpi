@@ -247,7 +247,10 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
         DatabaseMapper $mapper,
     ): array {
         // Check if a location is defined
-        if (isset($config[LocationFieldConfig::SPECIFIC_LOCATION_ID])) {
+        if (
+            isset($config[LocationFieldConfig::SPECIFIC_LOCATION_ID])
+            && $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] > 0
+        ) {
             // Insert id
             $config[LocationFieldConfig::SPECIFIC_LOCATION_ID] = $mapper->getItemId(
                 Location::class,
@@ -256,7 +259,10 @@ final class LocationField extends AbstractConfigField implements DestinationFiel
         }
 
         // Check if a specific question is defined
-        if (isset($config[LocationFieldConfig::SPECIFIC_QUESTION_ID])) {
+        if (
+            isset($config[LocationFieldConfig::SPECIFIC_QUESTION_ID])
+            && $config[LocationFieldConfig::SPECIFIC_QUESTION_ID] > 0
+        ) {
             // Insert id
             $config[LocationFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
                 Question::class,

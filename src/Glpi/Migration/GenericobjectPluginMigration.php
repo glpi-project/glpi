@@ -857,6 +857,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                             $this->importItem(
                                 Group_Item::class,
                                 input: $group_input,
+                                reconciliation_criteria: $group_input,
                             );
                         }
                     }
@@ -871,6 +872,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         $this->importItem(
                             Domain_Item::class,
                             input: $domain_input,
+                            reconciliation_criteria: $domain_input,
                         );
                     }
 

@@ -1,0 +1,10 @@
+Date: Wed, 11 Dec 2025 10:00:00 +0100
+From: Normal User <normal@glpi-project.org>
+To: GLPI debug <unittests@glpi-project.org>
+CC: } <}>
+Subject: 49 - Message with invalid CC email address
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+This message has an invalid CC email address that should not crash the mail collector.

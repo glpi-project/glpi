@@ -454,6 +454,27 @@ describe('Form rendering', () => {
             });
         });
     });
+
+    it('Submit button appears when rich text content is filled', () => {
+        cy.login();
+
+        // Import the form
+        cy.importForm('form_with_condition_on_richtext.json').then((form_id) => {
+            // Visit the form
+            cy.visit(`/Form/Render/${form_id}`);
+
+            // Assert submit button is hidden initially
+            cy.get('[data-glpi-form-renderer-actions]')
+                .find('button[data-glpi-form-renderer-action="submit"]')
+                .should('be.hidden');
+
+            // Fill the TinyMCE description
+            cy.findByLabelText('Description').awaitTinyMCE().type('Some content');
+
+            // Assert submit button is visible
+            cy.findByRole('button', { name: 'Submit' }).should('be.visible');
+        });
+    });
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {

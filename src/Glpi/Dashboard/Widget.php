@@ -388,6 +388,7 @@ class Widget
             </style>
             <a {$href}
                id="{$id}"
+               data-testid="dashboard-widget"
                class="card big-number $class"
                data-bs-toggle="tooltip" data-bs-placement="top" title="{$alt}">
                 <span class="content">$formatted_number</span>
@@ -672,7 +673,7 @@ HTML;
                     color: {$dark_fg_color};
                 }
             </style>
-            <div class="card g-chart {$class}" id="{$chart_id}">
+            <div class="card g-chart {$class}" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">{$no_data_html}</div>
                 <span class="main-label">{$label}</span>
                 <i class="main-icon {$icon}"></i>
@@ -1188,7 +1189,7 @@ TWIG, $twig_params);
                 }
             </style>
 
-            <div class="card g-chart $class" id="{$chart_id}">
+            <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">$no_data_html</div>
                 <span class="main-label">{$label}</span>
                 <i class="main-icon {$icon}"></i>
@@ -1582,7 +1583,7 @@ TWIG, $twig_params);
                 }
             </style>
 
-            <div class="card g-chart $class" id="{$chart_id}">
+            <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart"></div>
                 <span class="main-label">{$label}</span>
                 <i class="main-icon {$icon}"></i>
