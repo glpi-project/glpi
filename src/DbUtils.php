@@ -2243,6 +2243,8 @@ final class DbUtils
                         }
 
                         if ($target_field_itemtype !== $source_itemtype) {
+
+                            Toolbox::logDebug($target_field_itemtype . ' != ' . $source_itemtype);
                             // Relation is made on a field that is not a foreign key of the source object.
                             trigger_error(
                                 sprintf(
