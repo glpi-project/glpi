@@ -50,7 +50,7 @@
             let color = '#';
             for (let i = 0; i < 3; i++) {
                 const value = (hash >> (i * 8)) & 0xFF;
-                color += ('00' + value.toString(16)).substr(-2);
+                color += (`00${value.toString(16)}`).substr(-2);
             }
             bg_color = color;
         }
@@ -125,7 +125,7 @@
             </tr>
         </thead>
         <tbody>
-            <template v-for="section in top_level_data">
+            <template v-for="section in top_level_data" :key="section.id">
                 <tr :data-profiler-section-id="section.id" v-show="!props.hide_instant_sections || (section.duration > instant_threshold)">
                     <td class="nesting-spacer" v-for="i in nest_level" :key="i" aria-hidden="true"></td>
                     <td data-prop="category">

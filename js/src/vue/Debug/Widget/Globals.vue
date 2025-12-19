@@ -20,7 +20,7 @@
         let data_string = data;
         try {
             data_string = JSON.stringify(data, null, ' ');
-        } catch (e) {
+        } catch {
             if (typeof data !== 'string') {
                 container.append('Empty array');
                 return;

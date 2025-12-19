@@ -10,7 +10,7 @@
     const memory_usage = +(server_perf.memory_usage / 1024 / 1024).toFixed(2);
     const memory_peak = +(server_perf.memory_peak / 1024 / 1024).toFixed(2);
     const memory_limit = +(server_perf.memory_limit / 1024 / 1024).toFixed(2);
-    let total_execution_time = +server_perf.execution_time;
+    const total_execution_time = +server_perf.execution_time;
 
     let total_sql_duration = 0;
     let total_sql_queries = 0;

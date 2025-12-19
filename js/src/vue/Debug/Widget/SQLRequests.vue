@@ -1,6 +1,4 @@
 <script setup>
-    /* global copyTextToClipboard */
-    /* global _ */
     import {computed, reactive, ref, watch} from "vue";
 
     const props = defineProps({
@@ -63,8 +61,8 @@
                     time: query['time'],
                     query: query['query'],
                     rows: query['rows'],
-                    warnings: _.escape(query['warnings']),
-                    errors: _.escape(query['errors']),
+                    warnings: window._.escape(query['warnings']),
+                    errors: window._.escape(query['errors']),
                 });
             });
         });
@@ -113,7 +111,7 @@
         const code =  $(e.currentTarget).parent().find('code');
         // Normalize whitespace as spaces and trim
         const code_clean = code.text().replace(/\s+/g, ' ').trim();
-        copyTextToClipboard(code_clean);
+        window.copyTextToClipboard(code_clean);
 
         // change temporary the button icon to a check then after a while return to the original icon
         const icon = $(e.currentTarget).find('i');
@@ -140,7 +138,7 @@
 
     watch(() => sorted_queries_data.value, () => {
         sorted_queries_data.value.forEach((query) => {
-            const key = query.request_id + '-' + query.num;
+            const key = `${query.request_id}-${query.num}`;
             if (!colorized_queries.has(key)) {
                 // Show uncolored query until the colorized version is ready
                 colorized_queries.set(key, query.query);

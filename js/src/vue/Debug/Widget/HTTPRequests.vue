@@ -56,7 +56,7 @@
         if (left_panel_width.value === null) {
             return '33%';
         }
-        return left_panel_width.value + 'px';
+        return `${left_panel_width.value}px`;
     });
 
     function onMouseDown(e) {

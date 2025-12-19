@@ -267,7 +267,7 @@
             const duration = section.sections[hover_data.value.target.timing][1] - section.sections[hover_data.value.target.timing][0];
             let section_name = section.name;
             if (section_name.length > 100) {
-                section_name = section_name.slice(0, 100) + '...';
+                section_name = `${section_name.slice(0, 100)}...`;
             }
             const text = `${section_name} ${hover_data.value.target.timing} (${duration.toFixed(0)} ms)`;
             ctx.value.font = ctx.value.font.replace(/\d+px/, '14px');

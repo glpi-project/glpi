@@ -31,6 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
+import { useAJAX } from '../Composables/useAJAX.js';
+
 /* global tinycolor */
 /* global _ */
 
@@ -43,7 +45,7 @@ export class TeamBadgeProvider {
             Contact: {}
         };
         this.user_pictures_to_load = new Set([]);
-        this.dark_theme = $('html').attr('data-glpi-theme-dark') === '1';
+        this.dark_theme = document.documentElement.getAttribute('data-glpi-theme-dark') === '1';
         /**
          * The size in pixels for the team badges
          * @type {number}
@@ -128,14 +130,18 @@ export class TeamBadgeProvider {
         // Clear "to load" list
         this.user_pictures_to_load.clear();
 
-        $.ajax({
-            type: 'POST', // Too much data may break GET limit
-            url: `${CFG_GLPI['root_doc']}/ajax/getUserPicture.php`,
-            data: {
-                users_id: users_ids,
-                size: this.team_image_size,
+        useAJAX().ajaxPost('/ajax/getUserPicture.php', {
+            users_id: users_ids,
+            size: this.team_image_size,
+        }, {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
             }
-        }).done((data) => {
+        }).then((response) => {
+            if (!response || !response.data) {
+                return;
+            }
+            const data = response.data;
             const to_reload = [];
             Object.keys(users_ids).forEach((user_id) => {
                 if (data[user_id] !== undefined) {

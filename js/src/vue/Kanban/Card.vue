@@ -77,14 +77,14 @@
             return [];
         }
         const members = Object.values(props.team).slice(0, props.team_badge_provider.max_team_images);
-        $.each(members, (i, member) => {
-            member.content = props.team_badge_provider.getTeamBadge(member);
-            member.hash = props.team_badge_provider.getTeamBadgeHash(member);
+        members.forEach((member, i) => {
+            members[i].content = props.team_badge_provider.getTeamBadge(member);
+            members[i].hash = props.team_badge_provider.getTeamBadgeHash(member);
         });
         return members;
     });
 
-    $(props.team_badge_provider.event_target).on('kanban:team_badge:changed', () => {
+    props.team_badge_provider.event_target.addEventListener('kanban:team_badge:changed', () => {
         render_badges.value = false;
         nextTick(() => {
             render_badges.value = true;

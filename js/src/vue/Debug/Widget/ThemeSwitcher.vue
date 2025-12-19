@@ -1,18 +1,19 @@
 <script setup>
     import {onMounted, ref} from "vue";
+    import { useAJAX } from "../../Composables/useAJAX.js";
 
     const emit = defineEmits(['refreshButton']);
 
     const themes = ref([]);
     const rand = Math.floor(Math.random() * 1000000000);
+    const { ajaxGet } = useAJAX();
 
     onMounted(() => {
-        $.ajax({
-            url: CFG_GLPI['root_doc'] + '/ajax/debug.php',
-            data: {
+        ajaxGet('/ajax/debug.php', {
+            params: {
                 action: 'get_themes'
             }
-        }).then((data) => {
+        }).then(({data}) => {
             themes.value = data;
         });
     });

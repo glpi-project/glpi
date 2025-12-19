@@ -1,13 +1,10 @@
 <script setup>
-    const props = defineProps({});
-
     const perf = window.performance;
     const nav_timings = window.performance.getEntriesByType('navigation')[0];
     const paint_timings = window.performance.getEntriesByType('paint');
     const resource_timings = window.performance.getEntriesByType('resource');
 
     let paint_timing = paint_timings.filter((timing) => timing.name === 'first-paint');
-    let paint_timing_label = 'Time to first paint';
     if (paint_timing.length === 0) {
         // Firefox doesn't have first-paint for whatever reason
         paint_timing = paint_timings.filter((timing) => timing.name === 'first-contentful-paint');
@@ -37,7 +34,7 @@
         <h3 class="mb-2">Timings</h3>
         <div class="datagrid">
             <div class="datagrid-item">
-                <div class="datagrid-title">{{ paint_timing_label }}</div>
+                <div class="datagrid-title">Time to first paint</div>
                 <div class="datagrid-content">{{ +time_to_first_paint.toFixed(2) }} ms</div>
             </div>
             <div class="datagrid-item">
