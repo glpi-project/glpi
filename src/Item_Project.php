@@ -247,14 +247,6 @@ class Item_Project extends CommonDBRelation
             return false;
         }
 
-        // If we are creating a project from a template, show read-only warning
-        if ($withtemplate == 2 && $item instanceof Project) {
-            echo '<div class="alert alert-info mb-3">';
-            echo '<i class="ti ti-info-circle me-2"></i>';
-            echo __s('You are viewing items from the template. Save the project first to be able to add or modify linked items.');
-            echo '</div>';
-        }
-
         if ($item instanceof Project) {
             return self::showForProject($item, $withtemplate);
         }

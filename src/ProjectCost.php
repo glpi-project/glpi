@@ -95,13 +95,6 @@ class ProjectCost extends CommonDBChild
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Project) {
-            // If we are creating from a template, show read-only view with explanation
-            if ($withtemplate == 2) {
-                echo '<div class="alert alert-info mb-3">';
-                echo '<i class="ti ti-info-circle me-2"></i>';
-                echo __s('You are viewing costs from the template. Save the project first to be able to add or modify costs.');
-                echo '</div>';
-            }
             return self::showForProject($item, $withtemplate);
         }
         return false;
