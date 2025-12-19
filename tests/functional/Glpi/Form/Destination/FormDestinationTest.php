@@ -43,6 +43,8 @@ use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\FormBuilder;
@@ -181,6 +183,42 @@ final class FormDestinationTest extends DbTestCase
 
         // Assert: the conditions should be deleted
         $this->assertEmpty($destination->getConfiguredConditionsData());
+    }
+
+    public function testScientificNotationInConditon(): void
+    {
+        // Arrange: create a form with a very specific condition
+        $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: "Radio",
+            type: QuestionTypeRadio::class,
+            extra_data: json_encode(
+                new QuestionTypeSelectableExtraDataConfig([
+                    '646012933e9268' => 'Option 1',
+                ],
+            )
+        ));
+        $builder->setDestinationCondition(
+            "Ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Radio",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "646012933e9268",
+                ],
+            ],
+        );
+        $form = $this->createForm($builder);
+
+        // Act: get the configured conditions
+        $destination = current($form->getDestinations());
+        $conditions = $destination->getConfiguredConditionsData();
+
+        // Assert: make sure the radio id was not cast to infinity
+        $this->assertNotEquals(INF, $conditions[0]->getValue());
     }
 
     private function createAndGetFormWithFourDestinations(): Form
