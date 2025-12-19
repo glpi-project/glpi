@@ -705,8 +705,6 @@ class CommonGLPI implements CommonGLPIInterface
                         __s('Creating from template'),
                         __s('You are currently creating an object from a template. You need to save it, in the main tab, before editing data in other tabs.')
                     );
-                    return true;
-
                 }
                 if ($obj = getItemForItemtype($itemtype)) {
                     $options['tabnum'] = $tabnum;
