@@ -45,6 +45,7 @@ use Safe\Exceptions\InfoException;
 use Safe\Exceptions\SessionException;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\filemtime;
 use function Safe\ini_get;
 use function Safe\preg_match;
 use function Safe\scandir;
@@ -799,6 +800,50 @@ class Session
 
 
     /**
+     * Computes a hash based on override translation files for cache invalidation.
+     *
+     * @param string $locale The locale (e.g., 'en_GB')
+     * @return string Hash of override files paths and mtimes, or empty string if no overrides
+     */
+    private static function getOverrideFilesHash(string $locale): string
+    {
+        if (!is_dir(GLPI_LOCAL_I18N_DIR)) {
+            return '';
+        }
+
+        $core_folders = scandir(GLPI_LOCAL_I18N_DIR);
+        $core_folders = array_filter($core_folders, function ($dir) {
+            if (!is_dir(GLPI_LOCAL_I18N_DIR . "/$dir")) {
+                return false;
+            }
+            return $dir === 'core' || str_starts_with($dir, 'core_');
+        });
+
+        $files_info = [];
+        $newfile = "/$locale.mo";
+
+        foreach ($core_folders as $core_folder) {
+            $mofile = GLPI_LOCAL_I18N_DIR . "/$core_folder" . $newfile;
+            $phpfile = str_replace('.mo', '.php', $mofile);
+
+            if (file_exists($phpfile)) {
+                $files_info[] = $phpfile . ':' . filemtime($phpfile);
+            }
+            if (file_exists($mofile)) {
+                $files_info[] = $mofile . ':' . filemtime($mofile);
+            }
+        }
+
+        if ($files_info === []) {
+            return '';
+        }
+
+        sort($files_info);
+        return md5(implode('|', $files_info));
+    }
+
+
+    /**
      * Include the good language dict.
      *
      * Get the default language from current user in $_SESSION["glpilanguage"].
@@ -844,10 +889,26 @@ class Session
 
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
         $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
-        $TRANSLATE = new class ($i18n_cache) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
-            public function __construct(?I18nCache $cache)
+        $override_hash = self::getOverrideFilesHash($trytoload);
+        $TRANSLATE = new class ($i18n_cache, $override_hash) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
+            private string $overrideHash;
+
+            public function __construct(?I18nCache $cache, string $overrideHash)
             {
                 $this->cache = $cache; // @phpstan-ignore assign.propertyType (laminas...)
+                $this->overrideHash = $overrideHash;
+            }
+
+            /**
+             * Override parent getCacheId to include override files hash for cache invalidation.
+             *
+             * @param string $textDomain
+             * @param string $locale
+             * @return string
+             */
+            public function getCacheId($textDomain, $locale)
+            {
+                return 'Laminas_I18n_Translator_Messages_' . md5($textDomain . $locale . $this->overrideHash);
             }
 
             public function removeCoreTranslationsForLanguage(string $language): void
