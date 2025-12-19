@@ -193,11 +193,13 @@ final class FormDestinationTest extends DbTestCase
             name: "Radio",
             type: QuestionTypeRadio::class,
             extra_data: json_encode(
-                new QuestionTypeSelectableExtraDataConfig([
-                    '646012933e9268' => 'Option 1',
-                ],
+                new QuestionTypeSelectableExtraDataConfig(
+                    [
+                        '646012933e9268' => 'Option 1',
+                    ],
+                )
             )
-        ));
+        );
         $builder->setDestinationCondition(
             "Ticket",
             CreationStrategy::CREATED_IF,
