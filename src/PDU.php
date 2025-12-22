@@ -60,12 +60,12 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     public function getCloneRelations(): array
     {
         return [
-            Item_Plug::class,
             Item_Devices::class,
             Document_Item::class,
             NetworkPort::class,
             Contract_Item::class,
             Infocom::class,
+            Plug::class,
         ];
     }
 
@@ -89,7 +89,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab(Item_Plug::class, $ong, $options)
+         ->addStandardTab(Plug::class, $ong, $options)
          ->addStandardTab(Item_Devices::class, $ong, $options)
          ->addStandardTab(NetworkPort::class, $ong, $options)
          ->addStandardTab(Infocom::class, $ong, $options)
@@ -99,7 +99,6 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
          ->addStandardTab(Item_Problem::class, $ong, $options)
          ->addStandardTab(Change_Item::class, $ong, $options)
          ->addStandardTab(Log::class, $ong, $options);
-        ;
         return $ong;
     }
 
@@ -291,16 +290,47 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Item_Plug::class,
                 PDU_Rack::class,
             ]
         );
     }
 
-
     public static function getIcon()
     {
-        return "ti ti-plug";
+        return "ti ti-battery-vertical-charging";
+    }
+
+    public static function getAdditionalMenuLinks()
+    {
+        $links = [];
+        $label = htmlescape(Plug::getTypeName(Session::getPluralNumber()));
+        if (static::canView()) {
+            $insts = "<i class=\"ti ti-plug\" title=\"$label\""
+            . "></i><span class='d-none d-xxl-block'>$label</span>";
+            $links[$insts] = Plug::getSearchURL(false);
+        }
+        if (count($links)) {
+            return $links;
+        }
+        return false;
+    }
+
+    public static function getAdditionalMenuOptions()
+    {
+        if (static::canView()) {
+            return [
+                Plug::class => [
+                    'title' => Plug::getTypeName(Session::getPluralNumber()),
+                    'page'  => Plug::getSearchURL(false),
+                    'icon'  => Plug::getIcon(),
+                    'links' => [
+                        'add'    => '/front/plug.form.php',
+                        'search' => '/front/plug.php',
+                    ],
+                ],
+            ];
+        }
+        return false;
     }
 
     public function prepareInputForAdd($input)
@@ -314,5 +344,15 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         $input = $this->prepareInputForAddAssignableItem($input);
 
         return $input;
+    }
+
+    public function post_deleteItem()
+    {
+        $plug = new Plug();
+        $plugs = $plug->find(['mainitems_id' => $this->fields['id'], 'mainitemtype' => get_class($this)]);
+
+        foreach ($plugs as $p) {
+            $plug->update(['id' => $p->fields['id'], 'mainitems_id' => 0, 'mainitemtype' => '']);
+        }
     }
 }
