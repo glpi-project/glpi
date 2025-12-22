@@ -127,6 +127,12 @@
                     {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, fields_params) }}
                 {% elseif type == 'textarea' %}
                     {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
+                {% elseif type == 'illustration' %}
+                        {{ fields.illustrationField(
+                            field['name'],
+                            item.fields[field['name']]|default(constant('Glpi\\UI\\IllustrationManager::DEFAULT_ILLUSTRATION')),
+                            field['label'],
+                        ) }}
                 {% elseif type == 'integer' %}
                     {% set fields_params = {
                         'value': item.fields[field['name']]
@@ -234,7 +240,7 @@
                 {% set type = field['type']|default('') %}
                 {% if field['name'] in picture_fields %}
                     {% if type == 'picture' %}
-                        {% if field['name'] == 'picture_front' %}
+                        {% if field['name'] == 'picture_front' and not is_model %}
                             {{ fields.smallTitle(__('Rack pictures'), 'Rack'|itemtype_icon) }}
                         {% endif %}
                         {% if item.fields[field['name']] is not empty %}
