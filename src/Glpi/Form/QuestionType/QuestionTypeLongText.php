@@ -71,19 +71,15 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
                         .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
                     const inst = tinyMCE.get(textarea.attr('id'));
 
-                    if (inst) {
-                        let content = inst.getContent();
-                        let tmp = document.createElement("DIV");
-                        tmp.innerHTML = content;
-                        content = tmp.textContent || tmp.innerText || "";
+                    let content = inst ? inst.getContent() : textarea.val() || "";
+                    let tmp = document.createElement("DIV");
+                    tmp.innerHTML = content;
+                    content = tmp.textContent || tmp.innerText || "";
 
-                        return new GlpiFormEditorConvertedExtractedDefaultValue(
-                            GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
-                            content
-                        );
-                    }
-
-                    return '';
+                    return new GlpiFormEditorConvertedExtractedDefaultValue(
+                        GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                        content
+                    );
                 },
                 "convertDefaultValue": function (question, value) {
                     const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")
