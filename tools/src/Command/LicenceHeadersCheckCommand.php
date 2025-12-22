@@ -3,9 +3,11 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI tools
+ * GLPI - Gestionnaire Libre de Parc Informatique
  *
- * @copyright 2017-2022 Teclib' and contributors.
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/glpi-project/tools
  *
@@ -13,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI tools.
+ * This file is part of GLPI.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,21 +33,20 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Plugin\Command;
+namespace Glpi\Tools\Command;
 
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-//TODO: This probably should be moved to tools and not tools/plugin
-class LicenceHeadersCheckCommand extends AbstractPluginCommand {
+class LicenceHeadersCheckCommand extends AbstractCommand
+{
 
    /**
     * Result code returned when some headers are missing or are outdated.
@@ -68,77 +69,123 @@ class LicenceHeadersCheckCommand extends AbstractPluginCommand {
     */
    private $header_lines;
 
-   protected function configure(): void
-   {
-      parent::configure();
+    protected function configure(): void
+    {
+        parent::configure();
 
-       //TODO: This probably should be moved to tools and not tools/plugin, so $project_dir should be updated dynamically based on --plugin param if defined.
-      $this->setName('tools:plugin:licence_headers_check');
-      $this->setDescription('Check licence header in code source files.');
+        $this->setName('tools:licence-headers-check');
+        $this->setAliases(['tools:license-headers-check']);
+        $this->setDescription('Check licence header in code source files.');
 
-      $this->addOption(
-         'header-file',
-         null,
-         InputOption::VALUE_OPTIONAL,
-         'Header file to use',
-      );
+        $project_dir = dirname(__DIR__, 3); // Root of GLPI
 
-      $this->addOption(
-         'fix',
-         'f',
-         InputOption::VALUE_NONE,
-         'Fix missing and outdated headers'
-      );
+        $this->addOption(
+            'directory',
+            'd',
+            InputOption::VALUE_REQUIRED,
+            'Directory to parse',
+            $project_dir
+        );
 
-      $this->addOption(
-         'discard-extra-tags',
-         null,
-         InputOption::VALUE_NONE,
-         'Discard extra tags found in headers'
-      );
-   }
+        $this->addOption(
+            'plugin',
+            'p',
+            InputOption::VALUE_REQUIRED,
+            'Plugin name (optional)'
+        );
 
-   protected function execute(InputInterface $input, OutputInterface $output): int
-   {
-      $files = $this->getFilesToParse($this->getPluginDirectory());
+        $headers_file = null;
+        if ($project_dir !== null) {
+            $path = implode(DIRECTORY_SEPARATOR, [$project_dir, '.licence-header']);
+            // Legacy path in tools/HEADER is now handled by looking at tools directory relative to root
+            $legacy_path = implode(DIRECTORY_SEPARATOR, [$project_dir, 'tools', 'HEADER']);
+            if (file_exists($path)) {
+                $headers_file = realpath($path);
+            } elseif (file_exists($legacy_path)) {
+                $headers_file = realpath($legacy_path);
+            }
+        }
 
-      if ($this->io->isVerbose()) {
-         $this->io->info(sprintf('%s files to process.', count($files)));
-      }
+        $this->addOption(
+            'header-file',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'Header file to use',
+            $headers_file
+        );
 
-      $missing_found   = 0;
-      $missing_errors  = 0;
-      $outdated_found  = 0;
-      $outdated_errors = 0;
+        $this->addOption(
+            'fix',
+            'f',
+            InputOption::VALUE_NONE,
+            'Fix missing and outdated headers'
+        );
 
-       // TODO: When moved to tools and not tools/plugin, $project_dir should be updated dynamically based on --plugin param if defined.
-       $project_dir = $this->getPluginDirectory();
+        $this->addOption(
+            'discard-extra-tags',
+            null,
+            InputOption::VALUE_NONE,
+            'Discard extra tags found in headers'
+        );
+    }
 
-       /** @var string|null $header_file_path */
-       $header_file_path = $this->input->getOption('header-file');
-       if (!$header_file_path) {
-           $path = implode(DIRECTORY_SEPARATOR, [$project_dir, '.licence-header']);
-           $legacy_path = implode(DIRECTORY_SEPARATOR, [$project_dir, 'tools', 'HEADER']);
-           if (file_exists($path)) {
-               $header_file_path = realpath($path);
-           } elseif (file_exists($legacy_path)) {
-               $header_file_path = realpath($legacy_path);
-           }
-       }
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $target_dir = $input->getOption('directory');
+        $plugin_name = $input->getOption('plugin');
 
-       if (!$header_file_path) {
-           throw new \Exception('No header path defined.');
-       }
+        if ($plugin_name) {
+            $root_dir = dirname(__DIR__, 3);
+            $target_dir = $root_dir . '/plugins/' . $plugin_name;
+            if (!is_dir($target_dir)) {
+                 throw new \RuntimeException(sprintf('Plugin directory "%s" not found.', $target_dir));
+            }
+        }
 
-       if ($this->io->isVerbose()) {
-           $this->io->info(sprintf('HEADER path: %s', $header_file_path));
-       }
+        $files = $this->getFilesToParse($target_dir);
 
-      /** @var string $filename */
-       foreach ($files as $filename) {
-           if ($this->io->isVerbose()) {
-               $this->io->text('<comment>' . sprintf('Processing "%s".' , $filename) . '</comment>');
-           }
+        if ($this->io->isVerbose()) {
+            $this->io->info(sprintf('%s files to process in %s.', count($files), $target_dir));
+        }
+
+        $missing_found   = 0;
+        $missing_errors  = 0;
+        $outdated_found  = 0;
+        $outdated_errors = 0;
+
+        /** @var string|null $header_file_path */
+        $header_file_path = $this->input->getOption('header-file');
+        
+        // If not explicit header file and we are in plugin mode, try to find plugin specific header
+        if (!$header_file_path && $plugin_name) {
+            $path = implode(DIRECTORY_SEPARATOR, [$target_dir, '.licence-header']);
+            $legacy_path = implode(DIRECTORY_SEPARATOR, [$target_dir, 'tools', 'HEADER']);
+            if (file_exists($path)) {
+                $header_file_path = realpath($path);
+            } elseif (file_exists($legacy_path)) {
+                $header_file_path = realpath($legacy_path);
+            }
+        }
+        
+        // Fallback to core header file if still null (taken from default value in configure if strictly equal to default, but here we cover logic gap)
+        if (!$header_file_path) {
+             // Re-evaluate default if needed or just fail
+             // Since we populated default in configure(), getOption SHOULD return it. 
+             // However if user passed --header-file="" explicitly it might be empty.
+             // We'll throw if empty.
+             throw new \RuntimeException('No header file specified or found.');
+        }
+
+
+        if ($this->io->isVerbose()) {
+            $this->io->info(sprintf('HEADER path: %s', $header_file_path));
+        }
+
+        /** @var string $filename */
+        foreach ($files as $filename) {
+            if ($this->io->isVerbose()) {
+                $this->io->text('<comment>' . sprintf('Processing "%s".' , $filename) . '</comment>');
+            }
 
          if (($file_lines = file($filename)) === false) {
             throw new \Exception(sprintf('Unable to read file "%s".', $filename));
@@ -425,7 +472,9 @@ class LicenceHeadersCheckCommand extends AbstractPluginCommand {
          }
 
          public function getChildren(): ?RecursiveFilterIterator {
-            return new self($this->getInnerIterator()->getChildren(), $this->exclusion_pattern);
+            /** @var RecursiveIterator */
+            $inner = $this->getInnerIterator();
+            return new self($inner->getChildren(), $this->exclusion_pattern);
          }
       };
 
@@ -575,11 +624,13 @@ class LicenceHeadersCheckCommand extends AbstractPluginCommand {
       }
 
       // Deduplicate tagged data
-      foreach ($data_to_append as $tag_name => $tag_values) {
-         if (preg_match('/^copy(right|left)$/', $tag_name) !== 1) {
-            continue;
+      if (is_array($data_to_append)) {
+         foreach ($data_to_append as $tag_name => $tag_values) {
+            if (preg_match('/^copy(right|left)$/', $tag_name) !== 1) {
+               continue;
+            }
+            $data_to_append[$tag_name] = $this->unduplicateCopyTag($tag_values);
          }
-         $data_to_append[$tag_name] = $this->unduplicateCopyTag($tag_values);
       }
 
       // Drop existing tag lines and re-append merged tagged data entirely
