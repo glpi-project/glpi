@@ -31,6 +31,7 @@
  */
 
 import { expect, type Locator, type Page } from '@playwright/test';
+import path from 'path';
 
 /**
  * Store common actions that can be executed on any GLPI page.
@@ -45,6 +46,14 @@ export class GlpiPage
     public readonly dashboards_widgets: Locator;
     public readonly active_entity: Locator;
 
+    // Notes tab locators
+    public readonly add_note_button: Locator;
+    public readonly submit_note_button: Locator;
+    public readonly is_visible_on_ticket_checkbox: Locator;
+    public readonly note_content_input: Locator;
+    public readonly notes: Locator;
+    public readonly notes_content: Locator;
+
     public constructor(page: Page)
     {
         this.page = page;
@@ -58,7 +67,15 @@ export class GlpiPage
 
         // .first() because we always display this information twice, with only
         // one being shown depending on the screen size.
-        this.active_entity         = page.getByTestId("current-entity").first();
+        this.active_entity = page.getByTestId("current-entity").first();
+
+        // Notes tab locators
+        this.add_note_button = this.getButton("Add a note");
+        this.submit_note_button = this.getButton("Add");
+        this.is_visible_on_ticket_checkbox = this.getCheckbox("Visible on tickets");
+        this.note_content_input = this.getRichTextByLabel('Content');
+        this.notes = page.getByTestId('note-container');
+        this.notes_content = page.getByTestId('note-content');
     }
 
     public async doSetDropdownValue(
@@ -121,6 +138,77 @@ export class GlpiPage
         entity_name: string
     ): Promise<void> {
         await this.getButton(entity_name).click();
+    }
+
+    public async doFocusNote(index: number): Promise<void>
+    {
+        await this.notes.nth(index).click();
+    }
+
+    public async doAddNote(
+        content: string,
+        visible_on_ticket: boolean = false,
+    ): Promise<void> {
+        await this.add_note_button.click();
+        await this.note_content_input.fill(content);
+        if (visible_on_ticket) {
+            await this.is_visible_on_ticket_checkbox.check();
+        }
+        await this.submit_note_button.click();
+    }
+
+    public async doUpdateNoteContent(
+        index: number,
+        content: string,
+    ): Promise<void> {
+        // Select the target note
+        await this.doFocusNote(index);
+
+        // Update content
+        await this.getButton("Edit").click();
+        await this.note_content_input.fill(content);
+        await this.getButton("Update").click();
+    }
+
+    public async doAddFileToNote(
+        index: number,
+        file: string,
+    ): Promise<void> {
+        // Select the target note
+        await this.doFocusNote(index);
+
+        // Update content
+        await this.getButton("Edit").click();
+        await this.doAddFileToUploadArea(file, this.page.getByRole('dialog'));
+        await this.getButton("Update").click();
+    }
+
+    public async doDeleteNote(
+        index: number,
+    ): Promise<void> {
+        // Select the target note
+        await this.doFocusNote(index);
+
+        // Prepare to confirm delete dialog
+        this.page.on('dialog', dialog => dialog.accept());
+
+        // Trigger deletion
+        await this.getButton("Delete").click();
+    }
+
+    public async doAddFileToUploadArea(file: string, parent: Locator): Promise<void>
+    {
+        // We have no control over this input locator as it is handled by a 3rd
+        // party lib.
+        // eslint-disable-next-line playwright/no-raw-locators
+        await parent.locator('input[type="file"]')
+            .setInputFiles(path.join(__dirname, `/../../fixtures/${file}`))
+        ;
+        const progress = parent.getByRole('progressbar');
+
+        // Upload progress should fill up then disappear
+        await expect(progress).toHaveText("Upload successful");
+        await expect(progress).not.toBeAttached();
     }
 
     /**
@@ -205,6 +293,17 @@ export class GlpiPage
     public getTab(name: string): Locator
     {
         return this.page.getByRole('tab', {
+            name: name,
+            exact: true,
+        });
+    }
+
+    /**
+     * Helper method to make common operation less verbose
+     */
+    public getRegion(name: string): Locator
+    {
+        return this.page.getByRole('region', {
             name: name,
             exact: true,
         });
