@@ -39,11 +39,13 @@ use RecursiveIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class LicenceHeadersCheckCommand extends Command {
+//TODO: This probably should be moved to tools and not tools/plugin
+class LicenceHeadersCheckCommand extends AbstractPluginCommand {
 
    /**
     * Result code returned when some headers are missing or are outdated.
@@ -66,42 +68,19 @@ class LicenceHeadersCheckCommand extends Command {
     */
    private $header_lines;
 
-   protected function configure() {
+   protected function configure(): void
+   {
       parent::configure();
 
+       //TODO: This probably should be moved to tools and not tools/plugin, so $project_dir should be updated dynamically based on --plugin param if defined.
       $this->setName('tools:plugin:licence_headers_check');
       $this->setDescription('Check licence header in code source files.');
-
-      $project_dir = realpath(__DIR__ . str_repeat(DIRECTORY_SEPARATOR . '..', 4));
-      if ($project_dir === false || !is_readable($project_dir)) {
-         $project_dir = null;
-      }
-
-      $this->addOption(
-         'directory',
-         'd',
-         InputOption::VALUE_REQUIRED,
-         'Directory to parse',
-         $project_dir
-      );
-
-      $header_file = null;
-      if ($project_dir !== null) {
-          $path = implode(DIRECTORY_SEPARATOR, [$project_dir, '.licence-header']);
-          $legacy_path = implode(DIRECTORY_SEPARATOR, [$project_dir, 'tools', 'HEADER']);
-          if (file_exists($path)) {
-              $header_file = realpath($path);
-          } elseif (file_exists($legacy_path)) {
-              $header_file = realpath($legacy_path);
-          }
-      }
 
       $this->addOption(
          'header-file',
          null,
-         InputOption::VALUE_REQUIRED,
+         InputOption::VALUE_OPTIONAL,
          'Header file to use',
-         $header_file
       );
 
       $this->addOption(
@@ -119,28 +98,50 @@ class LicenceHeadersCheckCommand extends Command {
       );
    }
 
-   protected function execute(InputInterface $input, OutputInterface $output) {
+   protected function execute(InputInterface $input, OutputInterface $output): int
+   {
+      $files = $this->getFilesToParse($this->getPluginDirectory());
 
-      $files = $this->getFilesToParse($input->getOption('directory'));
-
-      $output->writeln(
-         '<comment>' . sprintf('%s files to process.', count($files)) . '</comment>',
-         OutputInterface::VERBOSITY_VERBOSE
-      );
+      if ($this->io->isVerbose()) {
+         $this->io->info(sprintf('%s files to process.', count($files)));
+      }
 
       $missing_found   = 0;
       $missing_errors  = 0;
       $outdated_found  = 0;
       $outdated_errors = 0;
 
-      foreach ($files as $filename) {
-         $output->writeln(
-            '<comment>' . sprintf('Processing "%s".', $filename) . '</comment>',
-            OutputInterface::VERBOSITY_VERY_VERBOSE
-         );
+       // TODO: When moved to tools and not tools/plugin, $project_dir should be updated dynamically based on --plugin param if defined.
+       $project_dir = $this->getPluginDirectory();
+
+       /** @var string|null $header_file_path */
+       $header_file_path = $this->input->getOption('header-file');
+       if (!$header_file_path) {
+           $path = implode(DIRECTORY_SEPARATOR, [$project_dir, '.licence-header']);
+           $legacy_path = implode(DIRECTORY_SEPARATOR, [$project_dir, 'tools', 'HEADER']);
+           if (file_exists($path)) {
+               $header_file_path = realpath($path);
+           } elseif (file_exists($legacy_path)) {
+               $header_file_path = realpath($legacy_path);
+           }
+       }
+
+       if (!$header_file_path) {
+           throw new \Exception('No header path defined.');
+       }
+
+       if ($this->io->isVerbose()) {
+           $this->io->info(sprintf('HEADER path: %s', $header_file_path));
+       }
+
+      /** @var string $filename */
+       foreach ($files as $filename) {
+           if ($this->io->isVerbose()) {
+               $this->io->text('<comment>' . sprintf('Processing "%s".' , $filename) . '</comment>');
+           }
 
          if (($file_lines = file($filename)) === false) {
-            throw new \Exception(sprintf('Unable to read file.', $filename));
+            throw new \Exception(sprintf('Unable to read file "%s".', $filename));
          }
 
          $header_start_pattern   = null;
@@ -262,12 +263,12 @@ class LicenceHeadersCheckCommand extends Command {
             }
          }
 
-         $preserved_tagged_data = $input->getOption('discard-extra-tags')
+         $preserved_tagged_data = $this->input->getOption('discard-extra-tags')
             ? []
             : $this->extractTaggedData($current_header_lines, $header_line_prefix);
 
          $updated_header_lines = $this->getLicenceHeaderLines(
-            $input->getOption('header-file'),
+            $header_file_path,
             $header_line_prefix,
             $header_prepend_line,
             $header_append_line,
@@ -281,20 +282,14 @@ class LicenceHeadersCheckCommand extends Command {
          }
 
          if ($header_missing) {
-            $output->writeln(
-               '<info>' . sprintf('Missing licence header in file "%s".', $filename) . '</info>',
-               OutputInterface::VERBOSITY_NORMAL
-            );
+            $this->io->warning(sprintf('Missing licence header in file "%s".', $filename));
             $missing_found++;
          } else {
-            $output->writeln(
-               '<info>' . sprintf('Licence header outdated in file "%s".', $filename) . '</info>',
-               OutputInterface::VERBOSITY_NORMAL
-            );
+            $this->io->warning(sprintf('Licence header outdated in file "%s".', $filename));
             $outdated_found++;
          }
 
-         if ($input->getOption('fix')) {
+         if ($this->input->getOption('fix')) {
             $pre_header_lines  = $this->stripEmptyLines($pre_header_lines, false, true);
             $post_header_lines = $this->stripEmptyLines($post_header_lines, true, false);
 
@@ -308,10 +303,7 @@ class LicenceHeadersCheckCommand extends Command {
             }
 
             if (strlen($file_contents) !== file_put_contents($filename, $file_contents)) {
-               $output->writeln(
-                  '<error>' . sprintf('Unable to update licence header in file "%s".', $filename) . '</error>',
-                  OutputInterface::VERBOSITY_QUIET
-               );
+               $this->io->error(sprintf('Unable to update licence header in file "%s".', $filename));
                if ($header_missing) {
                   $missing_errors++;
                } else {
@@ -322,17 +314,17 @@ class LicenceHeadersCheckCommand extends Command {
       }
 
       if ($missing_found === 0 && $outdated_found === 0) {
-         $output->writeln('<info>Files headers are valid.</info>', OutputInterface::VERBOSITY_QUIET);
+         $this->io->success('Files headers are valid.');
          return 0; // Success
       }
 
-      if (!$input->getOption('fix')) {
+      if (!$this->input->getOption('fix')) {
          $msg = sprintf(
             'Found %d file(s) without header and %d file(s) with outdated header. Use --fix option to fix these files.',
             $missing_found,
             $outdated_found
          );
-         $output->writeln('<error>' . $msg . '</error>', OutputInterface::VERBOSITY_QUIET);
+         $this->io->error($msg);
          return self::ERROR_FOUND_MISSING_OR_OUTDATED;
       }
 
@@ -341,13 +333,10 @@ class LicenceHeadersCheckCommand extends Command {
          $missing_found - $missing_errors,
          $outdated_found - $outdated_errors
       );
-      $output->writeln('<info>' . $msg . '</info>', OutputInterface::VERBOSITY_QUIET);
+      $this->io->success($msg);
 
       if ($missing_errors > 0 || $outdated_errors > 0) {
-         $output->writeln(
-            '<error>' . sprintf('%s file(s) cannot be updated.', $missing_errors + $outdated_errors) . '</error>',
-            OutputInterface::VERBOSITY_QUIET
-         );
+         $this->io->error(sprintf('%s file(s) cannot be updated.', $missing_errors + $outdated_errors));
          return self::ERROR_UNABLE_TO_FIX_FILES;
       }
 
@@ -357,7 +346,7 @@ class LicenceHeadersCheckCommand extends Command {
    /**
     * Get licence header lines.
     *
-    * @param string $header_file_path
+    * @param string|null $header_file_path
     * @param string $line_prefix
     * @param string $prepend_line
     * @param string $append_line
@@ -402,7 +391,7 @@ class LicenceHeadersCheckCommand extends Command {
       $directory = realpath($directory);
 
       if (!is_dir($directory) || !is_readable($directory)) {
-         throw new \Symfony\Component\Console\Exception\InvalidOptionException(
+         throw new InvalidOptionException(
             sprintf('Unable to read directory "%s"', $directory)
          );
       }
@@ -419,16 +408,17 @@ class LicenceHeadersCheckCommand extends Command {
          }
 
          public function accept(): bool {
-            if ($this->exclusion_pattern !== null && preg_match($this->exclusion_pattern, $this->getRealPath())) {
+            $file = $this->current();
+            if ($this->exclusion_pattern !== null && preg_match($this->exclusion_pattern, $file->getRealPath())) {
                return false;
             }
-            if ($this->isDir()) {
+            if ($file->isDir()) {
                return true; // parse subdirectories
             }
-            if (preg_match('/^(css|js|ts|php|pl|scss|sh|sql|twig|ya?ml)$/', $this->getExtension())) {
+            if (preg_match('/^(css|js|ts|php|pl|scss|sh|sql|twig|ya?ml)$/', $file->getExtension())) {
                return true; // handled extensions
             }
-            if (basename($this->getPath()) === 'bin') {
+            if (basename($file->getPath()) === 'bin') {
                return true; // executable
             }
             return false;

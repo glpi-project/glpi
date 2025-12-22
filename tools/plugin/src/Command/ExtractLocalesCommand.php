@@ -11,39 +11,26 @@ use RecursiveIteratorIterator;
 use CallbackFilterIterator;
 use SplFileInfo;
 
-class ExtractLocalesCommand extends Command
+class ExtractLocalesCommand extends AbstractPluginCommand
 {
 
     protected function configure(): void
     {
+        parent::configure();
         $this->setName('tools:plugin:extract_locales');
         $this->setDescription('Extract strings from the project to generate POT file.');
-        $this->addOption('plugin', 'p', \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Plugin name');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $io = new SymfonyStyle($input, $output);
         $script_dir = dirname(__DIR__, 2); // glpi-11-2/tools/plugin
 
         $root_dir = dirname($script_dir, 2); // glpi-11-2
-        $working_dir = $root_dir;
-
-        $plugin_name = $input->getOption('plugin');
-        if (!$plugin_name) {
-             $io->error('The "--plugin" option is required.');
-             return Command::FAILURE;
-        }
-
-        $working_dir = $root_dir . '/plugins/' . $plugin_name;
-        if (!is_dir($working_dir)) {
-             $io->error(sprintf('Plugin directory "%s" not found.', $working_dir));
-             return Command::FAILURE;
-        }
+        $working_dir = $this->getPluginDirectory();
 
         // Check availability of xgettext
         if (trim(shell_exec('which xgettext')) === '') {
-             $io->error('xgettext not found. Please install gettext.');
+             $this->io->error('xgettext not found. Please install gettext.');
              return Command::FAILURE;
         }
 
@@ -98,7 +85,7 @@ class ExtractLocalesCommand extends Command
 
         // Append locales from Twig templates
         if (is_dir($working_dir . '/templates')) {
-             $io->section('Processing Twig templates...');
+             $this->io->section('Processing Twig templates...');
             $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
             mkdir($temp_twig_dir . '/templates', 0777, true);
 
@@ -109,7 +96,7 @@ class ExtractLocalesCommand extends Command
                  'output-directory'    => $temp_twig_dir . '/templates',
                  '--quiet' => true
             ]);
-            $compile_cmd->run($compile_input, $output);
+            $compile_cmd->run($compile_input, $this->output);
 
             $twig_files = $this->getFiles($temp_twig_dir, 'twig');
             if (count($twig_files) > 0) {
@@ -133,7 +120,7 @@ class ExtractLocalesCommand extends Command
         }
 
          // Append locales from PHP
-        $io->section('Processing PHP files...');
+        $this->io->section('Processing PHP files...');
         $php_files = $this->getFiles($working_dir, 'php', $exclude_regex);
         if (count($php_files) > 0) {
               // Write files list to usage in xgettext via -f
@@ -159,7 +146,7 @@ class ExtractLocalesCommand extends Command
         }
 
         // Append locales from JS
-        $io->section('Processing JS files...');
+        $this->io->section('Processing JS files...');
         $js_files = $this->getFiles($working_dir, 'js', $exclude_regex);
         // Exclude min.js
         $js_files = array_filter($js_files, fn($f) => !str_ends_with($f, '.min.js'));
@@ -191,18 +178,18 @@ class ExtractLocalesCommand extends Command
         }
 
         // Append locales from Vue
-        $io->section('Processing Vue files...');
+        $this->io->section('Processing Vue files...');
         // TODO: Port Vue extraction if needed (requires npm run vue:gettext:extract)
         // Original script ran npm install && npm run vue:gettext:extract in vendor tools.
         // For now, we might want to skip or implement depending on if we have Vue files.
         // Assuming we are in core or plugin with package.json
         if (file_exists($working_dir . '/package.json')) {
              // Logic for vue extraction would go here
-             $io->warning('Vue extraction not yet fully implemented in this command port.');
+             $this->io->warning('Vue extraction not yet fully implemented in this command port.');
         }
 
         // Update main language
-        $io->section('Updating en_GB.po...');
+        $this->io->section('Updating en_GB.po...');
         $cmd = sprintf(
             'LANG=C msginit --no-translator -i %s -l en_GB -o %s',
             escapeshellarg($potfile),
@@ -210,7 +197,7 @@ class ExtractLocalesCommand extends Command
         );
         system($cmd);
 
-        $io->success('Locales extracted successfully.');
+        $this->io->success('Locales extracted successfully.');
         return Command::SUCCESS;
     }
 

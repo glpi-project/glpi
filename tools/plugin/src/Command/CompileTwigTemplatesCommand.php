@@ -51,10 +51,10 @@ use RecursiveFilterIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
 
-class CompileTwigTemplatesCommand extends Command
+class CompileTwigTemplatesCommand extends AbstractPluginCommand
 {
 
-    protected function configure()
+    protected function configure(): void
     {
         parent::configure();
 
@@ -74,10 +74,10 @@ class CompileTwigTemplatesCommand extends Command
         );
     }
 
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $tpl_dir    = $input->getArgument('templates-directory');
-        $output_dir = $input->getArgument('output-directory');
+        $tpl_dir    = $this->input->getArgument('templates-directory');
+        $output_dir = $this->input->getArgument('output-directory');
 
         $loader = new FilesystemLoader($tpl_dir, dirname($tpl_dir));
         $twig = $this->getMockedTwigEnvironment($loader);
@@ -85,12 +85,12 @@ class CompileTwigTemplatesCommand extends Command
 
         $files = $this->getTemplatesFiles($tpl_dir);
 
-        $progress_bar = new ProgressBar($output);
+        $progress_bar = new ProgressBar($this->io);
         foreach ($progress_bar->iterate($files) as $file) {
             $twig->load($file);
         }
 
-        $output->writeln(''); // New to next line after progress bar display
+        $this->io->writeln(''); // New to next line after progress bar display
 
         return 0; // Success
     }
