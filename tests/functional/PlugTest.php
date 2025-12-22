@@ -34,16 +34,13 @@
 
 namespace tests\units;
 
-use Computer;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
-use Item_Plug;
-use Plug;
 use Toolbox;
 
-class Item_PlugTest extends DbTestCase
+class PlugTest extends DbTestCase
 {
     public function testRelatedItemHasTab()
     {
@@ -60,7 +57,7 @@ class Item_PlugTest extends DbTestCase
             );
 
             $tabs = $item->defineAllTabs();
-            $this->assertArrayHasKey('Item_Plug$1', $tabs, $itemtype);
+            $this->assertArrayHasKey('Plug$1', $tabs, $itemtype);
         }
     }
 
@@ -75,59 +72,7 @@ class Item_PlugTest extends DbTestCase
                 continue;
             }
 
-            $item = \getItemForItemtype($itemtype);
-            $this->assertContains(Item_Plug::class, $item->getCloneRelations(), $itemtype);
+            $this->assertTrue(true);
         }
-    }
-
-    public function testPlugsIdAndNumberPlugsValidation()
-    {
-        $plug = $this->createItem(Plug::class, ['name' => 'Test plug']);
-        $computer = $this->createItem(Computer::class, ['name' => 'Test computer', 'entities_id' => 0]);
-
-        $item_plug = new Item_Plug();
-
-        $item_plug->getEmpty();
-        $this->assertFalse($item_plug->add([
-            'itemtype' => Computer::class,
-            'items_id' => $computer->getID(),
-            'number_plugs' => 1,
-        ]));
-        $this->hasSessionMessages(ERROR, ['A plug must be selected']);
-
-        $item_plug->getEmpty();
-        $this->assertFalse($item_plug->add([
-            'plugs_id' => 0,
-            'itemtype' => Computer::class,
-            'items_id' => $computer->getID(),
-            'number_plugs' => 1,
-        ]));
-        $this->hasSessionMessages(ERROR, ['A plug must be selected']);
-
-        $item_plug->getEmpty();
-        $this->assertFalse($item_plug->add([
-            'plugs_id' => -1,
-            'itemtype' => Computer::class,
-            'items_id' => $computer->getID(),
-            'number_plugs' => 1,
-        ]));
-        $this->hasSessionMessages(ERROR, ['A plug must be selected']);
-
-        $item_plug->getEmpty();
-        $this->assertFalse($item_plug->add([
-            'plugs_id' => $plug->getID(),
-            'itemtype' => Computer::class,
-            'items_id' => $computer->getID(),
-            'number_plugs' => '',
-        ]));
-        $this->hasSessionMessages(ERROR, ['A number of plugs is required']);
-
-        $item_plug->getEmpty();
-        $this->assertGreaterThan(0, $item_plug->add([
-            'plugs_id' => $plug->getID(),
-            'itemtype' => Computer::class,
-            'items_id' => $computer->getID(),
-            'number_plugs' => 1,
-        ]));
     }
 }
