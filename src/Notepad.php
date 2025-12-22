@@ -239,6 +239,7 @@ class Notepad extends CommonDBChild
             'field'              => 'content',
             'name'               => $name,
             'datatype'           => 'text',
+            'htmltext'           => true,
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
