@@ -1293,6 +1293,7 @@ HTML;
                     'LineType' => null,
                     'RackType' => null,
                     'PDUType' => null,
+                    'PlugType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
                     'DatabaseInstanceType' => null,
