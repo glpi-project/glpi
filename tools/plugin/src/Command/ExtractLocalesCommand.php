@@ -1,0 +1,236 @@
+<?php
+
+namespace Glpi\Tools\Plugin\Command;
+
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use CallbackFilterIterator;
+use SplFileInfo;
+
+class ExtractLocalesCommand extends Command
+{
+
+    protected function configure(): void
+    {
+        $this->setName('tools:plugin:extract_locales');
+        $this->setDescription('Extract strings from the project to generate POT file.');
+        $this->addOption('plugin', 'p', \Symfony\Component\Console\Input\InputOption::VALUE_REQUIRED, 'Plugin name');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $script_dir = dirname(__DIR__, 2); // glpi-11-2/tools/plugin
+
+        $root_dir = dirname($script_dir, 2); // glpi-11-2
+        $working_dir = $root_dir;
+
+        $plugin_name = $input->getOption('plugin');
+        if (!$plugin_name) {
+             $io->error('The "--plugin" option is required.');
+             return Command::FAILURE;
+        }
+
+        $working_dir = $root_dir . '/plugins/' . $plugin_name;
+        if (!is_dir($working_dir)) {
+             $io->error(sprintf('Plugin directory "%s" not found.', $working_dir));
+             return Command::FAILURE;
+        }
+
+        // Check availability of xgettext
+        if (trim(shell_exec('which xgettext')) === '') {
+             $io->error('xgettext not found. Please install gettext.');
+             return Command::FAILURE;
+        }
+
+        // Define translate function args
+        $args = [
+            'F_ARGS_N'  => '1,2',
+            'F_ARGS__S' => '1',
+            'F_ARGS__'  => '1',
+            'F_ARGS_X'  => '1c,2',
+            'F_ARGS_SX' => '1c,2',
+            'F_ARGS_NX' => '1c,2,3',
+            'F_ARGS_SN' => '1,2',
+        ];
+
+        // Compute POT filename
+        if (file_exists($working_dir . '/setup.php')) {
+            // setup.php found: it's a plugin.
+            $content = file_get_contents($working_dir . '/setup.php');
+             if (preg_match('/PLUGIN_(.*)_VERSION/', $content, $matches)) {
+                 $name = $matches[1];
+             } else {
+                $name = 'UNKNOWN';
+             }
+
+            $exclude_regex = '/^\.\/(\..*|(libs?|node_modules|tests|vendor)\/).*/';
+
+            // Only strings with domain specified are extracted
+            $args['F_ARGS_N']  .= ',4t';
+            $args['F_ARGS__S'] .= ',2t';
+            $args['F_ARGS__']  .= ',2t';
+            $args['F_ARGS_X']  .= ',3t';
+            $args['F_ARGS_SX'] .= ',3t';
+            $args['F_ARGS_NX'] .= ',5t';
+            $args['F_ARGS_SN'] .= ',4t';
+        } else {
+             // core
+            $name = 'GLPI';
+            $exclude_regex = '/^\.\/(\..*|(config|files|lib|marketplace|node_modules|plugins|phpunit|public|tests|tools|vendor)\/).*/';
+        }
+
+        $potfile = $working_dir . '/locales/' . strtolower($name) . '.pot';
+
+        if (!is_dir($working_dir . '/locales')) {
+            mkdir($working_dir . '/locales');
+        }
+
+        // Clean existing POT file
+        if (file_exists($potfile)) {
+             unlink($potfile);
+        }
+        touch($potfile);
+
+        // Append locales from Twig templates
+        if (is_dir($working_dir . '/templates')) {
+             $io->section('Processing Twig templates...');
+            $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
+            mkdir($temp_twig_dir . '/templates', 0777, true);
+
+            // Using internal command to compile templates
+            $compile_cmd = $this->getApplication()->find('tools:plugin:compile_twig_templates');
+            $compile_input = new \Symfony\Component\Console\Input\ArrayInput([
+                 'templates-directory' => $working_dir . '/templates',
+                 'output-directory'    => $temp_twig_dir . '/templates',
+                 '--quiet' => true
+            ]);
+            $compile_cmd->run($compile_input, $output);
+
+            $twig_files = $this->getFiles($temp_twig_dir, 'twig');
+            if (count($twig_files) > 0) {
+                 $files_list = implode(' ', $twig_files);
+                 $cmd = sprintf(
+                     'cd %s && xgettext %s -o %s -L PHP --add-comments=TRANS --add-location=file --from-code=UTF-8 --force-po --join-existing ' .
+                     '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s',
+                     escapeshellarg($temp_twig_dir),
+                     $files_list,
+                     escapeshellarg($potfile),
+                     $args['F_ARGS_N'],
+                     $args['F_ARGS__'],
+                     $args['F_ARGS_X'],
+                     $args['F_ARGS_NX']
+                 );
+                 system($cmd);
+            }
+
+            // Cleanup
+             system('rm -rf ' . escapeshellarg($temp_twig_dir));
+        }
+
+         // Append locales from PHP
+        $io->section('Processing PHP files...');
+        $php_files = $this->getFiles($working_dir, 'php', $exclude_regex);
+        if (count($php_files) > 0) {
+              // Write files list to usage in xgettext via -f
+              $list_file = tempnam(sys_get_temp_dir(), 'phpfiles');
+              file_put_contents($list_file, implode("\n", $php_files));
+
+              $cmd = sprintf(
+                 'cd %s && xgettext --files-from=%s -o %s -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing ' .
+                 '--keyword=_n:%s --keyword=__s:%s --keyword=__:%s --keyword=_x:%s --keyword=_sx:%s --keyword=_nx:%s --keyword=_sn:%s',
+                 escapeshellarg($working_dir),
+                 escapeshellarg($list_file),
+                 escapeshellarg($potfile),
+                 $args['F_ARGS_N'],
+                 $args['F_ARGS__S'],
+                 $args['F_ARGS__'],
+                 $args['F_ARGS_X'],
+                 $args['F_ARGS_SX'],
+                 $args['F_ARGS_NX'],
+                 $args['F_ARGS_SN']
+             );
+             system($cmd);
+             unlink($list_file);
+        }
+
+        // Append locales from JS
+        $io->section('Processing JS files...');
+        $js_files = $this->getFiles($working_dir, 'js', $exclude_regex);
+        // Exclude min.js
+        $js_files = array_filter($js_files, fn($f) => !str_ends_with($f, '.min.js'));
+
+         if (count($js_files) > 0) {
+              $list_file = tempnam(sys_get_temp_dir(), 'jsfiles');
+              file_put_contents($list_file, implode("\n", $js_files));
+
+             $cmd = sprintf(
+                 'cd %s && xgettext --files-from=%s -o %s -L JavaScript --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing ' .
+                 '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s ' .
+                 '--keyword=i18n._n:%s --keyword=i18n.__:%s --keyword=i18n._p:%s --keyword=i18n.ngettext:%s --keyword=i18n.gettext:%s --keyword=i18n.pgettext:%s',
+                 escapeshellarg($working_dir),
+                  escapeshellarg($list_file),
+                 escapeshellarg($potfile),
+                 $args['F_ARGS_N'],
+                 $args['F_ARGS__'],
+                 $args['F_ARGS_X'],
+                 $args['F_ARGS_NX'],
+                 $args['F_ARGS_N'],
+                 $args['F_ARGS__'],
+                 $args['F_ARGS_X'],
+                 $args['F_ARGS_N'],
+                 $args['F_ARGS__'],
+                 $args['F_ARGS_X']
+             );
+             system($cmd);
+             unlink($list_file);
+        }
+
+        // Append locales from Vue
+        $io->section('Processing Vue files...');
+        // TODO: Port Vue extraction if needed (requires npm run vue:gettext:extract)
+        // Original script ran npm install && npm run vue:gettext:extract in vendor tools.
+        // For now, we might want to skip or implement depending on if we have Vue files.
+        // Assuming we are in core or plugin with package.json
+        if (file_exists($working_dir . '/package.json')) {
+             // Logic for vue extraction would go here
+             $io->warning('Vue extraction not yet fully implemented in this command port.');
+        }
+
+        // Update main language
+        $io->section('Updating en_GB.po...');
+        $cmd = sprintf(
+            'LANG=C msginit --no-translator -i %s -l en_GB -o %s',
+            escapeshellarg($potfile),
+            escapeshellarg($working_dir . '/locales/en_GB.po')
+        );
+        system($cmd);
+
+        $io->success('Locales extracted successfully.');
+        return Command::SUCCESS;
+    }
+
+    /**
+     * @return string[]
+     */
+    private function getFiles($directory, $extension, $exclude_regex = null): array
+    {
+        $files = [];
+        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
+        foreach ($iterator as $file) {
+            if ($file->isFile() && $file->getExtension() === $extension) {
+                $path = $file->getPathname();
+                $relPath = './' . ltrim(substr($path, strlen($directory)), '/');
+                if ($exclude_regex && preg_match($exclude_regex, $relPath)) {
+                    continue;
+                }
+                $files[] = $relPath;
+            }
+        }
+        return $files;
+    }
+}
