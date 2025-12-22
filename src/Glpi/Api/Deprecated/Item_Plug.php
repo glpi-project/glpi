@@ -35,10 +35,9 @@
 
 namespace Glpi\Api\Deprecated;
 
-use PDU;
 use Plug;
 
-class Pdu_Plug implements DeprecatedInterface
+class Item_Plug implements DeprecatedInterface
 {
     use CommonDeprecatedTrait;
 
@@ -54,8 +53,8 @@ class Pdu_Plug implements DeprecatedInterface
 
     public function mapDeprecatedToCurrentFields(object $fields): object
     {
-        $this->renameField($fields, 'pdus_id', 'mainitems_id');
-        $this->addField($fields, 'mainitemtype', PDU::class);
+        $this->renameField($fields, 'items_id', 'mainitems_id');
+        $this->renameField($fields, 'itemtype', 'mainitemtype');
 
         return $fields;
     }
@@ -63,7 +62,7 @@ class Pdu_Plug implements DeprecatedInterface
     public function mapCurrentToDeprecatedFields(array $fields): array
     {
         $this->renameField($fields, 'items_id', 'mainitems_id');
-        $this->deleteField($fields, 'mainitemtype');
+        $this->renameField($fields, 'itemtype', 'mainitemtype');
 
         return $fields;
     }
