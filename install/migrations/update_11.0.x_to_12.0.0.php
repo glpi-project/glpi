@@ -64,6 +64,29 @@ function update110xto1200()
         require $update_dir . $update_script;
     }
 
+    $device_model_tables = [
+        'glpi_devicebatterymodels',
+        'glpi_devicecameramodels',
+        'glpi_devicecasemodels',
+        'glpi_devicedrivemodels',
+        'glpi_devicegenericmodels',
+        'glpi_devicegraphiccardmodels',
+        'glpi_deviceharddrivemodels',
+        'glpi_devicememorymodels',
+        'glpi_devicemotherboardmodels',
+        'glpi_devicenetworkcardmodels',
+        'glpi_devicepcimodels',
+        'glpi_devicepowersupplymodels',
+        'glpi_deviceprocessormodels',
+        'glpi_devicesensormodels',
+        'glpi_devicesoundcardmodels',
+    ];
+
+    foreach ($device_model_tables as $table) {
+        $migration->addField($table, 'picture_front', 'text');
+        $migration->addField($table, 'picture_rear', 'text');
+    }
+
     // ************ Keep it at the end **************
     $migration->updateDisplayPrefs($ADDTODISPLAYPREF, $DELFROMDISPLAYPREF);
 
