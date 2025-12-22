@@ -3,9 +3,11 @@
 /**
  * ---------------------------------------------------------------------
  *
- * GLPI tools
+ * GLPI - Gestionnaire Libre de Parc Informatique
  *
- * @copyright 2017-2023 Teclib' and contributors.
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  * @link      https://github.com/glpi-project/tools
  *
@@ -13,7 +15,7 @@
  *
  * LICENSE
  *
- * This file is part of GLPI tools.
+ * This file is part of GLPI.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
