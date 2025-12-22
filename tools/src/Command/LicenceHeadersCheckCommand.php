@@ -77,16 +77,6 @@ class LicenceHeadersCheckCommand extends AbstractCommand
         $this->setAliases(['tools:license-headers-check']);
         $this->setDescription('Check licence header in code source files.');
 
-        $project_dir = dirname(__DIR__, 3); // Root of GLPI
-
-        $this->addOption(
-            'directory',
-            'd',
-            InputOption::VALUE_REQUIRED,
-            'Directory to parse',
-            $project_dir
-        );
-
         $this->addOption(
             'plugin',
             'p',
@@ -94,24 +84,18 @@ class LicenceHeadersCheckCommand extends AbstractCommand
             'Plugin name (optional)'
         );
 
-        $headers_file = null;
-        if ($project_dir !== null) {
-            $path = implode(DIRECTORY_SEPARATOR, [$project_dir, '.licence-header']);
-            // Legacy path in tools/HEADER is now handled by looking at tools directory relative to root
-            $legacy_path = implode(DIRECTORY_SEPARATOR, [$project_dir, 'tools', 'HEADER']);
-            if (file_exists($path)) {
-                $headers_file = realpath($path);
-            } elseif (file_exists($legacy_path)) {
-                $headers_file = realpath($legacy_path);
-            }
-        }
+        $this->addOption(
+            'directory',
+            'd',
+            InputOption::VALUE_OPTIONAL,
+            'Directory to parse (optional)',
+        );
 
         $this->addOption(
             'header-file',
             null,
-            InputOption::VALUE_REQUIRED,
-            'Header file to use',
-            $headers_file
+            InputOption::VALUE_OPTIONAL,
+            'Header file to use (optional)',
         );
 
         $this->addOption(
@@ -131,17 +115,38 @@ class LicenceHeadersCheckCommand extends AbstractCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $target_dir = $input->getOption('directory');
+        $project_dir = dirname(__DIR__, 3); // Root of GLPI
         $plugin_name = $input->getOption('plugin');
 
         if ($plugin_name) {
             $root_dir = dirname(__DIR__, 3);
-            $target_dir = $root_dir . '/plugins/' . $plugin_name;
-            if (!is_dir($target_dir)) {
-                 throw new \RuntimeException(sprintf('Plugin directory "%s" not found.', $target_dir));
+            $project_dir = $root_dir . '/plugins/' . $plugin_name;
+            if (!is_dir($project_dir)) {
+                 throw new \RuntimeException(sprintf('Plugin directory "%s" not found.', $project_dir));
             }
         }
 
+        /** @var string|null $header_file_path */
+        $header_file_path = $this->input->getOption('header-file');
+        if (!$header_file_path) {
+            $path = implode(DIRECTORY_SEPARATOR, [$project_dir, '.licence-header']);
+            $legacy_path = implode(DIRECTORY_SEPARATOR, [$project_dir, 'tools', 'HEADER']);
+            if (file_exists($path)) {
+                $header_file_path = realpath($path);
+            } elseif (file_exists($legacy_path)) {
+                $header_file_path = realpath($legacy_path);
+            }
+        }
+
+        if (!$header_file_path) {
+            throw new \Exception('No header path defined.');
+        }
+
+        if ($this->io->isVerbose()) {
+            $this->io->info(sprintf('HEADER path: %s', $header_file_path));
+        }
+
+        $target_dir = $input->getOption('directory') ?? $project_dir;
         $files = $this->getFilesToParse($target_dir);
 
         if ($this->io->isVerbose()) {
@@ -152,34 +157,6 @@ class LicenceHeadersCheckCommand extends AbstractCommand
         $missing_errors  = 0;
         $outdated_found  = 0;
         $outdated_errors = 0;
-
-        /** @var string|null $header_file_path */
-        $header_file_path = $this->input->getOption('header-file');
-        
-        // If not explicit header file and we are in plugin mode, try to find plugin specific header
-        if (!$header_file_path && $plugin_name) {
-            $path = implode(DIRECTORY_SEPARATOR, [$target_dir, '.licence-header']);
-            $legacy_path = implode(DIRECTORY_SEPARATOR, [$target_dir, 'tools', 'HEADER']);
-            if (file_exists($path)) {
-                $header_file_path = realpath($path);
-            } elseif (file_exists($legacy_path)) {
-                $header_file_path = realpath($legacy_path);
-            }
-        }
-        
-        // Fallback to core header file if still null (taken from default value in configure if strictly equal to default, but here we cover logic gap)
-        if (!$header_file_path) {
-             // Re-evaluate default if needed or just fail
-             // Since we populated default in configure(), getOption SHOULD return it. 
-             // However if user passed --header-file="" explicitly it might be empty.
-             // We'll throw if empty.
-             throw new \RuntimeException('No header file specified or found.');
-        }
-
-
-        if ($this->io->isVerbose()) {
-            $this->io->info(sprintf('HEADER path: %s', $header_file_path));
-        }
 
         /** @var string $filename */
         foreach ($files as $filename) {
