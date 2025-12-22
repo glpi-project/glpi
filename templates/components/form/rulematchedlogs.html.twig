@@ -29,7 +29,6 @@
  #
  # ---------------------------------------------------------------------
  #}
-
 {% block more_fields %}
     {% do call('Html::printAjaxPager', ['RuleMatchedLog'|itemtype_name, start, count]) %}
 
@@ -63,7 +62,7 @@
                 </td>
                 <td>{{ data['modulename'] }}</td>
                 <td>
-                    {% if data['input'] is iterable and data['input'] is not empty %}
+                    {% if data['input'] is not empty %}
                         {% set rand = random() %}
                         <div class="accordion" id="inputAccordion{{ rand }}">
                             <div id="item{{ rand }}">
@@ -72,17 +71,9 @@
                             <div id="collapse{{ rand }}" class="accordion-collapse collapse" data-bs-parent="#inputAccordion{{ rand }}">
                                 <div class="nested list-group list-group-flush card">
                                     <div class="list-group-item ">
-                                        {% for name, value in data['input'] %}
-                                            {% if value is iterable %}
-                                                <b>{{ name }}</b> :
-                                                {% for subvalue in value %}
-                                                    <br>&emsp;&bull;{{ subvalue }}
-                                                {% endfor %}
-                                                <br>
-                                            {% else %}
-                                                <b>{{ name }}</b> : {{ value }}<br>
-                                            {% endif %}
-                                        {% endfor %}
+                                        <pre>
+{{ data['input']|json_encode(constant('JSON_PRETTY_PRINT')) }}
+                                        <pre>
                                     </div>
                                 </div>
                             </div>
