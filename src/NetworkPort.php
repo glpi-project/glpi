@@ -1368,14 +1368,8 @@ class NetworkPort extends CommonDBChild
             $options['several'] = false;
         }
 
-        if ($ID > 0) {
-            if (!self::canView()) {
-                return false;
-            }
-        } else {
-            if (!self::canCreate()) {
-                return false;
-            }
+        if (($ID > 0 && !self::canView()) || !self::canCreate()) {
+            return false;
         }
 
         $recursiveItems = $this->recursivelyGetItems();
