@@ -1275,7 +1275,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
         $criteria['ORDERBY'] = [$_GET["sort"] . " $order"];
 
-        $canedit = $item::class === Project::class && $item->canEdit($ID);
+        $canedit = $item::class === Project::class && $item->canEdit($ID) && $withtemplate != 2;
 
         switch ($item::class) {
             case Project::class:
