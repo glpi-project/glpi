@@ -71,6 +71,7 @@ use NetworkPort;
 use NetworkPortType;
 use OAuthClient;
 use Override;
+use PDU;
 use Peripheral;
 use Plugin;
 use Printer;
@@ -95,6 +96,7 @@ use function Safe\simplexml_load_string;
  * @property int $import_antivirus
  * @property int $import_registry
  * @property int $import_process
+ * @property int $import_pdu
  * @property int $import_vm
  * @property int $import_monitor_on_partial_sn
  * @property int $import_unmanaged
@@ -298,6 +300,7 @@ class Conf extends CommonGLPI
             $success = false;
             $message = sprintf(__('An error occurs during import: `%s`.'), $e->getMessage());
             $items   = $inventory_request->getInventory()->getItems();
+            Toolbox::logDebug($e->getTraceAsString());
         }
 
         return new ImportResult(
@@ -696,6 +699,7 @@ class Conf extends CommonGLPI
             'import_antivirus'               => 1,
             'import_registry'                => 1,
             'import_process'                 => 1,
+            'import_pdu'                     => 1,
             'import_vm'                      => 1,
             'import_monitor_on_partial_sn'   => 0,
             'import_unmanaged'               => 1,

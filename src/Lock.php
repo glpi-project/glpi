@@ -135,68 +135,86 @@ TWIG;
             // get locked field for other lockable object
             foreach ($CFG_GLPI['inventory_lockable_objects'] as $lockable_itemtype) {
                 $lockable_itemtype_table = getTableForItemType($lockable_itemtype);
-                $lockable_object = getItemForItemtype($lockable_itemtype);
-                $query  = [
-                    'SELECT' => $lockedfield_table . ".*",
-                    'FROM'   => $lockedfield_table,
-                    'LEFT JOIN' => [
-                        $lockable_itemtype_table   => [
-                            'FKEY'   => [
-                                $lockedfield_table  => 'items_id',
-                                $lockable_itemtype_table   => 'id',
+                if ($lockable_object = getItemForItemtype($lockable_itemtype)) {
+                    $query  = [
+                        'SELECT' => $lockedfield_table . ".*",
+                        'FROM'   => $lockedfield_table,
+                        'LEFT JOIN' => [
+                            $lockable_itemtype_table   => [
+                                'FKEY'   => [
+                                    $lockedfield_table  => 'items_id',
+                                    $lockable_itemtype_table   => 'id',
+                                ],
                             ],
                         ],
-                    ],
-                    'WHERE'  => [
-                        'OR' => [
-                            [
-                                $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id')),
-                            ], [
-                                $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.is_global' => 1,
+                        'WHERE'  => [
+                            'OR' => [
+                                [
+                                    $lockedfield_table . '.itemtype'  => $lockable_itemtype,
+                                    $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id')),
+                                ], [
+                                    $lockedfield_table . '.itemtype'  => $lockable_itemtype,
+                                    $lockedfield_table . '.is_global' => 1,
+                                ],
                             ],
                         ],
-                    ],
-                ];
+                    ];
 
-                if ($lockable_object instanceof CommonDBConnexity) {
-                    $connexity_criteria = $lockable_itemtype::getSQLCriteriaToSearchForItem($itemtype, $ID);
-                    if ($connexity_criteria === null) {
+                    if ($lockable_object instanceof CommonDBConnexity) {
+                        $connexity_criteria = $lockable_itemtype::getSQLCriteriaToSearchForItem($itemtype, $ID);
+                        if ($connexity_criteria === null) {
+                            continue;
+                        }
+                        $query['WHERE'][] = $connexity_criteria['WHERE'];
+                        if ($lockable_object->isField('is_deleted')) {
+                            $query['WHERE'][] = [
+                                $lockable_object::getTableField('is_deleted') => 0,
+                            ];
+                        }
+                    } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
+                        //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
+                        $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()]
+                        = [
+                            'FKEY'   => [
+                                Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
+                                $lockable_itemtype::getTable()    => 'id',
+                            ],
+                        ];
+                        $query['WHERE'][] = [
+                            Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
+                            Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
+                            Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0,
+                        ];
+                    } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
+                        $query['WHERE'][] = [
+                            $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
+                            $lockable_itemtype::getTable() . '.items_id'  => $ID,
+                        ];
+                        if ($lockable_object->isField('is_deleted')) {
+                            $query['WHERE'][] = [
+                                $lockable_object::getTableField('is_deleted') => 0,
+                            ];
+                        }
+                    } elseif ($lockable_object->isField('itemtype_asset') && $lockable_object->isField('items_id_asset')) {
+                        // not a directconnect_types but with itemtype_asset / items_id_asset (Plug.php)
+                        $query['WHERE'][] = [
+                            $lockable_itemtype::getTable() . '.itemtype_asset'  => $itemtype,
+                            $lockable_itemtype::getTable() . '.items_id_asset'  => $ID,
+                        ];
+                        if ($lockable_object->isField('is_deleted')) {
+                            $query['WHERE'][] = [
+                                $lockable_object::getTableField('is_deleted') => 0,
+                            ];
+                        }
+                    } else {
+                        // skip other inventory_lockable_objects seen as CommonDBTM without
+                        // - itemtype / items_id
+                        // - itemtype_asset / items_id_asset
+                        // - directconnect_types reference
                         continue;
                     }
-                    $query['WHERE'][] = $connexity_criteria['WHERE'];
-                    if ($lockable_object->isField('is_deleted')) {
-                        $query['WHERE'][] = [
-                            $lockable_object::getTableField('is_deleted') => 0,
-                        ];
-                    }
-                } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
-                    //we need to restrict scope with Asset_PeripheralAsset to prevent loading of all lockedfield
-                    $query['LEFT JOIN'][Asset_PeripheralAsset::getTable()]
-                    = [
-                        'FKEY'   => [
-                            Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
-                            $lockable_itemtype::getTable()    => 'id',
-                        ],
-                    ];
-                    $query['WHERE'][] = [
-                        Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
-                        Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
-                        Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0,
-                    ];
-                } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
-                    $query['WHERE'][] = [
-                        $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
-                        $lockable_itemtype::getTable() . '.items_id'  => $ID,
-                    ];
-                    if ($lockable_object->isField('is_deleted')) {
-                        $query['WHERE'][] = [
-                            $lockable_object::getTableField('is_deleted') => 0,
-                        ];
-                    }
+                    $subquery[] = new QuerySubQuery($query);
                 }
-                $subquery[] = new QuerySubQuery($query);
             }
 
             $union = new QueryUnion($subquery);
@@ -255,12 +273,21 @@ TWIG;
                     // For CommonDBRelation
                     // $itemtype_1 / $items_id_1 and $itemtype_2 / $items_id_2 can be inverted
 
-                    // ex: Item_Software have
-                    // $itemtype_1 = 'itemtype';
-                    // $items_id_1 = 'items_id';
-                    // $itemtype_2 = SoftwareVersion::class;
-                    // $items_id_2 = 'softwareversions_id';
-                    if (str_starts_with($row['itemtype']::$itemtype_1, 'itemtype')) {
+                    if (str_starts_with((string) $row['itemtype']::$itemtype_1, 'itemtype_')) {
+                        // ex: Plug have
+                        // $itemtype_1 = 'itemtype_main';
+                        // $items_id_1 = 'items_id_main';
+                        // $itemtype_2 = 'itemtype_asset';
+                        // $items_id_2 = 'items_id_asset';
+                        $default_itemtype =  $row['itemtype']; //load itemtype directly
+                        $default_items_id =  'id'; // related key storing 'id'
+                        $default_itemtype_label = $default_itemtype::getTypeName();
+                    } elseif (str_starts_with((string) $row['itemtype']::$itemtype_1, 'itemtype')) {
+                        // ex: Item_Software have
+                        // $itemtype_1 = 'itemtype';
+                        // $items_id_1 = 'items_id';
+                        // $itemtype_2 = SoftwareVersion::class;
+                        // $items_id_2 = 'softwareversions_id';
                         $default_itemtype =  $row['itemtype']::$itemtype_2;
                         $default_items_id =  $row['itemtype']::$items_id_2;
                         $default_itemtype_label = $row['itemtype']::$itemtype_2::getTypeName();
@@ -447,6 +474,47 @@ TWIG, $twig_params);
                     'partition' => $item_disk->fields['device'],
                     'mountpoint' => $item_disk->fields['mountpoint'],
                     'is_dynamic' => Dropdown::getYesNo($item_disk->fields['is_dynamic']),
+                ];
+            }
+            $subtables[] = $subtable;
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['plug_types'], true)) {
+            //plugs
+            $plug = new Plug();
+            $plugs = $DB->request([
+                'FROM'  => $plug::getTable(),
+                'WHERE' => [
+                    'is_dynamic'        => 1,
+                    'is_deleted'        => 1,
+                    'items_id_main'     => $ID,
+                    'itemtype_main'     => $itemtype,
+                ],
+            ]);
+            $subtable = [
+                'nosort'    => true,
+                'nofilter'  => true,
+                'columns'   => [
+                    'chk'   => '',
+                    'item'  => $plug::getTypeName(1),
+                    'type'  => _n('Plug type', 'Plug types', 0),
+                    'is_dynamic' => __('Automatic inventory'),
+                ],
+                'formatters' => [
+                    'chk' => 'raw_html',
+                    'item' => 'raw_html',
+                ],
+                'entries' => [],
+            ];
+
+            foreach ($plugs as $line) {
+                $plug->getFromResultSet($line);
+                $show_checkbox = $plug->can($line['id'], UPDATE) || $plug->can($plug->getID(), PURGE);
+                $subtable['entries'][] = [
+                    'chk'           => $show_checkbox ? "<input type='checkbox' name='Plug[{$plug->getID()}]'>" : '',
+                    'item'          => $plug->getLink(),
+                    'type'          =>  Dropdown::getDropdownName(PlugType::getTable(), $plug->fields['plugtypes_id']),
+                    'is_dynamic'    => Dropdown::getYesNo($plug->fields['is_dynamic']),
                 ];
             }
             $subtables[] = $subtable;

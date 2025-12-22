@@ -36,11 +36,47 @@
  * @var Migration $migration
  * @var DBmysql $DB
  */
+$default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
+
+if (!$DB->tableExists('glpi_plugtypes')) {
+    $query = <<<SQL
+        CREATE TABLE `glpi_plugtypes` (
+            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `entities_id` int unsigned NOT NULL DEFAULT '0',
+            `is_recursive` tinyint NOT NULL DEFAULT '0',
+            `name` varchar(255) DEFAULT NULL,
+            `comment` text,
+            `date_creation` timestamp NULL DEFAULT NULL,
+            `date_mod` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`),
+            KEY `entities_id` (`entities_id`),
+            KEY `is_recursive` (`is_recursive`),
+            KEY `name` (`name`),
+            KEY `date_creation` (`date_creation`),
+            KEY `date_mod` (`date_mod`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+SQL;
+    $DB->doQuery($query);
+}
 
 $migration->addField(
     'glpi_plugs',
     'custom_name',
     'string'
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'number',
+    "int NOT NULL DEFAULT '0'",
+    ['after' => 'custom_name']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'plugtypes_id',
+    'fkey',
+    ['after' => 'number']
 );
 
 $migration->addField(
@@ -70,6 +106,21 @@ $migration->addField(
 
 $migration->addField(
     'glpi_plugs',
+    'autoupdatesystems_id',
+    "int {$default_key_sign} NOT NULL DEFAULT '0'",
+    ['after' => 'itemtype_asset']
+);
+
+$migration->addField(
+    'glpi_plugs',
+    'is_dynamic',
+    'bool',
+    ['after' => 'autoupdatesystems_id']
+);
+
+
+$migration->addField(
+    'glpi_plugs',
     'entities_id',
     'fkey'
 );
@@ -80,9 +131,19 @@ $migration->addField(
     'bool'
 );
 
+$migration->addField(
+    'glpi_plugs',
+    'is_deleted',
+    'bool'
+);
+
 $migration->addKey('glpi_plugs', ['itemtype_asset', 'items_id_asset'], 'asset_item');
 $migration->addKey('glpi_plugs', ['itemtype_main', 'items_id_main'], 'main_item');
+$migration->addKey('glpi_plugs', 'autoupdatesystems_id');
+$migration->addKey('glpi_plugs', 'is_dynamic');
+$migration->addKey('glpi_plugs', 'plugtypes_id');
 $migration->addKey('glpi_plugs', 'entities_id');
+$migration->addKey('glpi_plugs', 'is_deleted');
 $migration->addKey('glpi_plugs', 'is_recursive');
 
 $migration->migrationOneTable('glpi_plugs');
@@ -97,7 +158,7 @@ if ($DB->tableExists('glpi_items_plugs')) {
     foreach ($iterator as $plug_item_data) {
         // try to load plug from DB
         $plug_data = $DB->request([
-            'SELECT' => ["id"],
+            'SELECT' => ["id", "name"],
             'FROM'   => 'glpi_plugs',
             'WHERE'  => ['id' => $plug_item_data['plugs_id']],
         ])->current();
@@ -105,15 +166,18 @@ if ($DB->tableExists('glpi_items_plugs')) {
         // handle plug migration if exist
         if ($plug_data !== null) {
             for ($i = 1; $i <= $plug_item_data['number_plugs']; $i++) {
+
+                $plug_name = !empty($plug_data['name']) ? $plug_data['name'] . ' - ' . $i : $i;
                 // create dedicated plug
                 $migration->addPostQuery(
                     $DB->buildInsert('glpi_plugs', [
-                        'name'              => $plug_data['name'] . ' - ' . $i,
-                        'itemtype_asset'    => $plug_item_data['itemtype'],
-                        'items_id_asset'    => $plug_item_data['items_id'],
+                        'name'              => $plug_name,
+                        'number'            => $i,
+                        'itemtype_main'     => $plug_item_data['itemtype'],
+                        'items_id_main'     => $plug_item_data['items_id'],
                         'entities_id'       => 0,
                         'is_recursive'      => 1,
-                        'comment'           => $plug_data['comment'],
+                        'comment'           => $plug_data['comment'] ?? '',
                     ])
                 );
             }
