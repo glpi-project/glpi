@@ -145,15 +145,10 @@ export class GlpiPage
         await this.notes.nth(index).click();
     }
 
-    public async doAddNote(
-        content: string,
-        visible_on_ticket: boolean = false,
-    ): Promise<void> {
+    public async doAddNote(content: string): Promise<void>
+    {
         await this.add_note_button.click();
         await this.note_content_input.fill(content);
-        if (visible_on_ticket) {
-            await this.is_visible_on_ticket_checkbox.check();
-        }
         await this.submit_note_button.click();
     }
 
@@ -177,7 +172,7 @@ export class GlpiPage
         // Select the target note
         await this.doFocusNote(index);
 
-        // Update content
+        // Add file to note
         await this.getButton("Edit").click();
         await this.doAddFileToUploadArea(file, this.page.getByRole('dialog'));
         await this.getButton("Update").click();
@@ -190,7 +185,7 @@ export class GlpiPage
         await this.doFocusNote(index);
 
         // Prepare to confirm delete dialog
-        this.page.on('dialog', dialog => dialog.accept());
+        this.page.once('dialog', dialog => dialog.accept());
 
         // Trigger deletion
         await this.getButton("Delete").click();
@@ -202,7 +197,7 @@ export class GlpiPage
         // party lib.
         // eslint-disable-next-line playwright/no-raw-locators
         await parent.locator('input[type="file"]')
-            .setInputFiles(path.join(__dirname, `/../../fixtures/${file}`))
+            .setInputFiles(path.join(__dirname, `../../fixtures/${file}`))
         ;
         const progress = parent.getByRole('progressbar');
 
