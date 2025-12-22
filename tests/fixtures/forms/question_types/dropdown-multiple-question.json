@@ -1,0 +1,107 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 11,
+            "uuid": "4aa1ea37-0e4a-4c8e-867b-94da824a3b22",
+            "name": "Form with dropdown multiple question",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 29,
+                    "uuid": "a0c2841a-7dbd-48d7-8c12-d863e56c34c5",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 144,
+                    "uuid": "26b447a4-c477-4a33-ab18-0f0cd91fe01a",
+                    "name": "My question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeDropdown",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": {
+                        "options": {
+                            "802348617": "",
+                            "1153f7ee-ad5f-4c3e-9c8a-542d931a6e84": "Option 1",
+                            "a91e6872-2f4a-466a-8ed3-3b28e28ecc25": "Option 2",
+                            "e702fd87-d6ba-4ae9-be46-e95a62718fc6": "Option 3",
+                            "d91fe1c1-80fd-4a87-99ac-3eb51a87a2ba": "Option 4"
+                        },
+                        "is_multiple_dropdown": true
+                    },
+                    "section_id": 29,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 145,
+                    "uuid": "cc4c1774-1cc6-4139-a372-4aaa182621c2",
+                    "name": "Another question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 29,
+                    "visibility_strategy": "always_visible",
+                    "validation_strategy": "no_validation",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 47,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

@@ -68,4 +68,155 @@ export class FormPage extends GlpiPage
             'Item successfully updated'
         );
     }
+
+    public async doInitVisibilityConditionsDropdown(
+        question_index: number
+    ): Promise<void> {
+        await this.getButton("More actions").nth(question_index).click();
+        await this.getButton("Configure visibility").click();
+    }
+
+    public async doOpenVisibilityConditionsConfiguration(): Promise<void> {
+        await this.page.getByTestId('form-editor-left-panel')
+            .getByTitle("Configure visibility")
+            .filter({visible: true})
+            .click()
+        ;
+    }
+
+    public async doSetVisibilityStrategy(strategy: string): Promise<void>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        await this.page.locator('label', { hasText: strategy })
+            .filter({visible : true})
+            .click()
+        ;
+    }
+
+    public async doAddNewCondition(): Promise<void>
+    {
+        await this.getButton('Add another criteria').click();
+    }
+
+    public async doFillStringCondition(
+        index: number,
+        logic: string,
+        item: string,
+        operator: string,
+        value: string,
+    ): Promise<void> {
+        await this.doFillConditionWithoutValue(index, logic, item, operator);
+        await this.getTextbox('Value')
+            .last()
+            .fill(value)
+        ;
+    }
+
+    public async doFillNumberCondition(
+        index: number,
+        logic: string,
+        item: string,
+        operator: string,
+        value: number,
+    ): Promise<void> {
+        await this.doFillConditionWithoutValue(index, logic, item, operator);
+        await this.getSpinButton('Value')
+            .last().fill(
+                value.toString()
+            )
+        ;
+    }
+
+    public async doFillDateCondition(
+        index: number,
+        logic: string,
+        item: string,
+        operator: string,
+        value: string,
+    ): Promise<void> {
+        await this.doFillConditionWithoutValue(index, logic, item, operator);
+        await this.page.getByTestId('conditions-container')
+            .getByLabel('Value', {exact: true})
+            .filter({visible: true})
+            .last()
+            .fill(value)
+        ;
+    }
+
+    public async doFillDropdownCondition(
+        index: number,
+        logic: string,
+        item: string,
+        operator: string,
+        value: string,
+    ): Promise<void> {
+        await this.doFillConditionWithoutValue(index, logic, item, operator);
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Value')
+                .filter({visible : true})
+                .last(),
+            value,
+            false
+        );
+    }
+
+    public async doFillMultipleDropdownCondition(
+        index: number,
+        logic: string,
+        item: string,
+        operator: string,
+        value: string[],
+    ): Promise<void> {
+        await this.doFillConditionWithoutValue(index, logic, item, operator);
+        for (const option of value) {
+            await this.doSetDropdownValue(
+                this.getDropdownByLabel('Value')
+                    .filter({visible : true})
+                    .last(),
+                option,
+                false
+            );
+        }
+    }
+
+    public async doFillConditionWithoutValue(
+        index: number,
+        logic: string,
+        item: string,
+        operator: string,
+    ): Promise<void> {
+        // Set logic operator
+        if (index !== 0) {
+            await this.doSetDropdownValue(
+                this.getDropdownByLabel('Logic operator')
+                    .filter({visible : true})
+                    .nth(index - 1),
+                logic,
+            );
+        }
+
+        // Set target item
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Item')
+                .filter({visible : true})
+                .nth(index),
+            item,
+        );
+
+        // Set operator
+        await this.doSetDropdownValue(
+            this.getDropdownByLabel('Value operator').last(),
+            operator,
+        );
+    }
+
+    public getConditions(): Locator
+    {
+        return this.page.getByTestId('visibility-condition');
+    }
+
+    public getLastQuestion(): Locator
+    {
+        return this.getRegion("Question details").last();
+    }
 }

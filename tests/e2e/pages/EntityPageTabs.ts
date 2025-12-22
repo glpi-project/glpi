@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2026 Teclib' and contributors.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -30,27 +30,11 @@
  * ---------------------------------------------------------------------
  */
 
-describe('File upload', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-        cy.visit('/front/document.form.php');
-    });
+// Eslint does not see enum usages correctly.
+/* eslint-disable no-unused-vars */
 
-    it('Can upload file', () => {
-        // Upload file
-        cy.get("input[type=file]").selectFile("fixtures/uploads/bar.txt");
-        cy.findByText('Upload successful').should('exist');
-        cy.findByRole("button", {'name': "Add"}).click();
-        cy.findByRole('textbox', {'name': "Name"}).should('have.value', 'bar.txt');
-
-        // Download file
-        cy.get('#main-form')
-            .findByRole('link', {'name': "bar.txt"})
-            .invoke('attr', 'target', '_self') // Cypress don't like new tabs
-            .click();
-        cy.readFile('cypress/downloads/bar.txt').then(content => {
-            cy.wrap('bar').should('eq', content);
-        });
-    });
-});
+export enum EntityPageTabs
+{
+    Notes = "Notepad$1",
+    Assistance = "Entity$5",
+}

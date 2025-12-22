@@ -42,6 +42,7 @@ import { CsrfFetcher } from '../utils/CsrfFetcher';
 import { WorkerSessionCache } from '../utils/WorkerSessionCache';
 import { Api } from '../utils/Api';
 import { EntitySwitcher } from '../utils/EntitySwitcher';
+import { FormImporter } from '../utils/FormImporter';
 
 export * from '@playwright/test';
 export const test = baseTest.extend<{
@@ -50,6 +51,7 @@ export const test = baseTest.extend<{
     profile: ProfileSwitcher,
     entity: EntitySwitcher,
     csrf: CsrfFetcher,
+    formImporter: FormImporter,
     api: Api,
 }, {
     // Worker scoped fixtures, these objects will be created once per thread.
@@ -153,6 +155,10 @@ export const test = baseTest.extend<{
     // Service used to send API request to GLPI.
     api: [async ({ workerSessionCache }, use) => {
         await use(new Api(workerSessionCache));
+    }, { scope: 'test' }],
+
+    formImporter: [async ({ request, csrf }, use) => {
+        await use(new FormImporter(request, csrf));
     }, { scope: 'test' }],
 
     // Store the state of the current session.

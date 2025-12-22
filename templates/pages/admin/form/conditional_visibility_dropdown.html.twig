@@ -78,6 +78,7 @@
                 <div
                     class="{{ display_class }} align-items-center"
                     data-glpi-editor-visibility-badge="{{ strategy.value }}"
+                    aria-label="{{ strategy.getLabel() }}"
                 >
                     <i class="{{ strategy.getIcon() }} me-1"></i>
                     <span>{{ strategy.getLabel() }}</span>

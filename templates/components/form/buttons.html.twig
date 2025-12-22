@@ -44,12 +44,24 @@
       <div class="form-button-separator card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
          {% if withtemplate > 0 or item.isNewID(id) %}
             {% if id <= 0 or withtemplate == 2 %}
-               <button class="btn btn-primary me-2" type="submit" name="add" value="1">
+               <button
+                  class="btn btn-primary me-2"
+                  type="submit"
+                  name="add"
+                  value="1"
+                  aria-label="{{ _x('button', 'Add') }}"
+               >
                   <i class="ti ti-plus"></i>
                   <span>{{ _x('button', 'Add') }}</span>
                </button>
             {% else %}
-               <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+               <button
+                  class="btn btn-primary me-2"
+                  type="submit"
+                  name="update"
+                  value="1"
+                  aria-label="{{ _x('button', 'Save') }}"
+               >
                   <i class="ti ti-device-floppy"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
@@ -60,7 +72,13 @@
             {% endif %}
 
             {% if canedit and item.can(id, constant('UPDATE')) %}
-               <button class="btn btn-primary me-2" type="submit" name="update" value="1">
+               <button
+                  class="btn btn-primary me-2"
+                  type="submit"
+                  name="update"
+                  value="1"
+                  aria-label="{{ _x('button', 'Save') }}"
+               >
                   <i class="ti ti-device-floppy"></i>
                   <span>{{ _x('button', 'Save') }}</span>
                </button>
@@ -69,8 +87,13 @@
             {% if candel %}
                {% if item.isDeleted() %}
                   {% if item.can(id, constant('DELETE')) %}
-                     <button class="btn btn-outline-secondary me-2" type="submit"
-                             name="restore" value="1">
+                     <button
+                        class="btn btn-outline-secondary me-2"
+                        type="submit"
+                        name="restore"
+                        value="1"
+                        aria-label="{{ _x('button', 'Restore') }}"
+                     >
                         <i class="ti ti-trash-off"></i>
                         <span>{{ _x('button', 'Restore') }}</span>
                      </button>
@@ -86,9 +109,14 @@
                     {% endif %}
 
                      <span class="{{ span_cls }}">
-                        <button class="btn btn-danger me-2" type="submit" name="purge"
-                              value="1"
-                              onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
+                        <button
+                           class="btn btn-danger me-2"
+                           type="submit"
+                           name="purge"
+                           value="1"
+                           onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                           aria-label="{{ _x('button', 'Delete permanently') }}"
+                        >
                            <i class="ti ti-trash"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
@@ -107,16 +135,26 @@
                {% else %}
                   {% if (not item.maybeDeleted() or item.useDeletedToLockIfDynamic()) %}
                      {% if item.can(id, constant('PURGE')) %}
-                        <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
-                                value="1">
+                        <button
+                           class="btn btn-outline-danger me-2"
+                           type="submit"
+                           name="purge"
+                           onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                           value="1"
+                           aria-label="{{ _x('button', 'Delete permanently') }}"
+                        >
                            <i class="ti ti-trash"></i>
                            <span>{{ _x('button', 'Delete permanently') }}</span>
                         </button>
                      {% endif %}
                   {% elseif not item.isDeleted() and item.can(id, constant('DELETE')) %}
-                     <button class="btn btn-outline-warning me-2" type="submit"
-                             name="delete" value="1">
+                     <button
+                        class="btn btn-outline-warning me-2"
+                        type="submit"
+                        name="delete"
+                        value="1"
+                        aria-label="{{ _x('button', 'Put in trashbin') }}"
+                     >
                         <i class="ti ti-trash"></i>
                         <span>{{ _x('button', 'Put in trashbin') }}</span>
                      </button>
