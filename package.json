@@ -84,7 +84,8 @@
         "watch:vue": "webpack --config .vue.webpack.config.js --watch",
         "watch": "npm run watch:vue",
         "test:e2e": "cypress open --project tests",
-        "serve:vue": "webpack serve --config .vue.webpack.config.js"
+        "serve:vue": "webpack serve --config .vue.webpack.config.js",
+        "vue:gettext:extract": "vue-gettext-extract --config .gettext.config.js"
     },
     "devDependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.27.1",
@@ -136,6 +137,7 @@
         "typescript": "^5.9.3",
         "vue-eslint-parser": "^10.2.0",
         "vue-loader": "^17.4.2",
+        "vue3-gettext": "^4.0.0-beta.1",
         "webpack": "^5.100.2",
         "webpack-cli": "^6.0.1",
         "webpack-dev-server": "^5.2.3"

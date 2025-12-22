@@ -49,7 +49,7 @@ echo "Installing dependencies..."
 $WORKING_DIR/bin/console dependencies install --composer-options="--ignore-platform-reqs --prefer-dist --no-progress"
 
 echo "Compiling locale files..."
-$WORKING_DIR/bin/console locales:compile
+$WORKING_DIR/bin/console tools:locales:compile
 
 echo "Moving JS files into the /public directory..."
 for file in $(find $WORKING_DIR/js -type f ! -path "$WORKING_DIR/js/src/*")

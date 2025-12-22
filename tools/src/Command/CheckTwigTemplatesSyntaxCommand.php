@@ -48,7 +48,7 @@ use Twig\Error\Error;
 final class CheckTwigTemplatesSyntaxCommand extends Command
 {
     /**
-     * Error code returned when some templates have invalid yntax.
+     * Error code returned when some templates have invalid syntax.
      *
      * @var int
      */
