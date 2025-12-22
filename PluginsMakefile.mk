@@ -87,11 +87,11 @@ locales-compile: ## Compile locales
 
 ##—— Licenses  —————————————————————————————————————————————————————————————————
 license-headers-check: ## Verify that the license headers is present all files
-	@$(CONSOLE) tools:plugin:licence_headers_check --plugin=$(PLUGIN_DIR)
+	@$(CONSOLE) tools:licence-headers-check --plugin=$(PLUGIN_DIR)
 .PHONY: license-headers-check
 
 license-headers-fix: ## Add the missing license headers in all files
-	@$(CONSOLE) tools:plugin:licence_headers_check --fix --plugin=$(PLUGIN_DIR)
+	@$(CONSOLE) tools:licence-headers-check --fix --plugin=$(PLUGIN_DIR)
 .PHONY: license-headers-fix
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————
