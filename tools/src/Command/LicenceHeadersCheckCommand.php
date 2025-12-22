@@ -342,20 +342,40 @@ class LicenceHeadersCheckCommand extends AbstractCommand
          return 0; // Success
       }
 
+      $build_msg = function (int $missing_count, int $outdated_count): string {
+          $messages = [];
+          if ($missing_count > 0) {
+              $messages[] = sprintf(
+                  '%d file%s without header',
+                  $missing_count,
+                  $missing_count > 1 ? 's' : ''
+              );
+          }
+          if ($outdated_count > 0) {
+              $messages[] = sprintf(
+                  '%d file%s with outdated header',
+                  $outdated_count,
+                  $outdated_count > 1 ? 's' : ''
+              );
+          }
+          return implode(' and ', $messages);
+      };
+
       if (!$this->input->getOption('fix')) {
          $msg = sprintf(
-            'Found %d file(s) without header and %d file(s) with outdated header. Use --fix option to fix these files.',
-            $missing_found,
-            $outdated_found
+            'Found %s. Use --fix option to fix these files.',
+            $build_msg($missing_found, $outdated_found)
          );
          $this->io->error($msg);
          return self::ERROR_FOUND_MISSING_OR_OUTDATED;
       }
 
       $msg = sprintf(
-         'Fixed %d file(s) without header and %d file(s) with outdated header.',
-         $missing_found - $missing_errors,
-         $outdated_found - $outdated_errors
+         'Fixed %s.',
+         $build_msg(
+             $missing_found - $missing_errors,
+             $outdated_found - $outdated_errors
+         )
       );
       $this->io->success($msg);
 
