@@ -354,7 +354,6 @@ class DropdownDefinitionTest extends DbTestCase
             'RuleRightParameter',
             'Fieldblacklist',
             'SsoVariable',
-            'Plug',
             'ApplianceType',
             'ApplianceEnvironment',
             'ImageResolution',

@@ -171,12 +171,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Possibly invalid array key type string\\|null\\.$#',
-	'identifier' => 'array.invalidKey',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Item_Plug.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type int\\|null\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 1,

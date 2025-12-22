@@ -74,7 +74,7 @@ class DocumentTest extends DbTestCase
                 'item'   => 'Config',
                 'can'    => false,
             ], [
-                'item'   => 'Item_Plug',
+                'item'   => 'Plug',
                 'can'    => false,
             ],
         ];

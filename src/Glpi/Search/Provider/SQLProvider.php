@@ -84,6 +84,7 @@ use Notification;
 use OLA;
 use Override;
 use PlanningExternalEvent;
+use Plug;
 use Plugin;
 use Problem;
 use Project;
@@ -3359,6 +3360,44 @@ final class SQLProvider implements SearchProviderInterface
         ];
 
         // Specific JOIN
+        if ($to_type === Plug::class && in_array($from_type, $CFG_GLPI['plug_types'], true)) {
+            $plugs_table = getTableForItemType($to_type);
+            if (!in_array($plugs_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $plugs_table;
+                $joins['LEFT JOIN']["`" . getTableForItemType($to_type) . "` AS `$plugs_table`"] = [
+                    'ON' => [
+                        $plugs_table => 'items_id_main',
+                        $from_table => 'id',
+                        [
+                            'AND' => [
+                                "$plugs_table.itemtype_main" => $from_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
+        if ($from_type === Plug::class && in_array($to_type, $CFG_GLPI['plug_types'], true)) {
+            $plugs_table = getTableForItemType($to_type);
+            if (!in_array($plugs_table, $already_link_tables2, true)) {
+                $already_link_tables2[] = $plugs_table;
+                $joins['LEFT JOIN']["`" . getTableForItemType($to_type) . "` AS `$plugs_table`"] = [
+                    'ON' => [
+                        $from_table => 'items_id_main',
+                        $plugs_table => 'id',
+                        [
+                            'AND' => [
+                                "$from_table.itemtype_main" => $to_type,
+                            ],
+                        ],
+                    ],
+                ];
+            }
+            return $joins;
+        }
+
         if ($from_referencetype === Software::class && in_array($to_type, $CFG_GLPI['software_types'], true)) {
             // From Software to software_types
             $softwareversions_table = "glpi_softwareversions{$alias_suffix}";
