@@ -1005,6 +1005,11 @@ class SearchTest extends DbTestCase
             }
         }
 
+        // Keep track of meta-itemtypes that have already been fully tested.
+        // Once all search options of a meta-itemtype have been verified at least once,
+        // we only need to test it again with a single option for subsequent base itemtypes
+        // to confirm the meta-join relationship itself.
+        $fully_tested_metatypes = [];
         foreach ($itemtype_criteria as $itemtype => $criteria) {
             if ($criteria === []) {
                 continue;
@@ -1014,8 +1019,18 @@ class SearchTest extends DbTestCase
 
             // Search with each meta criteria independently.
             foreach ($criteria as $criterion_params) {
-                if (!array_key_exists($criterion_params['itemtype'], $first_criteria_by_metatype)) {
-                    $first_criteria_by_metatype[$criterion_params['itemtype']] = $criterion_params;
+                $metatype = $criterion_params['itemtype'];
+                $is_first_of_metatype = !array_key_exists($metatype, $first_criteria_by_metatype);
+
+                if ($is_first_of_metatype) {
+                    $first_criteria_by_metatype[$metatype] = $criterion_params;
+                }
+
+                // If this meta-itemtype was already fully tested for a previous base itemtype,
+                // we only repeat the search for the FIRST option of this meta-itemtype to verify
+                // the JOIN between the current $itemtype and the meta $metatype.
+                if (in_array($metatype, $fully_tested_metatypes) && !$is_first_of_metatype) {
+                    continue;
                 }
 
                 $search_params = ['is_deleted'   => 0,
@@ -1029,6 +1044,9 @@ class SearchTest extends DbTestCase
                 ];
                 $this->doSearch($itemtype, $search_params);
             }
+
+            // Mark all meta-itemtypes encountered for this base itemtype as "fully tested".
+            $fully_tested_metatypes = array_unique(array_merge($fully_tested_metatypes, array_keys($first_criteria_by_metatype)));
 
             // Search with criteria related to multiple meta items.
             // Limit criteria count to 5 to prevent performances issues (mainly on MariaDB).

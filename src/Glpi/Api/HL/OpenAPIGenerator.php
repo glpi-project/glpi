@@ -141,6 +141,11 @@ EOT;
 
     public static function getComponentSchemas(string $api_version): array
     {
+        static $cache = [];
+        if (isset($cache[$api_version])) {
+            return $cache[$api_version];
+        }
+
         $schemas = [];
 
         $controllers = Router::getInstance()->getControllers();
@@ -200,7 +205,7 @@ EOT;
             }
         }
 
-        return $schemas;
+        return $cache[$api_version] = $schemas;
     }
 
     private function getComponentReference(string $name, string $controller): ?array
