@@ -690,7 +690,7 @@ class CommonGLPI implements CommonGLPIInterface
                 if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
                     // Display generic message for template creation
                     $template = <<<HTML
-                    <div class="alert alert-info d-flex">
+                    <div class="alert alert-warning d-flex">
                         <div class="me-2">
                             <i class="ti ti-info-circle"></i>
                         </div>
