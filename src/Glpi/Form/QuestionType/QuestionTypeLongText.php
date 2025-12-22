@@ -72,7 +72,7 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
                     const inst = tinyMCE.get(textarea.attr('id'));
 
                     let content = inst ? inst.getContent() : textarea.val() || "";
-                    let tmp = document.createElement("DIV");
+                    const tmp = document.createElement("DIV");
                     tmp.innerHTML = content;
                     content = tmp.textContent || tmp.innerText || "";
 
