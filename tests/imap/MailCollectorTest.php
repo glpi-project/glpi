@@ -1204,6 +1204,110 @@ PLAINTEXT,
         }
     }
 
+    public function testSupplierCanReplyToTicket()
+    {
+        global $DB;
+        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+
+        $supplier = new \Supplier();
+        $supplier_id = $supplier->add([
+            'name' => 'Test Supplier',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $supplier_id);
+
+        $supplier_contact = new \Contact();
+        $contact_id = $supplier_contact->add([
+            'name' => 'Supplier Contact',
+            'firstname' => 'Test',
+            'email' => 'supplier@glpi-project.org',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $contact_id);
+
+        $contact_supplier = new \Contact_Supplier();
+        $this->assertGreaterThan(0, $contact_supplier->add([
+            'suppliers_id' => $supplier_id,
+            'contacts_id' => $contact_id,
+        ]));
+
+        $ticket = new \Ticket();
+        $ticket_id = $ticket->add([
+            'name' => 'Ticket for supplier reply test',
+            'content' => 'Initial ticket content',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $supplier_ticket = new \Supplier_Ticket();
+        $this->assertGreaterThan(0, $supplier_ticket->add([
+            'tickets_id' => $ticket_id,
+            'suppliers_id' => $supplier_id,
+            'type' => \CommonITILActor::ASSIGN,
+            'alternative_email' => 'supplier@glpi-project.org',
+        ]));
+
+        $uuid = \Config::getUuid('notification');
+        $message_id = "GLPI_{$uuid}-Ticket-{$ticket_id}/new." . time() . "." . rand() . "@localhost";
+
+        $mbox_filename = GLPI_TMP_DIR . '/mailbox_' . mt_rand() . '.eml';
+        $eml_content = <<<EML
+From: supplier@glpi-project.org
+To: unittests@glpi-project.org
+Subject: Re: [GLPI #{$ticket_id}] Ticket for supplier reply test
+Message-ID: <test-supplier-reply@localhost>
+In-Reply-To: <{$message_id}>
+Date: Thu, 19 Dec 2025 10:00:00 +0100
+Content-Type: text/plain; charset=UTF-8
+
+This is a reply from the supplier.
+EML;
+
+        file_put_contents($mbox_filename, $eml_content);
+
+        $collector = new \MailCollector();
+        $mailgate_id = (int) $collector->add([
+            'name' => 'testuser',
+            'login' => 'testuser',
+            'is_active' => true,
+            'passwd' => 'applesauce',
+            'mail_server' => 'dovecot',
+            'server_type' => '/imap',
+            'server_port' => 143,
+            'server_ssl' => '',
+            'server_cert' => '/novalidate-cert',
+        ]);
+        $this->assertGreaterThan(0, $mailgate_id);
+
+        $storage = new \Laminas\Mail\Storage\Mbox(['filename' => $mbox_filename]);
+        $message = $storage->getMessage(1);
+
+        $result = $collector->buildTicket(
+            $mailgate_id,
+            $message,
+            [
+                'mailgates_id' => $mailgate_id,
+                'play_rules' => true,
+            ]
+        );
+
+        $this->assertNotFalse($result);
+
+        $followups = $DB->request([
+            'FROM' => \ITILFollowup::getTable(),
+            'WHERE' => [
+                'items_id' => $ticket_id,
+                'itemtype' => 'Ticket',
+            ],
+        ]);
+
+        $this->assertCount(1, $followups);
+        $followup = $followups->current();
+        $this->assertStringContainsString('This is a reply from the supplier', $followup['content']);
+
+        unlink($mbox_filename);
+    }
+
     public static function mailServerProtocolsProvider()
     {
         return [
