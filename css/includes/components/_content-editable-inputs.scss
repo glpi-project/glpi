@@ -92,6 +92,7 @@ $inline-input-padding: 2px 4px;
         // on width)
         opacity: 0;
         height: 0 !important;
+        overflow: hidden;
         transition: height 0.25s ease !important;
         padding: 0 !important;
     }
@@ -112,6 +113,7 @@ form:not(.disable-focus) {
         .tox-editor-header {
             opacity: unset;
             height: 48px !important; // Need to set a fixed height for transition
+            overflow: visible;
             transition: height 0.25s ease !important;
             margin-top: 1rem !important;
             padding: 4px !important;
