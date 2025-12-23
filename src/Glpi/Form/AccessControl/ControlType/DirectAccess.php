@@ -46,6 +46,7 @@ use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
+use Toolbox;
 
 final class DirectAccess implements ControlTypeInterface
 {
@@ -180,6 +181,9 @@ final class DirectAccess implements ControlTypeInterface
         // as they don't need to manually include the token.
         if (
             !$has_supplied_token
+            // Disable this fallback for non ajax requests as the token should
+            // always be re-specified in this case
+            && Toolbox::isAjax()
             // Disable this fallback for the service catalog, as it is out of scope
             && !str_contains($current_route_path, "ServiceCatalog")
         ) {
