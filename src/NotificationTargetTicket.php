@@ -826,7 +826,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             $allowed_validation[] = $key;
         }
 
-        $tags = ['validation.validationstatus'
+        $tags = ['validation.storestatus'
                      => ['text'           => __('Status value in database'),
                          'allowed_values' => $allowed_validation,
                      ],
