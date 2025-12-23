@@ -36,4 +36,5 @@
 export enum EntityPageTabs
 {
     Notes = "Notepad$1",
+    Assistance = "Entity$5",
 }
