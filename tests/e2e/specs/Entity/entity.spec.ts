@@ -74,13 +74,13 @@ test('Survey options change by type and rate', async ({ page, profile }) => {
     );
     await expect.soft(entity_page.create_after_dropdown).toBeVisible();
     await expect.soft(entity_page.rate_dropdown).toBeVisible();
-    await expect.soft(entity_page.duration_dropdown).not.toBeVisible();
-    await expect.soft(entity_page.max_rate_dropdown).not.toBeVisible();
-    await expect.soft(entity_page.default_rate_input).not.toBeVisible();
-    await expect.soft(entity_page.comment_required_input).not.toBeVisible();
-    await expect.soft(entity_page.closed_after_text).not.toBeVisible();
-    await expect.soft(entity_page.valid_tags_text).not.toBeVisible();
-    await expect.soft(entity_page.url_input).not.toBeVisible();
+    await expect.soft(entity_page.duration_dropdown).toBeHidden();
+    await expect.soft(entity_page.max_rate_dropdown).toBeHidden();
+    await expect.soft(entity_page.default_rate_input).toBeHidden();
+    await expect.soft(entity_page.comment_required_input).toBeHidden();
+    await expect.soft(entity_page.closed_after_text).toBeHidden();
+    await expect.soft(entity_page.valid_tags_text).toBeHidden();
+    await expect.soft(entity_page.url_input).toBeHidden();
 
     // Test Internal survey with 10% rate
     await entity_page.doSetDropdownValue(entity_page.rate_dropdown, '10%');
@@ -91,8 +91,8 @@ test('Survey options change by type and rate', async ({ page, profile }) => {
     await expect.soft(entity_page.default_rate_input).toBeVisible();
     await expect.soft(entity_page.comment_required_input).toBeVisible();
     await expect.soft(entity_page.closed_after_text).toBeVisible();
-    await expect.soft(entity_page.valid_tags_text).not.toBeVisible();
-    await expect.soft(entity_page.url_input).not.toBeVisible();
+    await expect.soft(entity_page.valid_tags_text).toBeHidden();
+    await expect.soft(entity_page.url_input).toBeHidden();
 
     // Test External survey with default rate
     await entity_page.doSetDropdownValue(
@@ -101,13 +101,13 @@ test('Survey options change by type and rate', async ({ page, profile }) => {
     );
     await expect.soft(entity_page.create_after_dropdown).toBeVisible();
     await expect.soft(entity_page.rate_dropdown).toBeVisible();
-    await expect.soft(entity_page.duration_dropdown).not.toBeVisible();
-    await expect.soft(entity_page.max_rate_dropdown).not.toBeVisible();
-    await expect.soft(entity_page.default_rate_input).not.toBeVisible();
-    await expect.soft(entity_page.comment_required_input).not.toBeVisible();
-    await expect.soft(entity_page.closed_after_text).not.toBeVisible();
-    await expect.soft(entity_page.valid_tags_text).not.toBeVisible();
-    await expect.soft(entity_page.url_input).not.toBeVisible();
+    await expect.soft(entity_page.duration_dropdown).toBeHidden();
+    await expect.soft(entity_page.max_rate_dropdown).toBeHidden();
+    await expect.soft(entity_page.default_rate_input).toBeHidden();
+    await expect.soft(entity_page.comment_required_input).toBeHidden();
+    await expect.soft(entity_page.closed_after_text).toBeHidden();
+    await expect.soft(entity_page.valid_tags_text).toBeHidden();
+    await expect.soft(entity_page.url_input).toBeHidden();
 
     // Test External survey with 10% rate
     await entity_page.doSetDropdownValue(entity_page.rate_dropdown, '10%');

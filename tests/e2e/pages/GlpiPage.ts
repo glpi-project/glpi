@@ -211,10 +211,10 @@ export class GlpiPage
      * Select2's container is the span right after the select.
      * The interactive element is the combobox inside the container.
      */
-    public getDropdownByLabel(label: string): Locator
+    public getDropdownByLabel(label: string, base?: Locator): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators
-        return this.page
+        return (base ?? this.page)
             .getByLabel(label)
             .locator('+ span')
             .getByRole('combobox')

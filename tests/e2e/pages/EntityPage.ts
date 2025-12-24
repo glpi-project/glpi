@@ -75,20 +75,25 @@ export class EntityPage extends GlpiPage
         this.survey_tickets_region = this.page.getByLabel(
             'Configuring the satisfaction survey: Tickets'
         );
-        this.survey_config_dropdown = this.survey_tickets_region.locator(
-            this.getDropdownByLabel('Configuring the satisfaction survey')
+        this.survey_config_dropdown = this.getDropdownByLabel(
+            'Configuring the satisfaction survey',
+            this.survey_tickets_region
         );
-        this.create_after_dropdown = this.survey_tickets_region.locator(
-            this.getDropdownByLabel('Create survey after')
+        this.create_after_dropdown = this.getDropdownByLabel(
+            'Create survey after',
+            this.survey_tickets_region
         );
-        this.rate_dropdown = this.survey_tickets_region.locator(
-            this.getDropdownByLabel('Rate to trigger survey')
+        this.rate_dropdown = this.getDropdownByLabel(
+            'Rate to trigger survey',
+            this.survey_tickets_region
         );
-        this.duration_dropdown = this.survey_tickets_region.locator(
-            this.getDropdownByLabel('Duration of survey')
+        this.duration_dropdown = this.getDropdownByLabel(
+            'Duration of survey',
+            this.survey_tickets_region
         );
-        this.max_rate_dropdown = this.survey_tickets_region.locator(
-            this.getDropdownByLabel('Max rate')
+        this.max_rate_dropdown = this.getDropdownByLabel(
+            'Max rate',
+            this.survey_tickets_region
         );
         this.default_rate_input = this.survey_tickets_region.getByLabel('Default rate');
         this.comment_required_input = this.survey_tickets_region.getByLabel(
