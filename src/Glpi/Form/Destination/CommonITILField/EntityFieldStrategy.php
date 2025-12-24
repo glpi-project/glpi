@@ -121,8 +121,8 @@ enum EntityFieldStrategy: string
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
             ),
-            fn($answer) =>
-                $answer->getRawAnswer()['itemtype'] === Entity::getType()
+            fn($answer)
+                => $answer->getRawAnswer()['itemtype'] === Entity::getType()
                 && $answer->getRawAnswer()['items_id'] > -1
         );
 
