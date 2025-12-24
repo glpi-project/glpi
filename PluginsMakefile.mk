@@ -78,20 +78,20 @@ test-setup: ## Setup the plugin for tests
 .PHONY: test-setup
 
 locales-extract: ## Extract locales
-	@$(PLUGIN) vendor/bin/extract-locales
+	@$(CONSOLE) tools:plugin:extract_locales --plugin=$(PLUGIN_DIR)
 .PHONY: locales-extract
 
 locales-compile: ## Compile locales
-	@$(PLUGIN) vendor/bin/plugin-release --compile-mo
+	@$(CONSOLE) tools:plugin:release --compile-mo --plugin=$(PLUGIN_DIR)
 .PHONY: locales-compile
 
 ##—— Licenses  —————————————————————————————————————————————————————————————————
 license-headers-check: ## Verify that the license headers is present all files
-	@$(PLUGIN) vendor/bin/licence-headers-check
+	@$(CONSOLE) tools:licence-headers-check --plugin=$(PLUGIN_DIR)
 .PHONY: license-headers-check
 
 license-headers-fix: ## Add the missing license headers in all files
-	@$(PLUGIN) vendor/bin/licence-headers-check --fix
+	@$(CONSOLE) tools:licence-headers-check --fix --plugin=$(PLUGIN_DIR)
 .PHONY: license-headers-fix
 
 ##—— Dependencies ——————————————————————————————————————————————————————————————

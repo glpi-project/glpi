@@ -1,0 +1,85 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Tools\Plugin\Command;
+
+use Glpi\Tools\Command\AbstractCommand;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidOptionException;
+use Symfony\Component\Console\Exception\RuntimeException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+
+abstract class AbstractPluginCommand extends AbstractCommand
+{
+
+
+    protected function configure(): void
+    {
+        $this->addOption(
+            'plugin',
+            'p',
+            InputOption::VALUE_REQUIRED,
+            'Plugin name'
+        );
+    }
+
+    protected function initialize(InputInterface $input, OutputInterface $output): void
+    {
+        parent::initialize($input, $output);
+
+        $plugin_name = $this->input->getOption('plugin');
+        if (!$plugin_name) {
+            throw new InvalidOptionException('The "--plugin" option is required.');
+        }
+
+        $root_dir = dirname(__DIR__, 4);
+        $plugin_dir = $root_dir . '/plugins/' . $plugin_name;
+
+        if (!is_dir($plugin_dir)) {
+            throw new RuntimeException(
+                sprintf('Plugin directory "%s" not found.', $plugin_dir)
+            );
+        }
+    }
+
+    protected function getPluginDirectory(): string
+    {
+        $plugin_name = $this->input->getOption('plugin');
+        $root_dir = dirname(__DIR__, 4);
+        return $root_dir . '/plugins/' . $plugin_name;
+    }
+}
