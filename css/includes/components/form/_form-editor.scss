@@ -229,7 +229,8 @@
         }
 
         // Hide tinymce toolbar on inactive questions
-        .tox-editor-header {
+        // But allow it to show when simulate-focus is present (during focus transition)
+        .content-editable-tinymce:not(.simulate-focus) .tox-editor-header {
             display: none !important;
         }
     }
