@@ -60,7 +60,6 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
     public function getCloneRelations(): array
     {
         return [
-            Item_Plug::class,
             Item_Devices::class,
             Document_Item::class,
             NetworkPort::class,
@@ -89,7 +88,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab(Item_Plug::class, $ong, $options)
+         ->addStandardTab(Plug::class, $ong, $options)
          ->addStandardTab(Item_Devices::class, $ong, $options)
          ->addStandardTab(NetworkPort::class, $ong, $options)
          ->addStandardTab(Infocom::class, $ong, $options)
@@ -291,7 +290,6 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
 
         $this->deleteChildrenAndRelationsFromDb(
             [
-                Item_Plug::class,
                 PDU_Rack::class,
             ]
         );
