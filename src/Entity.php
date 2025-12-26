@@ -38,6 +38,7 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Features\Clonable;
+use Glpi\Form\FormTranslation;
 use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
@@ -3360,7 +3361,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             return $this->getDefaultHelpdeskHomeTitle();
         } else {
             // Custom value
-            return $value;
+            return FormTranslation::translate(
+                $this,
+                static::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE
+            ) ?? $value;
         }
     }
 
