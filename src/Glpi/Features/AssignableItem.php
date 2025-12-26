@@ -238,7 +238,12 @@ trait AssignableItem
         return $rights;
     }
 
-    /** @see AssignableItemInterface::prepareGroupFields() */
+    /**
+     * Update input with _groups_id & _groups_id_tech
+     *
+     * - set _groups_id & _groups_id_tech as arrays from groups_id & groups_id_tech (cast to int and fiter (values =< 0 are removed))
+     * - remove groups_id & groups_id_tech from input
+     */
     public function prepareGroupFields(array $input)
     {
         $fields = ['groups_id', 'groups_id_tech'];
@@ -247,10 +252,12 @@ trait AssignableItem
                 if (!is_array($input[$field])) {
                     $input[$field] = [$input[$field]];
                 }
+
                 $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn($v) => $v > 0);
                 unset($input[$field]);
             }
         }
+
         return $input;
     }
 
