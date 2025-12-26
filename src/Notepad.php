@@ -133,7 +133,7 @@ class Notepad extends CommonDBChild
             return false;
         }
 
-        static::showForItem($item, $withtemplate);
+        self::showForItem($item, $withtemplate);
         return true;
     }
 
