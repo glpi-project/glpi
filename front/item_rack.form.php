@@ -89,7 +89,7 @@ if ($ajax) {
     if ($id > 0 && !$item->getFromDB($params['id'])) {
         throw new NotFoundHttpException();
     }
-    $item->showForm($id, $params);
+    $item->showForm($id, $params + ['no_header' => true]);
 } else {
     $menus = ["assets", "rack"];
     Item_Rack::displayFullPageForItem($params['id'] ?? 0, $menus, $params);

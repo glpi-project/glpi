@@ -533,7 +533,7 @@ class Item_Rack extends CommonDBRelation
         echo "<div class='center'>";
 
         $this->initForm($ID, $options);
-        $this->showFormHeader();
+        $this->showFormHeader($options);
 
         $rack = new Rack();
         $rack->getFromDB($this->fields['racks_id']);
