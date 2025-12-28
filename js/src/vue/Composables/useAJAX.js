@@ -6,6 +6,7 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -30,26 +31,22 @@
  * ---------------------------------------------------------------------
  */
 
-module.exports = {
-    projects: [
-        {
-            displayName: 'units',
-            testMatch: ['<rootDir>/*.test.js', '<rootDir>/modules/**/*.test.js'],
-            setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
-            setupFiles: ['<rootDir>/bootstrap.mjs'],
-            moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
-            moduleFileExtensions: ['js'],
-            moduleNameMapper: {
-                '^/js/(.*)$': '<rootDir>/../../js/$1',
-                '^/build/(.*)$': '<rootDir>/../../public/build/$1',
-                '^/lib/(.*)$': '<rootDir>/../../public/lib/$1',
-            },
-            transform: {},
-            transformIgnorePatterns: [
-                "/node_modules/(?!@tabler).+\\.js$"
-            ],
-            testEnvironment: 'jsdom',
-            slowTestThreshold: 10,
-        },
-    ]
-};
+import axios from 'axios';
+
+const instance = axios.create({
+    baseURL: CFG_GLPI.root_doc,
+    headers: {
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-Glpi-Csrf-Token': window.getAjaxCsrfToken(),
+    }
+});
+
+export function useAJAX() {
+    return {
+        ajaxGet: (url, config = {}) => instance.get(url, config),
+        ajaxPost: (url, data = {}, config = {}) => instance.post(url, data, config),
+        ajaxPut: (url, data = {}, config = {}) => instance.put(url, data, config),
+        ajaxDelete: (url, config = {}) => instance.delete(url, config),
+        axiosInstance: instance,
+    };
+}

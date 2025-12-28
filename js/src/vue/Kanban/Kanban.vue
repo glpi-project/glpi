@@ -8,6 +8,7 @@
     import {computed, nextTick, onMounted, ref, watch} from "vue";
     import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
+    import { useAJAX } from "../Composables/useAJAX.js";
 
     const props = defineProps({
         /** @type {Rights} */
@@ -90,25 +91,24 @@
     let _background_refresh = null;
     const all_kanbans = ref({});
     const kanban_switcher = ref(null);
-    const debug_mode = $('body.debug-active').length > 0;
+    const debug_mode = document.body.classList.contains('debug-active');
     let mutation_observer = null;
     let is_sorting_active = false;
     let sort_data = undefined;
+    const { ajaxGet, ajaxPost } = useAJAX();
 
     const team_badge_provider = new TeamBadgeProvider(props.display_initials, props.max_team_images);
 
     watch(kanban_switcher, (new_value) => {
         // If selection is new. Treats all 0 and negative values as the same thing (Global).
         if (new_value !== props.item.items_id && !(new_value <= 0 && props.item.items_id <= 0)) {
-            $.ajax({
-                type: "GET",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
-                    action: "get_url",
+            ajaxGet('/ajax/kanban.php', {
+                params: {
+                    action: 'get_url',
                     itemtype: props.item.itemtype,
                     items_id: new_value
-                }
-            }).then((url) => {
+                },
+            }).then(({ data: url }) => {
                 window.location = url;
             });
         }
@@ -128,9 +128,9 @@
                             // Compute current position based on list of sortable elements without current card.
                             // Indeed, current card is still in DOM (but invisible), making placeholder index in DOM
                             // not always corresponding to its position inside list of visible elements.
-                            const sortable_elements = $('#' + CSS.escape(current_column) + ' ul.kanban-body > li:not([id="' + CSS.escape(sort_data.card_id) + '"])');
+                            const sortable_elements = $(`#${CSS.escape(current_column)} ul.kanban-body > li:not([id="${CSS.escape(sort_data.card_id)}"])`);
                             const current_position = sortable_elements.index(placeholder.get(0));
-                            const card = $('#' + CSS.escape(sort_data.card_id));
+                            const card = $(`#${CSS.escape(sort_data.card_id)}`);
                             card.data('current-pos', current_position);
 
                             if (!rights.canOrderCard()) {
@@ -167,7 +167,7 @@
         $(`#${CSS.escape(props.element_id)}`).trigger('kanban:refresh_sortables');
         // Make sure all items in the columns can be sorted
         const bodies = $(`#${CSS.escape(props.element_id)} .kanban-body`);
-        $.each(bodies, function(b) {
+        $.each(bodies, (b) => {
             const body = $(b);
             if (body.data('sortable')) {
                 sortable(b, 'destroy');
@@ -232,7 +232,7 @@
         filter_input.tokenizer.clearAutocomplete();
 
         // Refresh core tags autocomplete
-        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${_.escape(props.supported_itemtypes[k].icon)} me-1"></i>` + _.escape(k)));
+        filter_input.tokenizer.setAutocomplete('type', Object.keys(props.supported_itemtypes).map(k => `<i class="${_.escape(props.supported_itemtypes[k].icon)} me-1"></i>${_.escape(k)}`));
         filter_input.tokenizer.setAutocomplete('milestone', ["true", "false"]);
         filter_input.tokenizer.setAutocomplete('deleted', ["true", "false"]);
 
@@ -321,16 +321,14 @@
      */
     async function saveState() {
         emit('kanban:pre_save_state');
-        return $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "save_column_state",
-                itemtype: props.item.itemtype,
-                items_id: props.item.items_id,
-                state: getUpdatedColumnState()
-            },
-        }).always(() => {
+        return ajaxPost('/ajax/kanban.php', {
+            action: "save_column_state",
+            itemtype: props.item.itemtype,
+            items_id: props.item.items_id,
+            state: getUpdatedColumnState()
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).finally(() => {
             emit('kanban:post_save_state');
         });
     }
@@ -342,19 +340,18 @@
      */
     async function loadState() {
         emit('kanban:pre_load_state');
-        return $.ajax({
-            type: "GET",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
+        return ajaxGet('/ajax/kanban.php', {
+            params: {
                 action: "load_column_state",
                 itemtype: props.item.itemtype,
                 items_id: props.item.items_id,
                 last_load: last_refresh
             }
-        }).then(async function(state) {
-            if (state['state'] === undefined || state['state'] === null) {
+        }).then(async (response) => {
+            if (response.data['state'] === undefined || response.data['state'] === null) {
                 return;
             }
+            const state = response.data;
             user_state.value = {
                 state: state['state']
             };
@@ -390,18 +387,15 @@
             return;
         }
         const _clearState = () => {
-            $.ajax({
-                type: "POST",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
-                    action: "clear_column_state",
-                    itemtype: props.item.itemtype,
-                    items_id: props.item.items_id
-                }
-            }).done(() => {
-                // Reload page
+            ajaxPost('/ajax/kanban.php', {
+                action: "clear_column_state",
+                itemtype: props.item.itemtype,
+                items_id: props.item.items_id
+            }, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(() => {
                 window.location.reload();
-            }).fail(() => {
+            }).catch(() => {
                 glpi_toast_error(__('Failed to reset Kanban view'));
             });
         };
@@ -427,7 +421,7 @@
     async function loadColumn(column_id) {
         let skip_load = false;
         if (user_state.value.state !== undefined) {
-            $.each(user_state.value.state, function (i, c) {
+            $.each(user_state.value.state, (i, c) => {
                 if (parseInt(c['column']) === parseInt(column_id)) {
                     if (!c['visible']) {
                         skip_load = true;
@@ -440,39 +434,35 @@
             return Promise.resolve(null);
         }
 
-        try {
-            return $.ajax({
-                method: 'GET',
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
-                    action: "get_column",
-                    itemtype: props.item.itemtype,
-                    items_id: props.item.items_id,
-                    column_field: props.column_field.id,
-                    column_id: column_id
-                }
-            }).then((column) => {
-                if (column !== undefined && Object.keys(column).length > 0) {
-                    // Add the correct icons to the items
-                    $.each(column[column_id].items, function(i, item) {
-                        const itemtype = item.id.split('-')[0];
-                        item['icon'] = props.supported_itemtypes[itemtype]['icon'] || '';
-                    });
-                    column[column_id].items = Object.values(column[column_id]?.items || {});
-                    const state_for_col = Object.values(user_state.value.state).find((c) => parseInt(c.column) === parseInt(column_id));
-                    column[column_id].folded = state_for_col?.folded || false;
-                    columns.value[column_id] = column[column_id];
-                    refreshSortables();
+        return ajaxGet('/ajax/kanban.php', {
+            params: {
+                action: "get_column",
+                itemtype: props.item.itemtype,
+                items_id: props.item.items_id,
+                column_field: props.column_field.id,
+                column_id: column_id
+            }
+        }).then(({data: column}) => {
+            if (column !== undefined && Object.keys(column).length > 0) {
+                // Add the correct icons to the items
+                $.each(column[column_id].items, (i, item) => {
+                    const itemtype = item.id.split('-')[0];
+                    item['icon'] = props.supported_itemtypes[itemtype]['icon'] || '';
+                });
+                column[column_id].items = Object.values(column[column_id]?.items || {});
+                const state_for_col = Object.values(user_state.value.state).find((c) => parseInt(c.column) === parseInt(column_id));
+                column[column_id].folded = state_for_col?.folded || false;
+                columns.value[column_id] = column[column_id];
+                refreshSortables();
 
-                    // If there are no cards in the state for this column, force a state save
-                    if ((state_for_col?.cards || []).length === 0) {
-                        saveState();
-                    }
+                // If there are no cards in the state for this column, force a state save
+                if ((state_for_col?.cards || []).length === 0) {
+                    saveState();
                 }
-            });
-        } catch {
+            }
+        }).catch(() => {
             return Promise.resolve(null);
-        }
+        });
     }
 
     /**
@@ -482,17 +472,14 @@
      */
     async function refresh(initial_load = false) {
         const _refresh = async () => {
-            const promise = $.ajax({
-                method: 'GET',
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
+            return ajaxGet('/ajax/kanban.php', {
+                params: {
                     action: "refresh",
                     itemtype: props.item.itemtype,
                     items_id: props.item.items_id,
                     column_field: props.column_field.id
                 }
-            });
-            promise.then((new_columns) => {
+            }).then(({data: new_columns}) => {
                 columns.value = new_columns;
                 if (initial_load && (user_state.value.state === undefined || Object.keys(user_state.value.state).length === 0)) {
                     // Save the state for the first time
@@ -518,23 +505,8 @@
                     team_badge_provider.fetchRequiredUserPictures();
                 });
             });
-            return promise;
         };
         return _refresh();
-    }
-
-    /**
-     * Get the folded state of the column from the user state.
-     * @param column_id The ID of the column.
-     * @return {boolean} True if the column is folded, false otherwise (default if nothing specified in the user state for this column).
-     */
-    function getFoldedState(column_id) {
-        if (user_state.value.state === undefined) {
-            return false;
-        }
-        const match = Object.values(user_state.value.state).find((c) => parseInt(c.column) === parseInt(column_id));
-        const folded = match !== undefined ? match.folded : false;
-        return folded === true || folded === 'true';
     }
 
     /**
@@ -547,14 +519,12 @@
         if (matching_col) {
             matching_col.folded = e.folded;
         }
-        $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: e.folded ? 'collapse_column' : 'expand_column',
-                column: e.column_id,
-                kanban: props.item
-            }
+        ajaxPost('/ajax/kanban.php', {
+            action: e.folded ? 'collapse_column' : 'expand_column',
+            column: e.column_id,
+            kanban: props.item
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
     }
 
@@ -564,15 +534,13 @@
      * @param {number} position The position of the column.
      */
     function updateColumnPosition(column, position) {
-        $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "move_column",
-                column: column,
-                position: position,
-                kanban: props.item
-            }
+        ajaxPost('/ajax/kanban.php', {
+            action: "move_column",
+            column: column,
+            position: position,
+            kanban: props.item
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
     }
 
@@ -591,31 +559,27 @@
         const column_id = target_params[target_params.length - 1];
 
         if (el_params.length === 2 && source !== null && !(!rights.canOrderCard() && source.length === 0)) {
-            $.ajax({
-                type: "POST",
-                url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                data: {
-                    action: "update",
-                    itemtype: el_params[0],
-                    items_id: el_params[1],
-                    column_field: props.column_field.id,
-                    column_value: column_id
-                },
-                error: function() {
-                    window.sortable(sortable, 'cancel');
-                    return false;
-                },
-                success: function() {
-                    let pos = card.data('current-pos');
-                    if (!rights.canOrderCard()) {
-                        card.appendTo($(target).find('.kanban-body').first());
-                        pos = card.index();
-                    }
-                    // Update counters. Always pass the column element instead of the kanban body (card container)
-                    card.removeData('source-col');
-                    updateCardPosition(card.attr('id'), target.id, pos);
-                    return true;
+            ajaxPost('/ajax/kanban.php', {
+                action: "update",
+                itemtype: el_params[0],
+                items_id: el_params[1],
+                column_field: props.column_field.id,
+                column_value: column_id
+            }, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(() => {
+                let pos = card.data('current-pos');
+                if (!rights.canOrderCard()) {
+                    card.appendTo($(target).find('.kanban-body').first());
+                    pos = card.index();
                 }
+                // Update counters. Always pass the column element instead of the kanban body (card container)
+                card.removeData('source-col');
+                updateCardPosition(card.attr('id'), target.id, pos);
+                return true;
+            }).catch(() => {
+                window.sortable(sortable, 'cancel');
+                return false;
             });
         } else {
             window.sortable(sortable, 'cancel');
@@ -633,16 +597,14 @@
         if (typeof column === 'string' && column.lastIndexOf('column', 0) === 0) {
             column = column.split('-').pop();
         }
-        return $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "move_item",
-                card: card,
-                column: column,
-                position: position,
-                kanban: props.item
-            }
+        ajaxPost('/ajax/kanban.php', {
+            action: "move_item",
+            card: card,
+            column: column,
+            position: position,
+            kanban: props.item
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         });
     }
 
@@ -652,15 +614,13 @@
         const items_id = id_parts[1];
 
         closeCardDetailsPanel();
-        $.ajax({
-            method: 'GET',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
+        ajaxGet('/ajax/kanban.php', {
+            params: {
                 itemtype: itemtype,
                 items_id: items_id,
                 action: 'load_item_panel'
             }
-        }).done((result) => {
+        }).then(({data: result}) => {
             $(`#${CSS.escape(props.element_id)} .offcanvas`).remove();
             $(`#${CSS.escape(props.element_id)}`).append(`
                 <div class="offcanvas offcanvas-end show position-absolute h-100" tabindex="-1">
@@ -680,7 +640,7 @@
                 l = $(l);
                 const member_itemtype = l.attr('data-itemtype');
                 const member_items_id = l.attr('data-items_id');
-                let member_item = team_badge_provider.getTeamBadge({
+                const member_item = team_badge_provider.getTeamBadge({
                     itemtype: member_itemtype,
                     id: member_items_id,
                     name: l.attr('data-name'),
@@ -727,9 +687,9 @@
             .off('click', 'button[name="add"]')
             .on('click', 'button[name="add"]', () => {
                 $('.actor_entry').each(function() {
-                    let itemtype = $(this).data('itemtype');
-                    let items_id = $(this).data('items-id');
-                    let role = $(this).data('actortype');
+                    const itemtype = $(this).data('itemtype');
+                    const items_id = $(this).data('items-id');
+                    const role = $(this).data('actortype');
                     if (itemtype && items_id) {
                         addTeamMember(card_itemtype, card_items_id, itemtype, items_id, role).then(() => {
                             openCardDetailsPanel({
@@ -740,15 +700,13 @@
                 });
                 modal.modal('hide');
             });
-        $.ajax({
-            method: 'GET',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
+        ajaxGet('/ajax/kanban.php', {
+            params: {
                 itemtype: card_itemtype,
                 items_id: card_items_id,
                 action: 'load_teammember_form'
             }
-        }).done((result) => {
+        }).then(({data: result}) => {
             const teammember_types_dropdown = $(`#kanban-teammember-item-dropdown-${CSS.escape(card_itemtype)}`).html();
             const content = `
                 ${teammember_types_dropdown}
@@ -766,17 +724,15 @@
      * @return {Promise<*>}
      */
     async function hideColumn(column_id) {
-        return $.ajax({
-            method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "hide_column",
-                column: column_id,
-                kanban: props.item
-            }
+        return ajaxPost('/ajax/kanban.php', {
+            action: "hide_column",
+            column: column_id,
+            kanban: props.item
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).then(() => {
             delete columns.value[column_id];
-            $.each(user_state.value.state, function(i, c) {
+            $.each(user_state.value.state, (i, c) => {
                 if (parseInt(c['column']) === parseInt(column_id)) {
                     user_state.value.state[i]['visible'] = false;
                     return false;
@@ -791,16 +747,14 @@
      * @return {Promise<*>}
      */
     async function showColumn(column_id) {
-        return $.ajax({
-            method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "show_column",
-                column: column_id,
-                kanban: props.item
-            }
+        return ajaxPost('/ajax/kanban.php', {
+            action: "show_column",
+            column: column_id,
+            kanban: props.item
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).then(() => {
-            $.each(user_state.value.state, function(i, c) {
+            $.each(user_state.value.state, (i, c) => {
                 if (parseInt(c['column']) === parseInt(column_id)) {
                     user_state.value.state[i]['visible'] = true;
                     return false;
@@ -811,22 +765,20 @@
     }
 
     async function addTeamMember(itemtype, items_id, member_type, members_id, role) {
-        return $.ajax({
-            method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "add_teammember",
-                itemtype: itemtype,
-                items_id: items_id,
-                itemtype_teammember: member_type,
-                items_id_teammember: members_id,
-                role: role
-            }
+        return ajaxPost('/ajax/kanban.php', {
+            action: "add_teammember",
+            itemtype: itemtype,
+            items_id: items_id,
+            itemtype_teammember: member_type,
+            items_id_teammember: members_id,
+            role: role
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).then(() => {
             refresh(false).then(() => {
                 delayRefresh(props.bg_refresh_interval * 60 * 1000);
             });
-        }, () => {
+        }).catch(() => {
             glpi_toast_error(__('Failed to add team member'));
         });
     }
@@ -846,7 +798,7 @@
         regex: (filter_data, target) => {
             try {
                 return ((!target.trim().match(filter_data.term)) === filter_data.exclusion);
-            } catch (e) {
+            } catch {
                 // Invalid regex
                 glpi_toast_error(
                     __('The regular expression you entered is invalid. Please check it and try again.'),
@@ -922,7 +874,7 @@
                         if (!title.match(new RegExp(new_filters._text, 'i'))) {
                             shown = false;
                         }
-                    } catch (err) {
+                    } catch {
                         // Probably not a valid regular expression. Use simple contains matching.
                         if (!title.toLowerCase().includes(new_filters._text.toLowerCase())) {
                             shown = false;
@@ -1016,22 +968,20 @@
     }, {deep: true});
 
     async function removeTeamMember(itemtype, items_id, member_type, members_id, role) {
-        return $.ajax({
-            method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "delete_teammember",
-                itemtype: itemtype,
-                items_id: items_id,
-                itemtype_teammember: member_type,
-                items_id_teammember: members_id,
-                role: role
-            }
+        return ajaxPost('/ajax/kanban.php', {
+            action: "delete_teammember",
+            itemtype: itemtype,
+            items_id: items_id,
+            itemtype_teammember: member_type,
+            items_id_teammember: members_id,
+            role: role
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).then(() => {
             refresh(false).then(() => {
                 delayRefresh(props.bg_refresh_interval * 60 * 1000);
             });
-        }, () => {
+        }).catch(() => {
             glpi_toast_error(__('Failed to remove team member'));
         });
     }
@@ -1059,16 +1009,14 @@
             return Promise.reject();
         }
         const force = card._metadata.is_deleted;
-        return $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "delete_item",
-                itemtype: itemtype,
-                items_id: items_id,
-                force: force ? 1 : 0
-            }
-        }).then((response) => {
+        return ajaxPost('/ajax/kanban.php', {
+            action: "delete_item",
+            itemtype: itemtype,
+            items_id: items_id,
+            force: force ? 1 : 0
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(({data: response}) => {
             if (response.purged === true || response.purged === 'true') {
                 $.each(columns.value, (i, col) => {
                     $.each(col.items, (i2, item) => {
@@ -1110,14 +1058,12 @@
         if (card === null || !card._metadata.is_deleted) {
             return Promise.reject();
         }
-        return $.ajax({
-            type: "POST",
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "restore_item",
-                itemtype: itemtype,
-                items_id: items_id,
-            },
+        return ajaxPost('/ajax/kanban.php', {
+            action: "restore_item",
+            itemtype: itemtype,
+            items_id: items_id,
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).then(() => {
             card._metadata.is_deleted = false;
             emit('kanban:card_restore', {
@@ -1135,15 +1081,13 @@
     }
 
     async function updateAllColumnsList() {
-        return $.ajax({
-            method: 'GET',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
+        return ajaxGet('/ajax/kanban.php', {
+            params: {
                 action: "list_columns",
                 itemtype: props.item.itemtype,
                 column_field: props.column_field.id
             }
-        }).then((data) => {
+        }).then(({data}) => {
             all_columns.value = data;
         });
     }
@@ -1179,17 +1123,15 @@
         }
         const column_name = values['name'];
         delete values['name'];
-        return $.ajax({
-            method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                action: "create_column",
-                itemtype: props.item.itemtype,
-                items_id: props.item.items_id,
-                column_field: props.column_field.id,
-                column_name: column_name,
-                params: values
-            }
+        return ajaxPost('/ajax/kanban.php', {
+            action: "create_column",
+            itemtype: props.item.itemtype,
+            items_id: props.item.items_id,
+            column_field: props.column_field.id,
+            column_name: column_name,
+            params: values
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
         }).then(() => {
             updateAllColumnsList();
         });
@@ -1204,7 +1146,7 @@
                 visible[column_id].id = column_id;
             }
         });
-        let sorted_data = Object.values(visible); // Cast Object to array
+        const sorted_data = Object.values(visible); // Cast Object to array
         const collator = new Intl.Collator(undefined, {
             numeric: true,
             sensitivity: 'base'
@@ -1278,21 +1220,17 @@
 
         // Remove non-visible columns
         return ordered.filter((c) => c.visible !== false);
-
-        return ordered;
     });
 
     emit('kanban:pre_init');
     await loadState();
-    await $.ajax({
-        type: 'GET',
-        url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-        data: {
+    await ajaxGet('/ajax/kanban.php', {
+        params: {
             action: 'get_kanbans',
             itemtype: props.item.itemtype,
             items_id: props.item.items_id,
         }
-    }).then((kanbans) => {
+    }).then(({data: kanbans}) => {
         all_kanbans.value = kanbans;
         kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
     });

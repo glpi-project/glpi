@@ -256,10 +256,10 @@ if (($_POST['action'] ?? null) === 'update') {
     $checkParams(['items_id', 'state']);
     Item_Kanban::saveStateForItem($_POST['itemtype'], $_POST['items_id'], $_POST['state']);
 } elseif ($_REQUEST['action'] === 'load_column_state') {
-    $checkParams(['items_id', 'last_load']);
+    $checkParams(['items_id']);
     header("Content-Type: application/json; charset=UTF-8", true);
     $response = [
-        'state'     => Item_Kanban::loadStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['last_load']),
+        'state'     => Item_Kanban::loadStateForItem($_REQUEST['itemtype'], $_REQUEST['items_id'], $_REQUEST['last_load'] ?? null),
         'timestamp' => $_SESSION['glpi_currenttime'],
     ];
     echo json_encode($response, JSON_FORCE_OBJECT);

@@ -10,10 +10,10 @@
     const search = ref('');
 
     const unused_native_fields = computed(() => {
-        return new Map([...props.inactive_fields].filter(([key, field]) => (field.customfields_id ?? -1) < 0));
+        return new Map([...props.inactive_fields].filter(([, field]) => (field.customfields_id ?? -1) < 0));
     });
     const unused_custom_fields = computed(() => {
-        return new Map([...props.inactive_fields].filter(([key, field]) => (field.customfields_id ?? -1) >= 0));
+        return new Map([...props.inactive_fields].filter(([, field]) => (field.customfields_id ?? -1) >= 0));
     });
 
     function getMatched(fields) {
@@ -30,7 +30,7 @@
     }
 
     onMounted(() => {
-        $('.fields-sidebar .new-custom-field').on('click', () => {
+        document.querySelector('.fields-sidebar .new-custom-field').addEventListener('click', () => {
             window[props.add_edit_fn](-1);
         });
     });

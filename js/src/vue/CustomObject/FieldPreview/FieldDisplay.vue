@@ -2,6 +2,7 @@
     import {onMounted, computed, ref, reactive, watch, useTemplateRef, nextTick} from 'vue';
     import Field from "./Field.vue";
     import Sidebar from "./Sidebar.vue";
+    import { useAJAX } from "../../Composables/useAJAX.js";
 
     const props = defineProps({
         items_id: Number,
@@ -25,6 +26,7 @@
      * @type {Map<string, SortableField>}
      */
     const sortable_fields = reactive(new Map());
+    const { ajaxGet, ajaxPost } = useAJAX();
 
     function refreshSortables() {
         nextTick(() => {
@@ -87,13 +89,17 @@
      * Refresh the data in the all_fields object
      */
     function refreshAllFields() {
-        const url = `${CFG_GLPI.root_doc}/ajax/asset/assetdefinition.php?action=get_all_fields&assetdefinitions_id=${props.items_id}`;
-        $.get(url, (data) => {
+        ajaxGet('/ajax/asset/assetdefinition.php', {
+            params: {
+                action: 'get_all_fields',
+                assetdefinitions_id: props.items_id,
+            }
+        }).then(({data}) => {
             const new_fields = {};
             $.each(data['results'], (key, field) => {
                 new_fields[field.id] = field;
             });
-            appendField(Object.keys(new_fields), new_fields)
+            appendField(Object.keys(new_fields), new_fields);
             refreshSortables();
         });
     }
@@ -156,7 +162,7 @@
                     if (Array.isArray(value)) {
                         value.forEach((item) => {
                             url_params.append(`field_options[${name}][]`, item);
-                        })
+                        });
                     } else {
                         url_params.append(`field_options[${name}]`, value);
                     }
@@ -166,7 +172,7 @@
                     id: 'core_field_options_editor',
                     modalclass: 'modal-xl',
                     appendTo: `#${CSS.escape($(sortable_fields_container.value).attr('id'))}`,
-                    title: _.escape(field_el.text()),
+                    title: window._.escape(field_el.text()),
                     url: url,
                     buttons: [
                         {
@@ -194,20 +200,16 @@
             const custom_fields_id = $(e.target).closest('.sortable-field').attr('data-customfield-id');
 
             // Submit a form via AJAX to delete the field
-            $.ajax({
-                url: `${CFG_GLPI.root_doc}/ajax/asset/customfield.php`,
-                type: 'POST',
-                data: {
-                    customfielddefinitions_id: custom_fields_id,
-                    action: 'purge_field'
-                },
-                success: () => {
-                    sortable_fields.delete(field_key);
-                    refreshSortables();
-                },
-                complete: () => {
-                    displayAjaxMessageAfterRedirect();
-                }
+            ajaxPost('/ajax/asset/customfield.php', {
+                customfielddefinitions_id: custom_fields_id,
+                action: 'purge_field'
+            }, {
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).then(() => {
+                sortable_fields.delete(field_key);
+                refreshSortables();
+            }).finally(() => {
+                window.displayAjaxMessageAfterRedirect();
             });
         });
 
@@ -277,7 +279,7 @@
 
     const active_fields = computed(() => {
         const ordered_active_fields = [];
-        [...sortable_fields].filter(([key, field]) => field.is_active)
+        [...sortable_fields].filter(([, field]) => field.is_active)
             .sort((a, b) => a[1].order - b[1].order)
             .forEach(([key, field]) => {
                 ordered_active_fields.push({...field, key: key});
@@ -286,7 +288,7 @@
     });
 
     const inactive_fields = computed(() => {
-        return new Map([...sortable_fields].filter(([key, field]) => !field.is_active));
+        return new Map([...sortable_fields].filter(([, field]) => !field.is_active));
     });
 
     watch(active_fields, () => {
@@ -317,13 +319,15 @@
                             </template>
                             <template v-slot:field_options>
                                 <template v-for="(field_option_value, field_option_name) in sortable_field.field_options" :key="field_option_name">
-                                    <input
-                                        v-if="Array.isArray(field_option_value)"
-                                        v-for="value in field_option_value"
-                                        type="hidden"
-                                        :name="`field_options[${sortable_field.key}][${field_option_name}][]`"
-                                        :value="value"
-                                    />
+                                    <template v-if="Array.isArray(field_option_value)">
+                                        <input
+                                            v-for="value in field_option_value"
+                                            :key="value"
+                                            type="hidden"
+                                            :name="`field_options[${sortable_field.key}][${field_option_name}][]`"
+                                            :value="value"
+                                        />
+                                    </template>
                                     <input
                                         v-else
                                         type="hidden"

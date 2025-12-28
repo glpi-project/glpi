@@ -118,7 +118,7 @@ export default [
     })),
     {
         // Vue
-        files: ["js/src/**", "tests/js/**"],
+        files: ["js/src/**", "tests/js/vue/**"],
         plugins: {vue},
         languageOptions: {
             globals: {...globals.node},
@@ -134,7 +134,30 @@ export default [
                 "switchCase": 1
             }],
             "vue/multi-word-component-names": "off",
-            "indent": "off"
+            "indent": "off",
+            "no-restricted-syntax": [
+                "error",
+                {
+                    "selector": "CallExpression[callee.name='fetch']",
+                    "message": "Use axios for HTTP requests instead of fetch."
+                },
+                {
+                    "selector": "NewExpression[callee.name='XMLHttpRequest']",
+                    "message": "Use axios for HTTP requests instead of XMLHttpRequest."
+                },
+                {
+                    "selector": "CallExpression[callee.object.name='$'][callee.property.name=/^(ajax|get|post)$/]",
+                    "message": "Use axios for HTTP requests instead of jQuery AJAX methods."
+                },
+                // {
+                //     "selector": "CallExpression[callee.object.name='$'][callee.property.name='each']",
+                //     "message": "Use for loop or Array.forEach instead of jQuery $.each."
+                // },
+                // {
+                //     "selector": "CallExpression[callee.name='$']",
+                //     "message": "Use native DOM methods like querySelector instead of jQuery selectors."
+                // }
+            ]
         }
     },
     {

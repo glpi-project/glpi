@@ -17,6 +17,7 @@
     import {Rights} from "./Rights.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
     import AddItemForm from './AddItemForm.vue';
+    import { useAJAX } from "../Composables/useAJAX.js";
 
     const props = defineProps({
         rights: {
@@ -51,14 +52,13 @@
         'kanban:column_hide', 'kanban:card_show_details'
     ]);
 
+    const { ajaxPost } = useAJAX();
+
     const element_id = computed(() => {
         return `column-${props.column_field_id}-${props.column_id}`;
     });
     const bg_color = computed(() => {
         return props.column_data['header_color'] ?? 'transparent';
-    });
-    const text_color = computed(() => {
-        return props.column_data['header_fg_color'] ?? '';
     });
     const card_count = computed(() => {
         return Object.values(props.column_data.items || {}).filter(item => {
@@ -141,22 +141,20 @@
         $.each(e.fields, (name, options) => {
             values[name] = options.value;
         });
-        return $.ajax({
-            method: 'POST',
-            url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-            data: {
-                inputs: values,
-                itemtype: opened_form_data.value.itemtype,
-                action: opened_form_data.value.is_bulk ? 'bulk_add_item' : 'add_item',
-            }
-        }).done(() => {
+        return ajaxPost('/ajax/kanban.php', {
+            inputs: values,
+            itemtype: opened_form_data.value.itemtype,
+            action: opened_form_data.value.is_bulk ? 'bulk_add_item' : 'add_item',
+        }, {
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }).then(() => {
             emit('kanban:refresh');
             const itemtype = opened_form_data.value.itemtype;
             const is_bulk = opened_form_data.value.is_bulk;
             closeItemForms();
             showAddItemForm(itemtype, is_bulk);
-        }).always(() => {
-            displaySessionMessages();
+        }).finally(() => {
+            window.displaySessionMessages();
         });
     }
 
