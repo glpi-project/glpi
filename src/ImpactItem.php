@@ -35,6 +35,8 @@
 
 /**
  * @since 9.5.0
+ * @todo The 'parent_id' field should be named 'impactcompounds_id'
+ * @todo This should use standard GLPI right management. Currently blocking API access.
  */
 class ImpactItem extends CommonDBTM
 {
