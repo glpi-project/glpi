@@ -1,6 +1,7 @@
 <script setup>
     import Field from "./Field.vue";
     import {computed, ref, onMounted} from "vue";
+    import {InputText} from 'primevue';
 
     const props = defineProps({
         inactive_fields: Map,
@@ -40,7 +41,7 @@
 <template>
     <div class="h-100 d-flex col-auto flex-column p-2 px-3 fields-sidebar">
         <span class="fs-2">{{ __('Add more fields') }}</span>
-        <input type="text" class="form-control mb-3" name="search" :placeholder="__('Search')" v-model="search" />
+        <InputText class="mb-3" name="search" :placeholder="__('Search')" v-model="search" />
         <span v-if="unused_native_fields.size > 0" class="fs-3">{{ __('Native fields') }}</span>
         <Field v-for="[field_key, unused_field] of getMatched(unused_native_fields)" :key="field_key" :field_key="field_key"
                :is_active="false">
