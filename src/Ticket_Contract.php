@@ -106,7 +106,7 @@ class Ticket_Contract extends CommonDBRelation
 
         $linked_items = array_map(static function ($entry) use ($linked_itemtype, $ID) {
             $entry['itemtype'] = $linked_itemtype;
-            $entry['item_id'] = $ID;
+            $entry['item_id'] = $entry['id'];
             return $entry;
         }, iterator_to_array(self::getListForItem($item), false));
         $twig_params['used'] = [];
@@ -142,6 +142,11 @@ TWIG, $twig_params);
         if ($linked_itemtype === Ticket::class) {
             [$columns, $formatters] = array_values(Ticket::getCommonDatatableColumns(['ticket_stats' => true]));
             $entries = Ticket::getDatatableEntries($linked_items, ['ticket_stats' => true]);
+            $entries = array_map(static function ($entry) {
+                $entry['itemtype'] = self::class;
+                $entry['id'] = $entry['linkid'];
+                return $entry;
+            }, $entries);
         } else {
             $columns = [
                 'name' => __('Name'),
@@ -169,7 +174,7 @@ TWIG, $twig_params);
                 }
                 $entry = [
                     'itemtype' => self::class,
-                    'id' => $data['id'],
+                    'id' => $data['linkid'],
                     'name' => $item->getLink(),
                     'num' => $item->fields['num'],
                     'begin_date' => $item->fields['begin_date'],
