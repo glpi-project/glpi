@@ -1116,7 +1116,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             ($force === true)
             || (($this->fields['do_count'] == self::COUNT_YES)
               || ($this->fields['do_count'] == self::COUNT_AUTO)
-              && ($this->getField('last_execution_time') != null)
+              && ($this->fields['last_execution_time'] !== null && $this->fields['last_execution_time'] !== '')
               && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))
         ) {
             $search = new Search();
