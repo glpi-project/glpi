@@ -38,6 +38,7 @@ use GuzzleHttp\Client;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\ConsoleSectionOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
@@ -49,8 +50,8 @@ class PluginReleaseCommand extends AbstractPluginCommand
 
     private string $dist_dir;
     private string $gh_orga = 'pluginsGLPI';
-    private string $plugin_name;
-    private string $commit;
+    private string $plugin_name = '';
+    private string $commit = '';
 
     private array $banned = [
         '.git*',
@@ -231,9 +232,15 @@ class PluginReleaseCommand extends AbstractPluginCommand
     private function compileMo(string $dir): void
     {
         $locales_dir = $dir . '/locales';
+        $this->io->section("Compiling MO files");
+        if ($this->output->isVerbose()) {
+            $this->output->writeln(" <question>Locales dir: $locales_dir</question>");
+        }
+
         if (is_dir($locales_dir)) {
             $files = glob($locales_dir . '/*.po');
-            $this->io->text("Locales dir: " . $locales_dir);
+            /** @var ConsoleSectionOutput $section */
+            $section = $this->output->section();
 
             // Check msgfmt
             $process = new Process(['msgfmt', '--version']);
@@ -242,17 +249,20 @@ class PluginReleaseCommand extends AbstractPluginCommand
                 throw new \RuntimeException('msgfmt not found!');
             }
 
-            foreach ($files as $file) {
+            $section_messages = [];
+            foreach ($files as $k => $file) {
                 $mo = str_replace('.po', '.mo', $file);
-                if ($this->output->isVerbose()) {
-                    $this->io->text("Compiling " . basename($file) . "...");
-                }
+                $section->writeln(" Compiling " . basename($file) . "...");
                 $proc = new Process(['msgfmt', $file, '-o', $mo]);
                 $proc->run();
                 if (!$proc->isSuccessful()) {
-                    $this->io->error("Failed to compile $file");
+                    $section_messages[$k] = " <error>Failed to compile $file</error>";
+                } else {
+                    $section_messages[$k] = " <info>Compiled " . basename($file) . "</info>";
                 }
+                $section->overwrite(implode("\n", $section_messages)); // Use for dynamic message display
             }
+            $this->io->newLine();
         }
     }
 
@@ -464,11 +474,13 @@ class PluginReleaseCommand extends AbstractPluginCommand
     private function build(string $ver, string $ref, string $dest): void
     {
         $plugin_dir = $this->getPluginDirectory();
-        $this->io->section("Building glpi-{$this->plugin_name}-{$ver}...");
+        $this->io->section("Building glpi-{$this->plugin_name}-{$ver}");
 
         $type_str = ($ref !== $ver) ? 'Commit' : 'Tag';
         if ($this->output->isVerbose()) {
-            $this->io->text("Release name: glpi-{$this->plugin_name}-{$ver}, {$type_str}: {$ref}, Dest: {$dest}");
+            $this->io->text("Release name: glpi-{$this->plugin_name}-{$ver}");
+            $this->io->text("{$type_str}: {$ref}");
+            $this->io->text("Dest: {$dest}");
         }
 
         // git ls-tree
@@ -532,7 +544,10 @@ class PluginReleaseCommand extends AbstractPluginCommand
 
         // Composer
         if (file_exists($build_dir . '/composer.json')) {
-            $this->io->text("Installing composer dependencies...");
+            /** @var ConsoleSectionOutput $section */
+            $section = $this->output->section();
+
+            $section->writeln(" Installing composer dependencies...");
             $c_cmd = ['composer', 'install', '--no-dev', '--optimize-autoloader', '--no-interaction'];
             if (!$this->output->isVerbose()) {
                 $c_cmd[] = '--quiet';
@@ -553,11 +568,15 @@ class PluginReleaseCommand extends AbstractPluginCommand
             if (file_exists($build_dir . '/composer.lock')) {
                 unlink($build_dir . '/composer.lock');
             }
+            $section->overwrite("<info> Composer dependencies installed.</info>");
         }
 
         // NPM
         if (file_exists($build_dir . '/package.json')) {
-            $this->io->text("Installing npm dependencies...");
+            /** @var ConsoleSectionOutput $section */
+            $section = $this->output->section();
+
+            $section->writeln(" Installing npm dependencies...");
             $n_cmd = ['npm', 'install'];
             $proc = new Process($n_cmd, $build_dir);
             $proc->setTimeout(600);
@@ -570,13 +589,18 @@ class PluginReleaseCommand extends AbstractPluginCommand
             if (file_exists($build_dir . '/package-lock.json')) {
                 unlink($build_dir . '/package-lock.json');
             }
+            $section->overwrite("<info> npm dependencies installed.</info>");
         }
 
         // Compile MO
         $this->compileMo($build_dir);
 
         // Compress to bz2
-        $this->io->text("Compressing to $dest...");
+        $this->io->section("Generating the archive");
+        if ($this->output->isVerbose()) {
+            $this->output->writeln(" <question>Target: $dest</question>\n");
+        }
+
         $tar_cmd = ['tar', '-cjf', $dest, $this->plugin_name];
         $proc = new Process($tar_cmd, $src_dir);
         $proc->mustRun();
