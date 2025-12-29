@@ -592,7 +592,7 @@ TWIG, $twig_params);
         }
         $columns['is_active'] = __('Active');
         if ($display_entities) {
-            $columns['entities_id'] = Entity::getTypeName(1);
+            $columns['entity'] = Entity::getTypeName(1);
         }
         $columns['rank'] = __('Position');
         $columns['sort'] = '';
