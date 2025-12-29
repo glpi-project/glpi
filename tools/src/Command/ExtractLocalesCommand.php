@@ -32,33 +32,33 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Plugin\Command;
+namespace Glpi\Tools\Command;
 
+ini_set('memory_limit',-1); // This is required due to high memory usage when extracting for core.
+
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
-use RecursiveDirectoryIterator;
-use RecursiveIteratorIterator;
-use CallbackFilterIterator;
-use SplFileInfo;
 
-class ExtractLocalesCommand extends AbstractPluginCommand
+class ExtractLocalesCommand extends AbstractCommand
 {
+    protected const ALLOW_PLUGIN_OPTION = 1;
 
     protected function configure(): void
     {
         parent::configure();
-        $this->setName('tools:plugin:extract_locales');
+        $this->setName('tools:extract_locales');
         $this->setDescription('Extract strings from the project to generate POT file.');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $script_dir = dirname(__DIR__, 2); // glpi/tools/plugin
-
-        $root_dir = dirname($script_dir, 2); // glpi
-        $working_dir = $this->getPluginDirectory();
+        $working_dir = dirname(__DIR__, 3); // glpi
+        if ($this->isPluggingCommand()) {
+            $working_dir = $this->getPluginDirectory();
+        }
 
         // Check availability of xgettext
         if (trim(shell_exec('which xgettext')) === '') {
@@ -117,7 +117,7 @@ class ExtractLocalesCommand extends AbstractPluginCommand
 
         // Append locales from Twig templates
         if (is_dir($working_dir . '/templates')) {
-             $this->io->section('Processing Twig templates...');
+            $this->io->section('Processing Twig templates...');
             $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
             mkdir($temp_twig_dir . '/templates', 0777, true);
 

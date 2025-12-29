@@ -47,6 +47,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LicenceHeadersCheckCommand extends AbstractCommand
 {
+    protected const ALLOW_PLUGIN_OPTION = 1;
 
    /**
     * Result code returned when some headers are missing or are outdated.
@@ -76,13 +77,6 @@ class LicenceHeadersCheckCommand extends AbstractCommand
         $this->setName('tools:licence-headers-check');
         $this->setAliases(['tools:license-headers-check']);
         $this->setDescription('Check licence header in code source files.');
-
-        $this->addOption(
-            'plugin',
-            'p',
-            InputOption::VALUE_REQUIRED,
-            'Plugin name (optional)'
-        );
 
         $this->addOption(
             'directory',
@@ -116,11 +110,9 @@ class LicenceHeadersCheckCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $project_dir = dirname(__DIR__, 3); // Root of GLPI
-        $plugin_name = $input->getOption('plugin');
 
-        if ($plugin_name) {
-            $root_dir = dirname(__DIR__, 3);
-            $project_dir = $root_dir . '/plugins/' . $plugin_name;
+        if ($this->isPluggingCommand()) {
+            $project_dir = $this->getPluginDirectory();
             if (!is_dir($project_dir)) {
                  throw new \RuntimeException(sprintf('Plugin directory "%s" not found.', $project_dir));
             }

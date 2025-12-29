@@ -78,11 +78,11 @@ test-setup: ## Setup the plugin for tests
 .PHONY: test-setup
 
 locales-extract: ## Extract locales
-	@$(CONSOLE) tools:plugin:extract_locales --plugin=$(PLUGIN_DIR)
+	@$(CONSOLE) tools:extract_locales --plugin=$(PLUGIN_DIR)
 .PHONY: locales-extract
 
 locales-compile: ## Compile locales
-	@$(CONSOLE) tools:plugin:release --compile-mo --plugin=$(PLUGIN_DIR)
+	@$(CONSOLE) tools:release --compile-mo --plugin=$(PLUGIN_DIR)
 .PHONY: locales-compile
 
 ##—— Licenses  —————————————————————————————————————————————————————————————————
