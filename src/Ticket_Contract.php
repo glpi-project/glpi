@@ -168,8 +168,7 @@ TWIG, $twig_params);
                     continue;
                 }
                 $entry = [
-                    'itemtype' => self::class,
-                    'id' => $data['id'],
+                    'id' => $data['linkid'],
                     'name' => $item->getLink(),
                     'num' => $item->fields['num'],
                     'begin_date' => $item->fields['begin_date'],
@@ -186,6 +185,11 @@ TWIG, $twig_params);
                 $entry['end_date'] = Infocom::getWarrantyExpir($item->fields['begin_date'], $item->fields['duration'], 0, true);
                 $entries[] = $entry;
             }
+        }
+
+        foreach ($entries as &$entry) {
+            $entry['itemtype'] = self::class;
+            $entry['id'] = $entry['linkid'] ?? $entry['id'];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
