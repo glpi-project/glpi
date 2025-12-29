@@ -40,6 +40,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+/**
+ * Command extending this class don't have a native way to interact with the GLPI core.
+ * If you need to interact with it or its database, use the `Glpi\Console\AbstractCommand` instead.
+ */
 abstract class AbstractCommand extends Command
 {
     /** @var bool Declare the command has supporting plugging. */
@@ -52,6 +56,7 @@ abstract class AbstractCommand extends Command
     protected OutputInterface $output;
     protected SymfonyStyle $io;
 
+    #[Override]
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
         $this->input = $input;
@@ -59,6 +64,7 @@ abstract class AbstractCommand extends Command
         $this->io = new SymfonyStyle($input, $output);
     }
 
+    #[Override]
     protected function configure(): void
     {
         parent::configure();

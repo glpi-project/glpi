@@ -41,6 +41,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 
+/**
+ * Command extending this class don't have a native way to interact with the GLPI core.
+ * If you need to interact with it or its database, use the `Glpi\Console\AbstractCommand` instead.
+ */
 abstract class AbstractPluginCommand extends AbstractCommand
 {
     protected const REQUIRE_PLUGIN_OPTION = true;

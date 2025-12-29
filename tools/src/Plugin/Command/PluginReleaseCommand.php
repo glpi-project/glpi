@@ -72,6 +72,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
         'phpunit.xml.dist',
     ];
 
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
@@ -96,6 +97,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force rebuild even if release exists');
     }
 
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $plugin_dir = $this->getPluginDirectory();

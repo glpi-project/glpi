@@ -56,6 +56,7 @@ class CompileTwigTemplatesCommand extends AbstractCommand
 {
     protected const ALLOW_PLUGIN_OPTION = 1;
 
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
@@ -76,6 +77,7 @@ class CompileTwigTemplatesCommand extends AbstractCommand
         );
     }
 
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $tpl_dir    = $this->input->getArgument('templates-directory');

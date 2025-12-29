@@ -53,6 +53,7 @@ class ExtractLocalesCommand extends AbstractCommand
         $this->setDescription('Extract strings from the project to generate POT file.');
     }
 
+    #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $working_dir = dirname(__DIR__, 3); // glpi

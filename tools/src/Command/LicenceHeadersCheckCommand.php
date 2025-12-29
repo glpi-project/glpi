@@ -49,27 +49,28 @@ class LicenceHeadersCheckCommand extends AbstractCommand
 {
     protected const ALLOW_PLUGIN_OPTION = 1;
 
-   /**
-    * Result code returned when some headers are missing or are outdated.
-    *
-    * @var integer
-    */
-   const ERROR_FOUND_MISSING_OR_OUTDATED = 1;
+    /**
+     * Result code returned when some headers are missing or are outdated.
+     *
+     * @var integer
+     */
+    const ERROR_FOUND_MISSING_OR_OUTDATED = 1;
 
-   /**
-    * Result code returned when some files cannot be updated.
-    *
-    * @var integer
-    */
-   const ERROR_UNABLE_TO_FIX_FILES = 2;
+    /**
+     * Result code returned when some files cannot be updated.
+     *
+     * @var integer
+     */
+    const ERROR_UNABLE_TO_FIX_FILES = 2;
 
-   /**
-    * Header lines.
-    *
-    * @var array
-    */
-   private $header_lines;
+    /**
+     * Header lines.
+     *
+     * @var array
+     */
+    private array $header_lines = [];
 
+    #[Override]
     protected function configure(): void
     {
         parent::configure();
