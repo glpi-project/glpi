@@ -75,7 +75,6 @@ class LicenceHeadersCheckCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('tools:licence-headers-check');
-        $this->setAliases(['tools:license-headers-check']);
         $this->setDescription('Check licence header in code source files.');
 
         $this->addOption(
