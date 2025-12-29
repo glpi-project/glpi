@@ -898,7 +898,7 @@ class EntityTest extends DbTestCase
         $this->assertTrue($update);
 
         // create a user for this test (avoid using current logged user as we don't anonymize him)
-        $user_obj = new \User();
+        $user_obj = new User();
         $user_obj->add([
             'name'     => 'test_anon_user',
             'password' => 'test_anon_user',
@@ -1713,7 +1713,7 @@ class EntityTest extends DbTestCase
             'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
             'language'     => 'fr_FR',
             'translations' => json_encode(['one' => 'Ma valeur personnalisée']),
-        ]);
+        ], ['translations']);
         $this->updateItem(
             User::class,
             getItemByTypeName(User::class, 'post-only', true),
