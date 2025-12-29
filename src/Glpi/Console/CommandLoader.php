@@ -350,7 +350,7 @@ class CommandLoader implements CommandLoaderInterface
      */
     private function findPluginToolsCommands(): void
     {
-        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'plugin' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Command';
+        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Plugin' . DIRECTORY_SEPARATOR . 'Command';
 
         if (!is_dir($basedir)) {
             return;

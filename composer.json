@@ -182,8 +182,7 @@
     "autoload-dev": {
         "psr-4": {
             "Glpi\\Tools\\": "tools/src/",
-            "Glpi\\Tests\\": "tests/src/",
-            "Glpi\\Tools\\Plugin\\": "tools/plugin/src/"
+            "Glpi\\Tests\\": "tests/src/"
         },
         "files": ["tests/src/autoload/functions.php"]
     },
