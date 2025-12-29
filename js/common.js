@@ -1965,11 +1965,11 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
 /**
  * Toggle all accordions in a notepad container
  *
- * @param {Element} button - The button that was clicked
+ * @param {Element} element - The element that was clicked (button or link)
  */
-window.toggleNotesAccordion = function(button) {
+window.toggleNotesAccordion = function(element) {
     // Find the accordion container (it's the sibling div after the firstbloc)
-    const firstbloc = button.closest('.firstbloc');
+    const firstbloc = element.closest('.firstbloc');
     const accordionContainer = firstbloc.parentElement.querySelector('.accordion');
 
     if (!accordionContainer) {
@@ -1978,9 +1978,9 @@ window.toggleNotesAccordion = function(button) {
     }
 
     const accordionElements = accordionContainer.querySelectorAll('.accordion-collapse');
-    const buttonText = button.querySelector('span');
-    const buttonIcon = button.querySelector('i');
-    const isExpanding = buttonText.textContent.includes(button.dataset.expandText);
+    const elementText = element.querySelector('span');
+    const elementIcon = element.querySelector('i');
+    const isExpanding = elementText.textContent.includes(element.dataset.expandText);
 
     accordionElements.forEach(function(accordion) {
         if (isExpanding) {
@@ -2000,20 +2000,25 @@ window.toggleNotesAccordion = function(button) {
         }
     });
 
-    // Update button text and icon
+    // Update element text and icon (if present)
     if (isExpanding) {
-        buttonText.textContent = button.dataset.collapseText;
-        button.title = button.dataset.collapseTitle;
-        buttonIcon.className = 'ti ti-arrows-minimize';
+        elementText.textContent = element.dataset.collapseText;
+        element.title = element.dataset.collapseTitle;
+        if (elementIcon) {
+            elementIcon.className = 'ti ti-arrows-minimize';
+        }
     } else {
-        buttonText.textContent = button.dataset.expandText;
-        button.title = button.dataset.expandTitle;
-        buttonIcon.className = 'ti ti-arrows-maximize';
+        elementText.textContent = element.dataset.expandText;
+        element.title = element.dataset.expandTitle;
+        if (elementIcon) {
+            elementIcon.className = 'ti ti-arrows-maximize';
+        }
     }
 };
 
-// Event listener for toggle all notes button
-$(document).on('click', '.toggle-all-notes', function() {
+// Event listener for toggle all notes button/link
+$(document).on('click', '.toggle-all-notes', function(e) {
+    e.preventDefault(); // Prevent default link behavior
     window.toggleNotesAccordion(this);
 });
 
