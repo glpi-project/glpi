@@ -158,4 +158,47 @@ class CustomAssetControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testModelsAndTypesDiscriminated()
+    {
+        $this->login();
+
+        $this->api->call(new Request('GET', '/Assets/Custom/Test01Model'), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('Test01Model01', $content[0]['name']);
+                });
+        });
+        $this->api->call(new Request('GET', '/Assets/Custom/Test02Model'), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('Test02Model01', $content[0]['name']);
+                });
+        });
+
+        $this->api->call(new Request('GET', '/Assets/Custom/Test01Type'), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('Test01Type01', $content[0]['name']);
+                });
+        });
+        $this->api->call(new Request('GET', '/Assets/Custom/Test02Type'), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertCount(1, $content);
+                    $this->assertEquals('Test02Type01', $content[0]['name']);
+                });
+        });
+    }
 }

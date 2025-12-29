@@ -213,6 +213,13 @@ final class CustomAssetController extends AbstractController
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => $asset_type_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [
+                    'read' => static function () use ($asset_class, $definition) {
+                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_')];
+                        $criteria['WHERE']['_.assets_assetdefinitions_id'] = $definition->getID();
+                        return $criteria;
+                    },
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -254,6 +261,13 @@ final class CustomAssetController extends AbstractController
                 'x-version-introduced' => '2.0',
                 'x-itemtype' => $asset_model_class,
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [
+                    'read' => static function () use ($asset_class, $definition) {
+                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_')];
+                        $criteria['WHERE']['_.assets_assetdefinitions_id'] = $definition->getID();
+                        return $criteria;
+                    },
+                ],
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
