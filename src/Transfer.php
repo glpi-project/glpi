@@ -2485,7 +2485,7 @@ final class Transfer extends CommonDBTM
                                     'documents_id'      => $newdocID,
                                     'items_id'          => $newID,
                                     'itemtype'          => $itemtype,
-                                    'timeline_position' => $current_entry['timeline_position'],
+                                    'timeline_position' => $existing['timeline_position'],
                                 ]
                             );
                         }
