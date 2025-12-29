@@ -106,11 +106,11 @@ cc: console
 .PHONY: cc
 
 license-headers-check: ## Verify that the license headers is present all files
-	@$(CONSOLE) tools:licence-headers-check
+	@$(CONSOLE) tools:licence_headers_check
 .PHONY: license-headers-check
 
 license-headers-fix: ## Add the missing license headers in all files
-	@$(CONSOLE) tools:licence-headers-check --fix
+	@$(CONSOLE) tools:licence_headers_check --fix
 .PHONY: license-headers-fix
 
 ## —— Database —————————————————————————————————————————————————————————————————
