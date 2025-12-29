@@ -36,11 +36,18 @@ namespace Glpi\Tools\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 abstract class AbstractCommand extends Command
 {
+    /** @var bool Declare the command has supporting plugging. */
+    protected const ALLOW_PLUGIN_OPTION = false;
+
+    /** @var bool Declare the command supporting plugging and require it to be set. */
+    protected const REQUIRE_PLUGIN_OPTION = false;
+
     protected InputInterface $input;
     protected OutputInterface $output;
     protected SymfonyStyle $io;
@@ -50,5 +57,46 @@ abstract class AbstractCommand extends Command
         $this->input = $input;
         $this->output = $output;
         $this->io = new SymfonyStyle($input, $output);
+    }
+
+    protected function configure(): void
+    {
+        parent::configure();
+
+        if (static::REQUIRE_PLUGIN_OPTION) {
+            $this->addOption(
+                'plugin',
+                'p',
+                InputOption::VALUE_REQUIRED,
+                'Plugin name (required)'
+            );
+        } elseif (static::ALLOW_PLUGIN_OPTION) {
+            $this->addOption(
+                'plugin',
+                'p',
+                InputOption::VALUE_OPTIONAL,
+                'Plugin name'
+            );
+        }
+    }
+
+    public function isPluggingCommand(): bool
+    {
+        return $this->input->hasOption('plugin') && $this->input->getOption('plugin') !== null;
+    }
+
+    public function getPluginName(): string
+    {
+        if (!$this->isPluggingCommand()) {
+            throw new \LogicException('This command is not plugging command.');
+        }
+        return $this->input->getOption('plugin');
+    }
+
+    protected function getPluginDirectory(): string
+    {
+        $root_dir = dirname(__DIR__, 3);
+        $plugin_name = $this->getPluginName();
+        return $root_dir . '/plugins/' . $plugin_name;
     }
 }

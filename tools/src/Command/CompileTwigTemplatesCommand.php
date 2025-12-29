@@ -33,34 +33,34 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tools\Plugin\Command;
+namespace Glpi\Tools\Command;
 
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Twig\Environment;
-use Twig\TwigFilter;
-use Twig\TwigFunction;
-use Twig\TwigTest;
-use Twig\Cache\CacheInterface;
-use Twig\Cache\FilesystemCache;
-use Twig\Loader\FilesystemLoader;
-use Twig\Loader\LoaderInterface;
 use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Twig\Cache\CacheInterface;
+use Twig\Cache\FilesystemCache;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Twig\Loader\LoaderInterface;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
+use Twig\TwigTest;
 
-class CompileTwigTemplatesCommand extends AbstractPluginCommand
+class CompileTwigTemplatesCommand extends AbstractCommand
 {
+    protected const ALLOW_PLUGIN_OPTION = 1;
 
     protected function configure(): void
     {
         parent::configure();
 
-        $this->setName('tools:plugin:compile_twig_templates');
+        $this->setName('tools:compile_twig_templates');
         $this->setDescription('Compile twig templates into php files.');
 
         $this->addArgument(
@@ -81,7 +81,12 @@ class CompileTwigTemplatesCommand extends AbstractPluginCommand
         $tpl_dir    = $this->input->getArgument('templates-directory');
         $output_dir = $this->input->getArgument('output-directory');
 
-        $loader = new FilesystemLoader($tpl_dir, dirname($tpl_dir));
+        $root_path = dirname($tpl_dir);
+        if ($this->isPluggingCommand()) {
+            $root_path = $this->getPluginDirectory();
+        }
+
+        $loader = new FilesystemLoader($tpl_dir, $root_path);
         $twig = $this->getMockedTwigEnvironment($loader);
         $twig->setCache($this->getTwigCacheHandler($output_dir));
 

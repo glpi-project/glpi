@@ -55,9 +55,9 @@ class ExtractLocalesCommand extends AbstractPluginCommand
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $script_dir = dirname(__DIR__, 2); // glpi-11-2/tools/plugin
+        $script_dir = dirname(__DIR__, 2); // glpi/tools/plugin
 
-        $root_dir = dirname($script_dir, 2); // glpi-11-2
+        $root_dir = dirname($script_dir, 2); // glpi
         $working_dir = $this->getPluginDirectory();
 
         // Check availability of xgettext
@@ -122,12 +122,17 @@ class ExtractLocalesCommand extends AbstractPluginCommand
             mkdir($temp_twig_dir . '/templates', 0777, true);
 
             // Using internal command to compile templates
-            $compile_cmd = $this->getApplication()->find('tools:plugin:compile_twig_templates');
-            $compile_input = new \Symfony\Component\Console\Input\ArrayInput([
-                 'templates-directory' => $working_dir . '/templates',
-                 'output-directory'    => $temp_twig_dir . '/templates',
-                 '--quiet' => true
-            ]);
+            $compile_cmd = $this->getApplication()->find('tools:compile_twig_templates');
+            $options = [
+                'templates-directory' => $working_dir . '/templates',
+                'output-directory'    => $temp_twig_dir . '/templates',
+                '--quiet' => true
+            ];
+            if ($this->isPluggingCommand()) {
+                $options['--plugin'] = $this->getPluginName();
+            }
+
+            $compile_input = new \Symfony\Component\Console\Input\ArrayInput($options);
             $compile_cmd->run($compile_input, $this->output);
 
             $twig_files = $this->getFiles($temp_twig_dir, 'twig');
