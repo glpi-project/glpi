@@ -41,6 +41,7 @@ use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Reminder;
 use Reminder_User;
+use TicketValidation;
 use User;
 
 /* Test for inc/dashboard/provider.class.php */
@@ -923,5 +924,26 @@ class ProviderTest extends DbTestCase
             $results = Provider::getArticleListReminder();
             $this->assertEquals($expected, $results['number']);
         }
+    }
+
+    /**
+     * Regression test to make sure this widget does not crash when loaded as
+     * a self service user with validation rights enabled.
+     */
+    public function testTicketsWaitingForApprovalSelfService(): void
+    {
+        // Arrange: allow self service users to validate tickets
+        $this->addRightToProfile(
+            "Self-service",
+            TicketValidation::$rightname,
+            TicketValidation::VALIDATEREQUEST | TicketValidation::VALIDATEINCIDENT
+        );
+
+        // Act: get waiting_validation widget content
+        $this->login('post-only');
+        $params = Provider::nbTicketsGeneric('waiting_validation');
+
+        // Assert: just make sure this was executed without errors
+        $this->assertNotEmpty($params);
     }
 }

@@ -371,15 +371,17 @@ class Provider
                     $where[] = TicketValidation::getTargetCriteriaForUser(Session::getLoginUserID());
                 }
 
-                $query_criteria = array_merge_recursive($query_criteria, [
-                    'LEFT JOIN' => [
-                        'glpi_ticketvalidations' => [
-                            'ON' => [
-                                'glpi_ticketvalidations' => 'tickets_id',
-                                $table                   => 'id',
-                            ],
+                // Join glpi_ticketvalidations table if not already done
+                if (!isset($query_criteria['LEFT JOIN']['glpi_ticketvalidations'])) {
+                    $query_criteria['LEFT JOIN']['glpi_ticketvalidations'] = [
+                        'ON' => [
+                            'glpi_ticketvalidations' => 'tickets_id',
+                            $table                   => 'id',
                         ],
-                    ],
+                    ];
+                }
+
+                $query_criteria = array_merge_recursive($query_criteria, [
                     'WHERE' => $where,
                 ]);
                 break;
