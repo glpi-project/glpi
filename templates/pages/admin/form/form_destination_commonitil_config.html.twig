@@ -128,7 +128,7 @@
                                     item.formatConfigInputName(field.getKey()),
                                     config_field.getStrategiesInputName()
                                 ),
-                                strategy.value,
+                                strategy.key is defined ? strategy.key : strategy.value,
                                 field.getStrategiesForDropdown(),
                                 '',
                                 {

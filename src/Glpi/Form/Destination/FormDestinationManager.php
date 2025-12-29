@@ -35,6 +35,8 @@
 namespace Glpi\Form\Destination;
 
 use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\SLMFieldStrategyInterface;
 use Glpi\Form\Form;
 
 // singleton
@@ -53,6 +55,12 @@ final class FormDestinationManager
      * Mapping of common ITIL destination types to their additional config fields
      */
     private array $plugins_common_itil_config_fields = [];
+
+    /**
+     * @var array<string, SLMFieldStrategyInterface>
+     * Custom SLM field strategies registered by plugins
+     */
+    private array $plugins_slm_field_strategies = [];
 
     /**
      * Private constructor (singleton)
@@ -188,5 +196,47 @@ final class FormDestinationManager
         }
 
         return $config_fields;
+    }
+
+    /**
+     * Register a custom SLM field strategy from a plugin.
+     *
+     * This allows plugins to add new strategies for SLA/OLA TTO/TTR fields
+     * (e.g., "Answer from a specific question", "Computed value", etc.)
+     *
+     * @param SLMFieldStrategyInterface $strategy The strategy to register
+     * @return void
+     */
+    public function registerPluginSLMFieldStrategy(
+        SLMFieldStrategyInterface $strategy
+    ): void {
+        $this->plugins_slm_field_strategies[$strategy->getKey()] = $strategy;
+    }
+
+    /**
+     * Get all available SLM field strategies (core + plugins).
+     *
+     * @return array<string, SLMFieldStrategyInterface>
+     */
+    public function getSLMFieldStrategies(): array
+    {
+        $core_strategies = [];
+        foreach (SLMFieldStrategy::cases() as $strategy) {
+            $core_strategies[$strategy->getKey()] = $strategy;
+        }
+
+        return array_merge($core_strategies, $this->plugins_slm_field_strategies);
+    }
+
+    /**
+     * Get a specific SLM field strategy by its key.
+     *
+     * @param string $key The strategy key
+     * @return SLMFieldStrategyInterface|null The strategy, or null if not found
+     */
+    public function getSLMFieldStrategy(string $key): ?SLMFieldStrategyInterface
+    {
+        $strategies = $this->getSLMFieldStrategies();
+        return $strategies[$key] ?? null;
     }
 }

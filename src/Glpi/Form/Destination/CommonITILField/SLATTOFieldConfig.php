@@ -34,21 +34,4 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Override;
-
-final class SLATTOFieldConfig extends SLMFieldConfig
-{
-    #[Override]
-    public static function jsonDeserialize(array $data): self
-    {
-        $strategy = SLMFieldStrategy::tryFrom($data[self::STRATEGY] ?? "");
-        if ($strategy === null) {
-            $strategy = SLMFieldStrategy::FROM_TEMPLATE;
-        }
-
-        return new self(
-            strategy: $strategy,
-            specific_slm_id: $data[self::SLM_ID] ?? null,
-        );
-    }
-}
+final class SLATTOFieldConfig extends SLMFieldConfig {}
