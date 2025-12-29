@@ -4532,7 +4532,7 @@ final class SQLProvider implements SearchProviderInterface
                         // Use quoted value to prevent replacement of AllAssets in column identifiers
                         $tmpquery = str_replace(
                             $DB->quoteValue(AllAssets::getType()),
-                            $DB->quoteValue($DB->escape($ctype)),
+                            $DB->quoteValue($ctype),
                             $tmpquery
                         );
                     } else {// Ref table case
