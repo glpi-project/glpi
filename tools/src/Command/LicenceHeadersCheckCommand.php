@@ -291,7 +291,14 @@ class LicenceHeadersCheckCommand extends AbstractCommand
             $preserved_tagged_data
          );
 
-         $header_outdated = array_slice($updated_header_lines, 1, -1) !== array_slice($current_header_lines, 1, -1);
+         $sliced_header_lines = array_slice($updated_header_lines, 1, -1);
+
+         // User disabled the licence header by putting a blank comment line
+         if (empty($sliced_header_lines)) {
+            continue;
+         }
+
+         $header_outdated = $sliced_header_lines !== array_slice($current_header_lines, 1, -1);
 
          if (!$header_missing && !$header_outdated) {
             continue;
