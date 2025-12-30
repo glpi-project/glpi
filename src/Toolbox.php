@@ -2760,7 +2760,22 @@ class Toolbox
      */
     public static function getRemoteIpAddress()
     {
-        return $_SERVER["REMOTE_ADDR"];
+        // Check X-Forwarded-For header first (proxy/load balancer)
+        $forwarded_for = getenv("HTTP_X_FORWARDED_FOR");
+        if ($forwarded_for) {
+            // May contain multiple IPs separated by ", " - get the first one
+            $ips = explode(',', $forwarded_for);
+            return trim($ips[0]);
+        }
+
+        // Fallback to REMOTE_ADDR
+        $remote_addr = getenv("REMOTE_ADDR");
+        if ($remote_addr) {
+            return $remote_addr;
+        }
+
+        // Last fallback to $_SERVER
+        return $_SERVER["REMOTE_ADDR"] ?? '';
     }
 
     /**
