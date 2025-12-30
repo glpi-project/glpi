@@ -147,7 +147,7 @@ PHP;
         ]);
 
         $output = $tester->getDisplay();
-        $this->assertStringContainsString('[ERROR] Found 1 file without header. Use --fix option to fix these files.', $output);
+        $this->assertMatchesRegularExpression('/\[ERROR\] Found 1 file without header\. Use --fix option to fix these\s+files\./', $output);
         $this->assertEquals(LicenceHeadersCheckCommand::ERROR_FOUND_MISSING_OR_OUTDATED, $tester->getStatusCode());
     }
 

@@ -66,9 +66,9 @@ class LicenceHeadersCheckCommand extends AbstractCommand
     /**
      * Header lines.
      *
-     * @var array
+     * @var array|null
      */
-    private array $header_lines = [];
+    private ?array $header_lines = null;
 
     #[Override]
     protected function configure(): void
