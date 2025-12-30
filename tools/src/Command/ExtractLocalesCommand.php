@@ -241,7 +241,7 @@ class ExtractLocalesCommand extends AbstractCommand
                 system($merge_cmd);
                 unlink($vue_pot);
             } else {
-                 $this->io->warning('No vue locales generated to merge.');
+                $this->io->warning('No vue locales generated to merge.');
             }
         }
 
