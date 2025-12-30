@@ -400,7 +400,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
     private function getLatestVersion(): ?string
     {
         $tags = $this->getGitTags();
-        if (empty($tags)) {
+        if ($tags === []) {
             return null;
         }
 
@@ -463,7 +463,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
 
         // New Major
         $major_parts = $this->getNumericVersion($last_major);
-        if (empty($major_parts)) {
+        if ($major_parts === []) {
             $major_parts = [0];
         }
         $major_parts[count($major_parts) - 1]++;
