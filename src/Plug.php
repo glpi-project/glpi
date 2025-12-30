@@ -68,8 +68,12 @@ use Glpi\Application\View\TemplateRenderer;
  */
 
 /// Class Plug
-class Plug extends CommonDropdown
+class Plug extends CommonDBChild
 {
+    public static $itemtype       = 'itemtype';
+    public static $items_id       = 'items_id';
+    public $dohistory             = false;
+
     public $can_be_translated = false;
 
     public static function getTypeName($nb = 0)
@@ -82,54 +86,9 @@ class Plug extends CommonDropdown
         return "ti ti-plug";
     }
 
-    public function getAdditionalFields(): array
+    public static function getSectorizedDetails(): array
     {
-        return [
-            [
-                'name'  => 'custom_name',
-                'label' => __('Custom name'),
-                'type'  => 'text',
-            ],
-            [
-                'name'  => 'itemtype',
-                'label' => __s('Associated asset'),
-                'type'  => 'itemtype_items_id',
-            ],
-            [
-                'name'  => 'mainitemtype',
-                'label' => __s('Support type'),
-                'type'  => 'itemtype_items_id',
-            ],
-        ];
-    }
-
-    public function displaySpecificTypeField($ID, $field = [], array $options = [])
-    {
-        global $CFG_GLPI;
-
-        if ($field['type'] == 'itemtype_items_id') {
-            if ($field['name'] == 'mainitemtype') {
-                Dropdown::showSelectItemFromItemtypes(
-                    [
-                        'itemtypes' => $CFG_GLPI['plug_types'],
-                        'display_emptychoice' => false,
-                        'itemtype_name' => 'mainitems_id',
-                        'items_id_name' => 'mainitems_id',
-                        'default_itemtype' => $this->fields['mainitemtype'] ?? '',
-                        'default_items_id' => $this->fields['mainitems_id'] ?? 0,
-                    ]
-                );
-            } else {
-                Dropdown::showSelectItemFromItemtypes(
-                    [
-                        'itemtypes' => $CFG_GLPI['inventory_types'],
-                        'display_emptychoice' => false,
-                        'default_itemtype' => $this->fields['itemtype'] ?? '',
-                        'default_items_id' => $this->fields['items_id'] ?? 0,
-                    ]
-                );
-            }
-        }
+        return ['assets', PDU::class, self::class];
     }
 
     public function getSpecificMassiveActions($checkitem = null)
@@ -153,9 +112,9 @@ class Plug extends CommonDropdown
                     if ($plug->getFromDB($id)) {
                         if ($plug->update(
                             [
-                                'mainitemtype' => '',
-                                'mainitems_id'   => 0,
-                                'id' => $id,
+                                'mainitemtype'  => '',
+                                'mainitems_id'  => 0,
+                                'id'            => $id,
                             ]
                         )
                         ) {
@@ -176,7 +135,13 @@ class Plug extends CommonDropdown
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
             /** @var CommonDBTM $item */
-            $nb = countElementsInTable(self::getTable(), ['mainitemtype' => $item::class, 'mainitems_id' => $item->getID()]);
+            $nb = countElementsInTable(
+                self::getTable(),
+                [
+                    'mainitemtype' => $item::class,
+                    'mainitems_id' => $item->getID(),
+                ]
+            );
         }
         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
     }
@@ -187,6 +152,16 @@ class Plug extends CommonDropdown
             return false;
         }
         return self::showItems($item);
+    }
+
+    public function showForm($ID, array $options = [])
+    {
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/assets/pdu.html.twig', [
+            'item'      => $this,
+            'params'    => $options,
+        ]);
+        return true;
     }
 
     /**

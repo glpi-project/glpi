@@ -28316,6 +28316,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PDU.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method PDU\\:\\:getAdditionalMenuLinks\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method PDU\\:\\:getAdditionalMenuOptions\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PDU.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method PDU\\:\\:getAssignableVisiblityCriteria\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -29654,24 +29666,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Plug\\:\\:displaySpecificTypeField\\(\\) has parameter \\$field with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Plug\\:\\:displaySpecificTypeField\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Plug\\:\\:getAdditionalFields\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Plug.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Plug\\:\\:getSpecificMassiveActions\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -29680,6 +29674,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Plug\\:\\:processMassiveActionsForOneItemtype\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Plug\\:\\:showForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Property Plug\\:\\:\\$can_be_translated has no type specified\\.$#',
+	'identifier' => 'missingType.property',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Plug.php',
 ];

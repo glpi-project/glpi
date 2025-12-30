@@ -301,6 +301,40 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         return "ti ti-plug";
     }
 
+    public static function getAdditionalMenuLinks()
+    {
+        $links = [];
+        $label = htmlescape(Plug::getTypeName(Session::getPluralNumber()));
+        if (static::canView()) {
+            $insts = "<i class=\"ti ti-plug\" title=\"$label\""
+            . "></i><span class='d-none d-xxl-block'>$label</span>";
+            $links[$insts] = Plug::getSearchURL(false);
+        }
+        if (count($links)) {
+            return $links;
+        }
+        return false;
+    }
+
+    public static function getAdditionalMenuOptions()
+    {
+        if (static::canView()) {
+            return [
+                Plug::class => [
+                    'title' => Plug::getTypeName(Session::getPluralNumber()),
+                    'page'  => Plug::getSearchURL(false),
+                    'icon'  => Plug::getIcon(),
+                    'links' => [
+                        'add'    => '/front/plug.form.php',
+                        'search' => '/front/plug.php',
+                    ],
+                ],
+            ];
+        }
+        return false;
+    }
+
+
     public function prepareInputForAdd($input)
     {
         if (isset($input["id"]) && ($input["id"] > 0)) {
