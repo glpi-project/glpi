@@ -78,7 +78,6 @@
     "scripts": {
         "build:pack": "webpack --config .webpack.config.js",
         "build:vue": "webpack --config .vue.webpack.config.js",
-        "build:illustration-translations": "php bin/console tools:generate_illustration_translations --allow-superuser",
         "build": "npm run build:pack && npm run build:vue && npm run build:illustration-translations",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
@@ -88,7 +87,8 @@
         "watch:vue": "webpack --config .vue.webpack.config.js --watch",
         "watch": "npm run watch:vue",
         "test:e2e": "cypress open --project tests",
-        "serve:vue": "webpack serve --config .vue.webpack.config.js"
+        "serve:vue": "webpack serve --config .vue.webpack.config.js",
+        "vue:gettext:extract": "vue-gettext-extract"
     },
     "devDependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.27.1",
