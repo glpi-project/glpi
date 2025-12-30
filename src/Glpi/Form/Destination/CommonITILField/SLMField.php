@@ -193,7 +193,10 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         DatabaseMapper $mapper,
     ): array {
         // Check if a service level is defined
-        if (!isset($config[SLMFieldConfig::SLM_ID])) {
+        if (
+            !isset($config[SLMFieldConfig::SLM_ID])
+            || $config[SLMFieldConfig::SLM_ID] == 0
+        ) {
             return parent::prepareDynamicConfigDataForImport(
                 $config,
                 $destination,

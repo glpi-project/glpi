@@ -2382,6 +2382,7 @@ final class FormSerializerTest extends DbTestCase
         return [
             ['file' => 'form-with-empty-specific-question-for-location.json'],
             ['file' => 'form-with-empty-specific-template.json'],
+            ['file' => 'form-with-empty-specific-sla.json'],
         ];
     }
 
