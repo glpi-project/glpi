@@ -88,7 +88,7 @@
         "watch": "npm run watch:vue",
         "test:e2e": "cypress open --project tests",
         "serve:vue": "webpack serve --config .vue.webpack.config.js",
-        "vue:gettext:extract": "vue-gettext-extract"
+        "vue:gettext:extract": "vue-gettext-extract --config .gettext.config.js"
     },
     "devDependencies": {
         "@babel/plugin-transform-modules-commonjs": "^7.27.1",
