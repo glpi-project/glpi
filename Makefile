@@ -94,7 +94,7 @@ vendor: console
 .PHONY: vendor
 
 locales-extract: ## Extract locales
-	@$(PHP) vendor/bin/extract-locales
+	@$(CONSOLE) tools:extract_locales
 .PHONY: locales-extract
 
 locales-compile: c=locales:compile ## Compile locales
