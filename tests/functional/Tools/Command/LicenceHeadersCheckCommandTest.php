@@ -47,7 +47,7 @@ class LicenceHeadersCheckCommandTest extends GLPITestCase
         parent::setUp();
         $this->testDir = sys_get_temp_dir() . '/glpi_test_header_' . uniqid();
         if (!mkdir($this->testDir) && !is_dir($this->testDir)) {
-             $this->markTestSkipped('Could not create temp directory');
+            $this->markTestSkipped('Could not create temp directory');
         }
     }
 

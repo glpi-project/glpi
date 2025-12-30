@@ -34,11 +34,12 @@
 
 namespace Glpi\Tools\Command;
 
-ini_set('memory_limit',-1); // This is required due to high memory usage when extracting for core.
+ini_set('memory_limit', -1); // This is required due to high memory usage when extracting for core.
 
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -63,8 +64,8 @@ class ExtractLocalesCommand extends AbstractCommand
 
         // Check availability of xgettext
         if (trim(shell_exec('which xgettext')) === '') {
-             $this->io->error('xgettext not found. Please install gettext.');
-             return Command::FAILURE;
+            $this->io->error('xgettext not found. Please install gettext.');
+            return Command::FAILURE;
         }
 
         // Define translate function args
@@ -82,11 +83,11 @@ class ExtractLocalesCommand extends AbstractCommand
         if (file_exists($working_dir . '/setup.php')) {
             // setup.php found: it's a plugin.
             $content = file_get_contents($working_dir . '/setup.php');
-             if (preg_match('/PLUGIN_(.*)_VERSION/', $content, $matches)) {
-                 $name = $matches[1];
-             } else {
+            if (preg_match('/PLUGIN_(.*)_VERSION/', $content, $matches)) {
+                $name = $matches[1];
+            } else {
                 $name = 'UNKNOWN';
-             }
+            }
 
             $exclude_regex = '/^\.\/(\..*|(libs?|node_modules|tests|vendor)\/).*/';
 
@@ -99,7 +100,7 @@ class ExtractLocalesCommand extends AbstractCommand
             $args['F_ARGS_NX'] .= ',5t';
             $args['F_ARGS_SN'] .= ',4t';
         } else {
-             // core
+            // core
             $name = 'GLPI';
             $exclude_regex = '/^\.\/(\..*|(config|files|lib|marketplace|node_modules|plugins|phpunit|public|tests|tools|vendor)\/).*/';
         }
@@ -112,7 +113,7 @@ class ExtractLocalesCommand extends AbstractCommand
 
         // Clean existing POT file
         if (file_exists($potfile)) {
-             unlink($potfile);
+            unlink($potfile);
         }
         touch($potfile);
 
@@ -120,67 +121,67 @@ class ExtractLocalesCommand extends AbstractCommand
         if (is_dir($working_dir . '/templates')) {
             $this->io->section('Processing Twig templates...');
             $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
-            mkdir($temp_twig_dir . '/templates', 0777, true);
+            mkdir($temp_twig_dir . '/templates', 0o777, true);
 
             // Using internal command to compile templates
             $compile_cmd = $this->getApplication()->find('tools:compile_twig_templates');
             $options = [
                 'templates-directory' => $working_dir . '/templates',
                 'output-directory'    => $temp_twig_dir . '/templates',
-                '--quiet' => true
+                '--quiet' => true,
             ];
             if ($this->isPluggingCommand()) {
                 $options['--plugin'] = $this->getPluginName();
             }
 
-            $compile_input = new \Symfony\Component\Console\Input\ArrayInput($options);
+            $compile_input = new ArrayInput($options);
             $compile_cmd->run($compile_input, $this->output);
 
             $twig_files = $this->getFiles($temp_twig_dir, 'twig');
             if (count($twig_files) > 0) {
-                 $files_list = implode(' ', $twig_files);
-                 $cmd = sprintf(
-                     'cd %s && xgettext %s -o %s -L PHP --add-comments=TRANS --add-location=file --from-code=UTF-8 --force-po --join-existing ' .
-                     '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s',
-                     escapeshellarg($temp_twig_dir),
-                     $files_list,
-                     escapeshellarg($potfile),
-                     $args['F_ARGS_N'],
-                     $args['F_ARGS__'],
-                     $args['F_ARGS_X'],
-                     $args['F_ARGS_NX']
-                 );
-                 system($cmd);
+                $files_list = implode(' ', $twig_files);
+                $cmd = sprintf(
+                    'cd %s && xgettext %s -o %s -L PHP --add-comments=TRANS --add-location=file --from-code=UTF-8 --force-po --join-existing '
+                    . '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s',
+                    escapeshellarg($temp_twig_dir),
+                    $files_list,
+                    escapeshellarg($potfile),
+                    $args['F_ARGS_N'],
+                    $args['F_ARGS__'],
+                    $args['F_ARGS_X'],
+                    $args['F_ARGS_NX']
+                );
+                system($cmd);
             }
 
             // Cleanup
-             system('rm -rf ' . escapeshellarg($temp_twig_dir));
+            system('rm -rf ' . escapeshellarg($temp_twig_dir));
         }
 
-         // Append locales from PHP
+        // Append locales from PHP
         $this->io->section('Processing PHP files...');
         $php_files = $this->getFiles($working_dir, 'php', $exclude_regex);
         if (count($php_files) > 0) {
-              // Write files list to usage in xgettext via -f
-              $list_file = tempnam(sys_get_temp_dir(), 'phpfiles');
-              file_put_contents($list_file, implode("\n", $php_files));
+            // Write files list to usage in xgettext via -f
+            $list_file = tempnam(sys_get_temp_dir(), 'phpfiles');
+            file_put_contents($list_file, implode("\n", $php_files));
 
-              $cmd = sprintf(
-                 'cd %s && xgettext --files-from=%s -o %s -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing ' .
-                 '--keyword=_n:%s --keyword=__s:%s --keyword=__:%s --keyword=_x:%s --keyword=_sx:%s --keyword=_nx:%s --keyword=_sn:%s',
-                 escapeshellarg($working_dir),
-                 escapeshellarg($list_file),
-                 escapeshellarg($potfile),
-                 $args['F_ARGS_N'],
-                 $args['F_ARGS__S'],
-                 $args['F_ARGS__'],
-                 $args['F_ARGS_X'],
-                 $args['F_ARGS_SX'],
-                 $args['F_ARGS_NX'],
-                 $args['F_ARGS_SN']
-             );
-             system($cmd);
-             unlink($list_file);
+            $cmd = sprintf(
+                'cd %s && xgettext --files-from=%s -o %s -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing '
+                 . '--keyword=_n:%s --keyword=__s:%s --keyword=__:%s --keyword=_x:%s --keyword=_sx:%s --keyword=_nx:%s --keyword=_sn:%s',
+                escapeshellarg($working_dir),
+                escapeshellarg($list_file),
+                escapeshellarg($potfile),
+                $args['F_ARGS_N'],
+                $args['F_ARGS__S'],
+                $args['F_ARGS__'],
+                $args['F_ARGS_X'],
+                $args['F_ARGS_SX'],
+                $args['F_ARGS_NX'],
+                $args['F_ARGS_SN']
+            );
+            system($cmd);
+            unlink($list_file);
         }
 
         // Append locales from JS
@@ -189,30 +190,30 @@ class ExtractLocalesCommand extends AbstractCommand
         // Exclude min.js
         $js_files = array_filter($js_files, fn($f) => !str_ends_with($f, '.min.js'));
 
-         if (count($js_files) > 0) {
-              $list_file = tempnam(sys_get_temp_dir(), 'jsfiles');
-              file_put_contents($list_file, implode("\n", $js_files));
+        if (count($js_files) > 0) {
+            $list_file = tempnam(sys_get_temp_dir(), 'jsfiles');
+            file_put_contents($list_file, implode("\n", $js_files));
 
-             $cmd = sprintf(
-                 'cd %s && xgettext --files-from=%s -o %s -L JavaScript --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing ' .
-                 '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s ' .
-                 '--keyword=i18n._n:%s --keyword=i18n.__:%s --keyword=i18n._p:%s --keyword=i18n.ngettext:%s --keyword=i18n.gettext:%s --keyword=i18n.pgettext:%s',
-                 escapeshellarg($working_dir),
-                  escapeshellarg($list_file),
-                 escapeshellarg($potfile),
-                 $args['F_ARGS_N'],
-                 $args['F_ARGS__'],
-                 $args['F_ARGS_X'],
-                 $args['F_ARGS_NX'],
-                 $args['F_ARGS_N'],
-                 $args['F_ARGS__'],
-                 $args['F_ARGS_X'],
-                 $args['F_ARGS_N'],
-                 $args['F_ARGS__'],
-                 $args['F_ARGS_X']
-             );
-             system($cmd);
-             unlink($list_file);
+            $cmd = sprintf(
+                'cd %s && xgettext --files-from=%s -o %s -L JavaScript --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing '
+                . '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s '
+                . '--keyword=i18n._n:%s --keyword=i18n.__:%s --keyword=i18n._p:%s --keyword=i18n.ngettext:%s --keyword=i18n.gettext:%s --keyword=i18n.pgettext:%s',
+                escapeshellarg($working_dir),
+                escapeshellarg($list_file),
+                escapeshellarg($potfile),
+                $args['F_ARGS_N'],
+                $args['F_ARGS__'],
+                $args['F_ARGS_X'],
+                $args['F_ARGS_NX'],
+                $args['F_ARGS_N'],
+                $args['F_ARGS__'],
+                $args['F_ARGS_X'],
+                $args['F_ARGS_N'],
+                $args['F_ARGS__'],
+                $args['F_ARGS_X']
+            );
+            system($cmd);
+            unlink($list_file);
         }
 
         // Append locales from Vue
@@ -222,8 +223,8 @@ class ExtractLocalesCommand extends AbstractCommand
         // For now, we might want to skip or implement depending on if we have Vue files.
         // Assuming we are in core or plugin with package.json
         if (file_exists($working_dir . '/package.json')) {
-             // Logic for vue extraction would go here
-             $this->io->warning('Vue extraction not yet fully implemented in this command port.');
+            // Logic for vue extraction would go here
+            $this->io->warning('Vue extraction not yet fully implemented in this command port.');
         }
 
         // Update main language

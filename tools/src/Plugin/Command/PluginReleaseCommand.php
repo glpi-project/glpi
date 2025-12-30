@@ -35,6 +35,7 @@
 namespace Glpi\Tools\Plugin\Command;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -79,8 +80,8 @@ class PluginReleaseCommand extends AbstractPluginCommand
         $this->setName('tools:plugin:release');
         $this->setDescription(sprintf('Build and release a plugin (v%s).', self::SCRIPT_VERSION));
         $this->setHelp(sprintf(
-            'GLPI plugins release script v%s' . PHP_EOL . PHP_EOL .
-            'This command builds and releases a GLPI plugin archive.',
+            'GLPI plugins release script v%s' . PHP_EOL . PHP_EOL
+            . 'This command builds and releases a GLPI plugin archive.',
             self::SCRIPT_VERSION
         ));
 
@@ -109,7 +110,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
 
         $this->dist_dir = $plugin_dir . '/dist';
         if (!is_dir($this->dist_dir)) {
-            mkdir($this->dist_dir, 0777, true);
+            mkdir($this->dist_dir, 0o777, true);
         }
 
         $this->plugin_name = $this->guessPluginName();
@@ -319,7 +320,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
                 $xmldoc = new \SimpleXMLElement(file_get_contents($xml_file));
                 $found = false;
                 foreach ($xmldoc->versions->version as $version) {
-                    if ((string)$version->num === $build_ver) {
+                    if ((string) $version->num === $build_ver) {
                         if ($this->output->isVerbose()) {
                             $this->io->text("$build_ver found in the XML file!");
                         }
@@ -691,7 +692,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
             'headers'  => [
                 'Authorization' => 'token ' . $token,
                 'Accept'        => 'application/vnd.github.v3+json',
-            ]
+            ],
         ]);
 
         $repo = $this->gh_orga . '/' . $this->plugin_name;
@@ -716,13 +717,13 @@ class PluginReleaseCommand extends AbstractPluginCommand
                         'name'             => "GLPI {$this->plugin_name} $ver",
                         'body'             => 'Automated release from release script',
                         'draft'            => true,
-                        'prerelease'       => (bool)$commit
-                    ]
+                        'prerelease'       => (bool) $commit,
+                    ],
                 ]);
                 $release = json_decode($resp->getBody(), true);
             } catch (\Exception $e) {
                 $this->io->error("Failed to create release: " . $e->getMessage());
-                if ($e instanceof \GuzzleHttp\Exception\ClientException) {
+                if ($e instanceof ClientException) {
                     $this->io->error($e->getResponse()->getBody()->getContents());
                 }
                 return;
@@ -738,10 +739,10 @@ class PluginReleaseCommand extends AbstractPluginCommand
             try {
                 $client->post($upload_url, [
                     'headers' => [
-                        'Content-Type' => 'application/octet-stream'
+                        'Content-Type' => 'application/octet-stream',
                     ],
                     'query'   => ['name' => $asset_name],
-                    'body'    => fopen($archive, 'r')
+                    'body'    => fopen($archive, 'r'),
                 ]);
                 $this->io->success("Asset uploaded.");
             } catch (\Exception $e) {

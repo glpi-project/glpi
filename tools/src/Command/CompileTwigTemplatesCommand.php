@@ -39,6 +39,7 @@ use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -116,14 +117,14 @@ class CompileTwigTemplatesCommand extends AbstractCommand
         $directory = realpath($directory);
 
         if (!is_dir($directory) || !is_readable($directory)) {
-            throw new \Symfony\Component\Console\Exception\InvalidOptionException(
+            throw new InvalidOptionException(
                 sprintf('Unable to read directory "%s"', $directory)
             );
         }
 
         $dir_iterator = new RecursiveDirectoryIterator($directory);
 
-        $filter_iterator = new class($dir_iterator) extends RecursiveFilterIterator {
+        $filter_iterator = new class ($dir_iterator) extends RecursiveFilterIterator {
             public function accept(): bool
             {
                 if ($this->isFile() && !preg_match('/^twig$/', $this->getExtension())) {
@@ -168,7 +169,6 @@ class CompileTwigTemplatesCommand extends AbstractCommand
     private function getMockedTwigEnvironment(LoaderInterface $loader): Environment
     {
         return new class ($loader) extends Environment {
-
             public function getFunction(string $name): ?TwigFunction
             {
                 if (in_array($name, ['__', '_n', '_x', '_nx'], true)) {
@@ -208,8 +208,7 @@ class CompileTwigTemplatesCommand extends AbstractCommand
      */
     private function getTwigCacheHandler(string $directory): CacheInterface
     {
-        return new class($directory) extends FilesystemCache {
-
+        return new class ($directory) extends FilesystemCache {
             private $directory;
 
             public function __construct(string $directory, int $options = 0)
