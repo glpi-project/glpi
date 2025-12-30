@@ -100,6 +100,7 @@ class CompileTwigTemplatesCommand extends AbstractCommand
             $twig->load($file);
             $progress_bar->advance();
         }
+        $progress_bar->finish();
 
         $this->io->newLine(2);
 

@@ -39,7 +39,6 @@ ini_set('memory_limit', -1); // This is required due to high memory usage when e
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -124,6 +123,7 @@ class ExtractLocalesCommand extends AbstractCommand
             $temp_twig_dir = sys_get_temp_dir() . '/glpi-locales-' . uniqid();
             mkdir($temp_twig_dir . '/templates', 0o777, true);
 
+            $this->io->writeln("<question>Compiling twig templates into php files</question>");
             // Using internal command to compile templates
             $compile_cmd = $this->getApplication()->find('tools:compile_twig_templates');
             $options = [
@@ -138,6 +138,7 @@ class ExtractLocalesCommand extends AbstractCommand
             $compile_input = new ArrayInput($options);
             $compile_cmd->run($compile_input, $this->output);
 
+            $this->io->writeln("<question>Extracting translations from files</question>");
             $twig_files = $this->getFiles($temp_twig_dir, 'twig');
             if (count($twig_files) > 0) {
                 $files_list = implode(' ', $twig_files);
@@ -219,13 +220,29 @@ class ExtractLocalesCommand extends AbstractCommand
 
         // Append locales from Vue
         $this->io->section('Processing Vue files...');
-        // TODO: Port Vue extraction if needed (requires npm run vue:gettext:extract)
-        // Original script ran npm install && npm run vue:gettext:extract in vendor tools.
-        // For now, we might want to skip or implement depending on if we have Vue files.
-        // Assuming we are in core or plugin with package.json
-        if (file_exists($working_dir . '/package.json')) {
-            // Logic for vue extraction would go here
-            $this->io->warning('Vue extraction not yet fully implemented in this command port.');
+        $vue_files = $this->getFiles($working_dir, 'vue', $exclude_regex);
+        if (count($vue_files) > 0) {
+            // Run extraction using local npm script
+            $cmd_npm = sprintf(
+                'cd %s && npm run vue:gettext:extract',
+                escapeshellarg($working_dir)
+            );
+            system($cmd_npm, $ret_npm);
+
+            $vue_pot = $working_dir . '/locales/vue.pot';
+            if (file_exists($vue_pot)) {
+                $this->io->writeln("<info>Merge vue locales.</info>");
+                // merge vue pot with the existing global pot file
+                $merge_cmd = sprintf(
+                    'xgettext -o %s --join-existing %s',
+                    escapeshellarg($potfile),
+                    escapeshellarg($vue_pot)
+                );
+                system($merge_cmd);
+                unlink($vue_pot);
+            } else {
+                 $this->io->warning('No vue locales generated to merge.');
+            }
         }
 
         // Update main language
@@ -265,7 +282,6 @@ class ExtractLocalesCommand extends AbstractCommand
 
             return true;
         });
-
         // Count total matching files first for progress bar
         $total_files = iterator_count($filter);
         $filter->rewind(); // Reset iterator
@@ -278,6 +294,7 @@ class ExtractLocalesCommand extends AbstractCommand
             $files[] = $rel_path;
             $progress_bar->advance();
         }
+        $progress_bar->finish();
         $this->io->newLine(2); // Clean line break after progress bar
 
         return $files;
