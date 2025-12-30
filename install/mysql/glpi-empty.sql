@@ -8573,6 +8573,7 @@ CREATE TABLE `glpi_plugs` (
   `custom_name` varchar(255) DEFAULT NULL,
   `itemtype` varchar(100) NOT NULL DEFAULT '',
   `items_id` int unsigned NOT NULL DEFAULT '0',
+  `pdus_id` int NOT NULL DEFAULT 0,
   `mainitemtype` varchar(100) NOT NULL DEFAULT '',
   `mainitems_id` int unsigned NOT NULL DEFAULT '0',
   `entities_id` int unsigned NOT NULL DEFAULT '0',
@@ -8584,6 +8585,7 @@ CREATE TABLE `glpi_plugs` (
   KEY `name` (`name`),
   KEY `item` (`itemtype`, `items_id`),
   KEY `mainitem` (`mainitemtype`, `mainitems_id`),
+  KEY `mainitems_id` (`mainitems_id`)
   KEY `entities_id` (`entities_id`),
   KEY `is_recursive` (`is_recursive`),
   KEY `date_mod` (`date_mod`),

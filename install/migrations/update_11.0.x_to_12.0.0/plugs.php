@@ -96,6 +96,7 @@ $migration->addField(
 
 $migration->addKey('glpi_plugs', ['itemtype', 'items_id'], 'item');
 $migration->addKey('glpi_plugs', ['mainitemtype', 'mainitems_id'], 'mainitem');
+$migration->addKey('glpi_plugs', 'mainitems_id');
 $migration->addKey('glpi_plugs', 'pdus_id');
 $migration->addKey('glpi_plugs', 'entities_id');
 $migration->addKey('glpi_plugs', 'is_recursive');

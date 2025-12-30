@@ -72,7 +72,7 @@ class Plug extends CommonDBChild
 {
     public static $itemtype       = 'itemtype';
     public static $items_id       = 'items_id';
-    public $dohistory             = false;
+    public $dohistory             = true;
 
     public $can_be_translated = false;
 
@@ -90,6 +90,15 @@ class Plug extends CommonDBChild
     {
         return ['assets', PDU::class, self::class];
     }
+
+    public function defineTabs($options = [])
+    {
+        $ong = [];
+        $this->addDefaultFormTab($ong)
+            ->addStandardTab(Log::class, $ong, $options);
+        return $ong;
+    }
+
 
     public function getSpecificMassiveActions($checkitem = null)
     {

@@ -65,6 +65,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
             NetworkPort::class,
             Contract_Item::class,
             Infocom::class,
+            Plug::class,
         ];
     }
 
@@ -98,7 +99,6 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
          ->addStandardTab(Item_Problem::class, $ong, $options)
          ->addStandardTab(Change_Item::class, $ong, $options)
          ->addStandardTab(Log::class, $ong, $options);
-        ;
         return $ong;
     }
 
@@ -295,10 +295,9 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         );
     }
 
-
     public static function getIcon()
     {
-        return "ti ti-plug";
+        return "ti ti-battery-vertical-charging";
     }
 
     public static function getAdditionalMenuLinks()
@@ -333,7 +332,6 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
         }
         return false;
     }
-
 
     public function prepareInputForAdd($input)
     {
