@@ -104,7 +104,7 @@ class Ticket_Contract extends CommonDBRelation
 
         $canedit = $item->canEdit($ID);
 
-        $linked_items = array_map(static function ($entry) use ($linked_itemtype, $ID) {
+        $linked_items = array_map(static function ($entry) use ($linked_itemtype) {
             $entry['itemtype'] = $linked_itemtype;
             $entry['item_id'] = $entry['id'];
             return $entry;
