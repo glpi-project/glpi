@@ -39,6 +39,7 @@ ini_set('memory_limit', -1); // This is required due to high memory usage when e
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -245,18 +246,40 @@ class ExtractLocalesCommand extends AbstractCommand
      */
     private function getFiles($directory, $extension, $exclude_regex = null): array
     {
-        $files = [];
-        $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-        foreach ($iterator as $file) {
-            if ($file->isFile() && $file->getExtension() === $extension) {
-                $path = $file->getPathname();
-                $relPath = './' . ltrim(substr($path, strlen($directory)), '/');
-                if ($exclude_regex && preg_match($exclude_regex, $relPath)) {
-                    continue;
-                }
-                $files[] = $relPath;
+        $dir_iterator = new RecursiveDirectoryIterator($directory);
+        $iterator = new RecursiveIteratorIterator($dir_iterator);
+
+        $filter = new \CallbackFilterIterator($iterator, function ($file) use ($directory, $extension, $exclude_regex) {
+            /** @var \SplFileInfo $file */
+            if (!$file->isFile() || $file->getExtension() !== $extension) {
+                return false;
             }
+
+            if ($exclude_regex) {
+                $path = $file->getPathname();
+                $rel_path = './' . ltrim(substr($path, strlen($directory)), '/');
+                if (preg_match($exclude_regex, $rel_path)) {
+                    return false;
+                }
+            }
+
+            return true;
+        });
+
+        // Count total matching files first for progress bar
+        $total_files = iterator_count($filter);
+        $filter->rewind(); // Reset iterator
+
+        $progress_bar = $this->io->createProgressBar($total_files);
+        $files = [];
+        foreach ($filter as $file) {
+            $path = $file->getPathname();
+            $rel_path = './' . ltrim(substr($path, strlen($directory)), '/');
+            $files[] = $rel_path;
+            $progress_bar->advance();
         }
+        $this->io->newLine(2); // Clean line break after progress bar
+
         return $files;
     }
 }

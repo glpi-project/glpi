@@ -95,12 +95,13 @@ class CompileTwigTemplatesCommand extends AbstractCommand
 
         $files = $this->getTemplatesFiles($tpl_dir);
 
-        $progress_bar = new ProgressBar($this->io);
-        foreach ($progress_bar->iterate($files) as $file) {
+        $progress_bar = $this->io->createProgressBar(count($files));
+        foreach ($files as $file) {
             $twig->load($file);
+            $progress_bar->advance();
         }
 
-        $this->io->writeln(''); // New to next line after progress bar display
+        $this->io->newLine(2);
 
         return 0; // Success
     }
