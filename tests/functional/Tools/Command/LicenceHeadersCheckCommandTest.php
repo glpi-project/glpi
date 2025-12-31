@@ -40,32 +40,32 @@ use Symfony\Component\Console\Tester\CommandTester;
 
 class LicenceHeadersCheckCommandTest extends GLPITestCase
 {
-    private string $testDir;
+    private string $test_dir;
 
     public function setUp(): void
     {
         parent::setUp();
-        $this->testDir = sys_get_temp_dir() . '/glpi_test_header_' . uniqid();
-        if (!mkdir($this->testDir) && !is_dir($this->testDir)) {
+        $this->test_dir = sys_get_temp_dir() . '/glpi_test_header_' . uniqid();
+        if (!mkdir($this->test_dir) && !is_dir($this->test_dir)) {
             $this->markTestSkipped('Could not create temp directory');
         }
     }
 
     public function tearDown(): void
     {
-        $this->removeDirectory($this->testDir);
+        $this->removeDirectory($this->test_dir);
         parent::tearDown();
     }
 
     public function testMissingHeader(): void
     {
-        file_put_contents($this->testDir . '/no_header1.php', "<?php echo 'foo';");
-        file_put_contents($this->testDir . '/no_header2.php', "<?php echo 'foo';");
+        file_put_contents($this->test_dir . '/no_header1.php', "<?php echo 'foo';");
+        file_put_contents($this->test_dir . '/no_header2.php', "<?php echo 'foo';");
 
         $command = new LicenceHeadersCheckCommand();
         $tester = new CommandTester($command);
         $tester->execute([
-            '--directory' => $this->testDir,
+            '--directory' => $this->test_dir,
             '--fix' => true,
         ]);
 
@@ -85,12 +85,12 @@ class LicenceHeadersCheckCommandTest extends GLPITestCase
  * ---------------------------------------------------------------------
  */
 PHP;
-        file_put_contents($this->testDir . '/outdated.php', $content);
+        file_put_contents($this->test_dir . '/outdated.php', $content);
 
         $command = new LicenceHeadersCheckCommand();
         $tester = new CommandTester($command);
         $tester->execute([
-            '--directory' => $this->testDir,
+            '--directory' => $this->test_dir,
             '--fix' => true,
         ]);
 
@@ -100,7 +100,7 @@ PHP;
 
     public function testMixedIssues(): void
     {
-        file_put_contents($this->testDir . '/no_header.php', "<?php echo 'foo';");
+        file_put_contents($this->test_dir . '/no_header.php', "<?php echo 'foo';");
         $content = <<<PHP
 <?php
 /**
@@ -111,12 +111,12 @@ PHP;
  * ---------------------------------------------------------------------
  */
 PHP;
-        file_put_contents($this->testDir . '/outdated.php', $content);
+        file_put_contents($this->test_dir . '/outdated.php', $content);
 
         $command = new LicenceHeadersCheckCommand();
         $tester = new CommandTester($command);
         $tester->execute([
-            '--directory' => $this->testDir,
+            '--directory' => $this->test_dir,
             '--fix' => true,
         ]);
 
@@ -126,12 +126,12 @@ PHP;
 
     public function testNoFixOption(): void
     {
-        file_put_contents($this->testDir . '/no_header.php', "<?php echo 'foo';");
+        file_put_contents($this->test_dir . '/no_header.php', "<?php echo 'foo';");
 
         $command = new LicenceHeadersCheckCommand();
         $tester = new CommandTester($command);
         $tester->execute([
-            '--directory' => $this->testDir,
+            '--directory' => $this->test_dir,
         ]);
 
         $output = $tester->getDisplay();
@@ -145,7 +145,7 @@ PHP;
         $command = new LicenceHeadersCheckCommand();
         $tester = new CommandTester($command);
         $tester->execute([
-            '--directory' => $this->testDir,
+            '--directory' => $this->test_dir,
         ]);
 
         $output = $tester->getDisplay();
