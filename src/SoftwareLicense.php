@@ -989,7 +989,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
     {
         global $DB;
 
-        $softwares_id  = $software->getField('id');
+        $softwares_id  = $software->fields['id'];
         $license       = new self();
 
         if (!$software->can($softwares_id, READ)) {

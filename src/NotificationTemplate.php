@@ -592,7 +592,7 @@ class NotificationTemplate extends CommonDBTM
         $iterator = $DB->request([
             'FROM'   => 'glpi_notificationtemplatetranslations',
             'WHERE'  => [
-                'notificationtemplates_id' => $this->getField('id'),
+                'notificationtemplates_id' => $this->fields['id'],
                 'language'                 => [$language, ''],
             ],
             'ORDER'  => 'language DESC',
@@ -636,7 +636,7 @@ class NotificationTemplate extends CommonDBTM
         $mailing_options['content_html'] = $template_data['content_html'];
         $mailing_options['content_text'] = $template_data['content_text'];
         $mailing_options['items_id']     = method_exists($target->obj, "getField")
-         ? $target->obj->getField('id')
+         ? $target->obj->fields['id']
          : 0;
         if (property_exists($target->obj, 'documents') && isset($target->obj->documents)) {
             $mailing_options['documents'] = $target->obj->documents;

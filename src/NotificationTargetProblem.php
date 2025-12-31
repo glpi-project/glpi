@@ -62,13 +62,13 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         // Common ITIL data
         $data = parent::getDataForObject($item, $options, $simple);
 
-        $data["##problem.impacts##"]  = $item->getField('impactcontent');
-        $data["##problem.causes##"]   = $item->getField('causecontent');
-        $data["##problem.symptoms##"] = $item->getField('symptomcontent');
+        $data["##problem.impacts##"]  = $item->fields['impactcontent'];
+        $data["##problem.causes##"]   = $item->fields['causecontent'];
+        $data["##problem.symptoms##"] = $item->fields['symptomcontent'];
 
         // Complex mode
         if (!$simple) {
-            $restrict = ['problems_id' => $item->getField('id')];
+            $restrict = ['problems_id' => $item->fields['id']];
             $tickets  = getAllDataFromTable('glpi_problems_tickets', $restrict);
 
             $data['tickets'] = [];
@@ -81,16 +81,16 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
                         $tmp['##ticket.id##']
                                     = $row['tickets_id'];
                         $tmp['##ticket.date##']
-                                    = $ticket->getField('date');
+                                    = $ticket->fields['date'];
                         $tmp['##ticket.title##']
-                                    = $ticket->getField('name');
+                                    = $ticket->fields['name'];
                         $tmp['##ticket.url##']
                                     = $this->formatURL(
                                         $options['additionnaloption']['usertype'],
                                         "Ticket_" . $row['tickets_id']
                                     );
                         $tmp['##ticket.content##']
-                                   = $ticket->getField('content');
+                                   = $ticket->fields['content'];
 
                         $data['tickets'][] = $tmp;
                     }
@@ -110,16 +110,16 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
                         $tmp['##change.id##']
                                     = $row['changes_id'];
                         $tmp['##change.date##']
-                                    = $change->getField('date');
+                                    = $change->fields['date'];
                         $tmp['##change.title##']
-                                    = $change->getField('name');
+                                    = $change->fields['name'];
                         $tmp['##change.url##']
                                     = $this->formatURL(
                                         $options['additionnaloption']['usertype'],
                                         "Change_" . $row['changes_id']
                                     );
                         $tmp['##change.content##']
-                                    = $change->getField('content');
+                                    = $change->fields['content'];
 
                         $data['changes'][] = $tmp;
                     }

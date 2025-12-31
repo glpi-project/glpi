@@ -303,7 +303,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function canCreateItem(): bool
     {
         // Check the parent
-        return Session::haveRecursiveAccessToEntity($this->getField('entities_id'));
+        return Session::haveRecursiveAccessToEntity($this->fields['entities_id']);
     }
 
     public static function canUpdate(): bool
@@ -315,13 +315,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public function canUpdateItem(): bool
     {
         // Check the current entity
-        return Session::haveAccessToEntity($this->getField('id'));
+        return Session::haveAccessToEntity($this->getID());
     }
 
     public function canViewItem(): bool
     {
         // Check the current entity
-        return Session::haveAccessToEntity($this->getField('id'));
+        return Session::haveAccessToEntity($this->getID());
     }
 
     public static function isNewID($ID): bool
@@ -1695,7 +1695,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         // root entity first
         $ent = new self();
         if ($ent->getFromDB(0)) {  // always exists
-            $val = $ent->getField($field);
+            $val = $ent->fields[$field];
             if ($val > 0) {
                 $entities[0] = $val;
             }
@@ -1731,8 +1731,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function showStandardOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
-        if (!$entity->can($ID, READ)) {
+        if (!$entity->can($entity->getID(), READ)) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/admin/entity/address.html.twig', [
@@ -1746,8 +1745,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function showAdvancedOptions(Entity $entity): bool
     {
-        $ID          = $entity->getField('id');
-        if (!$entity->can($ID, READ)) {
+        if (!$entity->can($entity->getID(), READ)) {
             return false;
         }
         TemplateRenderer::getInstance()->display('pages/admin/entity/advanced.html.twig', [
@@ -1762,7 +1760,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function showInventoryOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ)) {
             return false;
         }
@@ -1851,7 +1849,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public static function showNotificationOptions(Entity $entity): bool
     {
 
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (
             !$entity->can($ID, READ)
             || !Notification::canView()
@@ -1896,7 +1894,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             'approval_reminder_repeat_interval' => $entity->getInheritedValueBadge('approval_reminder_repeat_interval'),
         ];
         if ($entity->fields['delay_send_emails'] == self::CONFIG_PARENT) {
-            $tid = self::getUsedConfig('delay_send_emails', $entity->getField('entities_id'));
+            $tid = self::getUsedConfig('delay_send_emails', $entity->fields['entities_id']);
             $inheritance_labels['delay_send_emails'] = self::inheritedValue(
                 $entity->getValueToDisplay('delay_send_emails', $tid, ['html' => true]),
                 false,
@@ -1904,7 +1902,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             );
         }
         if ($entity->fields['is_notif_enable_default'] == self::CONFIG_PARENT) {
-            $tid = self::getUsedConfig('is_notif_enable_default', $entity->getField('entities_id'));
+            $tid = self::getUsedConfig('is_notif_enable_default', $entity->fields['entities_id']);
             $inheritance_labels['is_notif_enable_default'] = self::inheritedValue(
                 self::getSpecificValueToDisplay('is_notif_enable_default', $tid),
                 false,
@@ -1938,7 +1936,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function showUiCustomizationOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ) || !Session::haveRight(Config::$rightname, UPDATE)) {
             return false;
         }
@@ -1985,7 +1983,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function showSecurityOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (!$entity->can($ID, READ)) {
             return false;
         }
@@ -2106,7 +2104,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         if (
             $entity->getFromDB($entities_id)
-            && ($entity->getField('authldaps_id') > 0)
+            && ($entity->fields['authldaps_id'] > 0)
         ) {
             return true;
         }
@@ -2122,7 +2120,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
     public static function showHelpdeskOptions(Entity $entity): bool
     {
-        $ID = $entity->getField('id');
+        $ID = $entity->getID();
         if (
             !$entity->can($ID, READ)
             || !Session::haveRightsOr(

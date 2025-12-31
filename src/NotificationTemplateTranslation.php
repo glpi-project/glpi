@@ -79,8 +79,8 @@ class NotificationTemplateTranslation extends CommonDBChild
     {
         global $CFG_GLPI;
 
-        if ($this->getField('language') !== '') {
-            return $CFG_GLPI['languages'][$this->getField('language')][0];
+        if ($this->fields['language'] !== '') {
+            return $CFG_GLPI['languages'][$this->fields['language']][0];
         }
         return __('Default translation');
     }
@@ -105,7 +105,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $notificationtemplates_id = $options['notificationtemplates_id'] ?? -1;
 
         if ($this->getFromDB($ID)) {
-            $notificationtemplates_id = $this->getField('notificationtemplates_id');
+            $notificationtemplates_id = $this->fields['notificationtemplates_id'];
         }
         $template = new NotificationTemplate();
         $template->getFromDB($notificationtemplates_id);
@@ -113,7 +113,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $used_languages = self::getAllUsedLanguages($notificationtemplates_id);
         // Remove current language
         if (!$this->isNewItem()) {
-            $used_languages = array_diff($used_languages, [$this->getField('language')]);
+            $used_languages = array_diff($used_languages, [$this->fields['language']]);
         }
 
         TemplateRenderer::getInstance()->display('pages/setup/notification/translation.html.twig', [
@@ -134,7 +134,7 @@ class NotificationTemplateTranslation extends CommonDBChild
     {
         global $CFG_GLPI, $DB;
 
-        $nID     = $template->getField('id');
+        $nID     = $template->fields['id'];
         $canedit = Config::canUpdate();
 
         if ($canedit) {

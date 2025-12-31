@@ -584,7 +584,7 @@ class NetworkPort extends CommonDBChild
         global $CFG_GLPI, $DB;
 
         $itemtype = $item::class;
-        $items_id = $item->getField('id');
+        $items_id = $item->fields['id'];
 
         $netport = new self();
         $netport_table = $netport->getTable();
@@ -1351,7 +1351,7 @@ class NetworkPort extends CommonDBChild
         $recursiveItems = $this->recursivelyGetItems();
         if (count($recursiveItems) > 0) {
             $lastItem             = $recursiveItems[count($recursiveItems) - 1];
-            $options['entities_id'] = $lastItem->getField('entities_id');
+            $options['entities_id'] = $lastItem->fields['entities_id'];
         } else {
             $options['entities_id'] = $_SESSION['glpiactive_entity'];
         }
@@ -1735,7 +1735,7 @@ class NetworkPort extends CommonDBChild
         if ($item::class === self::class) {
             $nbAlias = countElementsInTable(
                 'glpi_networkportaliases',
-                ['networkports_id_alias' => $item->getField('id')]
+                ['networkports_id_alias' => $item->fields['id']]
             );
             if ($nbAlias > 0) {
                 $aliases = self::createTabEntry(NetworkPortAlias::getTypeName(Session::getPluralNumber()), $nbAlias, $item::class);
@@ -1744,7 +1744,7 @@ class NetworkPort extends CommonDBChild
             }
             $nbAggregates = countElementsInTable(
                 'glpi_networkportaggregates',
-                ['networkports_id_list'   => ['LIKE', '%"' . $item->getField('id') . '"%']]
+                ['networkports_id_list'   => ['LIKE', '%"' . $item->fields['id'] . '"%']]
             );
             if ($nbAggregates > 0) {
                 $aggregates = self::createTabEntry(
@@ -1773,7 +1773,7 @@ class NetworkPort extends CommonDBChild
             'glpi_networkports',
             [
                 'itemtype'   => $item::class,
-                'items_id'   => $item->getField('id'),
+                'items_id'   => $item->fields['id'],
                 'is_deleted' => 0,
             ]
         );

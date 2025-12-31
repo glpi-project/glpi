@@ -79,11 +79,11 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         $savedsearch = $options['savedsearch'];
 
         $this->data['##savedsearch.action##']    = $events[$event];
-        $this->data['##savedsearch.name##']      = $savedsearch->getField('name');
+        $this->data['##savedsearch.name##']      = $savedsearch->fields['name'];
         $this->data['##savedsearch.message##']   = $options['msg'];
         $this->data['##savedsearch.id##']        = (string) $savedsearch->getID();
         $this->data['##savedsearch.count##']     = (string) $options['data']['totalcount'];
-        $this->data['##savedsearch.type##']      = $savedsearch->getField('itemtype');
+        $this->data['##savedsearch.type##']      = $savedsearch->fields['itemtype'];
         $url = $savedsearch::getSearchURL(false) . "?action=load&id=" . $savedsearch->getID();
         $this->data['##savedsearch.url##']       = $this->formatURL($options['additionnaloption']['usertype'], $url);
 
@@ -138,13 +138,13 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
                         $usertype = self::GLPI_USER;
                         $user = new User();
                         $savedsearch = new SavedSearch();
-                        $savedsearch->getFromDB($this->obj->getField('savedsearches_id'));
-                        $user->getFromDB($savedsearch->getField('users_id'));
+                        $savedsearch->getFromDB($this->obj->fields['savedsearches_id']);
+                        $user->getFromDB($savedsearch->fields['users_id']);
                         // Send to user without any check on profile / entity
                         // Do not set users_id
                         $data = ['name'     => $user->getName(),
                             'email'    => $user->getDefaultEmail(),
-                            'language' => $user->getField('language'),
+                            'language' => $user->fields['language'],
                             'users_id' => $user->getID(),
                             'usertype' => $usertype,
                         ];

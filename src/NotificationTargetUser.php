@@ -113,7 +113,7 @@ class NotificationTargetUser extends NotificationTarget
                         // Do not set users_id
                         $data = ['name'     => $this->obj->getName(),
                             'email'    => $this->obj->getDefaultEmail(),
-                            'language' => $this->obj->getField('language'),
+                            'language' => $this->obj->fields['language'],
                             'usertype' => $usertype,
                         ];
                         $this->addToRecipientsList($data);
@@ -127,9 +127,9 @@ class NotificationTargetUser extends NotificationTarget
 
         $events = $this->getEvents();
 
-        $this->data['##user.name##']      = $this->obj->getField("name");
-        $this->data['##user.realname##']  = $this->obj->getField("realname");
-        $this->data['##user.firstname##'] = $this->obj->getField("firstname");
+        $this->data['##user.name##']      = $this->obj->fields["name"];
+        $this->data['##user.realname##']  = $this->obj->fields["realname"];
+        $this->data['##user.firstname##'] = $this->obj->fields["firstname"];
         $this->data['##user.action##']    = $events[$event];
 
         switch ($event) {
@@ -170,10 +170,10 @@ class NotificationTargetUser extends NotificationTarget
                 . $token);
                 break;
             case 'passwordinit':
-                $this->data['##user.token##']           = $this->obj->getField("password_forget_token");
+                $this->data['##user.token##']           = $this->obj->fields["password_forget_token"];
                 $this->data['##user.passwordiniturl##'] = urldecode($CFG_GLPI["url_base"]
                 . "/front/initpassword.php?password_forget_token="
-                . $this->obj->getField("password_forget_token"));
+                . $this->obj->fields["password_forget_token"]);
                 break;
         }
 

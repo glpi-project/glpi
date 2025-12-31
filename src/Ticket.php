@@ -1284,7 +1284,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $sla->setTicketCalendar($calendars_id);
             $sla->addLevelToDo($this, $slalevels_id);
         }
-        SlaLevel_Ticket::replayForTicket($this->getID(), $sla->getField('type'));
+        SlaLevel_Ticket::replayForTicket($this->getID(), $sla->fields['type']);
     }
 
     /**
@@ -1314,7 +1314,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $ola->setTicketCalendar($calendars_id);
             $ola->addLevelToDo($this, $olalevels_id);
         }
-        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
+        OlaLevel_Ticket::replayForTicket($this->getID(), $ola->fields['type']);
     }
 
 
@@ -3426,7 +3426,7 @@ JAVASCRIPT;
             ],
             'WHERE'     => [
                 'glpi_items_tickets.itemtype' => get_class($item),
-                'glpi_items_tickets.items_id' => $item->getField('id'),
+                'glpi_items_tickets.items_id' => $item->fields['id'],
                 'OR'                          => [
                     'glpi_ticketcosts.cost_time'     => ['>', 0],
                     'glpi_ticketcosts.cost_fixed'    => ['>', 0],
@@ -3611,15 +3611,15 @@ JAVASCRIPT;
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();
                 if ($pt->getFromDB($options['_projecttasks_id'])) {
-                    $options['name'] = $pt->getField('name');
-                    $options['content'] = $pt->getField('content');
+                    $options['name'] = $pt->fields['name'];
+                    $options['content'] = $pt->fields['content'];
                 }
             }
             // Override default values from followup if needed
             if (isset($options['_promoted_fup_id']) && !$options['_skip_promoted_fields']) {
                 $fup = new ITILFollowup();
                 if ($fup->getFromDB($options['_promoted_fup_id'])) {
-                    $options['content'] = $fup->getField('content');
+                    $options['content'] = $fup->fields['content'];
                     $options['_users_id_requester'] = $fup->fields['users_id'];
                     // FIXME Use new format
                     $options['_link'] = [
@@ -3628,10 +3628,10 @@ JAVASCRIPT;
                     ];
 
                     // Set entity from parent
-                    $parent_itemtype = $fup->getField('itemtype');
+                    $parent_itemtype = $fup->fields['itemtype'];
                     $parent = getItemForItemtype($parent_itemtype);
-                    if ($parent->getFromDB($fup->getField('items_id'))) {
-                        $options['entities_id'] = $parent->getField('entities_id');
+                    if ($parent->getFromDB($fup->fields['items_id'])) {
+                        $options['entities_id'] = $parent->fields['entities_id'];
                     }
                 }
                 //Allow overriding the default values
@@ -3641,7 +3641,7 @@ JAVASCRIPT;
             if (isset($options['_promoted_task_id']) && !$options['_skip_promoted_fields']) {
                 $tickettask = new TicketTask();
                 if ($tickettask->getFromDB($options['_promoted_task_id'])) {
-                    $options['content'] = $tickettask->getField('content');
+                    $options['content'] = $tickettask->fields['content'];
                     $options['_users_id_requester'] = $tickettask->fields['users_id'];
                     $options['_users_id_assign'] = $tickettask->fields['users_id_tech'];
                     $options['_groups_id_assign'] = $tickettask->fields['groups_id_tech'];
@@ -3653,8 +3653,8 @@ JAVASCRIPT;
 
                     // Set entity from parent
                     $parent = new Ticket();
-                    if ($parent->getFromDB($tickettask->getField('tickets_id'))) {
-                        $options['entities_id'] = $parent->getField('entities_id');
+                    if ($parent->getFromDB($tickettask->fields['tickets_id'])) {
+                        $options['entities_id'] = $parent->fields['entities_id'];
                     }
                 }
                 //Allow overriding the default values
@@ -5554,7 +5554,7 @@ JAVASCRIPT;
         Html::showDatesTimelineGraph([
             'title'   => _n('Date', 'Dates', Session::getPluralNumber()),
             'dates'   => $dates,
-            'add_now' => $this->getField('closedate') == "",
+            'add_now' => $this->fields['closedate'] == "",
         ]);
     }
 

@@ -136,16 +136,16 @@ class Group extends CommonTreeDropdown
                     }
                     $ong[4] = self::createTabEntry(__('Child groups'), $nb, $item::class);
 
-                    if ($item->getField('is_itemgroup')) {
+                    if ($item->fields['is_itemgroup']) {
                         $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_NORMAL]);
                         $ong[1] = self::createTabEntry(__('Used items'), $count, $item::class, 'ti ti-package');
                     }
-                    if ($item->getField('is_assign')) {
+                    if ($item->fields['is_assign']) {
                         $count = countElementsInTable(Group_Item::getTable(), ['groups_id' => $item->getID(), 'type' => Group_Item::GROUP_TYPE_TECH]);
                         $ong[2] = self::createTabEntry(__('Managed items'), $count, $item::class, 'ti ti-package');
                     }
                     if (
-                        $item->getField('is_usergroup')
+                        $item->fields['is_usergroup']
                         && self::canUpdate()
                         && Session::haveRight("user", User::UPDATEAUTHENT)
                         && AuthLDAP::useAuthLdap()
@@ -755,7 +755,7 @@ class Group extends CommonTreeDropdown
             }
 
             $assignees = [];
-            if ($grps = $item->getField($tech ? 'groups_id_tech' : 'groups_id')) {
+            if ($grps = $item->fields[$tech ? 'groups_id_tech' : 'groups_id']) {
                 foreach ($grps as $grp) {
                     if (!isset($group_links[$grp]) && $group->getFromDB($grp)) {
                         $group_links[$grp] = $group->getLink(['comments' => true]);
@@ -763,7 +763,7 @@ class Group extends CommonTreeDropdown
                     $assignees[] = $group_links[$grp] ?? '';
                 }
             }
-            if ($usr = $item->getField($tech ? 'users_id_tech' : 'users_id')) {
+            if ($usr = $item->fields[$tech ? 'users_id_tech' : 'users_id']) {
                 if (!isset($user_links[$usr]) && $tuser->getFromDB($usr)) {
                     $user_links[$usr] = $tuser->getLink(['comments' => true]);
                 }

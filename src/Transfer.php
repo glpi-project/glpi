@@ -1766,14 +1766,14 @@ final class Transfer extends CommonDBTM
         $license                  = new SoftwareLicense();
 
         if ($item_softwarelicense->getFromDB($ID)) {
-            if ($license->getFromDB($item_softwarelicense->getField('softwarelicenses_id'))) {
+            if ($license->getFromDB($item_softwarelicense->fields['softwarelicenses_id'])) {
                 //// Update current : decrement number by 1 if valid
-                if ($license->getField('number') > 1) {
+                if ($license->fields['number'] > 1) {
                     $license->update([
                         'id'     => $license->getID(),
-                        'number' => ($license->getField('number') - 1),
+                        'number' => ($license->fields['number'] - 1),
                     ]);
-                } elseif ($license->getField('number') == 1) {
+                } elseif ($license->fields['number'] == 1) {
                     // Drop license
                     $license->delete(['id' => $license->getID()]);
                 }
@@ -2605,7 +2605,7 @@ final class Transfer extends CommonDBTM
                                     'WHERE'  => [
                                         'is_global'    => 1,
                                         'entities_id'  => $this->to,
-                                        'name'         => $link_item->getField('name'),
+                                        'name'         => $link_item->fields['name'],
                                     ],
                                 ]);
 

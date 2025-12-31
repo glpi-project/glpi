@@ -1995,7 +1995,7 @@ class Session
 
         // Cannot impersonate inactive user
         $user = new User();
-        if (!$user->getFromDB($user_id) || !$user->getField('is_active')) {
+        if (!$user->getFromDB($user_id) || !$user->isActive()) {
             $message = __("The user is not active.");
             return false;
         }

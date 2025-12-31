@@ -158,7 +158,7 @@ abstract class LevelAgreement extends CommonDBChild
             $this->check($ID, READ);
         } else {
             // Create item
-            $options[static::$items_id] = $slm->getField('id');
+            $options[static::$items_id] = $slm->fields['id'];
 
             // force itemtype of parent
             static::$itemtype = get_class($slm);
@@ -500,7 +500,7 @@ TWIG, $twig_params);
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
-                            ['slms_id' => $item->getField('id')]
+                            ['slms_id' => $item->fields['id']]
                         );
                     }
                     return self::createTabEntry(static::getTypeName($nb), $nb, $item::getType());

@@ -795,7 +795,7 @@ class Reservation extends CommonDBChild
             // Set item if not set
             if (
                 (!isset($options['item']) || (count($options['item']) === 0))
-                && ($itemid = $resa->getField('reservationitems_id'))
+                && ($itemid = $resa->fields['reservationitems_id'])
             ) {
                 $options['item'][$itemid] = $itemid;
             }

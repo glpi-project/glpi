@@ -270,7 +270,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function canReadITILItem()
     {
         $item = static::getItilObjectItemInstance();
-        if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
+        if (!$item->can($this->fields[$item::getForeignKeyField()], READ)) {
             return false;
         }
         return true;
@@ -286,7 +286,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     public function canUpdateITILItem()
     {
         $item = static::getItilObjectItemInstance();
-        if (!$item->can($this->getField($item->getForeignKeyField()), UPDATE)) {
+        if (!$item->can($this->fields[$item::getForeignKeyField()], UPDATE)) {
             return false;
         }
         return true;
@@ -401,7 +401,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField($item::getForeignKeyField()),
+            $this->fields[$item::getForeignKeyField()],
             $item::class,
             $changes,
             static::class,
@@ -610,7 +610,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             if (!$proceed) {
                 if (
                     isset($this->input['_status'])
-                    && $this->input['_status'] != $item->getField('status')
+                    && $this->input['_status'] != $item->fields['status']
                 ) {
                     $proceed = true;
                 }
@@ -648,7 +648,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
                 $this->fields['id'],
             ];
             Log::history(
-                $this->getField($item->getForeignKeyField()),
+                $this->fields[$item->getForeignKeyField()],
                 $item::class,
                 $changes,
                 $this->getType(),
@@ -844,7 +844,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField($this->input["_job"]->getForeignKeyField()),
+            $this->fields[$this->input["_job"]->getForeignKeyField()],
             $this->input["_job"]->getTYpe(),
             $changes,
             $this->getType(),

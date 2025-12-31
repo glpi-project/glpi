@@ -195,7 +195,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
      **/
     public static function showForProblem(Problem $problem)
     {
-        $ID = $problem->getField('id');
+        $ID = $problem->fields['id'];
 
         if (!static::canView() || !$problem->can($ID, READ)) {
             return;
@@ -271,7 +271,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
     public static function showForTicket(Ticket $ticket)
     {
 
-        $ID = $ticket->getField('id');
+        $ID = $ticket->fields['id'];
 
         if (!static::canView() || !$ticket->can($ID, READ)) {
             return;

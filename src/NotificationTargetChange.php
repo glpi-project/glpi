@@ -85,25 +85,25 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         $data['##change.urlvalidation##']
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "change_" . $item->getField("id") . '_Change$main',
+                         "change_" . $item->fields["id"] . '_Change$main',
                          $anchor
                      );
         $data['##change.globalvalidation##']
-                     = ChangeValidation::getStatus($item->getField('global_validation'));
+                     = ChangeValidation::getStatus($item->fields['global_validation']);
 
-        $data['##change.impactcontent##']      = $item->getField("impactcontent");
-        $data['##change.controlistcontent##']  = $item->getField("controlistcontent");
-        $data['##change.rolloutplancontent##'] = $item->getField("rolloutplancontent");
-        $data['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
-        $data['##change.checklistcontent##']   = $item->getField("checklistcontent");
+        $data['##change.impactcontent##']      = $item->fields["impactcontent"];
+        $data['##change.controlistcontent##']  = $item->fields["controlistcontent"];
+        $data['##change.rolloutplancontent##'] = $item->fields["rolloutplancontent"];
+        $data['##change.backoutplancontent##'] = $item->fields["backoutplancontent"];
+        $data['##change.checklistcontent##']   = $item->fields["checklistcontent"];
 
-        // $data["##problem.impacts##"]  = $item->getField('impactcontent');
-        // $data["##problem.causes##"]   = $item->getField('causecontent');
-        // $data["##problem.symptoms##"] = $item->getField('symptomcontent');
+        // $data["##problem.impacts##"]  = $item->fields['impactcontent'];
+        // $data["##problem.causes##"]   = $item->fields['causecontent'];
+        // $data["##problem.symptoms##"] = $item->fields['symptomcontent'];
 
         // Complex mode
         if (!$simple) {
-            $restrict = ['changes_id' => $item->getField('id')];
+            $restrict = ['changes_id' => $item->fields['id']];
             $tickets  = getAllDataFromTable('glpi_changes_tickets', $restrict);
 
             $data['tickets'] = [];
@@ -113,13 +113,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                     if ($ticket->getFromDB($row['tickets_id'])) {
                         $tmp = [];
                         $tmp['##ticket.id##']      = $row['tickets_id'];
-                        $tmp['##ticket.date##']    = $ticket->getField('date');
-                        $tmp['##ticket.title##']   = $ticket->getField('name');
+                        $tmp['##ticket.date##']    = $ticket->fields['date'];
+                        $tmp['##ticket.title##']   = $ticket->fields['name'];
                         $tmp['##ticket.url##']     = $this->formatURL(
                             $options['additionnaloption']['usertype'],
                             "Ticket_" . $row['tickets_id']
                         );
-                        $tmp['##ticket.content##'] = $ticket->getField('content');
+                        $tmp['##ticket.content##'] = $ticket->fields['content'];
 
                         $data['tickets'][] = $tmp;
                     }
@@ -139,16 +139,16 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                         $tmp['##problem.id##']
                                        = $row['problems_id'];
                         $tmp['##problem.date##']
-                                       = $problem->getField('date');
+                                       = $problem->fields['date'];
                         $tmp['##problem.title##']
-                                       = $problem->getField('name');
+                                       = $problem->fields['name'];
                         $tmp['##problem.url##']
                                        = $this->formatURL(
                                            $options['additionnaloption']['usertype'],
                                            "Problem_" . $row['problems_id']
                                        );
                         $tmp['##problem.content##']
-                                     = $problem->getField('content');
+                                     = $problem->fields['content'];
 
                         $data['problems'][] = $tmp;
                     }

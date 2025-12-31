@@ -182,7 +182,7 @@ class SavedSearch_Alert extends CommonDBChild
             'FROM'   => Notification::getTable(),
             'WHERE'  => [
                 'itemtype'  => self::getType(),
-                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID()),
+                'event'     => 'alert' . ($search->isPrivate() ? '' : ('_' . $search->getID())),
             ],
         ]);
 
@@ -435,7 +435,8 @@ class SavedSearch_Alert extends CommonDBChild
                     self::restoreContext($context);
 
                     if ($notify) {
-                        $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
+                        // 'alert' = private saved search, 'alert_ID' = public saved search
+                        $event = 'alert' . ($savedsearch->isPrivate() ? '' : ('_' . $savedsearch->getID()));
                         $savedsearch_alert = new self();
                         $savedsearch_alert->getFromDB($row['id']);
                         $data['savedsearch'] = $savedsearch;
