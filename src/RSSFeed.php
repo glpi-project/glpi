@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
@@ -483,7 +484,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         // We may want to disable the title/description values fetching when working with fake
         // feeds in our unit tests
-        $fetch_values = ($input['_do_not_fetch_values'] ?? false) === false;
+        $fetch_values = Environment::get() !== Environment::TESTING && ($input['_do_not_fetch_values'] ?? false) === false;
         if ($fetch_values) {
             if ($feed = self::getRSSFeed($input['url'])) {
                 $input['have_error'] = 0;
@@ -496,7 +497,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $input['name']       = '';
             }
         }
-        $input["name"] = trim($input["name"]);
+        $input["name"] = trim($input["name"] ?? '');
 
         if (empty($input["name"])) {
             $input["name"] = __('Without title');
