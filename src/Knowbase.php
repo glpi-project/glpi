@@ -95,7 +95,7 @@ class Knowbase extends CommonGLPI
         if (isset($_GET["itemtype"], $_GET["items_id"]) && !isset($_GET["contains"])) {
             if (in_array($_GET["item_itemtype"], $CFG_GLPI['kb_types'], true) && $item = getItemForItemtype($_GET["itemtype"])) {
                 if ($item->can($_GET["item_items_id"], READ)) {
-                    $_GET["contains"] = $item->getField('name');
+                    $_GET["contains"] = $item->fields['name'];
                 }
             }
         }

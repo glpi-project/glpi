@@ -70,7 +70,7 @@ class Certificate_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(['itemtype' => $item->getType(),
-            'items_id' => $item->getField('id'),
+            'items_id' => $item->getID(),
         ]);
     }
 
@@ -324,7 +324,7 @@ TWIG, $twig_params);
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
-        $ID = $item->getField('id');
+        $ID = $item->getID();
 
         if (
             $item->isNewID($ID)

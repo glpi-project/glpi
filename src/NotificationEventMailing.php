@@ -391,13 +391,13 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 self::attachDocuments($mail, $documents_to_attach);
 
-                $recipient = $current->getField('recipient');
+                $recipient = $current->fields['recipient'];
                 if (defined('GLPI_FORCE_MAIL')) {
                     Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
                     //force recipient to configured email address
                     $recipient = GLPI_FORCE_MAIL;
                     //add original email address to message body
-                    $text = sprintf(__('Original email address was %1$s'), $current->getField('recipient'));
+                    $text = sprintf(__('Original email address was %1$s'), $current->fields['recipient']);
                     $mail->text($mail->getTextBody() . "\n" . $text);
                     if ($is_html) {
                         $mail->html($mail->getHtmlBody() . "<br/>" . htmlescape($text));

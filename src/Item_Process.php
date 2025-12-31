@@ -100,7 +100,7 @@ class Item_Process extends CommonDBChild
         global $DB;
 
         $itemtype = $item->getType();
-        $items_id = $item->getField('id');
+        $items_id = $item->getID();
 
         $start       = intval($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";

@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
             $_POST['items_id_target'] = $target;
             $validation->add($_POST);
             Event::log(
-                $validation->getField($fk),
+                $validation->fields[$fk],
                 strtolower($itemtype),
                 4,
                 "tracking",
@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
     $validation->check($_POST['id'], UPDATE);
     $validation->update($_POST);
     Event::log(
-        $validation->getField($fk),
+        $validation->fields[$fk],
         strtolower($itemtype),
         4,
         "tracking",
@@ -108,7 +108,7 @@ if (isset($_POST["add"])) {
     $validation->delete($_POST, true);
 
     Event::log(
-        $validation->getField($fk),
+        $validation->fields[$fk],
         strtolower($itemtype),
         4,
         "tracking",

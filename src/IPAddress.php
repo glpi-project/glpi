@@ -171,8 +171,8 @@ class IPAddress extends CommonDBChild
             if ($input['itemtype'] == 'NetworkName') {
                 $name = new NetworkName();
                 if ($name->getFromDB($input['items_id'])) {
-                    if ($port = getItemForItemtype($name->getField('itemtype'))) {
-                        if ($port->getFromDB($name->getField('items_id'))) {
+                    if ($port = getItemForItemtype($name->fields['itemtype'])) {
+                        if ($port->getFromDB($name->fields['items_id'])) {
                             if (isset($port->fields['itemtype']) && isset($port->fields['items_id'])) {
                                 $input['mainitemtype'] = $port->fields['itemtype'];
                                 $input['mainitems_id'] = $port->fields['items_id'];
@@ -369,7 +369,7 @@ class IPAddress extends CommonDBChild
         if (
             ($item instanceof CommonDBTM)
             && $item->getID()
-            && $item->can($item->getField('id'), READ)
+            && $item->can($item->getID(), READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
