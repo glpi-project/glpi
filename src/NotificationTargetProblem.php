@@ -68,7 +68,7 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
 
         // Complex mode
         if (!$simple) {
-            $restrict = ['problems_id' => $item->getField('id')];
+            $restrict = ['problems_id' => $item->getID()];
             $tickets  = getAllDataFromTable('glpi_problems_tickets', $restrict);
 
             $data['tickets'] = [];

@@ -111,7 +111,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $perso_tag = 'GLPI';
         }
 
-        return sprintf("[$perso_tag #%07d] ", $this->obj->getField('id'));
+        return sprintf("[$perso_tag #%07d] ", $this->obj->getID());
     }
 
     #[Override]
@@ -1230,20 +1230,19 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         $data["##$objettype.title##"]        = $item->getField('name');
         $data["##$objettype.content##"]      = $item->getField('content');
         $data["##$objettype.description##"]  = $item->getField('content');
-        $data["##$objettype.id##"]           = sprintf("%07d", $item->getField("id"));
+        $data["##$objettype.id##"]           = sprintf("%07d", $item->getID());
 
         $data["##$objettype.url##"]
                         = $this->formatURL(
                             $options['additionnaloption']['usertype'],
-                            $objettype . "_" . $item->getField("id")
+                            $objettype . "_" . $item->getID()
                         );
 
         $tab = '$1';
         $data["##$objettype.urlapprove##"]
                            = $this->formatURL(
                                $options['additionnaloption']['usertype'],
-                               $objettype . "_" . $item->getField("id") . "_"
-                               . $item::class . $tab
+                               $objettype . "_" . $item->getID() . "_" . $item::class . $tab
                            );
 
         $entity = new Entity();
@@ -1267,24 +1266,24 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $data["##$objettype.storestatus##"]  = $item->getField('status');
-        $data["##$objettype.status##"]       = $item->getStatus($item->getField('status'));
+        $data["##$objettype.status##"]       = $item->getStatus($item->fields['status']);
 
-        $data["##$objettype.urgency##"]      = $item->getUrgencyName($item->getField('urgency'));
-        $data["##$objettype.impact##"]       = $item->getImpactName($item->getField('impact'));
-        $data["##$objettype.priority##"]     = $item->getPriorityName($item->getField('priority'));
-        $data["##$objettype.time##"]         = $item->getActionTime($item->getField('actiontime'));
+        $data["##$objettype.urgency##"]      = $item->getUrgencyName($item->fields['urgency']);
+        $data["##$objettype.impact##"]       = $item->getImpactName($item->fields['impact']);
+        $data["##$objettype.priority##"]     = $item->getPriorityName($item->fields['priority']);
+        $data["##$objettype.time##"]         = $item->getActionTime($item->fields['actiontime']);
 
-        $data["##$objettype.creationdate##"] = Html::convDateTime($item->getField('date'));
-        $data["##$objettype.closedate##"]    = Html::convDateTime($item->getField('closedate'));
-        $data["##$objettype.solvedate##"]    = Html::convDateTime($item->getField('solvedate'));
-        $data["##$objettype.duedate##"]      = Html::convDateTime($item->getField('time_to_resolve'));
+        $data["##$objettype.creationdate##"] = Html::convDateTime($item->fields['date']);
+        $data["##$objettype.closedate##"]    = Html::convDateTime($item->fields['closedate']);
+        $data["##$objettype.solvedate##"]    = Html::convDateTime($item->fields['solvedate']);
+        $data["##$objettype.duedate##"]      = Html::convDateTime($item->fields['time_to_resolve']);
 
         $data["##$objettype.category##"] = '';
-        if ($item->getField('itilcategories_id')) {
+        if ($item->fields['itilcategories_id']) {
             $data["##$objettype.category##"]
                               = Dropdown::getDropdownName(
                                   'glpi_itilcategories',
-                                  $item->getField('itilcategories_id')
+                                  $item->fields['itilcategories_id']
                               );
         }
         $data['actors']                = [];
@@ -1343,16 +1342,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
 
         $data["##$objettype.openbyuser##"] = '';
-        if ($item->getField('users_id_recipient')) {
+        if ($item->fields['users_id_recipient']) {
             $user_tmp = new User();
-            $user_tmp->getFromDB($item->getField('users_id_recipient'));
+            $user_tmp->getFromDB($item->fields['users_id_recipient']);
             $data["##$objettype.openbyuser##"] = $user_tmp->getName();
         }
 
         $data["##$objettype.lastupdater##"] = '';
-        if ($item->getField('users_id_lastupdater')) {
+        if ($item->fields['users_id_lastupdater']) {
             $user_tmp = new User();
-            $user_tmp->getFromDB($item->getField('users_id_lastupdater'));
+            $user_tmp->getFromDB($item->fields['users_id_lastupdater']);
             $data["##$objettype.lastupdater##"] = $user_tmp->getName();
         }
 
@@ -1460,14 +1459,14 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         if ($solution) {
             $data["##$objettype.solution.type##"] = '';
-            if ($itilsolution->getField('solutiontypes_id')) {
+            if ($itilsolution->fields['solutiontypes_id']) {
                 $data["##$objettype.solution.type##"] = Dropdown::getDropdownName(
                     'glpi_solutiontypes',
-                    $itilsolution->getField('solutiontypes_id')
+                    $itilsolution->fields['solutiontypes_id']
                 );
             }
 
-            $data["##$objettype.solution.author##"] = getUserName($itilsolution->getField('users_id'));
+            $data["##$objettype.solution.author##"] = getUserName($itilsolution->fields['users_id']);
             $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
         }
 
@@ -1496,9 +1495,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     'LIMIT'  => 1,
                 ])
             ) {
-                $data["##$objettype.reminder.bumpcounter##"]   = $pending_reason_item->getField('bump_count');
-                $data["##$objettype.reminder.bumpremaining##"] = $pending_reason_item->getField('followups_before_resolution') - $pending_reason_item->getField('bump_count');
-                $data["##$objettype.reminder.bumptotal##"]     = $pending_reason_item->getField('followups_before_resolution');
+                $data["##$objettype.reminder.bumpcounter##"]   = (int) $pending_reason_item->fields['bump_count'];
+                $data["##$objettype.reminder.bumpremaining##"] = (int) $pending_reason_item->fields['followups_before_resolution'] - $pending_reason_item->fields['bump_count'];
+                $data["##$objettype.reminder.bumptotal##"]     = (int) $pending_reason_item->fields['followups_before_resolution'];
                 $data["##$objettype.reminder.deadline##"]      = $pending_reason_item->getAutoResolvedate();
                 $data["##$objettype.reminder.text##"]          = $followup_template instanceof ITILFollowupTemplate ? $followup_template->getRenderedContent($item) : '';
                 $data["##$objettype.reminder.name##"]          = $pending_reason->getField('name');
@@ -1507,7 +1506,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         // Complex mode
         if (!$simple) {
-            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item::class, $item->getField('id'));
+            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item::class, $item->getID());
             $data['linkedtickets'] = [];
             $data['linkedchanges'] = [];
             $data['linkedproblems'] = [];
@@ -1547,7 +1546,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             $show_private = $options['additionnaloption']['show_private'] ?? false;
             $followup_restrict = [];
-            $followup_restrict['items_id'] = $item->getField('id');
+            $followup_restrict['items_id'] = $item->getID();
             if (!$show_private) {
                 $followup_restrict['is_private'] = 0;
             }
@@ -1701,7 +1700,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.urldocument##"]
                         = $this->formatURL(
                             $options['additionnaloption']['usertype'],
-                            $objettype . "_" . $item->getField("id") . '_Document_Item$1'
+                            $objettype . "_" . $item->getID() . '_Document_Item$1'
                         );
 
             $data["##$objettype.numberofdocuments##"]
@@ -1709,7 +1708,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             //costs infos
             $costtype = $item::class . 'Cost';
-            $costs    = $costtype::getCostsSummary($costtype, $item->getField("id"));
+            $costs    = $costtype::getCostsSummary($costtype, $item->getID());
 
             $data["##$objettype.costfixed##"]    = $costs['costfixed'];
             $data["##$objettype.costmaterial##"] = $costs['costmaterial'];
@@ -1719,7 +1718,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $costs          = getAllDataFromTable(
                 getTableForItemType($costtype),
                 [
-                    'WHERE'  => [$item->getForeignKeyField() => $item->getField('id')],
+                    'WHERE'  => [$item->getForeignKeyField() => $item->getID()],
                     'ORDER'  => ['begin_date DESC', 'id ASC'],
                 ]
             );
@@ -1750,7 +1749,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             //Task infos
             $taskobj = $item->getTaskClassInstance();
-            $restrict = [$item->getForeignKeyField() => $item->getField('id')];
+            $restrict = [$item->getForeignKeyField() => $item->getID()];
             if (
                 $taskobj->maybePrivate()
                 && (!isset($options['additionnaloption']['show_private'])
@@ -1864,11 +1863,11 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data['##satisfaction.satisfaction##'] = '';
                 $data['##satisfaction.description##'] = '';
 
-                if ($inquest->getFromDB($item->getField('id'))) {
+                if ($inquest->getFromDB($item->getID())) {
                     // internal inquest
                     if ($inquest->fields['type'] == 1) {
                         $user_type = $options['additionnaloption']['usertype'];
-                        $redirect = "{$objettype}_" . $item->getField("id") . '_' . $item::class . '$3';
+                        $redirect = "{$objettype}_" . $item->getID() . '_' . $item::class . '$3';
                         $data["##{$objettype}.urlsatisfaction##"] = $this->formatURL($user_type, $redirect);
                     } elseif ($inquest->fields['type'] == 2) { // external inquest
                         $data["##{$objettype}.urlsatisfaction##"] = Entity::generateLinkSatisfaction($item);
@@ -1966,16 +1965,16 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 $data[sprintf('##%s.town##', $key_prefix)]       = $actor->getField('town');
                 $data[sprintf('##%s.state##', $key_prefix)]      = $actor->getField('state');
                 $data[sprintf('##%s.country##', $key_prefix)]    = $actor->getField('country');
-                if ($actor->getField('suppliertypes_id')) {
+                if ($actor->fields['suppliertypes_id']) {
                     $data[sprintf('##%s.type##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_suppliertypes',
-                                   $actor->getField('suppliertypes_id')
+                                   $actor->fields['suppliertypes_id']
                                );
                     $data[sprintf('##%s.suppliertype##', $key_prefix)]
                                = Dropdown::getDropdownName(
                                    'glpi_suppliertypes',
-                                   $actor->getField('suppliertypes_id')
+                                   $actor->fields['suppliertypes_id']
                                );
                 }
                 break;

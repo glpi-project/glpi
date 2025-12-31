@@ -494,9 +494,7 @@ TWIG, $twig_params);
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0): bool
     {
-        $ID = $item->getField('id');
-
-        if ($item->isNewID($ID)) {
+        if ($item->isNewItem()) {
             return false;
         }
 

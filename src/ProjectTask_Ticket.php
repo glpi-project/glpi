@@ -157,7 +157,7 @@ class ProjectTask_Ticket extends CommonDBRelation
      **/
     public static function showForProjectTask(ProjectTask $projecttask)
     {
-        $ID = $projecttask->getField('id');
+        $ID = $projecttask->getID();
         if (!$projecttask->can($ID, READ)) {
             return false;
         }
@@ -240,7 +240,7 @@ class ProjectTask_Ticket extends CommonDBRelation
     {
         global $CFG_GLPI, $DB;
 
-        $ID = $ticket->getField('id');
+        $ID = $ticket->getID();
         if (!$ticket->can($ID, READ)) {
             return false;
         }

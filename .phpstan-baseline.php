@@ -2896,7 +2896,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getField\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -2912,7 +2912,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method isField\\(\\) on CommonDBTM\\|false\\.$#',
+	'message' => '#^Cannot call method isDeleted\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
@@ -4184,12 +4184,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getField\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Computer.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
@@ -4203,6 +4197,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getLink\\(\\) on Agent\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Computer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method isGlobal\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
@@ -13988,8 +13988,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILFollowup.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getForeignKeyField\\(\\) on CommonDBTM\\|false\\|null\\.$#',
-	'identifier' => 'method.nonObject',
+	'message' => '#^Cannot call static method getForeignKeyField\\(\\) on CommonDBTM\\|false\\|null\\.$#',
+	'identifier' => 'staticMethod.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ITILFollowup.php',
 ];
@@ -16220,12 +16220,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getField\\(\\) on \\(T of CommonITILObject\\)\\|null\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot call method getField\\(\\) on CommonDBTM\\|false\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
@@ -16252,7 +16246,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on \\(T of CommonITILObject\\)\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -16606,19 +16600,19 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on Project\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 5,
+	'count' => 23,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getField\\(\\) on Project\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 26,
+	'count' => 4,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on Project\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 2,
+	'count' => 6,
 	'path' => __DIR__ . '/src/NotificationTargetProject.php',
 ];
 $ignoreErrors[] = [
@@ -16660,19 +16654,19 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on ProjectTask\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 6,
+	'count' => 26,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getField\\(\\) on ProjectTask\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 26,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getID\\(\\) on ProjectTask\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 1,
+	'count' => 4,
 	'path' => __DIR__ . '/src/NotificationTargetProjectTask.php',
 ];
 $ignoreErrors[] = [
@@ -16700,6 +16694,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetReservation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Cannot access property \\$fields on Reservation\\|null\\.$#',
+	'identifier' => 'property.nonObject',
+	'count' => 4,
+	'path' => __DIR__ . '/src/NotificationTargetReservation.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Cannot assign new offset to array\\<array\\<string, mixed\\>\\|string\\>\\|string\\.$#',
 	'identifier' => 'offsetAssign.dimType',
 	'count' => 1,
@@ -16708,7 +16708,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getField\\(\\) on Reservation\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 6,
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetReservation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Cannot call method getID\\(\\) on Reservation\\|null\\.$#',
+	'identifier' => 'method.nonObject',
+	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetReservation.php',
 ];
 $ignoreErrors[] = [
@@ -16730,8 +16736,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetSavedSearch_Alert.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getField\\(\\) on SavedSearch_Alert\\|null\\.$#',
-	'identifier' => 'method.nonObject',
+	'message' => '#^Cannot access property \\$fields on SavedSearch_Alert\\|null\\.$#',
+	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetSavedSearch_Alert.php',
 ];
@@ -16760,7 +16766,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationTargetSoftwareLicense.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getField\\(\\) on Ticket\\|null\\.$#',
+	'message' => '#^Cannot call method getID\\(\\) on Ticket\\|null\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetTicket.php',
@@ -16774,7 +16780,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$fields on User\\|null\\.$#',
 	'identifier' => 'property.nonObject',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetUser.php',
 ];
 $ignoreErrors[] = [
@@ -16786,7 +16792,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Cannot call method getField\\(\\) on User\\|null\\.$#',
 	'identifier' => 'method.nonObject',
-	'count' => 4,
+	'count' => 3,
 	'path' => __DIR__ . '/src/NotificationTargetUser.php',
 ];
 $ignoreErrors[] = [
@@ -16863,12 +16869,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$object of function get_class expects object, CommonGLPI\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NotificationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$object_or_class of function method_exists expects object\\|string, CommonGLPI\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTemplate.php',
@@ -19094,6 +19094,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Parameter \\#1 \\$itemtype of method Search\\:\\:prepareDatasForSearch\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
+	'identifier' => 'argument.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SavedSearch.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'savedsearches_id\' might not exist on array\\<string, mixed\\>\\|null\\.$#',
 	'identifier' => 'offsetAccess.notFound',
 	'count' => 1,
@@ -19538,8 +19544,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Telemetry.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot call method getField\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
+	'message' => '#^Cannot access property \\$fields on CommonDBTM\\|false\\.$#',
+	'identifier' => 'property.nonObject',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];

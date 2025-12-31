@@ -2289,7 +2289,7 @@ TWIG, $twig_params);
     protected function getShowVisibilityDropdownParams()
     {
         $params = parent::getShowVisibilityDropdownParams();
-        $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
+        $params['right'] = $this->fields['is_faq'] ? 'faq' : 'knowbase';
         $params['allusers'] = 1;
         return $params;
     }

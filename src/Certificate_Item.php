@@ -69,8 +69,9 @@ class Certificate_Item extends CommonDBRelation
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
-        $temp->deleteByCriteria(['itemtype' => $item::class,
-            'items_id' => $item->getField('id'),
+        $temp->deleteByCriteria([
+            'itemtype' => $item::class,
+            'items_id' => $item->getID(),
         ]);
     }
 
@@ -304,7 +305,7 @@ class Certificate_Item extends CommonDBRelation
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
 
-        $ID = $item->getField('id');
+        $ID = $item->getID();
 
         if (
             $item->isNewID($ID)
