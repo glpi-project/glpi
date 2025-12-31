@@ -247,6 +247,8 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
                     ],
                 ],
             ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown',
         ];
 
@@ -302,6 +304,8 @@ abstract class Asset extends CommonDBTM implements AssignableItemInterface, Stat
                     ],
                 ],
             ],
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
             'datatype'           => 'dropdown',
         ];
 
