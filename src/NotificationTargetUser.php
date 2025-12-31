@@ -113,7 +113,7 @@ class NotificationTargetUser extends NotificationTarget
                         // Do not set users_id
                         $data = ['name'     => $this->obj->getName(),
                             'email'    => $this->obj->getDefaultEmail(),
-                            'language' => $this->obj->getField('language'),
+                            'language' => $this->obj->fields['language'],
                             'usertype' => $usertype,
                         ];
                         $this->addToRecipientsList($data);

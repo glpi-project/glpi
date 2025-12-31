@@ -50,14 +50,14 @@ if ($_POST["type"]) {
     switch ($_POST['type']) {
         case Ticket::INCIDENT_TYPE:
             $condition['is_incident'] = 1;
-            if ($currentcateg->getField('is_incident') == 1) {
+            if ($currentcateg->fields['is_incident'] == 1) {
                 $opt['value'] = $_POST['value'];
             }
             break;
 
         case Ticket::DEMAND_TYPE:
             $condition['is_request'] = 1;
-            if ($currentcateg->getField('is_request') == 1) {
+            if ($currentcateg->fields['is_request'] == 1) {
                 $opt['value'] = $_POST['value'];
             }
             break;

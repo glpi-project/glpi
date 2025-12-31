@@ -788,7 +788,7 @@ class Socket extends CommonDBChild
     {
         global $DB;
 
-        $ID       = $item->getField('id');
+        $ID       = $item->getID();
         $item->check($ID, READ);
         $canedit  = $item->canEdit($ID);
 

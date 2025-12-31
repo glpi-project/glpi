@@ -59,8 +59,9 @@ class Domain_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(
-            ['itemtype' => $item::class,
-                'items_id' => $item->getField('id'),
+            [
+                'itemtype' => $item::class,
+                'items_id' => $item->getID(),
             ]
         );
     }
@@ -475,9 +476,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        $ID = $item->getField('id');
-
-        if ($item->isNewID($ID) || !Session::haveRight('domain', READ)) {
+        if ($item->isNewItem() || !Session::haveRight('domain', READ)) {
             return false;
         }
 

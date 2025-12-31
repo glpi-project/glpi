@@ -127,7 +127,7 @@ class Itil_Project extends CommonDBRelation
     {
         global $DB, $CFG_GLPI;
 
-        $ID = $project->getField('id');
+        $ID = $project->getID();
         if (!$project->can($ID, READ)) {
             return false;
         }
