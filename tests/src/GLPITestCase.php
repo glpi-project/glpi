@@ -201,6 +201,8 @@ class GLPITestCase extends TestCase
         }
         // Delete nested folders and files in dir
         $this->removeDirectory($dir);
+        // We recreate the directory to ensure it's empty and present, as test rely on it being present.
+        mkdir($dir);
     }
 
     protected function removeDirectory(string $dir): void
