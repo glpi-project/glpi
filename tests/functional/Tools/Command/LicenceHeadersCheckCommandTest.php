@@ -57,18 +57,6 @@ class LicenceHeadersCheckCommandTest extends GLPITestCase
         parent::tearDown();
     }
 
-    private function removeDirectory(string $dir): void
-    {
-        if (!is_dir($dir)) {
-            return;
-        }
-        $files = array_diff(scandir($dir), ['.', '..']);
-        foreach ($files as $file) {
-            (is_dir("$dir/$file")) ? $this->removeDirectory("$dir/$file") : unlink("$dir/$file");
-        }
-        rmdir($dir);
-    }
-
     public function testMissingHeader(): void
     {
         file_put_contents($this->testDir . '/no_header1.php', "<?php echo 'foo';");

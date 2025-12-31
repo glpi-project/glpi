@@ -57,9 +57,10 @@ class ExtractLocalesCommand extends AbstractCommand
     #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $working_dir = dirname(__DIR__, 3); // glpi
         if ($this->isPluggingCommand()) {
             $working_dir = $this->getPluginDirectory();
+        } else {
+            $working_dir = dirname(__DIR__, 3); // glpi
         }
 
         // Check availability of xgettext

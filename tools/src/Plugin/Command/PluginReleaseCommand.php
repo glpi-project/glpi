@@ -345,7 +345,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
         return true;
     }
 
-    private function validCommit(string $commit_ref): bool
+    protected function validCommit(string $commit_ref): bool
     {
         $plugin_dir = $this->getPluginDirectory();
 
@@ -385,7 +385,7 @@ class PluginReleaseCommand extends AbstractPluginCommand
         return in_array($ver, $tags);
     }
 
-    private function getGitTags(): array
+    protected function getGitTags(): array
     {
         $plugin_dir = $this->getPluginDirectory();
         $process = new Process(['git', 'tag'], $plugin_dir);
