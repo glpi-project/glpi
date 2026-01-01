@@ -302,9 +302,9 @@ class DeviceProcessor extends CommonDevice
             'width'              => 100,
             'massiveaction'      => false,
             'joinparams'         => $main_joinparams,
-            'computation'        => QueryFunction::sum('TABLE.frequency') . ' * ' . QueryFunction::count(
+            'computation'        => QueryFunction::sum('TABLE.frequency') . ' / ' . QueryFunction::count(
                 expression: 'TABLE.id',
-            ) . ' / ' . QueryFunction::count(new QueryExpression('*')),
+            ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
 
