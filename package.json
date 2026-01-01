@@ -23,7 +23,7 @@
         "@glpi-project/illustrations": "^0.9.1",
         "@tabler/core": "^1.4.0",
         "@tabler/icons-webfont": "^3.35.0",
-        "altcha": "^2.2.4",
+        "altcha": "^2.3.0",
         "animate.css": "^4.1.1",
         "cropperjs": "^2.1.0",
         "cytoscape": "^3.33.1",
