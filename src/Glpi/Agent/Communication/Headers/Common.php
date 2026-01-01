@@ -74,16 +74,6 @@ class Common
      */
     protected string $connection = 'close';
 
-    /**
-     * "Pragma" HTTP header
-     * Required
-     *
-     * Avoid any caching done by the server
-     *
-     * @var string
-     */
-    protected string $pragma = 'no-cache';
-
     //GLPI agent headers
     /**
      * "GLPI-Agent-ID" HTTP header
@@ -138,7 +128,6 @@ class Common
     {
         return [
             'content_type',
-            'pragma',
             'glpi_agent_id',
             'cache_control',
             'connection',
