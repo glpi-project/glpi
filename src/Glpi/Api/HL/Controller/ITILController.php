@@ -537,6 +537,7 @@ final class ITILController extends AbstractController
                         // The x-mapper property indicates this property is calculated.
                         // The mapper callable gets the value of the x-mapped-from field (id in this case) and returns the name.
                         'x-mapper' => static fn($v) => $itil_type::getStatus($v),
+                        'readOnly' => true,
                     ],
                 ],
             ];

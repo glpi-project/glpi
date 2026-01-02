@@ -191,6 +191,7 @@ final class AdministrationController extends AbstractController
                             }
                             return $CFG_GLPI["root_doc"] . '/pics/picture.png';
                         },
+                        'readOnly' => true,
                     ],
                     'date_password_change' => [
                         'x-version-introduced' => '2.1.0',
