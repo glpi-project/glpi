@@ -8562,16 +8562,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.4.11",
+            "version": "2.4.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "c6d1060abaa9b540d7cd86ced827653196541e84"
+                "reference": "338095651126ec4207f98e5221beea30b27c0fe9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/c6d1060abaa9b540d7cd86ced827653196541e84",
-                "reference": "c6d1060abaa9b540d7cd86ced827653196541e84",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/338095651126ec4207f98e5221beea30b27c0fe9",
+                "reference": "338095651126ec4207f98e5221beea30b27c0fe9",
                 "shasum": ""
             },
             "require": {
@@ -8580,10 +8580,11 @@
                 "ext-gd": "*",
                 "ext-pcre": "*",
                 "php": ">=8.1",
-                "tecnickcom/tc-lib-color": "^2.2"
+                "tecnickcom/tc-lib-color": "^2.3"
             },
             "require-dev": {
                 "pdepend/pdepend": "2.16.2",
+                "phpcompatibility/php-compatibility": "^10.0.0@dev",
                 "phpmd/phpmd": "2.15.0",
                 "phpunit/phpunit": "12.4.4 || 11.5.44 || 10.5.58",
                 "squizlabs/php_codesniffer": "4.0.1"
@@ -8650,7 +8651,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.11"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.18"
             },
             "funding": [
                 {
@@ -8658,20 +8659,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-11-28T18:43:32+00:00"
+            "time": "2025-12-11T12:48:04+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.2.16",
+            "version": "2.3.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "f11b2fd7f72ac9d49642a7af2ec854dd09a76b62"
+                "reference": "4a70cf68cd9fd4082b1b6d16234876a66649be0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/f11b2fd7f72ac9d49642a7af2ec854dd09a76b62",
-                "reference": "f11b2fd7f72ac9d49642a7af2ec854dd09a76b62",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/4a70cf68cd9fd4082b1b6d16234876a66649be0b",
+                "reference": "4a70cf68cd9fd4082b1b6d16234876a66649be0b",
                 "shasum": ""
             },
             "require": {
@@ -8680,6 +8681,7 @@
             },
             "require-dev": {
                 "pdepend/pdepend": "2.16.2",
+                "phpcompatibility/php-compatibility": "^10.0.0@dev",
                 "phpmd/phpmd": "2.15.0",
                 "phpunit/phpunit": "12.4.4 || 11.5.44 || 10.5.58",
                 "squizlabs/php_codesniffer": "4.0.1"
@@ -8719,7 +8721,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.16"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.3.2"
             },
             "funding": [
                 {
@@ -8727,7 +8729,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-11-28T18:42:01+00:00"
+            "time": "2025-12-11T12:13:39+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
