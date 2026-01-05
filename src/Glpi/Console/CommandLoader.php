@@ -144,6 +144,8 @@ class CommandLoader implements CommandLoaderInterface
         if ($this->commands === null) {
             $this->findCoreCommands();
             $this->findToolsCommands();
+            $this->findGlpiToolsCommands();
+            $this->findPluginToolsCommands();
 
             if ($this->include_plugins) {
                 $this->findPluginCommands();
@@ -291,7 +293,7 @@ class CommandLoader implements CommandLoaderInterface
     /**
      * Find all "tools" commands.
      *
-     * return void
+     * @return void
      */
     private function findToolsCommands(): void
     {
@@ -341,6 +343,40 @@ class CommandLoader implements CommandLoaderInterface
         }
     }
 
+    /**
+     * Find all "tools/plugin" commands.
+     *
+     * @return void
+     */
+    private function findPluginToolsCommands(): void
+    {
+        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Plugin' . DIRECTORY_SEPARATOR . 'Command';
+
+        if (!is_dir($basedir)) {
+            return;
+        }
+
+        $tools_files = new DirectoryIterator($basedir);
+        foreach ($tools_files as $file) {
+            /** @var DirectoryIterator $file */
+            if (!$file->isReadable() || !$file->isFile()) {
+                continue;
+            }
+
+            $command = $this->getCommandFromFile(
+                $file,
+                $basedir,
+                ['Glpi\\Tools\\Plugin\\Command\\']
+            );
+
+            if (null === $command) {
+                continue;
+            }
+
+            $this->registerCommand($command);
+        }
+    }
+
     private function findSymfonyCommands(): void
     {
         /** @var Kernel|null $kernel */
@@ -360,6 +396,40 @@ class CommandLoader implements CommandLoaderInterface
         foreach ($base_loader->getNames() as $name) {
             $command = $base_loader->get($name);
             $command->setName('symfony:' . $name);
+            $this->registerCommand($command);
+        }
+    }
+
+    /**
+     * Find all "tools/src/Command" commands.
+     *
+     * return void
+     */
+    private function findGlpiToolsCommands(): void
+    {
+        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'Command';
+
+        if (!is_dir($basedir)) {
+            return;
+        }
+
+        $tools_files = new DirectoryIterator($basedir);
+        foreach ($tools_files as $file) {
+            /** @var DirectoryIterator $file */
+            if (!$file->isReadable() || !$file->isFile()) {
+                continue;
+            }
+
+            $command = $this->getCommandFromFile(
+                $file,
+                $basedir,
+                ['Glpi\\Tools\\Command\\']
+            );
+
+            if (null === $command) {
+                continue;
+            }
+
             $this->registerCommand($command);
         }
     }

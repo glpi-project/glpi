@@ -94,7 +94,7 @@ vendor: console
 .PHONY: vendor
 
 locales-extract: ## Extract locales
-	@$(PHP) vendor/bin/extract-locales
+	@$(CONSOLE) tools:extract_locales
 .PHONY: locales-extract
 
 locales-compile: c=locales:compile ## Compile locales
@@ -106,11 +106,11 @@ cc: console
 .PHONY: cc
 
 license-headers-check: ## Verify that the license headers is present all files
-	@$(PHP) vendor/bin/licence-headers-check
+	@$(CONSOLE) tools:licence_headers_check
 .PHONY: license-headers-check
 
 license-headers-fix: ## Add the missing license headers in all files
-	@$(PHP) vendor/bin/licence-headers-check --fix
+	@$(CONSOLE) tools:licence_headers_check --fix
 .PHONY: license-headers-fix
 
 ## —— Database —————————————————————————————————————————————————————————————————

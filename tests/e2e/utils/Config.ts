@@ -11,7 +11,7 @@
  * ---------------------------------------------------------------------
  *
  * LICENSE
- *e
+ *
  * This file is part of GLPI.
  *
  * This program is free software: you can redistribute it and/or modify
