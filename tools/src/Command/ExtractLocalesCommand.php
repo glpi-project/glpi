@@ -42,6 +42,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 final class ExtractLocalesCommand extends AbstractCommand
 {
@@ -142,23 +143,28 @@ final class ExtractLocalesCommand extends AbstractCommand
             $this->io->writeln("<question>Extracting translations from files</question>");
             $twig_files = $this->getFiles($temp_twig_dir, 'twig');
             if (count($twig_files) > 0) {
-                $files_list = implode(' ', $twig_files);
-                $cmd = sprintf(
-                    'cd %s && xgettext %s -o %s -L PHP --add-comments=TRANS --add-location=file --from-code=UTF-8 --force-po --join-existing '
-                    . '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s',
-                    escapeshellarg($temp_twig_dir),
-                    $files_list,
-                    escapeshellarg($potfile),
-                    $args['F_ARGS_N'],
-                    $args['F_ARGS__'],
-                    $args['F_ARGS_X'],
-                    $args['F_ARGS_NX']
+                $command = array_merge(
+                    [
+                        'xgettext',
+                        '-o', $potfile,
+                        '-L', 'PHP',
+                        '--add-comments=TRANS',
+                        '--add-location=file',
+                        '--from-code=UTF-8',
+                        '--force-po',
+                        '--join-existing',
+                        '--keyword=_n:' . $args['F_ARGS_N'],
+                        '--keyword=__:' . $args['F_ARGS__'],
+                        '--keyword=_x:' . $args['F_ARGS_X'],
+                        '--keyword=_nx:' . $args['F_ARGS_NX'],
+                    ],
+                    $twig_files
                 );
-                system($cmd);
+                $this->runCommand($command, $temp_twig_dir);
             }
 
             // Cleanup
-            system('rm -rf ' . escapeshellarg($temp_twig_dir));
+            $this->runCommand(['rm', '-rf', $temp_twig_dir]);
         }
 
         // Append locales from PHP
@@ -169,21 +175,26 @@ final class ExtractLocalesCommand extends AbstractCommand
             $list_file = tempnam(sys_get_temp_dir(), 'phpfiles');
             file_put_contents($list_file, implode("\n", $php_files));
 
-            $cmd = sprintf(
-                'cd %s && xgettext --files-from=%s -o %s -L PHP --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing '
-                 . '--keyword=_n:%s --keyword=__s:%s --keyword=__:%s --keyword=_x:%s --keyword=_sx:%s --keyword=_nx:%s --keyword=_sn:%s',
-                escapeshellarg($working_dir),
-                escapeshellarg($list_file),
-                escapeshellarg($potfile),
-                $args['F_ARGS_N'],
-                $args['F_ARGS__S'],
-                $args['F_ARGS__'],
-                $args['F_ARGS_X'],
-                $args['F_ARGS_SX'],
-                $args['F_ARGS_NX'],
-                $args['F_ARGS_SN']
+            $this->runCommand(
+                [
+                    'xgettext',
+                    '--files-from=' . $list_file,
+                    '-o', $potfile,
+                    '-L', 'PHP',
+                    '--add-comments=TRANS',
+                    '--from-code=UTF-8',
+                    '--force-po',
+                    '--join-existing',
+                    '--keyword=_n:' . $args['F_ARGS_N'],
+                    '--keyword=__s:' . $args['F_ARGS__S'],
+                    '--keyword=__:' . $args['F_ARGS__'],
+                    '--keyword=_x:' . $args['F_ARGS_X'],
+                    '--keyword=_sx:' . $args['F_ARGS_SX'],
+                    '--keyword=_nx:' . $args['F_ARGS_NX'],
+                    '--keyword=_sn:' . $args['F_ARGS_SN'],
+                ],
+                $working_dir
             );
-            system($cmd);
             unlink($list_file);
         }
 
@@ -197,25 +208,29 @@ final class ExtractLocalesCommand extends AbstractCommand
             $list_file = tempnam(sys_get_temp_dir(), 'jsfiles');
             file_put_contents($list_file, implode("\n", $js_files));
 
-            $cmd = sprintf(
-                'cd %s && xgettext --files-from=%s -o %s -L JavaScript --add-comments=TRANS --from-code=UTF-8 --force-po --join-existing '
-                . '--keyword=_n:%s --keyword=__:%s --keyword=_x:%s --keyword=_nx:%s '
-                . '--keyword=i18n._n:%s --keyword=i18n.__:%s --keyword=i18n._p:%s --keyword=i18n.ngettext:%s --keyword=i18n.gettext:%s --keyword=i18n.pgettext:%s',
-                escapeshellarg($working_dir),
-                escapeshellarg($list_file),
-                escapeshellarg($potfile),
-                $args['F_ARGS_N'],
-                $args['F_ARGS__'],
-                $args['F_ARGS_X'],
-                $args['F_ARGS_NX'],
-                $args['F_ARGS_N'],
-                $args['F_ARGS__'],
-                $args['F_ARGS_X'],
-                $args['F_ARGS_N'],
-                $args['F_ARGS__'],
-                $args['F_ARGS_X']
+            $this->runCommand(
+                [
+                    'xgettext',
+                    '--files-from=' . $list_file,
+                    '-o', $potfile,
+                    '-L', 'JavaScript',
+                    '--add-comments=TRANS',
+                    '--from-code=UTF-8',
+                    '--force-po',
+                    '--join-existing',
+                    '--keyword=_n:' . $args['F_ARGS_N'],
+                    '--keyword=__:' . $args['F_ARGS__'],
+                    '--keyword=_x:' . $args['F_ARGS_X'],
+                    '--keyword=_nx:' . $args['F_ARGS_NX'],
+                    '--keyword=i18n._n:' . $args['F_ARGS_N'],
+                    '--keyword=i18n.__:' . $args['F_ARGS__'],
+                    '--keyword=i18n._p:' . $args['F_ARGS_X'],
+                    '--keyword=i18n.ngettext:' . $args['F_ARGS_N'],
+                    '--keyword=i18n.gettext:' . $args['F_ARGS__'],
+                    '--keyword=i18n.pgettext:' . $args['F_ARGS_X'],
+                ],
+                $working_dir
             );
-            system($cmd);
             unlink($list_file);
         }
 
@@ -224,22 +239,18 @@ final class ExtractLocalesCommand extends AbstractCommand
         $vue_files = $this->getFiles($working_dir, 'vue', $exclude_regex);
         if (count($vue_files) > 0) {
             // Run extraction using local npm script
-            $cmd_npm = sprintf(
-                'cd %s && npm run vue:gettext:extract',
-                escapeshellarg($working_dir)
-            );
-            system($cmd_npm, $ret_npm);
+            $this->runCommand(['npm', 'run', 'vue:gettext:extract'], $working_dir, false);
 
             $vue_pot = $working_dir . '/locales/vue.pot';
             if (file_exists($vue_pot)) {
                 $this->io->writeln("<info>Merge vue locales.</info>");
                 // merge vue pot with the existing global pot file
-                $merge_cmd = sprintf(
-                    'xgettext -o %s --join-existing %s',
-                    escapeshellarg($potfile),
-                    escapeshellarg($vue_pot)
-                );
-                system($merge_cmd);
+                $this->runCommand([
+                    'xgettext',
+                    '-o', $potfile,
+                    '--join-existing',
+                    $vue_pot,
+                ]);
                 unlink($vue_pot);
             } else {
                 $this->io->warning('No vue locales generated to merge.');
@@ -248,12 +259,19 @@ final class ExtractLocalesCommand extends AbstractCommand
 
         // Update main language
         $this->io->section('Updating en_GB.po...');
-        $cmd = sprintf(
-            'LANG=C msginit --no-translator -i %s -l en_GB -o %s',
-            escapeshellarg($potfile),
-            escapeshellarg($working_dir . '/locales/en_GB.po')
+        $this->runCommand(
+            [
+                'msginit',
+                '--no-translator',
+                '-i', $potfile,
+                '-l', 'en_GB',
+                '-o', $working_dir . '/locales/en_GB.po',
+            ],
+            null,
+            true,
+             // Environment variables for this command (LANG=C)
+            ['LANG' => 'C']
         );
-        system($cmd);
 
         $this->io->success('Locales extracted successfully.');
         return Command::SUCCESS;
@@ -299,5 +317,23 @@ final class ExtractLocalesCommand extends AbstractCommand
         $this->io->newLine(2); // Clean line break after progress bar
 
         return $files;
+    }
+
+    private function runCommand(array $command, ?string $cwd = null, bool $must_succeed = true, array $env = []): Process
+    {
+        $process = new Process($command, $cwd, $env);
+        $process->setTimeout(null);
+
+        $callback = function ($type, $buffer) {
+            $this->output->write($buffer);
+        };
+
+        if ($must_succeed) {
+            $process->mustRun($callback);
+        } else {
+            $process->run($callback);
+        }
+
+        return $process;
     }
 }
