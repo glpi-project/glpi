@@ -152,7 +152,7 @@ final class InventoryController extends AbstractController
     #[Route("/front/inventory.conf.php", name: "glpi_inventory_configuration_legacy", methods: ['GET'])]
     public function configure(Request $request): Response
     {
-        Session::checkRight(Conf::$rightname, Conf::UPDATECONFIG);
+        Session::checkRight(Conf::$rightname, Conf::IMPORTFROMFILE);
         return $this->render('pages/admin/inventory/conf/index.html.twig', [
             'conf' => new Conf(),
         ]);
