@@ -1,0 +1,163 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 12,
+            "uuid": "e7ee4c45-1157-4d4e-b222-f9e34e64d2ab",
+            "name": "Form using unspecified SLA",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity > _test_root_entity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 19,
+                    "uuid": "dbabf67b-4ac2-46a5-b83a-ece12548dd1d",
+                    "name": "First section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "always_visible",
+                    "conditions": []
+                }
+            ],
+            "comments": [],
+            "questions": [],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 17,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": {
+                        "glpi-form-destination-commonitilfield-titlefield": {
+                            "value": "<span class=\"border-yellow border-start border-3 bg-dark-lt\" data-form-tag=\"true\" data-form-tag-value=\"12\" data-form-tag-provider=\"Glpi\\Form\\Tag\\FormTagProvider\">#Form name: Form using unspecified SLA<\/span>"
+                        },
+                        "glpi-form-destination-commonitilfield-contentfield_auto": "1",
+                        "glpi-form-destination-commonitilfield-itilfollowupfield": {
+                            "strategy": "no_followup"
+                        },
+                        "glpi-form-destination-commonitilfield-itiltaskfield": {
+                            "strategy": "no_task"
+                        },
+                        "glpi-form-destination-commonitilfield-validationfield": {
+                            "strategy_configs": [
+                                {
+                                    "strategy": "no_validation",
+                                    "specific_validationtemplates_ids": [],
+                                    "specific_question_ids": [],
+                                    "specific_actors": [],
+                                    "specific_validation_step_id": null
+                                }
+                            ]
+                        },
+                        "glpi-form-destination-commonitilfield-templatefield": {
+                            "strategy": "default_template"
+                        },
+                        "glpi-form-destination-commonitilfield-entityfield": {
+                            "strategy": "form_filler"
+                        },
+                        "glpi-form-destination-commonitilfield-requesttypefield": {
+                            "strategy": "last_valid_answer"
+                        },
+                        "glpi-form-destination-commonitilfield-itilcategoryfield": {
+                            "strategy": "last_valid_answer"
+                        },
+                        "glpi-form-destination-commonitilfield-statusfield": {
+                            "value": "default_status"
+                        },
+                        "glpi-form-destination-commonitilfield-requestsourcefield": {
+                            "strategy": "from_template"
+                        },
+                        "glpi-form-destination-commonitilfield-urgencyfield": {
+                            "strategy": "last_valid_answer"
+                        },
+                        "glpi-form-destination-commonitilfield-locationfield": {
+                            "strategy": "last_valid_answer"
+                        },
+                        "glpi-form-destination-commonitilfield-requesterfield": {
+                            "strategies": [
+                                "form_filler"
+                            ],
+                            "specific_itilactors_ids": null,
+                            "specific_question_ids": null
+                        },
+                        "glpi-form-destination-commonitilfield-observerfield": {
+                            "strategies": [
+                                "from_template"
+                            ],
+                            "specific_itilactors_ids": null,
+                            "specific_question_ids": null
+                        },
+                        "glpi-form-destination-commonitilfield-assigneefield": {
+                            "strategies": [
+                                "from_template"
+                            ],
+                            "specific_itilactors_ids": null,
+                            "specific_question_ids": null
+                        },
+                        "glpi-form-destination-commonitilfield-slattofield": {
+                            "strategy": "specific_value",
+                            "slm_id": "0"
+                        },
+                        "glpi-form-destination-commonitilfield-slattrfield": {
+                            "strategy": "specific_value",
+                            "slm_id": "0"
+                        },
+                        "glpi-form-destination-commonitilfield-olattofield": {
+                            "strategy": "specific_value",
+                            "slm_id": "0"
+                        },
+                        "glpi-form-destination-commonitilfield-olattrfield": {
+                            "strategy": "specific_value",
+                            "slm_id": "0"
+                        },
+                        "glpi-form-destination-commonitilfield-associateditemsfield": {
+                            "strategies": [
+                                "last_valid_answer"
+                            ],
+                            "specific_question_ids": null
+                        },
+                        "glpi-form-destination-commonitilfield-linkeditilobjectsfield": {
+                            "strategy_configs": [
+                                {
+                                    "strategy": null,
+                                    "linktype": "1",
+                                    "specific_destination_ids": [],
+                                    "specific_question_ids": [],
+                                    "specific_itilobject": []
+                                }
+                            ]
+                        }
+                    },
+                    "creation_strategy": "always_created",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > _test_root_entity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

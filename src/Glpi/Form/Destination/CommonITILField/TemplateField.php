@@ -219,8 +219,11 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
         AbstractCommonITILFormDestination $destination,
         DatabaseMapper $mapper,
     ): array {
-        // Check if a template is defined
-        if (!isset($config[TemplateFieldConfig::TEMPLATE_ID])) {
+        // Check if a valid template is defined
+        if (
+            !isset($config[TemplateFieldConfig::TEMPLATE_ID])
+            || $config[TemplateFieldConfig::TEMPLATE_ID] == 0
+        ) {
             return parent::prepareDynamicConfigDataForImport(
                 $config,
                 $destination,
