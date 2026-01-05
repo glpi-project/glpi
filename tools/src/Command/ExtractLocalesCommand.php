@@ -45,7 +45,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExtractLocalesCommand extends AbstractCommand
 {
-    protected const ALLOW_PLUGIN_OPTION = 1;
+    protected const ALLOW_PLUGIN_OPTION = true;
 
     protected function configure(): void
     {

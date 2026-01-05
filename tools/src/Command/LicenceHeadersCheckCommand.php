@@ -47,7 +47,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class LicenceHeadersCheckCommand extends AbstractCommand
 {
-    protected const ALLOW_PLUGIN_OPTION = 1;
+    protected const ALLOW_PLUGIN_OPTION = true;
 
     /**
      * Result code returned when some headers are missing or are outdated.
