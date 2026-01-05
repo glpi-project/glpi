@@ -2005,13 +2005,13 @@ window.toggleNotesAccordion = function(element) {
         elementText.textContent = element.dataset.collapseText;
         element.title = element.dataset.collapseTitle;
         if (elementIcon) {
-            elementIcon.className = 'ti ti-arrows-minimize';
+            elementIcon.className = 'ti ti-eye';
         }
     } else {
         elementText.textContent = element.dataset.expandText;
         element.title = element.dataset.expandTitle;
         if (elementIcon) {
-            elementIcon.className = 'ti ti-arrows-maximize';
+            elementIcon.className = 'ti ti-eye-off';
         }
     }
 };
