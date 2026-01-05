@@ -255,6 +255,26 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    public function testEntityFromLastValidAnswerWithEmptyAnswer()
+    {
+        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
+
+        // No answers, fallback to current entity
+        $this->sendFormAndAssertTicketEntity(
+            form: $form,
+            config: new EntityFieldConfig(
+                EntityFieldStrategy::LAST_VALID_ANSWER
+            ),
+            answers: [
+                'Entity 1' => [
+                    'itemtype' => Entity::class,
+                    'items_id' => -1,
+                ],
+            ],
+            expected_entity_id: $this->getTestRootEntity(only_id: true)
+        );
+    }
+
     #[Override]
     public static function provideConvertFieldConfigFromFormCreator(): iterable
     {
