@@ -68,7 +68,7 @@ function showSecurityKeyCheckForm(): void
     global $DB;
 
     echo '<form action="update.php" method="post">';
-    echo '<input type="hidden" name="continuer" value="1" />';
+    echo '<input type="hidden" name="continue" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
     echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
     echo '<div class="text-center">';
@@ -128,7 +128,7 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
         " . __s('Go back to GLPI') . "
      </a></p>";
     echo "</div>";
-} elseif (empty($_POST["continuer"]) && empty($_POST["post_update_step"])) {
+} elseif (empty($_POST["continue"]) && empty($_POST["post_update_step"])) {
     // Step 1: Confirmation screen (needed for install wizard flow)
     echo "<div class='center'>";
     echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
@@ -137,13 +137,13 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
     if (!VersionParser::isStableRelease(GLPI_VERSION)) {
         echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
     }
-    echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
+    echo "<button type='submit' class='btn btn-primary' name='continue' value='1'>
          " . __s('Continue') . "
          <i class='fas fa-chevron-right ms-1'></i>
       </button>";
     Html::closeForm();
     echo "</div>";
-} elseif (!empty($_POST["continuer"])) {
+} elseif (!empty($_POST["continue"])) {
     // Step 2
     if ($DB->connected) {
         echo "<h3>" . __s('Database connection successful') . "</h3>";
