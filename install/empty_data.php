@@ -79,6 +79,9 @@ $empty_data_builder = new class {
     // This cover up to 16 concurent threads, it should be quite enough.
     public const PLAYWRIGHT_MAX_WORKERS = 16;
 
+    /**
+     * @return array<string,array<string,mixed>>
+     */
     public function getEmptyData(): array
     {
         $tables = [];
