@@ -354,7 +354,7 @@ jobs:
             echo "PHP errors detected in log file"
             exit 1
           fi
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: ${{ !cancelled() }}
         with:
           name: playwright-report
@@ -362,7 +362,7 @@ jobs:
           retention-days: 30
       - name: "Upload GLPI logs"
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: glpi-playwright-logs
           path: tests/e2e/glpi_files/_log
