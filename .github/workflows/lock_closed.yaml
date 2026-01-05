@@ -28,3 +28,5 @@ jobs:
           pr-comment: >
             This PR has been is closed and has been automatically locked.
             Please open a new issue with all requested information for related bugs.
+          exclude-issue-created-before: '2025-01-01T00:00:00Z'
+          exclude-pr-created-before: '2025-01-01T00:00:00Z'
