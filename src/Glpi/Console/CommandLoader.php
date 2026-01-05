@@ -296,13 +296,16 @@ class CommandLoader implements CommandLoaderInterface
     private function findToolsCommands(): void
     {
 
-        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools';
+        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools/src';
 
         if (!is_dir($basedir)) {
             return;
         }
 
-        $tools_files = new DirectoryIterator($basedir);
+        $tools_files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($basedir),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
         foreach ($tools_files as $file) {
             /** @var DirectoryIterator $file */
             if (!$file->isReadable() || !$file->isFile()) {
@@ -311,7 +314,8 @@ class CommandLoader implements CommandLoaderInterface
 
             $command = $this->getCommandFromFile(
                 $file,
-                $basedir
+                $basedir,
+                ['Glpi\\Tools\\']
             );
 
             if (null === $command) {
