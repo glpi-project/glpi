@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -251,6 +251,26 @@ final class EntityFieldTest extends AbstractDestinationFieldTest
                 EntityFieldStrategy::LAST_VALID_ANSWER
             ),
             answers: [],
+            expected_entity_id: $this->getTestRootEntity(only_id: true)
+        );
+    }
+
+    public function testEntityFromLastValidAnswerWithEmptyAnswer()
+    {
+        $form = $this->createAndGetFormWithMultipleEntityAndRequesterQuestions();
+
+        // No answers, fallback to current entity
+        $this->sendFormAndAssertTicketEntity(
+            form: $form,
+            config: new EntityFieldConfig(
+                EntityFieldStrategy::LAST_VALID_ANSWER
+            ),
+            answers: [
+                'Entity 1' => [
+                    'itemtype' => Entity::class,
+                    'items_id' => -1,
+                ],
+            ],
             expected_entity_id: $this->getTestRootEntity(only_id: true)
         );
     }

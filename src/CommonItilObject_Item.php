@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -697,6 +697,25 @@ TWIG, $twig_params);
         $params['criteria'][0]['searchtype'] = 'equals';
         $params['criteria'][0]['value']      = 'all';
         $params['criteria'][0]['link']       = 'AND';
+
+        switch ($item->getType()) {
+            case User::class:
+                $params['criteria'][] = [
+                    'link'       => 'AND',
+                    'field'      => 4,
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID(),
+                ];
+                break;
+            case Group::class:
+                $params['criteria'][] = [
+                    'link'       => 'AND',
+                    'field'      => 71,
+                    'searchtype' => 'equals',
+                    'value'      => $item->getID(),
+                ];
+                break;
+        }
 
         $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
         if (method_exists(static::$itemtype_1, 'getCriteriaFromProfile')) {

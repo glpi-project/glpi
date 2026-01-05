@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -231,5 +231,34 @@ describe('Convert default value form', () => {
 
         // Check if the default value is still the same
         cy.getDropdownByLabelText('Default option').should('have.text', 'Option 2');
+    });
+
+    it('test convert default value between long text (tinymce not init) and short text types', () => {
+        // Arrange: Create a long text with default value, save and reload the form
+        const default_value = 'Default value for long text question';
+
+        // Set question name
+        cy.findByRole('textbox', {'name': 'Question name'}).type('Long answer question');
+
+        // Change type to "Long answer"
+        cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Long answer');
+
+        // Set defaut value
+        cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            cy.findByLabelText("Default value")
+                .awaitTinyMCE()
+                .type(default_value);
+        });
+
+        // Save and reload the form
+        cy.saveFormEditorAndReload();
+
+        // Act: Change back to short text
+        cy.findByRole('option', {'name': 'Long answer question'}).click('top');
+        cy.findByRole('option', {'name': 'Long answer question'}).changeQuestionType('Short answer');
+
+        // Assert: Check if default value has been converted
+        cy.findByRole('combobox', { name: 'Text' }).should('exist');
+        cy.findByRole('textbox', { name: 'Default value' }).should('have.value', default_value);
     });
 });

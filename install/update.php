@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -68,7 +68,7 @@ function showSecurityKeyCheckForm(): void
     global $DB;
 
     echo '<form action="update.php" method="post">';
-    echo '<input type="hidden" name="continuer" value="1" />';
+    echo '<input type="hidden" name="continue" value="1" />';
     echo '<input type="hidden" name="missing_key_warning_shown" value="1" />';
     echo Html::hidden('_glpi_csrf_token', ['value' => Session::getNewCSRFToken()]);
     echo '<div class="text-center">';
@@ -120,30 +120,30 @@ echo "<h2>" . __s('GLPI setup') . "</h2>";
 echo "<br><h3>" . __s('Upgrade') . "</h3>";
 
 if (($_SESSION['can_process_update'] ?? false) === false) {
-    // Unexpected direct access to the form
+    // Unexpected direct access to the form without proper entry point
     echo "<div class='center'>";
-    echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span>";
+    echo "<h3><span class='migred'>" . __s('Impossible to accomplish an update by this way!') . "</span></h3>";
     echo "<p>";
     echo "<a class='btn btn-primary' href='../index.php'>
         " . __s('Go back to GLPI') . "
      </a></p>";
     echo "</div>";
-} elseif (empty($_POST["continuer"]) && empty($_POST["from_update"]) && empty($_POST["post_update_step"])) {
-    // step 1    avec bouton de confirmation
+} elseif (empty($_POST["continue"]) && empty($_POST["post_update_step"])) {
+    // Step 1: Confirmation screen (needed for install wizard flow)
     echo "<div class='center'>";
-    echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</h3>";
+    echo "<h3 class='my-4'><span class='migred p-2'>" . sprintf(__s('Caution! You will update the GLPI database named: %s'), htmlescape($DB->dbdefault)) . "</span></h3>";
 
     echo "<form action='update.php' method='post'>";
     if (!VersionParser::isStableRelease(GLPI_VERSION)) {
         echo Config::agreeUnstableMessage(VersionParser::isDevVersion(GLPI_VERSION));
     }
-    echo "<button type='submit' class='btn btn-primary' name='continuer' value='1'>
-     " . __s('Continue') . "
-     <i class='fas fa-chevron-right ms-1'></i>
-  </button>";
+    echo "<button type='submit' class='btn btn-primary' name='continue' value='1'>
+         " . __s('Continue') . "
+         <i class='fas fa-chevron-right ms-1'></i>
+      </button>";
     Html::closeForm();
     echo "</div>";
-} elseif (!empty($_POST["continuer"])) {
+} elseif (!empty($_POST["continue"])) {
     // Step 2
     if ($DB->connected) {
         echo "<h3>" . __s('Database connection successful') . "</h3>";

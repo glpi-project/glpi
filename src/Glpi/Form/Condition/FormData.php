@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -199,7 +199,18 @@ final class FormData
             }
 
             $value = $condition_data['value'] ?? null;
-            if (is_string($value) && !empty($value) && json_validate($value)) {
+            if (
+                is_string($value)
+                && !empty($value)
+                && json_validate($value)
+                // Numbers are valid json so they will pass the json_validate
+                // check.
+                // There is no point decoding numbers, it can even lead to errors
+                // because they will be converted to unexpected values in some
+                // cases, like the `646012933e9268` string which is considered
+                // a number and will become an infinite value
+                && !is_numeric($value)
+            ) {
                 $value = json_decode($value, true);
             }
 

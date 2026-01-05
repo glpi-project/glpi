@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
@@ -1024,12 +1025,12 @@ TWIG,
             }
 
             $allassets = [
-                'Computer',
-                'Monitor',
-                'Peripheral',
-                'NetworkEquipment',
-                'Phone',
-                'Printer',
+                Computer::class,
+                Monitor::class,
+                Peripheral::class,
+                NetworkEquipment::class,
+                Phone::class,
+                Printer::class,
             ];
 
             foreach ($allassets as $type) {
@@ -5797,9 +5798,13 @@ JS);
     {
         global $CFG_GLPI;
         $prefix = $CFG_GLPI['root_doc'];
+
+        // Prevent double `/` between prefix and path.
+        $prefix = rtrim($prefix, '/');
         if (!str_starts_with($url, '/')) {
-            $prefix .= '/';
+            $url = '/' . $url;
         }
+
         return $prefix . $url;
     }
 

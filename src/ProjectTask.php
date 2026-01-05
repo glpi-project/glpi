@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
@@ -1289,12 +1290,13 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
         }
 
         if ($canedit) {
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class="mb-3">
-                    <a class="btn btn-primary" href="{{ 'ProjectTask'|itemtype_form_path() }}?projects_id={{ projects_id }}">{{ btn_label }}</a>
-                </div>
-TWIG, ['projects_id' => $ID, 'btn_label' => _x('button', 'Add a task')]);
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => ProjectTask::getFormURL() . '?projects_id=' . $ID,
+                    'button_label' => _x('button', 'Add a task'),
+                ]
+            );
         }
 
         if ($item::class === self::class && $item->can($ID, UPDATE)) {

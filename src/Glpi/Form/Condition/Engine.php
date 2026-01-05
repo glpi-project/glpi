@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -275,6 +275,7 @@ final class Engine
     {
         // Find relevant answer using the question's id
         $type = $condition->getItemType();
+        $answer = null;
         switch ($type) {
             case Type::QUESTION:
                 $question = Question::getByUuid($condition->getItemUuid());
@@ -312,10 +313,6 @@ final class Engine
             || $condition->getValueOperator() === ValueOperator::NOT_VISIBLE
         ) {
             $answer = $this->computeItemVisibility($question ?? $item);
-        }
-
-        if (($answer ?? null) === null) {
-            return false;
         }
 
         $condition_handler = array_filter(

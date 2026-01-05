@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\I18nCache;
 use Glpi\Controller\InventoryController;
@@ -843,7 +844,8 @@ class Session
         $_SESSION['glpiisrtl'] = self::isRTL($trytoload);
 
         // Redefine Translator caching logic to be able to drop laminas/laminas-cache dependency.
-        $i18n_cache = !defined('TU_USER') ? new I18nCache((new CacheManager())->getTranslationsCacheInstance()) : null;
+        $i18n_cache = new I18nCache((new CacheManager())->getTranslationsCacheInstance());
+
         $TRANSLATE = new class ($i18n_cache) extends Translator { // @phpstan-ignore class.extendsFinalByPhpDoc
             public function __construct(?I18nCache $cache)
             {
@@ -977,8 +979,17 @@ class Session
         arsort($accepted_languages); // sort by qfactor
 
         foreach (array_keys($accepted_languages) as $language) {
+            // Direct match with locale key (e.g., 'pl_PL')
             if (array_key_exists($language, $CFG_GLPI['languages'])) {
                 return $language;
+            }
+
+            // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
+            if (isset($CFG_GLPI['main_languages'][$language])) {
+                $main_lang = $CFG_GLPI['main_languages'][$language];
+                if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
+                    return $main_lang;
+                }
             }
         }
 
@@ -1621,10 +1632,9 @@ class Session
                 if ($key !== false) {
                     unset($array[$message_type][$key]);
                 }
+                // Reorder keys
+                $array[$message_type] = array_values($array[$message_type]);
             }
-
-            // Reorder keys
-            $array[$message_type] = array_values($array[$message_type]);
         }
     }
 

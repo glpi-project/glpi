@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -94,7 +94,20 @@ if (isset($_POST["update"])) {
     $_POST['_item']   = key($_POST["items"]);
     $_POST['begin']   = $_POST['resa']["begin"];
     $_POST['end']     = $_POST['resa']["end"];
-    $rr->update($_POST);
+    if ($rr->update($_POST)) {
+        Event::log(
+            $_POST["id"],
+            "reservation",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(
+                __('%1$s updates the reservation for item %2$s'),
+                $_SESSION["glpiname"],
+                $_POST['_item']
+            )
+        );
+    }
     $fn_redirect_back();
 } elseif (isset($_POST["purge"])) {
     $rr->check($_POST["id"], PURGE);

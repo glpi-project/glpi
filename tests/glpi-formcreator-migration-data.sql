@@ -5,7 +5,7 @@
 --
 -- http://glpi-project.org
 --
--- @copyright 2015-2025 Teclib' and contributors.
+-- @copyright 2015-2026 Teclib' and contributors.
 -- @licence   https://www.gnu.org/licenses/gpl-3.0.html
 --
 -- ---------------------------------------------------------------------
@@ -578,6 +578,31 @@ CREATE TABLE `glpi_plugin_formcreator_entityconfigs` (
   `service_catalog_home` int(11) NOT NULL DEFAULT -2,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Table structure for table `glpi_plugin_formcreator_formanswers`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_formanswers`;
+CREATE TABLE `glpi_plugin_formcreator_formanswers` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL DEFAULT '',
+  `entities_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `is_recursive` tinyint(1) NOT NULL DEFAULT 0,
+  `plugin_formcreator_forms_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `requester_id` int(10) unsigned NOT NULL DEFAULT 0,
+  `users_id_validator` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'User in charge of validation',
+  `groups_id_validator` int(10) unsigned NOT NULL DEFAULT 0 COMMENT 'Group in charge of validation',
+  `request_date` timestamp NULL DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 101,
+  `comment` mediumtext DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plugin_formcreator_forms_id` (`plugin_formcreator_forms_id`),
+  KEY `entities_id_is_recursive` (`entities_id`,`is_recursive`),
+  KEY `requester_id` (`requester_id`),
+  KEY `users_id_validator` (`users_id_validator`),
+  KEY `groups_id_validator` (`groups_id_validator`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 -- Dump completed on 2025-01-21 11:41:32

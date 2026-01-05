@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -570,5 +570,81 @@ describe('Edit form translations', () => {
 
         // Check the translations for the question description
         cy.findByRole('note', { name: 'Question description' }).should('exist').contains('Ceci est une question avec une description');
+    });
+
+    it('can translate options of a dropdown question', () => {
+        // Go to the form editor
+        cy.findByRole('tab', { name: 'Form' }).click();
+
+        // Add a dropdown question
+        cy.findByRole('button', { name: 'Add a question' }).click();
+        cy.findByRole('textbox', { name: 'Question name' }).type('Dropdown question');
+        cy.getDropdownByLabelText('Question type').selectDropdownValue('Dropdown');
+
+        // Add options to the question
+        cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(-1).type('First option');
+        cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(-1).type('Second option');
+        cy.findAllByRole('textbox', { name: 'Selectable option' }).eq(-1).type('Third option');
+
+        // Save the form
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form translations page
+        cy.findByRole('tab', { name: 'Form translations' }).click();
+
+        // Add a language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
+        cy.findByRole('button', { name: 'Add' }).click();
+        cy.findByRole('dialog').should('have.attr', 'data-cy-shown', 'true');
+
+        // Add translations for options
+        cy.findByRole('table', { name: 'Form translations' }).as('formTranslationsTable');
+        cy.get('@formTranslationsTable').findAllByRole('row').as('formTranslationsRows');
+        cy.get('@formTranslationsRows').eq(-3).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Dropdown Option');
+            cy.findByRole('cell', { name: 'Default value' }).contains('First option');
+            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
+                .type('Première option');
+        });
+        cy.get('@formTranslationsRows').eq(-2).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Dropdown Option');
+            cy.findByRole('cell', { name: 'Default value' }).contains('Second option');
+            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
+                .type('Deuxième option');
+        });
+        cy.get('@formTranslationsRows').eq(-1).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Dropdown Option');
+            cy.findByRole('cell', { name: 'Default value' }).contains('Third option');
+            cy.findByRole('cell', { name: 'Translated value' }).findByRole('textbox', { name: 'Enter translation' })
+                .type('Troisième option');
+        });
+
+        // Save the translations
+        cy.findByRole('button', { name: 'Save translation' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form preview
+        cy.get('@form_id').then((form_id) => {
+            cy.visit(`/Form/Render/${form_id}`);
+        });
+
+        // Check default translations in dropdown options
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
+        cy.findByRole('heading', { name: 'Dropdown question' }).should('exist');
+        cy.getDropdownByLabelText('Dropdown question').hasDropdownValue('First option');
+        cy.getDropdownByLabelText('Dropdown question').hasDropdownValue('Second option');
+        cy.getDropdownByLabelText('Dropdown question').hasDropdownValue('Third option');
+
+        // Change the user language to French
+        changeUserLanguage('fr_FR');
+        cy.reload();
+
+        // Check the translations for the dropdown question
+        checkTranslations('Tests form translations', 'This form is used to test form translations');
+        cy.getDropdownByLabelText('Dropdown question').hasDropdownValue('Première option');
+        cy.getDropdownByLabelText('Dropdown question').hasDropdownValue('Deuxième option');
+        cy.getDropdownByLabelText('Dropdown question').hasDropdownValue('Troisième option');
     });
 });

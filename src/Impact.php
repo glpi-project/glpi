@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,6 +43,7 @@ use function Safe\json_encode;
 
 /**
  * @since 9.5.0
+ * @todo This should use standard GLPI right management. Currently blocking API access.
  */
 class Impact extends CommonGLPI
 {
@@ -1422,9 +1423,7 @@ TWIG, $twig_params);
         // If the node has a parent, add it to the node list aswell
         if (!empty($new_node['parent'])) {
             $compound = new ImpactCompound();
-            $compound->getFromDB($new_node['parent']);
-
-            if (!isset($nodes[$new_node['parent']])) {
+            if (!isset($nodes[$new_node['parent']]) && $compound->getFromDB($new_node['parent'])) {
                 $nodes[$new_node['parent']] = [
                     'id'    => $compound->fields['id'],
                     'label' => $compound->fields['name'],

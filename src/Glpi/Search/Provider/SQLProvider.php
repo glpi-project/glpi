@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -4532,7 +4532,7 @@ final class SQLProvider implements SearchProviderInterface
                         // Use quoted value to prevent replacement of AllAssets in column identifiers
                         $tmpquery = str_replace(
                             $DB->quoteValue(AllAssets::getType()),
-                            $DB->quoteValue($DB->escape($ctype)),
+                            $DB->quoteValue($ctype),
                             $tmpquery
                         );
                     } else {// Ref table case

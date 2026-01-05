@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -96,5 +96,25 @@ class SetDbSessionVarsTest extends GLPITestCase
         ])->current();
 
         $this->assertEquals($expected_timezone, $result['tz']);
+    }
+
+    public function testOnPostBootWithDisconnectedDatabase(): void
+    {
+        global $DB;
+
+        $db_backup = $DB;
+
+        try {
+            $DB = null;
+
+            $_SESSION['glpitimezone'] = 'Europe/Paris';
+
+            $listener = new SetDbSessionVars();
+            $listener->onPostBoot();
+
+            $this->assertTrue(true);
+        } finally {
+            $DB = $db_backup;
+        }
     }
 }

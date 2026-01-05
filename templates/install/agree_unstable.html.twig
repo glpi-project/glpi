@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -48,7 +48,7 @@
 </div>
 <script>
    $(function() {
-       $('[name=from_update]').on('click', function(event){
+       $('[name="continue"]').on('click', function(event){
            if (!$('#agree_unstable').is(':checked')) {
                event.preventDefault();
                alert('{{ __('Please check the unstable version checkbox.') }}');

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -793,8 +793,8 @@ abstract class API
                     $iterator = $DB->request([
                         'SELECT'    => [
                             $relation_table . '.id AS assoc_id',
-                            $relation_table . '.itemtype_item',
-                            $relation_table . '.items_id_item',
+                            $relation_table . '.itemtype_asset',
+                            $relation_table . '.items_id_asset',
                             $relation_table . '.itemtype_peripheral',
                             $relation_table . '.items_id_peripheral',
                             $relation_table . '.is_dynamic AS assoc_is_dynamic',
@@ -810,8 +810,8 @@ abstract class API
                             ],
                         ],
                         'WHERE'     => [
-                            $relation_table . '.itemtype_item' => $itemtype,
-                            $relation_table . '.items_id_item' => $id,
+                            $relation_table . '.itemtype_asset' => $itemtype,
+                            $relation_table . '.items_id_asset' => $id,
                             $relation_table . '.itemtype_peripheral' => $connect_type,
                             $relation_table . '.is_deleted' => 0,
                         ],

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +35,7 @@
 namespace Glpi\Form\Migration;
 
 use AbstractRightsDropdown;
+use Change_Item;
 use DBmysql;
 use DBmysqlIterator;
 use Entity;
@@ -79,6 +80,8 @@ use Glpi\Form\Section;
 use Glpi\ItemTranslation\CldrLanguage;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
+use Item_Problem;
+use Item_Ticket;
 use LogicException;
 use Override;
 use Throwable;
@@ -373,6 +376,9 @@ class FormMigration extends AbstractPluginMigration
             'glpi_plugin_formcreator_targets_actors' => [
                 'id', 'itemtype', 'items_id', 'actor_role', 'actor_type', 'actor_value', 'use_notification', 'uuid',
             ],
+            'glpi_plugin_formcreator_formanswers' => [
+                'id', 'plugin_formcreator_forms_id',
+            ],
         ];
 
         return $this->checkDbFieldsExists($formcreator_schema);
@@ -396,6 +402,15 @@ class FormMigration extends AbstractPluginMigration
             'configs' => $this->countRecords('glpi_plugin_formcreator_entityconfigs', [
                 'replace_helpdesk' => [-2, 2],
             ]),
+            'items_tickets_relations' => $this->countRecords('glpi_items_tickets', [
+                'itemtype' => 'PluginFormcreatorFormAnswer',
+            ]),
+            'changes_items_relations' => $this->countRecords('glpi_changes_items', [
+                'itemtype' => 'PluginFormcreatorFormAnswer',
+            ]),
+            'items_problems_relations' => $this->countRecords('glpi_items_problems', [
+                'itemtype' => 'PluginFormcreatorFormAnswer',
+            ]),
         ];
 
         // Set total progress steps
@@ -417,6 +432,7 @@ class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfVisibilityConditions();
         $this->processMigrationOfValidationConditions();
         $this->processMigrationOfConfigs();
+        $this->processMigrationOfITILObjectsRelations();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -1972,6 +1988,94 @@ class FormMigration extends AbstractPluginMigration
                     default => 1, // Helpdesk view was not replaced or Full service catalog -> Use GLPI default of showing ticket properties
                 },
             ], ['id' => $entity_config['entities_id']]);
+
+            $this->progress_indicator?->advance();
+        }
+    }
+
+    private function processMigrationOfITILObjectsRelations(): void
+    {
+        $this->updateProgressWithMessage(__('Updating relations between forms and ITIL objects...'));
+
+        // Migrate Item_Ticket relations
+        $this->migrateITILObjectRelations(
+            'glpi_items_tickets',
+            'tickets_id',
+            Item_Ticket::class
+        );
+
+        // Migrate Change_Item relations
+        $this->migrateITILObjectRelations(
+            'glpi_changes_items',
+            'changes_id',
+            Change_Item::class
+        );
+
+        // Migrate Item_Problem relations
+        $this->migrateITILObjectRelations(
+            'glpi_items_problems',
+            'problems_id',
+            Item_Problem::class
+        );
+    }
+
+    /**
+     * Migrate ITIL object relations from FormCreator to GLPI forms
+     *
+     * @param string $table The source table name (e.g., 'glpi_items_tickets')
+     * @param string $itil_fk The foreign key field for the ITIL object (e.g., 'tickets_id')
+     * @param class-string $relation_class The relation class to use (e.g., Item_Ticket::class)
+     */
+    private function migrateITILObjectRelations(
+        string $table,
+        string $itil_fk,
+        string $relation_class
+    ): void {
+        $formanswers_links = $this->db->request([
+            'SELECT' => [
+                "$table.id",
+                "$table.$itil_fk",
+                'glpi_plugin_formcreator_formanswers.plugin_formcreator_forms_id',
+            ],
+            'FROM' => $table,
+            'JOIN' => [
+                'glpi_plugin_formcreator_formanswers' => [
+                    'ON' => [
+                        $table                                => 'items_id',
+                        'glpi_plugin_formcreator_formanswers' => 'id',
+                    ],
+                ],
+                'glpi_plugin_formcreator_forms' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_formanswers' => 'plugin_formcreator_forms_id',
+                        'glpi_plugin_formcreator_forms'       => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                "$table.itemtype" => 'PluginFormcreatorFormAnswer',
+            ] + $this->getFormWhereCriteria(),
+        ]);
+
+        foreach ($formanswers_links as $formanswers_link) {
+            $form_id = $this->validateItemExists(
+                'PluginFormcreatorForm',
+                $formanswers_link['plugin_formcreator_forms_id']
+            );
+
+            $this->importItem(
+                $relation_class,
+                [
+                    'itemtype' => Form::class,
+                    'items_id' => $form_id,
+                    $itil_fk   => $formanswers_link[$itil_fk],
+                ],
+                [
+                    'itemtype' => Form::class,
+                    'items_id' => $form_id,
+                    $itil_fk   => $formanswers_link[$itil_fk],
+                ]
+            );
 
             $this->progress_indicator?->advance();
         }

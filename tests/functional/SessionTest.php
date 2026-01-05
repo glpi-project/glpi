@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Computer;
+use Glpi\Cache\CacheManager;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\SessionExpiredException;
 use Glpi\Tests\DbTestCase;
@@ -217,6 +218,9 @@ class SessionTest extends DbTestCase
 
     public function testLocalI18n()
     {
+        $manager = new CacheManager();
+        $cache = $manager->getTranslationsCacheInstance();
+
         //load locales
         \Session::loadLanguage('en_GB');
         $this->assertEquals('Login', __('Login'));
@@ -231,6 +235,7 @@ class SessionTest extends DbTestCase
             __DIR__ . '/../local_en_GB.mo',
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.mo'
         );
+        $cache->clear();
         \Session::loadLanguage('en_GB');
 
         $this->assertEquals('Login from local gettext', __('Login'));
@@ -241,6 +246,7 @@ class SessionTest extends DbTestCase
             GLPI_LOCAL_I18N_DIR . '/core/en_GB.php',
             "<?php\n\$lang['Login'] = 'Login from local PHP';\n\$lang['Password'] = 'Password from local PHP';\nreturn \$lang;"
         );
+        $cache->clear();
         \Session::loadLanguage('en_GB');
 
         $this->assertEquals('Login from local gettext', __('Login'));
@@ -341,6 +347,41 @@ class SessionTest extends DbTestCase
                 'config'        => 'en_GB',
                 'legacy_config' => null,
                 'expected'      => 'it_IT',
+            ],
+            [
+                // Polish without country code should match pl_PL
+                'header'        => 'pl',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'pl_PL',
+            ],
+            [
+                // French without country code should match first fr_* (fr_FR)
+                'header'        => 'fr',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'fr_FR',
+            ],
+            [
+                // Mixed: exact match (fr_CA) has priority over short code fallback
+                'header'        => 'fr_CA, pl;q=0.9',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'fr_CA',
+            ],
+            [
+                // Short code match when exact locale not available
+                'header'        => 'pl, fr_FR;q=0.9',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'pl_PL',
+            ],
+            [
+                // English without country code should match en_GB (first en_* locale)
+                'header'        => 'en',
+                'config'        => 'fr_FR',
+                'legacy_config' => null,
+                'expected'      => 'en_GB',
             ],
         ];
     }
@@ -1062,6 +1103,15 @@ class SessionTest extends DbTestCase
         \Session::addMessageAfterRedirect("Test 3", INFO);
         \Session::deleteMessageAfterRedirect("Test 2", INFO);
         $this->hasSessionMessages(INFO, ["Test 1", "Test 3"]);
+    }
+
+    public function testDeleteMessageAfterRedirectWithEmptyMessageType(): void
+    {
+        $_SESSION['MESSAGE_AFTER_REDIRECT'] = [];
+
+        \Session::deleteMessageAfterRedirect("Non-existent message", INFO);
+
+        $this->assertSame([], $_SESSION['MESSAGE_AFTER_REDIRECT']);
     }
 
     public static function entitiesRestrictProvider(): iterable

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -96,6 +96,7 @@ use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use ITILCategory;
 use Location;
 use Monitor;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Ramsey\Uuid\Uuid;
 use Session;
 
@@ -2371,6 +2372,32 @@ final class FormSerializerTest extends DbTestCase
         $this->assertEmpty($preview_results->getFormsWithFatalErrors());
         $this->assertEmpty($preview_results->getSkippedForms());
         $this->assertCount(1, $preview_results->getValidForms());
+    }
+
+    public static function specificImportSucceedProvider(): array
+    {
+        // We just want to make sure that a few specific files do not throw any
+        // errors here, without any specific checks regarding the form content
+        // once imported.
+        return [
+            ['file' => 'form-with-empty-specific-question-for-location.json'],
+            ['file' => 'form-with-empty-specific-template.json'],
+            ['file' => 'form-with-empty-specific-sla.json'],
+        ];
+    }
+
+    #[DataProvider('specificImportSucceedProvider')]
+    public function testSpecificImportsSucceed(string $file): void
+    {
+        $json = $this->getFormJson($file);
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $results = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: the import should succeed
+        $this->assertEmpty($results->getFailedFormImports());
+        $this->assertCount(1, $results->getImportedForms());
     }
 
     private function compareValuesForRelations(

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,6 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-Session::checkRight('software', UPDATE);
 $inst = new Item_SoftwareVersion();
 
 // From asset - Software tab (add form)
@@ -47,13 +46,13 @@ if (isset($_POST['add'])) {
         isset($_POST['itemtype']) && isset($_POST['items_id']) && $_POST['items_id']
         && isset($_POST['softwareversions_id']) && $_POST['softwareversions_id']
     ) {
-        if (
-            $inst->add([
-                'itemtype'        => $_POST['itemtype'],
-                'items_id'        => $_POST['items_id'],
-                'softwareversions_id' => $_POST['softwareversions_id'],
-            ])
-        ) {
+        $input = [
+            'itemtype'            => $_POST['itemtype'],
+            'items_id'            => $_POST['items_id'],
+            'softwareversions_id' => $_POST['softwareversions_id'],
+        ];
+        $inst->check(-1, CREATE, $input);
+        if ($inst->add($input)) {
             Event::log(
                 $_POST["items_id"],
                 $_POST['itemtype'],

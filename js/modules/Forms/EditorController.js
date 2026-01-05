@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -312,7 +312,9 @@ export class GlpiFormEditorController
         // Handle conditions count changes
         document.addEventListener('conditions_count_changed', (e) => {
             this.#updateConditionsCount(
-                $(e.detail.container).closest('[data-glpi-form-editor-question-extra-details]'),
+                $(e.detail.container).closest(
+                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
+                ),
                 e.detail.conditions_count
             );
         });

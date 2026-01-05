@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -311,16 +311,16 @@ class ContractCost extends CommonDBChild
             $twig_params = [
                 'item' => $contract,
                 'rand' => $rand,
-                'button_msg' => __('Add a new cost'),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class="text-center">
-                    <button class="btn btn-primary" onclick="showCost{{ rand }}(-1)">{{ button_msg }}</button>
-                </div>
                 <div id="viewsubitem{{ rand }}" class="mb-3"></div>
                 <script>
-                    function showCost{{ rand }}(subitems_id) {
+                    function showCost{{ rand }}(subitems_id, btn) {
+                        // Hide the triggering button
+                        if (typeof btn !== undefined) {
+                            $(btn).hide();
+                        }
                         $.ajax({
                             url: '{{ config('root_doc') }}/ajax/viewsubitem.php',
                             method: 'POST',
@@ -342,6 +342,14 @@ class ContractCost extends CommonDBChild
                     });
                 </script>
 TWIG, $twig_params);
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:showCost' . $rand . '(-1, this);',
+                    'button_label' => __('Add a new cost'),
+                ]
+            );
+
         }
 
         $entries = [];

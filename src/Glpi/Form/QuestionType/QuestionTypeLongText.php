@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -71,19 +71,15 @@ final class QuestionTypeLongText extends AbstractQuestionType implements
                         .find('[name="default_value"], [data-glpi-form-editor-original-name="default_value"]');
                     const inst = tinyMCE.get(textarea.attr('id'));
 
-                    if (inst) {
-                        let content = inst.getContent();
-                        let tmp = document.createElement("DIV");
-                        tmp.innerHTML = content;
-                        content = tmp.textContent || tmp.innerText || "";
+                    let content = inst ? inst.getContent() : textarea.val() || "";
+                    const tmp = document.createElement("DIV");
+                    tmp.innerHTML = content;
+                    content = tmp.textContent || tmp.innerText || "";
 
-                        return new GlpiFormEditorConvertedExtractedDefaultValue(
-                            GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
-                            content
-                        );
-                    }
-
-                    return '';
+                    return new GlpiFormEditorConvertedExtractedDefaultValue(
+                        GlpiFormEditorConvertedExtractedDefaultValue.DATATYPE.STRING,
+                        content
+                    );
                 },
                 "convertDefaultValue": function (question, value) {
                     const GlpiFormEditorConvertedExtractedDefaultValue = $("[data-glpi-form-editor-container]")

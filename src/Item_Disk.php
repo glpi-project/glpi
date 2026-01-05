@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -231,10 +231,14 @@ class Item_Disk extends CommonDBChild
             && !(!empty($withtemplate) && ($withtemplate == 2))
         ) {
             $link = self::getFormURL() . '?itemtype=' . $item::class . '&items_id=' . $ID . '&withtemplate=' . (int) $withtemplate;
-            echo "<div class='mt-1 mb-3 text-center'>"
-               . "<a class='btn btn-primary' href='" . htmlescape($link) . "'>";
-            echo __s('Add a volume');
-            echo "</a></div>\n";
+
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => $link,
+                    'button_label' => __('Add a volume'),
+                ]
+            );
         }
 
         $iterator = self::getFromItem($item);

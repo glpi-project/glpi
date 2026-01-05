@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Config\ProxyExclusions;
 use Glpi\Marketplace\Controller;
@@ -88,8 +89,8 @@ $CFG_GLPI['languages'] = [
     'mn_MN'  => ['Монгол хэл',                'mn_MN.mo',    'mn',    'mn', 'mongolian',            2],
     'nl_NL'  => ['Nederlands',                'nl_NL.mo',    'nl',    'nl', 'dutch',                2],
     'nl_BE'  => ['Flemish',                   'nl_BE.mo',    'nl',    'nl', 'flemish',              2],
-    'nb_NO'  => ['Norsk (Bokmål)',            'nb_NO.mo',    'no',    'nb', 'norwegian',            2], // no_NB
-    'nn_NO'  => ['Norsk (Nynorsk)',           'nn_NO.mo',    'no',    'nn', 'norwegian',            2], // no_NN
+    'nb_NO'  => ['Norsk (Bokmål)',            'nb_NO.mo',    'no',    'nb', 'norwegian',            2],
+    'nn_NO'  => ['Norsk (Nynorsk)',           'nn_NO.mo',    'no',    'nn', 'norwegian',            2],
     'fa_IR'  => ['فارسی',                     'fa_IR.mo',    'fa',    'fa', 'persian',              2],
     'pl_PL'  => ['Polski',                    'pl_PL.mo',    'pl',    'pl', 'polish',               2],
     'pt_PT'  => ['Português',                 'pt_PT.mo',    'pt',    'pt', 'portuguese',           2],
@@ -115,6 +116,59 @@ $CFG_GLPI['languages'] = [
     'is_IS'  => ['íslenska',                  'is_IS.mo',    'is',    'en', 'icelandic',            2],
     'eo'     => ['Esperanto',                 'eo.mo',       'eo',    'en', 'esperanto',            2],
     'es_CL'  => ['Español chileno',           'es_CL.mo',    'es',    'es', 'spanish chilean',      2],
+];
+
+// Mapping of short language codes to their main locale
+$CFG_GLPI['main_languages'] = [
+    // 'ar' => 'ar_SA', // not sure about the default region for arabic language
+    'az' => 'az_AZ',
+    'bg' => 'bg_BG',
+    'bn' => 'bn_BD',
+    'id' => 'id_ID',
+    'ms' => 'ms_MY',
+    'ca' => 'ca_ES',
+    'cs' => 'cs_CZ',
+    'de' => 'de_DE',
+    'da' => 'da_DK',
+    'et' => 'et_EE',
+    'en' => 'en_GB',
+    'es' => 'es_ES',
+    'eu' => 'eu_ES',
+    'fr' => 'fr_FR',
+    'gl' => 'gl_ES',
+    'el' => 'el_GR',
+    'he' => 'he_IL',
+    'hi' => 'hi_IN',
+    'hr' => 'hr_HR',
+    'hu' => 'hu_HU',
+    'it' => 'it_IT',
+    'km' => 'km_KH',
+    'lv' => 'lv_LV',
+    'lt' => 'lt_LT',
+    'mn' => 'mn_MN',
+    'nl' => 'nl_NL',
+    'nb' => 'nb_NO',
+    'nn' => 'nn_NO',
+    'fa' => 'fa_IR',
+    'pl' => 'pl_PL',
+    'pt' => 'pt_PT',
+    'ro' => 'ro_RO',
+    'ru' => 'ru_RU',
+    'sk' => 'sk_SK',
+    'sl' => 'sl_SI',
+    'sq' => 'sq_AL',
+    'sr' => 'sr_RS',
+    'fi' => 'fi_FI',
+    'sv' => 'sv_SE',
+    'vi' => 'vi_VN',
+    'th' => 'th_TH',
+    'tr' => 'tr_TR',
+    'uk' => 'uk_UA',
+    'ja' => 'ja_JP',
+    'zh' => 'zh_CN',
+    'ko' => 'ko_KR',
+    'be' => 'be_BY',
+    'is' => 'is_IS',
 ];
 
 // Init to store glpi itemtype / tables link

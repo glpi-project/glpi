@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -1116,7 +1116,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             ($force === true)
             || (($this->fields['do_count'] == self::COUNT_YES)
               || ($this->fields['do_count'] == self::COUNT_AUTO)
-              && ($this->getField('last_execution_time') != null)
+              && ($this->fields['last_execution_time'] !== null && $this->fields['last_execution_time'] !== '')
               && ($this->fields['last_execution_time'] <= $CFG_GLPI['max_time_for_count']))
         ) {
             $search = new Search();

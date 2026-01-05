@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Glpi\Form\Condition\ConditionHandler\MultipleChoiceFromValuesConditionHandle
 use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
 use Glpi\Form\Condition\ConditionValueTransformerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use InvalidArgumentException;
 use Override;
@@ -276,10 +277,18 @@ TWIG;
             fn($option) => $option['uuid'],
             array_filter($this->getValues($question), fn($option) => $option['checked'])
         );
+
+        $options = $this->getOptions($question);
+        $translated_options = [];
+        foreach ($options as $uuid => $option) {
+            $key = sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid);
+            $translated_options[$uuid] = FormTranslation::translate($question, $key) ?? $option;
+        }
+
         return $twig->renderFromStringTemplate($template, [
             'question'       => $question,
             'label'          => $question->fields['name'],
-            'values'         => $this->getOptions($question),
+            'values'         => $translated_options,
             'checked_values' => $checked_values,
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);

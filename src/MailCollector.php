@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Error\ErrorHandler;
 use Laminas\Mail\Address;
@@ -982,7 +983,7 @@ class MailCollector extends CommonDBTM
         $blacklisted_emails   = Blacklist::getEmails();
         // Add name of the mailcollector as blacklisted
         $blacklisted_emails[] = $this->fields['name'];
-        if (Toolbox::inArrayCaseCompare($headers['from'], $blacklisted_emails)) {
+        if ($headers['from'] !== null && Toolbox::inArrayCaseCompare($headers['from'], $blacklisted_emails)) {
             $tkt['_blacklisted'] = true;
             return $tkt;
         }
@@ -1418,7 +1419,11 @@ class MailCollector extends CommonDBTM
             $h_tos   = $message->getHeader('to');
             if ($h_tos instanceof AbstractAddressList) {
                 foreach ($h_tos->getAddressList() as $address) {
-                    $mailto = Toolbox::strtolower($address->getEmail());
+                    $email = $address->getEmail();
+                    if ($email === null) {
+                        continue;
+                    }
+                    $mailto = Toolbox::strtolower($email);
                     if ($mailto === $this->fields['name']) {
                         $to = $mailto;
                     }
@@ -1432,7 +1437,11 @@ class MailCollector extends CommonDBTM
             $h_ccs   = $message->getHeader('cc');
             if ($h_ccs instanceof AbstractAddressList) {
                 foreach ($h_ccs->getAddressList() as $address) {
-                    $ccs[] = Toolbox::strtolower($address->getEmail());
+                    $email = $address->getEmail();
+                    if ($email === null) {
+                        continue;
+                    }
+                    $ccs[] = Toolbox::strtolower($email);
                 }
             }
         }
@@ -1450,7 +1459,7 @@ class MailCollector extends CommonDBTM
         }
 
         $mail_details = [
-            'from'       => Toolbox::strtolower($sender_email),
+            'from'       => $sender_email !== null ? Toolbox::strtolower($sender_email) : null,
             'subject'    => $subject,
             'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
             'to'         => $to !== null ? Toolbox::strtolower($to) : null,

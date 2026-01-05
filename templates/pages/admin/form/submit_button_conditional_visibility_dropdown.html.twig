@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -62,6 +62,14 @@
                 >
                     <i class="{{ strategy.getIcon() }} me-1"></i>
                     <span>{{ strategy.getLabel() }}</span>
+                    <span
+                        class="badge text-bg-secondary ms-1"
+                        data-glpi-editor-visibility-conditions-count-badge
+                        role="status"
+                        aria-label="{{ __('Conditions count') }}"
+                    >
+                        {{ item.getConfiguredConditionsData()|length }}
+                    </span>
                 </div>
             {% endfor %}
         </button>

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -620,6 +620,138 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsWithEmptyOperatorOnNullAnswer(): iterable
+    {
+        // Test case: A question with "VISIBLE_IF ... IS EMPTY" condition on a
+        // source question that has no answer (null value).
+        // This simulates the initial form load where no answers are provided.
+        // The condition should evaluate to true because null is considered empty.
+        $form_visible_if_empty = new FormBuilder();
+        $form_visible_if_empty->addQuestion("Source Question", QuestionTypeShortText::class);
+        $form_visible_if_empty->addQuestion("Conditional Question", QuestionTypeShortText::class);
+        $form_visible_if_empty->setQuestionVisibility(
+            "Conditional Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Source Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+
+        yield 'VISIBLE_IF EMPTY with null answer should be visible' => [
+            'form' => $form_visible_if_empty,
+            'input' => [
+                'answers' => [
+                    // Source question has no answer (simulating initial form load)
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Source Question'      => true,
+                    'Conditional Question' => true,
+                ],
+            ],
+        ];
+
+        yield 'VISIBLE_IF EMPTY with empty string answer should be visible' => [
+            'form' => $form_visible_if_empty,
+            'input' => [
+                'answers' => [
+                    'Source Question' => '',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Source Question'      => true,
+                    'Conditional Question' => true,
+                ],
+            ],
+        ];
+
+        yield 'VISIBLE_IF EMPTY with non-empty answer should be hidden' => [
+            'form' => $form_visible_if_empty,
+            'input' => [
+                'answers' => [
+                    'Source Question' => 'some value',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Source Question'      => true,
+                    'Conditional Question' => false,
+                ],
+            ],
+        ];
+
+        // Test case: A question with "HIDDEN_IF ... IS EMPTY" condition
+        $form_hidden_if_empty = new FormBuilder();
+        $form_hidden_if_empty->addQuestion("Source Question", QuestionTypeShortText::class);
+        $form_hidden_if_empty->addQuestion("Conditional Question", QuestionTypeShortText::class);
+        $form_hidden_if_empty->setQuestionVisibility(
+            "Conditional Question",
+            VisibilityStrategy::HIDDEN_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Source Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+
+        yield 'HIDDEN_IF EMPTY with null answer should be hidden' => [
+            'form' => $form_hidden_if_empty,
+            'input' => [
+                'answers' => [
+                    // Source question has no answer (simulating initial form load)
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Source Question'      => true,
+                    'Conditional Question' => false,
+                ],
+            ],
+        ];
+
+        yield 'HIDDEN_IF EMPTY with empty string answer should be hidden' => [
+            'form' => $form_hidden_if_empty,
+            'input' => [
+                'answers' => [
+                    'Source Question' => '',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Source Question'      => true,
+                    'Conditional Question' => false,
+                ],
+            ],
+        ];
+
+        yield 'HIDDEN_IF EMPTY with non-empty answer should be visible' => [
+            'form' => $form_hidden_if_empty,
+            'input' => [
+                'answers' => [
+                    'Source Question' => 'some value',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'Source Question'      => true,
+                    'Conditional Question' => true,
+                ],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnForm')]
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
@@ -627,6 +759,7 @@ final class EngineTest extends DbTestCase
     #[DataProvider('firstSectionShouldAlwaysBeVisible')]
     #[DataProvider('conditionsOnQuestionWithNullExtraData')]
     #[DataProvider('conditionsOnQuestionsWithNotVisibleQuestionAsSource')]
+    #[DataProvider('conditionsWithEmptyOperatorOnNullAnswer')]
     public function testComputation(
         FormBuilder $form,
         array $input,

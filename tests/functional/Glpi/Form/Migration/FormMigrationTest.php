@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Form\Migration;
 
 use AbstractRightsDropdown;
+use Change;
 use Computer;
 use Entity;
 use Glpi\DBAL\QueryExpression;
@@ -96,6 +97,8 @@ use Location;
 use LogicException;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Problem;
+use Ticket;
 
 final class FormMigrationTest extends DbTestCase
 {
@@ -3780,5 +3783,118 @@ final class FormMigrationTest extends DbTestCase
             throw new LogicException();
         }
         $this->assertEquals(Category::class, $config->getItemtype());
+    }
+
+    public static function provideITILObjectsRelationsMigration(): iterable
+    {
+        yield 'Item_Ticket relation' => [
+            'itil_class'     => Ticket::class,
+            'relation_table' => 'glpi_items_tickets',
+            'itil_fk'        => 'tickets_id',
+        ];
+
+        yield 'Change_Item relation' => [
+            'itil_class'     => Change::class,
+            'relation_table' => 'glpi_changes_items',
+            'itil_fk'        => 'changes_id',
+        ];
+
+        yield 'Item_Problem relation' => [
+            'itil_class'     => Problem::class,
+            'relation_table' => 'glpi_items_problems',
+            'itil_fk'        => 'problems_id',
+        ];
+    }
+
+    #[DataProvider('provideITILObjectsRelationsMigration')]
+    public function testMigrationOfITILObjectsRelations(
+        string $itil_class,
+        string $relation_table,
+        string $itil_fk
+    ): void {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $form_name = "Form to test $itil_class relations";
+
+        // Arrange: create a form with a short text question
+        $form_id = $this->createSimpleFormcreatorForm(
+            name: $form_name,
+            questions: [
+                [
+                    'name'      => 'My short text question',
+                    'fieldtype' => 'text',
+                ],
+            ],
+            ticket_destinations: [
+                [
+                    'name'    => 'Ticket destination',
+                    'content' => 'My content',
+                ],
+            ]
+        );
+
+        // Arrange: create a formanswers
+        $DB->insert('glpi_plugin_formcreator_formanswers', [
+            'plugin_formcreator_forms_id' => $form_id,
+        ]);
+        $formanswers_id = $DB->insertId();
+
+        // Arrange: create an ITIL object and link it to the form
+        $itil_object = $this->createItem($itil_class, [
+            'name'    => "$itil_class for form migration test",
+            'content' => "$itil_class content",
+        ]);
+        $DB->insert($relation_table, [
+            'itemtype' => 'PluginFormcreatorFormAnswer',
+            'items_id' => $formanswers_id,
+            $itil_fk   => $itil_object->getID(),
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = new PluginMigrationResult();
+        $this->setPrivateProperty($migration, 'result', $result);
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Get migrated form ID
+        $migrated_form_id = getItemByTypeName(Form::class, $form_name, true);
+
+        // Assert: verify a new relationship exists between the ITIL object and the migrated form
+        $relation = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => $relation_table,
+            'WHERE'  => [
+                'itemtype' => Form::class,
+                'items_id' => $migrated_form_id,
+                $itil_fk   => $itil_object->getID(),
+            ],
+        ]);
+        $this->assertEquals(1, $relation->count());
+
+        $this->assertEquals(
+            [Form::class => [$migrated_form_id => $migrated_form_id]],
+            $itil_object->getLinkedItems()
+        );
+    }
+
+    public function testFormMigrationActorsWithNullDefaultValue(): void
+    {
+        global $DB;
+
+        // Arrange: create a form with an actor question without a default value
+        $this->createSimpleFormcreatorForm('Actor test with null default value', [
+            [
+                'name'      => 'Actor',
+                'fieldtype' => 'actor',
+            ],
+        ]);
+
+        // Act: execute migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $result = $migration->execute();
+
+        // Assert: migration should be done without error
+        $this->assertTrue($result->isFullyProcessed());
     }
 }

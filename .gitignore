@@ -26,8 +26,10 @@ phpunit.xml
 /nbproject
 .composer.hash
 /**/*.min.css
+!/tests/**/*.min.css
 /css/lib/
 /**/*.min.js
+!/tests/**/*.min.js
 /node_modules/
 .package.hash
 /public/build/
@@ -47,3 +49,9 @@ phpstan.neon
 /resources/.illustrations_translations.php
 /phpunit/files/*
 /.dump/
+
+# Playwright
+/tests/e2e/results/
+/tests/e2e/.env.local
+!/tests/e2e/.env
+

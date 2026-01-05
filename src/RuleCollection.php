@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
@@ -569,12 +570,14 @@ TWIG, $twig_params);
 
         $ruletype = static::getRuleClassName();
 
+        Session::initNavigateListItems($ruletype);
         $entries = [];
         for ($i = $p['start'],$j = 0; isset($this->RuleList->list[$j]); $i++,$j++) {
             $entries[] = [
                 'itemtype' => $ruletype,
                 'id'       => $this->RuleList->list[$j]->fields['id'],
             ] + $this->RuleList->list[$j]->getDataForList($display_criterias, $display_actions, $display_entities, $canedit);
+            Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
         }
 
         $columns = [
@@ -592,7 +595,7 @@ TWIG, $twig_params);
         }
         $columns['is_active'] = __('Active');
         if ($display_entities) {
-            $columns['entities_id'] = Entity::getTypeName(1);
+            $columns['entity'] = Entity::getTypeName(1);
         }
         $columns['rank'] = __('Position');
         $columns['sort'] = '';

@@ -1,0 +1,62 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set block_class = block_class ?? 'd-flex mb-3' %}
+{% set button_id = button_id ?? false %}
+{% set button_class = button_class ?? 'btn btn-primary ms-1' %}
+{% set button_icon = button_icon ?? 'ti ti-link' %}
+{% set button_label = button_label ?? _x('button', 'Add') %}
+{% set button_attributes = button_attributes ?? {} %}
+{% set button_role = button_role ?? 'button' %}
+
+<div class="{{ block_class }}">
+    <a
+        role="{{ button_role }}"
+        class="{{ button_class }}"
+{% if button_id %}
+        id="{{ button_id }}"
+{% endif %}
+{% if add_link starts with 'javascript:' %}
+        onclick="{{ add_link }}"
+{% else %}
+        href="{{ add_link }}"
+{% endif %}
+{% for attribute, value in button_attributes %}
+        {{ attribute }}="{{ value }}"
+{% endfor %}
+    >
+{% if button_icon is not empty %}
+        <i class="{{ button_icon }}"></i>
+{% endif %}
+        {{ button_label }}
+    </a>
+</div>

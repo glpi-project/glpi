@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -61,13 +61,15 @@ final class PartialMatchStrategy implements FuzzyMatcherStrategyInterface
     {
         return 1;
     }
+
     public function deletionCost(): int
     {
         return 0;
     }
 
-    public function maxCostForSuccess(): int
+    public function maxCostForSuccess(?int $word_length = 0): int
     {
-        return 2;
+        // Allow up to 10% of the word length as cost
+        return (int) ceil($word_length * 0.1);
     }
 }

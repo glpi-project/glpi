@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+use Glpi\Application\View\TemplateRenderer;
 
 /**
  *  NetworkAlias Class
@@ -255,8 +257,6 @@ class NetworkAlias extends FQDNLabel
         }
 
         if ($canedit) {
-            echo "<div class='firstbloc'>";
-
             echo Html::scriptBlock(
                 "function viewAddAlias$rand() {"
                 . Ajax::updateItemJsCode(
@@ -273,9 +273,13 @@ class NetworkAlias extends FQDNLabel
                 . "};"
             );
 
-            echo "<a class='btn btn-primary' href='javascript:viewAddAlias$rand();'>";
-            echo __s('Add a network alias') . "</a>";
-            echo "</div>";
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:viewAddAlias' . $rand . '();',
+                    'button_label' => __('Add a network alias'),
+                ]
+            );
         }
         echo "<div id='viewnetworkalias$rand'></div>";
 

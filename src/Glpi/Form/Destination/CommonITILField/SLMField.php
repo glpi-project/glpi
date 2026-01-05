@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -193,7 +193,10 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         DatabaseMapper $mapper,
     ): array {
         // Check if a service level is defined
-        if (!isset($config[SLMFieldConfig::SLM_ID])) {
+        if (
+            !isset($config[SLMFieldConfig::SLM_ID])
+            || $config[SLMFieldConfig::SLM_ID] == 0
+        ) {
             return parent::prepareDynamicConfigDataForImport(
                 $config,
                 $destination,

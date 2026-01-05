@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,12 @@
 
 namespace Glpi\FuzzyMatcher;
 
+use Normalizer;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
+
 final class FuzzyMatcher
 {
     public function __construct(
@@ -48,8 +54,8 @@ final class FuzzyMatcher
         }
 
         // Cast to lowercase to avoid case issues
-        $subject = strtolower($subject);
-        $filter  = strtolower($filter);
+        $subject = mb_strtolower($subject);
+        $filter  = mb_strtolower($filter);
 
         // Start with a simple string comparison if the strategy allow it.
         if (
@@ -59,6 +65,30 @@ final class FuzzyMatcher
             return true;
         }
 
+        if (
+            preg_match('/^[\p{Latin}\p{P}\s\d]+$/u', $subject) !== 1
+            || preg_match('/^[\p{Latin}\p{P}\s\d]+$/u', $filter) !== 1
+        ) {
+            // `\p{Latin}` -> latin alphabet chars
+            // `\p{P}` -> punctuation chars
+            // `\s` -> spaces
+            // `\d` -> digits
+
+            // `levenshtein` algorithm is not compatible with some languages,
+            // for instance languages written with kanjis cannot be compared by splitting sentences in words.
+            // For the moment, we only handle subject/filters that contains only latin chars,
+            // until someone is able to enhance support of other alphabets.
+            return false;
+        }
+
+        // Normalize strings to remove accents
+        // The normalizer decomposes the string (FORM_D), which then allows
+        // the preg_replace to remove the accents (identified by \p{Mn})
+        $subject = Normalizer::normalize($subject, Normalizer::FORM_D);
+        $subject = preg_replace('/\p{Mn}/u', '', $subject);
+        $filter = Normalizer::normalize($filter, Normalizer::FORM_D);
+        $filter = preg_replace('/\p{Mn}/u', '', $filter);
+
         // Some strategies might disable fuzzy matching for short filters
         // as it may lead too many results that are not really relevant.
         // In this case, we stop the execution here.
@@ -67,19 +97,39 @@ final class FuzzyMatcher
             return false;
         }
 
-        // Actual fuzzy matching, use the costs and threshold defined in the
-        // strategy.
+        $subject_words = preg_split('/\s+/', $subject, -1, PREG_SPLIT_NO_EMPTY);
+        $filter_words = preg_split('/\s+/', $filter, -1, PREG_SPLIT_NO_EMPTY);
+
+        // Check if each filter word match at least one subject word
+        foreach ($filter_words as $filter_word) {
+            $word_match = false;
+            foreach ($subject_words as $subject_word) {
+                if ($this->matchWord($subject_word, $filter_word)) {
+                    $word_match = true;
+                    break;
+                }
+            }
+
+            if (!$word_match) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function matchWord(string $word, string $filter): bool
+    {
         $cost = levenshtein(
-            string1: $subject,
+            string1: $word,
             string2: $filter,
             insertion_cost: $this->strategy->insertionCost(),
             replacement_cost: $this->strategy->replacementCost(),
             deletion_cost: $this->strategy->deletionCost(),
         );
-        if ($cost <= $this->strategy->maxCostForSuccess()) {
-            return true;
-        }
 
-        return false;
+        $max_cost = $this->strategy->maxCostForSuccess(strlen($word));
+
+        return $cost <= $max_cost;
     }
 }

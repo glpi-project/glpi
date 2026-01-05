@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -201,6 +201,7 @@ final class HomePageTabs extends CommonGLPI
             'showmassiveactions' => false,
             'hide_controls'      => true,
             'as_map'             => false,
+            'usesession'         => 0, // false won't work here, need to be 0
             'push_history'       => false,
             'sort'               => [19],
             'order'              => ['DESC'],

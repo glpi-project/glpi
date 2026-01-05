@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -122,7 +122,7 @@ class HasImpactCapacity extends AbstractCapacity
 
     public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
-        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
+        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED), true) ?? [];
         if (!in_array($classname, $enabled_types, true)) {
             $enabled_types[] = $classname;
             Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
@@ -135,7 +135,7 @@ class HasImpactCapacity extends AbstractCapacity
 
         unset($CFG_GLPI['impact_asset_types'][$classname]);
 
-        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
+        $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED), true) ?? [];
         if (in_array($classname, $enabled_types, true)) {
             $enabled_types = \array_values(\array_diff($enabled_types, [$classname]));
             Config::setConfigurationValues('core', [Impact::CONF_ENABLED => json_encode($enabled_types)]);
