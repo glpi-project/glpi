@@ -58,7 +58,7 @@ final class CheckTwigTemplatesSyntaxCommand extends Command
     {
         parent::configure();
 
-        $this->setName(self::class);
+        $this->setName('tools:check_twig_templates_syntax');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
