@@ -35,6 +35,7 @@
 
 /**
  * @since 9.5.0
+ * @todo This should use standard GLPI right management. Currently blocking API access.
  */
 class ImpactContext extends CommonDBTM
 {
