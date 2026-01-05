@@ -54,7 +54,7 @@
             {
                 entity: item.getEntityID(),
                 rand: rand,
-                onchange: 'template_update' ~ rand ~ '(this.value);'
+                on_change: 'template_update' ~ rand ~ '(this.value)'
             }|merge(field_options)
         ) }}
 
@@ -80,7 +80,7 @@
                     }
                     $("#dropdown_background{{ rand }}").trigger("setValue", data.background);
                     if (data.text.length > 0) {
-                        setRichTextEditorContent("text{$rand}", data.text);
+                        setRichTextEditorContent("text_{{ rand }}", data.text);
                     }
 
                     // set planification fields
