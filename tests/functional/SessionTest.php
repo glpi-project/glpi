@@ -348,6 +348,41 @@ class SessionTest extends DbTestCase
                 'legacy_config' => null,
                 'expected'      => 'it_IT',
             ],
+            [
+                // Polish without country code should match pl_PL
+                'header'        => 'pl',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'pl_PL',
+            ],
+            [
+                // French without country code should match first fr_* (fr_FR)
+                'header'        => 'fr',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'fr_FR',
+            ],
+            [
+                // Mixed: exact match (fr_CA) has priority over short code fallback
+                'header'        => 'fr_CA, pl;q=0.9',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'fr_CA',
+            ],
+            [
+                // Short code match when exact locale not available
+                'header'        => 'pl, fr_FR;q=0.9',
+                'config'        => 'en_GB',
+                'legacy_config' => null,
+                'expected'      => 'pl_PL',
+            ],
+            [
+                // English without country code should match en_GB (first en_* locale)
+                'header'        => 'en',
+                'config'        => 'fr_FR',
+                'legacy_config' => null,
+                'expected'      => 'en_GB',
+            ],
         ];
     }
 

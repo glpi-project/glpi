@@ -43,6 +43,7 @@ use function Safe\json_encode;
 
 /**
  * @since 9.5.0
+ * @todo This should use standard GLPI right management. Currently blocking API access.
  */
 class Impact extends CommonGLPI
 {
@@ -1422,9 +1423,7 @@ TWIG, $twig_params);
         // If the node has a parent, add it to the node list aswell
         if (!empty($new_node['parent'])) {
             $compound = new ImpactCompound();
-            $compound->getFromDB($new_node['parent']);
-
-            if (!isset($nodes[$new_node['parent']])) {
+            if (!isset($nodes[$new_node['parent']]) && $compound->getFromDB($new_node['parent'])) {
                 $nodes[$new_node['parent']] = [
                     'id'    => $compound->fields['id'],
                     'label' => $compound->fields['name'],

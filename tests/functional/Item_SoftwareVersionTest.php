@@ -296,7 +296,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
-        $inst = new \Item_SoftwareVersion();
+        $inst = new Item_SoftwareVersion();
         $input = [
             'items_id'            => $computer->getID(),
             'itemtype'            => 'Computer',
@@ -313,25 +313,25 @@ class Item_SoftwareVersionTest extends DbTestCase
         // Test case 1: Software UPDATE + Computer READ = should work
         $_SESSION['glpiactiveprofile']['software'] = READ | UPDATE;
         $_SESSION['glpiactiveprofile']['computer'] = READ;
-        $inst1 = new \Item_SoftwareVersion();
+        $inst1 = new Item_SoftwareVersion();
         $this->assertTrue($inst1->can(-1, CREATE, $input), 'Software UPDATE + Computer READ should allow creation');
 
         // Test case 2: Computer UPDATE + Software READ = should work
         $_SESSION['glpiactiveprofile']['software'] = READ;
         $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
-        $inst2 = new \Item_SoftwareVersion();
+        $inst2 = new Item_SoftwareVersion();
         $this->assertTrue($inst2->can(-1, CREATE, $input), 'Computer UPDATE + Software READ should allow creation');
 
         // Test case 3: Software UPDATE only (no computer rights) = should fail
         $_SESSION['glpiactiveprofile']['software'] = READ | UPDATE;
         $_SESSION['glpiactiveprofile']['computer'] = 0;
-        $inst3 = new \Item_SoftwareVersion();
+        $inst3 = new Item_SoftwareVersion();
         $this->assertFalse($inst3->can(-1, CREATE, $input), 'Software UPDATE without Computer READ should deny creation');
 
         // Test case 4: Computer UPDATE only (no software rights) = should fail
         $_SESSION['glpiactiveprofile']['software'] = 0;
         $_SESSION['glpiactiveprofile']['computer'] = READ | UPDATE;
-        $inst4 = new \Item_SoftwareVersion();
+        $inst4 = new Item_SoftwareVersion();
         $this->assertFalse($inst4->can(-1, CREATE, $input), 'Computer UPDATE without Software READ should deny creation');
 
         // Restore original rights

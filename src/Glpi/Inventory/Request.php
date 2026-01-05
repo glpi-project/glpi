@@ -58,6 +58,7 @@ class Request extends AbstractRequest
 
     /** @var string */
     private string $network_inventory_mode;
+    private Conf $conf;
 
     protected function initHeaders(): Common
     {
@@ -76,6 +77,8 @@ class Request extends AbstractRequest
     protected function handleAction(string $action, mixed $content = null): bool
     {
         $this->query = $action;
+        $this->conf = new Conf();
+
         switch ($action) {
             case self::GET_PARAMS:
                 $this->getParams($content);
@@ -165,7 +168,7 @@ class Request extends AbstractRequest
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
+            'expiration' => $this->conf->inventory_frequency,
             'status'     => 'ok',
         ];
 
@@ -197,12 +200,12 @@ class Request extends AbstractRequest
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
-                'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
+                'expiration' => $this->conf->inventory_frequency,
                 'status'     => 'ok',
             ];
         } else {
             $response = [
-                'PROLOG_FREQ'  => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
+                'PROLOG_FREQ'  => $this->conf->inventory_frequency,
                 'RESPONSE'     => 'SEND',
             ];
         }
@@ -310,7 +313,7 @@ class Request extends AbstractRequest
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
+            'expiration' => $this->conf->inventory_frequency,
             'status'     => 'ok',
         ];
 
@@ -400,7 +403,7 @@ class Request extends AbstractRequest
         } else {
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
                 $response = [
-                    'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
+                    'expiration' => $this->conf->inventory_frequency,
                     'status'     => 'ok',
                 ];
             } else {
