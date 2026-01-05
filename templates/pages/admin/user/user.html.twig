@@ -53,6 +53,8 @@
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
+        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
+
         <div class="card-body d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
                 <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
@@ -319,6 +321,8 @@
         {% if not is_preference_form %}
             {% if no_form_buttons is not defined or no_form_buttons == false %}
                 {{ include('components/form/buttons.html.twig') }}
+            {% else %}
+                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             {% endif %}
             {% if params['formfooter'] ?? true %}
                 <div class="card-footer mx-n2 mb-n2">
@@ -326,6 +330,7 @@
                 </div>
             {% endif %}
         {% else %}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
             <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                 <button class="btn btn-primary me-2" type="submit" name="update" value="1">
                     <i class="ti ti-device-floppy"></i>
