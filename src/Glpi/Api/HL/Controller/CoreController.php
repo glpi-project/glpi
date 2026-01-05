@@ -51,6 +51,7 @@ use Glpi\Http\Response;
 use Glpi\OAuth\Server;
 use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
+use Glpi\UI\ThemeManager;
 use Html;
 use JsonException;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -274,7 +275,11 @@ EOT,
     {
         global $CFG_GLPI;
 
-        $swagger_content = '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
+        $swagger_content = '<!DOCTYPE html><html lang="en"';
+        if (ThemeManager::getInstance()->getCurrentTheme()->isDarkTheme()) {
+            $swagger_content .= ' class="dark-mode"';
+        }
+        $swagger_content .= '><head><meta charset="UTF-8"><title>GLPI API Documentation</title>';
         $swagger_content .= Html::script('/lib/swagger-ui.js');
         $swagger_content .= Html::css('/lib/swagger-ui.css');
         $favicon = Html::getPrefixedUrl('/pics/favicon.ico');
