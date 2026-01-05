@@ -42,6 +42,7 @@ use Glpi\Controller\ServiceCatalog\IndexController;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
+use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\Helpdesk\HomePageTabs;
 use Glpi\Tests\DbTestCase;
 use ITILFollowup;
@@ -56,6 +57,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Ticket;
 use Ticket_Contract;
 use Ticket_User;
+use User;
 
 /* Test for inc/entity.class.php */
 
@@ -896,7 +898,7 @@ class EntityTest extends DbTestCase
         $this->assertTrue($update);
 
         // create a user for this test (avoid using current logged user as we don't anonymize him)
-        $user_obj = new \User();
+        $user_obj = new User();
         $user_obj->add([
             'name'     => 'test_anon_user',
             'password' => 'test_anon_user',
@@ -1694,6 +1696,50 @@ class EntityTest extends DbTestCase
             ->text()
         ;
         $this->assertEquals($expected, $title);
+    }
+
+    public function testHelpdeskServiceCustomTitleIsTranslated(): void
+    {
+        $this->login();
+
+        // Arrange: set a custom title on the root entity and add a custom translation
+        $root = $this->getTestRootEntity();
+        $root = $this->updateItem(Entity::class, $root->getID(), [
+            'custom_helpdesk_home_title' => 'My custom value',
+        ]);
+        $this->createItem(HelpdeskTranslation::class, [
+            'itemtype'     => Entity::class,
+            'items_id'     => $root->getID(),
+            'key'          => Entity::TRANSLATION_KEY_CUSTOM_HELPDESK_HOME_TITLE,
+            'language'     => 'fr_FR',
+            'translations' => json_encode(['one' => 'Ma valeur personnalisée']),
+        ], ['translations']);
+        $this->updateItem(
+            User::class,
+            getItemByTypeName(User::class, 'post-only', true),
+            ['language' => 'fr_FR'],
+        );
+
+        // Act: render home page
+        $this->login('post-only');
+        $this->setEntity($root->getID(), true); // Can't pass entity value for this one, it must be set in the session.
+        $_SERVER['REQUEST_URI'] = ""; // Needed to avoid warnings
+        $renderer = TemplateRenderer::getInstance();
+        $content = $renderer->render('pages/helpdesk/index.html.twig', [
+            // We don't case about these, set minimal required values
+            'entity' => $root,
+            'title' => '',
+            'tiles' => [],
+            'tabs'  => new HomePageTabs(),
+            'password_alert' => null,
+        ]);
+
+        // Assert: compare the rendered title with the expected value
+        $title = (new Crawler($content))
+            ->filter('[data-testid=home-title]')
+            ->text()
+        ;
+        $this->assertEquals('Ma valeur personnalisée', $title);
     }
 
     public static function helpdeskSearchBarConfigIsAppliedProvider(): iterable
