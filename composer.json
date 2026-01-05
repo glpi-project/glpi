@@ -44,7 +44,7 @@
         "mexitek/phpcolors": "^1.0",
         "michelf/php-markdown": "^1.9",
         "monolog/monolog": "^2.8",
-        "paragonie/sodium_compat": "^1.17",
+        "paragonie/sodium_compat": "^1.24",
         "phpmailer/phpmailer": "^6.8",
         "psr/cache": "^1.0",
         "psr/log": "^1.1",
