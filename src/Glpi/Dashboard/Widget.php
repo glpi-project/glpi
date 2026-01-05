@@ -1279,8 +1279,11 @@ HTML;
 
         if ($p['legend']) {
             $options['legend'] = [
-                'show' => true,
-                'left' => 'left',
+                'show'      => true,
+                'left'      => 'left',
+                'textStyle' => [
+                    'color' => $fg_color,
+                ],
             ];
         }
 
@@ -1643,8 +1646,11 @@ HTML;
 
         if ($p['legend']) {
             $options['legend'] = [
-                'show' => true,
-                'left' => 'left',
+                'show'      => true,
+                'left'      => 'left',
+                'textStyle' => [
+                    'color' => $fg_color,
+                ],
             ];
         }
 
