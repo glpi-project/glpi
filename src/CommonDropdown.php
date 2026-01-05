@@ -389,11 +389,11 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
-            'item'   => $this,
-            'params' => $options,
+            'item'              => $this,
+            'params'            => $options,
             'additional_fields' => $fields,
-            'is_device_model' => $is_device_model,
-            'has_device_model' => $has_device_model
+            'is_device_model'   => $is_device_model,
+            'has_device_model'  => $has_device_model,
         ]);
 
         return true;

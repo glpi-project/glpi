@@ -39,7 +39,7 @@
     {% set params        = params ?? [] %}
     {% set target        = params['target'] ?? item.getFormURL() %}
     {% set withtemplate  = params['withtemplate'] ?? '' %}
-    {% set item_has_pictures = item.hasItemtypeOrModelPictures()%}
+    {% set item_has_pictures = item.hasItemtypeOrModelPictures() %}
 
     {% if item_has_pictures and not is_device_model and has_device_model %}
         <div class="card-body d-flex flex-wrap">
@@ -82,7 +82,7 @@
             {% endif %}
             {% if field['name'] in picture_fields %}
                 {% set show_field = false %}
-                {% if is_model %}
+                {% if is_device_model %}
                     {% set has_picture_field = true %}
                 {% endif %}
             {% endif %}
