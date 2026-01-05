@@ -215,7 +215,7 @@ final class CustomAssetController extends AbstractController
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
                     'read' => static function () use ($asset_class) {
-                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_')] + $asset_class::getSystemSQLCriteria('_');
+                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_') + $asset_class::getSystemSQLCriteria('_')];
                         return $criteria;
                     },
                 ],
@@ -262,7 +262,7 @@ final class CustomAssetController extends AbstractController
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
                     'read' => static function () use ($asset_class) {
-                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_')] + $asset_class::getSystemSQLCriteria('_');
+                        $criteria = ['WHERE' => $asset_class::getAssignableVisiblityCriteria('_') + $asset_class::getSystemSQLCriteria('_')];
                         return $criteria;
                     },
                 ],
