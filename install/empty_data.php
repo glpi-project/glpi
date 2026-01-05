@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,7 @@
  *
  * ---------------------------------------------------------------------
  */
+
 use Glpi\Application\Environment;
 use Glpi\Event;
 use Glpi\Form\AnswersSet;
@@ -78,6 +79,9 @@ $empty_data_builder = new class {
     // This cover up to 16 concurent threads, it should be quite enough.
     public const PLAYWRIGHT_MAX_WORKERS = 16;
 
+    /**
+     * @return array<string,array<string,mixed>>
+     */
     public function getEmptyData(): array
     {
         $tables = [];

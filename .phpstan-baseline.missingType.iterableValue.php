@@ -14,12 +14,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/inc/relation.constant.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method class@anonymous/install/empty_data\\.php\\:50\\:\\:getEmptyData\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/install/empty_data.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var for variable \\$CFG_GLPI has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
