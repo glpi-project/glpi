@@ -32,49 +32,49 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\UI\IllustrationManager;
+namespace Glpi\Tools\Command;
+
+use Glpi\Console\AbstractCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class GenerateIllustrationTranslationFileCommand extends Command
+final class CreateDevLdapCommand extends AbstractCommand
 {
-    protected $requires_db = false;
-
-    #[Override]
     protected function configure()
     {
         parent::configure();
 
-        $this->setName('tools:generate_illustration_translations');
+        $this->setName('tools:generate_dev_ldap');
+        $this->setDescription('Create a ready to use AuthLDAP object.');
     }
 
-    #[Override]
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $content = "<?php" . PHP_EOL . PHP_EOL;
+        global $CFG_GLPI;
 
-        $manager = new IllustrationManager();
-        foreach ($manager->getAllIconsTitles() as $title) {
-            $title = addslashes($title);
-            $content .= '_x("Icon", "' . $title . '");' . PHP_EOL;
+        $ldap = new AuthLDAP();
+        $id = $ldap->add([
+            'name'          => 'openldap',
+            'host'          => 'openldap',
+            'basedn'        => 'dc=glpi,dc=org',
+            'rootdn'        => 'cn=admin,dc=glpi,dc=org',
+            'port'          => '389',
+            'condition'     => '(objectClass=inetOrgPerson)',
+            'login_field'   => 'uid',
+            'sync_field'    => 'entryuuid',
+            'use_tls'       => 0,
+            'use_dn'        => 1,
+            'is_active'     => 1,
+            'rootdn_passwd' => 'admin',
+            'use_bind'      => 1,
+        ]);
+        if (!$id) {
+            $output->writeln("<error>Failed to create AuthLDAP</error>");
         }
 
-        foreach ($manager->getAllIconsTags() as $tag) {
-            $tag = addslashes($tag);
-            $content .= '_x("Icon", "' . $tag . '");' . PHP_EOL;
-        }
-
-        $written_bytes = file_put_contents(
-            IllustrationManager::TRANSLATION_FILE,
-            $content
-        );
-        if ($written_bytes !== strlen($content)) {
-            throw new RuntimeException('Unable to write the illustration translations file contents.');
-        }
-
-        $output->writeln('Illustration translations file generated successfully.');
-
+        $link = $CFG_GLPI['url_base'] . $ldap->getLinkURL();
+        $output->writeLn("<info>$link</info>");
         return Command::SUCCESS;
     }
 }

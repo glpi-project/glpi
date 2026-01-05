@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tools\Command;
+
 use Glpi\Console\AbstractCommand;
 use Glpi\Form\Form;
 use Glpi\UI\IllustrationManager;

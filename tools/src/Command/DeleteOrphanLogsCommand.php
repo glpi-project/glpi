@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tools\Command;
+
 use Glpi\Console\AbstractCommand;
 use Glpi\DBAL\QuerySubQuery;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -40,7 +42,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class DeleteOrphanLogsCommand extends AbstractCommand
+final class DeleteOrphanLogsCommand extends AbstractCommand
 {
     protected function configure()
     {

@@ -32,6 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tools\Command;
+
 use Glpi\Console\AbstractCommand;
 use Glpi\Plugin\Hooks;
 use Symfony\Component\Console\Input\InputInterface;
