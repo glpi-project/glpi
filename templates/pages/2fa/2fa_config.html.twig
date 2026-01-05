@@ -52,7 +52,11 @@
                 </td>
             </tr>
             <tr class="tab_bg_1">
-                <td>{{ __('Enforce 2FA') }}</td>
+                {% if item.getType() == 'User' %}
+                    <td>{{ __('Unenforce 2FA') }}</td>
+                {% else %}
+                    <td>{{ __('Enforce 2FA') }}</td>
+                {% endif %}
                 <td>
                     {% if item.getType() == 'Entity' %}
                         {{ fields.dropdownArrayField('2fa_enforcement_strategy', item.fields['2fa_enforcement_strategy'], {
@@ -62,6 +66,10 @@
                         }, '', {
                             'no_label': true,
                             add_field_html: inherited_value
+                        }) }}
+                    {% elseif item.getType() == 'User' %}
+                        {{ fields.dropdownYesNo('2fa_unenforced', item.fields['2fa_unenforced'], '', {
+                            'no_label': true,
                         }) }}
                     {% else %}
                         {{ fields.dropdownYesNo('2fa_enforced', item.fields['2fa_enforced'], '', {
