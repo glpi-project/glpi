@@ -81,7 +81,7 @@ if ($_REQUEST["action"] == "get_externalevent_template") {
         $template = new PlanningExternalEventTemplate();
         $template->getFromDB($_POST[$key]);
 
-        // Decode rrule field on ly if not empty
+        // Decode rrule field only if not empty
         if (!empty($template->fields['rrule'])) {
             $template->fields['rrule'] = json_decode($template->fields['rrule'], true);
         }
