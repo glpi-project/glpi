@@ -45,7 +45,7 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Process\Process;
 
-class PluginReleaseCommand extends AbstractPluginCommand
+final class PluginReleaseCommand extends AbstractPluginCommand
 {
     private const SCRIPT_VERSION = '2.0.0';
 

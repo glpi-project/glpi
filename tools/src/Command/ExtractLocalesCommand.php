@@ -43,7 +43,7 @@ use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ExtractLocalesCommand extends AbstractCommand
+final class ExtractLocalesCommand extends AbstractCommand
 {
     protected const ALLOW_PLUGIN_OPTION = true;
 

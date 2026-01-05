@@ -39,6 +39,7 @@ use RecursiveDirectoryIterator;
 use RecursiveFilterIterator;
 use RecursiveIteratorIterator;
 use SplFileInfo;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidOptionException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -52,7 +53,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use Twig\TwigTest;
 
-class CompileTwigTemplatesCommand extends AbstractCommand
+final class CompileTwigTemplatesCommand extends AbstractCommand
 {
     protected const ALLOW_PLUGIN_OPTION = true;
 
@@ -103,7 +104,7 @@ class CompileTwigTemplatesCommand extends AbstractCommand
 
         $this->io->newLine(2);
 
-        return 0; // Success
+        return Command::SUCCESS;
     }
 
     /**
