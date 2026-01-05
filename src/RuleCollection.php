@@ -570,12 +570,14 @@ TWIG, $twig_params);
 
         $ruletype = static::getRuleClassName();
 
+        Session::initNavigateListItems($ruletype);
         $entries = [];
         for ($i = $p['start'],$j = 0; isset($this->RuleList->list[$j]); $i++,$j++) {
             $entries[] = [
                 'itemtype' => $ruletype,
                 'id'       => $this->RuleList->list[$j]->fields['id'],
             ] + $this->RuleList->list[$j]->getDataForList($display_criterias, $display_actions, $display_entities, $canedit);
+            Session::addToNavigateListItems($ruletype, $this->RuleList->list[$j]->fields['id']);
         }
 
         $columns = [
