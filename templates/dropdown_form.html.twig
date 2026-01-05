@@ -39,9 +39,9 @@
     {% set params        = params ?? [] %}
     {% set target        = params['target'] ?? item.getFormURL() %}
     {% set withtemplate  = params['withtemplate'] ?? '' %}
-    {% set item_has_pictures = item.hasItemtypeOrModelPictures() and not is_model %}
+    {% set item_has_pictures = item.hasItemtypeOrModelPictures()%}
 
-    {% if item_has_pictures and not is_model %}
+    {% if item_has_pictures and not is_device_model and has_device_model %}
         <div class="card-body d-flex flex-wrap">
             <div class="col-12 col-xxl-{{ item_has_pictures ? '9' : '12' }} flex-column">
                 <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
@@ -221,11 +221,11 @@
         {% endfor %}
 
         {# if have pictures from it's model and current object not a model #}
-        {% if item_has_pictures and not is_model %}
-            </div> {# .row #}
-                </div> {# .row #}
-                    </div> {# .flex-row #}
-                        </div>
+        {% if item_has_pictures and not is_device_model and has_device_model %}
+                        </div> {# .row #}
+                    </div> {# .row #}
+                </div> {# .flex-row #}
+            </div>
             <div class="col-12 col-xxl-3 flex-column">
                 <div class="flex-row asset-pictures">
                 {{ include('components/form/pictures.html.twig', {'gallery_type': ''}) }}
@@ -233,14 +233,14 @@
             </div>
         {% else %}
             {# Show pictures at the bottom of the form for current object if needed -> ie DropdownModel#}
-            {% if is_model and has_picture_field %}
+            {% if is_device_model or has_picture_field %}
                 {{ fields.largeTitle(_n('Picture', 'Pictures', get_plural_number()), 'ti ti-photo') }}
             {% endif %}
             {% for field in additional_fields %}
                 {% set type = field['type']|default('') %}
                 {% if field['name'] in picture_fields %}
                     {% if type == 'picture' %}
-                        {% if field['name'] == 'picture_front' and not is_model %}
+                        {% if field['name'] == 'picture_front' and not is_device_model %}
                             {{ fields.smallTitle(__('Rack pictures'), 'Rack'|itemtype_icon) }}
                         {% endif %}
                         {% if item.fields[field['name']] is not empty %}
