@@ -1434,12 +1434,12 @@ TWIG,
             }
 
             $allassets = [
-                'Computer',
-                'Monitor',
-                'Peripheral',
-                'NetworkEquipment',
-                'Phone',
-                'Printer',
+                Computer::class,
+                Monitor::class,
+                Peripheral::class,
+                NetworkEquipment::class,
+                Phone::class,
+                Printer::class,
             ];
 
             foreach ($allassets as $type) {
