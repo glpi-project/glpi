@@ -108,7 +108,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
     {
         global $DB;
 
-        $ID = $problem->getField('id');
+        $ID = $problem->getID();
         if (!$problem->can($ID, READ)) {
             return;
         }
@@ -200,7 +200,7 @@ class Change_Problem extends CommonITILObject_CommonITILObject
     {
         global $DB;
 
-        $ID = $change->getField('id');
+        $ID = $change->getID();
         if (!$change->can($ID, READ)) {
             return;
         }

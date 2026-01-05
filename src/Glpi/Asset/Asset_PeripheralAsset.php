@@ -119,7 +119,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             $updates = [];
 
             if (
-                $asset->fields['locations_id'] !== $peripheral->getField('locations_id')
+                $asset->fields['locations_id'] !== $peripheral->fields['locations_id']
                 && Entity::getUsedConfig('is_location_autoupdate', $asset->getEntityID())
             ) {
                 $updates['locations_id'] = $asset->fields['locations_id'];
@@ -130,9 +130,9 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             }
             if (
                 (Entity::getUsedConfig('is_user_autoupdate', $asset->getEntityID())
-                && ($asset->fields['users_id'] !== $peripheral->getField('users_id')))
+                && ($asset->fields['users_id'] !== $peripheral->fields['users_id']))
                 || (Entity::getUsedConfig('is_group_autoupdate', $asset->getEntityID())
-                 && ($asset->fields['groups_id'] !== $peripheral->getField('groups_id')))
+                 && ($asset->fields['groups_id'] !== $peripheral->fields['groups_id']))
             ) {
                 if (Entity::getUsedConfig('is_user_autoupdate', $asset->getEntityID())) {
                     $updates['users_id'] = $asset->fields['users_id'];

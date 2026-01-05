@@ -90,7 +90,7 @@ class ITILFollowup extends CommonDBChild
             $itemtype = $this->getItilObjectItemType();
             $item     = getItemForItemtype($itemtype);
         }
-        if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
+        if (!$item->can($this->fields[$item::getForeignKeyField()], READ)) {
             return false;
         }
         return true;
@@ -147,7 +147,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject->can($this->fields['items_id'], READ)) {
             return false;
         }
         if (Session::haveRight(self::$rightname, self::SEEPRIVATE)) {
@@ -189,7 +189,7 @@ class ITILFollowup extends CommonDBChild
         }
 
         if (
-            !$itilobject->can($this->getField('items_id'), READ)
+            !$itilobject->can($this->fields['items_id'], READ)
             // No validation for closed tickets
             || in_array($itilobject->fields['status'], $itilobject->getClosedStatusArray())
             && !$itilobject->canReopen()
@@ -207,7 +207,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject->can($this->fields['items_id'], READ)) {
             return false;
         }
 
@@ -234,7 +234,7 @@ class ITILFollowup extends CommonDBChild
         } else {
             $itilobject = getItemForItemtype($this->fields['itemtype']);
         }
-        if (!$itilobject instanceof CommonITILObject || !$itilobject->can($this->getField('items_id'), READ)) {
+        if (!$itilobject instanceof CommonITILObject || !$itilobject->can($this->fields['items_id'], READ)) {
             return false;
         }
 
@@ -294,7 +294,7 @@ class ITILFollowup extends CommonDBChild
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField('items_id'),
+            $this->fields['items_id'],
             get_class($parentitem),
             $changes,
             $this->getType(),
@@ -359,7 +359,7 @@ class ITILFollowup extends CommonDBChild
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField(self::$items_id),
+            $this->fields[self::$items_id],
             $this->fields['itemtype'],
             $changes,
             $this->getType(),
@@ -585,7 +585,7 @@ class ITILFollowup extends CommonDBChild
             $this->fields['id'],
         ];
         Log::history(
-            $this->getField('items_id'),
+            $this->fields['items_id'],
             $this->fields['itemtype'],
             $changes,
             $this->getType(),

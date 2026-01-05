@@ -125,7 +125,7 @@ class Profile_User extends CommonDBRelation
      */
     public static function showForUser(User $user)
     {
-        $ID = $user->getField('id');
+        $ID = $user->fields['id'];
         if (!$user->can($ID, READ)) {
             return;
         }
@@ -245,7 +245,7 @@ class Profile_User extends CommonDBRelation
     {
         global $DB;
 
-        $ID = $entity->getField('id');
+        $ID = $entity->fields['id'];
         if (!$entity->can($ID, READ)) {
             return;
         }
@@ -657,7 +657,7 @@ TWIG, $avatar_params) . $username;
         if ($default_first) {
             $user = new User();
             if ($user->getFromDB((int) $user_ID)) {
-                $ent = $user->getField('entities_id');
+                $ent = $user->fields['entities_id'];
                 if (in_array($ent, $entities)) {
                     array_unshift($entities, $ent);
                 }

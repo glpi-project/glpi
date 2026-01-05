@@ -3037,7 +3037,7 @@ TWIG, ['label' => $this->getTitle()]);
             $this->showForm(0, [
                 'no_header' => true,
                 'short'     => true,
-                'entities_id' => $item->getField('id'),
+                'entities_id' => $item->fields['id'],
                 'params' => [
                     'formfooter' => false,
                 ],
@@ -3047,7 +3047,7 @@ TWIG, ['label' => $this->getTitle()]);
         // Get all rules and actions
         $crit = [
             'field' => getForeignKeyFieldForTable($item->getTable()),
-            'value' => $item->getField('id'),
+            'value' => $item->fields['id'],
         ];
 
         $rules = $this->getRulesForCriteria($crit);
@@ -3191,7 +3191,7 @@ TWIG, ['label' => $this->getTitle()]);
                     $valfield => $item->input['_replace_by'],
                 ],
                 [
-                    $valfield   => $item->getField('id'),
+                    $valfield   => $item->fields['id'],
                     $fieldfield => ['LIKE', $field],
                 ]
             );
@@ -3200,7 +3200,7 @@ TWIG, ['label' => $this->getTitle()]);
                 'SELECT' => [$fieldid],
                 'FROM'   => $table,
                 'WHERE'  => [
-                    $valfield   => $item->getField('id'),
+                    $valfield   => $item->fields['id'],
                     $fieldfield => ['LIKE', $field],
                 ],
             ]);

@@ -60,7 +60,7 @@ $track = $task::getItilObjectItemInstance();
 $itemtype = $track::class;
 $fk       = $track::getForeignKeyField();
 
-$track->getFromDB($task->getField($fk));
+$track->getFromDB($task->fields[$fk]);
 
 $redirect = null;
 $handled = false;
@@ -70,60 +70,60 @@ if (isset($_POST["add"])) {
     $task->add($_POST);
 
     Event::log(
-        $task->getField($fk),
+        $task->fields[$fk],
         strtolower($itemtype),
         4,
         "tracking",
         //TRANS: %s is the user login
         sprintf(__('%s adds a task'), $_SESSION["glpiname"])
     );
-    $redirect = $itemtype::getFormURLWithID($task->getField($fk));
+    $redirect = $itemtype::getFormURLWithID($task->fields[$fk]);
     $handled = true;
 } elseif (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
     $task->delete($_POST, true);
 
     Event::log(
-        $task->getField($fk),
+        $task->fields[$fk],
         strtolower($itemtype),
         4,
         "tracking",
         //TRANS: %s is the user login
         sprintf(__('%s purges a task'), $_SESSION["glpiname"])
     );
-    Html::redirect($itemtype::getFormURLWithID($task->getField($fk)));
+    Html::redirect($itemtype::getFormURLWithID($task->fields[$fk]));
 } elseif (isset($_POST["update"])) {
     $task->check($_POST["id"], UPDATE);
     $task->update($_POST);
 
     Event::log(
-        $task->getField($fk),
+        $task->fields[$fk],
         strtolower($itemtype),
         4,
         "tracking",
         //TRANS: %s is the user login
         sprintf(__('%s updates a task'), $_SESSION["glpiname"])
     );
-    $redirect = $itemtype::getFormURLWithID($task->getField($fk));
+    $redirect = $itemtype::getFormURLWithID($task->fields[$fk]);
     $handled = true;
 } elseif (isset($_POST["unplan"])) {
     $task->check($_POST["id"], UPDATE);
     $task->unplan();
 
     Event::log(
-        $task->getField($fk),
+        $task->fields[$fk],
         strtolower($itemtype),
         4,
         "tracking",
         //TRANS: %s is the user login
         sprintf(__('%s unplans a task'), $_SESSION["glpiname"])
     );
-    $redirect = $itemtype::getFormURLWithID($task->getField($fk));
+    $redirect = $itemtype::getFormURLWithID($task->fields[$fk]);
     $handled = true;
 }
 
 if ($handled) {
-    if ($track->can($task->getField($fk), READ)) {
+    if ($track->can($task->fields[$fk], READ)) {
         $toadd = '';
         // Copy followup to KB redirect to KB
         if (isset($_POST['_task_to_kb']) && $_POST['_task_to_kb']) {

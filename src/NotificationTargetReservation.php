@@ -78,49 +78,49 @@ class NotificationTargetReservation extends NotificationTarget
         if ($event != 'alert') {
             $this->data['##reservation.user##']   = "";
             $user_tmp                              = new User();
-            if ($user_tmp->getFromDB($this->obj->getField('users_id'))) {
+            if ($user_tmp->getFromDB($this->obj->fields['users_id'])) {
                 $this->data['##reservation.user##'] = $user_tmp->getName();
             }
-            $this->data['##reservation.begin##']   = Html::convDateTime($this->obj->getField('begin'));
-            $this->data['##reservation.end##']     = Html::convDateTime($this->obj->getField('end'));
-            $this->data['##reservation.comment##'] = $this->obj->getField('comment');
+            $this->data['##reservation.begin##']   = Html::convDateTime($this->obj->fields['begin']);
+            $this->data['##reservation.end##']     = Html::convDateTime($this->obj->fields['end']);
+            $this->data['##reservation.comment##'] = $this->obj->fields['comment'];
 
             $reservationitem = new ReservationItem();
-            $reservationitem->getFromDB($this->obj->getField('reservationitems_id'));
-            $itemtype        = $reservationitem->getField('itemtype');
+            $reservationitem->getFromDB($this->obj->fields['reservationitems_id']);
+            $itemtype        = $reservationitem->fields['itemtype'];
 
             if ($item = getItemForItemtype($itemtype)) {
-                $item->getFromDB($reservationitem->getField('items_id'));
+                $item->getFromDB($reservationitem->fields['items_id']);
                 $this->data["##reservation.note##"]
-                                 = $reservationitem->getField('comment');
+                                 = $reservationitem->fields['comment'];
                 $this->data['##reservation.itemtype##']
                                  = $item->getTypeName(1);
                 $this->data['##reservation.item.name##']
-                                 = $item->getField('name');
+                                 = $item->fields['name'];
                 $this->data['##reservation.item.entity##']
                                  = Dropdown::getDropdownName(
                                      'glpi_entities',
-                                     $item->getField('entities_id')
+                                     $item->fields['entities_id']
                                  );
 
                 if ($item->isField('users_id_tech')) {
                     $this->data['##reservation.item.tech##']
                                 = Dropdown::getDropdownName(
                                     'glpi_users',
-                                    $item->getField('users_id_tech')
+                                    $item->fields['users_id_tech']
                                 );
                 }
 
                 $this->data['##reservation.itemurl##']
                                  = $this->formatURL(
                                      $options['additionnaloption']['usertype'],
-                                     $itemtype . "_" . $item->getField('id')
+                                     $itemtype . "_" . $item->fields['id']
                                  );
 
                 $this->data['##reservation.url##']
                                  = $this->formatURL(
                                      $options['additionnaloption']['usertype'],
-                                     "Reservation_" . $this->obj->getField('id')
+                                     "Reservation_" . $this->obj->fields['id']
                                  );
             }
         } else {
@@ -220,14 +220,14 @@ class NotificationTargetReservation extends NotificationTarget
         if ($this->obj) {
             $ri = new ReservationItem();
 
-            if ($ri->getFromDB($this->obj->getField('reservationitems_id'))) {
-                $itemtype = $ri->getField('itemtype');
+            if ($ri->getFromDB($this->obj->fields['reservationitems_id'])) {
+                $itemtype = $ri->fields['itemtype'];
 
                 if (
                     ($itemtype != NOT_AVAILABLE) && ($itemtype != '')
                     && ($item = getItemForItemtype($itemtype))
                 ) {
-                    $item->getFromDB($ri->getField('items_id'));
+                    $item->getFromDB($ri->fields['items_id']);
                     $this->target_object[] = $item;
                 }
             }

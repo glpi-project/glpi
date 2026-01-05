@@ -67,7 +67,7 @@ class Calendar_Holiday extends CommonDBRelation
     {
         global $DB;
 
-        $ID = $calendar->getField('id');
+        $ID = $calendar->getID();
         if (!$calendar->can($ID, READ)) {
             return false;
         }

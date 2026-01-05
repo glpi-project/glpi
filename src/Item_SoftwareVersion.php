@@ -119,12 +119,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             || (!isset($input['is_deleted_item']) && $item->maybeDeleted())
         ) {
             if ($item->getFromDB($input['items_id'])) {
-                if ($item->maybeTemplate()) {
-                    $input['is_template_item'] = $item->getField('is_template');
-                }
-                if ($item->maybeDeleted()) {
-                    $input['is_deleted_item']  = $item->getField('is_deleted');
-                }
+                $input['is_template_item'] = $item->isTemplate();
+                $input['is_deleted_item']  = $item->isDeleted();
             } else {
                 return false;
             }
@@ -259,8 +255,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             return $DB->update(
                 static::getTable(),
                 [
-                    'is_template_item'  => $item->maybeTemplate() ? $item->getField('is_template') : 0,
-                    'is_deleted_item'   => $item->maybeDeleted() ? $item->getField('is_deleted') : 0,
+                    'is_template_item'  => $item->isTemplate(),
+                    'is_deleted_item'   => $item->isDeleted(),
                 ],
                 [
                     'items_id' => $items_id,
@@ -427,7 +423,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     public static function showForSoftware(Software $software)
     {
-        self::showInstallations($software->getField('id'), 'softwares_id');
+        self::showInstallations($software->fields['id'], 'softwares_id');
     }
 
     /**
@@ -439,7 +435,7 @@ class Item_SoftwareVersion extends CommonDBRelation
      **/
     public static function showForVersion(SoftwareVersion $version)
     {
-        self::showInstallations($version->getField('id'), 'id');
+        self::showInstallations($version->fields['id'], 'id');
     }
 
     /**
@@ -836,7 +832,7 @@ class Item_SoftwareVersion extends CommonDBRelation
     {
         global $DB;
 
-        $softwareversions_id = $version->getField('id');
+        $softwareversions_id = $version->fields['id'];
 
         if (!Software::canView() || !$softwareversions_id) {
             return;
@@ -935,7 +931,7 @@ class Item_SoftwareVersion extends CommonDBRelation
                 ],
             ],
             'WHERE'     => [
-                "{$selftable}.items_id" => $item->getField('id'),
+                "{$selftable}.items_id" => $item->fields['id'],
                 "{$selftable}.itemtype" => $item->getType(),
             ] + getEntitiesRestrictCriteria('glpi_softwares', '', '', true),
             'ORDER'     => ['softname', 'version'],

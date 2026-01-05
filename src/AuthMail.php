@@ -241,7 +241,7 @@ class AuthMail extends CommonDBTM
      */
     public function showFormTestMail()
     {
-        $ID = $this->getField('id');
+        $ID = $this->getID();
 
         if ($this->getFromDB($ID)) {
             $twig_params = [
@@ -381,7 +381,7 @@ TWIG, $twig_params);
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         /** @var CommonDBTM $item */
-        if (!$withtemplate && $item->can($item->getField('id'), READ)) {
+        if (!$withtemplate && $item->can($item->getID(), READ)) {
             $ong = [];
             $ong[1] = self::createTabEntry(_x('button', 'Test'), icon: 'ti ti-stethoscope');
 
