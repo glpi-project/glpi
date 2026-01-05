@@ -57,7 +57,7 @@ class ExtractLocalesCommand extends AbstractCommand
     #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->isPluggingCommand()) {
+        if ($this->isPluginCommand()) {
             $working_dir = $this->getPluginDirectory();
         } else {
             $working_dir = dirname(__DIR__, 3); // glpi
@@ -132,7 +132,7 @@ class ExtractLocalesCommand extends AbstractCommand
                 'output-directory'    => $temp_twig_dir . '/templates',
                 '--quiet' => true,
             ];
-            if ($this->isPluggingCommand()) {
+            if ($this->isPluginCommand()) {
                 $options['--plugin'] = $this->getPluginName();
             }
 

@@ -84,7 +84,7 @@ class CompileTwigTemplatesCommand extends AbstractCommand
         $output_dir = $this->input->getArgument('output-directory');
 
         $root_path = dirname($tpl_dir);
-        if ($this->isPluggingCommand()) {
+        if ($this->isPluginCommand()) {
             $root_path = $this->getPluginDirectory();
         }
 

@@ -86,14 +86,14 @@ abstract class AbstractCommand extends Command
         }
     }
 
-    public function isPluggingCommand(): bool
+    public function isPluginCommand(): bool
     {
         return $this->input->hasOption('plugin') && $this->input->getOption('plugin') !== null;
     }
 
     public function getPluginName(): string
     {
-        if (!$this->isPluggingCommand()) {
+        if (!$this->isPluginCommand()) {
             throw new \LogicException('This command is not plugging command.');
         }
         return $this->input->getOption('plugin');
