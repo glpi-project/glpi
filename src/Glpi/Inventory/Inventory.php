@@ -606,7 +606,7 @@ class Inventory
 
         $menu = [
             'title'   => __('Inventory'),
-            'page'    => '/front/inventory.conf.php',
+            'page'    => '/Inventory/Configuration',
             'icon'    => static::getIcon(),
             'options' => [],
             'links'   => $links,
@@ -661,10 +661,7 @@ class Inventory
             ];
         }
 
-        if (count($menu['options'])) {
-            return $menu;
-        }
-        return false;
+        return $menu;
     }
 
     /**
