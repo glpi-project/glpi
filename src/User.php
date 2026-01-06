@@ -373,6 +373,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                 ) {
                     $ong[3] = self::createTabEntry(__('LDAP information'), 0, $item::getType(), AuthLDAP::getIcon());
                 }
+                $ong[4] = self::createTabEntry(__('Security'), 0, $item::class, 'ti ti-shield-lock');
                 return $ong;
 
             case Preference::class:
@@ -386,27 +387,29 @@ class User extends CommonDBTM implements TreeBrowseInterface
     {
         global $CFG_GLPI;
 
-        switch (get_class($item)) {
-            case self::class:
-                switch ($tabnum) {
-                    case 1:
-                    case 2:
-                        $item->showItems($tabnum == 2);
-                        break;
-                    case 3:
-                        $item->showLdapInformation();
-                        break;
-                }
+        if ($item instanceof self) {
+            switch ($tabnum) {
+                case 1:
+                case 2:
+                    $item->showItems($tabnum == 2);
+                    break;
+                case 3:
+                    $item->showLdapInformation();
+                    break;
+                case 4:
+                    $item->showSecurityForm($item->getID());
+                    break;
+            }
 
-                return true;
+            return true;
 
-            case Preference::class:
-                $user = new self();
-                $user->showMyForm(
-                    $CFG_GLPI['root_doc'] . "/front/preference.php",
-                    Session::getLoginUserID()
-                );
-                return true;
+        } elseif ($item instanceof Preference) {
+            $user = new self();
+            $user->showMyForm(
+                $CFG_GLPI['root_doc'] . "/front/preference.php",
+                Session::getLoginUserID()
+            );
+            return true;
         }
         return false;
     }
@@ -6840,5 +6843,15 @@ HTML;
             }
         }
         return false;
+    }
+
+    private function showSecurityForm(int $ID): void
+    {
+        $canedit = self::canUpdate();
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
+            'canedit' => $canedit,
+            'item'   => $this,
+            'action' => Toolbox::getItemTypeFormURL(self::class),
+        ]);
     }
 }
