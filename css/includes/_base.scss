@@ -567,6 +567,15 @@ body pre {
 
 .text-muted {
     color: var(--tblr-muted) !important;
+
+    thead,
+    tbody,
+    tfoot,
+    tr,
+    td,
+    th {
+        border-width: inherit; // Prevent removal of borders from reboot CSS
+    }
 }
 
 .input-group {
