@@ -181,16 +181,6 @@ abstract class ITILTemplate extends CommonDropdown
                         = Html::computeGenericDateTimeSearch($this->predefined['time_to_own'], false);
             }
 
-            // Compute internal_time_to_resolve
-            if (isset($this->predefined['internal_time_to_resolve'])) {
-                $this->predefined['internal_time_to_resolve']
-                = Html::computeGenericDateTimeSearch($this->predefined['internal_time_to_resolve'], false);
-            }
-            if (isset($this->predefined['internal_time_to_own'])) {
-                $this->predefined['internal_time_to_own']
-                = Html::computeGenericDateTimeSearch($this->predefined['internal_time_to_own'], false);
-            }
-
             // Compute date
             if (isset($this->predefined['date'])) {
                 $this->predefined['date']

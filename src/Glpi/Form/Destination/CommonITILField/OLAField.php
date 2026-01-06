@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2025 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,46 +34,38 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use LevelAgreement;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\AnswersSet;
+use InvalidArgumentException;
 use Override;
-use SLA;
-use SLM;
 
-final class SLATTRField extends SLAField
+abstract class OLAField extends SLMField
 {
     #[Override]
-    public function getLabel(): string
-    {
-        return __("TTR");
-    }
+    public function applyConfiguratedValueToInputUsingAnswers(
+        JsonFieldInterface $config,
+        array $input,
+        AnswersSet $answers_set
+    ): array {
+        if (!$config instanceof SLMFieldConfig) {
+            throw new InvalidArgumentException("Unexpected config class");
+        }
 
-    #[Override]
-    public function getWeight(): int
-    {
-        return 210;
-    }
+        // Only one strategy is allowed
+        $strategy = current($config->getStrategies());
 
-    #[Override]
-    public function getSLM(): LevelAgreement
-    {
-        return new SLA();
-    }
+        // Compute value according to strategy
+        $slm_id = $strategy->getSLMID($config);
 
-    #[Override]
-    public function getType(): int
-    {
-        return SLM::TTR;
-    }
+        // Do not edit input if invalid value was found
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
+            return $input;
+        }
 
-    #[Override]
-    public function getConfigClass(): string
-    {
-        return SLATTRFieldConfig::class;
-    }
+        $input['_olas_id'] = [$slm_id];
+        $input['_la_update'] = true;
 
-    #[Override]
-    protected function getFieldNameToConvertSpecificSLMID(): string
-    {
-        return 'sla_question_ttr';
+        return $input;
     }
 }

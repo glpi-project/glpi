@@ -47,4 +47,12 @@ class Group_Ticket extends CommonITILActor
     public static $items_id_1 = 'tickets_id';
     public static $itemtype_2 = Group::class;
     public static $items_id_2 = 'groups_id';
+
+
+    public function post_purgeItem()
+    {
+        Item_Ola::computeGroupAssigneeRemoval((int) $this->fields['tickets_id'], (int) $this->fields['groups_id']);
+
+        parent::post_purgeItem();
+    }
 }

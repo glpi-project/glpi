@@ -53,6 +53,12 @@ use Override;
 abstract class SLMField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     abstract public function getSLM(): LevelAgreement;
+
+    /**
+     * Get the type of SLM field.
+     *
+     * @return int SLM::TTO | SLM::TTR
+     */
     abstract public function getType(): int;
     /** @return class-string<SLMFieldConfig> */
     abstract public function getConfigClass(): string;
