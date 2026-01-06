@@ -106,6 +106,7 @@ class NotificationTargetUserTest extends DbTestCase
             ->onlyMethods(['getPasswordExpirationTime'])
             ->getMock();
         $user->method('getPasswordExpirationTime')->willReturn($expiration_time);
+        $user->getEmpty();
 
         $cfg_backup = $CFG_GLPI;
         $CFG_GLPI['password_expiration_lock_delay'] = $lock_delay;
