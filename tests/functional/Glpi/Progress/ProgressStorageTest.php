@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Progress;
 
+use Glpi\Message\MessageType;
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
 use Glpi\Tests\GLPITestCase;
@@ -65,7 +66,7 @@ class ProgressStorageTest extends GLPITestCase
         $this->assertFileExists($expected_file_path);
 
         $stored_content = \file_get_contents($expected_file_path);
-        $this->assertEquals(\serialize($progress_indicator), $stored_content);
+        $this->assertEquals(\Safe\json_encode($progress_indicator), $stored_content);
     }
 
     public function testSaveAndGetProgressIndicator(): void
@@ -86,14 +87,49 @@ class ProgressStorageTest extends GLPITestCase
         $storage = new ProgressStorage(vfsStream::url('glpi/files/_tmp'));
         $progress_indicator = new StoredProgressIndicator($storage_key);
         $progress_indicator->setProgressStorage($storage);
+        $progress_indicator->setProgressBarMessage('Doing something...');
+        $progress_indicator->setCurrentStep(10);
+        $progress_indicator->setMaxSteps(84);
 
         // Act
         $storage->save($progress_indicator);
         $fetched_progress_indicator = $storage->getProgressIndicator($storage_key);
-        $fetched_progress_indicator->setProgressStorage($storage); // to simplify comparison, this would be the only diff
 
         // Assert
-        $this->assertEquals($progress_indicator, $fetched_progress_indicator);
+        $this->assertEquals($progress_indicator->getStartedAt()->format('c'), $fetched_progress_indicator->getStartedAt()->format('c'));
+        $this->assertEquals($progress_indicator->getUpdatedAt()->format('c'), $fetched_progress_indicator->getUpdatedAt()->format('c'));
+        $this->assertNull($fetched_progress_indicator->getEndedAt());
+        $this->assertFalse($fetched_progress_indicator->isFinished());
+        $this->assertFalse($fetched_progress_indicator->hasFailed());
+        $this->assertEquals(10, $fetched_progress_indicator->getCurrentStep());
+        $this->assertEquals(84, $fetched_progress_indicator->getMaxSteps());
+        $this->assertEquals('Doing something...', $fetched_progress_indicator->getProgressBarMessage());
+        $this->assertEquals([], $fetched_progress_indicator->getMessages());
+
+        // Arrange again
+        $progress_indicator->addMessage(MessageType::Notice, "I don't say Blah blah blah");
+        $progress_indicator->addMessage(MessageType::Error, 'Something goes wrong');
+        $progress_indicator->fail();
+        $progress_indicator->setProgressBarMessage('');
+
+        // Act again
+        $storage->save($progress_indicator);
+        $fetched_progress_indicator = $storage->getProgressIndicator($storage_key);
+
+        // Assert again
+        $this->assertEquals($progress_indicator->getEndedAt()->format('c'), $fetched_progress_indicator->getEndedAt()->format('c'));
+        $this->assertTrue($fetched_progress_indicator->isFinished());
+        $this->assertTrue($fetched_progress_indicator->hasFailed());
+        $this->assertEquals(10, $fetched_progress_indicator->getCurrentStep());
+        $this->assertEquals(84, $fetched_progress_indicator->getMaxSteps());
+        $this->assertEquals('', $fetched_progress_indicator->getProgressBarMessage());
+        $this->assertEquals(
+            [
+                ['type' => MessageType::Notice, 'message' => "I don't say Blah blah blah"],
+                ['type' => MessageType::Error, 'message' => 'Something goes wrong'],
+            ],
+            $fetched_progress_indicator->getMessages()
+        );
     }
 
     public function testGetProgressIndicatorThatDoesNotExists(): void
@@ -146,7 +182,7 @@ class ProgressStorageTest extends GLPITestCase
 
             vfsStream::newFile($prefix . $storage_key_suffix . '.progress')
                 ->at($structure->getChild('files/_tmp'))
-                ->setContent(\serialize($progress_indicator));
+                ->setContent(\json_encode($progress_indicator));
         }
 
         // Act
