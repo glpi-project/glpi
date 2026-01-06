@@ -3280,6 +3280,14 @@ JAVASCRIPT;
             $request['meta'] = 0;
         }
 
+        if (empty($request['field'])) {
+            $numericKeys = array_filter(
+                array_keys(Search::getOptions($request['itemtype'])),
+                'is_numeric'
+            );
+            $request['field'] = !empty($numericKeys) ? reset($numericKeys) : '';
+        }
+
         $actions = Search::getActionsFor($request["itemtype"], $request["field"]);
 
         // is it a valid action for type ?
