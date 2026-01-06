@@ -38,6 +38,7 @@ namespace Glpi\Asset;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
+use DBmysqlIterator;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
@@ -292,7 +293,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * Print the form for computers or templates connections to printers, screens or peripherals
      *
      * @param CommonDBTM $asset        CommonDBTM object
-     * @param int    $withtemplate Template or basic item (default 0)
+     * @param int        $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
@@ -994,9 +995,9 @@ TWIG, $twig_params);
      *
      * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
      *
-     * @return iterable<int, array<string, mixed>>
+     * @return DBmysqlIterator
     */
-    private static function getUsedPeripherals(string $itemtype): iterable
+    private static function getUsedPeripherals(string $itemtype): DBmysqlIterator
     {
         global $DB;
 
@@ -1030,9 +1031,10 @@ TWIG, $twig_params);
      *
      * @param CommonDBTM $peripheral Peripheral asset.
      * @param string     $itemtype   Itemtype of the main assets to retrieve.
-     * @return iterable
+     *
+     * @return DBmysqlIterator
      */
-    private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): iterable
+    private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): DBMysqlIterator
     {
         global $DB;
 
