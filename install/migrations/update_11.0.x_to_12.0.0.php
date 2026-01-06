@@ -85,6 +85,7 @@ function update110xto1200()
     foreach ($device_model_tables as $table) {
         $migration->addField($table, 'picture_front', 'text');
         $migration->addField($table, 'picture_rear', 'text');
+        $migration->addField($table, 'pictures', 'text');
     }
 
     // ************ Keep it at the end **************

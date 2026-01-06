@@ -1688,6 +1688,7 @@ CREATE TABLE `glpi_devicecasemodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -1785,6 +1786,7 @@ CREATE TABLE `glpi_devicedrivemodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -1828,6 +1830,7 @@ CREATE TABLE `glpi_devicegenericmodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -1884,6 +1887,7 @@ CREATE TABLE `glpi_devicegraphiccardmodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -1928,6 +1932,7 @@ CREATE TABLE `glpi_deviceharddrivemodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2041,6 +2046,7 @@ CREATE TABLE `glpi_devicecameramodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2128,6 +2134,7 @@ CREATE TABLE `glpi_devicememorymodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2188,6 +2195,7 @@ CREATE TABLE `glpi_devicemotherboardmodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2228,6 +2236,7 @@ CREATE TABLE `glpi_devicenetworkcardmodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2269,6 +2278,7 @@ CREATE TABLE `glpi_devicepcimodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2310,6 +2320,7 @@ CREATE TABLE `glpi_devicepowersupplymodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2352,6 +2363,7 @@ CREATE TABLE `glpi_deviceprocessormodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2423,6 +2435,7 @@ CREATE TABLE `glpi_devicesensormodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -2535,6 +2548,7 @@ CREATE TABLE `glpi_devicesoundcardmodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
@@ -8132,6 +8146,7 @@ CREATE TABLE `glpi_devicebatterymodels` (
   `product_number` varchar(255) DEFAULT NULL,
   `picture_front` text,
   `picture_rear` text,
+  `pictures` text,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `product_number` (`product_number`)
