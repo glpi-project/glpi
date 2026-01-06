@@ -16028,18 +16028,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Condition/EditorManager.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\Condition\\\\Engine\\:\\:\\$processing_stack type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Condition/Engine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Form\\\\Condition\\\\Engine\\:\\:\\$visibility_cache type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Condition/Engine.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Condition\\\\EngineCreationOutput\\:\\:jsonSerialize\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

@@ -752,6 +752,158 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsWithEmptyOperatorOnNotVisibleQuestionAsSource(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addQuestion("First Question", QuestionTypeShortText::class);
+        $form->addQuestion("Second Question", QuestionTypeShortText::class);
+        $form->setQuestionVisibility(
+            "First Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Second Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+        $form->setQuestionVisibility(
+            "Second Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "First Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+
+        yield 'Both questions should be visible on initial load' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    // No answers provided, simulating initial form load
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'First Question'  => true,
+                    'Second Question' => true,
+                ],
+            ],
+        ];
+
+        yield 'First question answered, Second question should be hidden' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'First Question'  => 'some answer',
+                    // Second Question has no answer
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'First Question'  => true,
+                    'Second Question' => false,
+                ],
+            ],
+        ];
+
+        yield 'Second question answered, First question should be hidden' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    // First Question has no answer
+                    'Second Question' => 'some answer',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'First Question'  => false,
+                    'Second Question' => true,
+                ],
+            ],
+        ];
+
+        yield 'Both questions answered, first should be visible, second hidden' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'First Question'  => 'some answer',
+                    'Second Question' => 'some answer',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'First Question'  => true,
+                    'Second Question' => false,
+                ],
+            ],
+        ];
+
+        $second_form = new FormBuilder();
+        $second_form->addQuestion("First Question", QuestionTypeShortText::class);
+        $second_form->addQuestion("Second Question", QuestionTypeShortText::class);
+        $second_form->addQuestion("Third Question", QuestionTypeShortText::class);
+        $second_form->setQuestionVisibility(
+            "First Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Second Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+        $second_form->setQuestionVisibility(
+            "Second Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "First Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EMPTY,
+                    'value'          => null,
+                ],
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Third Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::NOT_EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+
+        yield 'Second question is filled, First and Third questions should be visible' => [
+            'form' => $second_form,
+            'input' => [
+                'answers' => [
+                    'First Question'  => '',
+                    'Second Question' => 'some answer',
+                    'Third Question'  => '',
+                ],
+            ],
+            'expected_output' => [
+                'questions' => [
+                    'First Question'  => true,
+                    'Second Question' => false,
+                    'Third Question'  => true,
+                ],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnForm')]
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
@@ -760,6 +912,7 @@ final class EngineTest extends DbTestCase
     #[DataProvider('conditionsOnQuestionWithNullExtraData')]
     #[DataProvider('conditionsOnQuestionsWithNotVisibleQuestionAsSource')]
     #[DataProvider('conditionsWithEmptyOperatorOnNullAnswer')]
+    #[DataProvider('conditionsWithEmptyOperatorOnNotVisibleQuestionAsSource')]
     public function testComputation(
         FormBuilder $form,
         array $input,
