@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Actions\HasClientSideActionsInterface;
 use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Features\Clonable;
 use Glpi\Plugin\Hooks;
@@ -238,6 +239,18 @@ class MassiveAction
                                     $this->getCheckItem($POST),
                                     $items_id
                                 );
+
+                                if (
+                                    isset($item)
+                                    && $item instanceof HasClientSideActionsInterface
+                                ) {
+                                    $client_actions = $item
+                                        ->getClientSideActions()
+                                        ->toFormattedArray()
+                                    ;
+                                    $actions = [...$actions, ...$client_actions];
+                                }
+
                                 $POST['actions'] = array_merge($actions, $POST['actions']);
                                 foreach ($actions as $action => $label) {
                                     $POST['action_filter'][$action][] = $itemtype;
