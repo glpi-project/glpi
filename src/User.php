@@ -6845,7 +6845,7 @@ HTML;
         return false;
     }
 
-    public function showSecurityForm(int $ID): void
+    private function showSecurityForm(int $ID): void
     {
         $canedit = self::canUpdate();
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
