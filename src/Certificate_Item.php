@@ -322,7 +322,6 @@ class Certificate_Item extends CommonDBRelation
         }
 
         $canedit      = $item->canAddItem('Certificate');
-        $is_recursive = $item->isRecursive();
 
         $iterator = self::getListForItem($item);
 
