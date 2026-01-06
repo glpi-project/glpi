@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -31,6 +31,8 @@
  */
 
 import { expect, type Locator, type Page } from '@playwright/test';
+import { readFileSync } from 'fs';
+import path from 'path';
 
 /**
  * Store common actions that can be executed on any GLPI page.
@@ -45,6 +47,14 @@ export class GlpiPage
     public readonly dashboards_widgets: Locator;
     public readonly active_entity: Locator;
 
+    // Notes tab locators
+    public readonly add_note_button: Locator;
+    public readonly submit_note_button: Locator;
+    public readonly is_visible_on_ticket_checkbox: Locator;
+    public readonly note_content_input: Locator;
+    public readonly notes: Locator;
+    public readonly notes_content: Locator;
+
     public constructor(page: Page)
     {
         this.page = page;
@@ -58,19 +68,34 @@ export class GlpiPage
 
         // .first() because we always display this information twice, with only
         // one being shown depending on the screen size.
-        this.active_entity         = page.getByTestId("current-entity").first();
+        this.active_entity = page.getByTestId("current-entity").first();
+
+        // Notes tab locators
+        this.add_note_button = this.getButton("Add a note");
+        this.submit_note_button = this.getButton("Add");
+        this.is_visible_on_ticket_checkbox = this.getCheckbox("Visible on tickets");
+        this.note_content_input = this.getRichTextByLabel('Content');
+        this.notes = page.getByTestId('note-container');
+        this.notes_content = page.getByTestId('note-content');
     }
 
     public async doSetDropdownValue(
         dropdown: Locator,
-        value: string
+        value: string,
+        exact: boolean = true,
     ):  Promise<void> {
         await dropdown.click();
-        await this.page
+        // Select2 roles are different if the dropdown group some values
+        const simple_dropdown = this.page
             .getByRole('listbox')
-            .getByRole('option', {'name': value})
-            .click()
+            .getByRole('option', {'name': value, exact: exact})
         ;
+        const dropdown_with_groups = this.page
+            .getByRole('listbox')
+            .getByRole('listitem', {'name': value, exact: exact})
+        ;
+
+        await simple_dropdown.or(dropdown_with_groups).click();
         await expect(dropdown).toContainText(value);
     }
 
@@ -123,19 +148,115 @@ export class GlpiPage
         await this.getButton(entity_name).click();
     }
 
+    public async doFocusNote(index: number): Promise<void>
+    {
+        await this.notes.nth(index).click();
+    }
+
+    public async doAddNote(content: string): Promise<void>
+    {
+        await this.add_note_button.click();
+        await this.note_content_input.fill(content);
+        await this.submit_note_button.click();
+    }
+
+    public async doUpdateNoteContent(
+        index: number,
+        content: string,
+    ): Promise<void> {
+        // Select the target note
+        await this.doFocusNote(index);
+
+        // Update content
+        await this.getButton("Edit").click();
+        await this.note_content_input.fill(content);
+        await this.getButton("Update").click();
+    }
+
+    public async doAddFileToNote(
+        index: number,
+        file: string,
+    ): Promise<void> {
+        // Select the target note
+        await this.doFocusNote(index);
+
+        // Add file to note
+        await this.getButton("Edit").click();
+        await this.doAddFileToUploadArea(file, this.page.getByRole('dialog'));
+        await this.getButton("Update").click();
+    }
+
+    public async doDeleteNote(
+        index: number,
+    ): Promise<void> {
+        // Select the target note
+        await this.doFocusNote(index);
+
+        // Prepare to confirm delete dialog
+        this.page.once('dialog', dialog => dialog.accept());
+
+        // Trigger deletion
+        await this.getButton("Delete").click();
+    }
+
+    public async doAddFileToUploadArea(file: string, parent: Locator): Promise<void>
+    {
+        // We have no control over this input locator as it is handled by a 3rd
+        // party lib.
+        // eslint-disable-next-line playwright/no-raw-locators
+        await parent.locator('input[type="file"]')
+            .setInputFiles(path.join(__dirname, `../../fixtures/${file}`))
+        ;
+        const progress = parent.getByRole('progressbar');
+
+        // Upload progress should fill up then disappear
+        await expect(progress).toHaveText("Upload successful");
+        await expect(progress).not.toBeAttached();
+    }
+
+    public async doClickDownloadLinkAndGetcontent(
+        page: Page,
+        link: Locator
+    ): Promise<string> {
+        // Start download
+        const download_promise = page.waitForEvent('download');
+        await link.click();
+
+        // Read file once download is complete
+        const download = await download_promise;
+        const path = await download.path();
+        return readFileSync(path).toString();
+    }
+
     /**
      * Locate the orignal <select> item using its label.
      * Select2's container is the span right after the select.
      * The interactive element is the combobox inside the container.
      */
-    public getDropdownByLabel(label: string): Locator
+    public getDropdownByLabel(label: string, base?: Locator): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators
-        return this.page
-            .getByLabel(label)
+        return (base ?? this.page)
+            .getByLabel(label, {exact: true})
             .locator('+ span')
             .getByRole('combobox')
         ;
+    }
+
+    public async getDropdownOptions(
+        dropdown: Locator,
+    ): Promise<(string | null)[]> {
+        await dropdown.click();
+        const options = await this.page
+            .getByRole('listbox')
+            .getByRole('option')
+            .all()
+        ;
+        const values = await Promise.all(
+            options.map((option) => option.textContent())
+        );
+        await dropdown.click(); // Close dropdown
+        return values;
     }
 
     /**
@@ -163,7 +284,7 @@ export class GlpiPage
         return this.page.getByRole('link', {
             name: name,
             exact: true,
-        });
+        }).filter({ visible: true });
     }
 
     /**
@@ -174,7 +295,7 @@ export class GlpiPage
         return this.page.getByRole('button', {
             name: name,
             exact: true,
-        });
+        }).filter({ visible: true });
     }
 
     /**
@@ -185,7 +306,7 @@ export class GlpiPage
         return this.page.getByRole('checkbox', {
             name: name,
             exact: true,
-        });
+        }).filter({ visible: true });
     }
 
     /**
@@ -196,7 +317,7 @@ export class GlpiPage
         return this.page.getByRole('textbox', {
             name: name,
             exact: true,
-        });
+        }).filter({ visible: true });
     }
 
     /**
@@ -207,13 +328,46 @@ export class GlpiPage
         return this.page.getByRole('tab', {
             name: name,
             exact: true,
-        });
+        }).filter({ visible: true });
+    }
+
+    /**
+     * Helper method to make common operation less verbose
+     */
+    public getRegion(name: string): Locator
+    {
+        return this.page.getByRole('region', {
+            name: name,
+            exact: true,
+        }).filter({ visible: true });
+    }
+
+    /**
+     * Helper method to make common operation less verbose
+     */
+    public getRadio(name: string): Locator
+    {
+        return this.page.getByRole('radio', {
+            name: name,
+            exact: true,
+        }).filter({ visible: true });
+    }
+
+    /**
+     * Helper method to make common operation less verbose
+     */
+    public getSpinButton(name: string): Locator
+    {
+        return this.page.getByRole('spinbutton', {
+            name: name,
+            exact: true,
+        }).filter({ visible: true });
     }
 
     public getEntityFromTree(name: string): Locator
     {
         return this.page.getByRole('gridcell', {
             name: name,
-        });
+        }).filter({ visible: true });
     }
 }

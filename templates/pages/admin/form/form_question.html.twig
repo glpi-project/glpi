@@ -151,11 +151,13 @@
                         aria-expanded="false"
                         role="button"
                         title="{{ __('More actions') }}"
+                        aria-label="{{ __('More actions') }}"
                         data-glpi-form-editor-state-action
                     ></i>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
                             <button
+                                aria-label="{{ __('Configure visibility') }}"
                                 type="button"
                                 class="dropdown-item"
                                 data-glpi-form-editor-on-click="show-visibility-dropdown"

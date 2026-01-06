@@ -41,7 +41,7 @@
 {% set conditions = null %}
 
 {% block conditions_editor %}
-    <div data-glpi-conditions-editor-container>
+    <div data-glpi-conditions-editor-container data-testid="conditions-container">
         <div class="btn-group" role="group">
 
             {# Display strategy picker #}
@@ -66,6 +66,7 @@
                 <label
                     for="strategy_{{ rand }}"
                     class="btn btn-outline-secondary"
+                    aria-label="{{ strategy.getLabel() }}"
                 >
                     <i class="{{ strategy.getIcon() }} me-2"></i>
                     {{ strategy.getLabel() }}
