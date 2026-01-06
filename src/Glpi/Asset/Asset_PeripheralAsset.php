@@ -992,10 +992,10 @@ TWIG, $twig_params);
     /**
      * Returns used peripherals.
      *
-     * @param string $itemtype  Itemtype of the peripherals to retrieve.
+     * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
      *
-     * @return iterable
-     */
+     * @return iterable<int, array<string, mixed>>
+    */
     private static function getUsedPeripherals(string $itemtype): iterable
     {
         global $DB;
