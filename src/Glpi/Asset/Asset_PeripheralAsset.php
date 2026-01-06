@@ -1019,8 +1019,8 @@ TWIG, $twig_params);
                 ],
             ],
             'WHERE' => [
-                    self::getTable() . '.is_deleted'     => 0,
-                ] + getEntitiesRestrictCriteria($peripheral::getTable()),
+                self::getTable() . '.is_deleted'     => 0,
+            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
             'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);
     }
