@@ -3281,11 +3281,11 @@ JAVASCRIPT;
         }
 
         if (empty($request['field'])) {
-            $numericKeys = array_filter(
+            $numeric_keys = array_filter(
                 array_keys(Search::getOptions($request['itemtype'])),
                 'is_numeric'
             );
-            $request['field'] = !empty($numericKeys) ? reset($numericKeys) : '';
+            $request['field'] = $numeric_keys !== [] ? reset($numeric_keys) : '';
         }
 
         $actions = Search::getActionsFor($request["itemtype"], $request["field"]);
