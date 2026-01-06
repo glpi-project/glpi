@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9b9747e13c24ba8aff97045100ec388e",
+    "content-hash": "51e26447f6418ca6eccbe51ab465e43a",
     "packages": [
         {
             "name": "altcha-org/altcha",
@@ -3484,16 +3484,16 @@
         },
         {
             "name": "paragonie/sodium_compat",
-            "version": "v2.2.0",
+            "version": "v2.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/sodium_compat.git",
-                "reference": "9c3535883f1b60b5d26aeae5914bbec61132ad7f"
+                "reference": "4714da6efdc782c06690bc72ce34fae7941c2d9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/9c3535883f1b60b5d26aeae5914bbec61132ad7f",
-                "reference": "9c3535883f1b60b5d26aeae5914bbec61132ad7f",
+                "url": "https://api.github.com/repos/paragonie/sodium_compat/zipball/4714da6efdc782c06690bc72ce34fae7941c2d9f",
+                "reference": "4714da6efdc782c06690bc72ce34fae7941c2d9f",
                 "shasum": ""
             },
             "require": {
@@ -3574,9 +3574,9 @@
             ],
             "support": {
                 "issues": "https://github.com/paragonie/sodium_compat/issues",
-                "source": "https://github.com/paragonie/sodium_compat/tree/v2.2.0"
+                "source": "https://github.com/paragonie/sodium_compat/tree/v2.5.0"
             },
-            "time": "2025-09-21T18:27:14+00:00"
+            "time": "2025-12-30T16:12:18+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -14868,5 +14868,5 @@
     "platform-overrides": {
         "php": "8.2.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.9.0"
 }
