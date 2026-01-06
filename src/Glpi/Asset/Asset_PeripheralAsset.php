@@ -1029,12 +1029,12 @@ TWIG, $twig_params);
     /**
      * Returns linked main assets data for given peripheral asset.
      *
-     * @param CommonDBTM $peripheral Peripheral asset.
-     * @param string     $itemtype   Itemtype of the main assets to retrieve.
+     * @param CommonDBTM               $peripheral Peripheral asset.
+     * @param class-string<CommonDBTM> $itemtype   Itemtype of the main assets to retrieve.
      *
      * @return DBmysqlIterator
      */
-    private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): DBMysqlIterator
+    private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): DBmysqlIterator
     {
         global $DB;
 
