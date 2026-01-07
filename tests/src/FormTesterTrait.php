@@ -85,6 +85,7 @@ trait FormTesterTrait
             'is_pinned'             => $builder->getIsPinned(),
             'forms_categories_id'   => $builder->getCategory(),
             'usage_count'           => $builder->getUsageCount(),
+            'render_layout'         => $builder->getRenderLayout()->value,
             '_init_sections'        => false,  // We will handle sections ourselves
             '_init_access_policies' => $builder->getUseDefaultAccessPolicies(),
             '_init_destinations'    => $builder->shouldInitDestinations(),

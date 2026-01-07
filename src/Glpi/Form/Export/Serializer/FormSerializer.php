@@ -72,6 +72,7 @@ use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
+use Glpi\Form\RenderLayout;
 use Glpi\Form\Section;
 use Glpi\UI\IllustrationManager;
 use InvalidArgumentException;
@@ -343,6 +344,7 @@ final class FormSerializer extends AbstractFormSerializer
         $spec->illustration                      = $illustration;
         $spec->is_recursive                      = $form->fields['is_recursive'];
         $spec->is_active                         = $form->fields['is_active'];
+        $spec->render_layout                     = $form->fields['render_layout'];
         $spec->submit_button_visibility_strategy = $form->fields['submit_button_visibility_strategy'];
 
         $spec->submit_button_conditions = $this->prepareConditionDataForExport(
@@ -391,6 +393,7 @@ final class FormSerializer extends AbstractFormSerializer
             'entities_id'                       => $entities_id,
             'is_recursive'                      => $spec->is_recursive,
             'is_active'                         => $spec->is_active,
+            'render_layout'                     => $spec->render_layout ?? RenderLayout::STEP_BY_STEP->value,
             'submit_button_visibility_strategy' => $spec->submit_button_visibility_strategy,
             '_init_sections'                    => false,
         ]);

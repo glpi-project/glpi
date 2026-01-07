@@ -74,6 +74,7 @@ use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\RenderLayout;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\AnswerTagProvider;
 use Glpi\Form\Tag\CommentDescriptionTagProvider;
@@ -2262,6 +2263,30 @@ final class FormSerializerTest extends DbTestCase
         $this->assertEquals([
             'key' => 'Tester',
         ], $data['forms'][0]['plugin_requirements'][0]);
+    }
+
+    public function testExportAndImportRenderLayout(): void
+    {
+        // Arrange: create a form with a specific render layout
+        $builder = new FormBuilder();
+        $builder->setRenderLayout(RenderLayout::SINGLE_PAGE);
+        $form = $this->createForm($builder);
+
+        // Act: export the form
+        $json = $this->exportForm($form);
+
+        // Assert: make sure the layout is correctly exported
+        $data = json_decode($json, associative: true);
+        $this->assertEquals(RenderLayout::SINGLE_PAGE->value, $data['forms'][0]['render_layout']);
+
+        // Act: import the form
+        $mapper = new DatabaseMapper([$this->getTestRootEntity(true)]);
+        $import_result = self::$serializer->importFormsFromJson($json, $mapper);
+
+        // Assert: make sure the layout is correctly imported
+        $this->assertEmpty($import_result->getFailedFormImports());
+        $imported_form = $import_result->getImportedForms()[0];
+        $this->assertEquals(RenderLayout::SINGLE_PAGE->value, $imported_form->fields['render_layout']);
     }
 
     public function testPluginRequirementAreUnique(): void
