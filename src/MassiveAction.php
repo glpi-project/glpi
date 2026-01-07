@@ -241,7 +241,8 @@ class MassiveAction
                                 );
 
                                 if (
-                                    isset($item)
+                                    !isAPI()
+                                    && isset($item)
                                     && $item instanceof HasClientSideActionsInterface
                                 ) {
                                     $client_actions = $item
