@@ -50,12 +50,12 @@ class KnowbaseItemTest extends DbTestCase
     public function testGetTypeName()
     {
         $expected = 'Knowledge base';
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(1));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(1));
 
         $expected = 'Knowledge base';
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(0));
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(2));
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(10));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(0));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(2));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(10));
     }
 
     public function testCleanDBonPurge()
@@ -64,7 +64,7 @@ class KnowbaseItemTest extends DbTestCase
 
         $users_id = getItemByTypeName('User', TU_USER, true);
 
-        $kb = new \KnowbaseItem();
+        $kb = new KnowbaseItem();
         $this->assertGreaterThan(
             0,
             (int) $kb->add([
@@ -207,7 +207,7 @@ class KnowbaseItemTest extends DbTestCase
         $base64Image = base64_encode($fcontents);
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $users_id = getItemByTypeName('User', TU_USER, true);
-        $instance = new \KnowbaseItem();
+        $instance = new KnowbaseItem();
         $input = [
             'name'     => 'Test to remove',
             'answer'   => <<<HTML
@@ -276,7 +276,7 @@ HTML,
 
         // Test uploads for item creation
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
-        $instance = new \KnowbaseItem();
+        $instance = new KnowbaseItem();
         $input = [
             'name'    => 'a kb item',
             'answer' => 'testUploadDocuments',
@@ -344,7 +344,7 @@ HTML,
             ->disableOriginalConstructor()
             ->getMock();
 
-        $m_kbi = $this->getMockBuilder(\KnowbaseItem::class)
+        $m_kbi = $this->getMockBuilder(KnowbaseItem::class)
             ->onlyMethods(['getFromDB', 'canViewItem'])
             ->getMock();
 
@@ -365,7 +365,7 @@ HTML,
         // Expected : [1, 3]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = \KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getForCategory(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(2, $result);
         $this->assertContains('1', $result);
@@ -374,7 +374,7 @@ HTML,
         // Expected : [-1]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = \KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getForCategory(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(1, $result);
         $this->assertContains(-1, $result);
@@ -538,7 +538,7 @@ HTML,
     #[DataProvider('fullTextSearchProvider')]
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
-        $search = $this->callPrivateMethod(new \KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
+        $search = $this->callPrivateMethod(new KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
         $this->assertEquals($expected, $search);
     }
 
@@ -775,7 +775,7 @@ HTML,
         $this->login(); //to prevent KnowBaseItem entity restrict criteria for anonymous user
 
         // Build criteria array
-        $criteria = \KnowbaseItem::getListRequest($params, $type);
+        $criteria = KnowbaseItem::getListRequest($params, $type);
         $this->assertIsArray($criteria);
 
         // Check that the request is valid
@@ -802,7 +802,7 @@ HTML,
         $this->createItems('KnowbaseItem', [$input]);
 
         // Load KB
-        /** @var \KnowbaseItem */
+        /** @var KnowbaseItem */
         $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
         $answer = $kbi->getAnswer();
 
@@ -878,7 +878,7 @@ HTML,
         ]);
         $this->assertGreaterThan(0, $kb_cat_id2);
 
-        $kbitem = new \KnowbaseItem();
+        $kbitem = new KnowbaseItem();
         // Create a new KB item with the first category
         $kbitems_id1 = $kbitem->add([
             'name' => __FUNCTION__ . '_1',
@@ -932,8 +932,8 @@ HTML,
         global $DB, $CFG_GLPI;
 
         // Removing existing data
-        $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
-        $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
+        $DB->delete(KnowbaseItem::getTable(), [new QueryExpression('true')]);
+        $this->assertEquals(0, countElementsInTable(KnowbaseItem::getTable()));
 
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
@@ -997,8 +997,8 @@ HTML,
         $this->login('glpi', 'glpi');
 
         // Removing existing data
-        $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
-        $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
+        $DB->delete(KnowbaseItem::getTable(), [new QueryExpression('true')]);
+        $this->assertEquals(0, countElementsInTable(KnowbaseItem::getTable()));
 
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
@@ -1487,9 +1487,9 @@ HTML,
 
         $values = $this->testGetVisibilityCriteriaProvider();
         foreach ($values as $value) {
-            $criteria = array_merge(\KnowbaseItem::getVisibilityCriteria(false), [
+            $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
                 'SELECT' => 'name',
-                'FROM' => \KnowbaseItem::getTable(),
+                'FROM' => KnowbaseItem::getTable(),
             ]);
 
             $data = $DB->request($criteria);
@@ -1502,7 +1502,7 @@ HTML,
             $this->assertEquals($value['articles'], $result);
 
             // Check that every article can be opened
-            $item = new \KnowbaseItem();
+            $item = new KnowbaseItem();
             foreach ($value['articles'] as $name) {
                 $kb_id = getItemByTypeName('KnowbaseItem', $name, true);
                 $this->assertTrue($item->can($kb_id, READ));
@@ -1547,7 +1547,7 @@ HTML,
         $_SESSION['glpi_currenttime'] = $date;
 
         // Test item cloning
-        $knowbaseitem = new \KnowbaseItem();
+        $knowbaseitem = new KnowbaseItem();
         $this->assertGreaterThan(
             0,
             $id = $knowbaseitem->add([
@@ -1609,13 +1609,13 @@ HTML,
         );
 
         //clone!
-        $kbitem = new \KnowbaseItem();
+        $kbitem = new KnowbaseItem();
         $this->assertTrue($kbitem->getFromDB($id));
         $added = $kbitem->clone();
         $this->assertGreaterThan(0, (int) $added);
         $this->assertNotEquals($kbitem->fields['id'], $added);
 
-        $clonedKbitem = new \KnowbaseItem();
+        $clonedKbitem = new KnowbaseItem();
         $this->assertTrue($clonedKbitem->getFromDB($added));
 
         $fields = $kbitem->fields;
@@ -1719,7 +1719,7 @@ HTML,
 
         $fn_can_tech_see_kb = static function () {
             $criteria = [
-                'itemtype' => \KnowbaseItem::class,
+                'itemtype' => KnowbaseItem::class,
                 'criteria' => [
                     [
                         'field' => 1,
@@ -1729,13 +1729,13 @@ HTML,
                 ],
             ];
             ob_start();
-            \Search::showList(\KnowbaseItem::class, $criteria, [7]);
+            \Search::showList(KnowbaseItem::class, $criteria, [7]);
             $output = ob_get_clean();
             return str_contains($output, "KB anwser");
         };
 
         $tech_user = getItemByTypeName("User", "tech", true);
-        $kb_item = $this->createItem(\KnowbaseItem::class, [
+        $kb_item = $this->createItem(KnowbaseItem::class, [
             'name'     => 'KB visible to tech',
             'answer'   => 'KB anwser',
             'is_faq'   => false,
@@ -1825,8 +1825,7 @@ HTML,
     public function testArticleAdminRendering_Views(
         int $views,
         string $expected,
-    ): void
-    {
+    ): void {
         $this->login();
 
         // Arrange: create an article
