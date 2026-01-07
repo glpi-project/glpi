@@ -1261,36 +1261,46 @@ class DBmysql
      *
      * @since 9.3
      *
-     * @param string $name of field to quote (or table.field)
+     * @param string|QueryExpression $name
      *
      * @return string
      */
     public static function quoteName($name)
     {
-        //handle verbatim names
+        // handle verbatim names
         if ($name instanceof QueryExpression) {
             return $name->getValue();
         }
-        //handle aliases
-        $names = preg_split('/\s+AS\s+/i', $name);
-        if (count($names) > 2) {
-            throw new \RuntimeException(
-                'Invalid field name ' . $name
-            );
+
+        // handle aliases
+        $name_matches = [];
+        if (preg_match('/^(?<name>.+[\s|`])AS(?<alias>[\s|`].+)$/i', $name, $name_matches) === 1) {
+            $name = rtrim($name_matches['name']);
+            $alias = ltrim($name_matches['alias']);
+            return self::quoteName($name) . ' AS ' . self::quoteName($alias);
         }
-        if (count($names) == 2) {
-            $name = self::quoteName($names[0]);
-            $name .= ' AS ' . self::quoteName($names[1]);
+
+        // handle names with multiple chunks (e.g. db.table.field or table.field)
+        if (strpos($name, '.')) {
+            $names = explode('.', $name);
+            return implode('.', array_map([self::class, 'quoteName'], $names));
+        }
+
+        // do not quote wildcard (*)
+        if ($name === '*') {
             return $name;
-        } else {
-            if (strpos($name, '.')) {
-                $n = explode('.', $name, 2);
-                $table = self::quoteName($n[0]);
-                $field = ($n[1] === '*') ? $n[1] : self::quoteName($n[1]);
-                return "$table.$field";
-            }
-            return ($name[0] == '`' ? $name : ($name === '*' ? $name : "`$name`"));
         }
+
+        // do not quote alreay quoted names
+        if (preg_match('/^`[^`]+`$/', $name) === 1) {
+            return $name;
+        }
+
+        // escape backticks by doubling them
+        return sprintf(
+            '`%s`',
+            str_replace('`', '``', $name)
+        );
     }
 
     /**
