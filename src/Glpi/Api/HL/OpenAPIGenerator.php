@@ -81,6 +81,11 @@ final class OpenAPIGenerator
 
     private static array $component_schemas_cache = [];
 
+    public static function clearComponentSchemasCache(): void
+    {
+        self::$component_schemas_cache = [];
+    }
+
     public function __construct(Router $router, string $api_version)
     {
         $this->router = $router;
