@@ -904,6 +904,74 @@ final class EngineTest extends DbTestCase
         ];
     }
 
+    public static function conditionsOnChildBlocksWithParentSectionHidden(): iterable
+    {
+        $form = new FormBuilder();
+        $form->addQuestion("Question 1", QuestionTypeShortText::class);
+        $form->addSection("Section 1");
+        $form->addComment("Comment 1");
+        $form->addQuestion("Question 2", QuestionTypeShortText::class);
+        $form->setSectionVisibility(
+            "Section 1",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Question 1",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::NOT_EMPTY,
+                    'value'          => null,
+                ],
+            ]
+        );
+
+        yield 'Comment and Question 2 should be visible when question is answered' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => 'some answer',
+                    'Question 2' => '',
+                ],
+            ],
+            'expected_output' => [
+                'sections' => [
+                    'First section' => true,
+                    'Section 1' => true,
+                ],
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => true,
+                ],
+                'comments' => [
+                    'Comment 1' => true,
+                ],
+            ],
+        ];
+
+        yield 'Comment and Question 2 should be hidden when question is not answered' => [
+            'form' => $form,
+            'input' => [
+                'answers' => [
+                    'Question 1' => '',
+                    'Question 2' => '',
+                ],
+            ],
+            'expected_output' => [
+                'sections' => [
+                    'First section' => true,
+                    'Section 1'     => false,
+                ],
+                'questions' => [
+                    'Question 1' => true,
+                    'Question 2' => false,
+                ],
+                'comments' => [
+                    'Comment 1' => false,
+                ],
+            ],
+        ];
+    }
+
     #[DataProvider('conditionsOnForm')]
     #[DataProvider('conditionsOnQuestions')]
     #[DataProvider('conditionsOnComments')]
@@ -913,6 +981,7 @@ final class EngineTest extends DbTestCase
     #[DataProvider('conditionsOnQuestionsWithNotVisibleQuestionAsSource')]
     #[DataProvider('conditionsWithEmptyOperatorOnNullAnswer')]
     #[DataProvider('conditionsWithEmptyOperatorOnNotVisibleQuestionAsSource')]
+    #[DataProvider('conditionsOnChildBlocksWithParentSectionHidden')]
     public function testComputation(
         FormBuilder $form,
         array $input,

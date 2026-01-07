@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\BlockInterface;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Form;
@@ -196,6 +197,14 @@ final class Engine
     private function evaluateItemVisibility(ConditionableVisibilityInterface $item): bool
     {
         $strategy = $item->getConfiguredVisibilityStrategy();
+
+        // Before evaluating conditions, check parent visibility for BlockInterface items
+        if ($item instanceof BlockInterface) {
+            $parent_visible = $this->visibility_cache[$item->getSection()->getUUID()] ?? true;
+            if (!$parent_visible) {
+                return false;
+            }
+        }
 
         // Strategy ALWAYS_VISIBLE means always visible
         if ($strategy === VisibilityStrategy::ALWAYS_VISIBLE) {
