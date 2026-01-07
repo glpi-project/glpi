@@ -217,8 +217,6 @@ final class SearchEngine
             'rackable_types'       => [Enclosure::class, Rack::class],
             'socket_types'         => [Socket::class],
             'ticket_types'         => [Change::class, Problem::class, Ticket::class],
-            'consumables_types'    => [\Consumable::class],
-            'process_types'        => [\Item_Process::class],
         ];
 
         if (array_key_exists($config_key, $key_to_itemtypes)) {
