@@ -1088,6 +1088,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
     {
         global $CFG_GLPI;
 
+        if (!Toolbox::isUrlSafe($url)) {
+            return [
+                'status' => false,
+                'message' => sprintf(__('URL "%s" is not allowed by your administrator.'), $url),
+            ];
+        }
+
         $challenge_response = [];
         $options = [
             'base_uri'        => $url,
