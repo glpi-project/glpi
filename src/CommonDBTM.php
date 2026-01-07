@@ -5755,6 +5755,7 @@ class CommonDBTM extends CommonGLPI
             $ruleasset          = new RuleAssetCollection();
             $ruleasset->setEntity($this->input['entities_id'] ?? $this->fields['entities_id']);
             $input              = $this->input;
+            $original_input     = $input;
             $input['_itemtype'] = static::class;
 
             $user = new User();
@@ -5789,7 +5790,7 @@ class CommonDBTM extends CommonGLPI
             }
 
             // Set the condition (add or update)
-            $output = $ruleasset->processAllRules($input, [], [], [
+            $output = $ruleasset->processAllRules($input, $original_input, [], [
                 'condition' => $condition,
             ]);
 
