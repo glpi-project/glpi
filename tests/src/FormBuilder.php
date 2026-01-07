@@ -38,6 +38,7 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\RenderLayout;
 
 /**
  * Helper class to ease form creation using DbTestCase::createForm()
@@ -143,6 +144,8 @@ class FormBuilder
      */
     protected int $usage_count;
 
+    protected RenderLayout $render_layout;
+
     /**
      * Constructor
      *
@@ -171,6 +174,7 @@ class FormBuilder
         $this->init_destinations = true;
         $this->use_default_access_policies = true;
         $this->usage_count = 0;
+        $this->render_layout = RenderLayout::STEP_BY_STEP;
     }
 
     /**
@@ -671,5 +675,16 @@ class FormBuilder
     public function getUsageCount(): int
     {
         return $this->usage_count;
+    }
+
+    public function setRenderLayout(RenderLayout $render_layout): self
+    {
+        $this->render_layout = $render_layout;
+        return $this;
+    }
+
+    public function getRenderLayout(): RenderLayout
+    {
+        return $this->render_layout;
     }
 }
