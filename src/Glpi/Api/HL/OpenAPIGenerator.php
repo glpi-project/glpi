@@ -79,6 +79,9 @@ final class OpenAPIGenerator
 
     private string $api_version;
 
+    /**
+     * @var array<string, array<string, array>>
+     */
     private static array $component_schemas_cache = [];
 
     public static function clearComponentSchemasCache(): void
