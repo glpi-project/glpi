@@ -79,6 +79,8 @@ final class OpenAPIGenerator
 
     private string $api_version;
 
+    private static array $component_schemas_cache = [];
+
     public function __construct(Router $router, string $api_version)
     {
         $this->router = $router;
@@ -141,9 +143,8 @@ EOT;
 
     public static function getComponentSchemas(string $api_version): array
     {
-        static $cache = [];
-        if (isset($cache[$api_version])) {
-            return $cache[$api_version];
+        if (isset(self::$component_schemas_cache[$api_version])) {
+            return self::$component_schemas_cache[$api_version];
         }
 
         $schemas = [];
@@ -205,7 +206,7 @@ EOT;
             }
         }
 
-        return $cache[$api_version] = $schemas;
+        return self::$component_schemas_cache[$api_version] = $schemas;
     }
 
     private function getComponentReference(string $name, string $controller): ?array
