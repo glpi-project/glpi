@@ -50,9 +50,9 @@
                onmouseover="this.style.color='#0d6efd'"
                onmouseout="this.style.color=''"
                data-expand-text="{{ __('Show all') }}"
-               data-collapse-text="{{ __('Collapse all') }}"
+               data-collapse-text="{{ __('Expand all') }}"
                data-expand-title="{{ __('Show all') }}"
-               data-collapse-title="{{ __('Collapse all') }}">
+               data-collapse-title="{{ __('Expand all') }}">
                 <i class="ti ti-eye-off"></i>
                 <span>{{ __('Show all') }}</span>
             </a>
@@ -256,3 +256,63 @@
         </div>
     {% endfor %}
 </div>
+
+<script>
+/**
+ * Toggle all accordions in a notepad container with Bootstrap transitions
+ *
+ * @param {Element} element - The element that was clicked (button or link)
+ */
+function toggleNotesAccordion(element) {
+    // Find the accordion container (it's the sibling div after the firstbloc)
+    const firstbloc = element.closest('.firstbloc');
+    const accordionContainer = firstbloc.parentElement.querySelector('.accordion');
+
+    if (!accordionContainer) {
+        console.warn('Accordion container not found');
+        return;
+    }
+
+    const accordionElements = accordionContainer.querySelectorAll('.accordion-collapse');
+    const elementText = element.querySelector('span');
+    const elementIcon = element.querySelector('i');
+    const isExpanding = elementText.textContent.includes(element.dataset.expandText);
+
+    // Use Bootstrap's native collapse methods for smooth transitions
+    accordionElements.forEach(function(accordion) {
+        const bsCollapse = new bootstrap.Collapse(accordion, { toggle: false });
+
+        if (isExpanding) {
+            bsCollapse.show();
+        } else {
+            bsCollapse.hide();
+        }
+    });
+
+    // Update element text and icon (if present)
+    if (isExpanding) {
+        elementText.textContent = element.dataset.collapseText;
+        element.title = element.dataset.collapseTitle;
+        if (elementIcon) {
+            elementIcon.className = 'ti ti-eye';
+        }
+    } else {
+        elementText.textContent = element.dataset.expandText;
+        element.title = element.dataset.expandTitle;
+        if (elementIcon) {
+            elementIcon.className = 'ti ti-eye-off';
+        }
+    }
+}
+
+// Event listener for toggle all notes button/link
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.querySelector('.toggle-all-notes');
+    if (toggleButton) {
+        toggleButton.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default link behavior
+            toggleNotesAccordion(this);
+        });
+    }
+});
+</script>

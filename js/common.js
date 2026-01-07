@@ -1962,65 +1962,7 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
     });
 });
 
-/**
- * Toggle all accordions in a notepad container
- *
- * @param {Element} element - The element that was clicked (button or link)
- */
-window.toggleNotesAccordion = function(element) {
-    // Find the accordion container (it's the sibling div after the firstbloc)
-    const firstbloc = element.closest('.firstbloc');
-    const accordionContainer = firstbloc.parentElement.querySelector('.accordion');
 
-    if (!accordionContainer) {
-        console.warn('Accordion container not found');
-        return;
-    }
-
-    const accordionElements = accordionContainer.querySelectorAll('.accordion-collapse');
-    const elementText = element.querySelector('span');
-    const elementIcon = element.querySelector('i');
-    const isExpanding = elementText.textContent.includes(element.dataset.expandText);
-
-    accordionElements.forEach(function(accordion) {
-        if (isExpanding) {
-            accordion.classList.add('show');
-            const accordionButton = accordion.previousElementSibling.querySelector('.accordion-button');
-            if (accordionButton) {
-                accordionButton.classList.remove('collapsed');
-                accordionButton.setAttribute('aria-expanded', 'true');
-            }
-        } else {
-            accordion.classList.remove('show');
-            const accordionButton = accordion.previousElementSibling.querySelector('.accordion-button');
-            if (accordionButton) {
-                accordionButton.classList.add('collapsed');
-                accordionButton.setAttribute('aria-expanded', 'false');
-            }
-        }
-    });
-
-    // Update element text and icon (if present)
-    if (isExpanding) {
-        elementText.textContent = element.dataset.collapseText;
-        element.title = element.dataset.collapseTitle;
-        if (elementIcon) {
-            elementIcon.className = 'ti ti-eye';
-        }
-    } else {
-        elementText.textContent = element.dataset.expandText;
-        element.title = element.dataset.expandTitle;
-        if (elementIcon) {
-            elementIcon.className = 'ti ti-eye-off';
-        }
-    }
-};
-
-// Event listener for toggle all notes button/link
-$(document).on('click', '.toggle-all-notes', function(e) {
-    e.preventDefault(); // Prevent default link behavior
-    window.toggleNotesAccordion(this);
-});
 
 // Prevent Bootstrap dialog from blocking focusin
 // See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
