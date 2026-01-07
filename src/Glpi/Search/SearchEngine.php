@@ -226,7 +226,7 @@ final class SearchEngine
             return $key_to_itemtypes[$config_key];
         }
 
-        $itemclass = ucfirst($matches[1]);
+        $itemclass = (new \DbUtils())->getClassForItemtype($matches[1]);
         if (is_a($itemclass, CommonDBTM::class, true)) {
             return [$itemclass::getType()];
         }
