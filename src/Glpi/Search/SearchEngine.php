@@ -217,7 +217,6 @@ final class SearchEngine
             'rackable_types'       => [Enclosure::class, Rack::class],
             'socket_types'         => [Socket::class],
             'ticket_types'         => [Change::class, Problem::class, Ticket::class],
-            'itil_types'           => [Change::class, Problem::class, Ticket::class],
             'consumables_types'    => [\Consumable::class],
             'process_types'        => [\Item_Process::class],
         ];
