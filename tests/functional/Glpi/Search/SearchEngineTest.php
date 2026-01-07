@@ -110,5 +110,21 @@ class SearchEngineTest extends DbTestCase
                 implode('\', \'', $fails)
             )
         );
+
+        $fails = [];
+        foreach($exclusions as $exclusion) {
+            if (count($this->callPrivateMethod($search_engine, 'getMetaParentItemtypesForTypesConfig', $exclusion)) !== 0) {
+                $fails[] = $exclusion;
+            }
+        }
+
+        $this->assertCount(
+            0,
+            $fails,
+            sprintf(
+                "Existing itemtypes mapping that should not exists in SearchEngine::getMetaParentItemtypesForTypesConfig():\n'%s'",
+                implode('\', \'', $fails)
+            )
+        );
     }
 }
