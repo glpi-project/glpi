@@ -80,7 +80,7 @@ final class OpenAPIGenerator
     private string $api_version;
 
     /**
-     * @var array<string, array<string, array>> $component_schemas_cache
+     * @var array<string, array<string, mixed>>
      */
     private static array $component_schemas_cache = [];
 
