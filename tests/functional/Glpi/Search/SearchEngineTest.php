@@ -46,6 +46,56 @@ class SearchEngineTest extends DbTestCase
         $search_engine = new SearchEngine();
         $exclusions = [
             'unicity_types',
+            'asset_types',
+            'report_types',
+            'peripheralhost_types',
+            'linkuser_types',
+            'linkgroup_types',
+            'linkuser_tech_types',
+            'linkgroup_tech_types',
+            'dictionnary_types',
+            'helpdesk_visible_types',
+            'networkport_types',
+            'device_types',
+            'itemdevices_types',
+            'itemdevicememory_types',
+            'itemdevicepowersupply_types',
+            'itemdevicenetworkcard_types',
+            'itemdeviceharddrive_types',
+            'itemdevicebattery_types',
+            'itemdevicefirmware_types',
+            'itemdevicesimcard_types',
+            'itemdevicegeneric_types',
+            'itemdevicepci_types',
+            'itemdevicecontrol_types',
+            'itemdevicedrive_types',
+            'itemdevicesensor_types',
+            'itemdeviceprocessor_types',
+            'itemdevicesoundcard_types',
+            'itemdevicegraphiccard_types',
+            'itemdevicemotherboard_types',
+            'itemdevicecamera_types',
+            'notificationtemplates_types',
+            'systeminformations_types',
+            'planning_types',
+            'planning_add_types',
+            'globalsearch_types',
+            'inventory_types',
+            'kb_types',
+            'operatingsystem_types',
+            'disk_types',
+            'kanban_types',
+            'appliance_relation_types',
+            'remote_management_types',
+            'databaseinstance_types',
+            'default_impact_asset_types',
+            'impact_asset_types',
+            'itemantivirus_types',
+            'itemvirtualmachines_types',
+            'management_types',
+            'tools_types',
+            'admin_types',
+            'environment_types',
         ];
         $fails = [];
         foreach ($CFG_GLPI as $key => $value) {
@@ -60,8 +110,8 @@ class SearchEngineTest extends DbTestCase
             0,
             $fails,
             sprintf(
-                "Missing/wrong itemtypes mapping in SearchEngine::getMetaParentItemtypesForTypesConfig():\n%s",
-                implode(', ', $fails)
+                "Missing/wrong itemtypes mapping in SearchEngine::getMetaParentItemtypesForTypesConfig():\n'%s'",
+                implode('\', \'', $fails)
             )
         );
     }
