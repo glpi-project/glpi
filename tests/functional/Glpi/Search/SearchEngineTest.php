@@ -112,7 +112,7 @@ class SearchEngineTest extends DbTestCase
         );
 
         $fails = [];
-        foreach($exclusions as $exclusion) {
+        foreach ($exclusions as $exclusion) {
             if (count($this->callPrivateMethod($search_engine, 'getMetaParentItemtypesForTypesConfig', $exclusion)) !== 0) {
                 $fails[] = $exclusion;
             }
