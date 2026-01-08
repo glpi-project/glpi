@@ -1204,6 +1204,163 @@ PLAINTEXT,
         }
     }
 
+    public function testSupplierCanReplyToTicket()
+    {
+        global $DB;
+        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
+
+        $random_user_id = $this->createItem(\User::class, [
+            'name' => 'random_test_user',
+            'password' => 'random',
+            'password2' => 'random',
+            'entities_id' => 0,
+        ])->getID();
+        $this->assertGreaterThan(0, $random_user_id);
+
+        $uemail = new \UserEmail();
+        $this->assertGreaterThan(
+            0,
+            (int) $uemail->add([
+                'users_id' => $random_user_id,
+                'is_default' => 1,
+                'email' => 'randomuser@glpi-project.org',
+            ])
+        );
+
+        $supplier_id = $this->createItem(\Supplier::class, [
+            'name' => 'Test Supplier',
+            'email' => 'supplier@glpi-project.org',
+            'entities_id' => 0,
+        ])->getID();
+        $this->assertGreaterThan(0, $supplier_id);
+
+        $ticket_id = $this->createItem(Ticket::class, [
+            'name' => 'Ticket for supplier reply test',
+            'content' => 'Initial ticket content',
+            'entities_id' => 0,
+        ])->getID();
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $this->createItem(\Supplier_Ticket::class, [
+            'tickets_id' => $ticket_id,
+            'suppliers_id' => $supplier_id,
+            'type' => \CommonITILActor::ASSIGN,
+        ]);
+
+        $uuid = Config::getUuid('notification');
+        $message_id = "GLPI_{$uuid}-Ticket-{$ticket_id}/new." . time() . "." . rand() . "@localhost";
+
+        if (null === $this->collector) {
+            $collector = new \MailCollector();
+            $this->collector = $collector;
+        } else {
+            $collector = $this->collector;
+        }
+
+        $mailgate_id = (int) $collector->add([
+            'name' => 'testuser',
+            'login' => 'testuser',
+            'is_active' => true,
+            'passwd' => 'applesauce',
+            'mail_server' => 'dovecot',
+            'server_type' => '/imap',
+            'server_port' => 143,
+            'server_ssl' => '',
+            'server_cert' => '/novalidate-cert',
+        ]);
+        $this->assertGreaterThan(0, $mailgate_id);
+
+        $message_random = new Message([
+            'headers' => [
+                'From' => 'randomuser@glpi-project.org',
+                'To' => 'unittests@glpi-project.org',
+                'Subject' => "Re: [GLPI #{$ticket_id}] Ticket for supplier reply test",
+                'Message-ID' => '<test-random-user-reply@localhost>',
+                'In-Reply-To' => "<{$message_id}>",
+                'Date' => 'Thu, 19 Dec 2025 10:00:00 +0100',
+                'Content-Type' => 'text/plain; charset=UTF-8',
+            ],
+            'content' => 'This is a reply from a random user.',
+        ]);
+
+        $collector = new \MailCollector();
+        $collector->getFromDB($mailgate_id);
+
+        $result = $collector->buildTicket(
+            $mailgate_id,
+            $message_random,
+            [
+                'mailgates_id' => $mailgate_id,
+                'play_rules' => true,
+            ]
+        );
+
+        $this->assertNotFalse($result);
+
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                ITILFollowup::getTable(),
+                [
+                    'items_id' => $ticket_id,
+                    'itemtype' => 'Ticket',
+                ]
+            ),
+            sprintf("Followup from random user not found for ticket %s", $ticket_id)
+        );
+
+        $message_supplier = new Message([
+            'headers' => [
+                'From' => 'supplier@glpi-project.org',
+                'To' => 'unittests@glpi-project.org',
+                'Subject' => "Re: [GLPI #{$ticket_id}] Ticket for supplier reply test",
+                'Message-ID' => '<test-supplier-reply@localhost>',
+                'In-Reply-To' => "<{$message_id}>",
+                'Date' => 'Thu, 19 Dec 2025 10:01:00 +0100',
+                'Content-Type' => 'text/plain; charset=UTF-8',
+            ],
+            'content' => 'This is a reply from the supplier.',
+        ]);
+
+        $result = $collector->buildTicket(
+            $mailgate_id,
+            $message_supplier,
+            [
+                'mailgates_id' => $mailgate_id,
+                'play_rules' => true,
+            ]
+        );
+
+        $this->assertNotFalse($result);
+
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                ITILFollowup::getTable(),
+                [
+                    'items_id' => $ticket_id,
+                    'itemtype' => 'Ticket',
+                ]
+            ),
+            sprintf("Followup from supplier not found for ticket %s", $ticket_id)
+        );
+
+        $followups = $DB->request([
+            'FROM' => ITILFollowup::getTable(),
+            'WHERE' => [
+                'items_id' => $ticket_id,
+                'itemtype' => 'Ticket',
+            ],
+            'ORDER' => 'date_creation ASC',
+        ]);
+
+        $this->assertCount(2, $followups);
+        
+        $followups_array = iterator_to_array($followups);
+        $this->assertStringContainsString('This is a reply from a random user', $followups_array[0]['content']);
+        $this->assertStringContainsString('This is a reply from the supplier', $followups_array[1]['content']);
+    }
+
     public static function mailServerProtocolsProvider()
     {
         return [
