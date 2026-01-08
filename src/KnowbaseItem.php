@@ -949,10 +949,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
             'views' => $this->fields['view'],
-            'formatted_views' => Html::formatNumber(
-                number: $this->fields['view'],
-                forcedecimal: 0,
-            ),
             'answer' => $this->getAnswer(),
             'subject' => $this->fields['name'],
             'last_update_date' => $last_updater_info->getRawDate(),

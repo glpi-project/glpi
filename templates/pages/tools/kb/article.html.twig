@@ -72,7 +72,7 @@
                 {% elseif views == 1 %}
                     {{ __("1 view") }}
                 {% else %}
-                    {{ __("%s views")|format(formatted_views) }}
+                    {{ __("%s views")|format(views|formatted_integer ) }}
                 {% endif %}
             </span>
         </div>
