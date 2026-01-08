@@ -1815,7 +1815,7 @@ HTML,
 
     public static function articleAdminRendering_ViewsProvider(): iterable
     {
-        yield 'no views'           => [0, "No view"];
+        yield 'no views'           => [0, "No views"];
         yield 'one view'           => [1, "1 view"];
         yield 'more than one view' => [9, "9 views"];
         yield 'more than 1k'       => [1234, "1 234 views"];
