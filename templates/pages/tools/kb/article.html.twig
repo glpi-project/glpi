@@ -45,19 +45,22 @@
                 >{{ last_update_relative_date }}</time>
                 <span>{{ __("by") }}</span>
             </span>
-            {% if last_update_author_link is not null and last_update_can_view_author %}
-                <a
-                    href="{{ last_update_author_link }}"
-                    class="badge bg-azure-lt ms-1"
-                    data-testid="author_link"
-                >
-                    @{{ last_update_author_name }}
-                </a>
-            {% else %}
-                <span class="badge bg-dark-lt ms-1">
-                    @{{ last_update_author_name }}
-                </span>
-            {% endif %}
+            <address class="mb-0">
+                {% if last_update_author_link is not null and last_update_can_view_author %}
+                    <a
+                        rel="author"
+                        href="{{ last_update_author_link }}"
+                        class="badge bg-azure-lt ms-1"
+                        data-testid="author_link"
+                    >
+                        @{{ last_update_author_name }}
+                    </a>
+                {% else %}
+                    <span class="badge bg-dark-lt ms-1">
+                        @{{ last_update_author_name }}
+                    </span>
+                {% endif %}
+            </address>
         </div>
 
         {# Views #}
