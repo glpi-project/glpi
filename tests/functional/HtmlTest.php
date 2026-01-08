@@ -986,7 +986,7 @@ SCSS,
 
         $this->assertEquals(
             <<<CSS
-            
+
             nav > ul {
               margin: 0;
               padding: 0;
@@ -1219,7 +1219,7 @@ SCSS,
         yield [
             'current' => '2025-01-01 12:00:00.000',
             'timestamp' => '2025-01-01 11:59:00.000',
-            'expected'  => '1 minutes ago',
+            'expected'  => '1 minute ago',
         ];
 
         yield [
@@ -1231,7 +1231,7 @@ SCSS,
         yield [
             'current' => '2025-01-01 23:59:59.000',
             'timestamp' => '2025-01-01 22:59:59.000',
-            'expected'  => '1 hours ago',
+            'expected'  => '1 hour ago',
         ];
 
         yield [
