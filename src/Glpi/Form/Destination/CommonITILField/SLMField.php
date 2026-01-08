@@ -34,12 +34,12 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\FormDestinationManager;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
@@ -72,24 +72,19 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $slm = $this->getSLM();
-        $twig = TemplateRenderer::getInstance();
-        return $twig->render('pages/admin/form/itil_config_fields/slm.html.twig', [
-            // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => SLMFieldStrategy::SPECIFIC_VALUE->value,
+        // Render extra fields for all strategies
+        $extra_fields_html = '';
+        foreach (FormDestinationManager::getInstance()->getSLMFieldStrategies() as $strategy) {
+            $extra_fields_html .= $strategy->renderExtraConfigFields(
+                $form,
+                $this,
+                $config,
+                $input_name,
+                $display_options
+            );
+        }
 
-            // General display options
-            'options' => $display_options,
-
-            // Specific additional config for SPECIFIC_ANSWER strategy
-            'specific_value_extra_field' => [
-                'slm_class'   => $this->getSLM()::class,
-                'empty_label' => sprintf(__("Select a %s..."), $slm->getTypeName()),
-                'value'       => $config->getSpecificSLMID() ?? 0,
-                'input_name'  => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
-                'type'        => $this->getType(),
-            ],
-        ]);
+        return $extra_fields_html;
     }
 
     #[Override]
@@ -102,13 +97,27 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Only one strategy is allowed
-        $strategy = current($config->getStrategies());
+        $strategy = $config->getStrategy();
 
-        // Compute value according to strategy
-        $slm_id = $strategy->getSLMID($config);
+        return $strategy->applyStrategyToInput($this, $config, $input, $answers_set);
+    }
 
-        // Do not edit input if invalid value was found
+    /**
+     * Helper method to apply an SLM ID to the input array.
+     *
+     * This method can be used by strategies that compute an SLM ID and want
+     * to apply it in the standard way.
+     *
+     * @param int|null $slm_id The SLM ID to apply, or null to not modify the input
+     * @param array<string, mixed> $input The input array to modify
+     * @return array<string, mixed> The modified input array
+     */
+    public function applySlmIdToInput(?int $slm_id, array $input): array
+    {
+        if ($slm_id === null) {
+            return $input;
+        }
+
         $slm = $this->getSLM();
         if (!$slm::getById($slm_id)) {
             return $input;
@@ -147,9 +156,14 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
 
     public function getStrategiesForDropdown(): array
     {
+        $strategies = FormDestinationManager::getInstance()->getSLMFieldStrategies();
+
+        // Sort by weight
+        uasort($strategies, fn($a, $b) => $a->getWeight() <=> $b->getWeight());
+
         $values = [];
-        foreach (SLMFieldStrategy::cases() as $strategies) {
-            $values[$strategies->value] = $strategies->getLabel($this);
+        foreach ($strategies as $strategy) {
+            $values[$strategy->getKey()] = $strategy->getLabel($this);
         }
         return $values;
     }

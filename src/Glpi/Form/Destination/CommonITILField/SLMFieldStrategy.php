@@ -35,25 +35,108 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-enum SLMFieldStrategy: string
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AnswersSet;
+use Glpi\Form\Form;
+use Override;
+
+enum SLMFieldStrategy: string implements SLMFieldStrategyInterface
 {
     case FROM_TEMPLATE = 'from_template';
     case SPECIFIC_VALUE = 'specific_value';
 
+    #[Override]
+    public function getKey(): string
+    {
+        return $this->value;
+    }
+
+    #[Override]
     public function getLabel(SLMField $field): string
     {
         return match ($this) {
-            self::FROM_TEMPLATE     => __("From template"),
-            self::SPECIFIC_VALUE    => sprintf(__("Specific %s"), $field->getSLM()->getTypeName(1)),
+            self::FROM_TEMPLATE  => __("From template"),
+            self::SPECIFIC_VALUE => sprintf(__("Specific %s"), $field->getSLM()->getTypeName(1)),
         };
     }
 
-    public function getSLMID(
+    #[Override]
+    public function applyStrategyToInput(
+        SLMField $field,
         SLMFieldConfig $config,
-    ): ?int {
-        return match ($this) {
-            self::FROM_TEMPLATE => null, // Let the template apply its default value by itself.
+        array $input,
+        AnswersSet $answers_set
+    ): array {
+        $slm_id = match ($this) {
+            self::FROM_TEMPLATE  => null,
             self::SPECIFIC_VALUE => $config->getSpecificSLMID(),
         };
+
+        return $field->applySlmIdToInput($slm_id, $input);
+    }
+
+    /**
+     * @param array<string, mixed> $display_options
+     */
+    #[Override]
+    public function renderExtraConfigFields(
+        Form $form,
+        SLMField $field,
+        SLMFieldConfig $config,
+        string $input_name,
+        array $display_options
+    ): string {
+        return match ($this) {
+            self::FROM_TEMPLATE  => '',
+            self::SPECIFIC_VALUE => $this->renderSpecificValueExtraFields(
+                $field,
+                $config,
+                $input_name,
+                $display_options
+            ),
+        };
+    }
+
+    #[Override]
+    public function getExtraConfigKeys(): array
+    {
+        return match ($this) {
+            self::FROM_TEMPLATE  => [],
+            self::SPECIFIC_VALUE => [SLMFieldConfig::SLM_ID],
+        };
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return match ($this) {
+            self::FROM_TEMPLATE  => 10,
+            self::SPECIFIC_VALUE => 20,
+        };
+    }
+
+    /**
+     * @param array<string, mixed> $display_options
+     */
+    private function renderSpecificValueExtraFields(
+        SLMField $field,
+        SLMFieldConfig $config,
+        string $input_name,
+        array $display_options
+    ): string {
+        $slm = $field->getSLM();
+        $twig = TemplateRenderer::getInstance();
+
+        return $twig->render('pages/admin/form/itil_config_fields/slm.html.twig', [
+            'CONFIG_SPECIFIC_VALUE' => self::SPECIFIC_VALUE->value,
+            'options' => $display_options,
+            'specific_value_extra_field' => [
+                'slm_class'   => $slm::class,
+                'empty_label' => sprintf(__("Select a %s..."), $slm->getTypeName()),
+                'value'       => $config->getSpecificSLMID() ?? 0,
+                'input_name'  => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
+                'type'        => $field->getType(),
+            ],
+        ]);
     }
 }

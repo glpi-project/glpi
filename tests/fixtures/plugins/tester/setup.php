@@ -46,6 +46,7 @@ use GlpiPlugin\Tester\Form\DayOfTheWeekPolicy;
 use GlpiPlugin\Tester\Form\QuestionTypeRange;
 use GlpiPlugin\Tester\Form\QuestionTypeColor;
 use GlpiPlugin\Tester\Form\ExternalIDField;
+use GlpiPlugin\Tester\Form\SpecificAnswerSLMStrategy;
 use GlpiPlugin\Tester\Form\TesterCategory;
 use GlpiPlugin\Tester\MyPsr4Class;
 
@@ -110,6 +111,11 @@ function plugin_init_tester(): void
     $destination_manager->registerPluginCommonITILConfigField(
         FormDestinationTicket::class,
         new ExternalIDField()
+    );
+
+    // Register SLM field strategy
+    $destination_manager->registerPluginSLMFieldStrategy(
+        new SpecificAnswerSLMStrategy()
     );
 
     // Register custom tiles types

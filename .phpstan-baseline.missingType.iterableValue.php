@@ -17216,18 +17216,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/LocationFieldConfig.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\OLATTOFieldConfig\\:\\:jsonDeserialize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/OLATTOFieldConfig.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\OLATTRFieldConfig\\:\\:jsonDeserialize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/OLATTRFieldConfig.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\ObserverFieldConfig\\:\\:jsonDeserialize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -17334,18 +17322,6 @@ $ignoreErrors[] = [
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/RequesterFieldConfig.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLATTOFieldConfig\\:\\:jsonDeserialize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLATTOFieldConfig.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLATTRFieldConfig\\:\\:jsonDeserialize\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/SLATTRFieldConfig.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Form\\\\Destination\\\\CommonITILField\\\\SLMField\\:\\:applyConfiguratedValueToInputUsingAnswers\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
