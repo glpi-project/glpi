@@ -1668,7 +1668,6 @@ class UploadHandler
      */
     public function head()
     {
-        $this->header('Pragma: no-cache');
         $this->header('Cache-Control: no-store, no-cache, must-revalidate');
         $this->header('Content-Disposition: inline; filename="files.json"');
         // Prevent Internet Explorer from MIME-sniffing the content-type:

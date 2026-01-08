@@ -169,7 +169,6 @@ if (PHP_SAPI === 'cli') {
             'Content-Type'   => 'image/gif',
             'Content-Length' => strlen($image),
             'Cache-Control'  => 'no-cache,no-store',
-            'Pragma'         => 'no-cache',
             'Connection'     => 'close',
         ]
     );
