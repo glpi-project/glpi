@@ -15,4 +15,5 @@ jobs:
     # can use the inherit keyword to implicitly pass the secrets.
     secrets: inherit
     with:
-        glpi-version: "${{ github.event.release.tag_name }}"
+      push: true
+      glpi-version: "${{ github.event.release.tag_name }}"
