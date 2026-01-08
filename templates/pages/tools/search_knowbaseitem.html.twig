@@ -60,10 +60,10 @@
                                 <div class="fs-4 knowbaseitem-content-preview">{{ result.content_preview }}</div>
                             </div>
                             <div class="col-auto">
-                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon use-knowbaseitem" title="{{ __('Use this entry') }}">
+                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon use-knowbaseitem pointer-events-none" title="{{ __('Use this entry') }}">
                                     <i class="ti ti-check"></i>
                                 </button>
-                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon view-knowbaseitem" title="{{ __('Preview') }}">
+                                <button type="button" class="btn btn-ghost-secondary btn-sm btn-icon view-knowbaseitem pointer-events-none" title="{{ __('Preview') }}">
                                     <i class="ti ti-eye"></i>
                                 </button>
                             </div>
@@ -86,7 +86,7 @@
                     <i class="ti ti-arrow-left"></i>
                     {{ __('Back to results') }}
                 </button>
-                <button type="button" class="btn btn-primary use-knowbaseitem ms-auto">
+                <button type="button" class="btn btn-primary use-knowbaseitem pointer-events-none ms-auto">
                     <i class="ti ti-check"></i>
                     {{ __('Use this entry') }}
                 </button>
@@ -201,5 +201,9 @@
             $('#{{ container_id }} input[name="start"]').val(new_start);
             refreshResults();
         });
+
+        // Enable buttons only once script is ready
+        $('button.use-knowbaseitem').removeClass('pointer-events-none');
+        $('button.view-knowbaseitem').removeClass('pointer-events-none');
     </script>
 {% endif %}
