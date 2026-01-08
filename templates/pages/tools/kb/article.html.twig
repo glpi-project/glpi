@@ -38,11 +38,11 @@
             <i class="ti ti-clock me-1 fs-3"></i>
             <span>
                 <span>{{ __("Updated:") }}</span>
-                <span
+                <time
                     title="{{ last_update_date }}"
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
-                >{{ last_update_relative_date }}</span>
+                >{{ last_update_relative_date }}</time>
                 <span>{{ __("by") }}</span>
             </span>
             {% if last_update_author_link is not null and last_update_can_view_author %}
