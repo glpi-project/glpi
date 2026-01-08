@@ -6251,8 +6251,14 @@ CSS;
                 if ($diff < 60) {
                     return __('Just now');
                 }
+                if ($diff < 120) {
+                    return  sprintf(__('%s minute ago'), floor($diff / 60));
+                }
                 if ($diff < 3600) {
                     return  sprintf(__('%s minutes ago'), floor($diff / 60));
+                }
+                if ($diff < 7200) {
+                    return  sprintf(__('%s hour ago'), floor($diff / 3600));
                 }
                 if ($diff < 86400) {
                     return  sprintf(__('%s hours ago'), floor($diff / 3600));
