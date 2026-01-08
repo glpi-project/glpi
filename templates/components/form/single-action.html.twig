@@ -77,6 +77,12 @@ $(function () {
       $('.moreactions + .dropdown-menu').hide();
 
       var current_action = $(this).data('action');
+      if (current_action.startsWith('client:')) {
+         const action_name = current_action.replace('client:', '');
+         const event = new Event(action_name);
+         document.dispatchEvent(event);
+         return;
+      }
 
       glpi_ajax_dialog({
          url: `${CFG_GLPI.root_doc}/ajax/dropdownMassiveAction.php`,
