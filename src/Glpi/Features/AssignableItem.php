@@ -53,25 +53,29 @@ trait AssignableItem
     }
 
     /** @see AssignableItemInterface::canViewItem() */
-    public function canViewItem(): bool
-    {
-        if (!parent::canViewItem()) {
-            return false;
-        }
-
-        $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID']
-            || count(array_intersect($this->fields['groups_id_tech'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
-        $is_owned = $this->fields['users_id'] === $_SESSION['glpiID']
-            || count(array_intersect($this->fields['groups_id'] ?? [], $_SESSION['glpigroups'] ?? [])) > 0;
-
-        if (!Session::haveRight(static::$rightname, READ)) {
-            return ($is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED))
-                || ($is_owned && Session::haveRight(static::$rightname, READ_OWNED));
-        }
-
-        // Has global READ right
-        return true;
+public function canViewItem(): bool
+{
+    if (!parent::canViewItem()) {
+        return false;
     }
+
+    // Ensure we have arrays for comparison
+    $tech_groups = (array)($this->fields['groups_id_tech'] ?? []);
+    $own_groups = (array)($this->fields['groups_id'] ?? []);
+    $session_groups = (array)($_SESSION['glpigroups'] ?? []);
+
+    $is_assigned = $this->fields['users_id_tech'] === $_SESSION['glpiID']
+        || count(array_intersect($tech_groups, $session_groups)) > 0;
+    $is_owned = $this->fields['users_id'] === $_SESSION['glpiID']
+        || count(array_intersect($own_groups, $session_groups)) > 0;
+
+    if (!Session::haveRight(static::$rightname, READ)) {
+        return ($is_assigned && Session::haveRight(static::$rightname, READ_ASSIGNED))
+            || ($is_owned && Session::haveRight(static::$rightname, READ_OWNED));
+    }
+
+    return true;
+}
 
     /** @see AssignableItemInterface::canUpdate() */
     public static function canUpdate(): bool
