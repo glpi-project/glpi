@@ -57,9 +57,9 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
             "option_b" => "option B",
             "option_c" => "option C",
             "option_d" => "option D",
-            "1" => 1,
-            "2" => 2,
-            "3" => 3,
+            "fsefes-1" => 1,
+            "zzdzdd-2" => 2,
+            "abcdef-3" => 3,
         ];
 
         yield from self::getCasesForTypeAndConfig(
@@ -122,24 +122,24 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
         yield "Less than check - case 1 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::LESS_THAN,
-            'condition_value'     => "2",
-            'submitted_answer'    => "1",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "fsefes-1", // Fake UUID for the "1" value
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
         yield "Less than check - case 2 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::LESS_THAN,
-            'condition_value'     => "2",
-            'submitted_answer'    => "2",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "zzdzdd-2", // Fake UUID for the "2" value
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
         yield "Less than check - case 3 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::LESS_THAN,
-            'condition_value'     => "2",
-            'submitted_answer'    => "3",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "abcdef-3", // Fake UUID for the "3" value
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
@@ -148,24 +148,24 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
         yield "Less than or equals check - case 1 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
-            'condition_value'     => "2",
-            'submitted_answer'    => "1",
+            'condition_value'     => "zzdzdd-2",  // Fake UUID for the "2" value
+            'submitted_answer'    => "fsefes-1",  // Fake UUID for the "1" value
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
         yield "Less than or equals check - case 2 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
-            'condition_value'     => "2",
-            'submitted_answer'    => "2",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "zzdzdd-2", // Fake UUID for the "2" value
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
         yield "Less than or equals check - case 3 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::LESS_THAN_OR_EQUALS,
-            'condition_value'     => "2",
-            'submitted_answer'    => "3",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "abcdef-3", // Fake UUID for the "3" value
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
@@ -174,24 +174,24 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
         yield "Greater than check - case 1 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::GREATER_THAN,
-            'condition_value'     => "2",
-            'submitted_answer'    => "1",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "fsefes-1", // Fake UUID for the "1" value
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
         yield "Greater than check - case 2 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::GREATER_THAN,
-            'condition_value'     => "2",
-            'submitted_answer'    => "2",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "zzdzdd-2", // Fake UUID for the "2" value
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
         yield "Greater than check - case 3 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::GREATER_THAN,
-            'condition_value'     => "2",
-            'submitted_answer'    => "3",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "abcdef-3", // Fake UUID for the "3" value
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
@@ -200,24 +200,24 @@ final class SingleChoiceFromValuesConditionHandlerTest extends AbstractCondition
         yield "Greater than or equals check - case 1 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
-            'condition_value'     => "2",
-            'submitted_answer'    => "1",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "fsefes-1", // Fake UUID for the "1" value
             'expected_result'     => false,
             'question_extra_data' => $extra_data,
         ];
         yield "Greater than or equals check - case 2 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
-            'condition_value'     => "2",
-            'submitted_answer'    => "2",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "zzdzdd-2", // Fake UUID for the "2" value
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
         yield "Greater than or equals check - case 3 for $type" => [
             'question_type'       => $type,
             'condition_operator'  => ValueOperator::GREATER_THAN_OR_EQUALS,
-            'condition_value'     => "2",
-            'submitted_answer'    => "3",
+            'condition_value'     => "zzdzdd-2", // Fake UUID for the "2" value
+            'submitted_answer'    => "abcdef-3", // Fake UUID for the "3" value
             'expected_result'     => true,
             'question_extra_data' => $extra_data,
         ];
