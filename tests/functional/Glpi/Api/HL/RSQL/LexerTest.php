@@ -134,6 +134,10 @@ class LexerTest extends GLPITestCase
                 'name==テスト',
                 [[5, 'name'], [6, '=='], [7, 'テスト']],
             ],
+            [
+                'is_deleted==0',
+                [[5, 'is_deleted'], [6, '=='], [7, '0']],
+            ],
         ];
     }
 
