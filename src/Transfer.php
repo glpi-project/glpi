@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
@@ -2424,37 +2425,104 @@ final class Transfer extends CommonDBTM
                 // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newdocID) {
-                        $DB->update(
-                            'glpi_documents_items',
-                            [
-                                'documents_id' => $newdocID,
+                        // Check if the target relation already exists
+                        $existing = $DB->request([
+                            'COUNT'  => 'cpt',
+                            'FROM'   => 'glpi_documents_items',
+                            'WHERE'  => [
+                                'documents_id'      => $newdocID,
+                                'itemtype'          => $itemtype,
+                                'items_id'          => $newID,
+                                'timeline_position' => new QuerySubQuery([
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ]),
+                                'NOT'               => ['id' => $data['id']],
                             ],
-                            [
-                                'id' => $data['id'],
-                            ]
-                        );
+                        ])->current();
+
+                        if ($existing['cpt'] > 0) {
+                            // Relation already exists, delete the old one
+                            $DB->delete('glpi_documents_items', ['id' => $data['id']]);
+                        } else {
+                            // No duplicate, safe to update
+                            $DB->update(
+                                'glpi_documents_items',
+                                [
+                                    'documents_id' => $newdocID,
+                                ],
+                                [
+                                    'id' => $data['id'],
+                                ]
+                            );
+                        }
                     }
                 } else { // Same Item -> update links
                     // Copy Item -> copy links
                     if ($item_ID != $newdocID) {
-                        $DB->insert(
-                            'glpi_documents_items',
-                            [
-                                'documents_id' => $newdocID,
-                                'items_id'     => $newID,
-                                'itemtype'     => $itemtype,
-                            ]
-                        );
-                    } else { // same doc for new item update link
-                        $DB->update(
-                            'glpi_documents_items',
-                            [
-                                'items_id' => $newID,
+                        // Get timeline_position to check for duplicates
+                        $existing = $DB->request([
+                            'COUNT'  => 'cpt',
+                            'FROM'   => 'glpi_documents_items',
+                            'WHERE'  => [
+                                'documents_id'      => $newdocID,
+                                'itemtype'          => $itemtype,
+                                'items_id'          => $newID,
+                                'timeline_position' => new QuerySubQuery([
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ]),
                             ],
-                            [
-                                'id' => $data['id'],
-                            ]
-                        );
+                        ])->current();
+
+                        if ($existing['cpt'] == 0) {
+                            // No duplicate, safe to insert
+                            $DB->insert(
+                                'glpi_documents_items',
+                                [
+                                    'documents_id'      => $newdocID,
+                                    'items_id'          => $newID,
+                                    'itemtype'          => $itemtype,
+                                    'timeline_position' => $existing['timeline_position'],
+                                ]
+                            );
+                        }
+                        // If relation already exists, we simply skip the insert (no error)
+                    } else { // same doc for new item update link
+                        // Get timeline_position to check for duplicates
+                        $existing = $DB->request([
+                            'COUNT' => 'cpt',
+                            'FROM'  => 'glpi_documents_items',
+                            'WHERE' => [
+                                'documents_id' => $item_ID,
+                                'itemtype'     => $itemtype,
+                                'items_id'     => $newID,
+                                'timeline_position' => [
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ],
+                                'NOT' => ['id' => $data['id']],
+                            ],
+                        ])->current();
+
+                        if ($existing['cpt'] > 0) {
+                            // Relation already exists, delete the old one
+                            $DB->delete('glpi_documents_items', ['id' => $data['id']]);
+                        } else {
+                            // No duplicate, safe to update
+                            $DB->update(
+                                'glpi_documents_items',
+                                [
+                                    'items_id' => $newID,
+                                ],
+                                [
+                                    'id' => $data['id'],
+                                ]
+                            );
+                        }
                     }
                 }
 
