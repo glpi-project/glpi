@@ -56,13 +56,13 @@ use function Safe\preg_replace;
 
 abstract class InventoryAsset
 {
-    /** @var array */
+    /** @var array<int,stdClass> */
     protected $data = [];
     /** @var CommonDBTM */
     protected CommonDBTM $item;
     /** @var ?string */
     protected $itemtype;
-    /** @var array */
+    /** @var array<string,array<int,StdClass>> */
     protected $extra_data = [];
     /** @var Agent */
     protected Agent $agent;
@@ -146,7 +146,7 @@ abstract class InventoryAsset
     /**
      * Prepare data from raw data part
      *
-     * @return array
+     * @return array<int,stdClass>
      */
     abstract public function prepare(): array;
 
