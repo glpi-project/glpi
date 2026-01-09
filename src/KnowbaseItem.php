@@ -904,11 +904,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $answer = preg_replace(
                 [
                     '/<img([^>]+src=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/',
-                    '/<a([^>]+href=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/'
+                    '/<a([^>]+href=["\'])([^"\']*\/front\/document\.send\.php[^"\']*)(["\'][^>]*)>/',
                 ],
                 [
                     '<img$1$2&token=' . $options['token'] . '$3>',
-                    '<a$1$2&token=' . $options['token'] . '$3>'
+                    '<a$1$2&token=' . $options['token'] . '$3>',
                 ],
                 $this->getAnswer()
             );
