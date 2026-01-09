@@ -40,7 +40,6 @@ use Item_DeviceGraphicCard;
 
 class GraphicCard extends Device
 {
-    /** @var array */
     protected $ignored = ['controllers' => null];
 
     public function prepare(): array

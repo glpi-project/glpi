@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\Asset;
 
 use Blacklist;
+use CommonDBTM;
 use DBmysqlIterator;
 use FQDNLabel;
 use Glpi\DBAL\QueryParam;
@@ -56,15 +57,15 @@ use Unmanaged;
 
 trait InventoryNetworkPort
 {
-    /** @var array  */
+    /** @var object[]  */
     protected $ports = [];
     /** @var mysqli_stmt */
     protected $ipnetwork_stmt;
     /** @var mysqli_stmt */
     protected $idevice_stmt;
-    /** @var array  */
+    /** @var object[]  */
     protected $networks = [];
-    /** @var string */
+    /** @var class-string<CommonDBTM> */
     protected $itemtype;
     private ?int $items_id;
 
@@ -77,7 +78,7 @@ trait InventoryNetworkPort
     /**
      * Get network ports
      *
-     * @return array
+     * @return object[]
      */
     public function getNetworkPorts(): array
     {
@@ -87,7 +88,7 @@ trait InventoryNetworkPort
     /**
      * Add network ports
      *
-     * @param array $ports
+     * @param object[] $ports
      *
      * @return $this
      */
@@ -332,7 +333,7 @@ trait InventoryNetworkPort
     /**
      * Add several ip addresses into database
      *
-     * @param array   $ips      IP adresses to add
+     * @param string[] $ips IP adresses to add
      * @param int $items_id NetworkName id
      *
      * @return void

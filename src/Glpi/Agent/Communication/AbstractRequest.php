@@ -118,7 +118,7 @@ abstract class AbstractRequest
     protected ?int $mode = null;
     /** @var string */
     private string $deviceid;
-    /** @var DOMDocument|array|null */
+    /** @var DOMDocument|array<string, mixed>|null */
     private DOMDocument|array|null $response = null;
     /** @var ?int */
     private ?int $compression = null;
@@ -358,7 +358,7 @@ abstract class AbstractRequest
      *
      * @param string $task  Task (one of self::*_TASK)
      *
-     * @return array
+     * @return array{}|array{version: string, server: string}
      */
     abstract protected function handleTask(string $task): array;
 
@@ -481,7 +481,7 @@ abstract class AbstractRequest
     /**
      * Add elements to response
      *
-     * @param array $entries Array of key => values entries
+     * @param array<string, mixed> $entries Array of key => values entries
      *
      * @return void
      */
@@ -510,7 +510,7 @@ abstract class AbstractRequest
      *
      * @param DOMElement        $parent  Parent element
      * @param ?mixed            $name    Element name to create
-     * @param array|string|null $content Element contents, if any
+     * @param array<string, mixed>|string|null $content Element contents, if any
      *
      * @return void
      */
@@ -749,7 +749,7 @@ abstract class AbstractRequest
      *
      * @param bool $legacy Set to true to shunt required headers checks
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getHeaders(bool $legacy = true): array
     {
