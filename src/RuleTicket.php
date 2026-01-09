@@ -384,8 +384,8 @@ class RuleTicket extends Rule
 
                     case 'compute':
                         // Value could be not set (from test)
-                        $urgency = ($output['urgency'] ?? 3);
-                        $impact  = ($output['impact'] ?? 3);
+                        $urgency = (int) ($output['urgency'] ?? 3);
+                        $impact  = (int) ($output['impact'] ?? 3);
                         // Apply priority_matrix from config
                         $output['priority'] = Ticket::computePriority($urgency, $impact);
                         break;

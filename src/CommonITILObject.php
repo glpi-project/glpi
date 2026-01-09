@@ -828,8 +828,8 @@ abstract class CommonITILObject extends CommonDBTM
             )
         ) {
             $this->fields['priority'] = self::computePriority(
-                $this->fields['urgency'] ?? 3,
-                $this->fields['impact'] ?? 3
+                (int) ($this->fields['urgency'] ?? 3),
+                (int) ($this->fields['impact'] ?? 3)
             );
         }
 
@@ -2633,7 +2633,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if ($canpriority && !isset($input["priority"]) || !$canpriority) {
-            $input["priority"] = $this->computePriority($input["urgency"], $input["impact"]);
+            $input["priority"] = $this->computePriority((int) $input["urgency"], (int) $input["impact"]);
         }
 
         // set last updater if interactive user
@@ -2970,8 +2970,8 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @since 0.84
      *
-     * @param $urgency   integer from 1 to 5
-     * @param $impact    integer from 1 to 5
+     * @param int $urgency   integer from 1 to 5
+     * @param int $impact    integer from 1 to 5
      *
      * @return integer from 1 to 5 (priority)
      **/
