@@ -45,6 +45,7 @@
                 data-glpi-helpdesk-config-action-delete
                 data-glpi-helpdesk-config-action-delete-id="{{ tile.getDatabaseId() }}"
                 data-glpi-helpdesk-config-action-delete-itemtype="{{ get_class(tile) }}"
+                aria-label="{{ __("Delete tile") }}"
             >
                 <i
                     class="ti ti-trash me-1"
@@ -60,6 +61,7 @@
                 type="button"
                 class="btn btn-primary ms-2 w-auto d-flex align-items-center"
                 data-glpi-helpdesk-config-edit-tile-save
+                aria-label="{{ __("Save changes") }}"
             >
                 <i
                     class="ti ti-device-floppy me-1"

@@ -45,6 +45,7 @@ export class GlpiHelpdeskConfigController
         this.#items_id_item = items_id_item;
         this.#enableSortable();
         this.#initEventsHandlers();
+        this.#enablePointerEvents();
     }
 
     #enableSortable()
@@ -139,6 +140,19 @@ export class GlpiHelpdeskConfigController
         $(this.#container).on('change', '[data-glpi-helpdesk-config-add-tile-type]', (e) => {
             this.#triggerTypeChange(e.target.value);
         });
+    }
+
+    #enablePointerEvents()
+    {
+        // Make sure e2e tools don't click on the tiles until the events handlers
+        // are ready.
+        const items = this.#container.querySelectorAll(
+            '[data-glpi-helpdesk-config-tile-container],'
+            + '[data-glpi-helpdesk-config-action-new-tile]'
+        );
+        for (const item of items) {
+            item.classList.remove('pointer-events-none');
+        }
     }
 
     async #saveTilesOrder()
