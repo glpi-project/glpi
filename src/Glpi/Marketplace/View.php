@@ -458,10 +458,14 @@ HTML;
             $refresh_lbl  = __s("Refresh plugin list");
             $search_label = __s("Filter plugin list");
 
+            $plugin = new Plugin();
+            $plugin_message = $plugin->getPluginsUpdatableAlert();
+
             $marketplace  = <<<HTML
                 <div class='marketplace $tab' data-tab='{$tab}'>
                     {$tags_list}
                     <div class='right-panel'>
+                        {$plugin_message}
                         {$suspend_banner}
                         <div class='top-panel'>
                             <input type='search' class='filter-list form-control' placeholder='{$search_label}'>
@@ -528,6 +532,8 @@ JS;
         $plugin_inst  = new Plugin();
         $plugin_inst->getFromDBbyDir($plugin_key);
 
+        $mk_controller = new Controller($plugin_key);
+
         $plugin_info = [
             'key'           => $plugin['key'],
             'name'          => $plugin['name'],
@@ -547,6 +553,7 @@ JS;
             'buttons'       => self::getButtons($plugin_key),
             'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
             'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
+            'updatable'      => $mk_controller->checkUpdate($plugin_inst),
         ];
         return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
             'tab'    => $tab,
