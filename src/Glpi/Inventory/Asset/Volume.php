@@ -116,7 +116,7 @@ class Volume extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {

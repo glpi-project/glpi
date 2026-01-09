@@ -49,7 +49,7 @@ abstract class Device extends InventoryAsset
      * @param string $itemdevicetable
      * @param string $fk
      *
-     * @return array
+     * @return array<int, array<int, array<string, mixed>>>
      */
     protected function getExisting($itemdevicetable, $fk): array
     {

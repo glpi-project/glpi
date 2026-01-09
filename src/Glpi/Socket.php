@@ -494,13 +494,6 @@ class Socket extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param array $options
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 

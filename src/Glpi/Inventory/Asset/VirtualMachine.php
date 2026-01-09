@@ -51,6 +51,7 @@ class VirtualMachine extends InventoryAsset
     use InventoryNetworkPort;
 
     private Conf $conf;
+    /** @var array<string, array<string, object>> */
     private array $allports = [];
 
     private const VMCOMPONENTS = [
@@ -199,7 +200,7 @@ class VirtualMachine extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {
@@ -397,9 +398,7 @@ class VirtualMachine extends InventoryAsset
                     $this->handlePorts('Computer', $computers_vm_id);
                 } elseif (property_exists($vm, 'ipaddress')) {
                     $net_val = new stdClass();
-                    if (property_exists($vm, 'ipaddress')) {
-                        $net_val->ip = [$vm->ipaddress];
-                    }
+                    $net_val->ip = [$vm->ipaddress];
 
                     if (property_exists($vm, 'mac')) {
                         $net_val->instantiation_type = 'NetworkPortEthernet';
@@ -425,7 +424,7 @@ class VirtualMachine extends InventoryAsset
                     $os = new OperatingSystem($computervm, (array) $vm->operatingsystem);
                     if ($os->checkConf($this->conf)) {
                         $os->setAgent($this->getAgent());
-                        $os->setExtraData($this->data);
+                        $os->setExtraData([self::class => $this->data]);
                         $os->setEntityID($computervm->getEntityID());
                         $os->prepare();
                         $os->handleLinks();
@@ -440,7 +439,7 @@ class VirtualMachine extends InventoryAsset
                             $asset = new $assettype($computervm, $vm->$key);
                             if ($asset->checkConf($this->conf)) {
                                 $asset->setAgent($this->getAgent());
-                                $asset->setExtraData($this->data);
+                                $asset->setExtraData([self::class => $this->data]);
                                 $asset->setEntityID($computervm->getEntityID());
                                 $asset->prepare();
                                 $asset->handleLinks();

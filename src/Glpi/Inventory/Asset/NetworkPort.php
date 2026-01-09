@@ -36,6 +36,7 @@
 
 namespace Glpi\Inventory\Asset;
 
+use CommonDBTM;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\Inventory\Conf;
@@ -61,9 +62,13 @@ class NetworkPort extends InventoryAsset
     use InventoryNetworkPort {
         handlePorts as protected handlePortsTrait;
     }
+    /** @var array<int, array<stdClass>|array<string>> */
     private array $connections = [];
+    /** @var array<int, mixed> */
     private array $aggregates = [];
+    /** @var array<int, array<stdClass>> */
     private array $vlans = [];
+    /** @var array<string, array<int, int>> */
     private array $connection_ports = [];
     private stdClass $current_port;
     private stdClass $current_connection;
@@ -170,7 +175,7 @@ class NetworkPort extends InventoryAsset
      *
      * @param stdClass $port Port instance
      *
-     * @return array
+     * @return array<int, array<stdClass>|array<string>>
      */
     private function prepareConnections(stdClass $port)
     {
@@ -251,10 +256,10 @@ class NetworkPort extends InventoryAsset
     /**
      * Prepare network ports vlans
      *
-     * @param array $vlans    Port vlans
-     * @param int   $ifnumber Port ifnumber
+     * @param array<int, mixed> $vlans    Port vlans
+     * @param int               $ifnumber Port ifnumber
      *
-     * @return array
+     * @return array<int, array<stdClass>>
      */
     private function prepareVlans(array $vlans, int $ifnumber): array
     {
@@ -678,9 +683,9 @@ class NetworkPort extends InventoryAsset
      * After rule engine passed, update task (log) and create item if required
      *
      * @param int       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param int       $rules_id Matched rule id, if any
-     * @param int|array $ports_id Matched port ids, if any
+     * @param int|int[] $ports_id Matched port ids, if any
      *
      * @return void
      */
@@ -897,7 +902,7 @@ class NetworkPort extends InventoryAsset
     /**
      * Handle a hub (many MAC on a port means we face a hub)
      *
-     * @param array   $found_macs  ID of ports foudn by mac
+     * @param int[] $found_macs ID of ports found by MAC address
      * @param int $netports_id Network port id
      *
      * @return void
@@ -966,7 +971,7 @@ class NetworkPort extends InventoryAsset
      *
      * @param string $part Part to retrieve
      *
-     * @return array|void
+     * @return array<int, mixed>|void
      */
     public function getPart($part)
     {

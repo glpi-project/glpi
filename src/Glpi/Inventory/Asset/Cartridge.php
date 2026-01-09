@@ -41,6 +41,9 @@ use Printer_CartridgeInfo;
 
 class Cartridge extends InventoryAsset
 {
+    /**
+     * @return array<string, array<string, string>>
+     */
     public function knownTags(): array
     {
         $tags = [];
@@ -200,7 +203,7 @@ class Cartridge extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {

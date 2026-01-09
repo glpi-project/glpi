@@ -51,6 +51,9 @@ final class Environment extends InventoryAsset
         return $this->data;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     protected function getExisting(): array
     {
         global $DB;
