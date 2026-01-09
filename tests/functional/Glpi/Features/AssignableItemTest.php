@@ -56,7 +56,7 @@ class AssignableItemTest extends DbTestCase
 
     /**
      * @param class-string<AssignableItem> $class
- */
+     */
     #[DataProvider('itemtypeProvider')]
     public function testClassUsesTrait(string $class): void
     {
@@ -126,6 +126,32 @@ class AssignableItemTest extends DbTestCase
         $this->assertTrue($updated);
         $this->assertEqualsCanonicalizing([1, 2], $item_2->fields['groups_id']);
         $this->assertEqualsCanonicalizing([4, 5], $item_2->fields['groups_id_tech']);
+    }
+
+    /**
+     * Test form with an empty string as groups_id, as the form does in front
+     *
+     * Reproduce a bug despite the form doesn't really use these fields ("array_merge(): Argument #1 must be of type array, string given")
+     *
+     * @param class-string<AssignableItem> $class
+     **/
+    #[DataProvider('itemtypeProvider')]
+    public function testAddNoGroups(string $class): void
+    {
+        $this->login();
+
+        $input = $this->getMinimalCreationInput($class);
+        assert(!array_key_exists('groups_id', $input), 'There should be no groups_id input for this test');
+        assert(!array_key_exists('groups_id_tech', $input), 'There should be no groups_id_tech input for this test');
+        $item_1 = $this->createItem(
+            $class,
+            $input + [
+                $class::getNameField() => __FUNCTION__ . ' 1',
+            ]
+        );
+
+        $this->assertEqualsCanonicalizing([], $item_1->fields['groups_id']);
+        $this->assertEqualsCanonicalizing([], $item_1->fields['groups_id_tech']);
     }
 
     /**
