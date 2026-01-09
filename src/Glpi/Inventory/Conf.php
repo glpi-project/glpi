@@ -37,6 +37,7 @@
 namespace Glpi\Inventory;
 
 use Agent;
+use CommonDBTM;
 use CommonDevice;
 use CommonGLPI;
 use Computer;
@@ -130,6 +131,7 @@ use function Safe\simplexml_load_string;
  */
 class Conf extends CommonGLPI
 {
+    /** @var array<string, mixed> */
     private array $currents = [];
 
     public const STALE_AGENT_ACTION_CLEAN = 0;
@@ -162,7 +164,7 @@ class Conf extends CommonGLPI
     /**
      * Accepted file extension for inventories
      *
-     * @return array
+     * @return string[]
      */
     public function knownInventoryExtensions(): array
     {
@@ -176,9 +178,9 @@ class Conf extends CommonGLPI
     /**
      * Import inventory files
      *
-     * @param array $files[filename => filepath] Files to import
+     * @param array{filename: string, filepath: string} $files Files to import
      *
-     * @return array [filename => [success => bool, message => string, asset => CommonDBTM]]
+     * @return array{}|array{filename: array{success: bool, message: string, asset: CommonDBTM}}
      */
     public function importFiles($files): array
     {
@@ -229,7 +231,7 @@ class Conf extends CommonGLPI
      * @param ?string $path              File path
      * @param string  $contents          File contents
      *
-     * @return array [success => bool, message => ?string, items => CommonDBTM[], request => Glpi\Inventory\Request]
+     * @return array{success: bool, message: ?string, items: CommonDBTM[], request: Request}
      */
     protected function importContentFile($path, $contents): array
     {
@@ -285,7 +287,7 @@ class Conf extends CommonGLPI
     /**
      * Get possible actions for stale agents
      *
-     * @return array
+     * @return array<int, string>
      */
     public static function getStaleAgentActions(): array
     {
@@ -296,6 +298,10 @@ class Conf extends CommonGLPI
         ];
     }
 
+    /**
+     * @param array<string, mixed> $options
+     * @return array<string, string>
+     */
     public function defineTabs($options = [])
     {
         $ong = [];
@@ -1102,7 +1108,7 @@ class Conf extends CommonGLPI
     /**
      * Save configuration
      *
-     * @param array $values Configuration values
+     * @param array<string, mixed> $values Configuration values
      *
      * @return bool
      */
@@ -1218,7 +1224,7 @@ class Conf extends CommonGLPI
     /**
      * @param string $interface
      *
-     * @return array
+     * @return array<int, string|array<string, string>>
      */
     public function getRights($interface = 'central')
     {
@@ -1255,6 +1261,9 @@ class Conf extends CommonGLPI
         );
     }
 
+    /**
+     * @return array<string, int|string>
+     */
     public static function getDefaults(): array
     {
         return [
@@ -1298,8 +1307,8 @@ class Conf extends CommonGLPI
             'stale_agents_status_condition'  => exportArrayToDB(['all']),
             'import_env'                     => 0,
             'auth_required'                  => 'none',
-            'basic_auth_login'                     => '',
-            'basic_auth_password'                  => '',
+            'basic_auth_login'               => '',
+            'basic_auth_password'            => '',
         ];
     }
 

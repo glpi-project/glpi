@@ -73,7 +73,6 @@ abstract class MainAsset extends InventoryAsset
 {
     use InventoryNetworkPort;
 
-    /** @var array */
     protected $extra_data = [
         'hardware'     => null,
         'bios'         => null,
@@ -88,13 +87,13 @@ abstract class MainAsset extends InventoryAsset
     protected $states_id_default;
     /** @var stdClass */
     private $current_data;
-    /** @var array */
+    /** @var array<string, InventoryAsset[]> */
     protected $assets = [];
     /** @var Conf */
     protected $conf;
-    /** @var array */
+    /** @var RefusedEquipment[] */
     protected $refused = [];
-    /** @var array */
+    /** @var CommonDBTM[] */
     protected $inventoried = [];
     /** @var bool */
     protected $partial = false;
@@ -214,7 +213,7 @@ abstract class MainAsset extends InventoryAsset
         }
         $this->hardware = $hardware;
 
-        foreach ($hardware as $key => $property) { // @phpstan-ignore foreach.nonIterable
+        foreach ($hardware as $key => $property) {
             $val->$key = $property;
         }
 
@@ -432,7 +431,7 @@ abstract class MainAsset extends InventoryAsset
      *
      * @param stdClass $val Current data values
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function prepareAllRulesInput(stdClass $val): array
     {
@@ -540,9 +539,9 @@ abstract class MainAsset extends InventoryAsset
      * Prepare input for Entities rules
      *
      * @param stdClass $val Current data values
-     * @param array     $input Input processed or all rules
+     * @param array<string, mixed> $input Input processed or all rules
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function prepareEntitiesRulesInput(stdClass $val, array $input): array
     {
@@ -640,7 +639,7 @@ abstract class MainAsset extends InventoryAsset
     }
 
     /**
-     * @param array $input
+     * @param array<string, mixed> $input
      *
      * @return void
      */
@@ -697,9 +696,9 @@ abstract class MainAsset extends InventoryAsset
      * After rule engine passed, update task (log) and create item if required
      *
      * @param int       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param int|null      $rules_id Matched rule id, if any (else null)
-     * @param int|array $ports_id Matched port id, if any
+     * @param int|int[] $ports_id Matched port id, if any
      *
      * @return void
      */
@@ -1094,7 +1093,7 @@ abstract class MainAsset extends InventoryAsset
     /**
      * Set prepared assets
      *
-     * @param array $assets Prepared assets list
+     * @param array<string, InventoryAsset[]> $assets Prepared assets list
      *
      * @return MainAsset
      */

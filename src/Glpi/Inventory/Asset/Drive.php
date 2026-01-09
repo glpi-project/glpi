@@ -48,6 +48,7 @@ class Drive extends Device
     private Conf $conf;
 
     private HardDrive $harddrives;
+    /** @var stdClass[] */
     private array $prepared_harddrives = [];
 
     public function prepare(): array
@@ -142,7 +143,7 @@ class Drive extends Device
     /**
      * Get harddrives data
      *
-     * @return HardDrive[]
+     * @return stdClass[]
      */
     public function getPreparedHarddrives(): array
     {

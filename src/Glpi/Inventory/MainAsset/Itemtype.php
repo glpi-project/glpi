@@ -76,7 +76,7 @@ class Itemtype extends MainAsset
     /**
      * @param string $original_itemtype
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function defineItemtype($original_itemtype): array
     {
