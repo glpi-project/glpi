@@ -364,6 +364,16 @@ export class GlpiPage
         }).filter({ visible: true });
     }
 
+    public getAlert(title: string): Locator
+    {
+        return this.page.getByRole('alert')
+            .filter({
+                visible: true,
+                hasText: title,
+            })
+        ;
+    }
+
     public getEntityFromTree(name: string): Locator
     {
         return this.page.getByRole('gridcell', {

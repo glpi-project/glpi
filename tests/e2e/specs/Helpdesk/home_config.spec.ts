@@ -31,9 +31,10 @@
  */
 
 import { randomUUID } from 'crypto';
-import { test, expect } from '../../fixtures/glpi_fixture';
+import { expect, test } from '../../fixtures/glpi_fixture';
 import { Profiles } from '../../utils/Profiles';
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
+import { HelpdeskHomeConfigTag } from '../../pages/HelpdeskConfigTab';
 
 const test_tiles = [
     {
@@ -62,38 +63,77 @@ const test_tiles = [
     },
 ];
 
-test(`Helpdesk home page configuration for entities`, async ({
-    page,
-    profile,
-    api,
-}) => {
-    // Create an entity
-    await profile.set(Profiles.SuperAdmin);
-    const entity_id = await api.createItem('Entity', {
-        'name': `Entity ${randomUUID()}`,
-        'entities_id': getWorkerEntityId(),
+const itemtypes_with_helpdesk_tab = [
+    {
+        label: "profile",
+        itemtype: "Profile",
+        fields: () => ({
+            'name': `Helpdesk profile ${randomUUID()}`,
+            'interface': 'helpdesk',
+        }),
+        url: "/front/profile.form.php?id=${id}&forcetab=Profile$4",
+        refresh_session: false,
+    },
+    {
+        label: "entity",
+        itemtype: "Entity",
+        fields: () => ({
+            'name': `Entity ${randomUUID()}`,
+            'entities_id': getWorkerEntityId(),
+        }),
+        url: "/front/entity.form.php?id=${id}&forcetab=Entity$9",
+        refresh_session: true, // New entity won't be visible otherwise
+    }
+];
+
+for (const context of itemtypes_with_helpdesk_tab) {
+    test.describe(`Home config tests for ${context.label}`, () => {
+        let id: number;
+
+        test.beforeEach(async ({ api, profile }) => {
+            // Setup test profile/entity
+            id = await api.createItem(context.itemtype, context.fields());
+            if (context.refresh_session) {
+                api.refreshSession(); // New entity won't be visible otherwise
+            }
+            await api.asyncCreateTilesForItem(context.itemtype, id, test_tiles);
+
+            await profile.set(Profiles.SuperAdmin);
+        });
+
+        test('Can reorder tiles', async ({ page }) => {
+            const tab = new HelpdeskHomeConfigTag(page);
+            await tab.goto(context.itemtype, id);
+
+            // Validate default order
+            await tab.expectTiles([
+                "Browse help articles",
+                "Request a service",
+                "Make a reservation",
+                "View approval requests",
+            ]);
+            await tab.doDragAndDropTileAfterTile(
+                "Browse help articles",
+                "Make a reservation"
+            );
+            await tab.expectTiles([
+                "Request a service",
+                "Make a reservation",
+                "Browse help articles",
+                "View approval requests",
+            ]);
+
+            // Save new tab order and validate again
+            await tab.doSaveTilesOrder();
+            await tab.expectTiles([
+                "Request a service",
+                "Make a reservation",
+                "Browse help articles",
+                "View approval requests",
+            ]);
+
+            // Make sure we can still add new tiles (regression prevention)
+            await expect(tab.getNewTileButton()).toBeVisible();
+        });
     });
-    api.refreshSession(); // New entity won't be visible otherwise
-
-    // Create a few tiles
-    const created_tiles = [];
-    for (const tile of test_tiles) {
-        created_tiles.push(
-            api.createItem('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile)
-        );
-    }
-    const tile_ids = await Promise.all(created_tiles);
-
-    const linked_tiles = [];
-    let i = 0;
-    for (const tile_id of tile_ids) {
-        linked_tiles.push(api.createItem('Glpi\\Helpdesk\\Tile\\Item_Tile', {
-            'itemtype_item': 'Entity',
-            'items_id_item': entity_id,
-            'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
-            'items_id_tile': tile_id,
-            'rank': i++,
-        }));
-    }
-    await Promise.all(linked_tiles);
-});
+}
