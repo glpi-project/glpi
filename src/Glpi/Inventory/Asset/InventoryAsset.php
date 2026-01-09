@@ -70,12 +70,6 @@ abstract class InventoryAsset
     protected $entities_id = 0;
     /** @var int */
     protected $is_recursive = 0;
-    /** @var array */
-    protected $ruleentity_data = [];
-    /** @var array */
-    protected $rulelocation_data = [];
-    /** @var array */
-    protected array $rulematchedlog_input = [];
     /** @var bool */
     protected $links_handled = false;
     /** @var bool */
