@@ -86,6 +86,13 @@ export class Api
         return response.data;
     }
 
+    public refreshSession(): void
+    {
+        // Delete the stored client to force a new session for the next API
+        // requests.
+        this.cache.removeApiClient();
+    }
+
     private async initApiClient(): Promise<AxiosInstance>
     {
         const base_url = Config.getBaseUrl();

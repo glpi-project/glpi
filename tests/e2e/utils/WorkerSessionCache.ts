@@ -69,4 +69,9 @@ export class WorkerSessionCache
     {
         return this.api_client;
     }
+
+    public removeApiClient(): void
+    {
+        this.api_client = null;
+    }
 }
