@@ -103,6 +103,15 @@ abstract class MainAsset extends InventoryAsset
     /** @var int */
     protected $current_key;
 
+    /** @var array<string,mixed> */
+    protected $ruleentity_data = [];
+
+    /** @var array<string,mixed> */
+    protected $rulelocation_data = [];
+
+    /** @var array<string,mixed> */
+    protected array $rulematchedlog_input = [];
+
     public function __construct(CommonDBTM $item, $data)
     {
         $namespaced = explode('\\', static::class);
