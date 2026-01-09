@@ -122,41 +122,6 @@ for (const test of tests) {
             });
         });
 
-        it(`can reorder tiles (${test.label})`, () => {
-            // Valide default order
-            validateTilesOrder([
-                "Browse help articles",
-                "Request a service",
-                "Make a reservation",
-                "View approval requests",
-            ]);
-
-            // Change order
-            moveTileAfterTile("Browse help articles", "Make a reservation");
-            validateTilesOrder([
-                "Request a service",
-                "Make a reservation",
-                "Browse help articles",
-                "View approval requests",
-            ]);
-
-            // Save new order
-            cy.findByRole('button', {'name': "Save tiles order"}).click();
-            cy.findAllByRole('alert')
-                .contains("Configuration updated successfully.")
-                .should('be.visible')
-            ;
-            validateTilesOrder([
-                "Request a service",
-                "Make a reservation",
-                "Browse help articles",
-                "View approval requests",
-            ]);
-
-            // Make sure the state is still editable after the action
-            checkThatTilesAreEditable();
-        });
-
         it(`can remove tiles (${test.label})`, () => {
             // Delete tile
             cy.findByRole("region", {'name': "Request a service"}).click();
@@ -666,11 +631,6 @@ function validateTileFields(title, description, target) {
     cy.findByRole("heading", {'name': title}).should('be.visible');
     cy.findByLabelText('Description').awaitTinyMCE().should('contain', description);
     cy.findByLabelText('Target url').should('have.value', target);
-}
-
-function moveTileAfterTile(subject, destination) {
-    cy.findByRole("region", {'name': subject}).startToDrag();
-    cy.findByRole("region", {'name': destination}).dropDraggedItemAfter();
 }
 
 function saveIllustrationSettings() {

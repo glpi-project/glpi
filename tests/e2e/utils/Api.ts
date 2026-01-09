@@ -34,6 +34,13 @@ import axios, { AxiosInstance } from "axios";
 import { Config } from "./Config";
 import { WorkerSessionCache } from "./WorkerSessionCache";
 
+type Tile = {
+    title: string,
+    description: string
+    illustration: string,
+    page: string
+};
+
 /**
  * Utility class to interact with GLPI's API.
  * This help to setup tests by creating the needed items directly using the API
@@ -84,6 +91,41 @@ export class Api
             `${itemtype}/${id}`,
         );
         return response.data;
+    }
+
+    public refreshSession(): void
+    {
+        // Delete the stored client to force a new session for the next API
+        // requests.
+        this.cache.removeApiClient();
+    }
+
+    public async asyncCreateTilesForItem(
+        itemtype: string,
+        id: number,
+        tiles: Tile[]
+    ): Promise<void> {
+        // Create a few tiles
+        const created_tiles = [];
+        for (const tile of tiles) {
+            created_tiles.push(
+                this.createItem('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile)
+            );
+        }
+        const tile_ids = await Promise.all(created_tiles);
+
+        const linked_tiles = [];
+        let i = 0;
+        for (const tile_id of tile_ids) {
+            linked_tiles.push(this.createItem('Glpi\\Helpdesk\\Tile\\Item_Tile', {
+                'itemtype_item': itemtype,
+                'items_id_item': id,
+                'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                'items_id_tile': tile_id,
+                'rank': i++,
+            }));
+        }
+        await Promise.all(linked_tiles);
     }
 
     private async initApiClient(): Promise<AxiosInstance>
