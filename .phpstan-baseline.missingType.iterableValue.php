@@ -218,12 +218,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/APIClient.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property APIClient\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/APIClient.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method AbstractITILChildTemplate\\:\\:showForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -1275,12 +1269,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property AuthLDAP\\:\\:\\$conn_cache type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property AuthLDAP\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
@@ -3542,12 +3530,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method CommonDBTM\\:\\:unsetUndisclosedFields\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonDBTM\\:\\:update\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -3572,19 +3554,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property CommonDBTM\\:\\:\\$search_options_cache type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property CommonDBTM\\:\\:\\$searchopt type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property CommonDBTM\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
@@ -6038,19 +6008,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Config\\:\\:unsetUndisclosedFields\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var for variable \\$CFG_GLPI has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Config.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Config\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Config.php',
@@ -24344,12 +24302,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_DeviceSimcard.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Item_DeviceSimcard\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_DeviceSimcard.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_DeviceSoundCard\\:\\:getImportCriteria\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -24494,19 +24446,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Devices.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_Devices\\:\\:unsetUndisclosedFields\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Item_Devices\\:\\:updateAll\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Item_Devices.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Item_Devices\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Devices.php',
@@ -25923,12 +25863,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property MailCollector\\:\\:\\$tags type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/MailCollector.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property MailCollector\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
@@ -28173,12 +28107,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method OAuthClient\\:\\:showForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OAuthClient.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property OAuthClient\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/OAuthClient.php',
@@ -31377,12 +31305,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method QueuedNotification\\:\\:showForm\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/QueuedNotification.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method QueuedNotification\\:\\:unsetUndisclosedFields\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/QueuedNotification.php',
@@ -37004,12 +36926,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method User\\:\\:unsetUndisclosedFields\\(\\) has parameter \\$fields with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method User\\:\\:updateForgottenPassword\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -37023,12 +36939,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property User\\:\\:\\$entities type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/User.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property User\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
@@ -37299,12 +37209,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Webhook\\:\\:validateCRAChallenge\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Webhook\\:\\:\\$undisclosedFields type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',

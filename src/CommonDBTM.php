@@ -68,41 +68,41 @@ class CommonDBTM extends CommonGLPI
     /**
      * Data fields of the Item.
      *
-     * @var mixed[]
+     * @var array<string,mixed>
      */
     public $fields = [];
 
     /**
      * Add/Update fields input. Filled during add/update process.
      *
-     * @var mixed[]|false
+     * @var false|array<string,mixed>
      */
     public $input = [];
 
     /**
      * Updated fields keys. Filled during update process.
      *
-     * @var mixed[]
+     * @var array<int,string>
      */
     public $updates = [];
 
     /**
      * Previous values of updated fields. Filled during update process.
      *
-     * @var mixed[]
+     * @var array<string,mixed>
      */
     public $oldvalues = [];
 
 
     /**
-     * Flag to determine whether or not changes must be logged into history.
+     * Flag to determine whether changes must be logged into history.
      *
      * @var bool
      */
     public $dohistory = false;
 
     /**
-     * List of fields that must not be taken into account when logging history or computating last
+     * List of fields that must not be taken into account when logging history or computing last
      * modification date.
      *
      * @var string[]
@@ -110,14 +110,14 @@ class CommonDBTM extends CommonGLPI
     public $history_blacklist = [];
 
     /**
-     * Flag to determine whether or not automatic messages must be generated on actions.
+     * Flag to determine whether automatic messages must be generated on actions.
      *
      * @var bool
      */
     public $auto_message_on_action = true;
 
     /**
-     * Flag to determine whether or not a link to item form can be automatically generated via
+     * Flag to determine whether a link to item form can be automatically generated via
      * self::getLink() method.
      *
      * @var bool
@@ -159,14 +159,8 @@ class CommonDBTM extends CommonGLPI
      */
     protected $searchopt = false;
 
-    /**
-     * {@inheritDoc}
-     */
     public $taborientation = 'vertical';
 
-    /**
-     * {@inheritDoc}
-     */
     public $get_item_to_display_tab = true;
 
     /**
@@ -177,7 +171,7 @@ class CommonDBTM extends CommonGLPI
     protected static $plugins_forward_entity = [];
 
     /**
-     * Flag to determine whether or not table name of item has a notepad.
+     * Flag to determine whether table name of item has a notepad.
      *
      * @var bool
      */
@@ -198,7 +192,7 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Fields to remove when querying data with api
-     * @var array
+     * @var string[]
      */
     public static $undisclosedFields = [];
 
@@ -209,8 +203,8 @@ class CommonDBTM extends CommonGLPI
      */
     public $right;
 
-    /** @var array<class-string, array> */
-    private static $search_options_cache = [];
+    /** @var array<class-string, array<string,mixed>> */
+    private static array $search_options_cache = [];
 
     /**
      * If this method return true, a third 'Helpdesk view' display preference
@@ -589,7 +583,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done to not show some fields when getting a single item from API calls
      *
-     * @param array $fields Fields to unset undiscloseds
+     * @param array<string,mixed> $fields Fields to unset undisclosed
      *
      * @return void
      */
@@ -5732,13 +5726,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Manage business rules for assets
      *
-     * @since 9.4
-     *
-     * @param int $condition the condition (RuleAsset::ONADD or RuleAsset::ONUPDATE)
+     * @param int $condition the condition
+     * @phpstan-param RuleAsset::ONADD|RuleAsset::ONUPDATE $condition
      *
      * @return void
      */
-    private function assetBusinessRules($condition)
+    private function assetBusinessRules(int $condition): void
     {
         global $CFG_GLPI;
 
