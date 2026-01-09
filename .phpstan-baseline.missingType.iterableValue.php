@@ -32138,18 +32138,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Rule\\:\\:doHookAndMergeResults\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rule\\:\\:doHookAndMergeResults\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Rule\\:\\:dropdown\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -32241,12 +32229,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Rule\\:\\:getActionsByType\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Rule.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Rule\\:\\:getAllActions\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Rule.php',
