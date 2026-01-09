@@ -108,10 +108,9 @@ class ProjectTeam extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
         switch (get_class($item)) {
             case Project::class:
-                $item->showTeam($item);
+                $item->showTeam($item, $withtemplate);
         }
         return true;
     }
