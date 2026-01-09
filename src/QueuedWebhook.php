@@ -155,6 +155,24 @@ class QueuedWebhook extends CommonDBChild
         }
         $input['sent_try'] = 0;
 
+        $webhook_fields = ['webhooks_id', 'itemtype', 'items_id', 'event', 'url', 'send_time'];
+        $criteria = array_intersect_key($input, array_flip($webhook_fields));
+        if ($criteria !== []) {
+            $criteria['is_deleted'] = 0;
+            $criteria['sent_time'] = null;
+
+            $iterator = $DB->request([
+                'SELECT' => ['id'],
+                'FROM'   => $this->getTable(),
+                'WHERE'  => $criteria,
+                'LIMIT'  => 1,
+            ]);
+
+            if ($iterator->count() > 0) {
+                return [];
+            }
+        }
+
         return $input;
     }
 
