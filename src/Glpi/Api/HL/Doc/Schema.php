@@ -67,6 +67,9 @@ class Schema implements ArrayAccess
     public const FORMAT_NUMBER_FLOAT = 'float';
     public const FORMAT_BOOLEAN_BOOLEAN = 'boolean';
 
+    // Not defined directly in OpenAPI schema but exist within the format registry (https://spec.openapis.org/registry/format/)
+    public const FORMAT_STRING_HTML = 'html';
+
     public const PATTERN_UUIDV4 = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
     public const PATTERN_COLOR_HEX = '/^#([A-Fa-f0-9]{6})$/';
 
