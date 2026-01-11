@@ -50,7 +50,7 @@ services:
     image: "dbgate/dbgate:latest"
     restart: "unless-stopped"
     ports:
-      - "8090:3000"
+      - "8091:3000"
     environment:
       CONNECTIONS: "glpi"
 
