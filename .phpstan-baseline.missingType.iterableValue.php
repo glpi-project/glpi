@@ -10346,36 +10346,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\GraphQLGenerator\\:\\:convertRESTPropertyToGraphQLType\\(\\) has parameter \\$property with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQLGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\GraphQLGenerator\\:\\:convertRESTSchemaToGraphQLSchema\\(\\) has parameter \\$schema with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQLGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\GraphQLGenerator\\:\\:getTypesForSchema\\(\\) has parameter \\$schema with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQLGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\GraphQLGenerator\\:\\:getTypesForSchema\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQLGenerator.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Glpi\\\\Api\\\\HL\\\\GraphQLGenerator\\:\\:\\$types type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQLGenerator.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Middleware\\\\MiddlewareInput\\:\\:__construct\\(\\) has parameter \\$client with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
