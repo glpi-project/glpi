@@ -93,14 +93,15 @@
                 } %}
                 <span id="list_limit{{ rand }}_label">{{ __('rows / page') }}</span>
             </span>
+        {% else  %}
+            <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
+                {% include 'components/dropdown/limit.html.twig' with {
+                    'no_onchange': fluid_search|default(false),
+                    'select_class': 'search-limit-dropdown',
+                    'href': href|replace({'%start%': start}),
+                } %}
+            </span>
         {% endif %}
-        <span class="search-limit {{ short_display ? "" : "d-block d-md-none" }}">
-            {% include 'components/dropdown/limit.html.twig' with {
-                'no_onchange': fluid_search|default(false),
-                'select_class': 'search-limit-dropdown',
-                'href': href|replace({'%start%': start}),
-            } %}
-        </span>
     {% endif %}
 
     {% if not short_display %}
