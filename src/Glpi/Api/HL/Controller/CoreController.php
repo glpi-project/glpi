@@ -139,7 +139,7 @@ final class CoreController extends AbstractController
                     $right_prop['enum'][] = $right_bit;
                 }
 
-                $right_prop['x-label'] = $rights_info[$right_name]['label'];
+                $right_prop['x-label'] = $right_label;
                 $right_prop['x-right-scope'] = $rights_info[$right_name]['scope'];
             }
             $session_schema['properties']['active_profile']['properties']['rights']['properties'][$right_name] = $right_prop;
@@ -443,6 +443,8 @@ HTML;
             foreach ($active_profile as $key => $value) {
                 if (in_array($key, $all_right_names, true)) {
                     $session['active_profile']['rights'][$key] = (int)$value;
+                } else {
+                    $session['active_profile']['rights'][$key] = 0;
                 }
             }
         }
