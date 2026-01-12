@@ -743,7 +743,7 @@ class Agent extends CommonDBTM
     /**
      * Request status from agent
      *
-     * @return array<string, string>
+     * @return array{answer: string}
      */
     public function requestStatus()
     {
@@ -764,7 +764,7 @@ class Agent extends CommonDBTM
     /**
      * Request inventory from agent
      *
-     * @return array<string, string>
+     * @return array{answer: string}
      */
     public function requestInventory()
     {
@@ -788,7 +788,7 @@ class Agent extends CommonDBTM
      * @param Response $response Response
      * @param string   $request  Request type (either status or now)
      *
-     * @return array<string, string>
+     * @return array{answer: string}
      */
     private function handleAgentResponse(Response $response, $request): array
     {
