@@ -94,6 +94,7 @@ The present file will list all changes made to the project; according to the
 - `QueryUnion` class
 - `Search::joinDropdownTranslations()`
 - `Ticket_Ticket::getLinkedTicketsTo()`
+- `Glpi\Inventory\Asset\Software::getCompareKey()`
 
 
 ## [11.0.5] 2026-01-28
