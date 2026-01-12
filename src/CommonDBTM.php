@@ -82,7 +82,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Updated fields keys. Filled during update process.
      *
-     * @var array<int,string>
+     * @var list<string>
      */
     public $updates = [];
 
