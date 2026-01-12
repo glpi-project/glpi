@@ -4615,6 +4615,59 @@ HTML,
         $this->assertTrue((bool) $ticket->canAddFollowups());
     }
 
+    /**
+     * Assigning a group to a Ticket preserve previous associated groups when previous groups_id not passed in input
+     *
+     * Scenario :
+     * - create a ticket associated with a group
+     * - update the ticket to associate with another group (without first group in input)
+     * -> both groups are associated
+     */
+    public function testAssignGroup(): void
+    {
+        // --- arrange : create groups + ticket
+        $this->login();
+
+        $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+        $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+
+        $ticket = $this->createItem(
+            Ticket::class,
+            ['_groups_id_assign' => [$group_1->getID()]] + $this->getMinimalCreationInput(Ticket::class)
+        );
+
+        // check for one associated element
+        $this->assertEquals(
+            1,
+            countElementsInTable(
+                Group_Ticket::getTable(),
+                [   'groups_id'  =>  $group_1->getID(),
+                    'tickets_id'   => $ticket->getID(),
+                    'type' => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+
+        // --- act : update ticket content to match rule
+        $this->updateItem(
+            Ticket::class,
+            $ticket->getID(),
+            ['_groups_id_assign'   => [$group_2->getID()],]
+        );
+
+        // --- assert : groups 1 & 2 are assigned
+        $this->assertEquals(
+            2,
+            countElementsInTable(
+                Group_Ticket::getTable(),
+                [   'groups_id'  =>  [$group_1->getID(), $group_2->getID()],
+                    'tickets_id'   => $ticket->getID(),
+                    'type' => CommonITILActor::ASSIGN,
+                ]
+            )
+        );
+    }
+
     public function testCanAddFollowupsAsRequesterGroup()
     {
         global $DB;
