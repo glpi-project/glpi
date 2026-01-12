@@ -36,14 +36,16 @@ namespace tests\units\Glpi\Features;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
-use Glpi\Features\AssignableItemInterface;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Asset\ProviderTrait;
 use Group;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssignableItemTest extends DbTestCase
 {
+    use ProviderTrait;
+
     public static function itemtypeProvider(): iterable
     {
         global $CFG_GLPI;
@@ -51,24 +53,6 @@ class AssignableItemTest extends DbTestCase
         foreach ($CFG_GLPI['assignable_types'] as $itemtype) {
             yield $itemtype => [
                 'class' => $itemtype,
-            ];
-        }
-    }
-
-    /**
-     * @return iterable<array{class: class-string<AssignableItemInterface>, field: "groups_id"|"groups_id_tech"}>
-     */
-    public static function itemtypeAndGroupFieldProvider(): iterable
-    {
-        foreach (self::itemtypeProvider() as $itemtype) {
-            yield [
-                'item_type' => $itemtype['class'],
-                'field' => 'groups_id',
-            ];
-
-            yield [
-                'item_type' => $itemtype['class'],
-                'field' => 'groups_id_tech',
             ];
         }
     }
@@ -155,46 +139,47 @@ class AssignableItemTest extends DbTestCase
      * - update the asset to associate with another group (without first group in input)
      * -> only last group is associated
     */
-    #[DataProvider('itemtypeAndGroupFieldProvider')]
-    public function testAssignGroupRemovePreviousData(string $item_type, string $field): void
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupRemovePreviousData(string $class): void
     {
         // --- arrange - create 2 groups
         $this->login();
-        $group_type = match ($field) {
-            'groups_id_tech' => Group_Item::GROUP_TYPE_TECH,
-            'groups_id' => Group_Item::GROUP_TYPE_NORMAL,
-        };
 
-        $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
-        $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+        $tested_fields = ['groups_id_tech', 'groups_id'];
 
-        $asset = $this->createItem(
-            $item_type,
-            [
-                $field => [$group_1->getID()],
-            ] + $this->getMinimalCreationInput($item_type),
-            ['name'] // name for Item_DeviceSimcard at least
-        );
+        foreach ($tested_fields as $field) {
+            $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+            $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
 
-        // --- act - update asset
-        $this->updateItem(
-            $item_type,
-            $asset->getID(),
-            [$field => [$group_2->getID()]] + $this->getMinimalCreationInput($item_type),
-            ['name'] // name for Item_DeviceSimcard at least
-        );
+            $asset = $this->createItem(
+                $class,
+                [
+                    $field => [$group_1->getID()],
+                ] + $this->getMinimalCreationInput($class),
+                ['name'] // name for Item_DeviceSimcard at least
+            );
 
-        // --- assert - check that the asset has the tech groups assigned
-        $this->assertEquals(
-            1,
-            countElementsInTable(
-                Group_Item::getTable(),
-                [   'groups_id'  =>  [$group_2->getID()],
-                    'items_id'   => $asset->getID(),
-                    'itemtype'   => $asset::class,
-                ]
-            )
-        );
+            // --- act - update asset
+            $this->updateItem(
+                $class,
+                $asset->getID(),
+                [$field => [$group_2->getID()]] + $this->getMinimalCreationInput($class),
+                ['name'] // name for Item_DeviceSimcard at least
+            );
+
+            // --- assert - check that the asset has the tech groups assigned
+            $this->assertEquals(
+                1,
+                countElementsInTable(
+                    Group_Item::getTable(),
+                    [
+                        'groups_id' => [$group_2->getID()],
+                        'items_id' => $asset->getID(),
+                        'itemtype' => $asset::class,
+                    ]
+                )
+            );
+        }
     }
 
     /**
