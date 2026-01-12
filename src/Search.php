@@ -3681,6 +3681,12 @@ JAVASCRIPT;
 
         foreach ($sort_fields as $sort_field) {
             $ID = $sort_field['searchopt_id'];
+
+            if (!array_key_exists($ID, $searchopt)) {
+                // invalid search option
+                continue;
+            }
+
             if (isset($searchopt[$ID]['nosort']) && $searchopt[$ID]['nosort']) {
                 continue;
             }
