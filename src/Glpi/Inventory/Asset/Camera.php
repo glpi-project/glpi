@@ -93,6 +93,9 @@ class Camera extends Device
         }
     }
 
+    /**
+     * @param string[]|string $val
+     */
     private function handleResolution(Item_Devices $itemdevice, array|string $val, bool $is_video = false): void
     {
         if (!is_array($val)) {
@@ -126,6 +129,9 @@ class Camera extends Device
         }
     }
 
+    /**
+     * @param string[]|string $val
+     */
     private function handleFormats(Item_Devices $itemdevice, array|string $val): void
     {
         if (!is_array($val)) {

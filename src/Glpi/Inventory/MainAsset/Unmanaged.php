@@ -48,6 +48,7 @@ use Transfer;
 
 class Unmanaged extends MainAsset
 {
+    /** @var array<string, object> */
     private array $management_ports = [];
 
     protected $extra_data = [
@@ -106,7 +107,7 @@ class Unmanaged extends MainAsset
                 }
             }
 
-            foreach ($device as $key => $property) { /** @phpstan-ignore foreach.nonIterable */
+            foreach ($device as $key => $property) {
                 $val->$key = $property;
             }
 
@@ -139,9 +140,9 @@ class Unmanaged extends MainAsset
      * After rule engine passed, update task (log) and create item if required
      *
      * @param int       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param int       $rules_id Matched rule id, if any
-     * @param int|array $ports_id Matched port ids, if any
+     * @param int|int[] $ports_id Matched port ids, if any
      *
      * @return void
      */
@@ -311,24 +312,17 @@ class Unmanaged extends MainAsset
         }
     }
 
-    public function handleLinks(?array $data = null)
-    {
-        if ($this->current_key !== null) {
-            $data = [$this->data[$this->current_key]];
-        } else {
-            $data = $this->data;
-        }
-        return parent::handleLinks();
-    }
-
     /**
-     * @return array
+     * @return array<string, object>
      */
     public function getManagementPorts()
     {
         return $this->management_ports;
     }
 
+    /**
+     * @param array<string, object> $ports
+     */
     public function setManagementPorts(array $ports): Unmanaged
     {
         $this->management_ports = $ports;

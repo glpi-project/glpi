@@ -278,7 +278,7 @@ class Agent extends CommonDBTM
 
 
     /**
-     * @return array
+     * @return array<array<string, mixed>>
      */
     public static function rawSearchOptionsToAdd()
     {
@@ -364,7 +364,7 @@ class Agent extends CommonDBTM
      * Display form for agent configuration
      *
      * @param int $id      ID of the agent
-     * @param array   $options Options
+     * @param array<string, mixed> $options Options
      *
      * @return bool
      */
@@ -395,7 +395,7 @@ class Agent extends CommonDBTM
     /**
      * Handle agent
      *
-     * @param array $metadata Agents metadata from Inventory
+     * @param array<string, mixed> $metadata Agents metadata from Inventory
      *
      * @return int
      */
@@ -501,9 +501,9 @@ class Agent extends CommonDBTM
     /**
      * Prepare input for add and update
      *
-     * @param array $input Input
+     * @param array<string, mixed> $input Input
      *
-     * @return array|false
+     * @return array<string, mixed>|false
      */
     public function prepareInputs(array $input)
     {
@@ -555,7 +555,7 @@ class Agent extends CommonDBTM
     /**
      * Guess possible addresses the agent should answer on
      *
-     * @return array
+     * @return string[]
      */
     public function guessAddresses(): array
     {
@@ -660,7 +660,7 @@ class Agent extends CommonDBTM
     /**
      * Get agent URLs
      *
-     * @return array
+     * @return string[]
      */
     public function getAgentURLs(): array
     {
@@ -736,7 +736,7 @@ class Agent extends CommonDBTM
     /**
      * Request status from agent
      *
-     * @return array
+     * @return array{answer: string}
      */
     public function requestStatus()
     {
@@ -757,7 +757,7 @@ class Agent extends CommonDBTM
     /**
      * Request inventory from agent
      *
-     * @return array
+     * @return array{answer: string}
      */
     public function requestInventory()
     {
@@ -781,7 +781,7 @@ class Agent extends CommonDBTM
      * @param Response $response Response
      * @param string   $request  Request type (either status or now)
      *
-     * @return array
+     * @return array{answer: string}
      */
     private function handleAgentResponse(Response $response, $request): array
     {

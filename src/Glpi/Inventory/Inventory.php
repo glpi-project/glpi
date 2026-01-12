@@ -37,6 +37,7 @@ namespace Glpi\Inventory;
 
 use Agent;
 use CommonDBTM;
+use Computer;
 use CronTask;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinitionManager;
@@ -109,21 +110,21 @@ class Inventory
     protected $mode;
     /** @var ?stdClass */
     protected $raw_data = null;
-    /** @var array */
+    /** @var array<string, object> */
     protected $data = [];
-    /** @var array */
+    /** @var array<string, mixed> */
     private $metadata = [];
-    /** @var array */
+    /** @var string[] */
     private $errors = [];
     /** @var CommonDBTM */
     protected $item;
     /** @var Agent */
     private $agent;
-    /** @var InventoryAsset[] */
+    /** @var array<string, InventoryAsset[]> */
     protected $assets = [];
     /** @var Conf */
     protected $conf;
-    /** @var array */
+    /** @var array<string, array<stirng, mixed>> */
     private $benchs = [];
     /** @var string|false */
     private $inventory_tmpfile = false;
@@ -254,7 +255,7 @@ class Inventory
     /**
      * Prepare inventory data
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function extractMetadata(): array
     {
@@ -266,7 +267,7 @@ class Inventory
         $this->metadata = [
             'deviceid' => $this->raw_data->deviceid,
             'version' => $this->raw_data->version ?? $this->raw_data->content->versionclient ?? null,
-            'itemtype' => $this->raw_data->itemtype ?? 'Computer',
+            'itemtype' => $this->raw_data->itemtype ?? Computer::class,
             'port'      => $this->raw_data->{'httpd-port'} ?? null,
         ];
 
@@ -308,7 +309,7 @@ class Inventory
      *
      * @param bool $test_rules Only to test rules, do not store anything
      *
-     * @return array
+     * @return void
      */
     public function doInventory($test_rules = false)
     {
@@ -490,14 +491,12 @@ class Inventory
                 $this->printBenchResults();
             }
         }
-
-        return [];
     }
 
     /**
      * Get inventoried items
      *
-     * @return array
+     * @return CommonDBTM[]
      */
     public function getItems(): array
     {
@@ -565,7 +564,7 @@ class Inventory
     /**
      * Get error
      *
-     * @return array
+     * @return string[]
      */
     public function getErrors(): array
     {
@@ -583,7 +582,7 @@ class Inventory
     }
 
     /**
-     * @return array|false
+     * @return array<string, mixed>|false
      */
     public static function getMenuContent()
     {
@@ -959,13 +958,16 @@ class Inventory
         return "ti ti-cloud-download";
     }
 
+    /**
+     * @return array<stringn, mixed>
+     */
     public function getMetadata(): array
     {
         return $this->metadata;
     }
 
     /**
-     * @return InventoryAsset[]
+     * @return array<string, InventoryAsset[]>
      */
     public function getAssets()
     {
@@ -985,7 +987,7 @@ class Inventory
     /**
      * @param string $name
      *
-     * @return array
+     * @return array<string, string>
      */
     public static function cronInfo($name)
     {
@@ -1142,6 +1144,9 @@ class Inventory
         return $this;
     }
 
+    /**
+     * @return class-string<Asset>[]
+     */
     protected function getExtraItemtypes(): array
     {
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);

@@ -56,13 +56,13 @@ use function Safe\preg_replace;
 
 abstract class InventoryAsset
 {
-    /** @var array */
+    /** @var array<int,object> */
     protected $data = [];
     /** @var CommonDBTM */
     protected CommonDBTM $item;
     /** @var ?string */
     protected $itemtype;
-    /** @var array */
+    /** @var array<string,?object> */
     protected $extra_data = [];
     /** @var Agent */
     protected Agent $agent;
@@ -70,12 +70,6 @@ abstract class InventoryAsset
     protected $entities_id = 0;
     /** @var int */
     protected $is_recursive = 0;
-    /** @var array */
-    protected $ruleentity_data = [];
-    /** @var array */
-    protected $rulelocation_data = [];
-    /** @var array */
-    protected array $rulematchedlog_input = [];
     /** @var bool */
     protected $links_handled = false;
     /** @var bool */
@@ -86,19 +80,21 @@ abstract class InventoryAsset
     protected $request_query;
     /** @var bool */
     private bool $is_new = false;
-    /** @var array */
+    /** @var array<string, int> */
     protected array $known_links = [];
-    /** @var array */
+    /** @var array<string, int|string> */
     protected array $raw_links = [];
     /** @var array<string, mixed> */
     protected array $metadata = [];
+    /** @var array<string, ?array<string, string>> */
+    protected $ignored = [];
 
 
     /**
      * Constructor
      *
      * @param CommonDBTM $item Item instance
-     * @param array|null $data Data part, optional
+     * @param ?object[] $data Data part, optional
      */
     public function __construct(CommonDBTM $item, ?array $data = null)
     {
@@ -111,7 +107,7 @@ abstract class InventoryAsset
     /**
      * Set data from raw data part
      *
-     * @param array $data Data part
+     * @param object[] $data Data part
      *
      * @return InventoryAsset
      */
@@ -142,7 +138,7 @@ abstract class InventoryAsset
     /**
      * Get current data
      *
-     * @return array
+     * @return object[]
      */
     public function getData(): array
     {
@@ -152,7 +148,7 @@ abstract class InventoryAsset
     /**
      * Prepare data from raw data part
      *
-     * @return array
+     * @return array<int,stdClass>
      */
     abstract public function prepare(): array;
 
@@ -167,7 +163,7 @@ abstract class InventoryAsset
      * Set extra sub parts of interest
      * Only declared types in subclass extra_data are handled
      *
-     * @param array $data Processed data
+     * @param array<string, object|object[]|string[]> $data Processed data
      *
      * @return InventoryAsset
      */
@@ -186,7 +182,7 @@ abstract class InventoryAsset
      *
      * @param string $type Ignore type ("controllers" only for now)
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getIgnored($type): array
     {
@@ -205,7 +201,7 @@ abstract class InventoryAsset
     /**
      * Handle links (manufacturers, models, users, ...), create items if needed
      *
-     * @return array
+     * @return object[]
      */
     public function handleLinks()
     {
@@ -459,7 +455,7 @@ abstract class InventoryAsset
      * Add or move a peripheral asset.
      * If the peripheral asset is already linked to another main asset, existing link will be replaced by new link.
      *
-     * @param array $input
+     * @param array<string, mixed> $input
      *
      * @return void
      */
@@ -499,6 +495,9 @@ abstract class InventoryAsset
         return $this->is_new;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function handleInput(stdClass $value, ?CommonDBTM $item = null): array
     {
         $input = ['_auto' => 1];

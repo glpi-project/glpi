@@ -3898,10 +3898,10 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @return array a *not indexed* array of search options
+     * @return array<array<string, mixed>> a *not indexed* array of search options
      *
      * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-     **/
+     */
     public function rawSearchOptions()
     {
         global $CFG_GLPI;
@@ -4733,23 +4733,20 @@ class CommonDBTM extends CommonGLPI
     /**
      * display a specific field value
      *
-     * @since 0.83
-     *
-     * @param string       $field   name of the field
-     * @param string|array $values  with the value to display or a Single value
-     * @param array        $options Array of options
+     * @param string                      $field   name of the field
+     * @param string|array<string, mixed> $values  with the value to display or a Single value
+     * @param array<string, mixed>        $options Array of options
      *
      * @return string the string to display
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
-        switch ($field) {
-            case '_virtual_datacenter_position':
-                $static = new static();
-                if ($static instanceof DCBreadcrumbInterface) {
-                    return $static::renderDcBreadcrumb($values['id']);
-                }
+        if ($field == '_virtual_datacenter_position') {
+            $static = new static();
+            if ($static instanceof DCBreadcrumbInterface) {
+                return $static::renderDcBreadcrumb($values['id']);
+            }
         }
 
         return '';
