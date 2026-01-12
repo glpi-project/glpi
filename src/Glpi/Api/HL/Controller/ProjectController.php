@@ -116,7 +116,7 @@ final class ProjectController extends AbstractController
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'content' => ['type' => Doc\Schema::TYPE_STRING],
+                    'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'code' => ['type' => Doc\Schema::TYPE_STRING],
                     'priority' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -234,7 +234,7 @@ final class ProjectController extends AbstractController
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                    'content' => ['type' => Doc\Schema::TYPE_STRING],
+                    'content' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
                 ],
