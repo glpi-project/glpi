@@ -261,7 +261,7 @@ class RuleMailCollector extends Rule
                                     ) {
                                         if (count($entities) === 1) {
                                             //User has right on only one entity
-                                            $output['entities_id'] = array_pop($entities);
+                                            $output['entities_id'] = array_pop($entities);					
                                         } elseif (isset($this->criterias_results['UNIQUE_PROFILE'])) {
                                             $output['entities_id'] = array_pop($entities);
                                         } else {
@@ -283,8 +283,9 @@ class RuleMailCollector extends Rule
                                                 // If an entity is defined in user's preferences,
                                                 // and this entity allowed for this profile, use this one
                                                 // else do not set the rule as matched
-                                                if (in_array($tmpid, $entities, true)) {
-                                                    $output['entities_id'] = $user->fields['entities_id'];
+                                               if (in_array((int) $tmpid, $entities, true)) {
+                                               $output['entities_id'] = $user->fields['entities_id'];
+                                                   }
                                                 }
                                             }
                                         }
