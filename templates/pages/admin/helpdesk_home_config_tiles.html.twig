@@ -33,7 +33,7 @@
 {% set editable = editable|default(false) %}
 {% for tile in tiles %}
     <section
-        class="col-12 col-lg-6 col-xl-4 d-flex-soft"
+        class="col-12 col-lg-6 col-xl-4 d-flex-soft {{ editable ? "pointer-events-none" : "" }}"
         aria-label="{{ tile.getTitle() }}"
         {% if editable %}
             data-glpi-draggable-item
@@ -41,6 +41,7 @@
             data-glpi-helpdesk-config-action-show-edit-form
             data-bs-toggle="offcanvas"
             data-bs-target="#tile-form-offcanvas"
+            data-testid="config-tile"
         {% endif %}
     >
         <div
@@ -98,7 +99,7 @@
         data-bs-toggle="offcanvas"
         data-bs-target="#tile-form-offcanvas"
         data-glpi-helpdesk-config-action-new-tile
-        class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110"
+        class="col-12 col-lg-6 col-xl-4 d-flex-soft opacity-80 cursor-pointer opacity-100-hover min-height-110 pointer-events-none"
     >
         <div class="card rounded my-2 flex-grow-1 border-dashed">
             <div class="card-body d-flex justify-content-center">
