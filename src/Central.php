@@ -207,26 +207,18 @@ class Central extends CommonGLPI
         }
 
         if ($showticket) {
-            if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+            if ($showmyticket) {
+                if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+                    $lists[] = [
+                        'itemtype'  => Ticket::class,
+                        'status'    => 'toapprove',
+                    ];
+                }
+
                 $lists[] = [
                     'itemtype'  => Ticket::class,
-                    'status'    => 'toapprove',
+                    'status'    => 'survey',
                 ];
-            }
-
-            $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'survey',
-            ];
-            $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'validation.rejected',
-            ];
-            $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'solution.rejected',
-            ];
-            if ($showmyticket) {
                 $lists[] = [
                     'itemtype'  => Ticket::class,
                     'status'    => 'requestbyself',
@@ -236,6 +228,14 @@ class Central extends CommonGLPI
                     'status'    => 'observed',
                 ];
             }
+            $lists[] = [
+                'itemtype'  => Ticket::class,
+                'status'    => 'validation.rejected',
+            ];
+            $lists[] = [
+                'itemtype'  => Ticket::class,
+                'status'    => 'solution.rejected',
+            ];
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'process',
