@@ -2903,7 +2903,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<string, array<string, array<int|string>|string>>
+     * @return array<int|string, array<string, array<int|string>|string>|string>
      */
     public function getAllActions()
     {
@@ -2911,7 +2911,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<string, array<string, array<int|string>|string>> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
+     * @return array<int|string, array<string, array<int|string>|string>|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
      */
     public function getActions()
     {
