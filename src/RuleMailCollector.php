@@ -290,6 +290,28 @@ class RuleMailCollector extends Rule
                                             }
                                         }
                                     }
+                                } elseif (isset($params['_users_id_requester'])) {
+                                    // Case 4: No profile criteria specified
+                                    // Use user's default entity if they have any rights on it
+                                    $user = new User();
+                                    if ($user->getFromDB($params['_users_id_requester'])) {
+                                        $user_default_entity = (int) $user->getField('entities_id');
+
+                                        // Get all entities the user has access to (with any profile)
+                                        $user_entities = Profile_User::getUserEntities(
+                                            $params['_users_id_requester'],
+                                            true // include recursive entities
+                                        );
+
+                                        // If user's default entity is in their allowed entities, use it
+                                        if (in_array($user_default_entity, $user_entities, false)) {
+                                            $output['entities_id'] = $user_default_entity;
+                                        } elseif (count($user_entities) === 1) {
+                                            // User has only one entity, use it
+                                            $output['entities_id'] = array_pop($user_entities);
+                                        }
+                                        // If multiple entities and default not set/allowed, rule doesn't match
+                                    }
                                 }
                         }
                         break;
