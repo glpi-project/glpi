@@ -1064,7 +1064,7 @@ class Rule extends CommonDBTM
      **/
     public function maxActionsCount()
     {
-        return count(array_filter($this->getAllActions(), static fn($action_obj) => !isset($action_obj['duplicatewith'])));
+        return count(array_filter($this->getAllActions(), static fn($action_obj) => is_array($action_obj) && !isset($action_obj['duplicatewith'])));
     }
 
     /**
