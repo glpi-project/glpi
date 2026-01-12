@@ -1211,8 +1211,6 @@ PLAINTEXT,
 
         $random_user_id = $this->createItem(\User::class, [
             'name' => 'random_test_user',
-            'password' => 'random',
-            'password2' => 'random',
             'entities_id' => 0,
         ])->getID();
         $this->assertGreaterThan(0, $random_user_id);
@@ -1355,7 +1353,7 @@ PLAINTEXT,
         ]);
 
         $this->assertCount(2, $followups);
-        
+
         $followups_array = iterator_to_array($followups);
         $this->assertStringContainsString('This is a reply from a random user', $followups_array[0]['content']);
         $this->assertStringContainsString('This is a reply from the supplier', $followups_array[1]['content']);
