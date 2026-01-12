@@ -184,6 +184,7 @@ export class GlpiHelpdeskConfigController
 
             // Refresh content and confirm success
             this.#getTilesContainerDiv().innerHTML = await response.text();
+            this.#enablePointerEvents();
             glpi_toast_info(__("Configuration updated successfully."));
         } catch (e) {
             glpi_toast_error(__('An unexpected error occurred'));
@@ -267,6 +268,7 @@ export class GlpiHelpdeskConfigController
             glpi_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
+            this.#enablePointerEvents();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
             glpi_toast_error(__('An unexpected error occurred'));
@@ -353,6 +355,7 @@ export class GlpiHelpdeskConfigController
             glpi_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
+            this.#enablePointerEvents();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
             glpi_toast_error(__('An unexpected error occurred'));
@@ -432,6 +435,7 @@ export class GlpiHelpdeskConfigController
             glpi_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
+            this.#enablePointerEvents();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
             glpi_toast_error(__('An unexpected error occurred'));
