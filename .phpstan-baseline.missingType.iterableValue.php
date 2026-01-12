@@ -20018,12 +20018,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Inventory\\\\Asset\\\\Software\\:\\:getCompareKey\\(\\) has parameter \\$parts with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Inventory\\\\Asset\\\\Software\\:\\:getNormalizedComparisonKey\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,

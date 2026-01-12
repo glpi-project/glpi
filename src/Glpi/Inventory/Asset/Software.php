@@ -596,23 +596,6 @@ class Software extends InventoryAsset
     }
 
     /**
-     * Build comparison key from values
-     *
-     * @param array $parts Values parts
-     *
-     * @return string
-     *
-     * @FIXME Remove this method in GLPI 11.0.
-     */
-    protected function getCompareKey(array $parts): string
-    {
-        return implode(
-            self::SEPARATOR,
-            $parts
-        );
-    }
-
-    /**
      * Populates software list
      *
      * @return  void
