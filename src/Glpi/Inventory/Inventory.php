@@ -309,7 +309,7 @@ class Inventory
      *
      * @param bool $test_rules Only to test rules, do not store anything
      *
-     * @return array{} //FIXME
+     * @return void
      */
     public function doInventory($test_rules = false)
     {
@@ -491,8 +491,6 @@ class Inventory
                 $this->printBenchResults();
             }
         }
-
-        return [];
     }
 
     /**
