@@ -3898,10 +3898,10 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @return array a *not indexed* array of search options
+     * @return array<array<string, mixed>> a *not indexed* array of search options
      *
      * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-     **/
+     */
     public function rawSearchOptions()
     {
         global $CFG_GLPI;

@@ -280,8 +280,8 @@ class CommonGLPI implements CommonGLPIInterface
      * @param array<string, mixed> $options Options
      *     - withtemplate is a template view ?
      *
-     * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
-     *                  and values are the HTML snippet corresponding to the tab name.
+     * @return array<string, mixed> Array where keys are tabs identifier (e.g. `Ticket$main`)
+     *                              and values are the HTML snippet corresponding to the tab name.
      */
     public function defineTabs($options = [])
     {

@@ -90,9 +90,6 @@ class Agent extends CommonDBTM
         return 'inventory';
     }
 
-    /**
-     * @return array<array<string, mixed>>
-     */
     public function rawSearchOptions()
     {
 
@@ -352,10 +349,6 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * @param array<string, mixed> $options
-     * @return array<string, mixed>
-     */
     public function defineTabs($options = [])
     {
 

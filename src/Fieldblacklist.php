@@ -80,11 +80,6 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
-    /**
-     * Get search function for the class
-     *
-     * @return array of search option
-     **/
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
