@@ -2633,8 +2633,6 @@ class Plugin extends CommonDBTM
 
             case self::REPLACED:
                 return $shouldTranslate ? _x('plugin', 'Replaced') : 'Replaced';
-            default:
-                return 'State not available';
         }
 
         return $shouldTranslate ?  __('Error / to clean') : 'Error / to clean';
