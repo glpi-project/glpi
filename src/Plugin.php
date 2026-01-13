@@ -1646,11 +1646,13 @@ class Plugin extends CommonDBTM
 
         $plug     = new Plugin();
         $pluglist = $plug->find([], "name, directory");
+
         foreach ($pluglist as $plugin) {
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
             $state = $plug->isLoadable($plugin['directory']) ? $plugin['state'] : self::TOBECLEANED;
             $state = self::getState($state);
+
             $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
             $install_method = $is_marketplace ? "Marketplace" : "Manual";
 
@@ -1659,8 +1661,10 @@ class Plugin extends CommonDBTM
                  . " Version: " . str_pad($version, 10)
                  . " State: " . str_pad($state, 40)
                  . " Install Method: " . $install_method;
+
             $content .= "\n" . $msg;
         }
+
         return [
             'label' => 'Plugins list',
             'content' => $content,
@@ -2612,27 +2616,28 @@ class Plugin extends CommonDBTM
      */
     public static function getState($state = 0)
     {
+        // No need to translate, this part always display in english (for copy/paste to forum)
         switch ($state) {
             case self::ANEW:
-                return _x('status', 'New');
+                return 'New';
 
             case self::ACTIVATED:
-                return _x('plugin', 'Enabled');
+                return 'Enabled';
 
             case self::NOTINSTALLED:
-                return _x('plugin', 'Not installed');
+                return 'Not installed';
 
             case self::NOTUPDATED:
-                return __('To update');
+                return 'To update';
 
             case self::TOBECONFIGURED:
-                return _x('plugin', 'Installed / not configured');
+                return 'Installed / not configured';
 
             case self::NOTACTIVATED:
-                return _x('plugin', 'Installed / not activated');
+                return 'Installed / not activated';
 
             case self::REPLACED:
-                return _x('plugin', 'Replaced');
+                return 'Replaced';
         }
 
         return __('Error / to clean');
