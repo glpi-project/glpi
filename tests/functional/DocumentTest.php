@@ -35,13 +35,21 @@
 namespace tests\units;
 
 use DocumentCategory;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
+use Glpi\Form\Form;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\FormBuilder;
+use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
+use User;
 
 /* Test for inc/document.class.php */
 
 class DocumentTest extends DbTestCase
 {
+    use FormTesterTrait;
+
     public static function canApplyOnProvider()
     {
         return [
@@ -248,7 +256,7 @@ class DocumentTest extends DbTestCase
 
 
         // Create a second test user.
-        $user = new \User();
+        $user = new User();
         $uid = $user->add([
             'name'         => 'test_user2',
             'realname'     => 'Test User',
@@ -1699,6 +1707,50 @@ class DocumentTest extends DbTestCase
         $this->assertTrue($document->getFromDB(current($data)['documents_id']));
         $this->assertEquals(0, $document->fields['documentcategories_id']);
 
+    }
+
+    public function testLinkedDocumentsCanBeViewedByFormUsers(): void
+    {
+        // Arrange: create a form and attach a document
+        $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
+        $builder->addAccessControl(AllowList::class, new AllowListConfig(
+            user_ids: [getItemByTypeName(User::class, "post-only", true)],
+        ));
+        $form = $this->createForm($builder);
+        $document = $this->addDocumentToItem("foo.txt", "content", $form);
+
+        // Act: try to view document as a user allowed to see the form
+        $this->login("post-only");
+        $can_view = $document->canViewFile([
+            'itemtype' => Form::class,
+            'items_id' => $form->getID(),
+        ]);
+
+        // Assert: the user should be allowed to see the form
+        $this->assertTrue($can_view);
+    }
+
+    public function testLinkedDocumentsCantBeViewedByNonFormUsers(): void
+    {
+        // Arrange: create a form and attach a document
+        $builder = new FormBuilder();
+        $builder->setUseDefaultAccessPolicies(false);
+        $builder->addAccessControl(AllowList::class, new AllowListConfig(
+            user_ids: [getItemByTypeName(User::class, "tech", true)],
+        ));
+        $form = $this->createForm($builder);
+        $document = $this->addDocumentToItem("foo.txt", "content", $form);
+
+        // Act: try to view document as a user that is not allowed to see the form
+        $this->login("post-only");
+        $can_view = $document->canViewFile([
+            'itemtype' => Form::class,
+            'items_id' => $form->getID(),
+        ]);
+
+        // Assert: the user should not be allowed to see the form
+        $this->assertFalse($can_view);
     }
 
 }

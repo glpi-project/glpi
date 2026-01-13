@@ -39,6 +39,9 @@ use Glpi\Event;
 use Glpi\Features\ParentStatus;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
+use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Form;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -583,6 +586,10 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         }
 
         if ($problems_id !== null && $this->canViewFileFromItilObject(Problem::class, $problems_id)) {
+            return true;
+        }
+
+        if ($itemtype === Form::class && $this->canViewFileFromForm($items_id)) {
             return true;
         }
 
@@ -1747,5 +1754,21 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     {
         $file = GLPI_DOC_DIR . '/' . $filename;
         return file_exists($file) && is_readable($file);
+    }
+
+    private function canViewFileFromForm(int $form_id): bool
+    {
+        $control_manager = FormAccessControlManager::getInstance();
+        $parameters = new FormAccessParameters(
+            session_info: Session::getCurrentSessionInfo(),
+            url_parameters: [],
+        );
+
+        $form = Form::getById($form_id);
+        if (!$form) {
+            return false;
+        }
+
+        return $control_manager->canAnswerForm($form, $parameters);
     }
 }
