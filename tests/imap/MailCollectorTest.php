@@ -1232,22 +1232,6 @@ PLAINTEXT,
         ])->getID();
         $this->assertGreaterThan(0, $supplier_id);
 
-        $ticket_id = $this->createItem(Ticket::class, [
-            'name' => 'Ticket for supplier reply test',
-            'content' => 'Initial ticket content',
-            'entities_id' => 0,
-        ])->getID();
-        $this->assertGreaterThan(0, $ticket_id);
-
-        $this->createItem(\Supplier_Ticket::class, [
-            'tickets_id' => $ticket_id,
-            'suppliers_id' => $supplier_id,
-            'type' => \CommonITILActor::ASSIGN,
-        ]);
-
-        $uuid = Config::getUuid('notification');
-        $message_id = "GLPI_{$uuid}-Ticket-{$ticket_id}/new." . time() . "." . rand() . "@localhost";
-
         if (null === $this->collector) {
             $collector = new \MailCollector();
             $this->collector = $collector;
@@ -1268,6 +1252,46 @@ PLAINTEXT,
         ]);
         $this->assertGreaterThan(0, $mailgate_id);
 
+        $collector = new \MailCollector();
+        $collector->getFromDB($mailgate_id);
+
+        $initial_message = new Message([
+            'headers' => [
+                'From' => 'requester@glpi-project.org',
+                'To' => 'unittests@glpi-project.org',
+                'Subject' => 'Ticket for supplier reply test',
+                'Message-ID' => '<initial-ticket@localhost>',
+                'Date' => 'Thu, 19 Dec 2025 09:00:00 +0100',
+                'Content-Type' => 'text/plain; charset=UTF-8',
+            ],
+            'content' => 'Initial ticket content',
+        ]);
+
+        $tkt = $collector->buildTicket(
+            $mailgate_id,
+            $initial_message,
+            [
+                'mailgates_id' => $mailgate_id,
+                'play_rules' => true,
+            ]
+        );
+
+        $this->assertNotFalse($tkt);
+        $this->assertIsArray($tkt);
+
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add($tkt);
+        $this->assertGreaterThan(0, $ticket_id);
+
+        $this->createItem(\Supplier_Ticket::class, [
+            'tickets_id' => $ticket_id,
+            'suppliers_id' => $supplier_id,
+            'type' => \CommonITILActor::ASSIGN,
+        ]);
+
+        $uuid = Config::getUuid('notification');
+        $message_id = "GLPI_{$uuid}-Ticket-{$ticket_id}/new." . time() . "." . rand() . "@localhost";
+
         $message_random = new Message([
             'headers' => [
                 'From' => 'randomuser@glpi-project.org',
@@ -1281,10 +1305,7 @@ PLAINTEXT,
             'content' => 'This is a reply from a random user.',
         ]);
 
-        $collector = new \MailCollector();
-        $collector->getFromDB($mailgate_id);
-
-        $result = $collector->buildTicket(
+        $tkt = $collector->buildTicket(
             $mailgate_id,
             $message_random,
             [
@@ -1293,7 +1314,19 @@ PLAINTEXT,
             ]
         );
 
-        $this->assertNotFalse($result);
+        $this->assertNotFalse($tkt);
+        $this->assertIsArray($tkt);
+        $this->assertArrayHasKey('tickets_id', $tkt);
+        $this->assertEquals($ticket_id, $tkt['tickets_id']);
+
+        $fup = new ITILFollowup();
+        $fup_input = $tkt;
+        $fup_input['itemtype'] = Ticket::class;
+        $fup_input['items_id'] = $fup_input['tickets_id'];
+        unset($fup_input['tickets_id']);
+
+        $fup_id = $fup->add($fup_input);
+        $this->assertGreaterThan(0, $fup_id);
 
         $this->assertEquals(
             1,
@@ -1320,7 +1353,7 @@ PLAINTEXT,
             'content' => 'This is a reply from the supplier.',
         ]);
 
-        $result = $collector->buildTicket(
+        $tkt = $collector->buildTicket(
             $mailgate_id,
             $message_supplier,
             [
@@ -1329,7 +1362,19 @@ PLAINTEXT,
             ]
         );
 
-        $this->assertNotFalse($result);
+        $this->assertNotFalse($tkt);
+        $this->assertIsArray($tkt);
+        $this->assertArrayHasKey('tickets_id', $tkt);
+        $this->assertEquals($ticket_id, $tkt['tickets_id']);
+
+        $fup = new ITILFollowup();
+        $fup_input = $tkt;
+        $fup_input['itemtype'] = Ticket::class;
+        $fup_input['items_id'] = $fup_input['tickets_id'];
+        unset($fup_input['tickets_id']);
+
+        $fup_id = $fup->add($fup_input);
+        $this->assertGreaterThan(0, $fup_id);
 
         $this->assertEquals(
             2,
@@ -1354,7 +1399,7 @@ PLAINTEXT,
 
         $this->assertCount(2, $followups);
 
-        $followups_array = iterator_to_array($followups);
+        $followups_array = iterator_to_array($followups, false);
         $this->assertStringContainsString('This is a reply from a random user', $followups_array[0]['content']);
         $this->assertStringContainsString('This is a reply from the supplier', $followups_array[1]['content']);
     }
