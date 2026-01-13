@@ -2221,32 +2221,33 @@ class DBmysql
      */
     private function decodeFetchResult(array|object|false|null $values): array|object|false|null
     {
-        if ($values === null || $values === false) {
-            // No more results or error on fetch operation.
-            return $values;
-        }
-
-        foreach ($values as $key => $value) {
-            if (!is_string($value)) {
-                continue;
-            }
-
-            $decoder = new SanitizedStringsDecoder();
-
-            if ($key === 'completename') {
-                $value = $decoder->decodeHtmlSpecialCharsInCompletename($value);
-            } else {
-                $value = $decoder->decodeHtmlSpecialChars($value);
-            }
-
-            if (is_object($values)) {
-                $values->{$key} = $value;
-            } else {
-                $values[$key] = $value;
-            }
-        }
-
         return $values;
+//        if ($values === null || $values === false) {
+//            // No more results or error on fetch operation.
+//            return $values;
+//        }
+//
+//        foreach ($values as $key => $value) {
+//            if (!is_string($value)) {
+//                continue;
+//            }
+//
+//            $decoder = new SanitizedStringsDecoder();
+//
+//            if ($key === 'completename') {
+//                $value = $decoder->decodeHtmlSpecialCharsInCompletename($value);
+//            } else {
+//                $value = $decoder->decodeHtmlSpecialChars($value);
+//            }
+//
+//            if (is_object($values)) {
+//                $values->{$key} = $value;
+//            } else {
+//                $values[$key] = $value;
+//            }
+//        }
+//
+//        return $values;
     }
 
     /**
