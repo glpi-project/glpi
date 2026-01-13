@@ -1560,6 +1560,98 @@ class CommonDBTMTest extends DbTestCase
         $this->assertEquals('bar.txt', $document->fields['filename']);
     }
 
+    public function testAddFilesSkipsFileWhenTagNotInContent()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = $this->createItem(Computer::class, [
+            'name' => 'Test computer for skipped upload',
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        $filename_txt = '65292dc32d6a87.46654965' . 'deleted_image.png';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $tag = '0bf32119-761764d0-65292dc0770083.87619309';
+
+        $input = [
+            'name' => 'Test upload with deleted image',
+            'content' => 'Some text without the image tag',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => $tag,
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ],
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        // Temporary file should be cleaned up by the fix
+        $this->assertFileDoesNotExist(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // No document should be created since tag is not in content
+        $document_item = new Document_Item();
+        $this->assertFalse(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        );
+    }
+
+    /**
+     * Test that files are processed normally when their tag is present in content.
+     * This is a non-regression test for the fix of issue #22276.
+     *
+     * @see https://github.com/glpi-project/glpi/issues/22276
+     *
+     * @return void
+     */
+    public function testAddFilesProcessesFileWhenTagInContent()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = $this->createItem(Computer::class, [
+            'name' => 'Test computer for valid upload',
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        $filename_txt = '65292dc32d6a87.46654965' . 'valid_image.png';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $tag = '0bf32119-761764d0-65292dc0770083.87619309';
+
+        $input = [
+            'name' => 'Test upload with valid image',
+            'content' => 'Some text with the image tag ' . $tag . ' present',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => $tag,
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ],
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // Document should be created and linked since tag is in content
+        $document_item = new Document_Item();
+        $this->assertTrue(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        );
+        $document = new Document();
+        $this->assertTrue(
+            $document->getFromDB($document_item->fields['documents_id'])
+        );
+        $this->assertEquals('valid_image.png', $document->fields['filename']);
+    }
+
     public static function updatedInputProvider(): iterable
     {
         $root_entity_id = getItemByTypeName(Entity::class, '_test_root_entity', true);
