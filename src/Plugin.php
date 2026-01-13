@@ -1646,13 +1646,11 @@ class Plugin extends CommonDBTM
 
         $plug     = new Plugin();
         $pluglist = $plug->find([], "name, directory");
-
         foreach ($pluglist as $plugin) {
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
             $state = $plug->isLoadable($plugin['directory']) ? $plugin['state'] : self::TOBECLEANED;
             $state = self::getState($state, shouldTranslate: false);
-
             $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
             $install_method = $is_marketplace ? "Marketplace" : "Manual";
 
@@ -1661,10 +1659,8 @@ class Plugin extends CommonDBTM
                  . " Version: " . str_pad($version, 10)
                  . " State: " . str_pad($state, 40)
                  . " Install Method: " . $install_method;
-
             $content .= "\n" . $msg;
         }
-
         return [
             'label' => 'Plugins list',
             'content' => $content,
