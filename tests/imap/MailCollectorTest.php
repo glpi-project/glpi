@@ -1213,24 +1213,18 @@ PLAINTEXT,
             'name' => 'random_test_user',
             'entities_id' => 0,
         ])->getID();
-        $this->assertGreaterThan(0, $random_user_id);
 
-        $uemail = new \UserEmail();
-        $this->assertGreaterThan(
-            0,
-            (int) $uemail->add([
-                'users_id' => $random_user_id,
-                'is_default' => 1,
-                'email' => 'randomuser@glpi-project.org',
-            ])
-        );
+        $this->createItem(\UserEmail::class, [
+            'users_id' => $random_user_id,
+            'is_default' => 1,
+            'email' => 'randomuser@glpi-project.org',
+        ]);
 
         $supplier_id = $this->createItem(\Supplier::class, [
             'name' => 'Test Supplier',
             'email' => 'supplier@glpi-project.org',
             'entities_id' => 0,
         ])->getID();
-        $this->assertGreaterThan(0, $supplier_id);
 
         if (null === $this->collector) {
             $collector = new \MailCollector();
@@ -1279,9 +1273,7 @@ PLAINTEXT,
         $this->assertNotFalse($tkt);
         $this->assertIsArray($tkt);
 
-        $ticket = new Ticket();
-        $ticket_id = $ticket->add($tkt);
-        $this->assertGreaterThan(0, $ticket_id);
+        $ticket_id = $this->createItem(Ticket::class, $tkt)->getID();
 
         $this->createItem(\Supplier_Ticket::class, [
             'tickets_id' => $ticket_id,
@@ -1319,14 +1311,12 @@ PLAINTEXT,
         $this->assertArrayHasKey('tickets_id', $tkt);
         $this->assertEquals($ticket_id, $tkt['tickets_id']);
 
-        $fup = new ITILFollowup();
         $fup_input = $tkt;
         $fup_input['itemtype'] = Ticket::class;
         $fup_input['items_id'] = $fup_input['tickets_id'];
         unset($fup_input['tickets_id']);
 
-        $fup_id = $fup->add($fup_input);
-        $this->assertGreaterThan(0, $fup_id);
+        $this->createItem(ITILFollowup::class, $fup_input)->getID();
 
         $this->assertEquals(
             1,
@@ -1367,14 +1357,12 @@ PLAINTEXT,
         $this->assertArrayHasKey('tickets_id', $tkt);
         $this->assertEquals($ticket_id, $tkt['tickets_id']);
 
-        $fup = new ITILFollowup();
         $fup_input = $tkt;
         $fup_input['itemtype'] = Ticket::class;
         $fup_input['items_id'] = $fup_input['tickets_id'];
         unset($fup_input['tickets_id']);
 
-        $fup_id = $fup->add($fup_input);
-        $this->assertGreaterThan(0, $fup_id);
+        $this->createItem(ITILFollowup::class, $fup_input)->getID();
 
         $this->assertEquals(
             2,
