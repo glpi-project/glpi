@@ -4622,6 +4622,8 @@ HTML,
      * - create a ticket associated with a group
      * - update the ticket to associate with another group (without first group in input)
      * -> both groups are associated
+     *
+     * Notice behavior is not always the same, @see \tests\units\Glpi\Features\AssignableItemTest::testAssignGroupRemovePreviousData()
      */
     public function testAssignGroup(): void
     {

@@ -138,7 +138,10 @@ class AssignableItemTest extends DbTestCase
      * - create an asset associated with a group
      * - update the asset to associate with another group (without first group in input)
      * -> only last group is associated
-    */
+     *
+     *  Notice behavior is not always the same, for ticket, previous group is preserved.
+     * @see \tests\units\TicketTest::testAssignGroup()
+     */
     #[DataProvider('assignableAssetsItemtypeProvider')]
     public function testAssignGroupRemovePreviousData(string $class): void
     {
@@ -146,10 +149,10 @@ class AssignableItemTest extends DbTestCase
         $this->login();
 
         $tested_fields = ['groups_id_tech', 'groups_id'];
+        $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+        $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
 
         foreach ($tested_fields as $field) {
-            $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
-            $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
 
             $asset = $this->createItem(
                 $class,

@@ -691,7 +691,7 @@ class RuleAssetTest extends DbTestCase
      */
     #[TestWith(['groups_id_tech'])]
     #[TestWith(['groups_id'])]
-    public function xtestAddGroupOnAddWithInput(string $field): void // @todo sup le x
+    public function testAddGroupOnAddWithInput(string $field): void
     {
         $this->login();
         $group_type = match ($field) {
@@ -740,7 +740,8 @@ class RuleAssetTest extends DbTestCase
      *
      * Notice group set on creation is lost after the update.
      * - this is because of \Glpi\Features\AssignableItem::updateGroupFields() implementation that remove previous groups
-     * - important : behavior is not the same for Tickets (@todo ajouter ref au tests + ajouter ref à ici dans la ref)
+     * - important : behavior is not the same for Tickets (
+     * @see \tests\units\TicketTest::testAssignGroup()
      */
     #[TestWith(['groups_id_tech'])]
     #[TestWith(['groups_id'])]

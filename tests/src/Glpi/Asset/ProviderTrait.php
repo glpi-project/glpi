@@ -44,7 +44,6 @@ trait ProviderTrait
         global $CFG_GLPI;
         $assignable_assets_itemtypes = array_intersect($CFG_GLPI['assignable_types'], $CFG_GLPI['asset_types']);
 
-        dump($assignable_assets_itemtypes);
         foreach ($assignable_assets_itemtypes as $itemtype) {
             yield $itemtype => [
                 'class' => $itemtype,
