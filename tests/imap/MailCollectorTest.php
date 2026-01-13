@@ -1273,7 +1273,9 @@ PLAINTEXT,
         $this->assertNotFalse($tkt);
         $this->assertIsArray($tkt);
 
-        $ticket_id = $this->createItem(Ticket::class, $tkt)->getID();
+        // CreateItem is not compatible with $collector->buildTicket, some values are used for follow-ups, which causes a failure in createItem.
+        $ticket = new Ticket();
+        $ticket_id = $ticket->add($tkt);
 
         $this->createItem(\Supplier_Ticket::class, [
             'tickets_id' => $ticket_id,
@@ -1316,7 +1318,10 @@ PLAINTEXT,
         $fup_input['items_id'] = $fup_input['tickets_id'];
         unset($fup_input['tickets_id']);
 
-        $this->createItem(ITILFollowup::class, $fup_input)->getID();
+        // CreateItem is not compatible with $collector->buildTicket, some values are used for tickets, which causes a failure in createItem.
+        $ticket = new Ticket();
+        $itil_followup = new ITILFollowup();
+        $itil_followup->add($fup_input);
 
         $this->assertEquals(
             1,
@@ -1362,7 +1367,10 @@ PLAINTEXT,
         $fup_input['items_id'] = $fup_input['tickets_id'];
         unset($fup_input['tickets_id']);
 
-        $this->createItem(ITILFollowup::class, $fup_input)->getID();
+        // CreateItem is not compatible with $collector->buildTicket, some values are used for tickets, which causes a failure in createItem.
+        $ticket = new Ticket();
+        $itil_followup = new ITILFollowup();
+        $itil_followup->add($fup_input);
 
         $this->assertEquals(
             2,
