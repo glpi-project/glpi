@@ -724,9 +724,24 @@ class MailCollectorTest extends DbTestCase
             ])
         );
 
+        // Create supplier for 51-supplier-reply.eml test and assign to existing ticket 100
+        $supplier_id = $this->createItem(\Supplier::class, [
+            'name' => 'Test Supplier',
+            'email' => 'supplier@glpi-project.org',
+            'entities_id' => 0,
+        ])->getID();
+
+        $this->createItem(\Supplier_Ticket::class, [
+            'tickets_id' => 100,
+            'suppliers_id' => $supplier_id,
+            'type' => \CommonITILActor::ASSIGN,
+        ]);
+
         // Collect all mails
         $this->doConnect();
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
+
+        $msg = $this->collector->collect($this->mailgate_id);
 
         $expected_logged_errors = [
             // 17-malformed-email.eml
@@ -1193,6 +1208,13 @@ PLAINTEXT,
                     . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
                     . '...and there is no header line.',
             ],
+            [
+                // 51-supplier-reply.eml - Supplier reply to ticket 100
+                'items_id' => 100,
+                'users_id' => 0,
+                'content'  => 'This is a reply from the assigned supplier.' . "\r\n"
+                    . 'The supplier should be able to add a followup to this ticket.',
+            ],
         ];
 
         foreach ($expected_followups as $expected_followup) {
@@ -1202,202 +1224,6 @@ PLAINTEXT,
                 sprintf("Followup not found:\n> %s", $expected_followup['content'])
             );
         }
-    }
-
-    public function testSupplierCanReplyToTicket()
-    {
-        global $DB;
-        $_SESSION['glpicronuserrunning'] = 'cron_phpunit';
-
-        $random_user_id = $this->createItem(\User::class, [
-            'name' => 'random_test_user',
-            'entities_id' => 0,
-        ])->getID();
-
-        $this->createItem(\UserEmail::class, [
-            'users_id' => $random_user_id,
-            'is_default' => 1,
-            'email' => 'randomuser@glpi-project.org',
-        ]);
-
-        $supplier_id = $this->createItem(\Supplier::class, [
-            'name' => 'Test Supplier',
-            'email' => 'supplier@glpi-project.org',
-            'entities_id' => 0,
-        ])->getID();
-
-        if (null === $this->collector) {
-            $collector = new \MailCollector();
-            $this->collector = $collector;
-        } else {
-            $collector = $this->collector;
-        }
-
-        $mailgate_id = (int) $collector->add([
-            'name' => 'testuser',
-            'login' => 'testuser',
-            'is_active' => true,
-            'passwd' => 'applesauce',
-            'mail_server' => 'dovecot',
-            'server_type' => '/imap',
-            'server_port' => 143,
-            'server_ssl' => '',
-            'server_cert' => '/novalidate-cert',
-        ]);
-        $this->assertGreaterThan(0, $mailgate_id);
-
-        $collector = new \MailCollector();
-        $collector->getFromDB($mailgate_id);
-
-        $initial_message = new Message([
-            'headers' => [
-                'From' => 'requester@glpi-project.org',
-                'To' => 'unittests@glpi-project.org',
-                'Subject' => 'Ticket for supplier reply test',
-                'Message-ID' => '<initial-ticket@localhost>',
-                'Date' => 'Thu, 19 Dec 2025 09:00:00 +0100',
-                'Content-Type' => 'text/plain; charset=UTF-8',
-            ],
-            'content' => 'Initial ticket content',
-        ]);
-
-        $tkt = $collector->buildTicket(
-            $mailgate_id,
-            $initial_message,
-            [
-                'mailgates_id' => $mailgate_id,
-                'play_rules' => true,
-            ]
-        );
-
-        $this->assertNotFalse($tkt);
-        $this->assertIsArray($tkt);
-
-        // CreateItem is not compatible with $collector->buildTicket, some values are used for follow-ups, which causes a failure in createItem.
-        $ticket = new Ticket();
-        $ticket_id = $ticket->add($tkt);
-
-        $this->createItem(\Supplier_Ticket::class, [
-            'tickets_id' => $ticket_id,
-            'suppliers_id' => $supplier_id,
-            'type' => \CommonITILActor::ASSIGN,
-        ]);
-
-        $uuid = Config::getUuid('notification');
-        $message_id = "GLPI_{$uuid}-Ticket-{$ticket_id}/new." . time() . "." . rand() . "@localhost";
-
-        $message_random = new Message([
-            'headers' => [
-                'From' => 'randomuser@glpi-project.org',
-                'To' => 'unittests@glpi-project.org',
-                'Subject' => "Re: [GLPI #{$ticket_id}] Ticket for supplier reply test",
-                'Message-ID' => '<test-random-user-reply@localhost>',
-                'In-Reply-To' => "<{$message_id}>",
-                'Date' => 'Thu, 19 Dec 2025 10:00:00 +0100',
-                'Content-Type' => 'text/plain; charset=UTF-8',
-            ],
-            'content' => 'This is a reply from a random user.',
-        ]);
-
-        $tkt = $collector->buildTicket(
-            $mailgate_id,
-            $message_random,
-            [
-                'mailgates_id' => $mailgate_id,
-                'play_rules' => true,
-            ]
-        );
-
-        $this->assertNotFalse($tkt);
-        $this->assertIsArray($tkt);
-        $this->assertArrayHasKey('tickets_id', $tkt);
-        $this->assertEquals($ticket_id, $tkt['tickets_id']);
-
-        $fup_input = $tkt;
-        $fup_input['itemtype'] = Ticket::class;
-        $fup_input['items_id'] = $fup_input['tickets_id'];
-        unset($fup_input['tickets_id']);
-
-        // CreateItem is not compatible with $collector->buildTicket, some values are used for tickets, which causes a failure in createItem.
-        $ticket = new Ticket();
-        $itil_followup = new ITILFollowup();
-        $itil_followup->add($fup_input);
-
-        $this->assertEquals(
-            1,
-            countElementsInTable(
-                ITILFollowup::getTable(),
-                [
-                    'items_id' => $ticket_id,
-                    'itemtype' => 'Ticket',
-                ]
-            ),
-            sprintf("Followup from random user not found for ticket %s", $ticket_id)
-        );
-
-        $message_supplier = new Message([
-            'headers' => [
-                'From' => 'supplier@glpi-project.org',
-                'To' => 'unittests@glpi-project.org',
-                'Subject' => "Re: [GLPI #{$ticket_id}] Ticket for supplier reply test",
-                'Message-ID' => '<test-supplier-reply@localhost>',
-                'In-Reply-To' => "<{$message_id}>",
-                'Date' => 'Thu, 19 Dec 2025 10:01:00 +0100',
-                'Content-Type' => 'text/plain; charset=UTF-8',
-            ],
-            'content' => 'This is a reply from the supplier.',
-        ]);
-
-        $tkt = $collector->buildTicket(
-            $mailgate_id,
-            $message_supplier,
-            [
-                'mailgates_id' => $mailgate_id,
-                'play_rules' => true,
-            ]
-        );
-
-        $this->assertNotFalse($tkt);
-        $this->assertIsArray($tkt);
-        $this->assertArrayHasKey('tickets_id', $tkt);
-        $this->assertEquals($ticket_id, $tkt['tickets_id']);
-
-        $fup_input = $tkt;
-        $fup_input['itemtype'] = Ticket::class;
-        $fup_input['items_id'] = $fup_input['tickets_id'];
-        unset($fup_input['tickets_id']);
-
-        // CreateItem is not compatible with $collector->buildTicket, some values are used for tickets, which causes a failure in createItem.
-        $ticket = new Ticket();
-        $itil_followup = new ITILFollowup();
-        $itil_followup->add($fup_input);
-
-        $this->assertEquals(
-            2,
-            countElementsInTable(
-                ITILFollowup::getTable(),
-                [
-                    'items_id' => $ticket_id,
-                    'itemtype' => 'Ticket',
-                ]
-            ),
-            sprintf("Followup from supplier not found for ticket %s", $ticket_id)
-        );
-
-        $followups = $DB->request([
-            'FROM' => ITILFollowup::getTable(),
-            'WHERE' => [
-                'items_id' => $ticket_id,
-                'itemtype' => 'Ticket',
-            ],
-            'ORDER' => 'date_creation ASC',
-        ]);
-
-        $this->assertCount(2, $followups);
-
-        $followups_array = iterator_to_array($followups, false);
-        $this->assertStringContainsString('This is a reply from a random user', $followups_array[0]['content']);
-        $this->assertStringContainsString('This is a reply from the supplier', $followups_array[1]['content']);
     }
 
     public static function mailServerProtocolsProvider()
