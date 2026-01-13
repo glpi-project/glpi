@@ -159,7 +159,6 @@ class AssignableItemTest extends DbTestCase
                 [
                     $field => [$group_1->getID()],
                 ] + $this->getMinimalCreationInput($class),
-                ['name'] // name for Item_DeviceSimcard at least
             );
 
             // --- act - update asset
@@ -167,7 +166,6 @@ class AssignableItemTest extends DbTestCase
                 $class,
                 $asset->getID(),
                 [$field => [$group_2->getID()]] + $this->getMinimalCreationInput($class),
-                ['name'] // name for Item_DeviceSimcard at least
             );
 
             // --- assert - check that the asset has the tech groups assigned
