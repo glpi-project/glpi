@@ -145,15 +145,17 @@ class AssignableItemTest extends DbTestCase
     #[DataProvider('assignableAssetsItemtypeProvider')]
     public function testAssignGroupRemovePreviousData(string $class): void
     {
-        // --- arrange - create 2 groups
         $this->login();
 
-        $tested_fields = ['groups_id_tech', 'groups_id'];
+        // --- arrange - create 2 groups
         $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
         $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
 
+        $tested_fields = ['groups_id_tech', 'groups_id'];
+
         foreach ($tested_fields as $field) {
 
+            // --- arrange - create item
             $asset = $this->createItem(
                 $class,
                 [
