@@ -37,9 +37,9 @@ namespace Glpi\Tests\Glpi\Asset;
 trait ProviderTrait
 {
     /**
-     * @return \Generator Item type that are both assets and assignable
+     * @return iterable Item type that are both assets and assignable
      */
-    public static function assignableAssetsItemtypeProvider(): \Generator
+    public static function assignableAssetsItemtypeProvider(): iterable
     {
         global $CFG_GLPI;
         $assignable_assets_itemtypes = array_intersect($CFG_GLPI['assignable_types'], $CFG_GLPI['asset_types']);
