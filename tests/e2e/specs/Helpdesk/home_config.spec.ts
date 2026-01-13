@@ -249,3 +249,188 @@ for (const context of itemtypes_with_helpdesk_tab) {
         });
     });
 }
+
+test.describe(`Home config specific tests for entities`, () => {
+    let id: number;
+
+    test.beforeEach(async ({ api, profile }) => {
+        // Setup test entity
+        id = await api.createItem('Entity', {
+            'name': `Entity ${randomUUID()}`,
+            'entities_id': getWorkerEntityId(),
+        });
+        api.refreshSession(); // New entity won't be visible otherwise
+        await profile.set(Profiles.SuperAdmin);
+    });
+
+    test('Can configure entity tiles from scratch', async ({ page }) => {
+        const tab = new HelpdeskHomeConfigTag(page);
+        await tab.gotoForEntity(id);
+
+        // Default state
+        await expect(tab.getEmptyEntityTilesMessage()).toBeVisible();
+        await expect(tab.getHeading('Browse help articles')).toBeVisible();
+        await expect(tab.getNewTileButton()).not.toBeAttached();
+
+        // Replace by our own tiles
+        await tab.getDefineEntityTilesButton().click();
+        await expect(tab.getNewTileButton()).toBeVisible();
+        await expect(tab.getEmptyEntityTilesMessage()).toBeHidden();
+        await expect(tab.getHeading('Browse help articles')).toBeHidden();
+    });
+
+    test('Can copy tiles from parent entity', async ({ page }) => {
+        const tab = new HelpdeskHomeConfigTag(page);
+        await tab.gotoForEntity(id);
+
+        // Default state
+        await expect(tab.getEmptyEntityTilesMessage()).toBeVisible();
+        await expect(tab.getHeading('Browse help articles')).toBeVisible();
+        await expect(tab.getNewTileButton()).not.toBeAttached();
+
+        // Copy parent tiles
+        await tab.getCopyEntityTilesButton().click();
+        await expect(tab.getNewTileButton()).toBeVisible();
+        await expect(tab.getEmptyEntityTilesMessage()).toBeHidden();
+        await expect(tab.getHeading('Browse help articles')).toBeVisible();
+    });
+
+    test('Can configure custom illustrations', async ({ page }) => {
+        const tab = new HelpdeskHomeConfigTag(page);
+        await tab.gotoForEntity(id);
+
+        // Some headings should be displayed
+        await expect(tab.getHeading('Custom illustrations')).toBeVisible();
+        await expect(tab.getHeading('Left side')).toBeVisible();
+        await expect(tab.getHeading('Right side')).toBeVisible();
+
+        // There should be two dropdowns - one per side
+        await expect(
+            tab.getDropdownByLabel("Left side configuration")
+        ).toBeVisible();
+        await expect(
+            tab.getDropdownByLabel("Right side configuration")
+        ).toBeVisible();
+
+        const left = tab.getRegion("Left side");
+        const default_preview = left.getByRole('region', {
+            name: "Default illustration preview"
+        });
+        const custom_preview = left.getByRole('region', {
+            name: "Custom illustration preview and selection"
+        });
+        const inherited_preview = left.getByRole('region', {
+            name: "Inherited illustration preview"
+        });
+
+        // eslint-disable-next-line playwright/no-raw-locators
+        const svg = left.locator('svg').filter({ visible: true });
+        // eslint-disable-next-line playwright/no-raw-locators
+        const img = left.locator('img').filter({ visible: true });
+
+        // Default state, inheritance should be selected
+        await expect(
+            tab.getDropdownByLabel("Left side configuration")
+        ).toHaveText("Inherited from parent entity");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeVisible();
+        await expect(svg).toBeVisible();
+
+        // Switch to "Custom illustration"
+        const left_side_dropdown = tab.getDropdownByLabel("Left side configuration");
+        await tab.doSetDropdownValue(left_side_dropdown, "Custom illustration");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeVisible();
+        await expect(inherited_preview).toBeHidden();
+        await tab.doAddFileToUploadArea("uploads/bar.png", left);
+        await tab.doSaveIllustrationSettings();
+        await expect(left_side_dropdown).toHaveText("Custom illustration");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeVisible();
+        await expect(inherited_preview).toBeHidden();
+        await expect(img).toBeVisible();
+
+        // Use the default illustration
+        await tab.doSetDropdownValue(left_side_dropdown, "Default illustration");
+        await expect(default_preview).toBeVisible();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeHidden();
+        await expect(svg).toBeVisible();
+        await tab.doSaveIllustrationSettings();
+        await expect(left_side_dropdown).toHaveText("Default illustration");
+        await expect(default_preview).toBeVisible();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeHidden();
+        await expect(svg).toBeVisible();
+
+        // Go back to inherited value
+        await tab.doSetDropdownValue(left_side_dropdown, "Inherited from parent entity");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeVisible();
+        await expect(svg).toBeVisible();
+        await tab.doSaveIllustrationSettings();
+        await expect(left_side_dropdown).toHaveText("Inherited from parent entity");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeVisible();
+        await expect(svg).toBeVisible();
+    });
+
+    test('Can configure custom titles', async ({ page }) => {
+        const tab = new HelpdeskHomeConfigTag(page);
+        await tab.gotoForEntity(id);
+
+        // Default state, inheritance should be selected
+        const main_title_dropdown = tab.getDropdownByLabel("Main title");
+        await expect(main_title_dropdown).toHaveText("Inherited from parent entity");
+
+        const default_preview = tab.getRegion("Default title preview");
+        const custom_preview = tab.getRegion("Custom title value");
+        const inherited_preview = tab.getRegion("Inherited title preview");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeVisible();
+        await expect(inherited_preview.getByRole('textbox')).toHaveValue("How can we help you?");
+
+        // Switch to custom title
+        await tab.doSetDropdownValue(main_title_dropdown, "Custom value");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeVisible();
+        await expect(inherited_preview).toBeHidden();
+        await custom_preview.getByRole('textbox').fill("My custom title value");
+        await tab.doSaveGeneralSettings();
+        await expect(main_title_dropdown).toHaveText("Custom value");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeVisible();
+        await expect(inherited_preview).toBeHidden();
+        await expect(custom_preview.getByRole('textbox')).toHaveValue("My custom title value");
+
+        // Use the default title
+        await tab.doSetDropdownValue(main_title_dropdown, "Default value");
+        await expect(default_preview).toBeVisible();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeHidden();
+        await expect(default_preview.getByRole('textbox')).toHaveValue("How can we help you?");
+        await tab.doSaveGeneralSettings();
+        await expect(main_title_dropdown).toHaveText("Default value");
+        await expect(default_preview).toBeVisible();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeHidden();
+        await expect(default_preview.getByRole('textbox')).toHaveValue("How can we help you?");
+
+        // Go back to inherited value
+        await tab.doSetDropdownValue(main_title_dropdown, "Inherited from parent entity");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeVisible();
+        await expect(inherited_preview.getByRole('textbox')).toHaveValue("How can we help you?");
+        await tab.doSaveGeneralSettings();
+        await expect(main_title_dropdown).toHaveText("Inherited from parent entity");
+        await expect(default_preview).toBeHidden();
+        await expect(custom_preview).toBeHidden();
+        await expect(inherited_preview).toBeVisible();
+        await expect(inherited_preview.getByRole('textbox')).toHaveValue("How can we help you?");
+    });
+});
