@@ -55,3 +55,48 @@ $fontDir: "@fontsource/inter/files";
 $ti-font-path: "@tabler/icons-webfont/dist/fonts";
 
 @import "@tabler/icons-webfont/dist/tabler-icons";
+
+// Tabler Icons Filled support
+// In Tabler Icons v3, filled icons are in a separate font without the -filled suffix.
+// We need to load the filled font and create aliases for classes using the -filled suffix.
+@font-face {
+    font-family: "tabler-icons-filled";
+    font-style: normal;
+    font-weight: 400;
+    src:
+        url("#{$ti-font-path}/tabler-icons-filled.woff2") format("woff2"),
+        url("#{$ti-font-path}/tabler-icons-filled.woff") format("woff"),
+        url("#{$ti-font-path}/tabler-icons-filled.ttf") format("truetype");
+}
+
+.ti[class*="-filled"] {
+    font-family: "tabler-icons-filled" !important;
+}
+
+// Define filled icon classes with their content codes from tabler-icons-filled font
+.ti-alert-circle-filled::before { content: "\f6ee"; }
+.ti-alert-square-filled::before { content: "\fa35"; }
+.ti-alert-triangle-filled::before { content: "\f6f0"; }
+.ti-bell-filled::before { content: "\f669"; }
+.ti-caret-down-filled::before { content: "\fb2a"; }
+.ti-caret-left-filled::before { content: "\fb2b"; }
+.ti-caret-right-filled::before { content: "\fb2c"; }
+.ti-caret-up-filled::before { content: "\fb2d"; }
+.ti-circle-check-filled::before { content: "\f704"; }
+.ti-circle-filled::before { content: "\f671"; }
+.ti-copy-plus-filled::before { content: "\fe51"; }
+.ti-directions-filled::before { content: "\1003f"; }
+.ti-exclamation-circle-filled::before { content: "\ff62"; }
+.ti-info-circle-filled::before { content: "\f6d8"; }
+.ti-info-square-filled::before { content: "\fa45"; }
+.ti-player-pause-filled::before { content: "\f690"; }
+.ti-player-play-filled::before { content: "\f691"; }
+.ti-player-stop-filled::before { content: "\f695"; }
+.ti-player-track-prev-filled::before { content: "\f697"; }
+.ti-square-check-filled::before { content: "\f76d"; }
+.ti-star-filled::before { content: "\f6a6"; }
+.ti-star-half-filled::before { content: "\f6a7"; }
+.ti-toggle-left-filled::before { content: "\fec0"; }
+.ti-toggle-right-filled::before { content: "\febf"; }
+.ti-video-filled::before { content: "\1009b"; }
+
