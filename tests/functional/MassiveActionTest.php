@@ -1077,7 +1077,7 @@ class MassiveActionTest extends DbTestCase
                 'itemtype' => 'Computer',
                 'action' => 'delete',
                 'item_names' => ['Single Computer for Delete'],
-                'expected_message_pattern' => '/deletes 1 items by massive action/',
+                'expected_message_pattern' => '/deletes item Computer \(ID: \d+\) by massive action/',
                 'setup_callback' => null,
             ],
         ];
