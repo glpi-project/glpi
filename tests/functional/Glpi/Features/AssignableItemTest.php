@@ -34,15 +34,18 @@
 
 namespace tests\units\Glpi\Features;
 
-use Domain;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Features\AssignableItem;
 use Glpi\Tests\DbTestCase;
+use Glpi\Tests\Glpi\Asset\ProviderTrait;
+use Group;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 class AssignableItemTest extends DbTestCase
 {
+    use ProviderTrait;
+
     public static function itemtypeProvider(): iterable
     {
         global $CFG_GLPI;
@@ -126,6 +129,60 @@ class AssignableItemTest extends DbTestCase
         $this->assertTrue($updated);
         $this->assertEqualsCanonicalizing([1, 2], $item_2->fields['groups_id']);
         $this->assertEqualsCanonicalizing([4, 5], $item_2->fields['groups_id_tech']);
+    }
+
+    /**
+     * Assigning a group to an asset does not preserve previous associated groups (when previous groups_id not passed in input)
+     *
+     * Scenario :
+     * - create an asset associated with a group
+     * - update the asset to associate with another group (without first group in input)
+     * -> only last group is associated
+     *
+     *  Notice behavior is not always the same, for ticket, previous group is preserved.
+     * @see \tests\units\TicketTest::testAssignGroup()
+     */
+    #[DataProvider('assignableAssetsItemtypeProvider')]
+    public function testAssignGroupRemovePreviousData(string $class): void
+    {
+        $this->login();
+
+        // --- arrange - create 2 groups
+        $group_1 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+        $group_2 = $this->createItem(Group::class, $this->getMinimalCreationInput(Group::class));
+
+        $tested_fields = ['groups_id_tech', 'groups_id'];
+
+        foreach ($tested_fields as $field) {
+
+            // --- arrange - create item
+            $asset = $this->createItem(
+                $class,
+                [
+                    $field => [$group_1->getID()],
+                ] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- act - update asset
+            $this->updateItem(
+                $class,
+                $asset->getID(),
+                [$field => [$group_2->getID()]] + $this->getMinimalCreationInput($class),
+            );
+
+            // --- assert - check that the asset has the tech groups assigned
+            $this->assertEquals(
+                1,
+                countElementsInTable(
+                    Group_Item::getTable(),
+                    [
+                        'groups_id' => [$group_2->getID()],
+                        'items_id' => $asset->getID(),
+                        'itemtype' => $asset::class,
+                    ]
+                )
+            );
+        }
     }
 
     /**

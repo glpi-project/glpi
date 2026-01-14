@@ -203,7 +203,8 @@ class RuleAsset extends Rule
         $actions['groups_id']['type']          = 'dropdown';
         $actions['groups_id']['table']         = 'glpi_groups';
         $actions['groups_id']['condition']     = ['is_itemgroup' => 1];
-        $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser', 'firstgroupfromuser'];
+        $actions['groups_id']['force_actions'] = ['assign', 'append', 'defaultfromuser', 'firstgroupfromuser'];
+        $actions['groups_id']['permitseveral'] = ['append'];
 
         $actions['users_id_tech']['table']      = 'glpi_users';
         $actions['users_id_tech']['type']       = 'dropdown_users';
@@ -213,6 +214,8 @@ class RuleAsset extends Rule
         $actions['groups_id_tech']['type']      = 'dropdown';
         $actions['groups_id_tech']['table']     = 'glpi_groups';
         $actions['groups_id_tech']['condition'] = ['is_assign' => 1];
+        $actions['groups_id_tech']['force_actions'] = ['assign', 'append'];
+        $actions['groups_id_tech']['permitseveral'] = ['append'];
 
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
@@ -267,17 +270,19 @@ class RuleAsset extends Rule
                         break;
 
                     case "append":
-                        $actions = $this->getAllActions();
                         $value   = $action->fields["value"];
-                        if (
-                            isset($actions[$action->fields["field"]]["appendtoarray"])
-                            && isset($actions[$action->fields["field"]]["appendtoarrayfield"])
-                        ) {
-                            $value = $actions[$action->fields["field"]]["appendtoarray"];
-                            $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
-                            = $action->fields["value"];
+                        switch ($action->fields["field"]) {
+                            case 'groups_id':
+                            case 'groups_id_tech':
+                                $input_field_name = '_' . $action->fields["field"];
+                                if (!array_key_exists($input_field_name, $output)) {
+                                    $output[$input_field_name] = $input[$input_field_name] ?? [];
+                                }
+
+                                $output[$input_field_name][] = $value;
+                                break;
+                                // do not use 'default'
                         }
-                        $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
                         break;
 
                     case "regex_result":
