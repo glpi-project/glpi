@@ -44,6 +44,7 @@ use function Safe\readfile;
 $theme = ThemeManager::getInstance()->getTheme($_GET['key']);
 $preview = $theme?->getPreviewPath(false);
 
+header_remove('Pragma');
 header(sprintf('Content-Disposition: attachment; filename="%s.png"', basename($theme->getKey())));
 header('Content-type: image/png');
 

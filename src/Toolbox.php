@@ -605,6 +605,7 @@ class Toolbox
         $lastModified = filemtime($path);
 
         // remove headers automatically added by session start
+        header_remove('Pragma');
         header_remove('Cache-Control');
         header_remove('Expires');
 

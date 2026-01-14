@@ -1009,6 +1009,7 @@ HTML;
 
             if ($use_cache) {
                 // remove headers automatically added by session start
+                header_remove('Pragma');
                 header_remove('Cache-Control');
                 header_remove('Expires');
 
