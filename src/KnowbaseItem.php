@@ -42,6 +42,7 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
 
@@ -966,14 +967,14 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return true;
     }
 
-    public function getLastUpdateInfo(): KnowbaseItemLastUpdateInfo
+    public function getLastUpdateInfo(): LastUpdateInfo
     {
         // TODO: the new history feature has not yet been deployed so we can't
         // use it yet to retrieve the correct information.
         // For now, we will just use the author + last update date.
         // It will be improved later.
         $author = User::getById($this->fields['users_id']) ?: null;
-        return new KnowbaseItemLastUpdateInfo(
+        return new LastUpdateInfo(
             author_link: $author?->getLinkUrl(),
             author_name: $author?->getName(),
             date: $this->fields['date_mod'],

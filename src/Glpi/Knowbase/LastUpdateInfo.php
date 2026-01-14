@@ -32,7 +32,11 @@
  * ---------------------------------------------------------------------
  */
 
-final readonly class KnowbaseItemLastUpdateInfo
+namespace Glpi\Knowbase;
+
+use Html;
+
+final readonly class LastUpdateInfo
 {
     public function __construct(
         private ?string $author_link,
