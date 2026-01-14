@@ -885,7 +885,12 @@ SQL,
         $mysqli_result->method($mysqli_method)->willReturn($row);
 
         $instance = new \DB();
+
+        $instance->setMustUnsanitizeData(true);
         $this->assertEquals($expected, $instance->{$method}($mysqli_result));
+
+        $instance->setMustUnsanitizeData(false);
+        $this->assertEquals($row, $instance->{$method}($mysqli_result));
     }
 
     public static function dataDrop()
