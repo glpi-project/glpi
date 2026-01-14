@@ -945,17 +945,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $writer_link = getUserLink($this->fields["users_id"]);
         }
 
-        $last_updater_info = $this->getLastUpdaterInfo();
+        $last_update_info = $this->getLastUpdateInfo();
 
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
             'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),
             'subject' => $this->fields['name'],
-            'last_update_date' => $last_updater_info->getRawDate(),
-            'last_update_relative_date' => $last_updater_info->getRelativeDate(),
-            'last_update_author_name' => $last_updater_info->getAuthorName(),
-            'last_update_author_link' => $last_updater_info->getAuthorLink(),
-            'last_update_can_view_author' => $last_updater_info->canViewAuthor(),
+            'last_update_date' => $last_update_info->getRawDate(),
+            'last_update_relative_date' => $last_update_info->getRelativeDate(),
+            'last_update_author_name' => $last_update_info->getAuthorName(),
+            'last_update_author_link' => $last_update_info->getAuthorLink(),
+            'last_update_can_view_author' => $last_update_info->canViewAuthor(),
         ]);
         if ($options['display']) {
             echo $out;
@@ -966,7 +966,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return true;
     }
 
-    public function getLastUpdaterInfo(): KnowbaseItemLastUpdateInfo
+    public function getLastUpdateInfo(): KnowbaseItemLastUpdateInfo
     {
         // TODO: the new history feature has not yet been deployed so we can't
         // use it yet to retrieve the correct information.
