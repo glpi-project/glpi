@@ -226,18 +226,24 @@ final class Search
                                     $current_join_def = $current_join_parent !== null ? ($this->context->getJoins()[$current_join_parent] ?? null) : null;
                                 }
                                 $parent_keys = array_reverse($parent_keys);
-                                $expression = QueryFunction::groupConcat(
-                                    expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull($sql_field, new QueryExpression('0x0'))]),
-                                    separator: new QueryExpression(chr(0x1D)),
-                                );
+                                if ($join_def['parent_type'] === Doc\Schema::TYPE_ARRAY) {
+                                    $expression = QueryFunction::groupConcat(
+                                        expression: QueryFunction::concat([...$parent_keys, QueryFunction::ifnull($sql_field, new QueryExpression('0x0'))]),
+                                        separator: new QueryExpression(chr(0x1D)),
+                                    );
+                                }
                             } else {
                                 // Probably a nested property
                                 $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
                                 $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
                             }
                         } else {
-                            $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
-                            $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
+                            if ($join_def['parent_type'] === Doc\Schema::TYPE_ARRAY) {
+                                $expression = QueryFunction::ifnull($sql_field, new QueryExpression('0x0'));
+                                $expression = QueryFunction::groupConcat($expression, new QueryExpression(chr(0x1D)), $distinct_groups);
+                            }
+                            $alias = str_replace('.', chr(0x1F), $prop_name);
+                            return new QueryExpression($expression, $alias);
                         }
                     }
                 }
@@ -595,14 +601,14 @@ final class Search
                 $criteria['SELECT'][] = '_itemtype';
                 $criteria['GROUPBY'] = ['_itemtype', '_.id'];
             } else {
-                if (!$count_only) {
-                    foreach (array_keys($this->context->getJoins()) as $join_alias) {
-                        $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
-                        if ($s !== null) {
-                            $criteria['SELECT'][] = $s;
-                        }
-                    }
-                }
+//                if (!$count_only) {
+//                    foreach (array_keys($this->context->getJoins()) as $join_alias) {
+//                        $s = $this->getSelectCriteriaForProperty($this->context->getPrimaryKeyPropertyForJoin($join_alias), true);
+//                        if ($s !== null) {
+//                            $criteria['SELECT'][] = $s;
+//                        }
+//                    }
+//                }
                 $criteria['GROUPBY'] = ['_.id'];
             }
 

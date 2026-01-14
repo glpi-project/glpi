@@ -155,6 +155,7 @@ final class RecordSet
                     if (!isset($criteria['LEFT JOIN'])) {
                         $criteria['LEFT JOIN'] = [];
                     }
+                    //TODO translations should be handled in the main search query? Not sure if it should only be handled in the main search or if it is needed both places.
                     $criteria['LEFT JOIN']["glpi_dropdowntranslations AS {$trans_alias}"] = [
                         'ON' => [
                             $join_name => 'id',
@@ -200,103 +201,9 @@ final class RecordSet
         $itemtype_cache = [];
 
         foreach ($this->records as $schema_name => $dehydrated_records) {
-            // Clear lookup cache between schemas just in case.
-            $this->search->getContext()->clearFkeyTablesCache();
-            $to_hydrate = [];
-
-            // Collect all IDs to hydrate
-            Profiler::getInstance()->start('RecordSet::collectIdsToHydrate', Profiler::CATEGORY_HLAPI);
-            foreach ($dehydrated_records as $row) {
-                unset($row['_itemtype']);
-                // Make sure we have all the needed data
-                foreach ($row as $fkey => $record_ids) {
-                    $table = $this->search->getContext()->getTableForFKey($fkey, $schema_name);
-                    if ($table === null) {
-                        continue;
-                    }
-                    if (!array_key_exists($table, $itemtype_cache)) {
-                        $itemtype = getItemTypeForTable($table);
-                        $itemtype_cache[$table] = $itemtype;
-                    }
-                    $itemtype = $itemtype_cache[$table];
-
-                    if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
-                        continue;
-                    }
-                    // Find which IDs we need to fetch. We will avoid fetching records multiple times.
-                    $ids_to_fetch = explode(chr(0x1D), $record_ids);
-                    foreach ($ids_to_fetch as &$id) {
-                        if (str_contains($id, chr(0x1E))) {
-                            $id_parts = explode(chr(0x1E), $id);
-                            $id = end($id_parts);
-                        }
-                    }
-                    unset($id);
-                    $ids_to_fetch = array_diff($ids_to_fetch, array_keys($fetched_records[$table] ?? []));
-
-                    if ($ids_to_fetch === []) {
-                        // Every record needed for this row has already been fetched.
-                        continue;
-                    }
-
-                    if (!array_key_exists($fkey, $to_hydrate)) {
-                        $to_hydrate[$fkey] = [
-                            'table' => $table,
-                            'itemtype' => $itemtype,
-                            'ids' => [],
-                        ];
-                    }
-                    $to_hydrate[$fkey]['ids'] = [...$to_hydrate[$fkey]['ids'], ...$ids_to_fetch];
-                }
-            }
-            Profiler::getInstance()->stop('RecordSet::collectIdsToHydrate');
-
-            // Do the actual requests to fetch the data for the dehydrated records
-            foreach ($to_hydrate as $fkey => $info) {
-                $table = $info['table'];
-                $itemtype = $info['itemtype'];
-                $ids_to_fetch = array_values(array_unique($info['ids']));
-                if ($ids_to_fetch === []) {
-                    continue;
-                }
-                Profiler::getInstance()->start('RecordSet::getHydrationCriteria', Profiler::CATEGORY_HLAPI);
-                $criteria = $this->getHydrationCriteria($fkey, $table, $itemtype, $schema_name, $ids_to_fetch);
-                Profiler::getInstance()->stop('RecordSet::getHydrationCriteria');
-
-                Profiler::getInstance()->start('RecordSet::check if nothing to select', Profiler::CATEGORY_HLAPI);
-                if (empty($criteria['SELECT'])) {
-                    // Nothing to select. Security guard to prevent leaking extra data.
-                    $fetched_records[$table] ??= [];
-                    // fill fetched records with the hydrated parts of the main records
-                    foreach ($dehydrated_records as $row) {
-                        $hydrated_row = $this->getHydratedPartsOfMainRecord($row);
-                        $needed_ids = explode(chr(0x1D), $row[$fkey] ?? '');
-                        $needed_ids = array_filter($needed_ids, static fn($id) => $id !== chr(0x0));
-                        $fetched_records[$table][$needed_ids[0]] = $hydrated_row;
-                    }
-                    Profiler::getInstance()->stop('RecordSet::check if nothing to select');
-                    continue;
-                }
-                Profiler::getInstance()->stop('RecordSet::check if nothing to select');
-
-                // Fetch the data for the current dehydrated record
-                $it = $this->search->getDBRead()->request($criteria);
-                $this->search->validateIterator($it);
-                Profiler::getInstance()->start('RecordSet::processFetchedData', Profiler::CATEGORY_HLAPI);
-                $fkey_local_name = trim(strrchr($fkey, chr(0x1F)) ?: $fkey, chr(0x1F));
-                foreach ($it as $data) {
-                    $cleaned_data = [];
-                    foreach ($data as $k => $v) {
-                        ArrayPathAccessor::setElementByArrayPath($cleaned_data, $k, $v);
-                    }
-                    $fetched_records[$table][$data[$fkey_local_name]] = $cleaned_data;
-                }
-                Profiler::getInstance()->stop('RecordSet::processFetchedData');
-            }
-
             Profiler::getInstance()->start('RecordSet::assembleHydratedRecordsLoop', Profiler::CATEGORY_HLAPI);
             foreach ($dehydrated_records as $row) {
-                $hydrated_records[] = $this->assembleHydratedRecords($row, $schema_name, $fetched_records);
+                $hydrated_records[] = $this->new_assembleHydratedRecords($row, $schema_name, $fetched_records);
             }
             Profiler::getInstance()->stop('RecordSet::assembleHydratedRecordsLoop');
         }
@@ -372,6 +279,41 @@ final class RecordSet
         return $hydrated_record;
     }
 
+    private function new_assembleHydratedRecords(array $dehydrated_row, string $schema_name, array $fetched_records): array
+    {
+        $hydrated_record = $dehydrated_row;
+        foreach ($dehydrated_row as $dehydrated_ref => $dehyrdated_value) {
+            if (!str_contains($dehydrated_ref, chr(0x1F))) {
+                continue;
+            }
+            if ($dehyrdated_value !== null && str_contains($dehyrdated_value, chr(0x1D))) {
+                $v = explode(chr(0x1D), $dehyrdated_value);
+            } else {
+                $v = $dehyrdated_value;
+            }
+            if (str_contains($dehydrated_ref, chr(0x1F))) {
+                if (is_array($v)) {
+                    $path_parts = explode(chr(0x1F), $dehydrated_ref);
+                    //insert index before the last part and then re-join to dot notation path
+                    $last_part = array_pop($path_parts);
+                    $parent_path = implode(chr(0x1F), $path_parts);
+                    foreach ($v as $i => $vv) {
+                        $new_path = $parent_path . '.' . $i . '.' . $last_part;
+                        ArrayPathAccessor::setElementByArrayPath($hydrated_record, $new_path, $vv);
+                    }
+                    unset($hydrated_record[$dehydrated_ref]);
+                } else {
+                    ArrayPathAccessor::setElementByArrayPath($hydrated_record, str_replace(chr(0x1F), '.', $dehydrated_ref), $v);
+                    unset($hydrated_record[$dehydrated_ref]);
+                }
+            } else {
+                $hydrated_record[$dehydrated_ref] = $v;
+            }
+        }
+        $this->fixupAssembledRecord($hydrated_record);
+        return $hydrated_record;
+    }
+
     /**
      * Fix-up the assembled result record to ensure it matches the expected schema.
      *
@@ -401,11 +343,18 @@ final class RecordSet
                     continue;
                 }
                 if ($j['parent_type'] === Doc\Schema::TYPE_ARRAY) {
+                    //deduplicate $join_prop values. In some cases the SQL may return duplicate joined records like {id:1, name:'A'}, {id:1, name:'A'}
+                    $unique_join_prop = [];
+                    foreach ($join_prop as $jp) {
+                        $unique_join_prop[serialize($jp)] = $jp;
+                    }
+                    $join_prop = $unique_join_prop;
+                    // Re-index the array to have sequential numeric keys
                     $join_prop = array_values($join_prop);
                 } elseif (array_key_exists($name, $this->search->getContext()->getFlattenedProperties())) {
                     // Nothing more to do
                     continue;
-                } elseif (empty($join_prop)) {
+                } elseif (empty($join_prop) || array_filter($join_prop, static fn($v) => $v !== null) === []) {
                     // Object join with no data = null
                     ArrayPathAccessor::setElementByArrayPath($record, $path, null);
                     continue;
