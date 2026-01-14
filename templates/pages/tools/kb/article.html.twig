@@ -30,55 +30,105 @@
  # ---------------------------------------------------------------------
  #}
 
-<article class="container ms-0 px-4 py-3">
-    <h1 class="fw-bold" data-testid="subject">{{ subject }}</h1>
-    <div class="text-muted d-flex align-items-center gap-3">
-        {# Last update #}
-        <div class="d-flex align-items-center" data-testid="last-update">
-            <i class="ti ti-clock me-1 fs-3"></i>
-            <span>
-                <span>{{ __("Updated:") }}</span>
-                <time
-                    title="{{ last_update_date }}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                >{{ last_update_relative_date }}</time>
-                <span>{{ __("by") }}</span>
-            </span>
-            <address class="mb-0">
-                {% if last_update_author_link is not null and last_update_can_view_author %}
-                    <a
-                        rel="author"
-                        href="{{ last_update_author_link }}"
-                        class="badge bg-azure-lt ms-1"
-                        data-testid="author_link"
-                    >
-                        @{{ last_update_author_name }}
-                    </a>
-                {% else %}
-                    <span class="badge bg-dark-lt ms-1">
-                        @{{ last_update_author_name }}
-                    </span>
+<div class="d-flex mx-n2 my-n2" data-glpi-knowbase-article>
+    <article class="col-9 container ms-0 px-4 py-3 kb-article">
+        <div class="d-flex align-items-center mb-3">
+            <h1 class="fw-bold mb-0" data-testid="subject">{{ subject }}</h1>
+            <div class="dropdown ms-auto cursor-pointer d-flex align-items-center">
+                {% if edit_mode and actions|length > 0 %}
+                    <i
+                        class="ti ti-dots-vertical"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        role="button"
+                        title="{{ __('More actions') }}"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        {% for action in actions %}
+                            <li>
+                                <button
+                                    type="button"
+                                    class="dropdown-item"
+                                    aria-label="{{ action.label }}"
+                                    data-glpi-kb-action="{{ action.type.value }}"
+                                    {% for key, param in action.params %}
+                                        data-glpi-kb-action-param-{{ key }}="{{ param }}"
+                                    {% endfor %}
+                                >
+                                    <i class="{{ action.icon }}"></i>
+                                    <span>{{ action.label }}</span>
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
                 {% endif %}
-            </address>
+            </div>
+        </div>
+        <div class="text-muted d-flex align-items-center gap-3">
+            {# Last update #}
+            <div class="d-flex align-items-center" data-testid="last-update">
+                <i class="ti ti-clock me-1 fs-3"></i>
+                <span>
+                    <span>{{ __("Updated:") }}</span>
+                    <time
+                        title="{{ last_update_date }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                    >{{ last_update_relative_date }}</time>
+                    <span>{{ __("by") }}</span>
+                </span>
+                <address class="mb-0">
+                    {% if last_update_author_link is not null and last_update_can_view_author %}
+                        <a
+                            rel="author"
+                            href="{{ last_update_author_link }}"
+                            class="badge bg-azure-lt ms-1"
+                            data-testid="author_link"
+                        >
+                            @{{ last_update_author_name }}
+                        </a>
+                    {% else %}
+                        <span class="badge bg-dark-lt ms-1">
+                            @{{ last_update_author_name }}
+                        </span>
+                    {% endif %}
+                </address>
+            </div>
+
+            {# Views #}
+            <div class="d-flex align-items-center">
+                <i class="ti ti-eye me-1 fs-3"></i>
+                <span data-testid="views">
+                    {% if views == 0 %}
+                        {{ __("No views") }}
+                    {% else %}
+                        {{ _n("%s view", "%s views", views)|format(views|formatted_integer) }}
+                    {% endif %}
+                </span>
+            </div>
         </div>
 
-        {# Views #}
-        <div class="d-flex align-items-center">
-            <i class="ti ti-eye me-1 fs-3"></i>
-            <span data-testid="views">
-                {% if views == 0 %}
-                    {{ __("No views") }}
-                {% else %}
-                    {{ _n("%s view", "%s views", views)|format(views|formatted_integer) }}
-                {% endif %}
-            </span>
+        <hr class="mt-4 mb-4">
+
+        <div class="rich_text_container" data-testid="content">
+            {{ answer|safe_html }}
         </div>
+    </article>
+    <div
+        class="col-3 container kb-sidepanel px-4 py-3 d-none d-flex flex-column"
+        data-glpi-knowbase-side-panel
+    >
     </div>
+</div>
 
-    <hr class="mt-4 mb-4">
-
-    <div class="rich_text_container" data-testid="content">
-        {{ answer|safe_html }}
-    </div>
-</article>
+<script defer type="module">
+    (async () => {
+        const module = await import(
+            "/js/modules/Knowbase/ArticleController.js"
+        );
+        new module.GlpiKnowbaseArticleController(
+            document.querySelector('[data-glpi-knowbase-article]'),
+            document.querySelector('[data-glpi-knowbase-side-panel]'),
+        );
+    })();
+</script>
