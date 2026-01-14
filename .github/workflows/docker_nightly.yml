@@ -1,0 +1,39 @@
+name: "Docker nightly images"
+
+on:
+  # Build Docker nightly images every day
+  schedule:
+    - cron: '0 0 * * *'
+  # Enable manual run
+  workflow_dispatch:
+
+jobs:
+  build-main:
+    name: "Build main branch"
+    if: ${{ github.repository == 'glpi-project/glpi' }}
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    secrets: inherit
+    with:
+      push: true
+      glpi-version: "main"
+      image-tag: "dev-nightly"
+
+  build-11:
+    name: "Build 11.0/bugfixes branch"
+    if: ${{ github.repository == 'glpi-project/glpi' }}
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    secrets: inherit
+    with:
+      push: true
+      glpi-version: "11.0/bugfixes"
+      image-tag: "11.0-nightly"
+
+  build-10:
+    name: "Build 10.0/bugfixes branch"
+    if: ${{ github.repository == 'glpi-project/glpi' }}
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    secrets: inherit
+    with:
+      push: true
+      glpi-version: "10.0/bugfixes"
+      image-tag: "10.0-nightly"
