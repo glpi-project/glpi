@@ -83,6 +83,8 @@ class DbTestCase extends GLPITestCase
         $in_transaction = $this->callPrivateMethod($DB, 'isInTransaction');
         $this->assertFalse($in_transaction);
 
+        $DB->setMustUnsanitizeData(false); // Be sure to switch back to disabled unsanitization.
+
         parent::tearDown();
     }
 
