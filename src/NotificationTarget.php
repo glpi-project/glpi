@@ -1392,6 +1392,11 @@ class NotificationTarget extends CommonDBChild
     {
         $this->data = [];
 
+        // Store current user info for plugins to access during ITEM_GET_DATA hook
+        if (isset($options['additionnaloption']['users_id'])) {
+            $this->recipient_data['users_id'] = $options['additionnaloption']['users_id'];
+        }
+
         $this->addDataForTemplate($event, $options);
 
         // Add global tags data, use `+` operator to preserve overriden values
