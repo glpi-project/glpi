@@ -1177,6 +1177,7 @@ class GLPIDashboard {
             data: {
                 "action": "get_dashboard_filters",
                 "filters": filters,
+                "dashboard": this.current_name,
             }
         }).then((html) => {
             $(this.filters_selector).html(html);
