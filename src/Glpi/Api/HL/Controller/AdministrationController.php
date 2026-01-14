@@ -677,7 +677,7 @@ EOT,
                 ],
                 'toast_location' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['top-lest', 'top-right', 'bottom-left', 'bottom-right'],
+                    'enum' => ['top-left', 'top-right', 'bottom-left', 'bottom-right'],
                     'description' => 'Location for toast notifications',
                 ],
                 'timeline_action_button_layout' => [
