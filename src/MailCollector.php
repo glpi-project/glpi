@@ -1105,7 +1105,7 @@ class MailCollector extends CommonDBTM
                     $tkt['content'] = (
                         $this->body_is_html
                             ? htmlescape(sprintf(__('From %s'), $requester)) . '<br /><br />'
-                            : sprintf(__('From %s'), $requester) . "\n\n"
+                            : sprintf(__('From %s'), $requester) . "\r\n\r\n"
                     )
                         . $tkt['content'];
                 }
