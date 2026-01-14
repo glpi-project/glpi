@@ -599,7 +599,7 @@ TWIG, $twig_params);
                 ],
             ];
             if ($type_item->maybeDeleted()) {
-                $criteria['WHERE'][$type_item . '.' . 'is_deleted'] = 0;
+                $criteria['WHERE'][$type . '.' . 'is_deleted'] = 0;
             }
             $nb += countElementsInTable(static::getTable(), $criteria);
         }
