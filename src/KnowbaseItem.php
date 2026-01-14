@@ -42,6 +42,7 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
 
@@ -726,6 +727,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         ) {
             $input["is_faq"] = 0;
         }
+
+        if (!isset($input['users_id'])) {
+            $input["users_id"] = Session::getLoginUserID();
+        }
+
         return $input;
     }
 
@@ -940,13 +946,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             $writer_link = getUserLink($this->fields["users_id"]);
         }
 
+        $last_update_info = $this->getLastUpdateInfo();
+
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
-            'item' => $this,
-            'categories' => $article_categories,
-            'subject' => KnowbaseItemTranslation::getTranslatedValue($this, 'name'),
+            'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),
-            'attachments' => $attachments,
-            'writer_link' => $writer_link,
+            'subject' => $this->fields['name'],
+            'last_update_date' => $last_update_info->getRawDate(),
+            'last_update_relative_date' => $last_update_info->getRelativeDate(),
+            'last_update_author_name' => $last_update_info->getAuthorName(),
+            'last_update_author_link' => $last_update_info->getAuthorLink(),
+            'last_update_can_view_author' => $last_update_info->canViewAuthor(),
         ]);
         if ($options['display']) {
             echo $out;
@@ -955,6 +965,21 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         return true;
+    }
+
+    public function getLastUpdateInfo(): LastUpdateInfo
+    {
+        // TODO: the new history feature has not yet been deployed so we can't
+        // use it yet to retrieve the correct information.
+        // For now, we will just use the author + last update date.
+        // It will be improved later.
+        $author = User::getById($this->fields['users_id']) ?: null;
+        return new LastUpdateInfo(
+            author_link: $author?->getLinkUrl(),
+            author_name: $author?->getName(),
+            date: $this->fields['date_mod'],
+            can_view_author: $author ? $author->can($author->getID(), READ) : false,
+        );
     }
 
     /**
