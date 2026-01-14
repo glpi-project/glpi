@@ -1568,7 +1568,7 @@ class CommonDBTMTest extends DbTestCase
             'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
         ]);
 
-        $filename_txt = '65292dc32d6a87.46654965' . 'deleted_image.png';
+        $filename_txt = '65292dc32d6a87.46654965' . 'image_paste12345678.png';
         $content = $this->getUniqueString();
         file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
 
@@ -1616,7 +1616,7 @@ class CommonDBTMTest extends DbTestCase
             'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
         ]);
 
-        $filename_txt = '65292dc32d6a87.46654965' . 'valid_image.png';
+        $filename_txt = '65292dc32d6a87.46654965' . 'image_paste87654321.png';
         $content = $this->getUniqueString();
         file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
 
@@ -1649,7 +1649,54 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue(
             $document->getFromDB($document_item->fields['documents_id'])
         );
-        $this->assertEquals('valid_image.png', $document->fields['filename']);
+        $this->assertEquals('image_paste87654321.png', $document->fields['filename']);
+    }
+
+    public function testAddFilesAttachesFilePickerFileWithoutTagInContent()
+    {
+        // Simulate legit call to `addFiles()` post_addItem / post_updateItem
+        $item = $this->createItem(Computer::class, [
+            'name' => 'Test computer for file picker upload',
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        // File picker files do NOT have the image_paste pattern
+        $filename_txt = '65292dc32d6a87.46654965' . 'user_document.pdf';
+        $content = $this->getUniqueString();
+        file_put_contents(GLPI_TMP_DIR . '/' . $filename_txt, $content);
+
+        $tag = '0bf32119-761764d0-65292dc0770083.87619309';
+
+        $input = [
+            'name' => 'Test upload with file picker',
+            // Tag is NOT in content - but file should still be attached
+            'content' => 'Some text without the file tag',
+            '_filename' => [
+                0 => $filename_txt,
+            ],
+            '_tag_filename' => [
+                0 => $tag,
+            ],
+            '_prefix_filename' => [
+                0 => '65292dc32d6a87.46654965',
+            ],
+        ];
+        $item->input = $input;
+        $item->addFiles($input);
+
+        unlink(GLPI_TMP_DIR . '/' . $filename_txt);
+
+        // Document should be created and linked even though tag is not in content
+        // because this is a file picker upload, not a pasted image
+        $document_item = new Document_Item();
+        $this->assertTrue(
+            $document_item->getFromDbByCrit(['itemtype' => $item->getType(), 'items_id' => $item->getID()])
+        );
+        $document = new Document();
+        $this->assertTrue(
+            $document->getFromDB($document_item->fields['documents_id'])
+        );
+        $this->assertEquals('user_document.pdf', $document->fields['filename']);
     }
 
     public static function updatedInputProvider(): iterable

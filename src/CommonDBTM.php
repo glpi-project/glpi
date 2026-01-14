@@ -5530,12 +5530,18 @@ class CommonDBTM extends CommonGLPI
                 $input['_tag'][$key] = $input[$tagUploadName][$key];
             }
 
+            // Check if file is a pasted image (generated name pattern from fileupload.js)
+            $is_pasted_image = preg_match('/image_paste\d+\.\w+$/', $file);
+
+            // Only check tag presence for pasted images (they have image_paste prefix)
+            // Files from file picker should always be attached regardless of tag presence
             if (
-                isset($input['_tag'][$key])
+                $is_pasted_image
+                && isset($input['_tag'][$key])
                 && isset($input[$options['content_field']])
                 && !str_contains($input[$options['content_field']], $input['_tag'][$key])
             ) {
-                // Clean up temporary file
+                // Pasted image was deleted from editor before save - skip it
                 if (file_exists($filename)) {
                     unlink($filename);
                 }
