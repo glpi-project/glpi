@@ -95,6 +95,21 @@ export class HelpdeskHomeConfigTag extends GlpiPage
         return this.getAlert("Configuration updated successfully");
     }
 
+    public getDefineEntityTilesButton(): Locator
+    {
+        return this.getButton("Define tiles for this entity from scratch");
+    }
+
+    public getCopyEntityTilesButton(): Locator
+    {
+        return this.getButton("Copy parent entity configuration into this entity");
+    }
+
+    public getEmptyEntityTilesMessage(): Locator
+    {
+        return this.page.getByText("There are no tiles defined for this entity");
+    }
+
     public async doDragAndDropTileAfterTile(
         source: string,
         destination: string
@@ -176,5 +191,15 @@ export class HelpdeskHomeConfigTag extends GlpiPage
             exact: true,
         }).click();
         await expect(this.getUpdateConfirmationAlert()).toBeVisible();
+    }
+
+    public async doSaveIllustrationSettings(): Promise<void>
+    {
+        await this.getButton('Save custom illustrations settings').click();
+    }
+
+    public async doSaveGeneralSettings(): Promise<void>
+    {
+        await this.getButton('Save general settings').click();
     }
 }
