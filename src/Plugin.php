@@ -2635,7 +2635,7 @@ class Plugin extends CommonDBTM
                 return $shouldTranslate ? _x('plugin', 'Replaced') : 'Replaced';
         }
 
-        return $shouldTranslate ?  _x('plugin', 'Error / to clean') : 'Error / to clean';
+        return $shouldTranslate ? _x('plugin', 'Error / to clean') : 'Error / to clean';
     }
 
 
