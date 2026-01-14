@@ -1962,8 +1962,6 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
     });
 });
 
-
-
 // Prevent Bootstrap dialog from blocking focusin
 // See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
 document.addEventListener('focusin', (e) => {

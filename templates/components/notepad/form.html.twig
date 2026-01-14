@@ -280,12 +280,16 @@ function toggleNotesAccordion(element) {
 
     // Use Bootstrap's native collapse methods for smooth transitions
     accordionElements.forEach(function(accordion) {
-        const bsCollapse = new bootstrap.Collapse(accordion, { toggle: false });
+        try {
+            const bsCollapse = new bootstrap.Collapse(accordion, { toggle: false });
 
-        if (isExpanding) {
-            bsCollapse.show();
-        } else {
-            bsCollapse.hide();
+            if (isExpanding) {
+                bsCollapse.show();
+            } else {
+                bsCollapse.hide();
+            }
+        } catch (error) {
+            console.error('Error with bootstrap.Collapse:', error);
         }
     });
 
@@ -306,13 +310,21 @@ function toggleNotesAccordion(element) {
 }
 
 // Event listener for toggle all notes button/link
-document.addEventListener('DOMContentLoaded', function() {
+function setupToggleButton() {
     const toggleButton = document.querySelector('.toggle-all-notes');
-    if (toggleButton) {
+
+    if (toggleButton && !toggleButton.hasAttribute('data-listener-added')) {
+        toggleButton.setAttribute('data-listener-added', 'true');
         toggleButton.addEventListener('click', function(e) {
-            e.preventDefault(); // Prevent default link behavior
+            e.preventDefault();
             toggleNotesAccordion(this);
         });
     }
+}
+
+setupToggleButton();
+
+//try with DOMContentLoaded in case DOM is not ready
+document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
