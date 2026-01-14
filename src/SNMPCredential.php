@@ -195,6 +195,10 @@ class SNMPCredential extends CommonDBTM
                 return 'AES192C';
             case 5:
                 return 'AES256C';
+            case 6:
+                return 'CFB192-AES';
+            case 7:
+                return 'CFB256-AES';
             default:
                 return '';
         }
