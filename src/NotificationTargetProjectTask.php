@@ -264,7 +264,7 @@ class NotificationTargetProjectTask extends NotificationTarget
                       "ProjectTask_" . $item->fields["id"]
                   );
         $this->data["##projecttask.name##"]
-                  = $item->fields['name'];
+                  = $item->getField('name');
         $this->data["##projecttask.project##"]
                   = Dropdown::getDropdownName('glpi_projects', $item->fields['projects_id']);
         $this->data["##projecttask.projecturl##"]
@@ -273,9 +273,9 @@ class NotificationTargetProjectTask extends NotificationTarget
                       "Project_" . $item->fields["projects_id"]
                   );
         $this->data["##projecttask.description##"]
-                  = $item->fields['content'];
+                  = $item->getField('content');
         $this->data["##projecttask.comments##"]
-                  = $item->fields['comment'];
+                  = $item->getField('comment');
         $this->data["##projecttask.creationdate##"]
                   = Html::convDateTime($item->fields['date_creation']);
         $this->data["##projecttask.lastupdatedate##"]
@@ -309,8 +309,8 @@ class NotificationTargetProjectTask extends NotificationTarget
         $this->data["##projecttask.entity##"] = '';
         $this->data["##projecttask.shortentity##"] = '';
         if ($entity->getFromDB($this->getEntity())) {
-            $this->data["##projecttask.entity##"]      = $entity->fields['completename'];
-            $this->data["##projecttask.shortentity##"] = $entity->fields['name'];
+            $this->data["##projecttask.entity##"]      = $entity->getField('completename');
+            $this->data["##projecttask.shortentity##"] = $entity->getField('name');
         }
 
         $this->data["##projecttask.father##"] = '';
@@ -443,15 +443,15 @@ class NotificationTargetProjectTask extends NotificationTarget
                     $tmp                    = [];
 
                     $tmp['##ticket.id##']   = $data['tickets_id'];
-                    $tmp['##ticket.date##'] = $ticket->fields['date'];
+                    $tmp['##ticket.date##'] = $ticket->getField('date');
                     $tmp['##ticket.title##']
-                                       = $ticket->fields['name'];
+                                       = $ticket->getField('name');
                     $tmp['##ticket.url##']  = $this->formatURL(
                         $options['additionnaloption']['usertype'],
                         "Ticket_" . $data['tickets_id']
                     );
                     $tmp['##ticket.content##']
-                                      = $ticket->fields['content'];
+                                      = $ticket->getField('content');
 
                     $this->data['tickets'][] = $tmp;
                 }

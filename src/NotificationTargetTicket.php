@@ -319,26 +319,26 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                     $tmp['##ticket.itemtype##']  = $hardware->getTypeName();
 
                     //Object name
-                    $tmp['##ticket.item.name##'] = $hardware->fields['name'];
+                    $tmp['##ticket.item.name##'] = $hardware->getField('name');
 
                     //Object serial
                     if ($hardware->isField('serial')) {
-                        $tmp['##ticket.item.serial##'] = $hardware->fields['serial'];
+                        $tmp['##ticket.item.serial##'] = $hardware->getField('serial');
                     }
 
                     //Object contact
                     if ($hardware->isField('contact')) {
-                        $tmp['##ticket.item.contact##'] = $hardware->fields['contact'];
+                        $tmp['##ticket.item.contact##'] = $hardware->getField('contact');
                     }
 
                     //Object contact num
                     if ($hardware->isField('contact_num')) {
-                        $tmp['##ticket.item.contactnumber##'] = $hardware->fields['contact_num'];
+                        $tmp['##ticket.item.contactnumber##'] = $hardware->getField('contact_num');
                     }
 
                     //Object otherserial
                     if ($hardware->isField('otherserial')) {
-                        $tmp['##ticket.item.otherserial##'] = $hardware->fields['otherserial'];
+                        $tmp['##ticket.item.otherserial##'] = $hardware->getField('otherserial');
                     }
 
                     //Object location
@@ -349,17 +349,17 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         }
                         $locations = new Location();
                         if ($locations->getFromDB($h_locations_id)) {
-                            $data['##ticket.item.locationcomment##'] = $locations->fields['comment'];
-                            $data['##ticket.item.locationroom##'] = $locations->fields['room'];
-                            $data['##ticket.item.locationbuilding##'] = $locations->fields['building'];
-                            $data['##ticket.item.locationlatitude##'] = $locations->fields['latitude'];
-                            $data['##ticket.item.locationlongitude##'] = $locations->fields['longitude'];
-                            $data['##ticket.item.locationaltitude##'] = $locations->fields['altitude'];
-                            $data['##ticket.item.locationaddress##'] = $locations->fields['address'];
-                            $data['##ticket.item.locationpostcode##'] = $locations->fields['postcode'];
-                            $data['##ticket.item.locationtown##'] = $locations->fields['town'];
-                            $data['##ticket.item.locationstate##'] = $locations->fields['state'];
-                            $data['##ticket.item.locationcountry##'] = $locations->fields['country'];
+                            $data['##ticket.item.locationcomment##'] = $locations->getField('comment');
+                            $data['##ticket.item.locationroom##'] = $locations->getField('room');
+                            $data['##ticket.item.locationbuilding##'] = $locations->getField('building');
+                            $data['##ticket.item.locationlatitude##'] = $locations->getField('latitude');
+                            $data['##ticket.item.locationlongitude##'] = $locations->getField('longitude');
+                            $data['##ticket.item.locationaltitude##'] = $locations->getField('altitude');
+                            $data['##ticket.item.locationaddress##'] = $locations->getField('address');
+                            $data['##ticket.item.locationpostcode##'] = $locations->getField('postcode');
+                            $data['##ticket.item.locationtown##'] = $locations->getField('town');
+                            $data['##ticket.item.locationstate##'] = $locations->getField('state');
+                            $data['##ticket.item.locationcountry##'] = $locations->getField('country');
                         }
                     }
 
@@ -440,16 +440,16 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
                         $tmp['##change.id##']
                                  = $row['changes_id'];
                         $tmp['##change.date##']
-                                 = $change->fields['date'];
+                                 = $change->getField('date');
                         $tmp['##change.title##']
-                                 = $change->fields['name'];
+                                 = $change->getField('name');
                         $tmp['##change.url##']
                                  = $this->formatURL(
                                      $options['additionnaloption']['usertype'],
                                      "change_" . $row['changes_id']
                                  );
                         $tmp['##change.content##']
-                                = $change->fields['content'];
+                                = $change->getField('content');
 
                         $data['changes'][] = $tmp;
                     }

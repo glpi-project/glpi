@@ -1167,8 +1167,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             ) {
                 $entity = new Entity();
                 if ($entity->getFromDB($options['entities_id'])) {
-                    $this->data["##$objettype.entity##"]      = $entity->fields['completename'];
-                    $this->data["##$objettype.shortentity##"] = $entity->fields['name'];
+                    $this->data["##$objettype.entity##"]      = $entity->getField('completename');
+                    $this->data["##$objettype.shortentity##"] = $entity->getField('name');
                 }
                 $item = getItemForItemtype($objettype);
                 if ($item instanceof CommonITILObject) {
@@ -1226,9 +1226,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             && Entity::getAnonymizeConfig($item->fields['entities_id']) !== Entity::ANONYMIZE_DISABLED;
         $objettype = strtolower($item->getType());
 
-        $data["##$objettype.title##"]        = $item->fields['name'];
-        $data["##$objettype.content##"]      = $item->fields['content'];
-        $data["##$objettype.description##"]  = $item->fields['content'];
+        $data["##$objettype.title##"]        = $item->getField('name');
+        $data["##$objettype.content##"]      = $item->getField('content');
+        $data["##$objettype.description##"]  = $item->getField('content');
         $data["##$objettype.id##"]           = sprintf("%07d", $item->fields["id"]);
 
         $data["##$objettype.url##"]
@@ -1247,21 +1247,21 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         $entity = new Entity();
         if ($entity->getFromDB($this->getEntity())) {
-            $data["##$objettype.entity##"]          = $entity->fields['completename'];
-            $data["##$objettype.shortentity##"]     = $entity->fields['name'];
-            $data["##$objettype.entity.phone##"]    = $entity->fields['phonenumber'];
-            $data["##$objettype.entity.fax##"]      = $entity->fields['fax'];
-            $data["##$objettype.entity.website##"]  = $entity->fields['website'];
-            $data["##$objettype.entity.email##"]    = $entity->fields['email'];
-            $data["##$objettype.entity.address##"]  = $entity->fields['address'];
-            $data["##$objettype.entity.postcode##"] = $entity->fields['postcode'];
-            $data["##$objettype.entity.town##"]     = $entity->fields['town'];
-            $data["##$objettype.entity.state##"]    = $entity->fields['state'];
-            $data["##$objettype.entity.country##"]  = $entity->fields['country'];
-            $data["##$objettype.entity.registration_number##"] = $entity->fields['registration_number'];
+            $data["##$objettype.entity##"]          = $entity->getField('completename');
+            $data["##$objettype.shortentity##"]     = $entity->getField('name');
+            $data["##$objettype.entity.phone##"]    = $entity->getField('phonenumber');
+            $data["##$objettype.entity.fax##"]      = $entity->getField('fax');
+            $data["##$objettype.entity.website##"]  = $entity->getField('website');
+            $data["##$objettype.entity.email##"]    = $entity->getField('email');
+            $data["##$objettype.entity.address##"]  = $entity->getField('address');
+            $data["##$objettype.entity.postcode##"] = $entity->getField('postcode');
+            $data["##$objettype.entity.town##"]     = $entity->getField('town');
+            $data["##$objettype.entity.state##"]    = $entity->getField('state');
+            $data["##$objettype.entity.country##"]  = $entity->getField('country');
+            $data["##$objettype.entity.registration_number##"] = $entity->getField('registration_number');
         }
 
-        $data["##$objettype.storestatus##"]  = $item->fields['status'];
+        $data["##$objettype.storestatus##"]  = $item->getField('status');
         $data["##$objettype.status##"]       = $item->getStatus($item->fields['status']);
 
         $data["##$objettype.urgency##"]      = $item->getUrgencyName($item->fields['urgency']);
@@ -1463,7 +1463,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             }
 
             $data["##$objettype.solution.author##"] = getUserName($itilsolution->fields['users_id']);
-            $data["##$objettype.solution.description##"] = $itilsolution->fields['content'];
+            $data["##$objettype.solution.description##"] = $itilsolution->getField('content');
         }
 
         $itilreminder = new ITILReminder();
@@ -1491,9 +1491,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     'LIMIT'  => 1,
                 ])
             ) {
-                $data["##$objettype.reminder.bumpcounter##"]   = $pending_reason_item->fields['bump_count'];
-                $data["##$objettype.reminder.bumpremaining##"] = $pending_reason_item->fields['followups_before_resolution'] - $pending_reason_item->fields['bump_count'];
-                $data["##$objettype.reminder.bumptotal##"]     = $pending_reason_item->fields['followups_before_resolution'];
+                $data["##$objettype.reminder.bumpcounter##"]   = (int) $pending_reason_item->fields['bump_count'];
+                $data["##$objettype.reminder.bumpremaining##"] = (int) $pending_reason_item->fields['followups_before_resolution'] - $pending_reason_item->fields['bump_count'];
+                $data["##$objettype.reminder.bumptotal##"]     = (int) $pending_reason_item->fields['followups_before_resolution'];
                 $data["##$objettype.reminder.deadline##"]      = $pending_reason_item->getAutoResolvedate();
                 $data["##$objettype.reminder.text##"]          = $followup_template instanceof ITILFollowupTemplate ? $followup_template->getRenderedContent($item) : '';
                 $data["##$objettype.reminder.name##"]          = $pending_reason->fields['name'];
@@ -1519,8 +1519,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         strtolower($itemtype) . "_" . $link['items_id']
                     );
 
-                    $tmp['##linked' . strtolower($itemtype) . '.title##'] = $link_item->fields['name'];
-                    $tmp['##linked' . strtolower($itemtype) . '.content##'] = $link_item->fields['content'];
+                    $tmp['##linked' . strtolower($itemtype) . '.title##'] = $link_item->getField('name');
+                    $tmp['##linked' . strtolower($itemtype) . '.content##'] = $link_item->getField('content');
 
                     switch ($itemtype) {
                         case Ticket::class:
@@ -1920,9 +1920,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                         'glpi_locations',
                         $actor->fields['locations_id']
                     );
-                    $data[sprintf('##%s.address##', $key_prefix)]  = $location->fields['address'];
-                    $data[sprintf('##%s.postcode##', $key_prefix)] = $location->fields['postcode'];
-                    $data[sprintf('##%s.town##', $key_prefix)]     = $location->fields['town'];
+                    $data[sprintf('##%s.address##', $key_prefix)]  = $location->getField('address');
+                    $data[sprintf('##%s.postcode##', $key_prefix)] = $location->getField('postcode');
+                    $data[sprintf('##%s.town##', $key_prefix)]     = $location->getField('town');
                 }
 
                 if ($actor->fields['usertitles_id'] > 0) {
@@ -1940,24 +1940,24 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 }
 
                 $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getDefaultEmail();
-                $data[sprintf('##%s.mobile##', $key_prefix)]     = $actor->fields['mobile'];
-                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->fields['phone'];
-                $data[sprintf('##%s.phone2##', $key_prefix)]     = $actor->fields['phone2'];
+                $data[sprintf('##%s.mobile##', $key_prefix)]     = $actor->getField('mobile');
+                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phone');
+                $data[sprintf('##%s.phone2##', $key_prefix)]     = $actor->getField('phone2');
                 break;
             case Group::class:
                 $data[sprintf('##%s.name##', $key_prefix)]       = Dropdown::getDropdownName('glpi_groups', $actor->getID());
                 break;
             case Supplier::class:
                 $data[sprintf('##%s.name##', $key_prefix)]       = $actor->getName();
-                $data[sprintf('##%s.email##', $key_prefix)]      = $actor->fields['email'];
-                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->fields['phonenumber'];
-                $data[sprintf('##%s.fax##', $key_prefix)]        = $actor->fields['fax'];
-                $data[sprintf('##%s.website##', $key_prefix)]    = $actor->fields['website'];
-                $data[sprintf('##%s.address##', $key_prefix)]    = $actor->fields['address'];
-                $data[sprintf('##%s.postcode##', $key_prefix)]   = $actor->fields['postcode'];
-                $data[sprintf('##%s.town##', $key_prefix)]       = $actor->fields['town'];
-                $data[sprintf('##%s.state##', $key_prefix)]      = $actor->fields['state'];
-                $data[sprintf('##%s.country##', $key_prefix)]    = $actor->fields['country'];
+                $data[sprintf('##%s.email##', $key_prefix)]      = $actor->getField('email');
+                $data[sprintf('##%s.phone##', $key_prefix)]      = $actor->getField('phonenumber');
+                $data[sprintf('##%s.fax##', $key_prefix)]        = $actor->getField('fax');
+                $data[sprintf('##%s.website##', $key_prefix)]    = $actor->getField('website');
+                $data[sprintf('##%s.address##', $key_prefix)]    = $actor->getField('address');
+                $data[sprintf('##%s.postcode##', $key_prefix)]   = $actor->getField('postcode');
+                $data[sprintf('##%s.town##', $key_prefix)]       = $actor->getField('town');
+                $data[sprintf('##%s.state##', $key_prefix)]      = $actor->getField('state');
+                $data[sprintf('##%s.country##', $key_prefix)]    = $actor->getField('country');
                 if ($actor->fields['suppliertypes_id']) {
                     $data[sprintf('##%s.type##', $key_prefix)]
                                = Dropdown::getDropdownName(

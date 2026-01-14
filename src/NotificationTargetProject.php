@@ -263,13 +263,13 @@ class NotificationTargetProject extends NotificationTarget
                 "Project_" . $item->fields["id"]
             );
         $this->data["##project.name##"]
-            = $item->fields['name'];
+            = $item->getField('name');
         $this->data["##project.code##"]
-            = $item->fields['code'];
+            = $item->getField('code');
         $this->data["##project.description##"]
-            = $item->fields['content'];
+            = $item->getField('content');
         $this->data["##project.comments##"]
-            = $item->fields['comment'];
+            = $item->getField('comment');
         $this->data["##project.creationdate##"]
             = Html::convDateTime($item->fields['date']);
         $this->data["##project.lastupdatedate##"]
@@ -302,8 +302,8 @@ class NotificationTargetProject extends NotificationTarget
         $this->data["##project.entity##"] = '';
         $this->data["##project.shortentity##"] = '';
         if ($entity->getFromDB($this->getEntity())) {
-            $this->data["##project.entity##"]      = $entity->fields['completename'];
-            $this->data["##project.shortentity##"] = $entity->fields['name'];
+            $this->data["##project.entity##"]      = $entity->getField('completename');
+            $this->data["##project.shortentity##"] = $entity->getField('name');
         }
 
         $this->data["##project.father##"] = '';
@@ -476,13 +476,13 @@ class NotificationTargetProject extends NotificationTarget
                     if ($nitem->getFromDB($data['items_id'])) {
                         $values[] = [
                             '##' . $lc_itemtype . '.id##'      => $data['items_id'],
-                            '##' . $lc_itemtype . '.date##'    => $nitem->fields['date'],
-                            '##' . $lc_itemtype . '.title##'   => $nitem->fields['name'],
+                            '##' . $lc_itemtype . '.date##'    => $nitem->getField('date'),
+                            '##' . $lc_itemtype . '.title##'   => $nitem->getField('name'),
                             '##' . $lc_itemtype . '.url##'     => $this->formatURL(
                                 $options['additionnaloption']['usertype'],
                                 $lc_itemtype . '_' . $data['items_id']
                             ),
-                            '##' . $lc_itemtype . '.content##' => $nitem->fields['content'],
+                            '##' . $lc_itemtype . '.content##' => $nitem->getField('content'),
                         ];
                     }
                 }

@@ -89,17 +89,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                          $anchor
                      );
         $data['##change.globalvalidation##']
-                     = ChangeValidation::getStatus($item->fields['global_validation']);
+                     = ChangeValidation::getStatus($item->getField('global_validation'));
 
-        $data['##change.impactcontent##']      = $item->fields["impactcontent"];
-        $data['##change.controlistcontent##']  = $item->fields["controlistcontent"];
-        $data['##change.rolloutplancontent##'] = $item->fields["rolloutplancontent"];
-        $data['##change.backoutplancontent##'] = $item->fields["backoutplancontent"];
-        $data['##change.checklistcontent##']   = $item->fields["checklistcontent"];
-
-        // $data["##problem.impacts##"]  = $item->fields['impactcontent'];
-        // $data["##problem.causes##"]   = $item->fields['causecontent'];
-        // $data["##problem.symptoms##"] = $item->fields['symptomcontent'];
+        $data['##change.impactcontent##']      = $item->getField("impactcontent");
+        $data['##change.controlistcontent##']  = $item->getField("controlistcontent");
+        $data['##change.rolloutplancontent##'] = $item->getField("rolloutplancontent");
+        $data['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
+        $data['##change.checklistcontent##']   = $item->getField("checklistcontent");
 
         // Complex mode
         if (!$simple) {
@@ -113,13 +109,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                     if ($ticket->getFromDB($row['tickets_id'])) {
                         $tmp = [];
                         $tmp['##ticket.id##']      = $row['tickets_id'];
-                        $tmp['##ticket.date##']    = $ticket->fields['date'];
-                        $tmp['##ticket.title##']   = $ticket->fields['name'];
+                        $tmp['##ticket.date##']    = $ticket->getField('date');
+                        $tmp['##ticket.title##']   = $ticket->getField('name');
                         $tmp['##ticket.url##']     = $this->formatURL(
                             $options['additionnaloption']['usertype'],
                             "Ticket_" . $row['tickets_id']
                         );
-                        $tmp['##ticket.content##'] = $ticket->fields['content'];
+                        $tmp['##ticket.content##'] = $ticket->getField('content');
 
                         $data['tickets'][] = $tmp;
                     }
@@ -139,16 +135,16 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                         $tmp['##problem.id##']
                                        = $row['problems_id'];
                         $tmp['##problem.date##']
-                                       = $problem->fields['date'];
+                                       = $problem->getField('date');
                         $tmp['##problem.title##']
-                                       = $problem->fields['name'];
+                                       = $problem->getField('name');
                         $tmp['##problem.url##']
                                        = $this->formatURL(
                                            $options['additionnaloption']['usertype'],
                                            "Problem_" . $row['problems_id']
                                        );
                         $tmp['##problem.content##']
-                                     = $problem->fields['content'];
+                                     = $problem->getField('content');
 
                         $data['problems'][] = $tmp;
                     }

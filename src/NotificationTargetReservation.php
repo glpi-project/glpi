@@ -83,7 +83,7 @@ class NotificationTargetReservation extends NotificationTarget
             }
             $this->data['##reservation.begin##']   = Html::convDateTime($this->obj->fields['begin']);
             $this->data['##reservation.end##']     = Html::convDateTime($this->obj->fields['end']);
-            $this->data['##reservation.comment##'] = $this->obj->fields['comment'];
+            $this->data['##reservation.comment##'] = $this->obj->getField('comment');
 
             $reservationitem = new ReservationItem();
             $reservationitem->getFromDB($this->obj->fields['reservationitems_id']);
@@ -92,11 +92,11 @@ class NotificationTargetReservation extends NotificationTarget
             if ($item = getItemForItemtype($itemtype)) {
                 $item->getFromDB($reservationitem->fields['items_id']);
                 $this->data["##reservation.note##"]
-                                 = $reservationitem->fields['comment'];
+                                 = $reservationitem->getField('comment');
                 $this->data['##reservation.itemtype##']
                                  = $item->getTypeName(1);
                 $this->data['##reservation.item.name##']
-                                 = $item->fields['name'];
+                                 = $item->getField('name');
                 $this->data['##reservation.item.entity##']
                                  = Dropdown::getDropdownName(
                                      'glpi_entities',

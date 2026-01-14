@@ -127,9 +127,9 @@ class NotificationTargetUser extends NotificationTarget
 
         $events = $this->getEvents();
 
-        $this->data['##user.name##']      = $this->obj->fields["name"];
-        $this->data['##user.realname##']  = $this->obj->fields["realname"];
-        $this->data['##user.firstname##'] = $this->obj->fields["firstname"];
+        $this->data['##user.name##']      = $this->obj->getField("name");
+        $this->data['##user.realname##']  = $this->obj->getField("realname");
+        $this->data['##user.firstname##'] = $this->obj->getField("firstname");
         $this->data['##user.action##']    = $events[$event];
 
         switch ($event) {

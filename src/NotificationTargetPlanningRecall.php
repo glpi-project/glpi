@@ -190,23 +190,23 @@ class NotificationTargetPlanningRecall extends NotificationTarget
         $this->data['##recall.item.name##'] = '';
 
         if ($target_object->isField('name')) {
-            $this->data['##recall.item.name##'] = $target_object->fields['name'];
+            $this->data['##recall.item.name##'] = $target_object->getField('name');
         } else {
             if (
                 $target_object instanceof CommonDBChild
                 && ($item2 = $target_object->getItem()) !== false
                 && $item2->isField('name')
             ) {
-                $this->data['##recall.item.name##'] = $item2->fields['name'];
+                $this->data['##recall.item.name##'] = $item2->getField('name');
             }
         }
 
         $this->data['##recall.item.content##'] = '';
         if ($target_object->isField('content')) {
-            $this->data['##recall.item.content##'] = $target_object->fields['content'];
+            $this->data['##recall.item.content##'] = $target_object->getField('content');
         }
         if ($target_object->isField('text')) {
-            $this->data['##recall.item.content##'] = $target_object->fields['text'];
+            $this->data['##recall.item.content##'] = $target_object->getField('text');
         }
         $this->data['##recall.item.private##'] = '';
         if ($target_object->isField('is_private')) {

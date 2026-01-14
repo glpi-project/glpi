@@ -79,11 +79,11 @@ class NotificationTargetSavedSearch_Alert extends NotificationTarget
         $savedsearch = $options['savedsearch'];
 
         $this->data['##savedsearch.action##']    = $events[$event];
-        $this->data['##savedsearch.name##']      = $savedsearch->fields['name'];
+        $this->data['##savedsearch.name##']      = $savedsearch->getField('name');
         $this->data['##savedsearch.message##']   = $options['msg'];
         $this->data['##savedsearch.id##']        = (string) $savedsearch->getID();
         $this->data['##savedsearch.count##']     = (string) $options['data']['totalcount'];
-        $this->data['##savedsearch.type##']      = $savedsearch->fields['itemtype'];
+        $this->data['##savedsearch.type##']      = $savedsearch->getField('itemtype');
         $url = $savedsearch::getSearchURL(false) . "?action=load&id=" . $savedsearch->getID();
         $this->data['##savedsearch.url##']       = $this->formatURL($options['additionnaloption']['usertype'], $url);
 

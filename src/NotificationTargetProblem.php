@@ -62,9 +62,9 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
         // Common ITIL data
         $data = parent::getDataForObject($item, $options, $simple);
 
-        $data["##problem.impacts##"]  = $item->fields['impactcontent'];
-        $data["##problem.causes##"]   = $item->fields['causecontent'];
-        $data["##problem.symptoms##"] = $item->fields['symptomcontent'];
+        $data["##problem.impacts##"]  = $item->getField('impactcontent');
+        $data["##problem.causes##"]   = $item->getField('causecontent');
+        $data["##problem.symptoms##"] = $item->getField('symptomcontent');
 
         // Complex mode
         if (!$simple) {
@@ -81,16 +81,16 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
                         $tmp['##ticket.id##']
                                     = $row['tickets_id'];
                         $tmp['##ticket.date##']
-                                    = $ticket->fields['date'];
+                                    = $ticket->getField('date');
                         $tmp['##ticket.title##']
-                                    = $ticket->fields['name'];
+                                    = $ticket->getField('name');
                         $tmp['##ticket.url##']
                                     = $this->formatURL(
                                         $options['additionnaloption']['usertype'],
                                         "Ticket_" . $row['tickets_id']
                                     );
                         $tmp['##ticket.content##']
-                                   = $ticket->fields['content'];
+                                   = $ticket->getField('content');
 
                         $data['tickets'][] = $tmp;
                     }
@@ -110,16 +110,16 @@ class NotificationTargetProblem extends NotificationTargetCommonITILObject
                         $tmp['##change.id##']
                                     = $row['changes_id'];
                         $tmp['##change.date##']
-                                    = $change->fields['date'];
+                                    = $change->getField('date');
                         $tmp['##change.title##']
-                                    = $change->fields['name'];
+                                    = $change->getField('name');
                         $tmp['##change.url##']
                                     = $this->formatURL(
                                         $options['additionnaloption']['usertype'],
                                         "Change_" . $row['changes_id']
                                     );
                         $tmp['##change.content##']
-                                    = $change->fields['content'];
+                                    = $change->getField('content');
 
                         $data['changes'][] = $tmp;
                     }
