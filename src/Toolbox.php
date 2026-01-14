@@ -2584,10 +2584,18 @@ class Toolbox
                             // Avoids creating a link within a link, when the image is already in an <a> tag
                             $add_link_tmp = $add_link;
                             if ($add_link) {
-                                // Try to detect any unclosed `<a>` tag that preced the `<img>` tag
-                                $pattern = '/<a[^>]*>((?!<\/a>).)*<img[^>]*' . preg_quote($image['tag'], '/') . '/s';
-                                if (preg_match($pattern, $content_text)) {
-                                    $add_link_tmp = false;
+                                // Find the position of this specific image occurrence in content_text
+                                $img_pos = strpos($content_text, (string) $match_img);
+                                if ($img_pos !== false) {
+                                    // Extract content before this image
+                                    $content_before = substr($content_text, 0, $img_pos);
+                                    // Count opening and closing <a> tags
+                                    $open_count = preg_match_all('/<a[^>]*>/i', $content_before);
+                                    $close_count = preg_match_all('/<\/a>/i', $content_before);
+                                    // If there are more opening tags than closing tags, we're inside a link
+                                    if ($open_count > $close_count) {
+                                        $add_link_tmp = false;
+                                    }
                                 }
                             }
                             // replace image
