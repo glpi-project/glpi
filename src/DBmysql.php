@@ -222,6 +222,11 @@ class DBmysql
     private int $transaction_level = 0;
 
     /**
+     * Indicates whether the data fetched from DB must be unsanitized.
+     */
+    private bool $must_unsanitize_data = false;
+
+    /**
      * Constructor / Connect to the MySQL Database
      *
      * @param int $choice host number (default NULL)
@@ -2216,11 +2221,20 @@ class DBmysql
         return $config_flags;
     }
 
+    public function setMustUnsanitizeData(bool $must_unsanitize_data): void
+    {
+        $this->must_unsanitize_data = $must_unsanitize_data;
+    }
+
     /**
      * Decode HTML special chars on fetch operation result.
      */
     private function decodeFetchResult(array|object|false|null $values): array|object|false|null
     {
+        if ($this->must_unsanitize_data === false) {
+            return $values;
+        }
+
         if ($values === null || $values === false) {
             // No more results or error on fetch operation.
             return $values;

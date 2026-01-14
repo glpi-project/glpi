@@ -143,6 +143,15 @@ final class FormMigrationTest extends DbTestCase
         parent::tearDownAfterClass();
     }
 
+    public function setUp(): void
+    {
+        global $DB;
+
+        parent::setUp();
+
+        $DB->setMustUnsanitizeData(true); // plugin data has been autosanitized
+    }
+
     private static function getSectionIDFromFormName($form_name, $section_name)
     {
         $section = new Section();
