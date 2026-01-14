@@ -45,12 +45,10 @@ body {
         --glpi-flatpickr-faded-color: color-mix(in srgb, var(--tblr-body-color), transparent 70%);
 
         background: var(--glpi-flatpickr-bg);
-        -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
         box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color), -1px 0 0 var(--glpi-flatpickr-shadow-color), 0 1px 0 var(--glpi-flatpickr-shadow-color), 0 -1px 0 var(--glpi-flatpickr-shadow-color), 0 3px 13px var(--glpi-flatpickr-shadow-color);
     }
 
     .flatpickr-calendar.multiMonth .flatpickr-days .dayContainer:nth-child(n+2) .flatpickr-day.inRange:nth-child(7n+1) {
-        -webkit-box-shadow: -2px 0 0 var(--glpi-flatpickr-shadow-color), 5px 0 0 var(--glpi-flatpickr-shadow-color);
         box-shadow: -2px 0 0 var(--glpi-flatpickr-shadow-color), 5px 0 0 var(--glpi-flatpickr-shadow-color);
     }
 
@@ -130,7 +128,6 @@ body {
     }
 
     .dayContainer + .dayContainer {
-        -webkit-box-shadow: -1px 0 0 var(--glpi-flatpickr-shadow-color);
         box-shadow: -1px 0 0 var(--glpi-flatpickr-shadow-color);
     }
 
@@ -191,7 +188,6 @@ body {
     .flatpickr-day.selected.startRange + .endRange:not(:nth-child(7n+1)),
     .flatpickr-day.startRange.startRange + .endRange:not(:nth-child(7n+1)),
     .flatpickr-day.endRange.startRange + .endRange:not(:nth-child(7n+1)) {
-        -webkit-box-shadow: -10px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
         box-shadow: -10px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
     }
 
@@ -206,17 +202,14 @@ body {
     }
 
     .flatpickr-day.inRange {
-        -webkit-box-shadow: -5px 0 0 var(--glpi-flatpickr-date-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-hover-bg);
         box-shadow: -5px 0 0 var(--glpi-flatpickr-date-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-hover-bg);
     }
 
     .flatpickr-day.week.selected {
-        -webkit-box-shadow: -5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
         box-shadow: -5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg), 5px 0 0 var(--glpi-flatpickr-date-selection-hover-bg);
     }
 
     .flatpickr-weekwrapper .flatpickr-weeks {
-        -webkit-box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color);
         box-shadow: 1px 0 0 var(--glpi-flatpickr-shadow-color);
     }
 

@@ -80,7 +80,6 @@ if (isset($_GET["lID"])) {
                 $mime = "application/scriptfile";
 
                 header("Content-type: " . $mime);
-                header('Pragma: no-cache');
                 header('Expires: 0');
 
                 // May have several values due to network datas : use only first one

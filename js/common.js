@@ -284,18 +284,15 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
-
-    if (document.getElementById) { // DOM3 = IE5, NS6
-        if (document.getElementById(id).value == '0') {
-            document.getElementById(id).value = '1';
-            if (img_name !== '') {
-                document[img_name].src=img_src_yes;
-            }
-        } else {
-            document.getElementById(id).value = '0';
-            if (img_name !== '') {
-                document[img_name].src=img_src_no;
-            }
+    if (document.getElementById(id).value == '0') {
+        document.getElementById(id).value = '1';
+        if (img_name !== '') {
+            document[img_name].src=img_src_yes;
+        }
+    } else {
+        document.getElementById(id).value = '0';
+        if (img_name !== '') {
+            document[img_name].src=img_src_no;
         }
     }
 }
