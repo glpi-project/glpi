@@ -594,8 +594,8 @@ TWIG, $twig_params);
                     ],
                 ],
                 'WHERE' => [
-                    static::$itemtype_2 => $type,
-                    static::$items_id_2 => $ids,
+                    static::getTable() . '.' . static::$itemtype_2 => $type,
+                    static::getTable() . '.' . static::$items_id_2 => $ids,
                 ],
             ];
             if ($type_item->maybeDeleted()) {
