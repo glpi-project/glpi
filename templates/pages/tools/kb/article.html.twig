@@ -69,10 +69,8 @@
             <span data-testid="views">
                 {% if views == 0 %}
                     {{ __("No views") }}
-                {% elseif views == 1 %}
-                    {{ __("1 view") }}
                 {% else %}
-                    {{ __("%s views")|format(views|formatted_integer) }}
+                    {{ _n("%s view", "%s views", views)|format(views|formatted_integer) }}
                 {% endif %}
             </span>
         </div>
