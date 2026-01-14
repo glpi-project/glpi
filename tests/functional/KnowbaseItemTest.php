@@ -36,8 +36,12 @@ namespace test\units;
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\Tests\DbTestCase;
+use InvalidArgumentException;
+use KnowbaseItem;
 use KnowbaseItem_User;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
+use Symfony\Component\DomCrawler\Crawler;
 
 /* Test for inc/knowbaseitem.class.php */
 
@@ -46,12 +50,12 @@ class KnowbaseItemTest extends DbTestCase
     public function testGetTypeName()
     {
         $expected = 'Knowledge base';
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(1));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(1));
 
         $expected = 'Knowledge base';
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(0));
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(2));
-        $this->assertSame($expected, \KnowbaseItem::getTypeName(10));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(0));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(2));
+        $this->assertSame($expected, KnowbaseItem::getTypeName(10));
     }
 
     public function testCleanDBonPurge()
@@ -60,7 +64,7 @@ class KnowbaseItemTest extends DbTestCase
 
         $users_id = getItemByTypeName('User', TU_USER, true);
 
-        $kb = new \KnowbaseItem();
+        $kb = new KnowbaseItem();
         $this->assertGreaterThan(
             0,
             (int) $kb->add([
@@ -203,7 +207,7 @@ class KnowbaseItemTest extends DbTestCase
         $base64Image = base64_encode($fcontents);
         $filename = '5e5e92ffd9bd91.11111111image_paste22222222.png';
         $users_id = getItemByTypeName('User', TU_USER, true);
-        $instance = new \KnowbaseItem();
+        $instance = new KnowbaseItem();
         $input = [
             'name'     => 'Test to remove',
             'answer'   => <<<HTML
@@ -272,7 +276,7 @@ HTML,
 
         // Test uploads for item creation
         $filename = '5e5e92ffd9bd91.11111111' . 'foo.txt';
-        $instance = new \KnowbaseItem();
+        $instance = new KnowbaseItem();
         $input = [
             'name'    => 'a kb item',
             'answer' => 'testUploadDocuments',
@@ -340,7 +344,7 @@ HTML,
             ->disableOriginalConstructor()
             ->getMock();
 
-        $m_kbi = $this->getMockBuilder(\KnowbaseItem::class)
+        $m_kbi = $this->getMockBuilder(KnowbaseItem::class)
             ->onlyMethods(['getFromDB', 'canViewItem'])
             ->getMock();
 
@@ -361,7 +365,7 @@ HTML,
         // Expected : [1, 3]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = \KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getForCategory(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(2, $result);
         $this->assertContains('1', $result);
@@ -370,7 +374,7 @@ HTML,
         // Expected : [-1]
         // Replace global DB with mocked DB
         $DB = $m_db;
-        $result = \KnowbaseItem::getForCategory(1, $m_kbi);
+        $result = KnowbaseItem::getForCategory(1, $m_kbi);
         $DB = $orig_db;
         $this->assertCount(1, $result);
         $this->assertContains(-1, $result);
@@ -534,7 +538,7 @@ HTML,
     #[DataProvider('fullTextSearchProvider')]
     public function testComputeBooleanFullTextSearch(string $search, string $expected): void
     {
-        $search = $this->callPrivateMethod(new \KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
+        $search = $this->callPrivateMethod(new KnowbaseItem(), 'computeBooleanFullTextSearch', $search);
         $this->assertEquals($expected, $search);
     }
 
@@ -771,7 +775,7 @@ HTML,
         $this->login(); //to prevent KnowBaseItem entity restrict criteria for anonymous user
 
         // Build criteria array
-        $criteria = \KnowbaseItem::getListRequest($params, $type);
+        $criteria = KnowbaseItem::getListRequest($params, $type);
         $this->assertIsArray($criteria);
 
         // Check that the request is valid
@@ -798,7 +802,7 @@ HTML,
         $this->createItems('KnowbaseItem', [$input]);
 
         // Load KB
-        /** @var \KnowbaseItem */
+        /** @var KnowbaseItem */
         $kbi = getItemByTypeName("KnowbaseItem", $kb_name);
         $answer = $kbi->getAnswer();
 
@@ -874,7 +878,7 @@ HTML,
         ]);
         $this->assertGreaterThan(0, $kb_cat_id2);
 
-        $kbitem = new \KnowbaseItem();
+        $kbitem = new KnowbaseItem();
         // Create a new KB item with the first category
         $kbitems_id1 = $kbitem->add([
             'name' => __FUNCTION__ . '_1',
@@ -928,8 +932,8 @@ HTML,
         global $DB, $CFG_GLPI;
 
         // Removing existing data
-        $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
-        $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
+        $DB->delete(KnowbaseItem::getTable(), [new QueryExpression('true')]);
+        $this->assertEquals(0, countElementsInTable(KnowbaseItem::getTable()));
 
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
@@ -993,8 +997,8 @@ HTML,
         $this->login('glpi', 'glpi');
 
         // Removing existing data
-        $DB->delete(\KnowbaseItem::getTable(), [new QueryExpression('true')]);
-        $this->assertEquals(0, countElementsInTable(\KnowbaseItem::getTable()));
+        $DB->delete(KnowbaseItem::getTable(), [new QueryExpression('true')]);
+        $this->assertEquals(0, countElementsInTable(KnowbaseItem::getTable()));
 
         // Create set of test subjects
         $glpi_user = getItemByTypeName("User", "glpi", true);
@@ -1483,9 +1487,9 @@ HTML,
 
         $values = $this->testGetVisibilityCriteriaProvider();
         foreach ($values as $value) {
-            $criteria = array_merge(\KnowbaseItem::getVisibilityCriteria(false), [
+            $criteria = array_merge(KnowbaseItem::getVisibilityCriteria(false), [
                 'SELECT' => 'name',
-                'FROM' => \KnowbaseItem::getTable(),
+                'FROM' => KnowbaseItem::getTable(),
             ]);
 
             $data = $DB->request($criteria);
@@ -1498,7 +1502,7 @@ HTML,
             $this->assertEquals($value['articles'], $result);
 
             // Check that every article can be opened
-            $item = new \KnowbaseItem();
+            $item = new KnowbaseItem();
             foreach ($value['articles'] as $name) {
                 $kb_id = getItemByTypeName('KnowbaseItem', $name, true);
                 $this->assertTrue($item->can($kb_id, READ));
@@ -1543,7 +1547,7 @@ HTML,
         $_SESSION['glpi_currenttime'] = $date;
 
         // Test item cloning
-        $knowbaseitem = new \KnowbaseItem();
+        $knowbaseitem = new KnowbaseItem();
         $this->assertGreaterThan(
             0,
             $id = $knowbaseitem->add([
@@ -1605,13 +1609,13 @@ HTML,
         );
 
         //clone!
-        $kbitem = new \KnowbaseItem();
+        $kbitem = new KnowbaseItem();
         $this->assertTrue($kbitem->getFromDB($id));
         $added = $kbitem->clone();
         $this->assertGreaterThan(0, (int) $added);
         $this->assertNotEquals($kbitem->fields['id'], $added);
 
-        $clonedKbitem = new \KnowbaseItem();
+        $clonedKbitem = new KnowbaseItem();
         $this->assertTrue($clonedKbitem->getFromDB($added));
 
         $fields = $kbitem->fields;
@@ -1715,7 +1719,7 @@ HTML,
 
         $fn_can_tech_see_kb = static function () {
             $criteria = [
-                'itemtype' => \KnowbaseItem::class,
+                'itemtype' => KnowbaseItem::class,
                 'criteria' => [
                     [
                         'field' => 1,
@@ -1725,13 +1729,13 @@ HTML,
                 ],
             ];
             ob_start();
-            \Search::showList(\KnowbaseItem::class, $criteria, [7]);
+            \Search::showList(KnowbaseItem::class, $criteria, [7]);
             $output = ob_get_clean();
             return str_contains($output, "KB anwser");
         };
 
         $tech_user = getItemByTypeName("User", "tech", true);
-        $kb_item = $this->createItem(\KnowbaseItem::class, [
+        $kb_item = $this->createItem(KnowbaseItem::class, [
             'name'     => 'KB visible to tech',
             'answer'   => 'KB anwser',
             'is_faq'   => false,
@@ -1747,5 +1751,108 @@ HTML,
             'users_id'         => $tech_user,
         ]);
         $this->assertTrue($fn_can_tech_see_kb());
+    }
+
+    public function testArticleAdminRendering_Subject(): void
+    {
+        $this->login();
+
+        // Arrange: create an article
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name' => "My article",
+        ]);
+
+        // Act: render article and get its title
+        $html = $this->renderArticleAdmin($article->getID());
+        $subject = $html->filter('[data-testid=subject]')->text();
+
+        // Assert: title should be as configured
+        $this->assertEquals("My article", $subject);
+    }
+
+    public function testArticleAdminRendering_LastUpdate(): void
+    {
+        $this->login();
+
+        // Arrange: create an article, then move the time forward by 2 days
+        $this->setCurrentTime("2025-01-01 10:00:00");
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name' => "My article",
+        ]);
+        $this->setCurrentTime("2025-01-03 10:00:00");
+
+        // Act: render article and get its last update info
+        $html = $this->renderArticleAdmin($article->getID());
+        $last_update = $html->filter('[data-testid=last-update]')->text();
+        $author_link = $html->filter('[data-testid=author_link]');
+
+        // Assert: last update should be contain relative date + the author name
+        $this->assertEquals("Updated: 2 days ago by @_test_user", $last_update);
+        $this->assertCount(1, $author_link);
+    }
+
+    public function testArticleAdminRendering_LastUpdateDeletedUser(): void
+    {
+        $this->login();
+
+        // Arrange: create an article, then move the time forward by 2 days
+        $this->setCurrentTime("2025-01-01 10:00:00");
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name' => "My article",
+            'users_id' => 99999999, // Unknown
+        ]);
+        $this->setCurrentTime("2025-01-03 10:00:00");
+
+        // Act: render article and get its last update info
+        $html = $this->renderArticleAdmin($article->getID());
+        $last_update = $html->filter('[data-testid=last-update]')->text();
+        $author_link = $html->filter('[data-testid=author_link]');
+
+        // Assert: last update should be contain relative date + the author name
+        $this->assertEquals("Updated: 2 days ago by @Deleted user", $last_update);
+        $this->assertCount(0, $author_link);
+    }
+
+    public static function articleAdminRendering_ViewsProvider(): iterable
+    {
+        yield 'no views'           => [0, "No views"];
+        yield 'one view'           => [1, "1 view"];
+        yield 'more than one view' => [9, "9 views"];
+        yield 'more than 1k'       => [1234, "1 234 views"];
+    }
+
+    #[DataProvider('articleAdminRendering_ViewsProvider')]
+    public function testArticleAdminRendering_Views(
+        int $views,
+        string $expected,
+    ): void {
+        $this->login();
+
+        // Arrange: create an article
+        $article = $this->createItem(KnowbaseItem::class, [
+            'name' => "My article",
+            'view' => $views,
+        ]);
+
+        // Act: render article and get the views
+        $html = $this->renderArticleAdmin($article->getID());
+        $views = $html->filter('[data-testid=views]')->text();
+
+        // Assert: views should be as configured
+        $this->assertEquals($expected, $views);
+    }
+
+    private function renderArticleAdmin(int $id): Crawler
+    {
+        $kb = new KnowbaseItem();
+        if (!$kb->getFromDB($id)) {
+            throw new InvalidArgumentException("Failed to load article");
+        }
+
+        ob_start();
+        KnowbaseItem::displayTabContentForItem($kb, 1);
+        $html = ob_get_clean();
+
+        return new Crawler($html);
     }
 }
