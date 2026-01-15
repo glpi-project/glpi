@@ -1381,9 +1381,10 @@ class MassiveAction
                     } else {
                         // For multiple items, use the generic count message
                         $message = sprintf(
-                            __('%1$s deletes %2$d items by massive action'),
+                            __('%1$s deletes %2$d items by massive action: %3$s'),
                             $_SESSION["glpiname"],
-                            $deleted_count
+                            $deleted_count,
+                            implode(', ', $deleted_ids)
                         );
                         Event::log(
                             0,
