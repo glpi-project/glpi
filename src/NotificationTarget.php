@@ -1394,7 +1394,6 @@ class NotificationTarget extends CommonDBChild
 
         // Store current user info for plugins to access during ITEM_GET_DATA hook
         if (isset($options['additionnaloption']['users_id'])) {
-            $this->recipient_data['users_id'] = $options['additionnaloption']['users_id'];
             $this->recipient_data = [
                 'itemtype' => User::class,
                 'items_id' => $options['additionnaloption']['users_id'],
