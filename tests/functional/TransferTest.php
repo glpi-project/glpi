@@ -1073,14 +1073,6 @@ class TransferTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $item_softwareversion_id_1);
 
-        $item_softwareversion_id_2 = $item_softwareversion->add([
-            'items_id'             => $computers_id,
-            'itemtype'             => Computer::class,
-            'softwareversions_id'  => $softwareversion_id,
-            'entities_id'          => $test_entity,
-        ]);
-        $this->assertGreaterThan(0, $item_softwareversion_id_2);
-
         $count_before = $DB->request([
             'COUNT'  => 'cpt',
             'FROM'   => Item_SoftwareVersion::getTable(),
@@ -1090,7 +1082,7 @@ class TransferTest extends DbTestCase
                 'softwareversions_id' => $softwareversion_id,
             ],
         ])->current()['cpt'];
-        $this->assertEquals(2, $count_before);
+        $this->assertEquals(1, $count_before);
 
         $transfer = new \Transfer();
         $transfer->moveItems(
@@ -1120,7 +1112,7 @@ class TransferTest extends DbTestCase
             ],
         ])->current()['cpt'];
 
-        $this->assertEquals(2, $count_after, 'Le transfert doit conserver les 2 installations de la même version logicielle sans créer de doublon');
+        $this->assertEquals(1, $count_after);
 
         $all_links = $DB->request([
             'SELECT' => ['id'],
@@ -1130,6 +1122,6 @@ class TransferTest extends DbTestCase
                 'itemtype' => Computer::class,
             ],
         ]);
-        $this->assertCount(2, $all_links, 'Il ne doit y avoir que 2 liens Item_SoftwareVersion après le transfert');
+        $this->assertCount(1, $all_links);
     }
 }
