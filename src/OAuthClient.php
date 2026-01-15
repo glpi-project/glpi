@@ -62,6 +62,30 @@ final class OAuthClient extends CommonDBTM
         return 'ti ti-key';
     }
 
+    public function defineTabs($options = [])
+    {
+        $tabs = parent::defineTabs($options);
+        $this->addStandardTab(self::class, $tabs, $options);
+
+        return $tabs;
+    }
+
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    {
+        return [
+            1 => _n('Session', 'Sessions', Session::getPluralNumber()),
+        ];
+    }
+
+    public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
+    {
+        if ($item instanceof self && $tabnum == 1) {
+            $item->showSessions();
+            return true;
+        }
+        return false;
+    }
+
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/oauthclient.html.twig', [
@@ -70,6 +94,101 @@ final class OAuthClient extends CommonDBTM
             'allowed_scopes' => Server::getAllowedScopes(),
         ]);
         return true;
+    }
+
+    public function showSessions()
+    {
+        global $DB;
+
+        $access_tokens = $DB->request([
+            'SELECT' => [
+                'glpi_oauth_access_tokens.user_identifier', 'glpi_oauth_access_tokens.date_expiration',
+                'glpi_oauth_access_tokens.scopes', 'glpi_oauth_access_tokens.identifier',
+                'glpi_oauth_refresh_tokens.date_expiration AS refresh_token_expiration',
+            ],
+            'FROM'   => 'glpi_oauth_access_tokens',
+            'LEFT JOIN' => [
+                'glpi_oauth_refresh_tokens' => [
+                    'ON' => [
+                        'glpi_oauth_access_tokens' => 'identifier',
+                        'glpi_oauth_refresh_tokens' => 'access_token',
+                    ],
+                ],
+            ],
+            'WHERE'  => ['client' => $this->fields['identifier']],
+        ]);
+
+        $show_actions = self::canUpdate();
+
+        $entries = [];
+        foreach ($access_tokens as $token) {
+            $user = new User();
+            $user_display = $token['user_identifier'];
+            if ($user->getFromDB($token['user_identifier'])) {
+                $user_display = $user->getLink();
+            }
+            $entry = [
+                'id' => $token['identifier'],
+                'user'       => $user_display,
+                'expiration' => $token['date_expiration'],
+                'refresh_token_expiration' => $token['refresh_token_expiration'],
+                'scopes'     => implode(', ', json_decode($token['scopes'], true) ?? []),
+            ];
+            if ($show_actions) {
+                $entry['actions'] = '<button type="button" name="revoke_oauth_token" class="btn btn-danger btn-sm">' . __('Revoke') . '</button>';
+            }
+            $entries[] = $entry;
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'user'       => User::getTypeName(1),
+                'expiration' => __('Expiration date'),
+                'refresh_token_expiration' => __('Refresh token expiration date'),
+                'scopes'     => __('Scopes'),
+                'actions'    => __('Actions'),
+            ],
+            'formatters' => [
+                'user' => 'raw_html',
+                'expiration' => 'datetime',
+                'refresh_token_expiration' => 'datetime',
+                'actions' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+            'filtered_number' => count($entries),
+        ]);
+        if ($show_actions) {
+            echo Html::scriptBlock(<<<JS
+                document.querySelectorAll('button[name="revoke_oauth_token"]').forEach(function(button) {
+                    button.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        glpi_confirm({
+                            message: __("Are you sure you want to revoke this access token?"),
+                            confirm_callback: () => {
+                                const token_identifier = button.closest('tr').getAttribute('data-id');
+                                $.ajax({
+                                    method: "POST",
+                                    url: "/OAuth/AccessToken/" + token_identifier + "/Revoke"
+                                }).then(() => {
+                                    // Remove the row from the table
+                                    const row = button.closest('tr');
+                                    row.parentNode.removeChild(row);
+                                    glpi_toast_success(__("The access token has been successfully revoked."));
+                                }, () => {
+                                    glpi_toast_error(__("An error occurred while revoking the access token."));
+                                }).catch(() => {
+                                    glpi_toast_error(__("An error occurred while revoking the access token."));
+                                });
+                            }
+                        });
+                    });
+                });
+JS);
+        }
     }
 
     public function rawSearchOptions()
