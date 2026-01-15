@@ -1715,15 +1715,29 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $DB->update(
-                        'glpi_items_softwareversions',
-                        [
-                            'softwareversions_id' => $newversID,
+                    $soft_version_existing = $DB->request([
+                        'SELECT' => 'id',
+                        'FROM'   => Item_SoftwareVersion::getTable(),
+                        'WHERE'  => [
+                            'itemtype'             => $itemtype,
+                            'items_id'             => $ID,
+                            'softwareversions_id'  => $newversID,
                         ],
-                        [
-                            'id' => $data['id'],
-                        ]
-                    );
+                    ])->current();
+
+                    if ($soft_version_existing) {
+                        $DB->delete(Item_SoftwareVersion::getTable(), ['id' => $data['id']]);
+                    } else {
+                        $DB->update(
+                            Item_SoftwareVersion::getTable(),
+                            [
+                                'softwareversions_id' => $newversID,
+                            ],
+                            [
+                                'id' => $data['id'],
+                            ]
+                        );
+                    }
                 }
             } else { // Do not keep
                 // Delete inst software for item

@@ -1159,4 +1159,86 @@ class TransferTest extends DbTestCase
         ]);
         $this->assertCount(0, $docItems);
     }
+
+    public function testTransferComputerWithMultipleSoftwareVersionsMergedToSame(): void
+    {
+        $this->login();
+
+        //Get entities
+        $source_entity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        $dest_entity = (int) getItemByTypeName('Entity', '_test_child_1', true);
+
+        //Create computer to transfer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'TestComputer',
+            'entities_id' => $source_entity,
+        ]);
+
+        //Create software
+        //software_source in source entity with 2 versions
+        //software_dest in dest entity with same version as software_source
+        [$software_source, $software_dest] = $this->createItems(Software::class, [
+            [
+                'name' => 'TestSoftware',
+                'entities_id' => $source_entity,
+            ], [
+                'name' => 'TestSoftware',
+                'entities_id' => $dest_entity,
+            ]
+        ]);
+
+        [$softversion_1, $softversion_2] = $this->createItems(SoftwareVersion::class, [
+            [
+                'name' => 'V1.0',
+                'softwares_id' => $software_source->getID(),
+                'entities_id' => $source_entity,
+            ],
+            [
+                'name' => 'V1.0',
+                'softwares_id' => $software_source->getID(),
+                'entities_id' => $source_entity,
+            ],
+            [
+                'name' => 'V1.0',
+                'softwares_id' => $software_dest->getID(),
+                'entities_id' => $dest_entity,
+            ],
+        ]);
+
+        //Link both software versions to computer
+        $item_softwareversion = $this->createItems(Item_SoftwareVersion::class, [
+            [
+                'items_id' => $computer->getID(),
+                'itemtype' => Computer::class,
+                'softwareversions_id' => $softversion_1->getID(),
+                'entities_id' => $source_entity,
+            ],
+            [
+                'items_id' => $computer->getID(),
+                'itemtype' => Computer::class,
+                'softwareversions_id' => $softversion_2->getID(),
+                'entities_id' => $source_entity,
+            ],
+        ]);
+
+        //Prepare transfer with keep_software option
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+
+        $itemsToTransfer = [Computer::class => [$computer->getID() => $computer->getID()]];
+        $transfer->moveItems($itemsToTransfer, $dest_entity, ['keep_software' => 1]);
+
+        //Verify if computer is in destination entity
+        $computer->getFromDB($computer->getID());
+        $this->assertEquals($dest_entity, $computer->fields['entities_id']);
+
+        //Verify that only one Item_SoftwareVersion exists for the merged SoftwareVersion in destination entity
+        $item_softwareversion = new Item_SoftwareVersion();
+        $item_softwareversion->getFromDBByCrit([
+            'items_id' => $computer->getID(),
+            'itemtype' => Computer::class,
+        ]);
+
+        $this->assertEquals($dest_entity, $item_softwareversion->fields['entities_id']);
+    }
 }
