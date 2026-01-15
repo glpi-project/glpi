@@ -4182,7 +4182,7 @@ class CommonDBTM extends CommonGLPI
                         ],
                         'LIMIT'  => 1,
                     ]);
-                
+
                     if (!count($iterator)) {
                         return $actions;
                     }
