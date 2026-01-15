@@ -382,7 +382,11 @@ class Dropdown
                     );
                 }
 
-                $paramscomment = [];
+                $paramscomment = [
+                    'value'       => '__VALUE__',
+                    'itemtype'    => $itemtype,
+                    '_idor_token' => Session::getNewIDORToken($itemtype),
+                ];
                 if ($item::canView()) {
                     $paramscomment['withlink'] = $link_id;
                 }

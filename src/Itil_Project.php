@@ -111,7 +111,7 @@ class Itil_Project extends CommonDBRelation
                 return self::showForItil($item);
 
             case Project::class:
-                return self::showForProject($item);
+                return self::showForProject($item, $withtemplate);
         }
         return false;
     }
@@ -120,10 +120,11 @@ class Itil_Project extends CommonDBRelation
      * Show ITIL items for a project.
      *
      * @param Project $project
+     * @param int $withtemplate
      *
      * @return bool
      **/
-    public static function showForProject(Project $project): bool
+    public static function showForProject(Project $project, int $withtemplate = 0): bool
     {
         global $DB, $CFG_GLPI;
 
@@ -178,7 +179,7 @@ class Itil_Project extends CommonDBRelation
             ];
         }
 
-        if ($canedit) {
+        if ($canedit && $withtemplate != 2) {
             $twig_params = [
                 'btn_msg' => _x('button', 'Add'),
                 'used'    => $used,

@@ -724,39 +724,38 @@ class MailCollectorTest extends DbTestCase
             ])
         );
 
+        // Create supplier for 51-supplier-reply.eml test and assign to existing ticket 100
+        $supplier_id = $this->createItem(\Supplier::class, [
+            'name' => 'Test Supplier',
+            'email' => 'supplier@glpi-project.org',
+            'entities_id' => 0,
+        ])->getID();
+
+        $this->createItem(\Supplier_Ticket::class, [
+            'tickets_id' => 100,
+            'suppliers_id' => $supplier_id,
+            'type' => \CommonITILActor::ASSIGN,
+        ]);
+
         // Collect all mails
         $this->doConnect();
         $this->collector->maxfetch_emails = 1000; // Be sure to fetch all mails from test suite
 
+        $msg = $this->collector->collect($this->mailgate_id);
+
         $expected_logged_errors = [
+            // 05-empty-from.eml - Invalid address caught by Laminas patch
+            'Invalid address "<>"' => LogLevel::WARNING,
             // 17-malformed-email.eml
             'Header with Name date or date not found' => LogLevel::ERROR,
+            // 35-message-with-some-invalid-headers.eml
+            'Invalid header "X-Invalid-Encoding"' => LogLevel::WARNING,
+            // 49-invalid-cc-email-address.eml - Invalid CC address caught by Laminas patch
+            'Invalid address "} <}>"' => LogLevel::WARNING,
+            // 50-all-invalid-addresses.eml - All addresses are invalid (From and CC)
+            'Invalid address "< >"' => LogLevel::WARNING,
+            'Invalid address "{{{"' => LogLevel::WARNING,
         ];
-
-        $msg = $this->collector->collect($this->mailgate_id);
-        $this->hasPhpLogRecordThatContains(
-            'Invalid header "X-Invalid-Encoding"',
-            LogLevel::WARNING
-        );
-        // 05-empty-from.eml - Invalid address caught by Laminas patch
-        $this->hasPhpLogRecordThatContains(
-            'Invalid address "<>"',
-            LogLevel::WARNING
-        );
-        // 49-invalid-cc-email-address.eml - Invalid CC address caught by Laminas patch
-        $this->hasPhpLogRecordThatContains(
-            'Invalid address "} <}>"',
-            LogLevel::WARNING
-        );
-        // 50-all-invalid-addresses.eml - All addresses are invalid (From and CC)
-        $this->hasPhpLogRecordThatContains(
-            'Invalid address "< >"',
-            LogLevel::WARNING
-        );
-        $this->hasPhpLogRecordThatContains(
-            'Invalid address "{{{"',
-            LogLevel::WARNING
-        );
 
         // Check error log and clean it (to prevent test failure, see GLPITestCase::afterTestMethod()).
         foreach ($expected_logged_errors as $error_message => $error_level) {
@@ -1192,6 +1191,14 @@ PLAINTEXT,
                 'content'  => 'My followup starts above footer line...' . "\r\n\r\n"
                     . 'HERE IS THE INITIAL NOTIFICATION CONTENT' . "\r\n\r\n"
                     . '...and there is no header line.',
+            ],
+            [
+                // 51-supplier-reply.eml - Supplier reply to ticket 100
+                'items_id' => 100,
+                'users_id' => 0,
+                'content'  => 'From supplier@glpi-project.org' . "\r\n\r\n"
+                    . 'This is a reply from the assigned supplier.' . "\r\n"
+                    . 'The supplier should be able to add a followup to this ticket.',
             ],
         ];
 

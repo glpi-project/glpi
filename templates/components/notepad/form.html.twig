@@ -42,7 +42,8 @@
     'button_label': _x('button', 'Add a note'),
     'button_attributes': {
         'data-bs-toggle': 'modal',
-        'data-bs-target': '#new-note-form'
+        'data-bs-target': '#new-note-form',
+        'aria-label': __('Add a note'),
     }
 } %}
 
@@ -99,9 +100,15 @@
         {% set id = "note#{ note['id'] }#{ rand }" %}
         <div class="accordion-item">
             <div class="accordion-header">
-                <button class="accordion-button collapsed d-flex align-self-center" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#{{ id }}"
-                        aria-expanded="false" aria-controls="{{ id }}">
+                <button
+                    class="accordion-button collapsed d-flex align-self-center"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#{{ id }}"
+                    aria-expanded="false"
+                    aria-controls="{{ id }}"
+                    data-testid="note-container"
+                >
                     <i class="ti ti-notes"></i>
                     {% set title = '#' ~ note['id'] ~ ' - ' ~ note['date_creation']|formatted_datetime %}
                     {% if note['date_mod'] != note['date_creation'] %}
@@ -129,23 +136,38 @@
                             </span>
 
                             <span>
-                                <button class="btn btn-sm btn-ghost-danger delete-note" name="purge" type="submit" value="1"
-                                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
-                                        data-id="{{ id }}">
+                                <button
+                                    class="btn btn-sm btn-ghost-danger delete-note"
+                                    name="purge"
+                                    type="submit"
+                                    value="1"
+                                    onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                    data-id="{{ id }}"
+                                    aria-label="{{ __("Delete") }}"
+                                >
                                     <i class="ti ti-trash"></i>
                                     <span>{{ __('Delete') }}</span>
                                 </button>
 
-                                <button class="btn btn-sm btn-ghost-secondary edit-note" type="button"
-                                        data-id="{{ id }}"
-                                        data-bs-toggle="modal" data-bs-target="#edit-{{ id }}">
+                                <button
+                                    class="btn btn-sm btn-ghost-secondary edit-note"
+                                    type="button"
+                                    data-id="{{ id }}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edit-{{ id }}"
+                                    aria-label="{{ __("Edit") }}"
+                                >
                                     <i class="ti ti-edit"></i>
                                     <span>{{ __('Edit') }}</span>
                                 </button>
                             </span>
                         </div>
 
-                        <div class="rich_text_container" id="contentread{{ id }}">
+                        <div
+                            class="rich_text_container"
+                            id="contentread{{ id }}"
+                            data-testid="note-content"
+                        >
                             {{ note['content']|safe_html }}
                         </div>
 
@@ -201,7 +223,13 @@
                                             <i class="ti ti-trash"></i>
                                         </button>
 
-                                        <button type="submit" value="Update" name="update" class="btn btn-primary">
+                                        <button
+                                            type="submit"
+                                            value="Update"
+                                            name="update"
+                                            class="btn btn-primary"
+                                            aria-label="{{ __('Update') }}"
+                                        >
                                             <i class="ti ti-device-floppy"></i>
                                             <span>{{ __('Update') }}</span>
                                         </button>

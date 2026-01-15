@@ -853,13 +853,6 @@ class Rule extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * @param  string $field
-     * @param  array $values
-     * @param  array $options
-     *
-     * @return string
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {
@@ -2899,8 +2892,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @since 0.84
-     * @return array
+     * @return array<int|string, array<string, array<int|string>|string>|string>
      */
     public function getAllActions()
     {
@@ -2908,7 +2900,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * @return array<int|string, array<mixed>|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
+     * @return array<int|string, array<string, array<int|string>|string>|string> If the value is defined as a string (since GLPI 11.0.5), it will create a new section in the dropdown
      */
     public function getActions()
     {
@@ -2926,13 +2918,11 @@ TWIG, $twig_params);
     /**
      *  Execute a hook if necessary and merge results
      *
-     *  @since 0.84
-     *
      * @param string $hook            the hook to execute (getRuleActions, getRuleCriteria)
-     * @param array $params   array  input parameters
-     * @param string $itemtype        (default '')
+     * @param array<string, array<string, array<int|string>|string>> $params   array  input parameters
+     * @param ''|class-string<CommonDBTM> $itemtype
      *
-     * @return array input parameters merged with hook parameters
+     * @return array<string, array<string, array<int|string>|string>> input parameters merged with hook parameters
      **/
     public static function doHookAndMergeResults($hook, $params = [], $itemtype = '')
     {
@@ -2942,7 +2932,7 @@ TWIG, $twig_params);
             $itemtype = static::getType();
         }
 
-        //Agregate all plugins criteria for this rules engine
+        //Aggregate all plugins criteria for this rules engine
         $toreturn = $params;
         if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
             foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {

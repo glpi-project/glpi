@@ -102,7 +102,9 @@ export default defineConfig({
 
     // Folder for test artifacts such as screenshots, videos, traces, etc.
     // See: https://playwright.dev/docs/api/class-testconfig#test-config-output-dir
-    outputDir: 'tests/e2e/results',
+    // Note: must be different than the `outputFolder` folder specified in the HTML
+    // reporter.
+    outputDir: 'tests/e2e/output',
 
     // Test projets, for now we run all our tests in a single projet that uses
     // chromium.
@@ -110,7 +112,13 @@ export default defineConfig({
     projects: [
         {
             name: 'chromium',
-            use: { ...devices['Desktop Chrome'] },
+            use: {
+                ...devices['Desktop Chrome'],
+                viewport: {
+                    width: 1920,
+                    height: 1080,
+                },
+            },
         },
     ],
 });

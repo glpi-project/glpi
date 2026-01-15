@@ -3048,59 +3048,6 @@ class APIRestTest extends TestCase
         }
     }
 
-    /**
-     * Data provider for testReturnSanitizedContentUnit
-     *
-     * @return array
-     */
-    public static function testReturnSanitizedContentUnitProvider(): array
-    {
-        return [
-            [null, true],
-            ["", false],
-            ["true", true],
-            ["false", false],
-            ["on", true],
-            ["off", false],
-            ["1", true],
-            ["0", false],
-            ["yes", true],
-            ["no", false],
-            ["asfbhueshf", false],
-        ];
-    }
-
-    /**
-     * Functional test to ensure returned content is not sanitized.
-     *
-            $expected_output,
-     * @return void
-     */
-    public function testContentEncoding(): void
-    {
-        // Get computer with encoded comment
-        $computers_id = getItemByTypeName(
-            "Computer",
-            "_test_pc_with_encoded_comment",
-            true
-        );
-
-        // Request params
-        $url = "/Computer/$computers_id";
-        $method = "GET";
-        $headers = ['Session-Token' => $this->session_token];
-
-        $data = $this->query(
-            $url,
-            [
-                'headers' => $headers,
-                'verb'    => $method,
-            ],
-            200
-        );
-        $this->assertEquals("<>", $data['comment']);
-    }
-
     public function test_ActorUpdate()
     {
         $headers = ['Session-Token' => $this->session_token];

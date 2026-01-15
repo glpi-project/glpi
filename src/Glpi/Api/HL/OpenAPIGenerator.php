@@ -79,6 +79,16 @@ final class OpenAPIGenerator
 
     private string $api_version;
 
+    /**
+     * @var array<string, array<string, mixed>>
+     */
+    private static array $component_schemas_cache = [];
+
+    public static function clearComponentSchemasCache(): void
+    {
+        self::$component_schemas_cache = [];
+    }
+
     public function __construct(Router $router, string $api_version)
     {
         $this->router = $router;
@@ -87,7 +97,7 @@ final class OpenAPIGenerator
 
     private function getPublicVendorExtensions(): array
     {
-        return ['writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed', 'x-itemtype'];
+        return ['x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed', 'x-itemtype', 'x-supports-mentions'];
     }
 
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
@@ -141,6 +151,10 @@ EOT;
 
     public static function getComponentSchemas(string $api_version): array
     {
+        if (isset(self::$component_schemas_cache[$api_version])) {
+            return self::$component_schemas_cache[$api_version];
+        }
+
         $schemas = [];
 
         $controllers = Router::getInstance()->getControllers();
@@ -200,7 +214,7 @@ EOT;
             }
         }
 
-        return $schemas;
+        return self::$component_schemas_cache[$api_version] = $schemas;
     }
 
     private function getComponentReference(string $name, string $controller): ?array

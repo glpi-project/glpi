@@ -1004,7 +1004,7 @@ trait PlanningEvent
 
 
     /**
-     * @return array[]
+     * @return array<array<string, mixed>> a *not indexed* array of search options
      */
     public function rawSearchOptions()
     {

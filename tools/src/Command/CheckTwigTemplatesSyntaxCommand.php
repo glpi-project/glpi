@@ -45,7 +45,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Twig\Error\Error;
 
-class CheckTwigTemplatesSyntaxCommand extends Command
+final class CheckTwigTemplatesSyntaxCommand extends Command
 {
     /**
      * Error code returned when some templates have invalid yntax.
@@ -58,7 +58,7 @@ class CheckTwigTemplatesSyntaxCommand extends Command
     {
         parent::configure();
 
-        $this->setName(self::class);
+        $this->setName('tools:check_twig_templates_syntax');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

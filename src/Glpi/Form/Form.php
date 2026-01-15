@@ -40,6 +40,7 @@ use Change_Item;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
+use Document_Item;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
@@ -163,6 +164,7 @@ final class Form extends CommonDBTM implements
         $this->addStandardTab(FormAccessControl::class, $tabs, $options);
         $this->addStandardTab(FormDestination::class, $tabs, $options);
         $this->addStandardTab(FormTranslation::class, $tabs, $options);
+        $this->addStandardTab(Document_Item::class, $tabs, $options);
         $this->addStandardTab(Log::class, $tabs, $options);
         $tabs['no_all_tab'] = true;
         return $tabs;

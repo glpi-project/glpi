@@ -44,12 +44,11 @@ class NetworkCard extends Device
 {
     use InventoryNetworkPort;
 
-    /** @var Conf */
-    private $conf;
+    private Conf $conf;
 
     protected $extra_data = ['controllers' => null];
-    /** @var array */
     protected $ignored = ['controllers' => null];
+    /** @var string[] */
     private array $cards_macs = [];
 
     public function prepare(): array

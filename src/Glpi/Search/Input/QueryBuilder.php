@@ -199,6 +199,15 @@ final class QueryBuilder implements SearchInputInterface
             $request['meta'] = 0;
         }
 
+        // on first call, set default first field if not defined
+        if (empty($request['field'])) {
+            $numeric_keys = array_filter(
+                array_keys(SearchOption::getOptionsForItemtype($request['itemtype'])),
+                'is_numeric'
+            );
+            $request['field'] = $numeric_keys !== [] ? reset($numeric_keys) : '';
+        }
+
         $actions = SearchOption::getActionsFor($request["itemtype"], $request["field"]);
 
         // is it a valid action for type ?

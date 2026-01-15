@@ -74,7 +74,7 @@ final class ToolController extends AbstractController
                         'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'text' => ['type' => Doc\Schema::TYPE_STRING],
+                    'text' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'date' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
@@ -172,7 +172,7 @@ final class ToolController extends AbstractController
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
                         'description' => 'The ID of the reservable item',
                     ],
-                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_HTML],
                     'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                     'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                     'is_active' => [

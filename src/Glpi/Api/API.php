@@ -2864,7 +2864,6 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         $docmessage = true,
         $return_response = true
     ) {
-
         if (empty($httpcode)) {
             $httpcode = 400;
         }

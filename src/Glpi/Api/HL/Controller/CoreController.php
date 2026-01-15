@@ -324,6 +324,8 @@ HTML;
                 $response_headers['Access-Control-Allow-Headers'][] = 'XDEBUG_TRIGGER';
             }
         }
+        // Cache preflight responses for 10 minutes
+        $response_headers['Access-Control-Max-Age'] = '600';
         return new JSONResponse(null, 204, $response_headers);
     }
 

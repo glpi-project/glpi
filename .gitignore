@@ -42,6 +42,7 @@ phpunit.xml
 /inc/downstream.php
 /docker-compose.override.yaml
 /.devcontainer/docker-compose.override.yaml
+/.devcontainer/custom
 phpstan.neon
 /.phpunit.result.cache
 *.phar
@@ -52,6 +53,6 @@ phpstan.neon
 
 # Playwright
 /tests/e2e/results/
+/tests/e2e/output/
 /tests/e2e/.env.local
 !/tests/e2e/.env
-

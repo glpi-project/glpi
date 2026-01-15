@@ -1,0 +1,32 @@
+name: 'Lock closed threads'
+
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  pull-requests: write
+  discussions: write
+
+concurrency:
+  group: lock-threads
+
+jobs:
+  action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: dessant/lock-threads@v6
+        with:
+          process-only: 'issues,prs'
+          issue-inactive-days: '100'
+          pr-inactive-days: '100'
+          issue-comment: >
+            This issue is closed and has been automatically locked.
+            Please open a new issue with all requested information for related bugs.
+          pr-comment: >
+            This PR has been is closed and has been automatically locked.
+            Please open a new issue with all requested information for related bugs.
+          exclude-issue-created-before: '2025-01-01T00:00:00Z'
+          exclude-pr-created-before: '2025-01-01T00:00:00Z'

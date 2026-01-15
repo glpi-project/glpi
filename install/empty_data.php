@@ -413,6 +413,7 @@ $empty_data_builder = new class {
             'timezone' => '0',
             'glpi_11_form_migration' => 0,
             'glpi_11_assets_migration' => 0,
+            'must_unsanitize_db_data' => 0,
         ];
 
         $tables['glpi_configs'] = [];

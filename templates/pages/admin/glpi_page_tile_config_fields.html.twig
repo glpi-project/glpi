@@ -32,7 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-{{ fields.textField('title', tile.getTitle(), __('Title'), {
+{{ fields.textField('title', tile.fields['title']|default(''), __('Title'), {
     full_width: true,
     is_horizontal: false,
     maxlength: 255,
@@ -40,7 +40,7 @@
 
 {{ fields.textareaField(
     'description',
-    tile.getDescription(),
+    tile.fields['description']|default(''),
     __('Description'), {
         full_width: true,
         is_horizontal: false,

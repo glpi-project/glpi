@@ -33,12 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+namespace Glpi\Tools\Command;
+
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\DatabaseSchemaConsistencyChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
+final class CheckDatabaseSchemaConsistencyCommand extends AbstractCommand
 {
     /**
      * Error code returned when missing fields are found.

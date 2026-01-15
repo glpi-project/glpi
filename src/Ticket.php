@@ -963,7 +963,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             if (!isset($input['impact'])) {
                 $input['impact'] = $this->fields['impact'];
             }
-            $input['priority'] = self::computePriority($input['urgency'], $input['impact']);
+            $input['priority'] = self::computePriority((int) $input['urgency'], (int) $input['impact']);
         }
 
         // Security checks

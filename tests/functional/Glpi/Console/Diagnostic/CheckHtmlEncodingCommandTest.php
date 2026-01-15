@@ -157,6 +157,8 @@ class CheckHtmlEncodingCommandTest extends DbTestCase
     {
         global $DB;
 
+        $DB->setMustUnsanitizeData(true); // The tested command has been made to correct autosanitized data
+
         $checker = new CheckHtmlEncodingCommand();
 
         // Create and load item

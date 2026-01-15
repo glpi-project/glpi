@@ -108,6 +108,8 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
+- Some `string` properties in High-Level API schemas have been updated use the `html` format to indicate the context should be treated as HTML/Rich text.
+- Some `string` properties in High-Level API schemas have been updated to include an `x-supports-mentions` to indicate that user mentions are supported.
 
 ### Deprecated
 

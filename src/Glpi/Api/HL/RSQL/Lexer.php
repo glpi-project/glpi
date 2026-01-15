@@ -159,7 +159,7 @@ final class Lexer
                 $fn_validate_pos();
                 $in_value = true;
                 $char = mb_substr($query, $pos, 1, 'UTF-8');
-                if (empty($char)) {
+                if ($char === '') {
                     $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
                     break;
                 }

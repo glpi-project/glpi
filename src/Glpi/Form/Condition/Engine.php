@@ -34,10 +34,13 @@
 
 namespace Glpi\Form\Condition;
 
+use Glpi\Form\BlockInterface;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\Section;
 use LogicException;
 use Safe\Exceptions\JsonException;
@@ -47,15 +50,17 @@ use function Safe\json_decode;
 
 final class Engine
 {
-    /**
-     * @var array Track items currently being processed to avoid circular dependencies
-     */
-    private array $processing_stack = [];
+    private const MAX_FIXED_POINT_ITERATIONS = 100;
 
     /**
-     * @var array Cache for item visibility results
+     * @var array<string, bool> Cache for item visibility results indexed by UUID
      */
     private array $visibility_cache = [];
+
+    /**
+     * @var bool Whether the fixed-point algorithm has been executed
+     */
+    private bool $visibility_computed = false;
 
     public function __construct(
         private Form $form,
@@ -64,30 +69,34 @@ final class Engine
 
     public function computeVisibility(): EngineVisibilityOutput
     {
+        // Phase 1: Compute all visibilities using fixed-point algorithm
+        $this->computeVisibilitiesWithFixedPoint();
+
+        // Phase 2: Build output from cache
         $output = new EngineVisibilityOutput();
 
-        // Compute form visibility
+        // Set form visibility
         $output->setFormVisibility(
-            $this->computeItemVisibility($this->form),
+            $this->visibility_cache[$this->form->getUUID()] ?? true,
         );
 
-        // Compute questions visibility
+        // Set questions visibility
         foreach ($this->form->getQuestions() as $question) {
             $output->setQuestionVisibility(
                 $question->getID(),
-                $this->computeItemVisibility($question),
+                $this->visibility_cache[$question->getUUID()] ?? true,
             );
         }
 
-        // Compute comments visibility
+        // Set comments visibility
         foreach ($this->form->getFormComments() as $comment) {
             $output->setCommentVisibility(
                 $comment->getID(),
-                $this->computeItemVisibility($comment),
+                $this->visibility_cache[$comment->getUUID()] ?? true,
             );
         }
 
-        // Compute section visiblity
+        // Set sections visibility
         $first = true;
         foreach ($this->form->getSections() as $section) {
             if ($first) {
@@ -97,10 +106,9 @@ final class Engine
                 continue;
             }
 
-            $is_visible = $this->computeItemVisibility($section);
+            $is_visible = $this->visibility_cache[$section->getUUID()] ?? true;
 
-            // Set visiblity to false if the section does not have at least
-            // one visible child
+            // Set visibility to false if the section does not have at least one visible child
             if ($is_visible) {
                 $is_visible = $this->sectionHasVisibleChildren($output, $section);
             }
@@ -110,8 +118,124 @@ final class Engine
         return $output;
     }
 
+    /**
+     * Compute all item visibilities using a fixed-point iteration algorithm.
+     *
+     * This algorithm handles circular dependencies between conditions by iterating
+     * until the visibility state stabilizes (no changes between iterations).
+     */
+    private function computeVisibilitiesWithFixedPoint(): void
+    {
+        if ($this->visibility_computed) {
+            return;
+        }
+
+        // Get all items that can have visibility conditions
+        $items = $this->getAllConditionableItems();
+
+        // Initialize visibility cache with default values based on strategy
+        foreach ($items as $item) {
+            $strategy = $item->getConfiguredVisibilityStrategy();
+            // Default: visible if strategy is ALWAYS_VISIBLE, otherwise assume not visible initially
+            $this->visibility_cache[$item->getUUID()] = ($strategy === VisibilityStrategy::ALWAYS_VISIBLE);
+        }
+
+        // Fixed-point iteration
+        for ($iteration = 0; $iteration < self::MAX_FIXED_POINT_ITERATIONS; $iteration++) {
+            $changed = false;
+
+            foreach ($items as $item) {
+                $new_visibility = $this->evaluateItemVisibility($item);
+                $uuid = $item->getUUID();
+
+                if ($this->visibility_cache[$uuid] !== $new_visibility) {
+                    $this->visibility_cache[$uuid] = $new_visibility;
+                    $changed = true;
+                }
+            }
+
+            if (!$changed) {
+                // Fixed point reached, all visibilities are stable
+                break;
+            }
+        }
+
+        $this->visibility_computed = true;
+    }
+
+    /**
+     * Get all items that implement ConditionableVisibilityInterface.
+     *
+     * @return ConditionableVisibilityInterface[]
+     */
+    private function getAllConditionableItems(): array
+    {
+        $items = [];
+
+        // Add the form itself
+        $items[] = $this->form;
+
+        // Add all questions
+        foreach ($this->form->getQuestions() as $question) {
+            $items[] = $question;
+        }
+
+        // Add all comments
+        foreach ($this->form->getFormComments() as $comment) {
+            $items[] = $comment;
+        }
+
+        // Add all sections
+        foreach ($this->form->getSections() as $section) {
+            $items[] = $section;
+        }
+
+        return $items;
+    }
+
+    /**
+     * Evaluate the visibility of an item using the current state of the visibility cache.
+     */
+    private function evaluateItemVisibility(ConditionableVisibilityInterface $item): bool
+    {
+        $strategy = $item->getConfiguredVisibilityStrategy();
+
+        // Before evaluating conditions, check parent visibility for BlockInterface items
+        if ($item instanceof BlockInterface) {
+            $parent_visible = $this->visibility_cache[$item->getSection()->getUUID()] ?? true;
+            if (!$parent_visible) {
+                return false;
+            }
+        }
+
+        // Strategy ALWAYS_VISIBLE means always visible
+        if ($strategy === VisibilityStrategy::ALWAYS_VISIBLE) {
+            $result = true;
+        } else {
+            // Compute the conditions using current visibility state
+            $conditions = $item->getConfiguredConditionsData();
+            $conditions_result = $this->computeConditions($conditions);
+            $result = $strategy->mustBeVisible($conditions_result);
+        }
+
+        // Special handling for questions: check if question type allows unauthenticated access
+        if ($result === true && $item instanceof Question) {
+            if (
+                !$item->getQuestionType()->isAllowedForUnauthenticatedAccess()
+                && !Session::isAuthenticated()
+            ) {
+                $result = false;
+            }
+        }
+
+        return $result;
+    }
+
     public function computeValidation(): EngineValidationOutput
     {
+        // Ensure visibility is computed first (needed for condition evaluation)
+        $this->computeVisibilitiesWithFixedPoint();
+
         $validation = new EngineValidationOutput();
 
         // Compute questions validation
@@ -127,9 +251,12 @@ final class Engine
 
     public function computeItemsThatMustBeCreated(): EngineCreationOutput
     {
+        // Ensure visibility is computed first (needed for condition evaluation)
+        $this->computeVisibilitiesWithFixedPoint();
+
         $output = new EngineCreationOutput();
 
-        // Compute questions visibility
+        // Compute destinations creation
         foreach ($this->form->getDestinations() as $destination) {
             $visibility = $this->computeDestinationCreation($destination);
             if ($visibility) {
@@ -138,57 +265,6 @@ final class Engine
         }
 
         return $output;
-    }
-
-    private function computeItemVisibility(ConditionableVisibilityInterface $item): bool
-    {
-        $item_uuid = $item->getUUID();
-
-        // Return cached result if available
-        if (isset($this->visibility_cache[$item_uuid])) {
-            return $this->visibility_cache[$item_uuid];
-        }
-
-        // Detect circular dependencies
-        if (in_array($item_uuid, $this->processing_stack)) {
-            // Circular dependency detected, stop processing and return false to avoid infinite loop.
-            return false;
-        }
-
-        // Add current item to the processing stack
-        $this->processing_stack[] = $item_uuid;
-
-        try {
-            // Stop immediatly if the strategy result is forced.
-            $strategy = $item->getConfiguredVisibilityStrategy();
-            if ($strategy == VisibilityStrategy::ALWAYS_VISIBLE) {
-                $result = true;
-            } else {
-                // Compute the conditions
-                $conditions = $item->getConfiguredConditionsData();
-                $conditions_result = $this->computeConditions($conditions);
-                $result = $strategy->mustBeVisible($conditions_result);
-            }
-
-            if ($result === true && $item instanceof Question) {
-                // Questions can have a question type that does not allow its visibility to unauthenticated users.
-                // In this case we must consider that the question is not visible.
-                if (
-                    !$item->getQuestionType()->isAllowedForUnauthenticatedAccess()
-                    && !Session::isAuthenticated()
-                ) {
-                    $result = false;
-                }
-            }
-
-            // Cache the result
-            $this->visibility_cache[$item_uuid] = $result;
-
-            return $result;
-        } finally {
-            // Remove the item from the processing stack when done
-            array_pop($this->processing_stack);
-        }
     }
 
     /**
@@ -273,9 +349,11 @@ final class Engine
 
     private function computeCondition(ConditionData $condition): bool
     {
-        // Find relevant answer using the question's id
         $type = $condition->getItemType();
+        $operator = $condition->getValueOperator();
         $answer = null;
+        $config = null;
+
         switch ($type) {
             case Type::QUESTION:
                 $question = Question::getByUuid($condition->getItemUuid());
@@ -286,39 +364,55 @@ final class Engine
                 } catch (JsonException $e) {
                     $config = null;
                 }
+
+                // Get source visibility from cache
+                $source_visible = $this->visibility_cache[$question->getUUID()] ?? true;
                 $answer = $this->input->getAnswers()[$question->getID()] ?? null;
 
-                // If the condition is not about visibility operators and the source question is not visible,
-                // we cannot evaluate the condition based on its answer
-                if (
-                    $condition->getValueOperator() !== ValueOperator::VISIBLE
-                    && $condition->getValueOperator() !== ValueOperator::NOT_VISIBLE
-                    && !$this->computeItemVisibility($question)
-                ) {
-                    return false;
+                // Handle operators based on their dependency on source visibility
+                if ($operator === ValueOperator::VISIBLE || $operator === ValueOperator::NOT_VISIBLE) {
+                    // VISIBLE/NOT_VISIBLE operators use the visibility state directly
+                    $answer = $source_visible;
+                } elseif ($operator === ValueOperator::EMPTY) {
+                    // EMPTY: if source is not visible, consider it as empty (return true)
+                    if (!$source_visible) {
+                        return true;
+                    }
+                } else {
+                    // Other operators: if source is not visible, condition is false
+                    // (user cannot see/modify the value)
+                    if (!$source_visible) {
+                        return false;
+                    }
                 }
                 break;
+
             case Type::SECTION:
                 $item = Section::getByUuid($condition->getItemUuid());
+                $source_visible = $this->visibility_cache[$item->getUUID()] ?? true;
+
+                if ($operator === ValueOperator::VISIBLE || $operator === ValueOperator::NOT_VISIBLE) {
+                    $answer = $source_visible;
+                }
                 break;
+
             case Type::COMMENT:
                 $item = Comment::getByUuid($condition->getItemUuid());
+                $source_visible = $this->visibility_cache[$item->getUUID()] ?? true;
+
+                if ($operator === ValueOperator::VISIBLE || $operator === ValueOperator::NOT_VISIBLE) {
+                    $answer = $source_visible;
+                }
                 break;
+
             default:
                 throw new LogicException(sprintf('Unknown type "%s" for condition', $type));
         }
 
-        if (
-            $condition->getValueOperator() === ValueOperator::VISIBLE
-            || $condition->getValueOperator() === ValueOperator::NOT_VISIBLE
-        ) {
-            $answer = $this->computeItemVisibility($question ?? $item);
-        }
-
         $condition_handler = array_filter(
-            $item->getConditionHandlers($config ?? null),
+            $item->getConditionHandlers($config),
             fn(ConditionHandlerInterface $handler): bool => in_array(
-                $condition->getValueOperator(),
+                $operator,
                 $handler->getSupportedValueOperators(),
             ),
         );
@@ -335,10 +429,34 @@ final class Engine
             );
         }
 
+        // TODO: refactor on main branch so this can be done directly in the
+        // SingleChoiceFromValuesConditionHandler class by sending the question
+        // config to `applyValueOperator` as a 4th parameter.
+        // Can't be done on bugfix as it would be break classes implementing the
+        // interface.
+        if (
+            $condition_handler instanceof SingleChoiceFromValuesConditionHandler
+            && \in_array($operator, [
+                ValueOperator::LESS_THAN,
+                ValueOperator::LESS_THAN_OR_EQUALS,
+                ValueOperator::GREATER_THAN,
+                ValueOperator::GREATER_THAN_OR_EQUALS,
+            ], true)
+            && $config instanceof QuestionTypeSelectableExtraDataConfig
+        ) {
+            [$answer, $condition_value] = $this->mapSelectableValuesToRealValues(
+                $answer,
+                $condition->getValue(),
+                $config,
+            );
+        } else {
+            $condition_value = $condition->getValue();
+        }
+
         return $condition_handler->applyValueOperator(
             $answer,
             $condition->getValueOperator(),
-            $condition->getValue(),
+            $condition_value,
         );
     }
 
@@ -359,5 +477,28 @@ final class Engine
         }
 
         return false;
+    }
+
+    /**
+     * @return array{string, string}
+     */
+    private function mapSelectableValuesToRealValues(
+        mixed $answer,
+        mixed $condition_value,
+        QuestionTypeSelectableExtraDataConfig $config,
+    ): array {
+        $options = $config->getOptions();
+
+        if (is_array($answer)) {
+            $answer = array_pop($answer);
+        }
+        $answer = $options[$answer] ?? $answer;
+
+        if (is_array($condition_value)) {
+            $condition_value = array_pop($condition_value);
+        }
+        $condition_value = $options[$condition_value] ?? $condition_value;
+
+        return [$answer, $condition_value];
     }
 }

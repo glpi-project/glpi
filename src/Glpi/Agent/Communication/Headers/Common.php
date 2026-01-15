@@ -124,6 +124,9 @@ class Common
      */
     protected string $www_authenticate;
 
+    /**
+     * @return string[]
+     */
     public function getRequireds(): array
     {
         return [
@@ -134,6 +137,9 @@ class Common
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getHeadersNames(): array
     {
         return [
@@ -146,7 +152,7 @@ class Common
      *
      * @param bool $legacy Set to true to shunt required headers checks
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getHeaders(bool $legacy = true): array
     {
@@ -221,7 +227,7 @@ class Common
     /**
      * Set multiple HTTP header values at once
      *
-     * @param array $headers Array of HTTP header name as key and value
+     * @param array<string, string> $headers Array of HTTP header name as key and value
      *
      * @return $this
      */

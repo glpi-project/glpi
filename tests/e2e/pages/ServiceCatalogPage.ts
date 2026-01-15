@@ -30,27 +30,28 @@
  * ---------------------------------------------------------------------
  */
 
-describe('File upload', () => {
-    beforeEach(() => {
-        cy.login();
-        cy.changeProfile('Super-Admin');
-        cy.visit('/front/document.form.php');
-    });
+import { Page } from "@playwright/test";
+import { GlpiPage } from "./GlpiPage";
 
-    it('Can upload file', () => {
-        // Upload file
-        cy.get("input[type=file]").selectFile("fixtures/uploads/bar.txt");
-        cy.findByText('Upload successful').should('exist');
-        cy.findByRole("button", {'name': "Add"}).click();
-        cy.findByRole('textbox', {'name': "Name"}).should('have.value', 'bar.txt');
+export class ServiceCatalogPage extends GlpiPage
+{
+    public constructor(page: Page)
+    {
+        super(page);
+    }
 
-        // Download file
-        cy.get('#main-form')
-            .findByRole('link', {'name': "bar.txt"})
-            .invoke('attr', 'target', '_self') // Cypress don't like new tabs
-            .click();
-        cy.readFile('cypress/downloads/bar.txt').then(content => {
-            cy.wrap('bar').should('eq', content);
-        });
-    });
-});
+    public async goto(): Promise<void>
+    {
+        await this.page.goto(`/ServiceCatalog`);
+    }
+
+    public async doSearchItem(filter: string): Promise<void>
+    {
+        await this.getTextbox('Search for forms...').fill(filter);
+    }
+
+    public async doGoToItem(name: string): Promise<void>
+    {
+        await this.getLink(name).click();
+    }
+}

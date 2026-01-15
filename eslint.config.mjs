@@ -21,7 +21,8 @@ export default [
             "public/lib/*",
             "tests/config/*",
             "vendor/*",
-            "**/*.min.js"
+            "**/*.min.js",
+            "tests/e2e/results/*"
         ],
     },
     js.configs.recommended,

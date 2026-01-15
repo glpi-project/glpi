@@ -119,7 +119,7 @@ class KnowbaseItem_Item extends CommonDBRelation
         }
 
         $rand = mt_rand();
-        if ($canedit && $ok_state) {
+        if ($canedit && $ok_state && $withtemplate != 2) {
             if ($item::class !== KnowbaseItem::class) {
                 $visibility = KnowbaseItem::getVisibilityCriteria();
                 $condition = (isset($visibility['WHERE']) && count($visibility['WHERE'])) ? $visibility['WHERE'] : [];

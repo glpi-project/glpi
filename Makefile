@@ -41,7 +41,7 @@ _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
 ## —— General ——————————————————————————————————————————————————————————————————
 .DEFAULT_GOAL := help
 help: ## Show this help message
-	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
+	@grep -hE '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 .PHONY: help
 
 install: init-override build up vendor db-install test-db-install ## Install the project

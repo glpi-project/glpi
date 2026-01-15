@@ -80,7 +80,7 @@ final class SearchOption implements ArrayAccess
      */
     private array $search_opt_array;
     /** @var array */
-    private static $search_options_cache = [];
+    private static array $search_options_cache = [];
 
     public function __construct(array $search_opt_array)
     {

@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory;
 
+use Agent;
 use Exception;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
@@ -119,7 +120,7 @@ class Request extends AbstractRequest
      *
      * @param string $task  Task (one of self::*_TASK)
      *
-     * @return array
+     * @return array{}|array{version: string, server: string}
      */
     protected function handleTask(string $task): array
     {
@@ -418,9 +419,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled inventory task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleInventoryTask(array $params): array
     {
@@ -438,9 +439,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled netdiscovery task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleNetDiscoveryTask(array $params): array
     {
@@ -452,9 +453,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled netinventory task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleNetInventoryTask(array $params): array
     {
@@ -466,9 +467,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled ESX task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleESXTask(array $params): array
     {
@@ -480,9 +481,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled collect task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleCollectTask(array $params): array
     {
@@ -494,9 +495,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled deploy task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleDeployTask(array $params): array
     {
@@ -508,9 +509,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled wakeonlan task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleWakeOnLanTask(array $params): array
     {
@@ -522,9 +523,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled remoteinventory task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleRemoteInventoryTask(array $params): array
     {
@@ -536,7 +537,7 @@ class Request extends AbstractRequest
     /**
      * Get inventory request status
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getInventoryStatus(): array
     {

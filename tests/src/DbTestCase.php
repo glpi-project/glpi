@@ -47,6 +47,7 @@ use Glpi\Asset\CapacityConfig;
 use Glpi\Dropdown\DropdownDefinition;
 use Profile;
 use ProfileRight;
+use Ramsey\Uuid\Uuid;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use ReflectionClass;
@@ -81,6 +82,8 @@ class DbTestCase extends GLPITestCase
         // that started it but forgot to commit/rollback.
         $in_transaction = $this->callPrivateMethod($DB, 'isInTransaction');
         $this->assertFalse($in_transaction);
+
+        $DB->setMustUnsanitizeData(false); // Be sure to switch back to disabled unsanitization.
 
         parent::tearDown();
     }
@@ -744,6 +747,31 @@ class DbTestCase extends GLPITestCase
         ]);
         $this->updateItem(ProfileRight::class, $profile_right->fields['id'], [
             'rights' => $profile_right->fields['rights'] & ~$value,
+        ]);
+    }
+
+    protected function addDocumentToItem(
+        string $name,
+        string $content,
+        CommonDBTM $item,
+    ): Document {
+        $this->login();
+
+        $prefix = uniqid(more_entropy: true);
+        file_put_contents(GLPI_TMP_DIR . '/' . "$prefix" . $name, $content);
+        return $this->createItem(Document::class, [
+            'documentcategories_id' => 0,
+            '_filename'             => ["$prefix" . $name],
+            '_prefix_filename'      => [$prefix],
+            '_tag_filename'         => [Uuid::uuid4()],
+            'itemtype'              => $item::class,
+            'items_id'              => $item->getID(),
+        ], [
+            '_filename',
+            '_prefix_filename',
+            '_tag_filename',
+            'itemtype',
+            'items_id',
         ]);
     }
 }

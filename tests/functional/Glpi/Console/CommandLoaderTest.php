@@ -81,15 +81,20 @@ PHP,
                 ],
             ],
             'tools' => [
-                // Base command case with alias
-                'DebugCommand.php' => <<<PHP
+                'src' => [
+                    'Command' => [
+                        // Base command case with alias
+                        'DebugCommand.php' => <<<PHP
 <?php
+namespace Glpi\\Tools\\Command;
 class DebugCommand extends \\Symfony\\Component\\Console\\Command\\Command {
    protected function configure() {
       \$this->setName('tools:debug');
    }
 }
 PHP,
+                    ],
+                ],
 
                 // Not a command case
                 'oldscript.php' => '<?php echo("Hi!");',
@@ -261,7 +266,7 @@ PHP,
             'database:install' => 'InstallCommand',
             'db:install'       => 'InstallCommand',
             'test'             => 'Glpi\\Console\\TestCommand',
-            'tools:debug'      => 'DebugCommand',
+            'tools:debug'      => 'Glpi\\Tools\\Command\\DebugCommand',
         ];
 
         $plugins_names_to_class = [

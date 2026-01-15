@@ -861,8 +861,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             )
         ) {
             $this->fields['priority'] = self::computePriority(
-                $this->fields['urgency'] ?? 3,
-                $this->fields['impact'] ?? 3
+                (int) ($this->fields['urgency'] ?? 3),
+                (int) ($this->fields['impact'] ?? 3)
             );
         }
 
@@ -2921,7 +2921,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         }
 
         if ($canpriority && !isset($input["priority"]) || !$canpriority) {
-            $input["priority"] = static::computePriority($input["urgency"], $input["impact"]);
+            $input["priority"] = static::computePriority((int) $input["urgency"], (int) $input["impact"]);
         }
 
         // set last updater if interactive user

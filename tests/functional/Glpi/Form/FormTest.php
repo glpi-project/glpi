@@ -652,6 +652,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 1',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with default destination and 1 answers' => [
@@ -664,6 +665,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 1',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with default destination and 5 answers' => [
@@ -676,6 +678,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 1',
                 'Form translations',
+                'Documents',
             ],
         ];
     }
@@ -696,6 +699,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with multiple tickets destinations and 1 answers' => [
@@ -708,6 +712,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with multiple tickets destinations and 5 answers' => [
@@ -720,6 +725,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
     }
@@ -740,6 +746,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with multiple changes destinations and 1 answers' => [
@@ -753,6 +760,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with multiple changes destinations and 5 answers' => [
@@ -766,6 +774,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
     }
@@ -786,6 +795,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with multiple problems destinations and 1 answers' => [
@@ -799,6 +809,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
         yield 'Form with multiple problems destinations and 5 answers' => [
@@ -812,6 +823,7 @@ class FormTest extends DbTestCase
                 'Access controls 1',
                 'Destinations 4',
                 'Form translations',
+                'Documents',
             ],
         ];
     }

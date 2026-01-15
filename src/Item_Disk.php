@@ -662,15 +662,6 @@ TWIG, $twig_params);
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    /**
-     * Display a specific field value
-     *
-     * @param string       $field   Name of the field
-     * @param string|array $values  Value(s) to display
-     * @param array        $options Array of options
-     *
-     * @return string the string to display
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {
