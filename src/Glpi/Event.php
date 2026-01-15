@@ -120,7 +120,7 @@ class Event extends CommonDBTM
     {
         global $CFG_GLPI, $DB;
 
-        if ($level >= $CFG_GLPI["event_loglevel"]) {
+        if ($CFG_GLPI["event_loglevel"] < $level) {
             return;
         }
 
