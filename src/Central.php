@@ -219,14 +219,6 @@ class Central extends CommonGLPI
                     'itemtype'  => Ticket::class,
                     'status'    => 'survey',
                 ];
-                $lists[] = [
-                    'itemtype'  => Ticket::class,
-                    'status'    => 'requestbyself',
-                ];
-                $lists[] = [
-                    'itemtype'  => Ticket::class,
-                    'status'    => 'observed',
-                ];
             }
             $lists[] = [
                 'itemtype'  => Ticket::class,
@@ -236,6 +228,16 @@ class Central extends CommonGLPI
                 'itemtype'  => Ticket::class,
                 'status'    => 'solution.rejected',
             ];
+            if ($showmyticket) {
+                $lists[] = [
+                    'itemtype'  => Ticket::class,
+                    'status'    => 'requestbyself',
+                ];
+                $lists[] = [
+                    'itemtype'  => Ticket::class,
+                    'status'    => 'observed',
+                ];
+            }
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'process',
