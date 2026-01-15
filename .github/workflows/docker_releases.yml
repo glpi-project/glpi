@@ -6,7 +6,25 @@ on:
       - "published"
 
 jobs:
+  prepare:
+    name: "Prepare"
+    runs-on: "ubuntu-latest"
+    outputs:
+      use-legacy-marketplace-path: ${{ steps.detect.outputs.use_legacy }}
+    steps:
+      - name: "Detect v10.x release"
+        id: "detect"
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          MAJOR=$(echo "$TAG" | cut --delimiter='.' --fields=1)
+          if [[ "$MAJOR" = "10" ]]; then
+            echo "use_legacy=true" >> $GITHUB_OUTPUT
+          else
+            echo "use_legacy=false" >> $GITHUB_OUTPUT
+          fi
+
   trigger-docker-releases:
+    needs: [prepare]
     permissions:
       contents: "read"
     name: "Trigger Docker releases"
@@ -15,4 +33,6 @@ jobs:
     # can use the inherit keyword to implicitly pass the secrets.
     secrets: inherit
     with:
-        glpi-version: "${{ github.event.release.tag_name }}"
+      push: true
+      glpi-version: "${{ github.event.release.tag_name }}"
+      use-legacy-marketplace-path: ${{ needs.prepare.outputs.use-legacy-marketplace-path == 'true' }}
