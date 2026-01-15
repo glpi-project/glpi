@@ -73,7 +73,7 @@ final class CoreController extends AbstractController
             'description' => <<<EOT
 - 0: Delete permanently
 - 1: Keep
-EOT
+EOT,
         ];
         $transfer_clean_option = [
             'type' => Doc\Schema::TYPE_INTEGER,
@@ -83,7 +83,7 @@ EOT
 - 0: Keep
 - 1: Put in trashbin
 - 2: Delete permanently
-EOT
+EOT,
         ];
         $transfer_connection_option = [
             'type' => Doc\Schema::TYPE_INTEGER,
@@ -93,7 +93,7 @@ EOT
 - 0: Delete permanently
 - 1: Disconnect
 - 2: Keep
-EOT
+EOT,
         ];
 
         return [
