@@ -42,6 +42,7 @@ phpunit.xml
 /inc/downstream.php
 /docker-compose.override.yaml
 /.devcontainer/docker-compose.override.yaml
+/.devcontainer/custom
 phpstan.neon
 /.phpunit.result.cache
 *.phar
