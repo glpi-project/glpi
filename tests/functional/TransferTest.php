@@ -1184,7 +1184,7 @@ class TransferTest extends DbTestCase
             ], [
                 'name' => 'TestSoftware',
                 'entities_id' => $dest_entity,
-            ]
+            ],
         ]);
 
         [$softversion_1, $softversion_2] = $this->createItems(SoftwareVersion::class, [
