@@ -468,7 +468,7 @@ final class HLAPIHelper
         $itemtype = $schema['x-itemtype'];
         if (is_subclass_of($itemtype, CommonDBTM::class)) {
             $item = new $itemtype();
-            if ($item->maybeDeleted()) {
+            if ($item->maybeDeleted() && !$item->useDeletedToLockIfDynamic()) {
                 // Try getting the new item again. It should still exist.
                 $this->call(new Request('GET', $new_item_location), function ($call) use ($update_params) {
                     /** @var HLAPICallAsserter $call */

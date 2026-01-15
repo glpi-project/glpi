@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - New endpoints/schema for notes in High-Level API v2.2.
 - New EventLog schema, endpoints, and webhook support in the High-Level API v2.2.
 - `active_profile.rights` property for the `Session` schema in High-Level API v2.2 to indicate the rights of the user's current profile.
+- New schemas/endpoints for Operating system installations on assets in the High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
