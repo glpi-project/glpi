@@ -4175,7 +4175,7 @@ class CommonDBTM extends CommonGLPI
                     // Check if at least one selected item is linked to a rack
                     $iterator = $DB->request([
                         'SELECT' => 'id',
-                        'FROM'   => \Item_Rack::getTable(),
+                        'FROM'   => Item_Rack::getTable(),
                         'WHERE'  => [
                             'itemtype' => static::getType(),
                             'items_id' => $item_ids
