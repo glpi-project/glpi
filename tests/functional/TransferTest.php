@@ -1032,4 +1032,104 @@ class TransferTest extends DbTestCase
             'entities_id' => $fentity,
         ])), 1);
     }
+
+    public function testTransferSoftwareNoDuplicates(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
+        $dest_entity = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $computer = new Computer();
+        $computers_id = $computer->add([
+            'name'        => 'test_transfer_no_duplicate',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        $software = new Software();
+        $software_id = $software->add([
+            'name'        => 'test_software_no_duplicate',
+            'entities_id' => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $software_id);
+
+        $softwareversion = new SoftwareVersion();
+        $softwareversion_id = $softwareversion->add([
+            'name'         => 'V1.0',
+            'softwares_id' => $software_id,
+            'entities_id'  => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $softwareversion_id);
+
+        $item_softwareversion = new Item_SoftwareVersion();
+        $item_softwareversion_id_1 = $item_softwareversion->add([
+            'items_id'             => $computers_id,
+            'itemtype'             => Computer::class,
+            'softwareversions_id'  => $softwareversion_id,
+            'entities_id'          => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_1);
+
+        $item_softwareversion_id_2 = $item_softwareversion->add([
+            'items_id'             => $computers_id,
+            'itemtype'             => Computer::class,
+            'softwareversions_id'  => $softwareversion_id,
+            'entities_id'          => $test_entity,
+        ]);
+        $this->assertGreaterThan(0, $item_softwareversion_id_2);
+
+        $count_before = $DB->request([
+            'COUNT'  => 'cpt',
+            'FROM'   => Item_SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'items_id'            => $computers_id,
+                'itemtype'            => Computer::class,
+                'softwareversions_id' => $softwareversion_id,
+            ],
+        ])->current()['cpt'];
+        $this->assertEquals(2, $count_before);
+
+        $transfer = new \Transfer();
+        $transfer->moveItems(
+            [Computer::class => [$computers_id]],
+            $dest_entity,
+            ['keep_software' => 1]
+        );
+
+        $transferred_softwareversion = $DB->request([
+            'SELECT' => ['id', 'softwares_id'],
+            'FROM'   => SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'name'        => 'V1.0',
+                'entities_id' => $dest_entity,
+            ],
+        ])->current();
+        $this->assertNotEmpty($transferred_softwareversion);
+        $new_softwareversion_id = $transferred_softwareversion['id'];
+
+        $count_after = $DB->request([
+            'COUNT'  => 'cpt',
+            'FROM'   => Item_SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'items_id'            => $computers_id,
+                'itemtype'            => Computer::class,
+                'softwareversions_id' => $new_softwareversion_id,
+            ],
+        ])->current()['cpt'];
+
+        $this->assertEquals(2, $count_after, 'Le transfert doit conserver les 2 installations de la même version logicielle sans créer de doublon');
+
+        $all_links = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => Item_SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'items_id' => $computers_id,
+                'itemtype' => Computer::class,
+            ],
+        ]);
+        $this->assertCount(2, $all_links, 'Il ne doit y avoir que 2 liens Item_SoftwareVersion après le transfert');
+    }
 }
