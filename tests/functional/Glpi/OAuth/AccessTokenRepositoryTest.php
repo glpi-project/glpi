@@ -36,90 +36,90 @@ namespace tests\units\Glpi\OAuth;
 
 use DateTimeImmutable;
 use Glpi\OAuth\AccessToken;
-use Glpi\OAuth\RefreshToken;
-use Glpi\OAuth\RefreshTokenRepository;
+use Glpi\OAuth\AccessTokenRepository;
+use Glpi\OAuth\Client;
 use Glpi\Tests\DbTestCase;
 
-class RefreshTokenRepositoryTest extends DbTestCase
+class AccessTokenRepositoryTest extends DbTestCase
 {
-    public function testPersistNewRefreshToken(): void
+    public function testPersistNewAccessToken(): void
     {
         global $DB;
 
         // add some preexisting tokens that are expired and current to test cleanup
-        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
             'identifier' => 'expired_token',
-            'access_token' => 'access_token_expired',
+            'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() - 3600),
         ]));
-        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
             'identifier' => 'current_token',
-            'access_token' => 'access_token_current',
+            'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
         ]));
 
-        $repo = new RefreshTokenRepository();
-        $refresh_token = new RefreshToken();
+        $repo = new AccessTokenRepository();
         $access_token = new AccessToken();
-        $refresh_token->setIdentifier('refresh_token_0');
+        $client = new Client();
+        $client->setIdentifier('client_1');
+        $client->setName('client_1');
         $access_token->setIdentifier('access_token_0');
-        $refresh_token->setAccessToken($access_token);
-        $refresh_token->setExpiryDateTime(new DateTimeImmutable('+1 hour'));
-        $repo->persistNewRefreshToken($refresh_token);
+        $access_token->setClient($client);
+        $access_token->setExpiryDateTime(new DateTimeImmutable('+1 hour'));
+        $repo->persistNewAccessToken($access_token);
 
         $it = $DB->request([
-            'FROM' => 'glpi_oauth_refresh_tokens',
-            'WHERE' => ['identifier' => 'refresh_token_0'],
+            'FROM' => 'glpi_oauth_access_tokens',
+            'WHERE' => ['identifier' => 'access_token_0'],
         ]);
         $this->assertCount(1, $it);
         $data = $it->current();
-        $this->assertEquals('access_token_0', $data['access_token']);
         $this->assertNotEmpty($data['date_expiration']);
 
         // check that expired token is cleaned up
         $it = $DB->request([
-            'FROM' => 'glpi_oauth_refresh_tokens',
+            'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => ['identifier' => 'expired_token'],
         ]);
         $this->assertCount(0, $it);
         // check that current token is not removed
         $it = $DB->request([
-            'FROM' => 'glpi_oauth_refresh_tokens',
+            'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => ['identifier' => 'current_token'],
         ]);
         $this->assertCount(1, $it);
     }
 
-    public function testRevokeRefreshToken(): void
+    public function testRevokeAccessToken(): void
     {
         global $DB;
 
-        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
-            'identifier' => 'refresh_token_1',
-            'access_token' => 'access_token_1',
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'access_token_1',
+            'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
         ]));
-        $repo = new RefreshTokenRepository();
-        $repo->revokeRefreshToken('refresh_token_1');
+        $repo = new AccessTokenRepository();
+        $repo->revokeAccessToken('access_token_1');
         $it = $DB->request([
-            'FROM' => 'glpi_oauth_refresh_tokens',
-            'WHERE' => ['identifier' => 'refresh_token_1'],
+            'FROM' => 'glpi_oauth_access_tokens',
+            'WHERE' => ['identifier' => 'access_token_1'],
         ]);
         $this->assertCount(0, $it);
     }
 
-    public function testIsRefreshTokenRevoked(): void
+    public function testIsAccessTokenRevoked(): void
     {
         global $DB;
 
-        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
-            'identifier' => 'refresh_token_2',
-            'access_token' => 'access_token_2',
+        $this->assertTrue($DB->insert('glpi_oauth_access_tokens', [
+            'identifier' => 'access_token_2',
+            'client' => 'client_1',
             'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
         ]));
-        $repo = new RefreshTokenRepository();
-        $this->assertFalse($repo->isRefreshTokenRevoked('refresh_token_2'));
-        $repo->revokeRefreshToken('refresh_token_2');
-        $this->assertTrue($repo->isRefreshTokenRevoked('refresh_token_2'));
+        $repo = new AccessTokenRepository();
+        $this->assertFalse($repo->isAccessTokenRevoked('access_token_2'));
+        $repo->revokeAccessToken('access_token_2');
+        $this->assertTrue($repo->isAccessTokenRevoked('access_token_2'));
     }
 }
