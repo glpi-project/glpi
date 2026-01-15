@@ -35,6 +35,7 @@
 namespace Glpi\Helpdesk\Tile;
 
 use CommonDBTM;
+use Glpi\Helpdesk\HelpdeskTranslation;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\Session\SessionInfo;
@@ -75,13 +76,19 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
     #[Override]
     public function getTitle(): string
     {
-        return $this->fields['title'] ?? "";
+        return HelpdeskTranslation::translate(
+            $this,
+            self::TRANSLATION_KEY_TITLE
+        ) ?? '';
     }
 
     #[Override]
     public function getDescription(): string
     {
-        return $this->fields['description'] ?? "";
+        return HelpdeskTranslation::translate(
+            $this,
+            self::TRANSLATION_KEY_DESCRIPTION
+        ) ?? '';
     }
 
     #[Override]
@@ -130,22 +137,22 @@ final class ExternalPageTile extends CommonDBTM implements TileInterface, Provid
         $handlers = [];
         $key = sprintf('%s_%d', self::getType(), $this->getID());
         $category_name = sprintf('%s: %s', $this->getLabel(), $this->fields['title'] ?? NOT_AVAILABLE);
-        if (!empty($this->getTitle())) {
+        if (!empty($this->fields['title'])) {
             $handlers[$key][] = new TranslationHandler(
                 item: $this,
                 key: self::TRANSLATION_KEY_TITLE,
                 name: __('Title'),
-                value: $this->getTitle(),
+                value: $this->fields['title'],
                 is_rich_text: false,
                 category: $category_name
             );
         }
-        if (!empty($this->getDescription())) {
+        if (!empty($this->fields['description'])) {
             $handlers[$key][] = new TranslationHandler(
                 item: $this,
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Description'),
-                value: $this->getDescription(),
+                value: $this->fields['description'],
                 is_rich_text: true,
                 category: $category_name
             );

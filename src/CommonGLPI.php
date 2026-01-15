@@ -45,8 +45,34 @@ use Symfony\Component\HttpFoundation\Request;
 use function Safe\parse_url;
 
 /**
- *  Common GLPI object
- **/
+ * Common GLPI object
+ *
+ * @phpstan-type GlpiMenuOption array{
+ *   title: string,
+ *   page: string,
+ *   icon?: string,
+ *   links?: array{
+ *     search: string,
+ *     add?: string,
+ *     template?: string,
+ *   }
+ * }
+ *
+ * @phpstan-type GlpiMenuEntry array{
+ *   title: string,
+ *   page: string,
+ *   shortcut?: string,
+ *   icon?: string,
+ *   links?: array{
+ *     search?: string,
+ *     add?: string,
+ *     template?: string,
+ *     lists?: '',
+ *     lists_itemtype?: class-string<CommonDBTM>
+ *   },
+ *   options?: array<string, GlpiMenuOption>
+ * }
+ */
 class CommonGLPI implements CommonGLPIInterface
 {
     /**
@@ -101,7 +127,7 @@ class CommonGLPI implements CommonGLPIInterface
      *      ]
      *  ]
      *
-     * @var array
+     * @var array<class-string<CommonGLPI>, array<class-string<CommonGLPI>, int>>
      */
     private static $othertabs = [];
 
@@ -277,11 +303,12 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Define tabs to display.
      *
-     * @param array<string, mixed> $options Options
+     * @param array{withtemplate?: int} $options Options
      *     - withtemplate is a template view ?
      *
-     * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
-     *                  and values are the HTML snippet corresponding to the tab name.
+     * @return array<string, string|bool> Array where keys are tabs identifier (e.g. `Ticket$main`)
+     *                                    and values are the HTML snippet corresponding to the tab name,
+     *                                    or key is `no_all_tab` and value is a boolean.
      */
     public function defineTabs($options = [])
     {
@@ -302,16 +329,15 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.83
      *
-     * @param array<string, mixed> $options Options
+     * @param array{withtemplate?: int} $options Options
      *     - withtemplate is a template view ?
      *
-     * @return array    Array where keys are tabs identifier (e.g. `Ticket$main`)
-     *                  and values are the HTML snippet corresponding to the tab name.
+     * @return array<string, string|bool> Array where keys are tabs identifier (e.g. `Ticket$main`)
+     *                                    and values are the HTML snippet corresponding to the tab name,
+     *                                    or key is `no_all_tab` and value is a boolean.
      */
     final public function defineAllTabs($options = [])
     {
-        global $CFG_GLPI;
-
         $onglets = [];
         // Tabs known by the object
         if ($this->isNewItem()) {
@@ -334,9 +360,9 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Add a standard tab.
      *
-     * @param class-string<CommonGLPI> $itemtype itemtype link to the tab
-     * @param array                    $ong      defined tabs (see `defineTabs()` return value)
-     * @param array<string, mixed>     $options  options (for withtemplate)
+     * @param class-string<CommonGLPI>   $itemtype itemtype link to the tab
+     * @param array<string, string|bool> $ong      defined tabs (see `defineTabs()` return value)
+     * @param array{withtemplate?: int}  $options  options (for withtemplate)
      *
      * @return static
      *
@@ -374,8 +400,8 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Add the impact tab if enabled for this item type.
      *
-     * @param array                 $ong        defined tabs (see `defineTabs()` return value)
-     * @param array<string, mixed>  $options    options (for withtemplate)
+     * @param array<string, string|bool> $ong        defined tabs (see `defineTabs()` return value)
+     * @param array{withtemplate?: int}  $options    options (for withtemplate)
      *
      * @return static
      *
@@ -383,8 +409,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function addImpactTab(array &$ong, array $options)
     {
-        global $CFG_GLPI;
-
         // Check if impact analysis is enabled for this item type
         if (Impact::isEnabled(static::class)) {
             $this->addStandardTab(Impact::class, $ong, $options);
@@ -398,7 +422,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @param array $ong    defined tabs (see `defineTabs()` return value)
+     * @param array<string, string> $ong    defined tabs (see `defineTabs()` return value)
      *
      * @return static
      */
@@ -418,7 +442,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return false|array
+     * @return false|GlpiMenuEntry|array<string, GlpiMenuEntry|true>
      */
     public static function getMenuContent()
     {
@@ -499,7 +523,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return false|array  Additional menu specs, or false if no additional menu content.
+     * @return false|array<string, GlpiMenuEntry>  Additional menu specs, or false if no additional menu content.
      */
     public static function getAdditionalMenuContent()
     {
@@ -523,7 +547,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return array|false  Additional menu options, or false if no additional options.
+     * @return false|array<string, GlpiMenuOption>  Additional menu options, or false if no additional options.
      */
     public static function getAdditionalMenuOptions()
     {
@@ -535,7 +559,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @return false|array  Additional menu links, or false if no additional links.
+     * @return false|array<string, string>  Additional menu links, or false if no additional links.
      **/
     public static function getAdditionalMenuLinks()
     {
@@ -685,6 +709,27 @@ class CommonGLPI implements CommonGLPIInterface
 
                     Plugin::doHook(Hooks::POST_SHOW_ITEM, ['item' => $item, 'options' => $options]);
                     return $ret;
+                }
+
+                // Check if we're creating an object from template and this is not the main tab
+                if ($withtemplate == 2 && $tabnum != 'main' && $item instanceof CommonDBTM) {
+                    // Display generic message for template creation
+                    $template = <<<HTML
+                    <div class="alert alert-warning d-flex">
+                        <div class="me-2">
+                            <i class="ti ti-info-circle"></i>
+                        </div>
+                        <div>
+                            <strong>%s</strong><br>
+                            %s
+                        </div>
+                    </div>
+                    HTML;
+                    echo sprintf(
+                        $template,
+                        __s('Creating from template'),
+                        __s('You are currently creating an object from a template. You need to save it, in the main tab, before editing data in other tabs.')
+                    );
                 }
 
                 if ($obj = getItemForItemtype($itemtype)) {
@@ -1021,8 +1066,6 @@ class CommonGLPI implements CommonGLPIInterface
      */
     public function showNavigationHeader($options = [])
     {
-        global $CFG_GLPI;
-
         // for objects not in table like central
         if (isset($this->fields['id'])) {
             $ID = $this->fields['id'];
@@ -1233,7 +1276,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @since 0.85
      *
-     * @param array $options Options
+     * @param array{id?: positive-int, loaded?: bool, show_nav_header?: bool} $options Options
      *                       show_nav_header (default true): show navigation header (link to list of items)
      *
      * @return void

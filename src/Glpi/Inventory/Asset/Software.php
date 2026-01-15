@@ -57,22 +57,21 @@ class Software extends InventoryAsset
 {
     public const SEPARATOR = '$$$$';
 
-    /** @var array */
-    private $softwares = [];
-    /** @var array */
-    private $versions = [];
-    /** @var array */
-    private $items_versions = [];
-    /** @var array */
-    private $current_versions = [];
-    /** @var array */
-    private $added_versions   = [];
-    /** @var array */
-    private $updated_versions = [];
-    /** @var array */
-    private $deleted_versions = [];
+    /** @var array<string, int> */
+    private array $softwares = [];
+    /** @var array<string, int> */
+    private array $versions = [];
+    /** @var array<string, bool> */
+    private array $items_versions = [];
+    /** @var array<string, bool> */
+    private array $current_versions = [];
+    /** @var array<string, array<string, string>> */
+    private array $added_versions   = [];
+    /** @var array<string, array<string, string>> */
+    private array $updated_versions = [];
+    /** @var array<int, mixed> */
+    private array $deleted_versions = [];
 
-    /** @var array */
     protected $extra_data = [
         OperatingSystem::class => null,
     ];
@@ -598,7 +597,7 @@ class Software extends InventoryAsset
     /**
      * Build comparison key from values
      *
-     * @param array $parts Values parts
+     * @param array<string, mixed> $parts Values parts
      *
      * @return string
      *
@@ -854,7 +853,7 @@ class Software extends InventoryAsset
                     $stmt = $DB->prepare($insert_query);
                 }
 
-                $stmt_values = array_values($stmt_columns);
+                $stmt_values = array_values($stmt_columns); //@phpstan-ignore argument.templateType (I have no idea how to solve this one.)
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
                 $versions_id = $DB->insertId();
@@ -877,12 +876,12 @@ class Software extends InventoryAsset
     /**
      * Clean input data
      *
-     * @param array $input        Input data
-     * @param array $known_fields Table fields
+     * @param array<string, mixed> $input        Input data
+     * @param array<string>        $known_fields Table fields
      *
-     * @return array
+     * @return array<string, mixed>
      */
-    private function cleanInputToPrepare(array $input, array $known_fields)
+    private function cleanInputToPrepare(array $input, array $known_fields): array
     {
         foreach (array_keys($input) as $column) {
             if (!isset($known_fields[$column])) {
@@ -1068,7 +1067,7 @@ class Software extends InventoryAsset
     /**
      * Get comparison key with normalized data.
      *
-     * @param array $data
+     * @param array<string, mixed> $data
      *
      * return string
      */

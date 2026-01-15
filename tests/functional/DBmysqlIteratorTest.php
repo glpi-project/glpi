@@ -1793,9 +1793,15 @@ class DBmysqlIteratorTest extends DbTestCase
         $db->method('doQuery')->willReturn($mysqli_result);
         $db->method('numrows')->willReturn(1);
 
+        // Check result with active unsanitization
+        $db->setMustUnsanitizeData(true);
         $iterator = $db->request(['FROM' => 'glpi_mocks']);
-
         $this->assertEquals($result, $iterator->current());
+
+        // Check result with deactivated unsanitization
+        $db->setMustUnsanitizeData(false);
+        $iterator = $db->request(['FROM' => 'glpi_mocks']);
+        $this->assertEquals($db_data, $iterator->current());
     }
 
     public function testRawFKeyCondition()

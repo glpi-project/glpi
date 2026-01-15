@@ -37,6 +37,7 @@
 namespace Glpi\Inventory\MainAsset;
 
 use Blacklist;
+use CommonDBTM;
 use Glpi\Inventory\Asset\NetworkPort;
 use IPAddress;
 use NetworkEquipmentModel;
@@ -49,6 +50,7 @@ use function Safe\preg_replace;
 
 class NetworkEquipment extends MainAsset
 {
+    /** @var array<string, object> */
     private array $management_ports = [];
 
     protected $extra_data = [
@@ -101,7 +103,7 @@ class NetworkEquipment extends MainAsset
             }
             $this->hardware = $device;
 
-            foreach ($device as $key => $property) { // @phpstan-ignore foreach.nonIterable
+            foreach ($device as $key => $property) {
                 $val->$key = $property;
             }
 
@@ -198,9 +200,9 @@ class NetworkEquipment extends MainAsset
      * After rule engine passed, update task (log) and create item if required
      *
      * @param int       $items_id id of the item (0 if new)
-     * @param string        $itemtype Item type
+     * @param class-string<CommonDBTM> $itemtype Item type
      * @param int       $rules_id Matched rule id, if any
-     * @param int|array $ports_id Matched port id, if any
+     * @param int|int[] $ports_id Matched port id, if any
      *
      * @return void
      */
@@ -236,7 +238,9 @@ class NetworkEquipment extends MainAsset
                 $np->addNetworkPorts($mports);
                 $this->assets[NetworkPort::class] = [$np];
             } else {
-                $this->assets[NetworkPort::class][0]->addNetworkPorts($np->getNetworkPorts());
+                /** @var NetworkPort $existing_np */
+                $existing_np = $this->assets[NetworkPort::class][0];
+                $existing_np->addNetworkPorts($np->getNetworkPorts());
             }
         }
 
@@ -245,16 +249,6 @@ class NetworkEquipment extends MainAsset
         if (isset($bkp_assets)) {
             $this->assets = $bkp_assets;
         }
-    }
-
-    public function handleLinks(?array $data = null)
-    {
-        if ($this->current_key !== null) {
-            $data = [$this->data[$this->current_key]];
-        } else {
-            $data = $this->data;
-        }
-        return parent::handleLinks();
     }
 
     /**
@@ -288,13 +282,16 @@ class NetworkEquipment extends MainAsset
     }
 
     /**
-     * @return array
+     * @return array<string, object>
      */
     public function getManagementPorts()
     {
         return $this->management_ports;
     }
 
+    /**
+     * @param array<string, object> $ports
+     */
     public function setManagementPorts(array $ports): NetworkEquipment
     {
         $this->management_ports = $ports;
@@ -342,7 +339,7 @@ class NetworkEquipment extends MainAsset
     /**
      * Get detected switches (sorted by their index)
      *
-     * @return array
+     * @return array<int, stdClass>
      */
     public function getStackedSwitches(): array
     {
@@ -375,7 +372,7 @@ class NetworkEquipment extends MainAsset
     /**
      * Get stack component name
      *
-     * @param array $components Network components
+     * @param stdClass[] $components Network components
      *
      * @return string
      */
@@ -430,7 +427,7 @@ class NetworkEquipment extends MainAsset
     /**
      * Get wireless controller access points
      *
-     * @return array
+     * @return array<int, stdClass>
      */
     public function getAccessPoints(): array
     {
@@ -474,12 +471,12 @@ class NetworkEquipment extends MainAsset
      * Try to know if networkEquipement need to be updated from discovery
      * Only if IP has changed
      *
-     * @param \CommonDBTM $item
-     * @param stdClass    $val
+     * @param CommonDBTM $item
+     * @param stdClass   $val
      *
      * @return bool
      */
-    public static function needToBeUpdatedFromDiscovery(\CommonDBTM $item, $val)
+    public static function needToBeUpdatedFromDiscovery(CommonDBTM $item, $val)
     {
         if (property_exists($val, 'ips')) {
             foreach ($val->ips as $ip) {

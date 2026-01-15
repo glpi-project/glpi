@@ -117,7 +117,12 @@ class ObjectLock extends CommonDBTM
         $autolock = $this->isAutolockReadonlyMode();
 
         $user = new User();
-        if (isset($this->fields['users_id']) && $this->fields['users_id'] > 0 && $user->getFromDB($this->fields['users_id'])) {
+        if (
+            isset($this->fields['users_id'])
+            && $this->fields['users_id'] > 0
+            && $this->fields['users_id'] !== Session::getLoginUserID()
+            && $user->getFromDB($this->fields['users_id'])
+        ) {
             $user_data = [
                 'name' => $user->getName(),
                 'comment' => $user->getInfoCard(),
@@ -128,6 +133,9 @@ class ObjectLock extends CommonDBTM
                 'users_id' => $this->fields['users_id'],
                 'is_default' => 1,
             ]) && ($CFG_GLPI['notifications_mailing'] == 1);
+        } else {
+            // No locking user found, so the lock is invalid
+            $autolock = false;
         }
 
         if (!$autolock) {

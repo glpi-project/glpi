@@ -31,8 +31,20 @@
  */
 
 import axios, { AxiosInstance } from "axios";
+import { openSync, closeSync, unlinkSync, existsSync } from "fs";
+import { tmpdir } from "os";
+import { join } from "path";
 import { Config } from "./Config";
 import { WorkerSessionCache } from "./WorkerSessionCache";
+
+const ENTITY_LOCK_FILE = join(tmpdir(), 'glpi-e2e-entity-creation.lock');
+
+type Tile = {
+    title: string,
+    description: string
+    illustration: string,
+    page: string
+};
 
 /**
  * Utility class to interact with GLPI's API.
@@ -56,12 +68,14 @@ export class Api
 
     public async createItem(itemtype: string, fields: object): Promise<number>
     {
-        const response = await this.doCrudRequest('POST', itemtype, fields);
-        if (response.status !== 201) {
-            throw new Error('Failed to create item');
+        if (itemtype === 'Entity') {
+            // Hack for entities to prevent the issue described here:
+            // https://github.com/glpi-project/glpi/issues/22625
+            // Can be removed once the issue is resolved.
+            return this.createItemWithLock(itemtype, fields);
         }
 
-        return Number(response.data.id);
+        return this.doCreateItem(itemtype, fields);
     }
 
     public async updateItem(
@@ -84,6 +98,89 @@ export class Api
             `${itemtype}/${id}`,
         );
         return response.data;
+    }
+
+    public refreshSession(): void
+    {
+        // Delete the stored client to force a new session for the next API
+        // requests.
+        this.cache.removeApiClient();
+    }
+
+    public async asyncCreateTilesForItem(
+        itemtype: string,
+        id: number,
+        tiles: Tile[]
+    ): Promise<void> {
+        // Create a few tiles
+        const created_tiles = [];
+        for (const tile of tiles) {
+            created_tiles.push(
+                this.createItem('Glpi\\Helpdesk\\Tile\\GlpiPageTile', tile)
+            );
+        }
+        const tile_ids = await Promise.all(created_tiles);
+
+        const linked_tiles = [];
+        let i = 0;
+        for (const tile_id of tile_ids) {
+            linked_tiles.push(this.createItem('Glpi\\Helpdesk\\Tile\\Item_Tile', {
+                'itemtype_item': itemtype,
+                'items_id_item': id,
+                'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                'items_id_tile': tile_id,
+                'rank': i++,
+            }));
+        }
+        await Promise.all(linked_tiles);
+    }
+
+    private async doCreateItem(itemtype: string, fields: object): Promise<number>
+    {
+        const response = await this.doCrudRequest('POST', itemtype, fields);
+        if (response.status !== 201) {
+            throw new Error('Failed to create item');
+        }
+
+        return Number(response.data.id);
+    }
+
+    private async createItemWithLock(itemtype: string, fields: object): Promise<number>
+    {
+        const lock = await this.acquireLock();
+        try {
+            return await this.doCreateItem(itemtype, fields);
+        } finally {
+            this.releaseLock(lock);
+        }
+    }
+
+    private async acquireLock(): Promise<number>
+    {
+        const maxAttempts = 100;
+        const retryDelay = 50;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            try {
+                const fd = openSync(ENTITY_LOCK_FILE, 'wx');
+                return fd;
+            } catch {
+                await new Promise(resolve => setTimeout(resolve, retryDelay));
+            }
+        }
+
+        throw new Error('Failed to acquire lock for Entity creation');
+    }
+
+    private releaseLock(fd: number): void
+    {
+        try {
+            closeSync(fd);
+        } finally {
+            if (existsSync(ENTITY_LOCK_FILE)) {
+                unlinkSync(ENTITY_LOCK_FILE);
+            }
+        }
     }
 
     private async initApiClient(): Promise<AxiosInstance>

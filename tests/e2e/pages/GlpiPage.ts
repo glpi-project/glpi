@@ -345,6 +345,17 @@ export class GlpiPage
     /**
      * Helper method to make common operation less verbose
      */
+    public getHeading(name: string): Locator
+    {
+        return this.page.getByRole('heading', {
+            name: name,
+            exact: true,
+        }).filter({ visible: true });
+    }
+
+    /**
+     * Helper method to make common operation less verbose
+     */
     public getRadio(name: string): Locator
     {
         return this.page.getByRole('radio', {
@@ -362,6 +373,16 @@ export class GlpiPage
             name: name,
             exact: true,
         }).filter({ visible: true });
+    }
+
+    public getAlert(title: string): Locator
+    {
+        return this.page.getByRole('alert')
+            .filter({
+                visible: true,
+                hasText: title,
+            })
+        ;
     }
 
     public getEntityFromTree(name: string): Locator

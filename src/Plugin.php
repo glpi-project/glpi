@@ -1650,7 +1650,7 @@ class Plugin extends CommonDBTM
             $name = Toolbox::stripTags($plugin['name']);
             $version = Toolbox::stripTags($plugin['version']);
             $state = $plug->isLoadable($plugin['directory']) ? $plugin['state'] : self::TOBECLEANED;
-            $state = self::getState($state);
+            $state = self::getState($state, shouldTranslate: false);
             $is_marketplace = file_exists(GLPI_MARKETPLACE_DIR . "/" . $plugin['directory']);
             $install_method = $is_marketplace ? "Marketplace" : "Manual";
 
@@ -2610,32 +2610,32 @@ class Plugin extends CommonDBTM
      * @param  int $state see this class constants (ex self::ANEW, self::ACTIVATED)
      * @return string  the label
      */
-    public static function getState($state = 0)
+    public static function getState($state = 0, bool $shouldTranslate = true): string
     {
         switch ($state) {
             case self::ANEW:
-                return _x('status', 'New');
+                return $shouldTranslate ? _x('plugin', 'New') : 'New';
 
             case self::ACTIVATED:
-                return _x('plugin', 'Enabled');
+                return $shouldTranslate ? _x('plugin', 'Enabled') : 'Enabled';
 
             case self::NOTINSTALLED:
-                return _x('plugin', 'Not installed');
+                return $shouldTranslate ? _x('plugin', 'Not installed') : 'Not installed';
 
             case self::NOTUPDATED:
-                return __('To update');
+                return $shouldTranslate ? _x('plugin', 'To update') : 'To update';
 
             case self::TOBECONFIGURED:
-                return _x('plugin', 'Installed / not configured');
+                return $shouldTranslate ? _x('plugin', 'Installed / not configured') : 'Installed / not configured';
 
             case self::NOTACTIVATED:
-                return _x('plugin', 'Installed / not activated');
+                return $shouldTranslate ? _x('plugin', 'Installed / not activated') : 'Installed / not activated';
 
             case self::REPLACED:
-                return _x('plugin', 'Replaced');
+                return $shouldTranslate ? _x('plugin', 'Replaced') : 'Replaced';
         }
 
-        return __('Error / to clean');
+        return $shouldTranslate ? _x('plugin', 'Error / to clean') : 'Error / to clean';
     }
 
 

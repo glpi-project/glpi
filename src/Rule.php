@@ -853,13 +853,6 @@ class Rule extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * @param  string $field
-     * @param  array $values
-     * @param  array $options
-     *
-     * @return string
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
         if (!is_array($values)) {

@@ -75,6 +75,9 @@ class Process extends InventoryAsset
         return $this->data;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     protected function getExisting(): array
     {
         global $DB;

@@ -249,7 +249,7 @@ switch ($_REQUEST['action']) {
         $grid->displayFilterForm($_REQUEST);
         break;
     case 'get_dashboard_filters':
-        if (!Session::haveRight('dashboard', READ)) {
+        if (!$dashboard->canViewCurrent()) {
             throw new AccessDeniedHttpException();
         }
 

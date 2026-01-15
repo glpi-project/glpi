@@ -111,7 +111,7 @@ class ProjectTeam extends CommonDBRelation
 
         switch (get_class($item)) {
             case Project::class:
-                $item->showTeam($item);
+                $item->showTeam($item, $withtemplate);
         }
         return true;
     }
