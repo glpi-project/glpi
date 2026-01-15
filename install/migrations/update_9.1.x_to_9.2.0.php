@@ -2015,25 +2015,33 @@ Regards,',
         $firmwares = [];
         foreach ($iterator as $row) {
             if (!isset($firmwares[$row['firmware']])) {
-                $fw = new DeviceFirmware();
-                if ($fw->getFromDBByCrit(['designation' => $DB->escape($row['firmware'])])) {
-                    $firmwares[$row['firmware']] = $fw->getID();
+                $firmware_result = $DB->request([
+                    'FROM' => 'glpi_devicefirmwares',
+                    'WHERE' => ['designation' => $DB->escape($row['firmware'])],
+                ]);
+                if ($firmware_result->count() === 1) {
+                    $firmwares[$row['firmware']] = $firmware_result->current()['id'];
                 } else {
-                    $id = $fw->add([
-                        'designation'              => $DB->escape($row['firmware']),
-                        'devicefirmwaretypes_id'   => '3', //type "firmware"
-                    ]);
-                    $firmwares[$row['firmware']] = $id;
+                    $DB->insert(
+                        'glpi_devicefirmwares',
+                        [
+                            'designation'              => $DB->escape($row['firmware']),
+                            'devicefirmwaretypes_id'   => '3', //type "firmware"
+                        ]
+                    );
+                    $firmwares[$row['firmware']] = $DB->insertId();
                 }
             }
 
             //add link
-            $item_fw = new Item_DeviceFirmware();
-            $item_fw->add([
-                'itemtype'           => 'Phone',
-                'items_id'           => $row['id'],
-                'devicefirmwares_id' => $firmwares[$row['firmware']],
-            ]);
+            $DB->insert(
+                'glpi_items_devicefirmwares',
+                [
+                    'itemtype'           => 'Phone',
+                    'items_id'           => $row['id'],
+                    'devicefirmwares_id' => $firmwares[$row['firmware']],
+                ]
+            );
         }
 
         $migration->dropField('glpi_phones', 'firmware');
@@ -2044,26 +2052,30 @@ Regards,',
         $mapping = [];
         $iterator = $DB->request('glpi_networkequipmentfirmwares');
         foreach ($iterator as $row) {
-            $fw = new DeviceFirmware();
-            $id = $fw->add([
-                'designation'              => $DB->escape($row['name']),
-                'comment'                  => $DB->escape($row['comment']),
-                'devicefirmwaretypes_id'   => 3, //type "Firmware"
-                'date_creation'            => $row['date_creation'],
-                'date_mod'                 => $row['date_mod'],
-            ]);
-            $mapping[$row['id']] = $id;
+            $DB->insert(
+                'glpi_devicefirmwares',
+                [
+                    'designation'              => $DB->escape($row['name']),
+                    'comment'                  => $DB->escape($row['comment']),
+                    'devicefirmwaretypes_id'   => 3, //type "Firmware"
+                    'date_creation'            => $row['date_creation'],
+                    'date_mod'                 => $row['date_mod'],
+                ]
+            );
+            $mapping[$row['id']] = $DB->insertId();
         }
 
         $iterator = $DB->request('glpi_networkequipments');
         foreach ($iterator as $row) {
             if (isset($mapping[$row['networkequipmentfirmwares_id']])) {
-                $itemdevice = new Item_DeviceFirmware();
-                $itemdevice->add([
-                    'itemtype'           => 'NetworkEquipment',
-                    'items_id'           => $row['id'],
-                    'devicefirmwares_id' => $mapping[$row['networkequipmentfirmwares_id']],
-                ]);
+                $DB->insert(
+                    'glpi_items_devicefirmwares',
+                    [
+                        'itemtype'           => 'NetworkEquipment',
+                        'items_id'           => $row['id'],
+                        'devicefirmwares_id' => $mapping[$row['networkequipmentfirmwares_id']],
+                    ]
+                );
             }
         }
 
