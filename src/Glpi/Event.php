@@ -109,10 +109,10 @@ class Event extends CommonDBTM
      * $level is above or equal to setting from configuration.
      *
      * @param string|int $items_id
-     * @param string $type
-     * @param int $level
-     * @param string $service
-     * @param string $event
+     * @param string     $type
+     * @param int        $level @see \CommonDBTM::getLogDefaultLevel() documentation
+     * @param string     $service
+     * @param string     $event
      *
      * @return void
      */
