@@ -37,3 +37,4 @@ jobs:
       push: true
       glpi-version: "10.0/bugfixes"
       image-tag: "10.0-nightly"
+      use-legacy-marketplace-path: true
