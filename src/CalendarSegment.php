@@ -214,7 +214,7 @@ class CalendarSegment extends CommonDBChild
 
         // Build SELECT clauses based on delay direction
         $SELECT = [];
-        
+
         // Add specific SELECT and WHERE clauses
         if (!$negative_delay) {
             // For positive delay: calculate time from begin_time to end of segment
