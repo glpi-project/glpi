@@ -110,9 +110,7 @@
                         <i class="ti ti-alert-circle-filled fa-2x me-2"></i>
                         <p v-html="shortcut_message"></p>
                     </div>
-                    <search>
-                        <input type="text" class="form-control" name="fuzzysearch_modal_search_menu" :placeholder="placeholder" v-model="input_text">
-                    </search>
+                    <input type="text" class="form-control" name="fuzzysearch_modal_search_menu" :placeholder="placeholder" v-model="input_text">
                     <ul class="results list-group mt-2">
                         <li v-for="result in results" :key="result.index" class="list-group-item">
                             <a :href="result.original.url" v-html="result.string"></a>
