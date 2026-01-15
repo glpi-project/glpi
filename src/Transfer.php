@@ -1714,23 +1714,23 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $DB->update(
-                        'glpi_items_softwareversions',
-                        [
-                            'softwareversions_id' => $newversID,
-                        ],
-                        [
-                            'id' => $data['id'],
-                            new \Glpi\DBAL\QueryExpression(
-                                "NOT EXISTS (
-                                    SELECT 1 FROM `glpi_items_softwareversions` AS `isv`
-                                    WHERE `isv`.`items_id` = " . $ID . "
-                                    AND `isv`.`itemtype` = " . $DB->quote($itemtype) . "
-                                    AND `isv`.`softwareversions_id` = " . $newversID . "
-                                )"
-                            )
-                        ]
-                    );
+                    try {
+                        $DB->update(
+                            'glpi_items_softwareversions',
+                            ['softwareversions_id' => $newversID],
+                            ['id' => $data['id']]
+                        );
+                    } catch (RuntimeException $e) {
+                        if (str_contains($e->getMessage(), 'Duplicate entry')) {
+                            // If duplicate: delete the current row (obsolete)
+                            $DB->delete(
+                                'glpi_items_softwareversions',
+                                ['id' => $data['id']]
+                            );
+                        } else {
+                            throw $e;
+                        }
+                    }
                 }
             } else { // Do not keep
                 // Delete inst software for item

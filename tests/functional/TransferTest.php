@@ -1035,93 +1035,83 @@ class TransferTest extends DbTestCase
 
     public function testTransferSoftwareNoDuplicates(): void
     {
-        global $DB;
-
         $this->login();
 
-        $test_entity = getItemByTypeName('Entity', '_test_root_entity', true);
-        $dest_entity = getItemByTypeName('Entity', '_test_child_1', true);
+        //Get entities
+        $source_entity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        $dest_entity = (int) getItemByTypeName('Entity', '_test_child_1', true);
 
-        $computer = new Computer();
-        $computers_id = $computer->add([
-            'name'        => 'test_transfer_no_duplicate',
-            'entities_id' => $test_entity,
+        //Create computer to transfer
+        $computer = $this->createItem(Computer::class, [
+            'name' => 'TestComputer',
+            'entities_id' => $source_entity,
         ]);
-        $this->assertGreaterThan(0, $computers_id);
 
-        $software = new Software();
-        $software_id = $software->add([
-            'name'        => 'test_software_no_duplicate',
-            'entities_id' => $test_entity,
-        ]);
-        $this->assertGreaterThan(0, $software_id);
-
-        $softwareversion = new SoftwareVersion();
-        $softwareversion_id = $softwareversion->add([
-            'name'         => 'V1.0',
-            'softwares_id' => $software_id,
-            'entities_id'  => $test_entity,
-        ]);
-        $this->assertGreaterThan(0, $softwareversion_id);
-
-        $item_softwareversion = new Item_SoftwareVersion();
-        $item_softwareversion_id_1 = $item_softwareversion->add([
-            'items_id'             => $computers_id,
-            'itemtype'             => Computer::class,
-            'softwareversions_id'  => $softwareversion_id,
-            'entities_id'          => $test_entity,
-        ]);
-        $this->assertGreaterThan(0, $item_softwareversion_id_1);
-
-        $count_before = $DB->request([
-            'COUNT'  => 'cpt',
-            'FROM'   => Item_SoftwareVersion::getTable(),
-            'WHERE'  => [
-                'items_id'            => $computers_id,
-                'itemtype'            => Computer::class,
-                'softwareversions_id' => $softwareversion_id,
-            ],
-        ])->current()['cpt'];
-        $this->assertEquals(1, $count_before);
-
-        $transfer = new \Transfer();
-        $transfer->moveItems(
-            [Computer::class => [$computers_id]],
-            $dest_entity,
-            ['keep_software' => 1]
-        );
-
-        $transferred_softwareversion = $DB->request([
-            'SELECT' => ['id', 'softwares_id'],
-            'FROM'   => SoftwareVersion::getTable(),
-            'WHERE'  => [
-                'name'        => 'V1.0',
+        //Create software
+        //software_source in source entity with 2 versions
+        //software_dest in dest entity with same version as software_source
+        [$software_source, $software_dest] = $this->createItems(Software::class, [
+            [
+                'name' => 'TestSoftware',
+                'entities_id' => $source_entity,
+            ], [
+                'name' => 'TestSoftware',
                 'entities_id' => $dest_entity,
             ],
-        ])->current();
-        $this->assertNotEmpty($transferred_softwareversion);
-        $new_softwareversion_id = $transferred_softwareversion['id'];
+        ]);
 
-        $count_after = $DB->request([
-            'COUNT'  => 'cpt',
-            'FROM'   => Item_SoftwareVersion::getTable(),
-            'WHERE'  => [
-                'items_id'            => $computers_id,
-                'itemtype'            => Computer::class,
-                'softwareversions_id' => $new_softwareversion_id,
+        [$softversion_1, $softversion_2] = $this->createItems(SoftwareVersion::class, [
+            [
+                'name' => 'V1.0',
+                'softwares_id' => $software_source->getID(),
+                'entities_id' => $source_entity,
             ],
-        ])->current()['cpt'];
-
-        $this->assertEquals(1, $count_after);
-
-        $all_links = $DB->request([
-            'SELECT' => ['id'],
-            'FROM'   => Item_SoftwareVersion::getTable(),
-            'WHERE'  => [
-                'items_id' => $computers_id,
-                'itemtype' => Computer::class,
+            [
+                'name' => 'V1.0',
+                'softwares_id' => $software_source->getID(),
+                'entities_id' => $source_entity,
+            ],
+            [
+                'name' => 'V1.0',
+                'softwares_id' => $software_dest->getID(),
+                'entities_id' => $dest_entity,
             ],
         ]);
-        $this->assertCount(1, $all_links);
+
+        //Link both software versions to computer
+        $item_softwareversion = $this->createItems(Item_SoftwareVersion::class, [
+            [
+                'items_id' => $computer->getID(),
+                'itemtype' => Computer::class,
+                'softwareversions_id' => $softversion_1->getID(),
+                'entities_id' => $source_entity,
+            ],
+            [
+                'items_id' => $computer->getID(),
+                'itemtype' => Computer::class,
+                'softwareversions_id' => $softversion_2->getID(),
+                'entities_id' => $source_entity,
+            ],
+        ]);
+
+        //Prepare transfer with keep_software option
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+
+        $itemsToTransfer = [Computer::class => [$computer->getID() => $computer->getID()]];
+        $transfer->moveItems($itemsToTransfer, $dest_entity, ['keep_software' => 1]);
+
+        //Verify if computer is in destination entity
+        $computer->getFromDB($computer->getID());
+        $this->assertEquals($dest_entity, $computer->fields['entities_id']);
+
+        //Verify that only one Item_SoftwareVersion exists for the merged SoftwareVersion in destination entity
+        $item_softwareversion = new Item_SoftwareVersion();
+        $item_softwareversion->getFromDBByCrit([
+            'items_id' => $computer->getID(),
+            'itemtype' => Computer::class,
+        ]);
+
+        $this->assertEquals($dest_entity, $item_softwareversion->fields['entities_id']);
     }
 }
