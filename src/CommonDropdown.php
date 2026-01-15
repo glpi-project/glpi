@@ -373,11 +373,27 @@ abstract class CommonDropdown extends CommonDBTM
         }
 
         $fields = $this->getAdditionalFields();
+        $is_device_model = ($this instanceof CommonDeviceModel);
+
+        $has_device_model = false;
+        if (!$is_device_model) {
+            $model_fk = $this->getModelForeignKeyField();
+            if (
+                $model_fk !== null
+                && str_contains($model_fk, 'device')
+                && isset($this->fields[$model_fk])
+                && $this->fields[$model_fk] > 0
+            ) {
+                $has_device_model = true;
+            }
+        }
 
         echo TemplateRenderer::getInstance()->render('dropdown_form.html.twig', [
-            'item'   => $this,
-            'params' => $options,
+            'item'              => $this,
+            'params'            => $options,
             'additional_fields' => $fields,
+            'is_device_model'   => $is_device_model,
+            'has_device_model'  => $has_device_model,
         ]);
 
         return true;
