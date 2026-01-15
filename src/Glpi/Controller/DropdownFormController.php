@@ -209,6 +209,7 @@ class DropdownFormController extends AbstractController
         }
         $options['formoptions'] = ($options['formoptions'] ?? '') . ' data-track-changes=true';
         $options['id'] = $id;
+        $options['itemtype'] = $class;
 
         $dropdown::displayFullPageForItem($id, $dropdown->getSectorizedDetails(), $options);
         $content = ob_get_clean();
