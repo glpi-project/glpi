@@ -4178,14 +4178,14 @@ class CommonDBTM extends CommonGLPI
                         'FROM'   => Item_Rack::getTable(),
                         'WHERE'  => [
                             'itemtype' => static::getType(),
-                            'items_id' => $item_ids
+                            'items_id' => $item_ids,
                         ],
-                        'LIMIT'  => 1
+                        'LIMIT'  => 1,
                     ]);
                 
-                   if (!count($iterator)) {
-                       return $actions;
-                   }
+                    if (!count($iterator)) {
+                        return $actions;
+                    }
                 }
                 $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
                 = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
