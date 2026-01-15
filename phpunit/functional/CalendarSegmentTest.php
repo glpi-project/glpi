@@ -195,8 +195,7 @@ class CalendarSegmentTest extends DbTestCase
     }
 
     /**
-     * Test the addDelayInDay method with various scenarios
-     * This tests complex calendars with multiple disconnected segments per day
+     * Test the addDelayInDay method
      *
      * @dataProvider addDelayInDayProvider
      *
