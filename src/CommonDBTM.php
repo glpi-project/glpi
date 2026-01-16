@@ -4171,7 +4171,7 @@ class CommonDBTM extends CommonGLPI
                 if ($checkitem instanceof CommonDBTM && $checkitem->getID() > 0) {
                     // Single item context
                     $item_ids = [$checkitem->getID()];
-                
+
                     // Check if at least one selected item is linked to a rack
                     $iterator = $DB->request([
                         'SELECT' => 'id',
