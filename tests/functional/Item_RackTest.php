@@ -883,7 +883,7 @@ class Item_RackTest extends DbTestCase
             'itemtype' => 'Computer',
             'ids'      => [$computer_id],
         ];
-        
+
         $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
 
         // Configure the Action (using real methods on the partial mock)
