@@ -873,12 +873,12 @@ class Item_RackTest extends DbTestCase
         $this->assertIsInt($computer_id);
 
         // Mock the MassiveAction object
-        $ma = $this->getMockBuilder(MassiveAction::class)
+        $ma = $this->getMockBuilder(\MassiveAction::class)
             ->disableOriginalConstructor()
             ->onlyMethods(['getAction', 'itemDone']) // We only want to mock (intercept) methods with result reporting
             ->getMock();
 
-        $action_key = 'Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
+        $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
 
         // Configure the Action (using real methods on the partial mock)
         // Instead of setting state, we force the getter to return our specific action
@@ -891,7 +891,7 @@ class Item_RackTest extends DbTestCase
             ->with(
                 $this->equalTo('Computer'),          // Item Type
                 $this->equalTo($computer_id),        // Item ID
-                $this->equalTo(MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
+                $this->equalTo(\MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
             );
 
         // Prepare the Massive Action input
