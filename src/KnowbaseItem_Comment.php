@@ -42,7 +42,6 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class KnowbaseItem_Comment extends CommonDBTM
 {
-
     public static function getTypeName($nb = 0)
     {
         return _n('Comment', 'Comments', $nb);

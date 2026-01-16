@@ -36,6 +36,7 @@ namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
 use KnowbaseItem;
+use KnowbaseItem_Comment;
 use KnowbaseItem_User;
 use Session;
 
@@ -49,17 +50,17 @@ class KnowbaseItem_CommentTest extends DbTestCase
     public function testGetTypeName()
     {
         $expected = 'Comment';
-        $this->assertSame($expected, \KnowbaseItem_Comment::getTypeName(1));
+        $this->assertSame($expected, KnowbaseItem_Comment::getTypeName(1));
 
         $expected = 'Comments';
         foreach ([0, 2, 10] as $i) {
-            $this->assertSame($expected, \KnowbaseItem_Comment::getTypeName($i));
+            $this->assertSame($expected, KnowbaseItem_Comment::getTypeName($i));
         }
     }
 
     public function testGetCommentsForKbItem()
     {
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
 
         //first, set data
         $this->addComments($kb1);
@@ -71,7 +72,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertSame(12, $nb);
 
         // second, test what we retrieve
-        $comments = \KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
+        $comments = KnowbaseItem_Comment::getCommentsForKbItem($kb1->getID(), null);
         $this->assertCount(3, $comments);
         $this->assertCount(10, $comments[0]);
         $this->assertCount(2, $comments[0]['answers']);
@@ -88,15 +89,15 @@ class KnowbaseItem_CommentTest extends DbTestCase
     /**
      * Add comments into database
      *
-     * @param \KnowbaseItem $kb   KB item instance
+     * @param KnowbaseItem $kb   KB item instance
      * @param string        $lang KB item language, defaults to null
      *
      * @return void
      */
-    private function addComments(\KnowbaseItem $kb, string $lang = 'NULL')
+    private function addComments(KnowbaseItem $kb, string $lang = 'NULL')
     {
         $this->login();
-        $kbcom = new \KnowbaseItem_Comment();
+        $kbcom = new KnowbaseItem_Comment();
         $input = [
             'knowbaseitems_id' => $kb->getID(),
             'users_id'         => getItemByTypeName('User', TU_USER, true),
@@ -139,8 +140,8 @@ class KnowbaseItem_CommentTest extends DbTestCase
     public function testGetTabNameForItemNotLogged()
     {
         //we are not logged, we should not see comment tab
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
-        $kbcom = new \KnowbaseItem_Comment();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+        $kbcom = new KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
         $this->assertSame('', $name);
@@ -150,9 +151,9 @@ class KnowbaseItem_CommentTest extends DbTestCase
     {
         $this->login();
 
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
         $this->addComments($kb1);
-        $kbcom = new \KnowbaseItem_Comment();
+        $kbcom = new KnowbaseItem_Comment();
 
         $name = $kbcom->getTabNameForItem($kb1, true);
         $this->assertSame("Comments 6", strip_tags($name));
@@ -171,7 +172,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertEmpty($kbcom->getTabNameForItem($kb1));
 
         // Add comment and read right
-        $_SESSION['glpiactiveprofile']['knowbase'] = READ | \KnowbaseItem::COMMENTS;
+        $_SESSION['glpiactiveprofile']['knowbase'] = READ | KnowbaseItem::COMMENTS;
         // Tab name should be filled
         $this->assertSame("Comments", strip_tags($name));
     }
@@ -179,11 +180,11 @@ class KnowbaseItem_CommentTest extends DbTestCase
     public function testDisplayComments()
     {
         //TODO This should be part of an E2E test
-        $kb1 = getItemByTypeName(\KnowbaseItem::getType(), '_knowbaseitem01');
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
         $this->addComments($kb1);
 
         ob_start();
-        \KnowbaseItem_Comment::showForItem($kb1);
+        KnowbaseItem_Comment::showForItem($kb1);
         $html = ob_get_clean();
 
         preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
@@ -204,7 +205,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertTrue($result);
 
         ob_start();
-        \KnowbaseItem_Comment::showForItem($kb1);
+        KnowbaseItem_Comment::showForItem($kb1);
         $html = ob_get_clean();
 
         preg_match_all("/li id=\"kbcomment\d+\" class=\"comment\s+timeline-item KnowbaseItemComment /", $html, $results);
@@ -224,7 +225,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
     {
         $this->login();
         $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
-        $comment = new \KnowbaseItem_Comment();
+        $comment = new KnowbaseItem_Comment();
         $new_comment_input = [
             'knowbaseitems_id' => $kb1->getID(),
             'users_id'         => Session::getLoginUserID(),
@@ -254,16 +255,16 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $kb2 = new KnowbaseItem();
         $this->assertNotFalse($kb2->add([
             'name' => 'KB item for rights test',
-            'content' => 'Content of KB item for rights test'
+            'content' => 'Content of KB item for rights test',
         ]));
-        $kb2_comment1 = new \KnowbaseItem_Comment();
+        $kb2_comment1 = new KnowbaseItem_Comment();
         $kb2_comment_input = [
             'knowbaseitems_id' => $kb2->getID(),
             'users_id'         => Session::getLoginUserID(),
             'comment'          => 'Comment 1 for KB2',
         ];
         $this->assertNotFalse($kb2_comment1->add($kb2_comment_input));
-        $kb2_comment2 = new \KnowbaseItem_Comment();
+        $kb2_comment2 = new KnowbaseItem_Comment();
         $kb2_comment_input['comment'] = 'Comment 2 for KB2';
         $kb2_comment_input['users_id'] = getItemByTypeName('User', 'tech', true);
         $this->assertNotFalse($kb2_comment2->add($kb2_comment_input));
