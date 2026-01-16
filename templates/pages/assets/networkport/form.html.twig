@@ -62,7 +62,11 @@
         {{ fields.htmlField('', logical_num_field, _n('Port number', 'Port number', 1)) }}
         <input type="hidden" name="several" value="yes">
     {% endif %}
-    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textField('name', item.fields['name'], __('Name'), {
+        additional_attributes: {
+            autocomplete: 'off',
+        }
+    }) }}
     {{ fields.textField('ifalias', item.fields['ifalias'], __('Alias')) }}
 
     {% set is_readonly = item.fields['is_dynamic']|default(false) %}
