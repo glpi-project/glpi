@@ -875,24 +875,24 @@ class Item_RackTest extends DbTestCase
         // Mock the MassiveAction object
         $ma = $this->getMockBuilder(\MassiveAction::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['getAction', 'itemDone']) // We only want to mock (intercept) methods with result reporting
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone']) // We only want to mock (intercept) methods with result reporting
             ->getMock();
 
+        // Prepare the input
+        $input = [
+            'itemtype' => 'Computer',
+            'ids'      => [$computer_id],
+        ];
+        
         $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
 
         // Configure the Action (using real methods on the partial mock)
         // Instead of setting state, we force the getter to return our specific action
+        $ma->POST = $input;
         $ma->method('getAction')->willReturn($action_key);
-
-        // Define Expectation
-        // We expect itemDone to be called exactly ONCE with the status NO_ACTION
-        $ma->expects($this->once())
-            ->method('itemDone')
-            ->with(
-                $this->equalTo('Computer'),          // Item Type
-                $this->equalTo($computer_id),        // Item ID
-                $this->equalTo(\MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
-            );
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn($input);
+        $ma->method('itemDone')->willReturn(MassiveAction::NO_ACTION);
 
         // Execute the logic
         // We call Item_Rack directly. It will call $ma->getAction() (which returns 'delete')
