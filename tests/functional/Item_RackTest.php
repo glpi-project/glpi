@@ -867,35 +867,35 @@ class Item_RackTest extends DbTestCase
             'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true),
         ]);
         $this->assertIsInt($computer_id);
-    
+
         // Initialize the MassiveAction object
         $ma = new \MassiveAction(
             [], // POST
             [], // GET
             'process'
         );
-    
+
         // Configure the Action
         $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
-        
+
         $ma->setAction($action_key);
         $ma->setItemType('Computer');
-        
+
         // Prepare the Massive Action logic
         $input = [
             'itemtype' => 'Computer',
-            'ids'      => [$computer_id] 
+            'ids'      => [$computer_id],
         ];
-        
+
         // Pass the computer instance as the "checkitem" (the item type being processed)
         \Item_Rack::processMassiveActions($ma, $computer, $input);
-    
+
         // Assertions (Item_Rack::processMassiveActionsForOneItemtype)
         $results = $ma->getResults();
-    
+
         // Ensure the item is NOT in the 'ko' (error) list
         $this->assertArrayNotHasKey(
-            $computer_id, 
+            $computer_id,
             $results['ko'] ?? []
         );
     }
