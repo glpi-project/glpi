@@ -37,8 +37,8 @@
     is_horizontal: false,
 } %}
 
-<div class="firstbloc d-flex justify-content-between align-items-center">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form" aria-label="{{ __('Add a note') }}">
+<div class="d-flex mb-3 justify-content-between align-items-center">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form" aria-label="{{ _x('button', 'Add a note') }}">
         <i class="ti ti-link"></i>
         <span>{{ _x('button', 'Add a note') }}</span>
     </button>
@@ -264,11 +264,12 @@
  * @param {Element} element - The element that was clicked (button or link)
  */
 function toggleNotesAccordion(element) {
-    // Find the accordion container (it's the sibling div after the firstbloc)
-    const firstbloc = element.closest('.firstbloc');
-    const accordionContainer = firstbloc.parentElement.querySelector('.accordion');
+    // Find the accordion container - it's the next sibling div after the modal div
+    const buttonsContainer = element.closest('.d-flex.mb-3');
+    const modalContainer = buttonsContainer.nextElementSibling;
+    const accordionContainer = modalContainer.nextElementSibling;
 
-    if (!accordionContainer) {
+    if (!accordionContainer || !accordionContainer.classList.contains('accordion')) {
         console.warn('Accordion container not found');
         return;
     }
