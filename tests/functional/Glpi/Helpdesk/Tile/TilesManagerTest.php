@@ -764,6 +764,33 @@ final class TilesManagerTest extends DbTestCase
         $this->assertCount(0, $tiles);
     }
 
+    public function testTilesFromSoftDeletedFormsAreNotFound(): void
+    {
+        $form = getItemByTypeName(
+            type: Form::class,
+            name: 'Request a service',
+            onlyid: true,
+        );
+
+        // Arrange: create a self service profile with a form tile
+        $manager = $this->getManager();
+        $profile = $this->createNewHelpdeskProfile();
+        $this->createUserForProfile("test_user", $profile);
+        $manager->addTile($profile, FormTile::class, [
+            Form::getForeignKeyField() => $form,
+        ]);
+
+        // Act: count tiles, soft delete form then count again
+        $this->login("test_user");
+        $session = Session::getCurrentSessionInfo();
+        $tiles_before = $manager->getVisibleTilesForSession($session);
+        $this->deleteItem(Form::class, $form, purge: false);
+        $tiles_after = $manager->getVisibleTilesForSession($session);
+
+        // Assert: the form tile should not longer be found after deletion
+        $this->assertEquals(1, count($tiles_before) - count($tiles_after));
+    }
+
     private function createNewHelpdeskProfile(): Profile
     {
         return $this->createItem(Profile::class, [
