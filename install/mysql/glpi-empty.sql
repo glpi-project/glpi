@@ -2724,7 +2724,7 @@ CREATE TABLE `glpi_dropdowntranslations` (
 
 DROP TABLE IF EXISTS `glpi_entities`;
 CREATE TABLE `glpi_entities` (
-  `id` int unsigned NOT NULL DEFAULT '0',
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT NULL,
   `entities_id` int unsigned DEFAULT '0',
   `completename` text,
