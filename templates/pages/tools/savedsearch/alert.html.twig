@@ -48,7 +48,11 @@
       {% endset %}
 
       {{ fields.htmlField('', search_link_field, 'SavedSearch'|itemtype_name(1)) }}
-      {{ fields.textField('name', item.fields['name'], __('Name')) }}
+      {{ fields.textField('name', item.fields['name'], __('Name'), {
+          additional_attributes: {
+              autocomplete: 'off',
+          }
+      }) }}
       {{ fields.dropdownArrayField('operator', item.fields['operator'], operators, __('Operator'), {
          helper: __('Compare number of results the search returns against the specified value with selected operator')
       }) }}
