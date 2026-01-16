@@ -166,6 +166,46 @@ class EntityTest extends DbTestCase
     }
 
     /**
+     * Test that prepareInputForAdd does not manually set the ID.
+     * Race condition fix using AUTO_INCREMENT.
+     */
+    public function testPrepareInputForAddDoesNotSetId(): void
+    {
+        $this->login();
+        $entity = new Entity();
+
+        $prepared = $entity->prepareInputForAdd([
+            'name' => 'Test Entity No Manual ID',
+            'entities_id' => 0,
+        ]);
+
+        $this->assertArrayNotHasKey('id', $prepared);
+    }
+
+    /**
+     * Test that entity creation generates unique and sequential IDs.
+     */
+    public function testEntityCreationGeneratesUniqueIds(): void
+    {
+        $this->login();
+
+        $ids = [];
+        for ($i = 1; $i <= 5; $i++) {
+            $entity = $this->createItem(Entity::class, [
+                'name' => "Test Entity AutoIncrement $i",
+                'entities_id' => 0,
+            ]);
+            $ids[] = $entity->getID();
+        }
+
+        $this->assertCount(5, array_unique($ids));
+
+        for ($i = 1; $i < count($ids); $i++) {
+            $this->assertGreaterThan($ids[$i - 1], $ids[$i]);
+        }
+    }
+
+    /**
      * Run getSonsOf tests
      *
      * @param bool $cache Is cache enabled?
