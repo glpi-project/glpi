@@ -42,6 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class KnowbaseItem_Comment extends CommonDBTM
 {
+
     public static function getTypeName($nb = 0)
     {
         return _n('Comment', 'Comments', $nb);
@@ -50,6 +51,71 @@ class KnowbaseItem_Comment extends CommonDBTM
     public static function getIcon()
     {
         return 'ti ti-message-circle';
+    }
+
+    public static function canCreate(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canView(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canUpdate(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canDelete(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canPurge(): bool
+    {
+        return self::canDelete();
+    }
+
+    public function canCreateItem(): bool
+    {
+        return $this->canComment();
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->canComment();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        if (!$this->canComment()) {
+            return false;
+        }
+        // Users can edit their own comments and admins can edit all comments
+        return Session::getLoginUserID() === $this->fields['users_id']
+            || Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN);
+    }
+
+    public function canDeleteItem(): bool
+    {
+        // No deletion support in the UI for now so return false to also block API deletion
+        return false;
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canDeleteItem();
+    }
+
+    private function canComment(): bool
+    {
+        $kbitem = new KnowbaseItem();
+        if (!$kbitem->getFromDB($this->fields['knowbaseitems_id'])) {
+            return false;
+        }
+        return $kbitem->canComment();
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)

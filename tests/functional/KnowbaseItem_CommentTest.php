@@ -35,6 +35,9 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use KnowbaseItem;
+use KnowbaseItem_User;
+use Session;
 
 /* Test for inc/knowbaseitem_comment.class.php */
 
@@ -215,5 +218,85 @@ class KnowbaseItem_CommentTest extends DbTestCase
 
         preg_match_all("/button type=\"button\" class=\"btn btn-sm btn-ghost-secondary add_answer /", $html, $results);
         $this->assertCount(6, $results[0]);
+    }
+
+    public function testRights(): void
+    {
+        $this->login();
+        $kb1 = getItemByTypeName(KnowbaseItem::getType(), '_knowbaseitem01');
+        $comment = new \KnowbaseItem_Comment();
+        $new_comment_input = [
+            'knowbaseitems_id' => $kb1->getID(),
+            'users_id'         => Session::getLoginUserID(),
+            'comment'          => 'Comment for rights test',
+        ];
+
+        $all_knowbase_rights = ALLSTANDARDRIGHT | KnowbaseItem::KNOWBASEADMIN | KnowbaseItem::COMMENTS;
+
+        $this->assertTrue($comment::canCreate());
+        $this->assertTrue($comment::canUpdate());
+        $this->assertTrue($comment::canView());
+        $this->assertTrue($comment::canDelete());
+        $this->assertTrue($comment::canPurge());
+        $this->assertTrue($comment->can(-1, CREATE, $new_comment_input));
+        $this->assertNotFalse($comment->add($new_comment_input));
+        $this->assertTrue($comment->can($comment->getID(), READ));
+        $this->assertTrue($comment->can($comment->getID(), UPDATE));
+        // No deletion support yet
+        $this->assertFalse($comment->can($comment->getID(), PURGE));
+        $_SESSION['glpiactiveprofile']['knowbase'] = $all_knowbase_rights & ~KnowbaseItem::COMMENTS;
+        $this->assertFalse($comment::canCreate());
+        $this->assertFalse($comment::canUpdate());
+        $this->assertFalse($comment::canView());
+        $this->assertFalse($comment::canDelete());
+        $this->assertFalse($comment::canPurge());
+
+        $kb2 = new KnowbaseItem();
+        $this->assertNotFalse($kb2->add([
+            'name' => 'KB item for rights test',
+            'content' => 'Content of KB item for rights test'
+        ]));
+        $kb2_comment1 = new \KnowbaseItem_Comment();
+        $kb2_comment_input = [
+            'knowbaseitems_id' => $kb2->getID(),
+            'users_id'         => Session::getLoginUserID(),
+            'comment'          => 'Comment 1 for KB2',
+        ];
+        $this->assertNotFalse($kb2_comment1->add($kb2_comment_input));
+        $kb2_comment2 = new \KnowbaseItem_Comment();
+        $kb2_comment_input['comment'] = 'Comment 2 for KB2';
+        $kb2_comment_input['users_id'] = getItemByTypeName('User', 'tech', true);
+        $this->assertNotFalse($kb2_comment2->add($kb2_comment_input));
+
+        $this->login('tech', 'tech');
+        $new_comment_input['knowbaseitems_id'] = $kb2->getID();
+        $this->assertFalse($kb2->canViewItem());
+        $this->assertFalse($comment->can(-1, CREATE, $new_comment_input));
+        $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), READ));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), READ));
+        $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), UPDATE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), UPDATE));
+        $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), PURGE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), PURGE));
+
+        // give visibility
+        $kb_user = new KnowbaseItem_User();
+        $this->assertNotFalse($kb_user->add([
+            'knowbaseitems_id' => $kb2->getID(),
+            'users_id'         => getItemByTypeName('User', 'tech', true),
+        ]));
+        $this->assertTrue($kb2->update([
+            'id' => $kb2->getID(),
+            'is_faq' => 1,
+        ]));
+        $this->assertTrue($kb2->canViewItem());
+        $this->assertTrue($comment->can(-1, CREATE, $new_comment_input));
+        $this->assertTrue($kb2_comment1->can($kb2_comment1->getID(), READ));
+        $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), READ));
+        $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), UPDATE));
+        $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), UPDATE));
+        // No deletion support yet
+        $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), PURGE));
+        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), PURGE));
     }
 }
