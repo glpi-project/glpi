@@ -897,7 +897,7 @@ class Item_RackTest extends DbTestCase
         // Prepare the Massive Action input
         // Pass the computer instance as the "checkitem" (the item type being processed)
         $input = [
-            'itemtype' => 'Computer',
+            'itemtype' => \Computer::class,
             'ids'      => [$computer_id],
         ];
 
