@@ -308,9 +308,9 @@ describe('Service catalog page', () => {
         // Check breadcrumb
         cy.findByRole('main').findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
             cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
-            cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
-            cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
-            cy.findByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
         });
 
         // Go to the first child category
@@ -321,9 +321,9 @@ describe('Service catalog page', () => {
         // Check breadcrumb
         cy.findByRole('main').findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
             cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
-            cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
             cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('exist');
-            cy.findByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
         });
 
         // Check that the form is visible
@@ -337,9 +337,9 @@ describe('Service catalog page', () => {
         // Check breadcrumb
         cy.findByRole('main').findByRole('navigation', { 'name': 'Service catalog categories' }).within(() => {
             cy.findByRole('link', { 'name': 'Service catalog' }).should('exist');
-            cy.findByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
-            cy.findByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
-            cy.findByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Root Category ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Child Category 1 ${time}` }).should('not.exist');
+            cy.queryByRole('link', { 'name': `Child Category 2 ${time}` }).should('not.exist');
         });
     });
 
