@@ -4167,12 +4167,10 @@ class CommonDBTM extends CommonGLPI
                 = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
-            if (!in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
-                return $actions;
-            }
-
-            $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
+            if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
                 = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+            }
         }
 
         return $actions;
