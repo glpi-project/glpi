@@ -1068,11 +1068,6 @@ class TransferTest extends DbTestCase
             ],
             [
                 'name' => 'V1.0',
-                'softwares_id' => $software_source->getID(),
-                'entities_id' => $source_entity,
-            ],
-            [
-                'name' => 'V1.0',
                 'softwares_id' => $software_dest->getID(),
                 'entities_id' => $dest_entity,
             ],
