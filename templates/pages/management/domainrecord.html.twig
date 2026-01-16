@@ -56,7 +56,11 @@
         {% endset %}
         {{ fields.htmlField('', domain_field, 'Domain'|itemtype_name) }}
     {% endif %}
-    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textField('name', item.fields['name'], __('Name'), {
+        additional_attributes: {
+            autocomplete: 'off',
+        }
+    }) }}
 
     {{ fields.dropdownField(
         'DomainRecordType',
