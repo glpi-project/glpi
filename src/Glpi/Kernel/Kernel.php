@@ -197,6 +197,11 @@ final class Kernel extends BaseKernel
         // Global core controllers
         $routes->import($this->getProjectDir() . '/src/Glpi/Controller', 'attribute');
 
+        // Specific routes used only for tests
+        if (Environment::get()->shouldLoadTestsRoutes()) {
+            $routes->import($this->getProjectDir() . '/tests/Controller', 'attribute');
+        }
+
         // Env-specific route files.
         if (\is_file($path = $this->getProjectDir() . '/routes/' . $this->environment . '.php')) {
             (require $path)($routes->withPath($path), $this);
