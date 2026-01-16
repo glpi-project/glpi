@@ -892,7 +892,7 @@ class Item_RackTest extends DbTestCase
         $ma->method('getAction')->willReturn($action_key);
         $ma->method('addMessage')->willReturn(null);
         $ma->method('getInput')->willReturn($input);
-        $ma->method('itemDone')->willReturn(MassiveAction::NO_ACTION);
+        $ma->method('itemDone')->willReturn(\MassiveAction::NO_ACTION);
 
         // Execute the logic
         // We call Item_Rack directly. It will call $ma->getAction() (which returns 'delete')
