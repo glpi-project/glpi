@@ -4167,27 +4167,12 @@ class CommonDBTM extends CommonGLPI
                 = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
-            if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
-                if ($checkitem instanceof CommonDBTM && $checkitem->getID() > 0) {
-                    // Check if at least one selected item is linked to a rack
-                    $has_rack = $DB->request([
-                        'SELECT' => 'id',
-                        'FROM'   => Item_Rack::getTable(),
-                        'WHERE'  => [
-                            'itemtype' => static::getType(),
-                            'items_id' => $checkitem->getID(),
-                        ],
-                        'LIMIT'  => 1,
-                    ])->count() > 0;
-
-                    if (!$has_rack) {
-                        return $actions;
-                    }
-                }
-                // REST / API / no-context: always show
-                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
-                = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+            if (!in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
+                return $actions;
             }
+
+            $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
+                = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
         }
 
         return $actions;
