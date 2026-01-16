@@ -894,17 +894,10 @@ class Item_RackTest extends DbTestCase
                 $this->equalTo(\MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
             );
 
-        // Prepare the Massive Action input
-        // Pass the computer instance as the "checkitem" (the item type being processed)
-        $input = [
-            'itemtype' => \Computer::class,
-            'ids'      => [$computer_id],
-        ];
-
         // Execute the logic
         // We call Item_Rack directly. It will call $ma->getAction() (which returns 'delete')
         // and then it should call $ma->itemDone(..., NO_ACTION).
         // The assertion is handled automatically by the Mock's expectation above
-        \Item_Rack::processMassiveActions($ma, $computer, $input);
+        \Item_Rack::processMassiveActionsForOneItemtype($ma, $computer, [$computer_id]);
     }
 }
