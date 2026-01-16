@@ -858,6 +858,10 @@ class Item_RackTest extends DbTestCase
         $this->assertEquals(Rack::POS_RIGHT, $itemRack->fields['hpos']);
     }
 
+    /**
+     * Test verifying that unlinking an asset not connected to a rack
+     * results in NO_ACTION (skipped) rather than an error.
+     */
     public function testUnlinkAssetNotLinkedToRack()
     {
         // Create a Computer that is NOT linked to any rack
@@ -869,25 +873,26 @@ class Item_RackTest extends DbTestCase
         $this->assertIsInt($computer_id);
 
         // Mock the MassiveAction object
-        $ma = $this->getMockBuilder(\MassiveAction::class)
+        $ma = $this->getMockBuilder(MassiveAction::class)
             ->disableOriginalConstructor()
-            ->onlyMethods(['itemDone']) // We only want to intercept the result reporting
+            ->onlyMethods(['getAction', 'itemDone']) // We only want to mock (intercept) methods with result reporting
             ->getMock();
 
-        // Define our Expectation
-        // We expect 'itemDone' to be called exactly ONCE with the status NO_ACTION
+        $action_key = 'Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
+
+        // Configure the Action (using real methods on the partial mock)
+        // Instead of setting state, we force the getter to return our specific action
+        $ma->method('getAction')->willReturn($action_key);
+
+        // Define Expectation
+        // We expect itemDone to be called exactly ONCE with the status NO_ACTION
         $ma->expects($this->once())
             ->method('itemDone')
             ->with(
                 $this->equalTo('Computer'),          // Item Type
                 $this->equalTo($computer_id),        // Item ID
-                $this->equalTo(\MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
+                $this->equalTo(MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
             );
-
-        // Configure the Action (using real methods on the partial mock)
-        $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
-        $ma->setAction($action_key);
-        $ma->setItemType('Computer');
 
         // Prepare the Massive Action input
         // Pass the computer instance as the "checkitem" (the item type being processed)
@@ -897,6 +902,8 @@ class Item_RackTest extends DbTestCase
         ];
 
         // Execute the logic
+        // We call Item_Rack directly. It will call $ma->getAction() (which returns 'delete')
+        // and then it should call $ma->itemDone(..., NO_ACTION).
         // The assertion is handled automatically by the Mock's expectation above
         \Item_Rack::processMassiveActions($ma, $computer, $input);
     }
