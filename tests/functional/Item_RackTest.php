@@ -898,6 +898,6 @@ class Item_RackTest extends DbTestCase
         // We call Item_Rack directly. It will call $ma->getAction() (which returns 'delete')
         // and then it should call $ma->itemDone(..., NO_ACTION).
         // The assertion is handled automatically by the Mock's expectation above
-        \Item_Rack::processMassiveActionsForOneItemtype($ma, $computer, [$computer_id]);
+        \Item_Rack::processMassiveActionsForOneItemtype($ma, $computer, $input);
     }
 }
