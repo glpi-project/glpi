@@ -41,7 +41,11 @@
         {{ inputs.hidden('ranking', item.fields['ranking']) }}
     {% endif %}
     {{ inputs.hidden('sub_type', get_class(item)) }}
-    {{ fields.textField('name', item.fields['name'], __('Name')) }}
+    {{ fields.textField('name', item.fields['name'], __('Name'), {
+        additional_attributes: {
+            autocomplete: 'off',
+        }
+    }) }}
     {{ fields.textField('description', item.fields['description'], __('Description')) }}
     {{ fields.dropdownArrayField('match', item.fields['match'], match_operators, __('Logical operator')) }}
 
