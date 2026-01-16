@@ -35,7 +35,11 @@
 
 {% block form_fields %}
     {% if not item.isNewItem() %}
-        {{ fields.textField('name', item.fields['name'], __('Name')) }}
+        {{ fields.textField('name', item.fields['name'], __('Name'), {
+        additional_attributes: {
+            autocomplete: 'off',
+        }
+    }) }}
     {% endif %}
     {{ fields.textField('url', item.fields['url'], __('URL'), {
         full_width: true
