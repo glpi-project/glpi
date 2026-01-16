@@ -868,35 +868,36 @@ class Item_RackTest extends DbTestCase
         ]);
         $this->assertIsInt($computer_id);
 
-        // Initialize the MassiveAction object
-        $ma = new \MassiveAction(
-            [], // POST
-            [], // GET
-            'process'
-        );
+        // Mock the MassiveAction object
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['itemDone']) // We only want to intercept the result reporting
+            ->getMock();
 
-        // Configure the Action
+        // Define our Expectation
+        // We expect 'itemDone' to be called exactly ONCE with the status NO_ACTION
+        $ma->expects($this->once())
+            ->method('itemDone')
+            ->with(
+                $this->equalTo('Computer'),          // Item Type
+                $this->equalTo($computer_id),        // Item ID
+                $this->equalTo(\MassiveAction::NO_ACTION) // Ensure the item is NOT in the 'ko' (error) list
+            );
+
+        // Configure the Action (using real methods on the partial mock)
         $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
-
         $ma->setAction($action_key);
         $ma->setItemType('Computer');
 
-        // Prepare the Massive Action logic
+        // Prepare the Massive Action input
+        // Pass the computer instance as the "checkitem" (the item type being processed)
         $input = [
             'itemtype' => 'Computer',
             'ids'      => [$computer_id],
         ];
 
-        // Pass the computer instance as the "checkitem" (the item type being processed)
+        // Execute the logic
+        // The assertion is handled automatically by the Mock's expectation above
         \Item_Rack::processMassiveActions($ma, $computer, $input);
-
-        // Assertions (Item_Rack::processMassiveActionsForOneItemtype)
-        $results = $ma->getResults();
-
-        // Ensure the item is NOT in the 'ko' (error) list
-        $this->assertArrayNotHasKey(
-            $computer_id,
-            $results['ko'] ?? []
-        );
     }
 }
