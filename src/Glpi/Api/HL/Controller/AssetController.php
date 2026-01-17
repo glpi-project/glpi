@@ -366,6 +366,17 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'itemtype' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'readOnly' => true,
+                ],
+                'items_id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-version-introduced' => '2.2.0',
+                    'readOnly' => true,
+                ],
                 'instantiation_type' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-version-introduced' => '2.2.0',
