@@ -44,6 +44,9 @@ use CommonITILObject;
 use Contact;
 use Contract;
 use Database;
+use DatabaseInstance;
+use DatabaseInstanceCategory;
+use DatabaseInstanceType;
 use Datacenter;
 use Document;
 use Document_Item;
@@ -106,6 +109,11 @@ final class ManagementController extends AbstractController
                     'label' => Database::getTypeName(1),
                     'version_introduced' => '2.0',
                 ],
+                DatabaseInstance::class => [
+                    'schema_name' => 'DatabaseInstance',
+                    'label' => DatabaseInstance::getTypeName(1),
+                    'version_introduced' => '2.2',
+                ],
                 Datacenter::class => [
                     'schema_name' => 'DataCenter',
                     'label' => Datacenter::getTypeName(1),
@@ -162,6 +170,9 @@ final class ManagementController extends AbstractController
         foreach ($management_types as $m_class => $m_data) {
             if (!\is_a($m_class, CommonDBTM::class, true)) {
                 throw new LogicException();
+            }
+            if ($m_class === DatabaseInstanceType::class) {
+                continue;
             }
 
             $m_name = $m_data['schema_name'];
@@ -508,6 +519,67 @@ final class ManagementController extends AbstractController
                 ],
                 'business_criticity' => self::getDropdownTypeSchema(BusinessCriticity::class),
             ],
+        ];
+
+        $schemas['DatabaseInstance'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => DatabaseInstance::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'version' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'port' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 10], // Why is this a string instead of integer?
+                'path' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'type' => self::getDropdownTypeSchema(class: DatabaseInstanceType::class, full_schema: 'DatabaseInstanceType'),
+                'category' => self::getDropdownTypeSchema(class: DatabaseInstanceCategory::class, full_schema: 'DatabaseInstanceCategory'),
+                'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
+                'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'is_onbackup' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_lastboot' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_lastbackup' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'database' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Database',
+                        'x-join' => [
+                            'table' => Database::getTable(), // The table with the desired data
+                            'fkey' => 'id',
+                            'field' => DatabaseInstance::getForeignKeyField(),
+                            'primary-property' => 'id',
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'readOnly' => true,
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+        $schemas['Database']['properties']['instance'] = self::getDropdownTypeSchema(class: DatabaseInstance::class, full_schema: 'DatabaseInstance') + [
+            'x-version-introduced' => '2.2',
         ];
 
         return $schemas;
