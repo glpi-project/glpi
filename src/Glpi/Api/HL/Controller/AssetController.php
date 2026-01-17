@@ -62,6 +62,7 @@ use Glpi\SocketModel;
 use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Infocom;
+use Item_DeviceNetworkCard;
 use Item_Rack;
 use Location;
 use Manufacturer;
@@ -69,6 +70,14 @@ use Monitor;
 use Network;
 use NetworkEquipment;
 use NetworkPort;
+use NetworkPortAggregate;
+use NetworkPortAlias;
+use NetworkPortDialup;
+use NetworkPortEthernet;
+use NetworkPortFiberchannel;
+use NetworkPortFiberchannelType;
+use NetworkPortLocal;
+use NetworkPortWifi;
 use OperatingSystem;
 use PassiveDCEquipment;
 use PassiveDCEquipmentModel;
@@ -87,6 +96,7 @@ use SoftwareCategory;
 use SoftwareVersion;
 use State;
 use User;
+use WifiNetwork;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -356,6 +366,14 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'instantiation_type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'enum' => [
+                        'NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortAggregate', 'NetworkPortAlias',
+                        'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel'
+                    ],
+                ],
                 'logical_number' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'mac' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -1422,6 +1440,187 @@ final class AssetController extends AbstractController
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
                 'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortEthernet'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortEthernet::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, full_schema: 'NetworkCardItem'),
+                'type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'T', 'SX', 'LX'],
+                    'description' => <<<EOT
+                        Type of Ethernet port.
+                        - '': Not specified
+                        - 'T': Twisted Pair (RJ-45)
+                        - 'SX': Multimode fiber
+                        - 'LX': Single mode fiber
+EOT,
+                ],
+                'speed' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Speed of the Ethernet port in Mbps',
+                    'default' => 10,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortWifi'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortWifi::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, full_schema: 'NetworkCardItem'),
+                'wifinetwork' => self::getDropdownTypeSchema(class: WifiNetwork::class, full_schema: 'WifiNetwork'),
+                'version' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'a', 'b', 'a/b', 'a/b/g', 'a/b/g/n', 'a/b/g/n/y', 'ac', 'ax', 'be', 'bn'],
+                    'description' => <<<EOT
+                        Wi-Fi version.
+                        - '': Not specified
+                        - 'a': 802.11a
+                        - 'b': 802.11b
+                        - 'a/b': 802.11a/b
+                        - 'a/b/g': 802.11a/b/g
+                        - 'a/b/g/n': 802.11a/b/g/n
+                        - 'a/b/g/n/y': 802.11a/b/g/n/y
+                        - 'ac': 802.11ac (Wi-Fi 5)
+                        - 'ax': 802.11ax (Wi-Fi 6)
+                        - 'be': 802.11be (Wi-Fi 7)
+                        - 'bn': 802.11bn (Wi-Fi 8)
+EOT,
+                ],
+                'mode' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'ad-hoc', 'managed', 'master', 'repeater', 'secondary', 'monitor', 'auto'],
+                    'description' => <<<EOT
+                        Wi-Fi mode.
+                        - '': Not specified
+                        - 'ad-hoc': Ad-Hoc mode
+                        - 'managed': Managed mode
+                        - 'master': Master mode
+                        - 'repeater': Repeater mode
+                        - 'secondary': Secondary mode
+                        - 'monitor': Monitor mode
+                        - 'auto': Automatic mode
+EOT,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortAggregate'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortAggregate::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_port_list' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-field' => 'networkports_id_list',
+                    'description' => 'JSON-encoded array of Network Port IDs that are part of this aggregate port',
+                ],
+                //TODO add network_ports property that uses something like JSON_TABLE to properly join the related ports. May need changes to the search code to support it.
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortAlias'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortAlias::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'aliased_network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, field: 'networkports_id_alias', full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortDialup'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortDialup::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortLocal'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortLocal::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortFiberchannel'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortFiberchannel::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, full_schema: 'NetworkCardItem'),
+                'type' => self::getDropdownTypeSchema(class: NetworkPortFiberchannelType::class, full_schema: 'NetworkPortFiberchannelType'),
+                'wwn' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 50],
+                'speed' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Speed of the Fiber Channel port in Mbps',
+                    'default' => 10,
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
