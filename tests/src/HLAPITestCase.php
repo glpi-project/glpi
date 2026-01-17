@@ -303,8 +303,12 @@ final class HLAPIHelper
         return $this;
     }
 
-    public function autoTestCRUD(string $endpoint, array $create_params = [], array $update_params = []): self
+    public function autoTestCRUD(string $endpoint, array $create_params = [], array $update_params = [], array $extra_options = []): self
     {
+        $extra_options = array_merge([
+            // Expect the new location to be a singleton (i.e. /endpoint instead of /endpoint/{id})
+            'new_location_singleton' => false,
+        ], $extra_options);
         $this->test->resetSession();
         $this->test->login();
         $unique_id = __FUNCTION__;
@@ -375,15 +379,19 @@ final class HLAPIHelper
         }, false);
 
         $new_item_location = null;
-        $this->call($request, function ($call) use (&$new_item_location, $endpoint) {
+        $this->call($request, function ($call) use ($extra_options, &$new_item_location, $endpoint) {
             /** @var HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->jsonContent(function ($content) use ($endpoint) {
+                ->jsonContent(function ($content) use ($extra_options, $endpoint) {
                     $this->test->assertArrayHasKey('id', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "id" field');
                     $this->test->assertGreaterThan(0, $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "id" field that is not valid');
                     $this->test->assertArrayHasKey('href', $content, 'The response for the POST route path of endpoint "' . $endpoint . '" does not have an "href" field');
-                    $this->test->assertEqualsIgnoringCase($content['href'], $endpoint . '/' . $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    if ($extra_options['new_location_singleton']) {
+                        $this->test->assertEqualsIgnoringCase($content['href'], $endpoint, 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    } else {
+                        $this->test->assertEqualsIgnoringCase($content['href'], $endpoint . '/' . $content['id'], 'The response for the POST route path of endpoint "' . $endpoint . '" has an "href" field that is not valid');
+                    }
                 })
                 ->headers(function ($headers) use (&$new_item_location) {
                     $this->test->assertNotEmpty($headers['Location']);
