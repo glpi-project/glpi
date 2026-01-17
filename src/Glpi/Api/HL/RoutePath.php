@@ -277,6 +277,14 @@ final class RoutePath
     /**
      * @return string[]
      */
+    public function getRouteScopes(): array
+    {
+        return $this->getRoute()->scopes;
+    }
+
+    /**
+     * @return string[]
+     */
     public function getRouteTags(): array
     {
         return $this->getRoute()->tags;
