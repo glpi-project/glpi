@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL;
 
+use CommonDBChild;
 use CommonDBTM;
 use DBConnection;
 use DBmysql;
@@ -426,8 +427,21 @@ final class Search
                     $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
                 }
             }
-            if ($item->isEntityAssign()) {
+            $entity_assign = $item->isEntityAssign();
+            if ($entity_assign && $item->isField('entities_id')) {
                 $entity_restrict[] = getEntitiesRestrictCriteria('_');
+            } elseif ($entity_assign && $item instanceof CommonDBChild && !str_starts_with($item::$itemtype, 'itemtype')) {
+                // need to join the parent item table and apply the entity restrict there
+                $parent_item_table = ($item::$itemtype)::getTable();
+                $criteria['LEFT JOIN'][$parent_item_table . ' AS parent_item_ent'] = [
+                    'ON' => [
+                        'parent_item_ent' => 'id',
+                        '_' => $item::$items_id,
+                    ],
+                ];
+                $entity_restrict[] = getEntitiesRestrictCriteria('parent_item_ent');
+            } elseif ($entity_assign) {
+                throw new RuntimeException('Itemtype ' . $itemtype . ' is entity assign but has no known way to apply entity restrictions.');
             }
             if ($item instanceof Entity) {
                 $entity_restrict = [

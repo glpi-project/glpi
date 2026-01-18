@@ -382,7 +382,7 @@ final class AssetController extends AbstractController
                     'x-version-introduced' => '2.2.0',
                     'enum' => [
                         'NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortAggregate', 'NetworkPortAlias',
-                        'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel'
+                        'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel',
                     ],
                 ],
                 'logical_number' => ['type' => Doc\Schema::TYPE_INTEGER],
@@ -1467,7 +1467,7 @@ final class AssetController extends AbstractController
                     'readOnly' => true,
                 ],
                 'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
-                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, full_schema: 'NetworkCardItem'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
                 'type' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['', 'T', 'SX', 'LX'],
@@ -1501,7 +1501,7 @@ EOT,
                     'readOnly' => true,
                 ],
                 'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
-                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, full_schema: 'NetworkCardItem'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
                 'wifinetwork' => self::getDropdownTypeSchema(class: WifiNetwork::class, full_schema: 'WifiNetwork'),
                 'version' => [
                     'type' => Doc\Schema::TYPE_STRING,
@@ -1623,7 +1623,7 @@ EOT,
                     'readOnly' => true,
                 ],
                 'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
-                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, full_schema: 'NetworkCardItem'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
                 'type' => self::getDropdownTypeSchema(class: NetworkPortFiberchannelType::class, full_schema: 'NetworkPortFiberchannelType'),
                 'wwn' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 50],
                 'speed' => [
