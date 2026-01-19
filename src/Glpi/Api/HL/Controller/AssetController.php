@@ -1984,6 +1984,32 @@ EOT,
         return $types_only ? array_keys($assets) : $assets;
     }
 
+    /**
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
+     * @return array<class-string<CommonDBTM>, string>
+     */
+    public static function getAssetInfocomTypes(bool $types_only = true): array
+    {
+        static $assets = null;
+
+        if ($assets === null) {
+            $assets = [];
+            $types = [
+                'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem',
+                'Computer', 'Monitor', 'NetworkEquipment',
+                'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
+                'Certificate', 'Appliance', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable',
+            ];
+            /**
+             * @var class-string<CommonDBTM> $type
+             */
+            foreach ($types as $type) {
+                $assets[$type] = $type::getTypeName(1);
+            }
+        }
+        return $types_only ? array_keys($assets) : $assets;
+    }
+
     public static function getRackTypes(bool $schema_names_only = true): array
     {
         static $rack_types = null;
@@ -2105,7 +2131,7 @@ EOT,
     }
 
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -2134,6 +2160,108 @@ EOT,
         }
         $results = reset($results);
         return $result->withBody(Utils::streamFor(json_encode($results)));
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'Infocom',
+        description: 'Create the financial and administration information for a specific asset'
+    )]
+    public function createItemInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $management_controller = new ManagementController();
+        $infocom_schema = $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request));
+        unset($infocom_schema['properties']['itemtype']['readOnly']);
+        unset($infocom_schema['properties']['items_id']['readOnly']);
+        return ResourceAccessor::createBySchema(
+            $infocom_schema,
+            $request->getParameters(),
+            [self::class, 'getItemInfocom'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'id' => $request->getAttribute('id'),
+                ],
+                'id' => 'noop',
+            ]
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Infocom',
+        description: 'Update the financial and administration information for a specific asset'
+    )]
+    public function updateItemInfocom(Request $request): Response
+    {
+        global $DB;
+
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        $management_controller = new ManagementController();
+        return ResourceAccessor::updateBySchema(
+            $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Infocom',
+        description: 'Delete the financial and administration information for a specific asset',
+    )]
+    public function deleteItemInfocom(Request $request): Response
+    {
+        global $DB;
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        $management_controller = new ManagementController();
+        return ResourceAccessor::deleteBySchema(
+            $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
