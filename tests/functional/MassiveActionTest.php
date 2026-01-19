@@ -36,6 +36,7 @@ namespace tests\units;
 
 use CommonDBTM;
 use Contract;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Location;
 use MassiveAction;
@@ -144,6 +145,15 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount($singlecount, $input['actions']);
     }
 
+    /**
+     * @param string $action_code   action choosen on form ('update', 'purge', ...)
+     * @param CommonDBTM $item
+     * @param array $ids            ids for items to update
+     * @param array $input
+     * @param int $ok               number of expected success
+     * @param int $ko               number of expected failures
+     * @param string $action_class
+     */
     protected function processMassiveActionsForOneItemtype(
         string $action_code,
         CommonDBTM $item,
@@ -152,7 +162,7 @@ class MassiveActionTest extends DbTestCase
         int $ok,
         int $ko,
         string $action_class = MassiveAction::class
-    ) {
+    ): void {
         $ma_ok = 0;
         $ma_ko = 0;
 
@@ -276,6 +286,55 @@ class MassiveActionTest extends DbTestCase
         }
 
         $_SESSION['glpiactiveentities'] = $old_session;
+    }
+
+    /**
+     * Ids of search Option of State related to visibility
+     * @see State::rawSearchOptions()
+     */
+    public static function stateVisibilitySearchOptionIdsProvider()
+    {
+        return array_map(fn($so_id) => [$so_id], range(21, 39));
+    }
+
+    /**
+     * Checks if a State can be (de)associated with an itemtype via massive action
+     */
+    #[DataProvider('stateVisibilitySearchOptionIdsProvider')]
+    public function testMassiveActionUpdateStateVisibility(int $search_option_id): void
+    {
+        // --- arrange
+        $this->login();
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        $_searchoption_definition = SearchOption::getOptionsForItemtype($state::class)[$search_option_id];
+        $tested_field = $_searchoption_definition['linkfield'] ?? $_searchoption_definition['field'];
+
+        // ensure visibility is set to No by default
+        $this->assertArrayHasKey($tested_field, $state->fields, "field $tested_field not found in State fields. Wrong search option probably.");
+        $this->assertEquals(0, $state->fields[$tested_field], "field $tested_field should be 0 to start test.");
+
+        // input submited in massive action form
+        $test_input = [
+            // 'id_field' => 'State:'.$search_option_id, // submited in form, no effect on test
+            'field' => $tested_field, // 'is_visible_phone',
+            $tested_field => 1,
+            'search_options' => ['State' => $search_option_id],
+        ];
+
+        // --- act
+        $this->processMassiveActionsForOneItemtype(
+            'update',
+            $state,
+            [$state->fields['id']],
+            $test_input,
+            1,
+            0
+        );
+
+        // -- assert
+        $state->getFromDB($state->getID());
+        $this->assertEquals(1, $state->fields[$tested_field]);
     }
 
     public static function addNoteProvider()
