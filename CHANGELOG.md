@@ -8,6 +8,7 @@ The present file will list all changes made to the project; according to the
 ### Added
 - New schemas for network port instantiations in High-Level API v2.2.
 - Endpoints for creating, updating and deleting Infocom (Financial and administrative information) for items in the High-Level API v2.2.
+- New endpoints/schema for notes in High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
