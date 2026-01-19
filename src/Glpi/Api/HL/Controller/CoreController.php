@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\OpenAPIGenerator;
@@ -695,5 +696,50 @@ HTML;
         }
 
         return new JSONResponse(null, $is_partial_transfer ? 202 : 200);
+    }
+
+    #[Route(path: '/Session/EntityTree', methods: ['GET'], tags: ['Session'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\Route(
+        description: 'Get the entity tree for the current session, with the active entity selected and its ancestors expanded.',
+    )]
+    public function getSessionEntityTree(Request $request): JSONResponse
+    {
+        $ancestors = getAncestorsOf('glpi_entities', $_SESSION['glpiactive_entity']);
+        $entitiestree = [];
+        foreach ($_SESSION['glpiactiveprofile']['entities'] as $default_entity) {
+            $default_entity_id = $default_entity['id'];
+            $entitytree = $default_entity['is_recursive'] ? Entity::getEntityTree($default_entity_id) : [$default_entity['id'] => $default_entity];
+
+            $adapt_tree = static function (&$entities) use (&$adapt_tree) {
+                foreach ($entities as $entities_id => &$entity) {
+                    $entity['key'] = $entities_id;
+                    $entity['label'] = $entity['name'];
+                    $entity['tree'] ??= [];
+                    $entity['children'] = array_values($adapt_tree($entity['tree']));
+                    unset($entity['name'], $entity['tree']);
+                }
+                unset($entity);
+                return $entities;
+            };
+            $adapt_tree($entitytree);
+
+            $entitiestree = array_merge($entitiestree, $entitytree);
+        }
+        $select_tree = static function (&$entities) use (&$select_tree, $ancestors) {
+            foreach ($entities as &$entity) {
+                if (isset($ancestors[$entity['key']])) {
+                    $entity['expanded'] = 'true';
+                }
+                if ($entity['key'] == $_SESSION['glpiactive_entity']) {
+                    $entity['selected'] = 'true';
+                }
+                if (isset($entity['children'])) {
+                    $select_tree($entity['children']);
+                }
+            }
+        };
+        $select_tree($entitiestree);
+        return new JSONResponse($entitiestree);
     }
 }
