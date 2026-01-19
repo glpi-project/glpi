@@ -880,7 +880,7 @@ class Item_RackTest extends DbTestCase
 
         // Prepare the input
         $input = [
-            'itemtype' => 'Computer',
+            'itemtype' => \Computer::class,
             'ids'      => [$computer_id],
         ];
 
