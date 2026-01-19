@@ -63,6 +63,8 @@ final class AssetDefinition extends AbstractDefinition
 {
     use AssetImage;
 
+    private ?array $decoded_capacities_cache = null;
+
     public static function getSectorizedDetails(): array
     {
         return ['config', self::class];
@@ -637,7 +639,10 @@ TWIG, $twig_params);
      */
     private function getDecodedCapacitiesField(): array
     {
-        return $this->decodeCapacities($this->fields['capacities']);
+        if ($this->decoded_capacities_cache === null) {
+            $this->decoded_capacities_cache = $this->decodeCapacities($this->fields['capacities']);
+        }
+        return $this->decoded_capacities_cache;
     }
 
     /**
