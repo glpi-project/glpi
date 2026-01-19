@@ -49,7 +49,9 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Location;
 use Manufacturer;
+use NetworkPortFiberchannelType;
 use State;
+use WifiNetwork;
 
 #[Route(path: '/Dropdowns', priority: 1, tags: ['Dropdowns'])]
 #[Doc\Route(
@@ -227,6 +229,45 @@ final class DropdownController extends AbstractController
             ],
         ];
 
+        $schemas['WifiNetwork'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => WifiNetwork::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'essid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'mode' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortFiberchannelType'] = [
+            'x-version-introduced' => '2.2',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortFiberchannelType::class,
+            'description' => NetworkPortFiberchannelType::getTypeName(1),
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -244,6 +285,8 @@ final class DropdownController extends AbstractController
                 'State' => State::getTypeName(1),
                 'Manufacturer' => Manufacturer::getTypeName(1),
                 'Calendar' => Calendar::getTypeName(1),
+                'WifiNetwork' => WifiNetwork::getTypeName(1),
+                'NetworkPortFiberchannelType' => NetworkPortFiberchannelType::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
