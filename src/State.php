@@ -371,6 +371,7 @@ class State extends CommonTreeDropdown
             'id'                 => '21',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_computer',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Computer::getTypeName(Session::getPluralNumber())),
             'datatype'           => 'bool',
             'joinparams'         => [
@@ -387,6 +388,7 @@ class State extends CommonTreeDropdown
             'id'                 => '22',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_softwareversion',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -407,6 +409,7 @@ class State extends CommonTreeDropdown
             'id'                 => '23',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_monitor',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Monitor::getTypeName(Session::getPluralNumber())),
             'datatype'           => 'bool',
             'joinparams'         => [
@@ -423,6 +426,7 @@ class State extends CommonTreeDropdown
             'id'                 => '24',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_printer',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Printer::getTypeName(Session::getPluralNumber())),
             'datatype'           => 'bool',
             'joinparams'         => [
@@ -439,6 +443,7 @@ class State extends CommonTreeDropdown
             'id'                 => '25',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_peripheral',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Peripheral::getTypeName(Session::getPluralNumber())),
             'datatype'           => 'bool',
             'joinparams'         => [
@@ -455,6 +460,7 @@ class State extends CommonTreeDropdown
             'id'                 => '26',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_phone',
             'name'               => sprintf(__('%1$s - %2$s'), __('Visibility'), Phone::getTypeName(Session::getPluralNumber())),
             'datatype'           => 'bool',
             'joinparams'         => [
@@ -471,6 +477,7 @@ class State extends CommonTreeDropdown
             'id'                 => '27',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_networkequipment',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -491,6 +498,7 @@ class State extends CommonTreeDropdown
             'id'                 => '28',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_softwarelicense',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -511,6 +519,7 @@ class State extends CommonTreeDropdown
             'id'                 => '29',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_certificate',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -531,6 +540,7 @@ class State extends CommonTreeDropdown
             'id'                 => '30',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_rack',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -551,6 +561,7 @@ class State extends CommonTreeDropdown
             'id'                 => '31',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_line',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -571,6 +582,7 @@ class State extends CommonTreeDropdown
             'id'                 => '32',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_enclosure',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -591,6 +603,7 @@ class State extends CommonTreeDropdown
             'id'                 => '33',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_pdu',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -611,6 +624,7 @@ class State extends CommonTreeDropdown
             'id'                 => '34',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_cluster',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -631,6 +645,7 @@ class State extends CommonTreeDropdown
             'id'                 => '35',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_passivedcequipment',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -651,6 +666,7 @@ class State extends CommonTreeDropdown
             'id'                 => '36',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_contract',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -671,6 +687,7 @@ class State extends CommonTreeDropdown
             'id'                 => '37',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_appliance',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -691,6 +708,7 @@ class State extends CommonTreeDropdown
             'id'                 => '38',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_cable',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
@@ -711,6 +729,7 @@ class State extends CommonTreeDropdown
             'id'                 => '39',
             'table'              => DropdownVisibility::getTable(),
             'field'              => 'is_visible',
+            'linkfield'          => 'is_visible_databaseinstance',
             'name'               => sprintf(
                 __('%1$s - %2$s'),
                 __('Visibility'),
