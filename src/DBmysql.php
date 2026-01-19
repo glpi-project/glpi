@@ -294,8 +294,8 @@ class DBmysql
             // force mysqlnd to return int and float types correctly (not as strings)
             $this->dbh->options(MYSQLI_OPT_INT_AND_FLOAT_NATIVE, 1);
 
-            // Remove ONLY_FULL_GROUP_BY and add NO_AUTO_VALUE_ON_ZERO to allow inserting id=0 for root entity
-            $this->dbh->query("SET SESSION sql_mode = CONCAT((SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', '')), ',NO_AUTO_VALUE_ON_ZERO')");
+            // Remove ONLY_FULL_GROUP_BY from SQL mode
+            $this->dbh->query("SET SESSION sql_mode = (SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''))");
 
             $this->connected = true;
 
