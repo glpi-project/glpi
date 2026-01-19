@@ -47,23 +47,10 @@ class CalendarSegmentTest extends DbTestCase
      */
     protected function addDelayInDayProvider(): iterable
     {
-        // Create a calendar with segments on different days
-        // Monday (day 1): 09:00-18:00 (9h continuous)
-        // Tuesday (day 2): 08:00-12:00 and 14:00-18:00 (8h split)
-        $calendar = $this->createItem(\Calendar::class, [
-            'name' => 'Test Calendar with multiple days',
-        ]);
-        $this->createItems(CalendarSegment::class, [
-            ['calendars_id' => $calendar->getID(), 'day' => 1, 'begin' => '09:00:00', 'end' => '18:00:00'],
-            ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '12:00:00'],
-            ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '14:00:00', 'end' => '18:00:00'],
-        ]);
-
         // POSITIVE DELAY TESTS
 
         // Test 1: Simple positive delay within a single segment
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '10:00:00',
             'delay' => 2 * HOUR_TIMESTAMP,
@@ -73,7 +60,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 2: Positive delay from start to end of segment
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '09:00:00',
             'delay' => 9 * HOUR_TIMESTAMP,
@@ -83,7 +69,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 3: Positive delay spanning two segments on same day
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 2,
             'begin_time' => '10:00:00',
             'delay' => 5 * HOUR_TIMESTAMP,
@@ -93,7 +78,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 4: Positive delay starting before segment
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 2,
             'begin_time' => '07:00:00',
             'delay' => 3 * HOUR_TIMESTAMP,
@@ -103,7 +87,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 5: Positive delay starting in gap between segments
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 2,
             'begin_time' => '13:00:00',
             'delay' => 2 * HOUR_TIMESTAMP,
@@ -113,7 +96,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 6: Positive delay exceeding available time
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '17:00:00',
             'delay' => 3 * HOUR_TIMESTAMP,
@@ -125,7 +107,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 7: Simple negative delay within a single segment
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '15:00:00',
             'delay' => 2 * HOUR_TIMESTAMP,
@@ -135,7 +116,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 8: Negative delay from end to start of segment
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '18:00:00',
             'delay' => 9 * HOUR_TIMESTAMP,
@@ -145,7 +125,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 9: Negative delay spanning two segments
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 2,
             'begin_time' => '17:00:00',
             'delay' => 5 * HOUR_TIMESTAMP,
@@ -155,7 +134,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 10: Negative delay starting after segment
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '19:00:00',
             'delay' => 3 * HOUR_TIMESTAMP,
@@ -165,7 +143,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 11: Negative delay starting in gap between segments
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 2,
             'begin_time' => '13:00:00',
             'delay' => 2 * HOUR_TIMESTAMP,
@@ -175,7 +152,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 12: Negative delay exceeding available time
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 2,
             'begin_time' => '10:00:00',
             'delay' => 3 * HOUR_TIMESTAMP,
@@ -185,7 +161,6 @@ class CalendarSegmentTest extends DbTestCase
 
         // Test 13: Zero delay
         yield [
-            'calendar_id' => $calendar->getID(),
             'day' => 1,
             'begin_time' => '12:00:00',
             'delay' => 0,
@@ -199,7 +174,6 @@ class CalendarSegmentTest extends DbTestCase
      *
      * @dataProvider addDelayInDayProvider
      *
-     * @param integer      $calendar_id      Calendar ID
      * @param integer      $day              Day number (1|2)
      * @param string       $begin_time       Starting time (HH:MM:SS)
      * @param integer      $delay            Delay in seconds
@@ -209,15 +183,26 @@ class CalendarSegmentTest extends DbTestCase
      * @return void
      */
     public function testAddDelayInDay(
-        int $calendar_id,
         int $day,
         string $begin_time,
         int $delay,
         bool $negative_delay,
         $expected
     ): void {
+        // Create a calendar with segments on different days
+        // Monday (day 1): 09:00-18:00 (9h continuous)
+        // Tuesday (day 2): 08:00-12:00 and 14:00-18:00 (8h split)
+        $calendar = $this->createItem(\Calendar::class, [
+            'name' => 'Test Calendar',
+        ]);
+        $this->createItems(CalendarSegment::class, [
+            ['calendars_id' => $calendar->getID(), 'day' => 1, 'begin' => '09:00:00', 'end' => '18:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '08:00:00', 'end' => '12:00:00'],
+            ['calendars_id' => $calendar->getID(), 'day' => 2, 'begin' => '14:00:00', 'end' => '18:00:00'],
+        ]);
+
         $result = CalendarSegment::addDelayInDay(
-            $calendar_id,
+            $calendar->getID(),
             $day,
             $begin_time,
             $delay,
