@@ -9630,16 +9630,16 @@ HTML,
      */
     public static function contentsProvider(): array
     {
-        $std_input = [\Ticket::getTemplateFormFieldName() => 1];
+        $std_input = [Ticket::getTemplateFormFieldName() => 1];
         $providers = [
             [
                 'input' => $std_input,
-                'success' => false
+                'success' => false,
             ],
             [
                 'input' => $std_input + ['content' => 'sthing'],
-                'success' => true
-            ]
+                'success' => true,
+            ],
         ];
 
         $ko_contents = [
@@ -9652,7 +9652,7 @@ HTML,
         foreach ($ko_contents as $ko_content) {
             $providers[] = [
                 'input' => $std_input + ['content' => '<p>' . $ko_content . '</p>'],
-                'success' => false
+                'success' => false,
             ];
         }
 
@@ -9660,7 +9660,7 @@ HTML,
         foreach ($ko_contents as $ko_content) {
             $providers[] = [
                 'input' => $std_input + ['content' => '<p>' . $ko_content . ' and any text, inclugind  some nbsp</p>'],
-                'success' => true
+                'success' => true,
             ];
         }
 
@@ -9675,7 +9675,7 @@ HTML,
     {
         $this->login();
 
-        $ticket = new \Ticket();
+        $ticket = new Ticket();
 
         $result = $ticket->add($input);
         if ($success) {
