@@ -1856,7 +1856,7 @@ class MassiveAction
      * @param CommonDBTM $item         Item instance
      * @param string     $action_verb  Action verb (deletes, restores, purges)
      * @param int        $count        Number of items processed
-     * @param array      $ids          Array of item IDs processed
+     * @param int[]      $ids          Array of item IDs processed
      * @return void
      */
     private static function logMassiveActionEvent(CommonDBTM $item, string $action_verb, int $count, array $ids): void
