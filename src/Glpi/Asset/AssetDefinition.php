@@ -407,6 +407,12 @@ TWIG, $twig_params);
         }
     }
 
+    public function post_getFromDB()
+    {
+        parent::post_getFromDB();
+        $this->decoded_capacities_cache = null;
+    }
+
     public function cleanDBonPurge()
     {
         $capacities = $this->getDecodedCapacitiesField();
