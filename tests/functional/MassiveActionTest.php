@@ -337,6 +337,72 @@ class MassiveActionTest extends DbTestCase
         $this->assertEquals(1, $state->fields[$tested_field]);
     }
 
+    /**
+     * Checks if a State can be (de)associated with a custom asset itemtype via massive action
+     */
+    public function testMassiveActionUpdateStateVisibilityForCustomAsset(): void
+    {
+        // --- Arrange
+        $this->login();
+        $definition = $this->initAssetDefinition();
+        $custom_asset_classname = $definition->getAssetClassName();
+
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        // Find the search option for this custom asset in State using definition (not id, it may change)
+        $search_options = SearchOption::getOptionsForItemtype($state::class);
+        $custom_asset_search_option = null;
+        $custom_asset_search_option_id = null;
+
+        foreach ($search_options as $so_id => $so_definition) {
+            if (isset($so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'])
+                && $so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] === $custom_asset_classname) {
+                $custom_asset_search_option = $so_definition;
+                $custom_asset_search_option_id = $so_id;
+                break;
+            }
+        }
+
+        assert($custom_asset_search_option !== null, "Search option not found for custom asset {$custom_asset_classname}");
+        $tested_field = $custom_asset_search_option['linkfield'] ?? $custom_asset_search_option['field'];
+
+        assert(isset($state->fields[$tested_field]), "field {$tested_field} not found in State fields");
+        assert($state->fields[$tested_field] == 0, "field {$tested_field} should be 0 to start test");
+
+        // input submitted in massive action form
+        $test_input = [
+            'field' => $tested_field,
+            $tested_field => 1,
+            'search_options' => ['State' => $custom_asset_search_option_id],
+        ];
+
+        // --- Act
+        $this->processMassiveActionsForOneItemtype(
+            'update',
+            $state,
+            [$state->fields['id']],
+            $test_input,
+            1,
+            0
+        );
+
+        // --- Assert
+        $state->getFromDB($state->getID());
+        $this->assertEquals(1, $state->fields[$tested_field]);
+
+        // Verify in DropdownVisibility table
+        $visibility = countElementsInTable(
+            \DropdownVisibility::getTable(),
+            [
+                'itemtype' => \State::class,
+                'items_id' => $state->getID(),
+                'visible_itemtype' => $custom_asset_classname,
+                'is_visible' => 1,
+            ]
+        );
+        $this->assertEquals(1, $visibility, "DropdownVisibility entry should exist for custom asset");
+    }
+
     public static function addNoteProvider()
     {
         return [

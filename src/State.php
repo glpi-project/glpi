@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Features\Clonable;
@@ -754,6 +755,31 @@ class State extends CommonTreeDropdown
             'datatype'           => 'bool',
         ];
 
+        // custom Assets
+        $custom_asset_search_id = 4000; // random choice, see @todo below
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $tab[] = [
+                'id'                 => $custom_asset_search_id++, // @todo I don't know what to put here...
+                'table'              => DropdownVisibility::getTable(),
+                'field'              => 'is_visible',
+                'linkfield'          => strtolower(str_replace('\'', '_', 'is_visible_' . $definition->getAssetClassName())),
+                'name'               => sprintf(
+                    __('%1$s - %2$s'),
+                    __('Visibility'),
+                    $definition->getFriendlyName()
+                ),
+                'datatype'           => 'bool',
+                'joinparams'         => [
+                    'jointype' => 'itemtypeonly',
+                    'table'      => static::getTable(),
+                    'condition' => [
+                        'NEWTABLE.visible_itemtype' => $definition->getAssetClassName(),
+                        'NEWTABLE.items_id' => new QueryExpression('REFTABLE.id'),
+                    ],
+                ],
+            ];
+        };
+
         return $tab;
     }
 
@@ -829,6 +855,12 @@ class State extends CommonTreeDropdown
         foreach ($CFG_GLPI['state_types'] as $type) {
             $fields[$type] = 'is_visible_' . strtolower($type);
         }
+
+        // Add custom assets
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+            $fields[$definition->getAssetClassName()] = strtolower(str_replace('\'', '_', 'is_visible_' . $definition->getAssetClassName()));
+        }
+
         return $fields;
     }
 
