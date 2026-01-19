@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL;
 
+use CartridgeItem;
+use CommonDBChild;
 use CommonDBTM;
 use DBConnection;
 use DBmysql;
@@ -426,8 +428,29 @@ final class Search
                     $criteria[$join_type] = array_merge($criteria[$join_type], $visibility_restrict[$join_type]);
                 }
             }
-            if ($item->isEntityAssign()) {
+            $entity_assign = $item->isEntityAssign();
+            if ($entity_assign && $item->isField('entities_id') && !in_array($itemtype, ['Consumable', 'Cartridge'], true)) {
                 $entity_restrict[] = getEntitiesRestrictCriteria(table: '_', is_recursive: $item->maybeRecursive() && !($item instanceof Entity));
+            } elseif ($entity_assign && $item instanceof CommonDBChild && !str_starts_with($item::$itemtype, 'itemtype')) {
+                // need to join the parent item table and apply the entity restrict there
+                $parent_item_table = ($item::$itemtype)::getTable();
+                $criteria['LEFT JOIN'][$parent_item_table . ' AS parent_item_ent'] = [
+                    'ON' => [
+                        'parent_item_ent' => 'id',
+                        '_' => $item::$items_id,
+                    ],
+                ];
+                $parent_item = getItemForItemtype($item::$itemtype);
+                $entity_restrict[] = getEntitiesRestrictCriteria(table: 'parent_item_ent', is_recursive: $parent_item->maybeRecursive());
+            } elseif ($itemtype === 'Cartridge') {
+                $criteria['LEFT JOIN'][CartridgeItem::getTable() . ' AS parent_item_ent'] = [
+                    'ON' => [
+                        'parent_item_ent' => 'id',
+                        '_' => 'cartridgeitems_id',
+                    ],
+                ];
+            } elseif ($entity_assign) {
+                throw new RuntimeException('Itemtype ' . $itemtype . ' is entity assign but has no known way to apply entity restrictions.');
             }
             if ($item instanceof Entity) {
                 $entity_restrict = [
