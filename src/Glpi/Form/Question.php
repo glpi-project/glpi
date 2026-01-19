@@ -101,6 +101,13 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     #[Override]
     public function post_addItem()
     {
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+
         // Report logs to the parent form
         $this->logCreationInParentForm();
     }
@@ -108,6 +115,13 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     #[Override]
     public function post_updateItem($history = true)
     {
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+
         // Report logs to the parent form
         $this->logUpdateInParentForm($history);
     }

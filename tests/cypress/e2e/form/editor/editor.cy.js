@@ -30,6 +30,45 @@
  * ---------------------------------------------------------------------
  */
 
+const TEST_IMAGE_BASE64 = 'iVBORw0KGgoAAAANSUhEUgAAAEMAAABHCAYAAABcW/plAAAEJElEQVR4AeyXjVHjMBCF7WskUEmgkoRKCJUEKglUkkkluf00yPe8kfx3yd0MWcaKV7tvn6SntZF/NfHXKRBidFI0TYgRYogCYkZlhBiigJhRGSGGKCBmVEaIIQqIGZURYogCYkZlhBiigJipMg6Hw3m1WqWGLfG7MpMY2+22OZ1OqWFPVeCn4ZIYCJEXpnb23cs9iXEvix1bZ4ghCoUYIYYoIGZURoghCogZlTFVjP1+f95sNulkajln2spOqvj2FrP+ootcOOAygo53vV6fiZlv0UXuZvNnvvAf7HQ9laxYGZBC9PLy0nx8fKSTaSbkUIaPGBiwOTZ2Z2LkkAsHXDkH++vrqyEGZg4vWHLIVV4455yoi2JAClGeaO0OBuzr6yu7W4MlP5jn5+eesClQ+Mm87HIh3HPByxzI6QUWdIpizOV5e3trmFQtjxiYWrzmZ5eHBBnjtWpp3t/fa/QX/lExbMDmeDyS2NpPi43P7N7FYinXntM6PBrEzOxdcMBlzkFeBCnx4hvjtWpprRrht2HGr6oYqMpkbcD28fGxI8TGRwyMDrHb7bSb7K19ESfj+4ccE6iBA65vd4ONbyqvHwtecuGAK/POuVfF+Pz8TBOskTEgGI3bTjTsWPZh48t97pRt2i06hbaUl7mQW6Cc7CqKQQlPIQYDVkdjUrmvNj57/pshIcDQ5vIyB3LI/ZtWFMOX9tAAHqsCqA2Hx+KrNY9VLrXJ91h8S1pRjDkqe6w+FmozuSlVAY42h9djyV/SimIsIfoJOUkM3sS6GHsrjx6iMt5jlUtt8B6Lr9bmYGscc/1JjKenp14eb/yeY6Djscr18PDQy/TYXtB1/HvBhW/SLYph/6s5aI1WB7sHVmemYvgXG1hyFF+ywex2u1Lopr4khp3tW1/SLIpJ1UYnBkbjcMCVfcTx5T53fORilxoxRPQv3xL22r4kBqS+hJmMvaXTNwcTBEPDtv/rZ2Jg8OXmd9MwrfeRY/4iL4c0xOLrNXP+y3snBv/2bJEXY1PaTN4CPDZJBHzW713kalXkID4OW7mf73B4XsNO+qrNHNe+d2JAbBNsWRT2nEYOubUc+9hqS4LU8P/L3xODSbAoPqT8s07MNzBW2umjy8d8H0HAkuNjvg/GY/FlXM3O8aX3CzEg4pGxZ7tlQuyoHxwfMTBW2t0XLblDDSw55MLhedfrNR96PCotWN5jYGj67lE/9tCYc2JFMTIBE2JHWYD5WHSLjY+Y+RZd5MIBlxF0vPbiTCKYL115U8CRk5z2o35sc13lGhTjKiPchOQ2pCGG6BpihBiigJhRGSGGKCBmVEaIIQqIGZURYogCYkZlhBiigJhRGSGGKCBmVMadiyHL75tRGaJHiBFiiAJiRmWEGKKAmFEZIYYoIGZURoghCogZlSFi/AYAAP//O4yYwAAAAAZJREFUAwCnQCatff2bYwAAAABJRU5ErkJggg==';
+
+function pasteImageIntoTinyMCE($destination) {
+    const htmlContent = `<img src="data:image/png;base64,${TEST_IMAGE_BASE64}" />`;
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData('text/html', htmlContent);
+
+    const pasteEvent = new ClipboardEvent('paste', {
+        bubbles: true,
+        cancelable: true,
+        clipboardData: dataTransfer
+    });
+
+    $destination[0].dispatchEvent(pasteEvent);
+}
+
+function assertFileUploadSuccess(interception, expectedProperty) {
+    expect(interception.response.statusCode).to.eq(200);
+    expect(interception.response.body).to.have.property(expectedProperty);
+    expect(interception.response.body[expectedProperty]).to.be.an('array').that.is.not.empty;
+}
+
+function assertImageInserted(getElement) {
+    getElement()
+        .find('a')
+        .should('have.attr', 'href')
+        .and('match', /^\/front\/document\.send\.php/);
+    getElement()
+        .find('img')
+        .should('have.attr', 'src')
+        .and('match', /^\/front\/document\.send\.php/);
+}
+
+function saveFormAndReload() {
+    cy.findByRole('button', {'name': 'Save'}).click();
+    cy.findAllByRole('alert').should('exist');
+    cy.reload();
+}
+
 describe ('Form editor', () => {
     beforeEach(() => {
         cy.login();
@@ -1148,5 +1187,234 @@ describe ('Form editor', () => {
         // Save the form
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+    });
+
+    it('can paste image in form description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            cy.wrap(form_id).visitFormTab('Form');
+        });
+
+        cy.findByLabelText("Form description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.findByLabelText("Form description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_uploader_header');
+        });
+
+        saveFormAndReload();
+
+        assertImageInserted(() => cy.findByLabelText("Form description").awaitTinyMCE());
+    });
+
+    it('can paste image in section description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            cy.wrap(form_id).visitFormTab('Form');
+            cy.addQuestion('First question');
+            cy.addSection('Second section');
+            cy.saveFormEditorAndReload();
+        });
+
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(0).as('section');
+        cy.get('@section').findByLabelText("Section description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@section').findByLabelText("Section description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_sections[0][_uploader_description][]');
+        });
+
+        saveFormAndReload();
+
+        assertImageInserted(() => cy.get('@section').findByLabelText("Section description").awaitTinyMCE());
+    });
+
+    it('can paste image in new section description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            cy.wrap(form_id).visitFormTab('Form');
+            cy.addQuestion('First question');
+            cy.addSection('Second section');
+        });
+
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(1).as('section');
+        cy.get('@section').findByLabelText("Section description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@section').findByLabelText("Section description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_sections[1][_uploader_description][]');
+        });
+
+        saveFormAndReload();
+
+        assertImageInserted(() => cy.get('@section').findByLabelText("Section description").awaitTinyMCE());
+    });
+
+    it('can duplicate a section with an image in description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            cy.wrap(form_id).visitFormTab('Form');
+            cy.addQuestion('First question');
+            cy.addSection('Second section');
+        });
+
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(0).as('section');
+        cy.get('@section').findByLabelText("Section description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@section').findByLabelText("Section description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_sections[0][_uploader_description][]');
+        });
+
+        cy.get('@section')
+            .findAllByRole('button', {name: 'More actions'}).eq(0)
+            .click()
+        ;
+        cy.get('@section')
+            .findByRole('button', {name: 'Duplicate section'})
+            .click()
+        ;
+
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Form section'}).eq(1).as('section');
+
+        assertImageInserted(() => cy.get('@section').findByLabelText("Section description").awaitTinyMCE());
+    });
+
+    it('can paste image in question description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            cy.addQuestionToDefaultSectionWithAPI(
+                form_id,
+                'First question',
+                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                0,
+                null
+            );
+            cy.wrap(form_id).visitFormTab('Form');
+        });
+
+        cy.findByRole('option', {'name': 'First question'}).as('question');
+        cy.get('@question').click();
+        cy.get('@question').findByLabelText("Question description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@question').findByLabelText("Question description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_questions[0][_uploader_description][]');
+        });
+
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Question details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                assertImageInserted(() => cy.findByLabelText("Question description").awaitTinyMCE());
+            });
+        });
+    });
+
+    it('can paste image in new question description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').visitFormTab('Form');
+        cy.addQuestion("First question");
+
+        cy.findByRole('option', {'name': 'New question'}).as('question');
+        cy.get('@question').findByLabelText("Question description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@question').findByLabelText("Question description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_questions[0][_uploader_description][]');
+        });
+
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Question details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                assertImageInserted(() => cy.findByLabelText("Question description").awaitTinyMCE());
+            });
+        });
+    });
+
+    it('can duplicate a question with an image in description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').visitFormTab('Form');
+        cy.addQuestion("First question");
+
+        cy.findByRole('option', {'name': 'New question'}).as('question');
+        cy.get('@question').click();
+        cy.get('@question').findByLabelText("Question description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@question').findByLabelText("Question description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_questions[0][_uploader_description][]');
+        });
+
+        cy.findByRole('button', {'name': "Duplicate question"}).click();
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).should('exist');
+
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Question details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                cy.findByRole('textbox', {'name': 'Question name'}).click();
+                assertImageInserted(() => cy.findByLabelText("Question description").awaitTinyMCE());
+            });
+        });
     });
 });

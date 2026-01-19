@@ -249,7 +249,8 @@
              'name': name,
              'only_uploaded_files': true,
              'uploads': options.uploads,
-             'required': options.fields_template.isMandatoryField('_documents_id')|default(false)
+             'required': options.fields_template.isMandatoryField('_documents_id')|default(false),
+             'init': options.init_fileupload ?? options.init ?? true
          }]) %}
       {% endset %}
    {% endif %}

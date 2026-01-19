@@ -377,6 +377,11 @@ final class Form extends CommonDBTM implements
 
         $input = $this->removeSavedConditionsIfAlwaysVisible($input);
 
+        $input = $this->addFiles($input, [
+            'name' => 'header',
+            'content_field' => 'header',
+        ]);
+
         return $input;
     }
 
