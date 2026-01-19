@@ -151,12 +151,12 @@ class DropdownControllerTest extends HLAPITestCase
         $this->createItem(Location::class, [
             'name' => 'recursive_location',
             'entities_id' => $this->getTestRootEntity(true),
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_child_1', true)));
         $this->login();
         $this->api->call(new Request('GET', '/Dropdowns/Location', [
-            'GLPI-Entity' => getItemByTypeName('Entity', '_test_child_1', true)
+            'GLPI-Entity' => getItemByTypeName('Entity', '_test_child_1', true),
         ]), function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
