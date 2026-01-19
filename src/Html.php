@@ -4873,7 +4873,6 @@ JAVASCRIPT
             placeholder: " . json_encode($placeholder) . ",
             allowClear: $allowclear,
             minimumInputLength: 0,
-            quietMillis: 100,
             dropdownAutoWidth: true,
             dropdownParent: $('#$field_id').closest('div.modal, div.dropdown-menu, body'),
             minimumResultsForSearch: " . $CFG_GLPI['ajax_limit_count'] . ",
@@ -4881,6 +4880,7 @@ JAVASCRIPT
                url: '$url',
                dataType: 'json',
                type: 'POST',
+               delay: 250,
                data: function (params) {
                   query = params;
                   return $.extend({}, params_$field_id, {
