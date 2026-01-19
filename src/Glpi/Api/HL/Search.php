@@ -427,7 +427,7 @@ final class Search
                 }
             }
             if ($item->isEntityAssign()) {
-                $entity_restrict[] = getEntitiesRestrictCriteria('_');
+                $entity_restrict[] = getEntitiesRestrictCriteria(table: '_', is_recursive: $item->maybeRecursive() && !($item instanceof Entity));
             }
             if ($item instanceof Entity) {
                 $entity_restrict = [
