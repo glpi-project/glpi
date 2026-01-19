@@ -1715,22 +1715,25 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    try {
+                    $item_software_version = new Item_SoftwareVersion();
+                    $soft_version_existing = $item_software_version->getFromDBByCrit([
+                        'itemtype'             => $itemtype,
+                        'items_id'             => $ID,
+                        'softwareversions_id'  => $newversID,
+                    ]);
+
+                    if ($soft_version_existing) {
+                        $DB->delete(Item_SoftwareVersion::getTable(), ['id' => $data['id']]);
+                    } else {
                         $DB->update(
-                            'glpi_items_softwareversions',
-                            ['softwareversions_id' => $newversID],
-                            ['id' => $data['id']]
+                            Item_SoftwareVersion::getTable(),
+                            [
+                                'softwareversions_id' => $newversID,
+                            ],
+                            [
+                                'id' => $data['id'],
+                            ]
                         );
-                    } catch (RuntimeException $e) {
-                        if (str_contains($e->getMessage(), 'Duplicate entry')) {
-                            // If duplicate: delete the current row (obsolete)
-                            $DB->delete(
-                                'glpi_items_softwareversions',
-                                ['id' => $data['id']]
-                            );
-                        } else {
-                            throw $e;
-                        }
                     }
                 }
             } else { // Do not keep
