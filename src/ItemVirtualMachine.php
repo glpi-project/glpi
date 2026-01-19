@@ -41,11 +41,6 @@ use function Safe\preg_match;
 use function Safe\preg_replace;
 
 /**
- * Virtual machine management
- */
-
-
-/**
  * ItemVirtualMachine Class
  *
  * Class to manage virtual machines
@@ -134,14 +129,6 @@ class ItemVirtualMachine extends CommonDBChild
     }
 
 
-    /**
-     * Display form
-     *
-     * @param int $ID
-     * @param array   $options
-     *
-     * @return bool TRUE if form is ok
-     **/
     public function showForm($ID, array $options = [])
     {
         if (isset($options['parent'])) {
@@ -162,9 +149,9 @@ class ItemVirtualMachine extends CommonDBChild
 
         $linked_asset = "";
         if ($link_asset = self::findVirtualMachine($this->fields)) {
-            $asset = getItemForItemtype($this->fields['itemtype']);
-            if ($asset->getFromDB($link_asset)) {
-                $linked_asset = $asset->getLink(['comments' => true]);
+            $asset_to_link = getItemForItemtype($this->fields['itemtype']);
+            if ($asset_to_link->getFromDB($link_asset)) {
+                $linked_asset = $asset_to_link->getLink(['comments' => true]);
             }
         }
 
@@ -182,12 +169,12 @@ class ItemVirtualMachine extends CommonDBChild
 
 
     /**
-     * Show hosts for a virtualmachine
+     * Show hosts for a virtual machine
      *
-     * @param $asset CommonDBTM object that represents the virtual machine
+     * @param CommonDBTM $asset object that represents the virtual machine
      *
      * @return void
-     **/
+     */
     public static function showForVirtualMachine(CommonDBTM $asset)
     {
         global $CFG_GLPI;
@@ -256,8 +243,8 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param CommonDBTM $asset Asset instance
      *
-     * @return void|bool (display) Returns false if there is a rights error.
-     **/
+     * @return void
+     */
     public static function showForAsset(CommonDBTM $asset)
     {
 
@@ -265,7 +252,7 @@ class ItemVirtualMachine extends CommonDBChild
         $itemtype = $asset->getType();
 
         if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
-            return false;
+            return;
         }
         $canedit = $asset->canEdit($ID);
 
@@ -346,15 +333,15 @@ class ItemVirtualMachine extends CommonDBChild
 
 
     /**
-     * Get correct uuid sql search for virtualmachines
+     * Get correct uuid SQL search for virtual machines
      *
      * @since 9.3.1
      *
      * @param string $uuid the uuid given
      *
-     * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
+     * @return string[] the restrict SQL clause which contains uuid, uuid with first block flipped,
      * uuid with 3 first block flipped
-     **/
+     */
     public static function getUUIDRestrictCriteria($uuid)
     {
         //More infos about uuid, please see wikipedia :
@@ -373,7 +360,7 @@ class ItemVirtualMachine extends CommonDBChild
         }
 
         //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
-        //On unix is flips first block of uuid and on windows flips 3 first blocks...
+        //On unix is flips first block of uuid and on Windows flips 3 first blocks...
         $in      = [strtolower($uuid)];
         $regexes = [
             "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/"                                        => "$4$3$2$1$5",
@@ -393,7 +380,7 @@ class ItemVirtualMachine extends CommonDBChild
     /**
      * Find a virtual machine by uuid
      *
-     * @param array $fields  Array of virtualmachine fields
+     * @param array<string,mixed> $fields  Array of virtual machine fields
      *
      * @return int|bool ID of the asset that have this uuid or false otherwise
      **/
@@ -511,7 +498,7 @@ class ItemVirtualMachine extends CommonDBChild
     /**
      * @param class-string<CommonDBTM> $itemtype
      *
-     * @return array
+     * @return array<array<string,mixed>>
      */
     public static function rawSearchOptionsToAdd($itemtype)
     {
