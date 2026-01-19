@@ -63,6 +63,7 @@ final class AssetDefinition extends AbstractDefinition
 {
     use AssetImage;
 
+    /** @var Capacity[] */
     private ?array $decoded_capacities_cache = null;
 
     public static function getSectorizedDetails(): array
