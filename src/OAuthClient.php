@@ -62,6 +62,9 @@ final class OAuthClient extends CommonDBTM
         return 'ti ti-key';
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs($options);
@@ -70,6 +73,9 @@ final class OAuthClient extends CommonDBTM
         return $tabs;
     }
 
+    /**
+     * @return string[]
+     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return [
@@ -96,7 +102,7 @@ final class OAuthClient extends CommonDBTM
         return true;
     }
 
-    public function showSessions()
+    public function showSessions(): void
     {
         global $DB;
 
