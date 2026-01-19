@@ -162,9 +162,9 @@ class ItemVirtualMachine extends CommonDBChild
 
         $linked_asset = "";
         if ($link_asset = self::findVirtualMachine($this->fields)) {
-            $asset = getItemForItemtype($this->fields['itemtype']);
-            if ($asset->getFromDB($link_asset)) {
-                $linked_asset = $asset->getLink(['comments' => true]);
+            $asset_to_link = getItemForItemtype($this->fields['itemtype']);
+            if ($asset_to_link->getFromDB($link_asset)) {
+                $linked_asset = $asset_to_link->getLink(['comments' => true]);
             }
         }
 
