@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Computer;
+use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
 use Glpi\Features\AssignableItemInterface;
@@ -638,5 +639,30 @@ class AssetControllerTest extends HLAPITestCase
                     $this->assertEquals('_test_group_2', $content['group'][1]['name']);
                 });
         });
+    }
+
+    public function testCRUDInfocom()
+    {
+        $this->login();
+        $infocom_types = AssetController::getAssetInfocomTypes(true);
+        foreach ($infocom_types as $itemtype) {
+            $create_input = [];
+            if ($itemtype === 'Cartridge') {
+                $create_input['cartridgeitems_id'] = getItemByTypeName('CartridgeItem', '_test_cartridgeitem01', true);
+            } elseif ($itemtype === 'Consumable') {
+                $create_input['consumableitems_id'] = getItemByTypeName('ConsumableItem', '_test_consumableitem01', true);
+            } else {
+                $create_input['name'] = __FUNCTION__;
+                $create_input['entities_id'] = $this->getTestRootEntity(true);
+            }
+            $item = $this->createItem($itemtype, $create_input);
+            $this->api->autoTestCRUD('/Assets/' . $itemtype . '/' . $item->getID() . '/Infocom', [
+                'date_buy' => '2026-01-14',
+            ], [
+                'date_buy' => '2026-01-15',
+            ], [
+                'new_location_singleton' => true,
+            ]);
+        }
     }
 }
