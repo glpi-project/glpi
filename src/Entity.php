@@ -3141,7 +3141,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return null;
     }
 
-    private static function getEntityTree(int $entities_id_root): array
+    public static function getEntityTree(int $entities_id_root): array
     {
         global $DB;
 
