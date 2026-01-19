@@ -1715,14 +1715,17 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $item_software_version = new Item_SoftwareVersion();
-                    $soft_version_existing = $item_software_version->getFromDBByCrit([
-                        'itemtype'             => $itemtype,
-                        'items_id'             => $ID,
-                        'softwareversions_id'  => $newversID,
-                    ]);
+                    $existing_count = $DB->request([
+                        'COUNT'  => 'cpt',
+                        'FROM'   => Item_SoftwareVersion::getTable(),
+                        'WHERE'  => [
+                            'itemtype'             => $itemtype,
+                            'items_id'             => $ID,
+                            'softwareversions_id'  => $newversID,
+                        ],
+                    ])->current();
 
-                    if ($soft_version_existing) {
+                    if ($existing_count['cpt'] > 0) {
                         $DB->delete(Item_SoftwareVersion::getTable(), ['id' => $data['id']]);
                     } else {
                         $DB->update(
