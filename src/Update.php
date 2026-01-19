@@ -225,6 +225,10 @@ class Update
             $DB->doQuery(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
         }
 
+        // Add NO_AUTO_VALUE_ON_ZERO to allow operations on entities with id=0 (root entity)
+        // This is required because glpi_entities uses id=0 for the root entity
+        $DB->doQuery("SET SESSION sql_mode = CONCAT(@@sql_mode, ',NO_AUTO_VALUE_ON_ZERO')");
+
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
 
         $number_of_steps = count($migrations);
