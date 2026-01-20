@@ -45,7 +45,7 @@ class CalendarSegmentTest extends DbTestCase
      *
      * @return iterable
      */
-    protected function addDelayInDayProvider(): iterable
+    public function addDelayInDayProvider(): iterable
     {
         // POSITIVE DELAY TESTS
 
