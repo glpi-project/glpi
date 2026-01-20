@@ -35,6 +35,7 @@ import { expect, test } from '../../fixtures/glpi_fixture';
 import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from '../../utils/WorkerEntities';
 import { FormTranslationPage } from "../../pages/FormTranslationPage";
+import { pasteImageInRichText, assertPastedImageIsCorrectlyInserted } from "../../utils/ImagePasteHelpers";
 
 test('Can copy default value to translation', async ({ page, profile, api }) => {
     await profile.set(Profiles.SuperAdmin);
@@ -92,4 +93,45 @@ test('Can copy default value to translation', async ({ page, profile, api }) => 
     // Check values
     await expect(translationInput).toHaveValue(`Form - ${uuid}`);
     await expect(translationInputDesc).toHaveText('Form description');
+});
+
+test('Can paste image in form translation', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const form_translation = new FormTranslationPage(page);
+
+    // Create a form and go to its translation page
+    const uuid = randomUUID();
+    const form_id = await api.createItem('Glpi\\Form\\Form', {
+        name: `Form - ${uuid}`,
+        header: `Form description`,
+        entities_id: getWorkerEntityId(),
+    });
+    await form_translation.goto(form_id);
+
+    // Add a language
+    await form_translation.addLanguage('Français');
+    await form_translation.expectLanguageDropdownOpened('Français');
+
+    // Retrieve textarea name attribute to verify upload later
+    const translationRow = await form_translation.getTranslationRow('Form description');
+    const textarea = translationRow.getByRole('cell', { name: 'Translated value' })
+        .getByLabel('Enter translation');
+    const textareaName = await textarea.getAttribute('name');
+
+    // Paste image in form description translation
+    await pasteImageInRichText(
+        page,
+        () => form_translation.getTranslationRichTextByLabel('Form description'),
+        `_uploader_${textareaName}`
+    );
+
+    // Save the translation and open it again to ensure values are persisted
+    await form_translation.saveTranslation();
+    await form_translation.openLanguage('Français');
+    await form_translation.expectLanguageDropdownOpened('Français');
+
+    // Verify the pasted image is displayed
+    await assertPastedImageIsCorrectlyInserted(
+        () => form_translation.getTranslationRichTextByLabel('Form description')
+    );
 });

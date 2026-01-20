@@ -61,6 +61,8 @@ final class UpdateFormTranslationController extends AbstractTranslationControlle
         $this->validateLanguage($language);
 
         $input = $request->request->all();
+        $input['translations'] = $this->remapFileUploadsToTranslations($input);
+
         if ($this->processTranslations($input['translations'] ?? [], $language)) {
             $this->addSuccessMessage($language);
         }
@@ -86,5 +88,32 @@ final class UpdateFormTranslationController extends AbstractTranslationControlle
     protected function getContextTranslations(?string $language = null): array
     {
         return FormTranslation::getTranslationsForItem($this->form);
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function remapFileUploadsToTranslations(array $input): array
+    {
+        $translations = $input['translations'] ?? [];
+        $file_upload_prefixes = ['_', '_prefix_', '_tag_'];
+
+        foreach ($file_upload_prefixes as $prefix) {
+            $prefixed_key = $prefix . 'translations';
+            if (!isset($input[$prefixed_key])) {
+                continue;
+            }
+
+            foreach ($input[$prefixed_key] as $translation_key => $data) {
+                if (!is_array($data) || !isset($data['translations']['one'])) {
+                    continue;
+                }
+
+                $translations[$translation_key]['translations'][$prefix . 'one'] = $data['translations']['one'];
+            }
+        }
+
+        return $translations;
     }
 }
