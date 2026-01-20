@@ -345,8 +345,15 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     {
         $tmp = [];
 
-        $existing_id = $input['id'] ?? null;
-        unset($input['id']);
+        $excludeds = [];
+        if (isset($input['id'])) {
+            $excludeds['id'] = $input['id'];
+            unset($input['id']);
+        }
+        if (isset($input['_no_history'])) {
+            $excludeds['_no_history'] = $input['_no_history'];
+            unset($input['_no_history']);
+        }
 
         foreach (self::$field_right as $right => $fields) {
             if ($right === 'entity_helpdesk') {
@@ -368,6 +375,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             }
         }
 
+        // Add framework  / internal ones
+        foreach ($input as $key => $val) {
+            if ($key[0] === '_') {
+                $tmp[$key] = $val;
+            }
+        }
+
         if (!count($tmp)) {
             Session::addMessageAfterRedirect(
                 __s("You do not have rights for this entity."),
@@ -377,16 +391,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             return false;
         }
 
-        // Add framework  / internal ones
-        foreach ($input as $key => $val) {
-            if ($key[0] === '_') {
-                $tmp[$key] = $val;
-            }
-        }
-
-        if ($existing_id !== null) {
-            $tmp['id'] = $existing_id;
-        }
+        return array_merge($excludeds, $tmp);
         return $tmp;
     }
 
