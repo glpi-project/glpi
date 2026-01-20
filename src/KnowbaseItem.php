@@ -914,6 +914,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $iterator = $DB->request($criteria);
 
         $attachments = [];
+        $documents = [];
         $heading_names = [];
         if (count($iterator) > 0) {
             $document = new Document();
@@ -923,6 +924,20 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
                 if ($document->getFromDB($docID)) {
                     $downloadlink = $document->getDownloadLink();
+
+                    // Enrich documents data for main tab display
+                    $filename = $document->fields['filename'] ?? '';
+                    $extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+                    $iconAndColor = self::getDocumentIconAndColor($extension);
+
+                    $documents[] = [
+                        'id' => $docID,
+                        'filename' => $filename,
+                        'extension' => $extension,
+                        'icon_class' => $iconAndColor['icon_class'],
+                        'color_class' => $iconAndColor['color_class'],
+                        'download_link' => $CFG_GLPI["root_doc"] . '/front/document.send.php?docid=' . $docID,
+                    ];
                 }
 
                 if (!isset($heading_names[$data["documentcategories_id"]])) {
@@ -957,6 +972,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'last_update_author_name' => $last_update_info->getAuthorName(),
             'last_update_author_link' => $last_update_info->getAuthorLink(),
             'last_update_can_view_author' => $last_update_info->canViewAuthor(),
+            'documents' => $documents,
+            'documents_count' => count($documents),
+            'can_add_documents' => $this->canUpdateItem(),
+            'item_id' => $this->fields['id'],
         ]);
         if ($options['display']) {
             echo $out;
@@ -980,6 +999,50 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             date: $this->fields['date_mod'],
             can_view_author: $author ? $author->can($author->getID(), READ) : false,
         );
+    }
+
+    /**
+     * Get Tabler icon class and Bootstrap color class for a document based on its extension.
+     *
+     * @param string $extension File extension (lowercase, without dot)
+     * @return array{icon_class: string, color_class: string}
+     */
+    private static function getDocumentIconAndColor(string $extension): array
+    {
+        return match ($extension) {
+            'pdf' => [
+                'icon_class' => 'ti-file-type-pdf',
+                'color_class' => 'text-danger',
+            ],
+            'doc', 'docx' => [
+                'icon_class' => 'ti-file-type-doc',
+                'color_class' => 'text-primary',
+            ],
+            'xls', 'xlsx' => [
+                'icon_class' => 'ti-file-spreadsheet',
+                'color_class' => 'text-success',
+            ],
+            'ppt', 'pptx' => [
+                'icon_class' => 'ti-presentation',
+                'color_class' => 'text-orange',
+            ],
+            'zip', 'rar', '7z' => [
+                'icon_class' => 'ti-file-zip',
+                'color_class' => 'text-warning',
+            ],
+            'txt', 'md' => [
+                'icon_class' => 'ti-file-text',
+                'color_class' => 'text-info',
+            ],
+            'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp' => [
+                'icon_class' => 'ti-photo',
+                'color_class' => 'text-purple',
+            ],
+            default => [
+                'icon_class' => 'ti-file',
+                'color_class' => 'text-secondary',
+            ],
+        };
     }
 
     /**
