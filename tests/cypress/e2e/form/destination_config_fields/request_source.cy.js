@@ -76,11 +76,25 @@ describe('Request source configuration', () => {
     });
 
     it('can create ticket using default configuration', () => {
-        cy.createWithAPI('TicketTemplatePredefinedField', {
-            'tickettemplates_id': 1, // Default template
-            'num': 9, // Request source
-            'value': 3, // Phone
+        // Create a ticket template with predefined request source
+        cy.createWithAPI('TicketTemplate', {
+            'name': 'Test template for request source',
+        }).then((ticket_template_id) => {
+            cy.createWithAPI('TicketTemplatePredefinedField', {
+                'tickettemplates_id': ticket_template_id,
+                'num': 9, // Request source
+                'value': 3, // Phone
+            });
+
+            // Configure the destination to use this specific template
+            cy.openAccordionItem('Destination fields accordion', 'Properties');
+            cy.findByRole('region', { 'name': "Template configuration" }).as("template_config");
+            cy.get('@template_config').getDropdownByLabelText('Template').selectDropdownValue('Specific template');
+            cy.get('@template_config').getDropdownByLabelText('Select a template...').selectDropdownValue('Test template for request source');
+            cy.findByRole('button', { 'name': 'Update item' }).click();
+            cy.checkAndCloseAlert('Item successfully updated');
         });
+
         // Go to preview
         cy.findByRole('tab', { 'name': "Form" }).click();
         cy.findByRole('link', { 'name': "Preview" })
