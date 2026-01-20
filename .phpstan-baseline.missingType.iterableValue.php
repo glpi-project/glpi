@@ -8012,18 +8012,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Enclosure.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Entity\\:\\:checkRightData\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Entity\\:\\:checkRightData\\(\\) return type has no value type specified in iterable type array\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Entity.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Entity\\:\\:cleanCloneInput\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
