@@ -457,6 +457,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
+            if (count($input) === 1 && isset($input['id'])) {
+                // No fields to update
+                return false;
+            }
         }
 
         $input = $this->handleCustomScenesInputValues($input);
