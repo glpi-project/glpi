@@ -341,7 +341,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
      *
      * @return false|array<string, mixed> (filtered input)
      **/
-    private function checkRightDatas(array $input): array|bool
+    private function checkRightData(array $input): array|bool
     {
         $tmp = [];
 
@@ -433,7 +433,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         if (!Session::isCron()) { // Filter input for connected
-            $input = $this->checkRightDatas($input);
+            $input = $this->checkRightData($input);
         }
         return $input;
     }
@@ -462,7 +462,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         if (!Session::isCron()) { // Filter input for connected
-            $input = $this->checkRightDatas($input);
+            $input = $this->checkRightData($input);
             if ($input === false) {
                 return false;
             }
