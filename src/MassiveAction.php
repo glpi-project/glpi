@@ -1344,7 +1344,6 @@ class MassiveAction
 
         switch ($action) {
             case 'delete':
-                $deleted_count = 0;
                 $deleted_ids = [];
                 foreach ($ids as $id) {
                     if ($item->can($id, DELETE)) {
@@ -1367,7 +1366,6 @@ class MassiveAction
                 break;
 
             case 'restore':
-                $restored_count = 0;
                 $restored_ids = [];
                 foreach ($ids as $id) {
                     if ($item->can($id, DELETE)) {
@@ -1391,7 +1389,6 @@ class MassiveAction
             case 'purge_item_but_devices':
             case 'purge_but_item_linked':
             case 'purge':
-                $purged_count = 0;
                 $purged_ids = [];
                 foreach ($ids as $id) {
                     if ($item->can($id, PURGE)) {
