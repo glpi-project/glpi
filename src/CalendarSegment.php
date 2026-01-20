@@ -203,26 +203,8 @@ class CalendarSegment extends CommonDBChild
         $delay,
         bool $negative_delay = false
     ) {
-        // TODO: unit test this method with complex calendars using multiple
-        // disconnected segments per day
         /** @var \DBmysql $DB */
         global $DB;
-
-        // Common SELECT for both modes
-        $SELECT = [
-            new \QueryExpression(
-                sprintf(
-                    "TIMEDIFF(
-                        %s,
-                        GREATEST(%s, %s)
-                    ) AS %s",
-                    $DB->quoteName('end'),
-                    $DB->quoteName('begin'),
-                    $DB->quoteValue($begin_time),
-                    $DB->quoteName('TDIFF')
-                ),
-            ),
-        ];
 
         // Common WHERE for both modes
         $WHERE = [
@@ -230,8 +212,21 @@ class CalendarSegment extends CommonDBChild
             'day'          => $day,
         ];
 
+        // Build SELECT clauses based on delay direction
+        $SELECT = [];
+
         // Add specific SELECT and WHERE clauses
         if (!$negative_delay) {
+            // For positive delay: calculate time from begin_time to end of segment
+            $SELECT[] = new \QueryExpression(
+                sprintf(
+                    "TIMEDIFF(%s, GREATEST(%s, %s)) AS %s",
+                    $DB->quoteName('end'),
+                    $DB->quoteName('begin'),
+                    $DB->quoteValue($begin_time),
+                    $DB->quoteName('TDIFF')
+                )
+            );
             $SELECT[] = new \QueryExpression(
                 sprintf("GREATEST(%s, %s) AS %s", ...[
                     $DB->quoteName('begin'),
@@ -247,6 +242,17 @@ class CalendarSegment extends CommonDBChild
             // return no results but using 23:59:59 get us the correct behavior).
             $adjusted_time_for_comparaison_in_negative_delay_mode = $begin_time == "00:00:00" ? "23:59:59" : $begin_time;
 
+            // For negative delay: calculate time from begin of segment to begin_time
+            // This gives us the available time to go backwards in this segment
+            $SELECT[] = new \QueryExpression(
+                sprintf(
+                    "TIMEDIFF(LEAST(%s, %s), %s) AS %s",
+                    $DB->quoteName('end'),
+                    $DB->quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode),
+                    $DB->quoteName('begin'),
+                    $DB->quoteName('TDIFF')
+                )
+            );
             $SELECT[] = new \QueryExpression(
                 sprintf(
                     "LEAST(%s, %s) AS %s",
