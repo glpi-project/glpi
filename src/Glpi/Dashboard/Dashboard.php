@@ -92,9 +92,9 @@ class Dashboard extends CommonDBTM
         $loaded = true;
         if (
             $force
-            || count($this->fields) == 0
-            || $this->fields['id'] == 0
-            || strlen($this->fields['name']) == 0
+            || count($this->fields) === 0
+            || (int) $this->fields['id'] === 0
+            || $this->fields['name'] == ''
         ) {
             $loaded = $this->getFromDB($this->key);
         }
