@@ -31,7 +31,7 @@
  */
 
 .kb-sidepanel {
-    background-color: #fbfbfb;
+    background-color: var(--tblr-card-cap-bg);
     border-left: 1px solid #e1e4e8;
     height: calc(100vh - 150px);
 }
