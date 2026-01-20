@@ -54,6 +54,8 @@ use Glpi\Toolbox\MarkdownRenderer;
 use Html;
 use JsonException;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Profile;
+use ProfileRight;
 use Session;
 use Throwable;
 use Transfer;
@@ -97,40 +99,85 @@ EOT,
 EOT,
         ];
 
-        return [
-            'Session' => [
-                'x-version-introduced' => '2.0',
-                'type' => Doc\Schema::TYPE_OBJECT,
-                'properties' => [
-                    'current_time' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                    'user_id' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'use_mode' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'friendly_name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'real_name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'first_name' => ['type' => Doc\Schema::TYPE_STRING],
-                    'default_entity' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'profiles' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
-                    'active_entities' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
-                    'active_profile' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'id' => ['type' => Doc\Schema::TYPE_INTEGER],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'interface' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                    'active_entity' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'id' => ['type' => Doc\Schema::TYPE_INTEGER],
-                            'short_name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
+        $session_schema = [
+            'x-version-introduced' => '2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'current_time' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'user_id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'use_mode' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'friendly_name' => ['type' => Doc\Schema::TYPE_STRING],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'real_name' => ['type' => Doc\Schema::TYPE_STRING],
+                'first_name' => ['type' => Doc\Schema::TYPE_STRING],
+                'default_entity' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'profiles' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
+                'active_entities' => ['type' => Doc\Schema::TYPE_ARRAY, 'items' => ['type' => Doc\Schema::TYPE_INTEGER]],
+                'active_profile' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        'interface' => ['type' => Doc\Schema::TYPE_STRING],
+                        'rights' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-version-introduced' => '2.2',
+                            'description' => 'Rights associated with the active profile. Each right value is an integer with the individual bitwise flags combined by OR depending on the specific right.',
+                            'properties' => [
+                                // Filled dynamically below
+                            ],
                         ],
                     ],
                 ],
+                'active_entity' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'properties' => [
+                        'id' => ['type' => Doc\Schema::TYPE_INTEGER],
+                        'short_name' => ['type' => Doc\Schema::TYPE_STRING],
+                        'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
+                        'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
+                    ],
+                ],
             ],
+        ];
+        $all_right_names = array_keys(ProfileRight::getAllPossibleRights());
+        $rights_info = [];
+        foreach (Profile::getRightsForForm() as $forms) {
+            foreach ($forms as $groups) {
+                foreach ($groups as $rights) {
+                    foreach ($rights as $right) {
+                        if (!array_key_exists($right['field'], $rights_info)) {
+                            $rights_info[$right['field']] = $right;
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($all_right_names as $right_name) {
+            $right_prop = [
+                'type' => Doc\Schema::TYPE_INTEGER,
+            ];
+            if (array_key_exists($right_name, $rights_info)) {
+                $right_prop['description'] = $rights_info[$right_name]['label'] . ' rights. Possible values:';
+                $rights = $rights_info[$right_name]['rights'];
+                ksort($rights);
+                foreach ($rights as $right_bit => $right_label) {
+                    if (is_array($right_label)) {
+                        $right_label = $right_label['short'];
+                    }
+                    $right_prop['description'] .= "\n- " . $right_bit . ': ' . $right_label;
+                    $right_prop['enum'][] = $right_bit;
+                }
+
+                $right_prop['x-label'] = $rights_info[$right_name]['label'];
+                $right_prop['x-right-scope'] = $rights_info[$right_name]['scope'];
+            }
+            $session_schema['properties']['active_profile']['properties']['rights']['properties'][$right_name] = $right_prop;
+        }
+
+        return [
+            'Session' => $session_schema,
             'EntityTransferRecord' => [
                 'x-version-introduced' => '2.0',
                 'type' => Doc\Schema::TYPE_OBJECT,
@@ -460,6 +507,18 @@ HTML;
             'name' => $active_profile['name'],
             'interface' => $active_profile['interface'],
         ];
+
+        if (version_compare($this->getAPIVersion($request), '2.2', '>=')) {
+            $all_right_names = array_keys(ProfileRight::getAllPossibleRights());
+            foreach ($active_profile as $key => $value) {
+                if (in_array($key, $all_right_names, true)) {
+                    $session['active_profile']['rights'][$key] = (int) $value;
+                } else {
+                    $session['active_profile']['rights'][$key] = 0;
+                }
+            }
+        }
+
         $session['active_entity'] = [
             'id' => $_SESSION['glpiactive_entity'],
             'short_name' => $_SESSION['glpiactive_entity_shortname'],
