@@ -178,7 +178,7 @@ class EntityTest extends DbTestCase
 
         //once logged, we have rights
         $this->login();
-        $this->assertSame($input, $entity->prepareInputForUpdate($input));
+        $this->assertEquals($input, $entity->prepareInputForUpdate($input));
     }
 
     /**

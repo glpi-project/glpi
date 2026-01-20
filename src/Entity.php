@@ -337,17 +337,16 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Check right on each field before add / update
      *
-     * @param array $input
+     * @param array<string, mixed> $input
      *
-     * @return array (filtered input)
+     * @return false|array<string, mixed> (filtered input)
      **/
-    private function checkRightDatas($input): array
+    private function checkRightDatas(array $input): array|bool
     {
         $tmp = [];
 
-        if (isset($input['id'])) {
-            $tmp['id'] = $input['id'];
-        }
+        $existing_id = $input['id'] ?? null;
+        unset($input['id']);
 
         foreach (self::$field_right as $right => $fields) {
             if ($right === 'entity_helpdesk') {
@@ -375,6 +374,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
             }
         }
 
+        if (!count($tmp)) {
+            return false;
+        }
+
+        if ($existing_id !== null) {
+            $tmp['id'] = $existing_id;
+        }
         return $tmp;
     }
 
@@ -457,8 +463,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
 
         if (!Session::isCron()) { // Filter input for connected
             $input = $this->checkRightDatas($input);
-            if (count($input) === 1 && isset($input['id'])) {
-                // No fields to update
+            if ($input === false) {
                 return false;
             }
         }
