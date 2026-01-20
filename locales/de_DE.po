@@ -35152,7 +35152,7 @@ msgstr "UUID wurde erfolgreich in die Zwischenablage kopiert."
 #: js/modules/Forms/RendererController.js:299
 #, javascript-format
 msgid "Item successfully created: %s"
-msgstr "Eitrag erfolgreich ergestellt %s"
+msgstr "Eintrag erfolgreich erstellt: %s"
 
 #: js/modules/Forms/RendererController.js:336
 msgid "Failed to submit form, please contact your administrator."
