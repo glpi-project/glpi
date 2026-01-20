@@ -93,6 +93,7 @@ class Session
             // Restart GLPI session : complete destroy to prevent lost datas
             $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
                 'glpiskipMaintenance',
+                'glpi_remote_user',
             ];
             $save   = [];
             foreach ($tosave as $t) {
@@ -992,8 +993,11 @@ class Session
      **/
     public static function checkValidSessionId()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         if (
             !isset($_SESSION['valid_id'])
@@ -1010,7 +1014,20 @@ class Session
 
         if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
             $valid_user = false;
-        } else {
+        }
+
+        // Check if remote user changed (SSO case)
+        if ($valid_user && array_key_exists('glpi_remote_user', $_SESSION)) {
+            $ssovariable = Dropdown::getDropdownName(
+                'glpi_ssovariables',
+                $CFG_GLPI["ssovariables_id"]
+            );
+            if (!array_key_exists($ssovariable, $_SERVER) || $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
+                $valid_user = false;
+            }
+        }
+
+        if ($valid_user) {
             $user_table = User::getTable();
             $pu_table   = Profile_User::getTable();
             $result = $DB->request(

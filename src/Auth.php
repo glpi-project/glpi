@@ -596,6 +596,9 @@ class Auth extends CommonGLPI
                     if (!$ret) {
                         return false;
                     }
+
+                    $_SESSION['glpi_remote_user'] = $login_string; // store raw remote user
+
                     return true;
                 }
                 break;
