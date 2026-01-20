@@ -71,7 +71,7 @@ if ($fieldtype == 'Predefined') {
 if (isset($_POST["add"]) || isset($_POST['massiveaction'])) {
     $item->check(-1, UPDATE, $_POST);
 
-    if ($item->add($_POST)) {
+    if (!empty($_POST['num']) && $item->add($_POST)) {
         $fieldtype_name = '';
         switch ($fieldtype) {
             case 'Hidden':
