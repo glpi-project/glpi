@@ -32,17 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Tests\Controller\Tabler;
+use Glpi\Kernel\Kernel;
+use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
 
-use Glpi\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
-
-final class TablerIconController extends AbstractController
-{
-    #[Route(path: '/test/tabler/icons', name: "test_tabler_icons")]
-    public function __invoke(): Response
-    {
-        return $this->render("tests/tabler/icons.html.twig", ['title' => "Icons"]);
-    }
-}
+/*
+ * Closures $_route and $_import are here to provide defaults.
+ * These are necessary for prefixing and for locale.
+ */
+return static function (RoutingConfigurator $routes, Kernel $kernel) {
+    $routes->import($kernel->getProjectDir() . '/tests/Controller', 'attribute');
+};

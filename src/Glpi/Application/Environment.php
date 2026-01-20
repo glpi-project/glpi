@@ -279,16 +279,4 @@ enum Environment: string
             self::E2E => true,
         };
     }
-
-    public function shouldLoadTestsRoutes(): bool
-    {
-        return match ($this) {
-            default   => false,
-            // Required for e2e tests.
-            self::E2E => true,
-            // Not mandatory on dev but usefull to do some manual testing or
-            // debugging when adding new routes for the tests.
-            self::DEVELOPMENT => true,
-        };
-    }
 }
