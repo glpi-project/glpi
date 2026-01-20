@@ -417,7 +417,7 @@ class RuleRight extends Rule
                 'addbuttons' => $add_buttons,
             ],
         ], $options);
-        TemplateRenderer::getInstance()->display('pages/admin/rules/form.html.twig', $twig_params);
+        TemplateRenderer::getInstance()->display('pages/admin/rules/ruleright_form.html.twig', $twig_params);
 
         return true;
     }
