@@ -370,7 +370,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         // Add framework  / internal ones
         foreach ($input as $key => $val) {
             if ($key[0] === '_') {
-                $tmp[$key] = $input[$key];
+                $tmp[$key] = $val;
             }
         }
 
