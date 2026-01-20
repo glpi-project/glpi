@@ -337,17 +337,16 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     /**
      * Check right on each field before add / update
      *
-     * @param array $input
+     * @param array<string, mixed> $input
      *
-     * @return array (filtered input)
+     * @return false|array<string, mixed> (filtered input)
      **/
-    private function checkRightDatas($input): array
+    private function checkRightData(array $input): array|bool
     {
         $tmp = [];
 
-        if (isset($input['id'])) {
-            $tmp['id'] = $input['id'];
-        }
+        $existing_id = $input['id'] ?? null;
+        unset($input['id']);
 
         foreach (self::$field_right as $right => $fields) {
             if ($right === 'entity_helpdesk') {
@@ -371,10 +370,22 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         // Add framework  / internal ones
         foreach ($input as $key => $val) {
             if ($key[0] === '_') {
-                $tmp[$key] = $input[$key];
+                $tmp[$key] = $val;
             }
         }
 
+        if (!count($tmp)) {
+            Session::addMessageAfterRedirect(
+                __s("You do not have rights for this entity."),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if ($existing_id !== null) {
+            $tmp['id'] = $existing_id;
+        }
         return $tmp;
     }
 
@@ -427,7 +438,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         if (!Session::isCron()) { // Filter input for connected
-            $input = $this->checkRightDatas($input);
+            $input = $this->checkRightData($input);
         }
         return $input;
     }
@@ -456,7 +467,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         if (!Session::isCron()) { // Filter input for connected
-            $input = $this->checkRightDatas($input);
+            $input = $this->checkRightData($input);
+            if ($input === false) {
+                return false;
+            }
         }
 
         $input = $this->handleCustomScenesInputValues($input);
