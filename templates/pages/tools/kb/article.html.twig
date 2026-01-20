@@ -31,7 +31,33 @@
  #}
 
 <article class="container ms-0 px-4 py-3">
-    <h1 class="fw-bold" data-testid="subject">{{ subject }}</h1>
+    {# Header with title and edit button #}
+    <div class="d-flex justify-content-between align-items-start mb-2">
+        <h1 class="fw-bold mb-0" data-testid="subject">{{ subject }}</h1>
+        {% if can_edit %}
+            <div class="kb-editor-actions d-flex gap-2">
+                <button type="button"
+                        class="btn btn-outline-secondary"
+                        data-action="toggle-edit"
+                        data-testid="edit-button">
+                    <i class="ti ti-edit me-1"></i>{{ __('Edit') }}
+                </button>
+                <button type="button"
+                        class="btn btn-primary d-none"
+                        data-action="save"
+                        data-testid="save-button">
+                    <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+                </button>
+                <button type="button"
+                        class="btn btn-outline-secondary d-none"
+                        data-action="cancel"
+                        data-testid="cancel-button">
+                    {{ __('Cancel') }}
+                </button>
+            </div>
+        {% endif %}
+    </div>
+
     <div class="text-muted d-flex align-items-center gap-3">
         {# Last update #}
         <div class="d-flex align-items-center" data-testid="last-update">
@@ -78,7 +104,103 @@
 
     <hr class="mt-4 mb-4">
 
-    <div class="rich_text_container" data-testid="content">
+    {# Tiptap editor container #}
+    <div id="kb-tiptap-editor"
+         class="rich_text_container"
+         data-testid="content">
         {{ answer|safe_html }}
     </div>
 </article>
+
+{% if can_edit %}
+<script>
+(function() {
+    // Execute immediately - this template is loaded via AJAX so DOM is already ready
+    const editorElement = document.getElementById('kb-tiptap-editor');
+    const editButton = document.querySelector('[data-action="toggle-edit"]');
+    const saveButton = document.querySelector('[data-action="save"]');
+    const cancelButton = document.querySelector('[data-action="cancel"]');
+
+    if (!editorElement || !editButton || !window.KnowbaseEditor) {
+        return;
+    }
+
+    // Store original content for cancel functionality
+    const originalContent = editorElement.innerHTML;
+    let editor = null;
+
+    // Initialize editor in readonly mode
+    editor = new window.KnowbaseEditor(editorElement, {
+        content: originalContent,
+        readonly: true,
+        placeholder: '{{ __("Start writing...")|e('js') }}',
+        onUpdate: function(html) {
+            // Content updated
+        }
+    });
+
+    // Toggle edit mode
+    editButton.addEventListener('click', function() {
+        editor.setEditable(true);
+        editor.focus();
+        editButton.classList.add('d-none');
+        saveButton.classList.remove('d-none');
+        cancelButton.classList.remove('d-none');
+    });
+
+    // Cancel editing
+    cancelButton.addEventListener('click', function() {
+        editor.setContent(originalContent);
+        editor.setEditable(false);
+        editButton.classList.remove('d-none');
+        saveButton.classList.add('d-none');
+        cancelButton.classList.add('d-none');
+    });
+
+    // Save content
+    saveButton.addEventListener('click', async function() {
+        saveButton.disabled = true;
+        saveButton.innerHTML = '<i class="ti ti-loader me-1"></i>{{ __("Saving...")|e('js') }}';
+
+        try {
+            const response = await fetch(CFG_GLPI.root_doc + '/Knowbase/KnowbaseItem/{{ item_id }}/Answer', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                },
+                body: JSON.stringify({
+                    answer: editor.getHTML(),
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Update original content for future cancel operations
+                const newContent = editor.getHTML();
+                editor.setEditable(false);
+                editButton.classList.remove('d-none');
+                saveButton.classList.add('d-none');
+                cancelButton.classList.add('d-none');
+
+                // Show success notification
+                if (typeof glpi_toast_info === 'function') {
+                    glpi_toast_info('{{ __("Article saved successfully")|e('js') }}');
+                }
+            } else {
+                throw new Error(result.message || '{{ __("Failed to save")|e('js') }}');
+            }
+        } catch (error) {
+            if (typeof glpi_toast_error === 'function') {
+                glpi_toast_error(error.message || '{{ __("An error occurred while saving")|e('js') }}');
+            }
+        } finally {
+            saveButton.disabled = false;
+            saveButton.innerHTML = '<i class="ti ti-device-floppy me-1"></i>{{ __("Save")|e('js') }}';
+        }
+    });
+})();
+</script>
+{% endif %}

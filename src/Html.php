@@ -741,6 +741,10 @@ TWIG,
                 $tpl_vars['css_files'][] = ['path' => 'css/standalone/kb.scss'];
             }
 
+            if (in_array('tiptap', $jslibs)) {
+                Html::requireJs('tiptap');
+            }
+
             if (in_array('rack', $jslibs)) {
                 Html::requireJs('rack');
             }
@@ -5610,6 +5614,11 @@ JS);
                 break;
             case 'altcha':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/altcha.js';
+                break;
+            case 'tiptap':
+                $_SESSION['glpi_js_toload'][$name][] = 'lib/tiptap.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/modules/SlashCommands.js';
+                $_SESSION['glpi_js_toload'][$name][] = 'js/modules/KnowbaseEditor.js';
                 break;
             default:
                 $found = false;
