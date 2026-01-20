@@ -53,8 +53,8 @@
                data-collapse-text="{{ __('Collapse all') }}"
                data-expand-title="{{ __('Expand all') }}"
                data-collapse-title="{{ __('Collapse all') }}">
-                <i class="ti ti-eye-off"></i>
-                <span>{{ __('Expand all') }}</span>
+                <i class="ti ti-eye"></i>
+                <span>{{ __('Collapse all') }}</span>
             </a>
         </small>
     {% endif %}
@@ -114,11 +114,11 @@
         <div class="accordion-item">
             <div class="accordion-header">
                 <button
-                    class="accordion-button collapsed d-flex align-self-center"
+                    class="accordion-button d-flex align-self-center"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#{{ id }}"
-                    aria-expanded="false"
+                    aria-expanded="true"
                     aria-controls="{{ id }}"
                     data-testid="note-container"
                 >
@@ -131,7 +131,7 @@
                 </button>
             </div>
 
-            <div id="{{ id }}" class="accordion-collapse collapse">
+            <div id="{{ id }}" class="accordion-collapse collapse show">
                 <div class="accordion-body pt-0">
                     <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
