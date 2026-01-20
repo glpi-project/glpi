@@ -1603,7 +1603,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Prepare input data for adding the item. If false, add is cancelled.
+     * Prepare input data for adding the item. If false, add is canceled.
      *
      * @param array<string, mixed> $input datas used to add the item
      *

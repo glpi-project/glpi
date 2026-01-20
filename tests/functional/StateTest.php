@@ -332,4 +332,24 @@ class StateTest extends DbTestCase
             $this->assertTrue(array_key_exists('ITEM_AllAssets_31', $raw));
         }
     }
+
+    public function testVisibilityIsAddedOnCustomAssetCreation(): void
+    {
+        // --- arrange - create a state
+        $this->login();
+        $state = $this->createItem(
+            \State::class,
+            ['entities_id' => $this->getTestRootEntity(true)] + $this->getMinimalCreationInput(\State::class), // // @todo virer entities_id
+        );
+
+        // --- act - create a custom asset (asset definition)
+        $custom_asset = $this->initAssetDefinition();
+
+        // --- assert - state visibility associted to custom asset
+        $this->assertEquals(1, countElementsInTable(
+            DropdownVisibility::getTable(),
+            ['itemtype' => \State::getType(), 'items_id' => $state->getID(), 'visible_itemtype' => $custom_asset->getAssetClassName()],
+        ));
+
+    }
 }
