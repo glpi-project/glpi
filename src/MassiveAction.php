@@ -1363,7 +1363,7 @@ class MassiveAction
                 }
 
                 // Log event for successful delete actions (grouped)
-                self::logMassiveActionEvent($item, 'deletes', $deleted_count, $deleted_ids);
+                self::logMassiveActionEvent($item, 'deletes', $deleted_ids);
                 break;
 
             case 'restore':
@@ -1385,7 +1385,7 @@ class MassiveAction
                     }
                 }
                 // Log event for successful restore actions (grouped)
-                self::logMassiveActionEvent($item, 'restores', $restored_count, $restored_ids);
+                self::logMassiveActionEvent($item, 'restores', $restored_ids);
                 break;
 
             case 'purge_item_but_devices':
@@ -1446,7 +1446,7 @@ class MassiveAction
                 // Log event for successful purge actions (grouped)
                 $is_force_purge = $action === 'purge';
                 $action_verb = $is_force_purge ? 'purges' : 'deletes';
-                self::logMassiveActionEvent($item, $action_verb, $purged_count, $purged_ids);
+                self::logMassiveActionEvent($item, $action_verb, $purged_ids);
                 break;
 
             case 'update':
@@ -1855,17 +1855,17 @@ class MassiveAction
      *
      * @param CommonDBTM $item         Item instance
      * @param string     $action_verb  Action verb (deletes, restores, purges)
-     * @param int        $count        Number of items processed
      * @param int[]      $ids          Array of item IDs processed
      * @return void
      */
-    private static function logMassiveActionEvent(CommonDBTM $item, string $action_verb, int $count, array $ids): void
+    private static function logMassiveActionEvent(CommonDBTM $item, string $action_verb, array $ids): void
     {
+        $count = count($ids);
         if ($count <= 0) {
             return;
         }
 
-        if ($count === 1 && count($ids) === 1) {
+        if ($count === 1) {
             // For single item, show ID in element column and simplified message
             $message = sprintf(
                 __('%1$s %2$s item %3$s by massive action'),
