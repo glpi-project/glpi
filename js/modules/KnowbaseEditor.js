@@ -88,6 +88,11 @@ class KnowbaseEditor {
 
         this.#isEditable = !this.#options.readonly;
 
+        // Clear the container before initializing Tiptap
+        // Tiptap appends its .ProseMirror element without clearing existing content
+        // This ensures we get a clean in-place editing experience (Notion-like)
+        this.#element.innerHTML = '';
+
         // Get SlashCommands extension if available
         const slashCommandsExt = typeof window.SlashCommands !== 'undefined' ? window.SlashCommands : null;
 

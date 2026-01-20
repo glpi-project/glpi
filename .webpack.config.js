@@ -133,6 +133,20 @@ const config = {
         mainFields: [
             'main',
         ],
+        // Aliases for @tiptap/pm submodules (package uses exports field without main)
+        alias: {
+            '@tiptap/pm/commands': path.resolve(__dirname, 'node_modules/@tiptap/pm/commands/dist/index.cjs'),
+            '@tiptap/pm/dropcursor': path.resolve(__dirname, 'node_modules/@tiptap/pm/dropcursor/dist/index.cjs'),
+            '@tiptap/pm/gapcursor': path.resolve(__dirname, 'node_modules/@tiptap/pm/gapcursor/dist/index.cjs'),
+            '@tiptap/pm/history': path.resolve(__dirname, 'node_modules/@tiptap/pm/history/dist/index.cjs'),
+            '@tiptap/pm/keymap': path.resolve(__dirname, 'node_modules/@tiptap/pm/keymap/dist/index.cjs'),
+            '@tiptap/pm/model': path.resolve(__dirname, 'node_modules/@tiptap/pm/model/dist/index.cjs'),
+            '@tiptap/pm/schema-list': path.resolve(__dirname, 'node_modules/@tiptap/pm/schema-list/dist/index.cjs'),
+            '@tiptap/pm/state': path.resolve(__dirname, 'node_modules/@tiptap/pm/state/dist/index.cjs'),
+            '@tiptap/pm/tables': path.resolve(__dirname, 'node_modules/@tiptap/pm/tables/dist/index.cjs'),
+            '@tiptap/pm/transform': path.resolve(__dirname, 'node_modules/@tiptap/pm/transform/dist/index.cjs'),
+            '@tiptap/pm/view': path.resolve(__dirname, 'node_modules/@tiptap/pm/view/dist/index.cjs'),
+        },
     },
     mode: 'none', // Force 'none' mode, as optimizations will be done on release process
     devtool: 'source-map', // Add sourcemap to files
