@@ -175,6 +175,7 @@ class EntityTest extends DbTestCase
 
         //no login => no rights.
         $this->assertFalse($entity->prepareInputForUpdate($input));
+        $this->hasSessionMessages(ERROR, ['You do not have rights for this entity.']);
 
         //once logged, we have rights
         $this->login();

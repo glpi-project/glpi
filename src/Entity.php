@@ -375,6 +375,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         if (!count($tmp)) {
+            Session::addMessageAfterRedirect(
+                __s("You do not have rights for this entity."),
+                false,
+                ERROR
+            );
             return false;
         }
 
