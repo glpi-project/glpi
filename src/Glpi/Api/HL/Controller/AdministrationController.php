@@ -44,6 +44,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Event;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -379,6 +380,53 @@ EOD,
                     'is_dynamic' => [
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is dynamic',
+                    ],
+                ],
+            ],
+            'EventLog' => [
+                'x-version-introduced' => '2.2.0',
+                'x-itemtype' => Event::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'items_id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                    ],
+                    'date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'service' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                    ],
+                    'level' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'readOnly' => true,
+                        'enum' => [1, 2, 3, 4, 5],
+                        'description' => <<<EOT
+                        Log level:
+                        - 1: Critical (login errors only)
+                        - 2: Severe
+                        - 3: Important (successful logins)
+                        - 4: Notice (add, delete, update actions)
+                        - 5: Other
+EOT,
+                    ],
+                    'message' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
                     ],
                 ],
             ],
@@ -1262,5 +1310,21 @@ EOT,
     {
         $users_id = ResourceAccessor::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
         return ResourceAccessor::updateBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), ['id' => $users_id], $request->getParameters());
+    }
+
+    #[Route(path: '/EventLog', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(schema_name: 'EventLog')]
+    public function searchEventLogs(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('EventLog', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/EventLog/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(schema_name: 'EventLog')]
+    public function getEventLogByID(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('EventLog', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }
