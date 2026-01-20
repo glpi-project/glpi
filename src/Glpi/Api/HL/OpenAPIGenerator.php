@@ -597,7 +597,7 @@ EOT;
     {
         return [
             [
-                'oauth' => [],
+                'oauth' => $route_path->getRouteScopes(),
             ],
         ];
     }

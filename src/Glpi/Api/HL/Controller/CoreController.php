@@ -546,7 +546,7 @@ HTML;
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
-    #[Route(path: '/status', methods: ['GET'], tags: ['Status'])]
+    #[Route(path: '/status', methods: ['GET'], tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Get a list of all GLPI system status checker services.')]
     public function status(Request $request): Response
@@ -565,7 +565,7 @@ HTML;
         return new JSONResponse($data);
     }
 
-    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'])]
+    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the the status of all GLPI system status checker services',
@@ -595,7 +595,7 @@ HTML;
 
     #[Route(path: '/status/{service}', methods: ['GET'], requirements: [
         'service' => '[a-zA-Z0-9_]+',
-    ], priority: 9, tags: ['Status'])]
+    ], priority: 9, tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the status of a GLPI system status checker service. Use "all" as the service to get the full system status.',
