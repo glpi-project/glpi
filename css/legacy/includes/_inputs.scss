@@ -122,3 +122,8 @@ input.submit,
    border-color: #d63939 !important;
    background-color: rgba(255, 0, 0, 0.1) !important;
 }
+.form-control[readonly] {
+   opacity: 0.7;
+   background-color: rgba(var(--tblr-body-color-rgb), 0.1);
+   cursor: not-allowed;
+}
