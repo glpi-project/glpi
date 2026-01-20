@@ -392,7 +392,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         return array_merge($excludeds, $tmp);
-        return $tmp;
     }
 
     public function prepareInputForAdd($input)
