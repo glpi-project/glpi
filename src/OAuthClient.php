@@ -79,7 +79,7 @@ final class OAuthClient extends CommonDBTM
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         return [
-            1 => _n('Session', 'Sessions', Session::getPluralNumber()),
+            1 => self::createTabEntry(text: _n('Session', 'Sessions', Session::getPluralNumber()), icon: 'ti ti-cloud-lock'),
         ];
     }
 
