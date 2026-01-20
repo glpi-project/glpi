@@ -170,6 +170,7 @@ class EntityTest extends DbTestCase
         $entity = new Entity();
         $input = [
             'id' => 1,
+            '_no_history' => false,
             'agent_base_url' => 'http://anyurl',
         ];
 

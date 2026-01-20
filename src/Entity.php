@@ -367,12 +367,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 }
             }
         }
-        // Add framework  / internal ones
-        foreach ($input as $key => $val) {
-            if ($key[0] === '_') {
-                $tmp[$key] = $val;
-            }
-        }
 
         if (!count($tmp)) {
             Session::addMessageAfterRedirect(
@@ -381,6 +375,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
                 ERROR
             );
             return false;
+        }
+
+        // Add framework  / internal ones
+        foreach ($input as $key => $val) {
+            if ($key[0] === '_') {
+                $tmp[$key] = $val;
+            }
         }
 
         if ($existing_id !== null) {
