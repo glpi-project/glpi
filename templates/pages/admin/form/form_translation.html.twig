@@ -86,8 +86,10 @@
 {% endmacro %}
 
 {% macro getActions(handler) %}
+    {% set rand = random() %}
+
     <div class="btn-actions">
-        <a data-translation-action-copy-default-value="{{ handler.getKey() }}"
+        <a data-translation-action-copy-default-value="{{ rand }}"
             class="btn btn-action"
             title="{{ __('Copy default value to translation') }}"
             role="button"
@@ -98,11 +100,11 @@
 
     <script>
         $(function() {
-            $('[data-translation-action-copy-default-value="{{ handler.getKey() }}"]')
+            $('[data-translation-action-copy-default-value="{{ rand }}"]')
                 .on('click', (event) => {
                     event.preventDefault();
                     const row = $(event.currentTarget).closest('tr');
-                    const translationInput = row.find('td').eq(3).find('input, textarea').filter(':not([type="hidden"])').first();
+                    const translationInput = row.find('> td').eq(3).find('input, textarea').filter(':not([type="hidden"])').first();
 
                     {% if handler.isRichText() %}
                         if (translationInput.siblings('.tox-tinymce').length === 0) {
