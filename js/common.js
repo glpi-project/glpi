@@ -1941,10 +1941,18 @@ document.addEventListener('hidden.bs.modal', (e) => {
 
 // Tinymce on click loading
 $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
-    const div = $(this);
-    const textarea_id = div.attr('data-glpi-tinymce-init-on-demand-render');
-    div.removeAttr('data-glpi-tinymce-init-on-demand-render');
-    const textarea = $("#" + textarea_id);
+    const $container = $(this);
+    const $textarea = $("#" + CSS.escape($container.attr('data-glpi-tinymce-init-on-demand-render')));
+    initTinyMCEOnDemand($textarea, $container);
+});
+
+/**
+ * Initialize TinyMCE editor on demand
+ * @param {string} textarea_id The ID of the textarea to initialize
+ * @param {HTMLElement} container The container element that triggered the initialization
+ */
+function initTinyMCEOnDemand($textarea, $container) {
+    $container.removeAttr('data-glpi-tinymce-init-on-demand-render');
 
     const loadingOverlay = $(`
         <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
@@ -1954,13 +1962,16 @@ $(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function
         </div>
     `);
 
-    textarea.show();
-    div.css('position', 'relative').append(loadingOverlay);
-    tinyMCE.init(tinymce_editor_configs[textarea_id]).then((editors) => {
+    $textarea.show();
+    $container.css('position', 'relative').append(loadingOverlay);
+    const promise = tinyMCE.init(tinymce_editor_configs[$textarea.attr('id')]);
+    promise.then((editors) => {
         editors[0].focus();
-        div.remove();
+        $container.remove();
     });
-});
+
+    return promise;
+}
 
 // Prevent Bootstrap dialog from blocking focusin
 // See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
