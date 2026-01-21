@@ -936,7 +936,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                         'extension' => $extension,
                         'icon_class' => $iconAndColor['icon_class'],
                         'color_class' => $iconAndColor['color_class'],
-                        'download_link' => $CFG_GLPI["root_doc"] . '/front/document.send.php?docid=' . $docID,
+                        'download_link' => $downloadlink,
                     ];
                 }
 

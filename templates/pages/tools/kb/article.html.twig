@@ -138,14 +138,14 @@
                 </button>
 
                 {# Modal placeholder - TODO: implement full upload #}
-                <div class="modal fade" id="kb-add-document-modal" tabindex="-1">
+                <div class="modal fade" id="kb-add-document-modal" tabindex="-1" aria-labelledby="kb-add-document-modal-title">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title">
+                                <h5 class="modal-title" id="kb-add-document-modal-title">
                                     <i class="ti ti-upload me-2"></i>{{ __('Add Document') }}
                                 </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
                             </div>
                             <div class="modal-body text-center text-muted py-5">
                                 <i class="ti ti-cloud-upload fs-1 mb-3 d-block"></i>
