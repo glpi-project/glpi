@@ -110,7 +110,6 @@ class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInte
             'table'             => $this->getTable(),
             'field'             => 'illustration',
             'name'              => __('Illustration'),
-            'datatype'          => 'text',
             'massiveaction'      => false,
             'nosearch'          => true,
             'datatype'          => 'specific',
