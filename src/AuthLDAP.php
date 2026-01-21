@@ -2052,7 +2052,7 @@ TWIG, $twig_params);
                 ) {
                     // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
-                    if ($user['auths_id'] === $options['authldaps_id']) {
+                    if ($user['auths_id'] === (int) $options['authldaps_id']) {
                         if ((int) $user['is_deleted_ldap'] === 0) {
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
