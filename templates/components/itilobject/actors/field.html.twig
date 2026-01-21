@@ -336,24 +336,20 @@
             }
         });
 
-        // when the mouse leave the user card in the popover, close it
-        $(document).on('mouseleave', '.user-info-card', () => {
-            setTimeout(() => {
-                $('.popover').popover('hide');
-            }, 300);
-        });
+        // when the mouse leave the info card in the popover, close it
+        $(document).on('mouseleave', '.user-info-card, .group-info-card, .supplier-info-card', (e) => {
+            const popover = $(e.target).closest('.popover');
+            if (popover.length === 0) {
+                return;
+            }
 
-        // when the mouse leave the group card in the popover, close it
-        $(document).on('mouseleave', '.group-info-card', () => {
             setTimeout(() => {
-                $('.popover').popover('hide');
-            }, 300);
-        });
-
-        // when the mouse leave the supplier card in the popover, close it
-        $(document).on('mouseleave', '.supplier-info-card', () => {
-            setTimeout(() => {
-                $('.popover').popover('hide');
+                // Find the trigger element and hide its popover
+                const popover_element = $('[data-glpi-popover-source][aria-describedby="' + CSS.escape(popover.attr('id')) + '"]');
+                if (popover_element.length > 0) {
+                    const popover_instance = bootstrap.Popover.getInstance(popover_element[0]);
+                    popover_instance.hide();
+                }
             }, 300);
         });
 
