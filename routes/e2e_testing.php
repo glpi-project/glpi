@@ -40,5 +40,5 @@ use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
  * These are necessary for prefixing and for locale.
  */
 return static function (RoutingConfigurator $routes, Kernel $kernel) {
-    $routes->import($kernel->getProjectDir() . '/tests/Controller', 'attribute');
+    $routes->import($kernel->getProjectDir() . '/tests/src/Controller', 'attribute');
 };
