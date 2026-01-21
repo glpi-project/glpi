@@ -1349,7 +1349,6 @@ class MassiveAction
                     if ($item->can($id, DELETE)) {
                         if ($item->delete(["id" => $id])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                            $deleted_count++;
                             $deleted_ids[] = $id;
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -1371,7 +1370,6 @@ class MassiveAction
                     if ($item->can($id, DELETE)) {
                         if ($item->restore(["id" => $id])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                            $restored_count++;
                             $restored_ids[] = $id;
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -1428,7 +1426,6 @@ class MassiveAction
                         }
                         if ($item->delete($delete_array, $force)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                            $purged_count++;
                             $purged_ids[] = $id;
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
