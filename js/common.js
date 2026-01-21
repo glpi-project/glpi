@@ -59,6 +59,7 @@ var select2_configs = {};
  *
  * @param objet
  * @param statut
+ * @todo Remove - Not used. Not useful anyways.
 **/
 function setdisplay(objet, statut) {
 
@@ -72,6 +73,7 @@ function setdisplay(objet, statut) {
 
 /**
  * @param id
+ * @todo Remove - Not used. Not useful anyways.
 **/
 function cleandisplay(id) {
 
@@ -84,6 +86,7 @@ function cleandisplay(id) {
 
 /**
  * @param id
+ * @todo Remove - Not used. Not useful anyways.
 **/
 function cleanhide(id) {
 
@@ -97,6 +100,7 @@ function cleanhide(id) {
 /**
  * @param Type
  * @param Id
+ * @todo Remove - Not used. Not even sure what this was ever used for.
 **/
 function fillidfield(Type, Id) {
     window.opener.document.forms.helpdeskform.elements.items_id.value = Id;
@@ -151,6 +155,7 @@ function unMarkCheckboxes(container_id) {
  *
  * @param    select_object     DOM select object
  * @param    other_option_name the name of both the option and the text input field
+ * @note Used by src/Dropdown.php. Probably not actually used.
 **/
 function displayOtherSelectOptions(select_object, other_option_name) {
     if (select_object.options[select_object.selectedIndex].value == other_option_name) {
@@ -169,7 +174,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
  * Check all checkboxes inside the given element as the same state as a reference one (toggle this one before)
  * the given element is usaly a table or a div containing the table or tables
  *
- * @param {HTMLElement} reference
+ * @param {HTMLElement|string} reference
  * @param {string} container_id
 **/
 function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input[type="checkbox"]') {
@@ -227,6 +232,7 @@ $.fn.shiftSelectable = function() {
  * @param img_name         name attribut of the img item
  * @param img_src_close    url of the close img
  * @param img_src_open     url of the open img
+ * @todo Remove - Not very useful and only used by plugins since the removal of the old debug toolbar.
 **/
 function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
     var _elt = $('#' + id);
@@ -271,6 +277,7 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_name
  * @param img_src_yes
  * @param img_src_no
+ * @todo Remove - Not useful and only used by templates/components/search/controls.html.twig and that doesn't even use the img params so it is litterally just changing an input's value between 0 and 1...
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
 
@@ -297,6 +304,7 @@ function toogle(id, img_name, img_src_yes, img_src_no) {
  * @param img_name
  * @param img_src_close
  * @param img_src_open
+ * @todo Remove - Not used and I am not sure what it was ever used for.
  */
 function toggleTableDisplay(tbl, img_name, img_src_close, img_src_open) {
 
@@ -333,10 +341,12 @@ function toggleTableDisplay(tbl, img_name, img_src_close, img_src_open) {
 
 
 /**
+ * Creates a form element and submits it with POST method (despite the function name) to the specified target with the specified fields
  * @since 0.84
  *
  * @param target
  * @param fields
+ * @deprecated Use real form HTML
 **/
 function submitGetLink(target, fields) {
 
@@ -412,6 +422,7 @@ function massiveUpdateCheckbox(criterion, reference) {
 
 /**
  * Timeline for itiobjects
+ * @todo Remove - Not used anymore
  */
 var filter_timeline = function() {
     $(document).on("click", '.filter_timeline li a', function(event) {
@@ -457,6 +468,7 @@ var read_more = function() {
 };
 
 // Responsive header
+//TODO Remove - Probably not used anymore
 if ($(window).width() <= 700) {
     var didScroll;
     var lastScrollTop = 0;
@@ -495,6 +507,9 @@ if ($(window).width() <= 700) {
     };
 }
 
+/**
+ * @todo Remove? The 'fold_menu' field/$_SESSION['glpifold_menu'] seem unused.
+ */
 var switchFoldMenu = function() {
     $.ajax({
         url: CFG_GLPI.root_doc + '/ajax/switchfoldmenu.php',
@@ -522,6 +537,7 @@ var switchFoldMenu = function() {
 };
 
 $(function() {
+    //TODO Remove. Only applies to legacy tables using .tab_cadre_fixehov class
     $("body").delegate('td','mouseover mouseleave', function(e) {
         var col = $(this).closest('tr').children().index($(this));
         var tr = $(this).closest('tr');
@@ -544,6 +560,7 @@ $(function() {
         }
     });
 
+    //TODO remove? See comment for switchFoldMenu()
     $('.reduce-menu').on('click', function(event) {
         event.preventDefault();
         event.stopPropagation();
@@ -558,6 +575,7 @@ $(function() {
         }
     });
 
+    //TODO Remove - Was for the old debug toolbar/panels
     // toggle debug panel
     $(document).on('click', '.see_debug', function() {
         $('body > .debug-panel').toggle();
@@ -640,7 +658,7 @@ var urlExists = function(url) {
 /**
  * Format a size to the last possible unit (o, Kio, Mio, etc)
  *
- * @param  {integer} size
+ * @param  {number} size
  * @return {string}  The formated size
  */
 var getSize = function (size) {
@@ -671,7 +689,7 @@ var getSize = function (size) {
 /**
  * Convert a integer index into an excel like alpha index (A, B, ..., AA, AB, ...)
  * @since  9.3
- * @param  integer index    the numeric index
+ * @param  {number} index    the numeric index
  * @return string           excel like string index
  */
 var getBijectiveIndex = function(index) {
@@ -686,6 +704,7 @@ var getBijectiveIndex = function(index) {
 
 /**
  * Stop propagation and navigation default for the specified event
+ * @todo Remove - Not useful and only used one place
  */
 var stopEvent = function(event) {
     event.preventDefault();
@@ -694,6 +713,7 @@ var stopEvent = function(event) {
 
 /**
  * Returns element height, including margins
+ * @todo Remove - Not used anywhere
 */
 function _eltRealSize(_elt) {
     var _s = 0;
@@ -856,7 +876,10 @@ var templateResult = function(result) {
     return _elt;
 };
 
-// delay function who reinit timer on each call
+/**
+ * delay function who reinit timer on each call
+ * @todo Remove - use lodash.debounce instead
+ */
 var typewatch = (function(){
     var timer = 0;
     return function(callback, ms){
@@ -1314,10 +1337,16 @@ $(
 );
 
 // case insentive :contains selector -> ":icontains"
+//TODO Remove. Used only by templates/pages/setup/dropdowns_list.html.twig. This kind of case-insensitive search can be done other ways.
 jQuery.expr.filters.icontains = function(elem, i, m) {
     return (elem.innerText || elem.textContent || "").toLowerCase().indexOf(m[3].toLowerCase()) > -1;
 };
 
+/**
+ * @param table
+ * @returns {string}
+ * @note Used by System Info page to copy the info on the page for use on GitHub.
+ */
 function tableToDetails(table) {
     let in_details = false;
     const section_els = $(table).find('.section-header, .section-content');
@@ -1328,11 +1357,11 @@ function tableToDetails(table) {
             if (in_details) {
                 details += '\n</pre></details>';
             }
-            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>\n`;
+            details += `<details><summary>${_.escape(e.textContent)}</summary><pre>\n`;
             in_details = true;
         } else {
             if (in_details) {
-                details += _.escape(e.innerText);
+                details += _.escape(e.textContent);
             }
         }
     });
@@ -1980,3 +2009,24 @@ document.addEventListener('focusin', (e) => {
         e.stopImmediatePropagation();
     }
 });
+
+/* eslint-disable no-undef */
+if (typeof module !== 'undefined' && module.exports) {
+    module.exports = {
+        markCheckboxes,
+        unMarkCheckboxes,
+        checkAsCheckboxes,
+        selectAll,
+        deselectAll,
+        isImage,
+        getExtIcon,
+        getSize,
+        getBijectiveIndex,
+        getUuidV4,
+        setHasUnsavedChanges,
+        hasUnsavedChanges,
+        getFlatPickerLocale,
+        getAjaxCsrfToken,
+        tableToDetails,
+    };
+}
