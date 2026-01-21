@@ -51,6 +51,7 @@
     data-glpi-form-editor-comment
     data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').COMMENT.value }}"
     data-glpi-draggable-item
+    aria-label="{{ comment is not null ? comment.fields.name : __('New comment') }}"
 >
     <section
         data-glpi-form-editor-on-click="set-active"
@@ -95,6 +96,7 @@
 
                 {# Duplicate comment #}
                 <i
+                    role="button"
                     class="ti ti-copy ms-3 cursor-pointer"
                     data-bs-toggle="tooltip"
                     data-bs-placement="top"

@@ -1417,4 +1417,105 @@ describe ('Form editor', () => {
             });
         });
     });
+
+    it('can paste image in comment description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            cy.wrap(form_id).visitFormTab('Form');
+            cy.findByRole('button', {'name': 'Add a comment'}).click();
+            cy.focused().type('First comment');
+            cy.saveFormEditorAndReload();
+        });
+
+        cy.findByRole('option', {'name': 'First comment'}).as('comment');
+        cy.get('@comment').click();
+        cy.get('@comment').findByLabelText("Comment description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@comment').findByLabelText("Comment description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_comments[0][_uploader_description][]');
+        });
+
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Comment details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                assertImageInserted(() => cy.findByLabelText("Comment description").awaitTinyMCE());
+            });
+        });
+    });
+
+    it('can paste image in new comment description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').visitFormTab('Form');
+        cy.findByRole('button', {'name': 'Add a comment'}).click();
+        cy.focused().type('First comment');
+
+        cy.findByRole('option', {'name': 'New comment'}).as('comment');
+        cy.get('@comment').findByLabelText("Comment description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@comment').findByLabelText("Comment description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_comments[0][_uploader_description][]');
+        });
+
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Comment details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                assertImageInserted(() => cy.findByLabelText("Comment description").awaitTinyMCE());
+            });
+        });
+    });
+
+    it('can duplicate a comment with an image in description', () => {
+        cy.login();
+        cy.createFormWithAPI().as('form_id').visitFormTab('Form');
+        cy.findByRole('button', {'name': 'Add a comment'}).click();
+        cy.focused().type('First comment');
+
+        cy.findByRole('option', {'name': 'New comment'}).as('comment');
+        cy.get('@comment').click();
+        cy.get('@comment').findByLabelText("Comment description")
+            .awaitTinyMCE()
+            .click()
+        ;
+
+        cy.intercept('POST', '/ajax/fileupload.php').as('fileUpload');
+
+        cy.get('@comment').findByLabelText("Comment description").awaitTinyMCE().then($destination => {
+            pasteImageIntoTinyMCE($destination);
+        });
+
+        cy.wait('@fileUpload').then((interception) => {
+            assertFileUploadSuccess(interception, '_comments[0][_uploader_description][]');
+        });
+
+        cy.findByRole('button', {'name': "Duplicate comment"}).click();
+        cy.findAllByRole('region', {'name': 'Comment details'}).eq(1).should('exist');
+        saveFormAndReload();
+
+        cy.findAllByRole('region', {'name': 'Comment details'}).each((region) => {
+            cy.wrap(region).within(() => {
+                cy.findByRole('textbox', {'name': 'Comment title'}).click();
+                assertImageInserted(() => cy.findByLabelText("Comment description").awaitTinyMCE());
+            });
+        });
+    });
 });
