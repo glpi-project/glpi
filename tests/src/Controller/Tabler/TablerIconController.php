@@ -43,6 +43,6 @@ final class TablerIconController extends AbstractController
     #[Route(path: '/test/tabler/icons', name: "test_tabler_icons")]
     public function __invoke(): Response
     {
-        return $this->render("tests/tabler/icons.html.twig", ['title' => "Icons"]);
+        return $this->render("@test/tabler/icons.html.twig", ['title' => "Icons"]);
     }
 }
