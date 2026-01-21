@@ -127,7 +127,6 @@ class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInte
         switch ($field) {
             case 'illustration':
                 return (new IllustrationManager())->renderIcon($values[$field], 32);
-                break;
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
