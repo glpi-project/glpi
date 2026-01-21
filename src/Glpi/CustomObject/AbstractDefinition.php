@@ -557,25 +557,6 @@ abstract class AbstractDefinition extends CommonDBTM
             $this->syncProfilesRights();
             unset($_SESSION['menu']);
         }
-
-        // add asset in dropdownvisibilities
-        $dropdown_visibility = new \DropdownVisibility();
-        // Only State type is handled atm, DropdownVisibility is designed to handle other classes
-        $states = (new \State())->find(['entities_id' => Session::getActiveEntity()]);
-        foreach ($states as $state) {
-            if (!$dropdown_visibility->add(
-                [
-                    'visible_itemtype' => $this->getCustomObjectClassName(),
-                    'items_id' => $state['id'],
-                    'itemtype' => \State::class,
-                    'is_visible' => 0, // not visible by default
-                ]
-            )
-            ) {
-                throw new \RuntimeException('Cannot add custom dropdown visibility');
-            }
-            $dropdown_visibility->reset();
-        }
     }
 
     public function post_updateItem($history = true)
