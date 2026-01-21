@@ -231,6 +231,9 @@
                             {% if entry['id'] is defined %}
                                 data-id="{{ entry['id'] ?? "" }}"
                             {% endif %}
+                            {% if entry['row_aria_label'] is defined %}
+                                aria-label="{{ entry['row_aria_label'] }}"
+                            {% endif %}
                         >
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
