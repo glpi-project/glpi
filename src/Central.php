@@ -188,6 +188,11 @@ class Central extends CommonGLPI
             [Ticket::READMY, Ticket::READALL, Ticket::READASSIGN]
         );
 
+        $showmyticket = Session::haveRightsOr(
+            "ticket",
+            [Ticket::READMY, Ticket::READALL]
+        );
+
         $showproblem = Session::haveRightsOr('problem', [Problem::READALL, Problem::READMY]);
 
         $showchanges = Session::haveRightsOr('change', [Change::READALL, Change::READMY]);
@@ -202,17 +207,19 @@ class Central extends CommonGLPI
         }
 
         if ($showticket) {
-            if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+            if ($showmyticket) {
+                if (Ticket::isAllowedStatus(Ticket::SOLVED, Ticket::CLOSED)) {
+                    $lists[] = [
+                        'itemtype'  => Ticket::class,
+                        'status'    => 'toapprove',
+                    ];
+                }
+
                 $lists[] = [
                     'itemtype'  => Ticket::class,
-                    'status'    => 'toapprove',
+                    'status'    => 'survey',
                 ];
             }
-
-            $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'survey',
-            ];
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'validation.rejected',
@@ -221,14 +228,16 @@ class Central extends CommonGLPI
                 'itemtype'  => Ticket::class,
                 'status'    => 'solution.rejected',
             ];
-            $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'requestbyself',
-            ];
-            $lists[] = [
-                'itemtype'  => Ticket::class,
-                'status'    => 'observed',
-            ];
+            if ($showmyticket) {
+                $lists[] = [
+                    'itemtype'  => Ticket::class,
+                    'status'    => 'requestbyself',
+                ];
+                $lists[] = [
+                    'itemtype'  => Ticket::class,
+                    'status'    => 'observed',
+                ];
+            }
             $lists[] = [
                 'itemtype'  => Ticket::class,
                 'status'    => 'process',

@@ -47,7 +47,7 @@ use Glpi\Http\Response;
 #[Route(path: '/GraphQL', priority: 1, tags: ['GraphQL'])]
 final class GraphQLController extends AbstractController
 {
-    #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED, scopes: ['graphql'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'GraphQL API')]
     public function index(Request $request): Response
@@ -55,7 +55,7 @@ final class GraphQLController extends AbstractController
         return new JSONResponse(GraphQL::processRequest($request));
     }
 
-    #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED, scopes: ['graphql'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'GraphQL API Schema')]
     public function getSchema(Request $request): Response
