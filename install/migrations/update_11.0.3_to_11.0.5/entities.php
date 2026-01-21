@@ -43,6 +43,8 @@ $migration->changeField('glpi_entities', 'inquest_URL_change', 'inquest_URL_chan
 // Fix glpi_entities.id column to use AUTO_INCREMENT instead of DEFAULT 0
 // This is required for concurrent entity creation to work properly
 // see #22625
+// Add NO_AUTO_VALUE_ON_ZERO to allow operations on entities with id=0 (root entity)
+$DB->doQuery("SET SESSION sql_mode = CONCAT(@@sql_mode, ',NO_AUTO_VALUE_ON_ZERO')");
 $DB->doQuery(
     "ALTER TABLE `glpi_entities`
      MODIFY `id` INT unsigned NOT NULL AUTO_INCREMENT"
