@@ -341,13 +341,48 @@ input[type="checkbox"].toggle_comments {
     }
 }
 
-// Tippy.js theme for GLPI
-.tippy-box[data-theme~='glpi'] {
-    background: transparent;
-    border: none;
-    box-shadow: none;
+// Bubble menu (text selection toolbar)
+.bubble-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    background: var(--tblr-bg-surface);
+    border: 1px solid var(--tblr-border-color);
+    border-radius: var(--tblr-border-radius);
+    box-shadow: var(--tblr-box-shadow);
+    padding: 0.25rem;
 
-    > .tippy-content {
+    .bubble-menu-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
         padding: 0;
+        border: none;
+        background: none;
+        cursor: pointer;
+        border-radius: var(--tblr-border-radius-sm);
+        color: var(--tblr-body-color);
+
+        i {
+            font-size: 1rem;
+        }
+
+        &:hover {
+            background: var(--tblr-bg-surface-secondary);
+        }
+
+        &.is-active {
+            background: var(--tblr-primary);
+            color: #fff;
+        }
+    }
+
+    .bubble-menu-divider {
+        width: 1px;
+        height: 1.25rem;
+        background: var(--tblr-border-color);
+        margin: 0 0.25rem;
     }
 }

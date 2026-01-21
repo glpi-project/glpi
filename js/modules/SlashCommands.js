@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global TiptapCore, TiptapSuggestion, tippy */
+/* global TiptapCore, TiptapSuggestion, FloatingUI */
 
 /**
  * Slash commands extension for Tiptap editor
@@ -43,61 +43,63 @@ const Suggestion = TiptapSuggestion.default || TiptapSuggestion.Suggestion || Ti
 
 /**
  * Available slash commands
+ * Each command receives (editor, range) and must delete the range in the same chain
+ * Uses insertContent to INSERT new blocks rather than transforming existing content
  */
 const SLASH_COMMANDS = [
     {
         title: __('Heading 1'),
         icon: 'ti ti-h-1',
-        command: (editor) => editor.chain().focus().toggleHeading({ level: 1 }).run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'heading', attrs: { level: 1 } }).run(),
     },
     {
         title: __('Heading 2'),
         icon: 'ti ti-h-2',
-        command: (editor) => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'heading', attrs: { level: 2 } }).run(),
     },
     {
         title: __('Heading 3'),
         icon: 'ti ti-h-3',
-        command: (editor) => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'heading', attrs: { level: 3 } }).run(),
     },
     {
         title: __('Bullet List'),
         icon: 'ti ti-list',
-        command: (editor) => editor.chain().focus().toggleBulletList().run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'bulletList', content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }).run(),
     },
     {
         title: __('Numbered List'),
         icon: 'ti ti-list-numbers',
-        command: (editor) => editor.chain().focus().toggleOrderedList().run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'orderedList', content: [{ type: 'listItem', content: [{ type: 'paragraph' }] }] }).run(),
     },
     {
         title: __('Quote'),
         icon: 'ti ti-blockquote',
-        command: (editor) => editor.chain().focus().toggleBlockquote().run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'blockquote', content: [{ type: 'paragraph' }] }).run(),
     },
     {
         title: __('Code Block'),
         icon: 'ti ti-code',
-        command: (editor) => editor.chain().focus().toggleCodeBlock().run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'codeBlock' }).run(),
     },
     {
         title: __('Table'),
         icon: 'ti ti-table',
-        command: (editor) => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run(),
     },
     {
         title: __('Divider'),
         icon: 'ti ti-minus',
-        command: (editor) => editor.chain().focus().setHorizontalRule().run(),
+        command: (editor, range) => editor.chain().focus().deleteRange(range).insertContent({ type: 'horizontalRule' }).run(),
     },
     {
         title: __('Image'),
         icon: 'ti ti-photo',
-        command: (editor) => {
+        command: (editor, range) => {
             // TODO: Integrate with GLPI document picker
             const url = window.prompt(__('Enter image URL'));
             if (url) {
-                editor.chain().focus().setImage({ src: url }).run();
+                editor.chain().focus().deleteRange(range).insertContent({ type: 'image', attrs: { src: url } }).run();
             }
         },
     },
@@ -164,8 +166,10 @@ const SlashCommands = Extension.create({
                     );
                 },
                 render: () => {
-                    let popup = null;
+                    const { computePosition, autoUpdate, offset, flip, shift } = FloatingUI;
+                    let floatingElement = null;
                     let menuElement = null;
+                    let cleanupAutoUpdate = null;
                     let selectedIndex = 0;
                     let items = [];
                     let commandFn = null;
@@ -191,6 +195,25 @@ const SlashCommands = Extension.create({
                         }
                     };
 
+                    const updatePosition = (props) => {
+                        if (!floatingElement) return;
+
+                        // Create a virtual element from clientRect for Floating UI
+                        const virtualElement = {
+                            getBoundingClientRect: props.clientRect,
+                        };
+
+                        computePosition(virtualElement, floatingElement, {
+                            placement: 'bottom-start',
+                            middleware: [offset(6), flip(), shift({ padding: 8 })],
+                        }).then(({ x, y }) => {
+                            Object.assign(floatingElement.style, {
+                                left: `${x}px`,
+                                top: `${y}px`,
+                            });
+                        });
+                    };
+
                     return {
                         onStart: (props) => {
                             items = props.items;
@@ -199,16 +222,21 @@ const SlashCommands = Extension.create({
 
                             menuElement = createSlashMenu(items, selectedIndex, selectItem);
 
-                            popup = tippy('body', {
-                                getReferenceClientRect: props.clientRect,
-                                appendTo: () => document.body,
-                                content: menuElement,
-                                showOnCreate: true,
-                                interactive: true,
-                                trigger: 'manual',
-                                placement: 'bottom-start',
-                                theme: 'glpi',
-                                maxWidth: 'none',
+                            // Create floating container
+                            floatingElement = document.createElement('div');
+                            floatingElement.style.cssText = 'position: absolute; z-index: 1050;';
+                            floatingElement.appendChild(menuElement);
+                            document.body.appendChild(floatingElement);
+
+                            // Initial position
+                            updatePosition(props);
+
+                            // Auto-update position on scroll/resize
+                            const virtualElement = {
+                                getBoundingClientRect: props.clientRect,
+                            };
+                            cleanupAutoUpdate = autoUpdate(virtualElement, floatingElement, () => {
+                                updatePosition(props);
                             });
                         },
 
@@ -220,10 +248,20 @@ const SlashCommands = Extension.create({
                             // Recreate menu with new items
                             menuElement = createSlashMenu(items, selectedIndex, selectItem);
 
-                            if (popup && popup[0]) {
-                                popup[0].setContent(menuElement);
-                                popup[0].setProps({
-                                    getReferenceClientRect: props.clientRect,
+                            if (floatingElement) {
+                                floatingElement.innerHTML = '';
+                                floatingElement.appendChild(menuElement);
+                                updatePosition(props);
+
+                                // Update auto-update with new clientRect
+                                if (cleanupAutoUpdate) {
+                                    cleanupAutoUpdate();
+                                }
+                                const virtualElement = {
+                                    getBoundingClientRect: props.clientRect,
+                                };
+                                cleanupAutoUpdate = autoUpdate(virtualElement, floatingElement, () => {
+                                    updatePosition(props);
                                 });
                             }
                         },
@@ -252,9 +290,7 @@ const SlashCommands = Extension.create({
                             }
 
                             if (event.key === 'Escape') {
-                                if (popup && popup[0]) {
-                                    popup[0].hide();
-                                }
+                                // Cleanup is handled by onExit
                                 return true;
                             }
 
@@ -262,19 +298,21 @@ const SlashCommands = Extension.create({
                         },
 
                         onExit: () => {
-                            if (popup && popup[0]) {
-                                popup[0].destroy();
+                            if (cleanupAutoUpdate) {
+                                cleanupAutoUpdate();
+                                cleanupAutoUpdate = null;
                             }
-                            popup = null;
+                            if (floatingElement) {
+                                floatingElement.remove();
+                                floatingElement = null;
+                            }
                             menuElement = null;
                         },
                     };
                 },
                 command: ({ editor, range, props }) => {
-                    // Delete the slash command text
-                    editor.chain().focus().deleteRange(range).run();
-                    // Execute the command
-                    props.command(editor);
+                    // Execute the command with range - deletion happens in the same chain
+                    props.command(editor, range);
                 },
             },
         };
