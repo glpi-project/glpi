@@ -72,6 +72,10 @@ use User;
             schema: new Doc\Schema(type: Doc\Schema::TYPE_INTEGER),
             location: Doc\Parameter::LOCATION_PATH,
         ),
+        new Doc\Parameter(
+            name: 'language',
+            schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING),
+        ),
     ]
 )]
 class KnowbaseController extends AbstractController
@@ -305,7 +309,6 @@ class KnowbaseController extends AbstractController
                 ],
             ],
             'KBArticleTranslation' => [
-                //TODO How will a user request the base content vs a translation?
                 'x-version-introduced' => '2.2.0',
                 'x-itemtype' => KnowbaseItemTranslation::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
@@ -447,22 +450,6 @@ class KnowbaseController extends AbstractController
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBArticle', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     #[Route(path: '/Category', methods: ['POST'])]
     #[RouteVersion(introduced: '2.2')]
     #[Doc\CreateRoute(schema_name: 'KBCategory')]
@@ -507,20 +494,6 @@ class KnowbaseController extends AbstractController
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBCategory', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     #[Route(path: '/Article/{article_id}/Comment', methods: ['POST'])]
     #[RouteVersion(introduced: '2.2')]
     #[Doc\CreateRoute(schema_name: 'KBArticleComment')]
@@ -553,7 +526,7 @@ class KnowbaseController extends AbstractController
     public function searchKBArticleComments(Request $request): Response
     {
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle==' . $request->getAttribute('article_id');
+        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
         $request->setParameter('filter', $filters);
         return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getParameters());
     }
@@ -564,7 +537,7 @@ class KnowbaseController extends AbstractController
     public function getKBArticleComment(Request $request): Response
     {
         $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle==' . $request->getAttribute('article_id');
+        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
         $request->setParameter('filter', $filters);
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
@@ -574,9 +547,6 @@ class KnowbaseController extends AbstractController
     #[Doc\UpdateRoute('KBArticleComment')]
     public function updateKBArticleComment(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle==' . $request->getAttribute('article_id');
-        $request->setParameter('filter', $filters);
         return ResourceAccessor::updateBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
@@ -585,9 +555,64 @@ class KnowbaseController extends AbstractController
     #[Doc\DeleteRoute('KBArticleComment')]
     public function deleteKBArticleComment(Request $request): Response
     {
-        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
-        $filters .= ';kbarticle==' . $request->getAttribute('article_id');
-        $request->setParameter('filter', $filters);
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('KBArticleComment', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Article/{article_id}/Revision', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(schema_name: 'KBArticleRevision')]
+    public function searchKBArticleDefaultLangRevisions(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
+        $filters .= ';language=empty=';
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Article/{article_id}/Revision/{revision}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(schema_name: 'KBArticleRevision')]
+    public function getKBArticleDefaultLangRevision(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
+        $filters .= ';language=empty=';
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+            'revision'
+        );
+    }
+
+    #[Route(path: '/Article/{article_id}/{language}/Revision', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(schema_name: 'KBArticleRevision')]
+    public function searchKBArticleRevisions(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
+        $filters .= ';language==' . $request->getAttribute('language');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Article/{article_id}/{language}/Revision/{revision}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(schema_name: 'KBArticleRevision')]
+    public function getKBArticleRevision(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';kbarticle.id==' . $request->getAttribute('article_id');
+        $filters .= ';language==' . $request->getAttribute('language');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('KBArticleRevision', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+            'revision'
+        );
     }
 }
