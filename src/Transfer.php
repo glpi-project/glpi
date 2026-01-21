@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
@@ -1707,6 +1708,10 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request($criteria);
 
+        $query = "SELECT COUNT(*) as cpt FROM " . Item_SoftwareVersion::getTable() . "
+                  WHERE itemtype = " . new QueryParam() . " AND items_id = " . new QueryParam() . " AND softwareversions_id = " . new QueryParam() . ";";
+        $stmt = $DB->prepare($query);
+
         foreach ($iterator as $data) {
             if ($this->options['keep_software']) {
                 $newversID = $this->copySingleVersion($data['softwareversions_id']);
@@ -1715,17 +1720,12 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $existing_count = $DB->request([
-                        'COUNT'  => 'cpt',
-                        'FROM'   => Item_SoftwareVersion::getTable(),
-                        'WHERE'  => [
-                            'itemtype'             => $itemtype,
-                            'items_id'             => $ID,
-                            'softwareversions_id'  => $newversID,
-                        ],
-                    ])->current();
+                    $stmt->bind_param('sii', $itemtype, $ID, $newversID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
 
-                    if ($existing_count['cpt'] > 0) {
+                    if ($row['cpt'] > 0) {
                         $DB->delete(Item_SoftwareVersion::getTable(), ['id' => $data['id']]);
                     } else {
                         $DB->update(
