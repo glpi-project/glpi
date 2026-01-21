@@ -42,7 +42,7 @@ use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\UI\IllustrationManager;
 use Override;
 
-final class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
+class Category extends CommonTreeDropdown implements ServiceCatalogCompositeInterface
 {
     public $can_be_translated = true;
 
@@ -105,7 +105,32 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
             'datatype'          => 'text',
         ];
 
+        $options[] = [
+            'id'                => '4',
+            'table'             => $this->getTable(),
+            'field'             => 'illustration',
+            'name'              => __('Illustration'),
+            'datatype'          => 'text',
+            'massiveaction'      => false,
+            'nosearch'          => true,
+            'datatype'          => 'specific',
+        ];
+
         return $options;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($field) {
+            case 'illustration':
+                return (new IllustrationManager())->renderIcon($values[$field], 32);
+            break;
+        }
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     #[Override]
