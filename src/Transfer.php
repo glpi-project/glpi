@@ -1708,8 +1708,20 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request($criteria);
 
-        $query = "SELECT COUNT(*) as cpt FROM " . Item_SoftwareVersion::getTable() . "
-                  WHERE itemtype = " . new QueryParam() . " AND items_id = " . new QueryParam() . " AND softwareversions_id = " . new QueryParam() . ";";
+        // find if version is used by other items
+        $criteria = [
+            'COUNT'  => 'cpt',
+            'FROM'   => Item_SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'itemtype'             => new QueryParam(),
+                'items_id'             => new QueryParam(),
+                'softwareversions_id'  => new QueryParam(),
+            ],
+        ];
+
+        $it = new DBmysqlIterator(null);
+        $it->buildQuery($criteria);
+        $query = $it->getSql();
         $stmt = $DB->prepare($query);
 
         foreach ($iterator as $data) {
