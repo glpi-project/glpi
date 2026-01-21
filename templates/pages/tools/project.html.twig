@@ -44,7 +44,7 @@
 
 {% block form_fields %}
     {% if not item.isNewItem() and not is_template %}
-        {{ fields.datetimeField('date', item.fields['date'], __('Creation date'), field_options) }}
+        {{ fields.datetimeField('date', item.fields['date_creation'], __('Creation date'), field_options) }}
         {{ fields.htmlField('date_mod', item.fields['date_mod']|formatted_datetime, __('Last update')) }}
     {% elseif is_template and not item.isNewItem() and no_header %}
         {{ fields.autoNameField('template_name', item, __('Template name'), 0, field_options) }}
