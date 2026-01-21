@@ -186,7 +186,7 @@ class KnowbaseEditor {
             { command: 'toggleOrderedList', icon: 'ti ti-list-numbers', title: __('Numbered List') },
             { command: 'toggleBlockquote', icon: 'ti ti-blockquote', title: __('Quote') },
             { type: 'divider' },
-            { command: 'setLink', icon: 'ti ti-link', title: __('Link'), special: 'link' },
+            { command: 'setLink', icon: 'ti ti-link', title: _x('button', 'Link'), special: 'link' },
             { command: 'unsetLink', icon: 'ti ti-link-off', title: __('Remove link'), special: 'unlink' },
         ];
 
