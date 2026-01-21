@@ -34,8 +34,10 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use KnowbaseItem;
+use KnowbaseItemTranslation;
 
 class KnowbaseControllerTest extends HLAPITestCase
 {
@@ -61,5 +63,86 @@ class KnowbaseControllerTest extends HLAPITestCase
             'user' => 2,
             'comment' => 'This is an updated comment on knowbase article',
         ]);
+    }
+
+    public function testSearchAndGetRevision()
+    {
+        // revision creation is done automatically on article update and no deletions are possible
+
+        $this->loginWeb();
+        // Create an article
+
+        $kbi = $this->createItem(KnowbaseItem::class, [
+            'name' => '_knowbaseitem_revision_test',
+            'answer' => 'Initial content',
+        ]);
+        // update the content to create a revision
+        $this->assertTrue($kbi->update([
+            'id' => $kbi->getID(),
+            'answer' => 'Updated content',
+        ]));
+        $this->assertTrue($kbi->update([
+            'id' => $kbi->getID(),
+            'answer' => 'Updated content 2',
+        ]));
+
+        $this->login();
+
+        $last_revision_id = null;
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/Revision'), function ($call) use (&$last_revision_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$last_revision_id) {
+                    $this->assertCount(2, $content);
+                    $last_revision_id = $content[count($content) - 1]['revision'];
+                });
+        });
+        // Get last revision
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/Revision/' . $last_revision_id), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Updated content', $content['content']);
+                });
+        });
+
+        // make a translation and test revisions there
+        $trans = $this->createItem(KnowbaseItemTranslation::class, [
+            'knowbaseitems_id' => $kbi->getID(),
+            'language' => 'fr_FR',
+            'name' => 'Traduction française',
+            'answer' => 'Contenu initial',
+        ]);
+        // update the content to create a revision
+        $this->assertTrue($trans->update([
+            'id' => $trans->getID(),
+            'answer' => 'Contenu mis à jour',
+        ]));
+        $this->assertTrue($trans->update([
+            'id' => $trans->getID(),
+            'answer' => 'Contenu mis à jour 2',
+        ]));
+
+        $last_revision_id = null;
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/fr_FR/Revision'), function ($call) use (&$last_revision_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use (&$last_revision_id) {
+                    $this->assertCount(2, $content);
+                    $last_revision_id = $content[count($content) - 1]['revision'];
+                });
+        });
+        // Get last revision
+        $this->api->call(new Request('GET', '/Knowledgebase/Article/' . $kbi->getID() . '/fr_FR/Revision/' . $last_revision_id), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertEquals('Contenu mis à jour', $content['content']);
+                });
+        });
     }
 }

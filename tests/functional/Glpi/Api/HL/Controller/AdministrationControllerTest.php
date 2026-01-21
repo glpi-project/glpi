@@ -226,10 +226,7 @@ class AdministrationControllerTest extends HLAPITestCase
         $request->setParameter('filter', 'username==' . TU_USER . '_other');
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
-            $call->response->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertEquals(TU_USER, $content['username']);
-                });
+            $call->response->isNotFoundError();
         });
     }
 
