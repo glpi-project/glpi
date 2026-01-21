@@ -108,7 +108,7 @@
                         if (translationInput.siblings('.tox-tinymce').length === 0) {
                             initTinyMCEOnDemand(
                                 translationInput,
-                                $('[data-glpi-tinymce-init-on-demand-render="' + translationInput.attr('id') + '"]')
+                                $('[data-glpi-tinymce-init-on-demand-render="' + CSS.escape(translationInput.attr('id')) + '"]')
                             ).then((editors) => {
                                 editors[0].setContent('{{ handler.getValue()|e('js') }}');
                             });
