@@ -281,4 +281,12 @@ enum Environment: string
             self::E2E => true,
         };
     }
+
+    public function shouldEnableTestResources(): bool
+    {
+        return match ($this) {
+            default   => false,
+            self::E2E => true,
+        };
+    }
 }
