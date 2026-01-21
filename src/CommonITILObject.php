@@ -2379,6 +2379,11 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function enforceReadonlyFields(array $input, bool $isAdd = false): array
     {
+        // This function can be triggered before the object is loaded (i.e: enforcing is run before doing $this->update in ticket.form)
+        if (empty($this->fields)) {
+            $this->getFromDB($input['id']);
+        }
+
         $tt = $this->getITILTemplateFromInput($input);
         if (!$tt) {
             return $input;
