@@ -176,7 +176,7 @@ export class GlpiPage
     }
 
     public async doDeleteNote(
-        index: number,
+        _index: number,
     ): Promise<void> {
         // Prepare to confirm delete dialog
         this.page.once('dialog', dialog => dialog.accept());
