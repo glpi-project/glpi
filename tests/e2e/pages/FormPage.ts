@@ -66,11 +66,11 @@ export class FormPage extends GlpiPage
         await focusedInput.waitFor({ state: 'visible', timeout: 5000 });
 
         const sectionIndex = await focusedInput.evaluate((input) => {
-            const section = input.closest('[role="region"][aria-label="Form section"]');
+            const section = input.closest('section[aria-label="Form section"]');
             if (!section) {
                 throw new Error('Section container not found');
             }
-            const allSections = Array.from(document.querySelectorAll('[role="region"][aria-label="Form section"]'));
+            const allSections = Array.from(document.querySelectorAll('section[aria-label="Form section"]'));
             return allSections.indexOf(section);
         });
 
@@ -88,11 +88,11 @@ export class FormPage extends GlpiPage
         await focusedInput.waitFor({ state: 'visible', timeout: 5000 });
 
         const questionIndex = await focusedInput.evaluate((input) => {
-            const question = input.closest('[role="region"][aria-label="Question details"]');
+            const question = input.closest('section[aria-label="Question details"]');
             if (!question) {
                 throw new Error('Question container not found');
             }
-            const allQuestions = Array.from(document.querySelectorAll('[role="region"][aria-label="Question details"]'));
+            const allQuestions = Array.from(document.querySelectorAll('section[aria-label="Question details"]'));
             return allQuestions.indexOf(question);
         });
 
@@ -110,11 +110,11 @@ export class FormPage extends GlpiPage
         await focusedInput.waitFor({ state: 'visible', timeout: 5000 });
 
         const commentIndex = await focusedInput.evaluate((input) => {
-            const comment = input.closest('[role="region"][aria-label="Comment details"]');
+            const comment = input.closest('section[aria-label="Comment details"]');
             if (!comment) {
                 throw new Error('Comment container not found');
             }
-            const allComments = Array.from(document.querySelectorAll('[role="region"][aria-label="Comment details"]'));
+            const allComments = Array.from(document.querySelectorAll('section[aria-label="Comment details"]'));
             return allComments.indexOf(comment);
         });
 

@@ -377,11 +377,6 @@ final class Form extends CommonDBTM implements
 
         $input = $this->removeSavedConditionsIfAlwaysVisible($input);
 
-        $input = $this->addFiles($input, [
-            'name' => 'header',
-            'content_field' => 'header',
-        ]);
-
         return $input;
     }
 
@@ -389,6 +384,12 @@ final class Form extends CommonDBTM implements
     public function post_updateItem($history = true)
     {
         global $DB;
+
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'header',
+            'content_field' => 'header',
+            'force_update'  => true,
+        ]);
 
         $DB->beginTransaction();
         try {
