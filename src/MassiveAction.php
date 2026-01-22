@@ -1439,8 +1439,8 @@ class MassiveAction
 
                 // Log event for successful purge actions (grouped)
                 $is_force_purge = $action === 'purge';
-                $action_verb = $is_force_purge ? 'purges' : 'deletes';
-                self::logMassiveActionEvent($item, $action_verb, $purged_ids);
+                $action = $is_force_purge ? 'purges' : 'deletes';
+                self::logMassiveActionEvent($item, $action, $purged_ids);
                 break;
 
             case 'update':
@@ -1848,11 +1848,11 @@ class MassiveAction
      * Log massive action events with item IDs
      *
      * @param CommonDBTM $item         Item instance
-     * @param string     $action_verb  Action verb (deletes, restores, purges)
+     * @param string     $action       Action verb (deletes, restores, purges)
      * @param int[]      $ids          Array of item IDs processed
      * @return void
      */
-    private static function logMassiveActionEvent(CommonDBTM $item, string $action_verb, array $ids): void
+    private static function logMassiveActionEvent(CommonDBTM $item, string $action, array $ids): void
     {
         $count = count($ids);
         if ($count <= 0) {
@@ -1861,11 +1861,16 @@ class MassiveAction
 
         if ($count === 1) {
             // For single item, show ID in element column and simplified message
+            $translation_key = match ($action) {
+                'deletes' => __('%1$s deletes item %2$s by massive action'),
+                'purges' => __('%1$s purges item %2$s by massive action'),
+                'restores' => __('%1$s restores item %2$s by massive action'),
+                default => __('%1$s %2$s item %3$s by massive action'),
+            };
             $message = sprintf(
-                __('%1$s %2$s item %3$s by massive action'),
+                $translation_key,
                 $_SESSION["glpiname"],
-                $action_verb,
-                $item->getType()
+                $item->getTypeName(1)
             );
             Event::log(
                 $ids[0],
@@ -1876,10 +1881,15 @@ class MassiveAction
             );
         } else {
             // For multiple items, use the generic count message with IDs
+            $translation_key = match ($action) {
+                'deletes' => __('%1$s deletes %2$d items by massive action: %3$s'),
+                'purges' => __('%1$s purges %2$d items by massive action: %3$s'),
+                'restores' => __('%1$s restores %2$d items by massive action: %3$s'),
+                default => __('%1$s %2$s %3$d items by massive action: %4$s'),
+            };
             $message = sprintf(
-                __('%1$s %2$s %3$d items by massive action: %4$s'),
+                $translation_key,
                 $_SESSION["glpiname"],
-                $action_verb,
                 $count,
                 implode(', ', $ids)
             );
