@@ -308,7 +308,7 @@ final class DropdownController extends AbstractController
     public static function getDropdownEndpointTypes22(): array
     {
         return [
-            'WifiNetwork', 'NetworkPortFiberchannelType'
+            'WifiNetwork', 'NetworkPortFiberchannelType',
         ];
     }
 
