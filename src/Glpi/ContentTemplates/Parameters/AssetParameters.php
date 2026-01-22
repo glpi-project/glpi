@@ -70,6 +70,7 @@ class AssetParameters extends AbstractParameters
             new AttributeParameter("name", __('Name')),
             new AttributeParameter("itemtype", __('Itemtype')),
             new AttributeParameter("serial", __('Serial number')),
+            new AttributeParameter("comment", __('Comments')),
             new ObjectParameter(new EntityParameters()),
         ];
     }
@@ -83,6 +84,7 @@ class AssetParameters extends AbstractParameters
             'name'     => $fields['name'],
             'itemtype' => $asset->getType(),
             'serial'   => $fields['serial'],
+            'comment'  => $fields['comment'],
         ];
 
         // Add asset's entity
