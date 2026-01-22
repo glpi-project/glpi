@@ -40,7 +40,7 @@ use Glpi\DBAL\QueryExpression;
  */
 
 // Fix null date_creation in glpi_documents_items
-// This can happen when migrating from pre-9.5.0 where date_mod was NULL
+// This can happen when migrating from pre-9.5.0 where date_creation was NULL
 // see #22134
 $migration->addPostQuery(
     $DB->buildUpdate(
@@ -52,7 +52,8 @@ $migration->addPostQuery(
                 . '(SELECT ' . $DB->quoteName('d.date_creation')
                 . ' FROM ' . $DB->quoteName('glpi_documents') . ' AS d'
                 . ' WHERE ' . $DB->quoteName('d.id') . ' = '
-                . $DB->quoteName('glpi_documents_items.documents_id') . ')'
+                . $DB->quoteName('glpi_documents_items.documents_id') . '), '
+                . 'NOW()'
                 . ')'
             ),
         ],
