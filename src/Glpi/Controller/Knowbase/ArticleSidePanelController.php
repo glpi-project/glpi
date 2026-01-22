@@ -59,7 +59,7 @@ final class ArticleSidePanelController extends AbstractController
         if (!$kb) {
             throw new BadRequestHttpException();
         }
-        if (!$kb::canView() || !$kb->canViewItem()) {
+        if (!$kb->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
 

@@ -61,9 +61,6 @@ final class AddCommentController extends AbstractController
         if (!$kb) {
             throw new BadRequestHttpException();
         }
-        if (!$kb::canView() || !$kb->canComment()) {
-            throw new AccessDeniedHttpException();
-        }
 
         // Parse content
         $content = $request->request->getString('content');
@@ -71,13 +68,17 @@ final class AddCommentController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        // Try to add comment
         $comment = new KnowbaseItem_Comment();
-        $comment_id = $comment->add([
+        $input = [
             'knowbaseitems_id' => $id,
             'comment' => $content,
-        ]);
-        if (!$comment_id) {
+        ];
+        if (!$comment->can(-1, CREATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        // Try to add comment
+        if (!$comment->add($input)) {
             throw new RuntimeException("Failed to create comment");
         }
 
