@@ -45,11 +45,7 @@
                 <div class="row flex-row align-items-start flex-grow-1">
                     <div class="row flex-row">
                         {% block form_fields %}
-                            {{ fields.textField('name', item.fields['name'], __('Name'), {
-                                additional_attributes: {
-                                    autocomplete: 'off',
-                                }
-                            }) }}
+                            {{ fields.textField('name', item.fields['name'], __('Name')) }}
                             {{ fields.dropdownArrayField('grants', null, {
                                 'password': __("Password"),
                                 'client_credentials': __("Client credentials"),
