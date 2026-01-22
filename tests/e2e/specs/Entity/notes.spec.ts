@@ -74,7 +74,7 @@ test('Can delete a note', async ({ page, profile, api }) => {
     // Go to the entity and delete the note
     await entity_page.goto(id, EntityPageTabs.Notes);
     await expect(entity_page.notes).toHaveCount(1);
-    await entity_page.doDeleteNote(0);
+    await entity_page.doDeleteNote();
 
     // The note is now deleted
     await expect(entity_page.notes).toHaveCount(0);

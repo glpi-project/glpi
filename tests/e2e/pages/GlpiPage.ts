@@ -175,9 +175,7 @@ export class GlpiPage
         await this.getButton("Update").click();
     }
 
-    public async doDeleteNote(
-        _index: number,
-    ): Promise<void> {
+    public async doDeleteNote(): Promise<void> {
         // Prepare to confirm delete dialog
         this.page.once('dialog', dialog => dialog.accept());
 
