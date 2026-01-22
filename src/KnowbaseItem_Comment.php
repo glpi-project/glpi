@@ -181,7 +181,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      * Gat all comments for specified KB entry
      *
      * @param int $kbitem_id KB entry ID
-     * @param string  $lang      Requested language
+     * @param string|null  $lang      Requested language
      * @param int $parent    Parent ID (defaults to 0)
      * @param array   $user_data_cache
      *
@@ -213,6 +213,8 @@ class KnowbaseItem_Comment extends CommonDBTM
                         'link'   => $user->getLinkURL(),
                         'initials' => $user->getUserInitials(),
                         'initials_bg_color' => $user->getUserInitialsBgColor(),
+                        'name' => $user->getFriendlyName(),
+                        'user' => $user,
                     ];
                 } else {
                     // User has been deleted, use default values
@@ -221,6 +223,8 @@ class KnowbaseItem_Comment extends CommonDBTM
                         'link'   => '',
                         'initials' => '',
                         'initials_bg_color' => '#cccccc',
+                        'name' => __("Deleted user"),
+                        'user' => null,
                     ];
                 }
             }

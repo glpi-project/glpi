@@ -33,10 +33,12 @@
 {% set enable_anonymization = enable_anonymization ?? false %}
 {% set avatar_size = avatar_size ?? "avatar-md" %}
 {% set anonymized = enable_anonymization and entity_config('anonymize_support_agents', session('glpiactive_entity')) != constant('Entity::ANONYMIZE_DISABLED') %}
-{% set user = user_object ?? get_item('User', users_id) %}
+{% set user = user_object ?? (users_id is defined ? get_item('User', users_id) : null) %}
 {% set with_link = with_link ?? true %}
 {% set force_initials = force_initials ?? false %}
-{% if not force_initials %}
+{% set extra_class = extra_class ?? "" %}
+{% set circle = circle ?? false %}
+{% if not force_initials and user is not null %}
     {% set user_thumbnail = user.getThumbnailPicturePath(enable_anonymization) %}
     {% if user_thumbnail == null and not entity_config('display_users_initials', session('glpiactive_entity')) %}
         {% set user_thumbnail = user.getPicturePath(enable_anonymization) %}
@@ -45,20 +47,24 @@
     {% set user_thumbnail = null %}
 {% endif %}
 
-{% if with_link and not anonymized %}
+{% if with_link and not anonymized and user is not null %}
    <a href="{{ user.getLinkURL() }}" class="d-flex align-items-center">
 {% endif %}
 
-{% set bg_color = user.getUserInitialsBgColor() %}
+{% set bg_color = user ? user.getUserInitialsBgColor() : '#cccccc' %}
 {% set fg_color = call('Toolbox::getFgColor', [bg_color, 60]) %}
-<span class="avatar {{ avatar_size }} rounded"
+<span class="avatar {{ avatar_size }} rounded{{ circle ? '-circle' : '' }} {{ extra_class }}"
       style="{% if user_thumbnail is not null %}background-image: url({{ user_thumbnail }}); background-color: inherit; {% else %} background-color: {{ bg_color }};{% endif %} aspect-ratio: 1;">
    {% if user_thumbnail is null %}
+      {% if user is not null %}
          {{ user.getUserInitials(enable_anonymization) }}
+      {% else %}
+         <i class="ti ti-user"></i>
+      {% endif %}
    {% endif %}
 </span>
 
-{% if with_link and not anonymized %}
+{% if with_link and not anonymized and user is not null %}
    {% if display_login ?? false %}
       <span class="ms-2">{{ user.fields['name'] }}</span>
    {% endif %}

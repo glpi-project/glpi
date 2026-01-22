@@ -1,0 +1,90 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends "pages/tools/kb/sidepanel/base.html.twig" %}
+
+{% block icon %}ti ti-message-circle{% endblock %}
+{% block title %}{{ __("Comments") }}{% endblock %}
+
+{% block content %}
+    <div class="d-flex flex-column row-gap-4 overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4" data-glpi-comments>
+        {% for comment in comments %}
+            {% set user_info = users_infos[comment.users_id] %}
+
+            {{ include('pages/tools/kb/sidepanel/comment.html.twig', {
+                user: users_infos[comment.users_id].user,
+                date_creation: comment.date_creation,
+                comment: comment.comment,
+            }, with_context = false) }}
+        {% endfor %}
+    </div>
+
+    <hr class="mt-4 ms-n4 me-n4 mb-3">
+
+    <div class="d-flex w-100 mt-2">
+        {{ include('components/user/picture.html.twig', {
+            'user_object': get_current_user(),
+            'avatar_size': 'avatar-sm',
+            'extra_class': 'me-2 align-self-start mt-1',
+            'circle': true,
+            'with_link' : false,
+        }, with_context = false) }}
+
+        <textarea
+            class="w-100 form-control auto-resize"
+            rows="1"
+            placeholder="{{ __('Add a comment...') }}"
+            name="new_comment"
+            data-glpi-add-comments-content
+        ></textarea>
+    </div>
+
+    <div class="d-flex mt-3">
+        <button
+            type="button"
+            class="btn btn-sm btn-primary ms-auto d-none"
+            data-glpi-add-comments-submit
+            aria-label="{{ __('Add comment') }}"
+        >
+            <i class="ti ti-plus" data-glpi-icon></i>
+            <i class="ti ti-loader-2 fa-spin d-none" data-glpi-loading></i>
+            <span>{{ __('Add comment') }}</span>
+        </button>
+    </div>
+
+    <input
+        type="hidden"
+        name="id"
+        value="{{ id }}"
+        data-glpi-kb-id
+    >
+{% endblock %}
