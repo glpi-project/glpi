@@ -34,11 +34,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-   {{ fields.textField('name', item.fields['name'], __('Name'), {
-        additional_attributes: {
-            autocomplete: 'off',
-        }
-    }) }}
+   {{ fields.textField('name', item.fields['name'], __('Name')) }}
    {{ fields.dropdownItemTypes('itemtype', item.fields['itemtype']|default('Ticket'), _n('Type', 'Types', 1), {
       types: config('notificationtemplates_types')
    }) }}
