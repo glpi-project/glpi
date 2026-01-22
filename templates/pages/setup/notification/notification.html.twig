@@ -34,11 +34,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {{ fields.textField('name', item.fields['name'], __('Name'), {
-        additional_attributes: {
-            autocomplete: 'off',
-        }
-    }) }}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
     {{ fields.dropdownYesNo('allow_response', item.fields['allow_response'], __('Allow response')) }}
