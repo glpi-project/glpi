@@ -71,6 +71,7 @@ use Infocom;
 use Item_DeviceNetworkCard;
 use Item_OperatingSystem;
 use Item_Rack;
+use Item_SoftwareVersion;
 use Location;
 use Manufacturer;
 use Monitor;
@@ -139,6 +140,17 @@ use function Safe\json_encode;
         ),
         new Doc\Parameter(
             name: 'id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
             schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
             description: 'The ID of the Asset',
             location: Doc\Parameter::LOCATION_PATH,
@@ -1376,6 +1388,25 @@ final class AssetController extends AbstractController
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+            ],
+        ];
+
+        $schemas['SoftwareInstallation'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_SoftwareVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'softwareversion' => self::getDropdownTypeSchema(class: SoftwareVersion::class, full_schema: 'SoftwareVersion'),
+                'date_install' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             ],
         ];
 
@@ -3200,5 +3231,92 @@ EOT,
     public function deleteOSInstallation(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Add a software version to an asset'
+    )]
+    public function createItemSoftwareVersion(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getSoftwareInstallation'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'List or search software installed on an asset'
+    )]
+    public function searchItemSoftware(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Get an existing software installation by the installation ID'
+    )]
+    public function getSoftwareInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Update an existing software installation by the installation ID'
+    )]
+    public function updateSoftwareInstallation(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Delete a software installation by the installation ID',
+    )]
+    public function deleteSoftwareInstallation(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

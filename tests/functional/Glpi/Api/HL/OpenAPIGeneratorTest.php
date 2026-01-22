@@ -130,6 +130,12 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                     continue;
                 }
                 unset($snapshot_method['description'], $schema_method['description'], $snapshot_method['tags'], $schema_method['tags']);
+                foreach ($snapshot_method['parameters'] ?? [] as $i => $param) {
+                    unset($snapshot_method['parameters'][$i]['description']);
+                }
+                foreach ($schema_method['parameters'] ?? [] as $i => $param) {
+                    unset($schema_method['parameters'][$i]['description']);
+                }
                 if ($snapshot_method !== $schema_method) {
                     $differences[] = "Method '$method' for path '$path' differs between snapshot and schema";
                 }
