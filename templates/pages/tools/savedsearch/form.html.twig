@@ -53,11 +53,7 @@
          {% endif %}
       {% endif %}
 
-      {{ fields.textField('name', item.fields['name'], __('Name'), {
-          additional_attributes: {
-              autocomplete: 'off',
-          }
-      }) }}
+      {{ fields.textField('name', item.fields['name'], __('Name')) }}
       {{ fields.dropdownArrayField('do_count', item.fields['do_count'], {
          (constant('SavedSearch::COUNT_AUTO')): __('Auto'),
          (constant('SavedSearch::COUNT_YES')): __('Yes'),
