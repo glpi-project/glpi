@@ -13,6 +13,7 @@ The present file will list all changes made to the project; according to the
 - `active_profile.rights` property for the `Session` schema in High-Level API v2.2 to indicate the rights of the user's current profile.
 - New schemas/endpoints for Operating system installations on assets in the High-Level API v2.2.
 - New schemas/endpoints for software installations on assets in the High-Level API v2.2.
+- New schema/endpoints for DatabaseInstance in the High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
