@@ -36,11 +36,7 @@
 
 {% block form_fields %}
     {{ inputs.hidden(items_id_field, parent_id) }}
-    {{ fields.textField('name', item.fields['name'], __('Name'), {
-        additional_attributes: {
-            autocomplete: 'off',
-        }
-    }) }}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.dropdownField('Budget', 'budgets_id', item.fields['budgets_id'], 'Budget'|itemtype_name(1), {
         entity: item.fields['entities_id'],
     }) }}
