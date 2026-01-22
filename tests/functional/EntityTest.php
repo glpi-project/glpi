@@ -137,7 +137,7 @@ class EntityTest extends DbTestCase
         );
     }
 
-    public function testPrepareInputForAdd()
+    public function testPrepareInputForAdd(): void
     {
         $this->login();
         $entity = new Entity();
@@ -163,6 +163,41 @@ class EntityTest extends DbTestCase
         $this->assertSame('entname', $prepared['completename']);
         $this->assertSame(1, $prepared['level']);
         $this->assertSame(0, $prepared['entities_id']);
+    }
+
+    public function testPrepareInputForUpdate(): void
+    {
+        $entity = new Entity();
+        $input = [
+            'id' => 1,
+            'agent_base_url' => 'http://anyurl',
+        ];
+
+        //no login => no rights.
+        $this->assertFalse($entity->prepareInputForUpdate($input));
+        $this->hasSessionMessages(ERROR, ['You do not have rights for this entity.']);
+
+        //once logged, we have rights
+        $this->login();
+        $this->assertEquals($input, $entity->prepareInputForUpdate($input));
+    }
+
+    /**
+     * Test that entity creation generates sequential IDs.
+     */
+    public function testEntityCreationGeneratesSequentialIds(): void
+    {
+        $this->login();
+
+        $id = 0;
+        for ($i = 1; $i <= 5; $i++) {
+            $entity = $this->createItem(Entity::class, [
+                'name' => "Test Entity AutoIncrement $i",
+                'entities_id' => 0,
+            ]);
+            $this->assertGreaterThan($id, $entity->getID());
+            $id = $entity->getID();
+        }
     }
 
     /**

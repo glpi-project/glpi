@@ -136,4 +136,79 @@ class ITILCategoryTest extends DbTestCase
         $this->assertSame('new comment', $category->fields['comment']);
         $this->assertSame('', $category->fields['code']);
     }
+
+    /**
+     * Test that recursive ITIL categories cannot be edited from child entities
+     *
+     * When a user is in a child entity, they should:
+     * - Be able to READ recursive objects from parent entities
+     * - NOT be able to UPDATE/DELETE recursive objects from parent entities
+     */
+    public function testRecursiveITILCategoryRights(): void
+    {
+        $this->login();
+
+        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $child_entity_id = getItemByTypeName('Entity', '_test_child_1', true);
+
+        $category = new \ITILCategory();
+
+        // Create a recursive ITIL category in root entity
+        $category_id = $category->add([
+            'name'         => 'Recursive Category Test',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 1,
+        ]);
+        $this->assertGreaterThan(0, $category_id);
+
+        // Create a non-recursive ITIL category in root entity
+        $non_recursive_category_id = $category->add([
+            'name'         => 'Non-Recursive Category Test',
+            'entities_id'  => $root_entity_id,
+            'is_recursive' => 0,
+        ]);
+        $this->assertGreaterThan(0, $non_recursive_category_id);
+
+        // Create a category in child entity
+        $child_category_id = $category->add([
+            'name'         => 'Child Category Test',
+            'entities_id'  => $child_entity_id,
+            'is_recursive' => 0,
+        ]);
+        $this->assertGreaterThan(0, $child_category_id);
+
+        // Switch to child entity only
+        $this->assertTrue(\Session::changeActiveEntities($child_entity_id));
+
+        // Verify READ rights: recursive objects from parent should be visible
+        $this->assertTrue($category->can($category_id, READ), "Should be able to read recursive category from parent entity");
+
+        // Verify that non-recursive objects from parent are NOT visible
+        $this->assertFalse($category->can($non_recursive_category_id, READ), "Should NOT be able to read non-recursive category from parent entity");
+
+        // Verify UPDATE rights: recursive objects from parent should NOT be editable
+        $this->assertTrue($category->getFromDB($category_id));
+        $this->assertFalse($category->canUpdateItem(), "Should NOT be able to update recursive category from parent entity when in child entity");
+
+        // Verify DELETE rights: recursive objects from parent should NOT be deletable
+        $this->assertFalse($category->canDeleteItem(), "Should NOT be able to delete recursive category from parent entity when in child entity");
+
+        // Verify PURGE rights: recursive objects from parent should NOT be purgeable
+        $this->assertFalse($category->canPurgeItem(), "Should NOT be able to purge recursive category from parent entity when in child entity");
+
+        // Verify that local category CAN be edited
+        $this->assertTrue($category->getFromDB($child_category_id));
+        $this->assertTrue($category->canUpdateItem(), "Should be able to update local category");
+        $this->assertTrue($category->canDeleteItem(), "Should be able to delete local category");
+        $this->assertTrue($category->canPurgeItem(), "Should be able to purge local category");
+
+        // Switch back to root entity
+        $this->assertTrue(\Session::changeActiveEntities($root_entity_id));
+
+        // Verify that recursive category CAN be edited from root entity
+        $this->assertTrue($category->getFromDB($category_id));
+        $this->assertTrue($category->canUpdateItem(), "Should be able to update recursive category from its own entity");
+        $this->assertTrue($category->canDeleteItem(), "Should be able to delete recursive category from its own entity");
+        $this->assertTrue($category->canPurgeItem(), "Should be able to purge recursive category from its own entity");
+    }
 }

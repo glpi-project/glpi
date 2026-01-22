@@ -65,5 +65,7 @@ class Route
         public array $tags = [],
         /** @var class-string<AbstractMiddleware>[] */
         public array $middlewares = [],
+        /** @var string[] $scopes */
+        public array $scopes = ['api'],
     ) {}
 }

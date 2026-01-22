@@ -234,6 +234,7 @@
                     type="button"
                     data-glpi-form-renderer-action="submit"
                     class="btn btn-primary pointer-events-none d-flex align-items-end {{ use_step_by_step ? 'd-none' : '' }}"
+                    aria-label="{{ __("Submit") }}"
                     disabled
                     {% if not visibility_engine_output.isFormVisible() %}
                         data-glpi-form-renderer-hidden-by-condition

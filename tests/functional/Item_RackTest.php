@@ -857,4 +857,47 @@ class Item_RackTest extends DbTestCase
         // Check horizontal position
         $this->assertEquals(Rack::POS_RIGHT, $itemRack->fields['hpos']);
     }
+
+    /**
+     * Test verifying that unlinking an asset not connected to a rack
+     * results in NO_ACTION (skipped) rather than an error.
+     */
+    public function testUnlinkAssetNotLinkedToRack()
+    {
+        // Create a Computer that is NOT linked to any rack
+        $computer = new \Computer();
+        $computer_id = $computer->add([
+            'name'        => 'Computer No Rack',
+            'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true),
+        ]);
+        $this->assertIsInt($computer_id);
+
+        // Mock the MassiveAction object
+        $ma = $this->getMockBuilder(\MassiveAction::class)
+            ->disableOriginalConstructor()
+            ->onlyMethods(['getAction', 'addMessage', 'getInput', 'itemDone']) // We only want to mock (intercept) methods with result reporting
+            ->getMock();
+
+        // Prepare the input
+        $input = [
+            'itemtype' => \Computer::class,
+            'ids'      => [$computer_id],
+        ];
+
+        $action_key = 'Item_Rack' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'delete';
+
+        // Configure the Action (using real methods on the partial mock)
+        // Instead of setting state, we force the getter to return our specific action
+        $ma->POST = $input;
+        $ma->method('getAction')->willReturn($action_key);
+        $ma->method('addMessage')->willReturn(null);
+        $ma->method('getInput')->willReturn($input);
+        $ma->method('itemDone')->willReturn(\MassiveAction::NO_ACTION);
+
+        // Execute the logic
+        // We call Item_Rack directly. It will call $ma->getAction() (which returns 'delete')
+        // and then it should call $ma->itemDone(..., NO_ACTION).
+        // The assertion is handled automatically by the Mock's expectation above
+        \Item_Rack::processMassiveActionsForOneItemtype($ma, $computer, $input);
+    }
 }

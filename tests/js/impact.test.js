@@ -87,4 +87,106 @@ describe('Impact', () => {
         window.GLPIImpact.checkBadgeHitboxes({x: 800, y: 421}, true, false);
         expect(window.location.href).toBe('');
     });
+    it('Undo/Redo - Generic', () => {
+        window.GLPIImpact.addToUndo('action1', {'something': 'test'});
+        window.GLPIImpact.addToUndo('action2', {'else': 'test2'});
+        window.GLPIImpact.addToUndo('action3', {'another': 'test3'});
+        expect(window.GLPIImpact.undoStack.length).toBe(3);
+        expect(window.GLPIImpact.redoStack.length).toBe(0);
+        window.GLPIImpact.undo();
+        expect(window.GLPIImpact.undoStack.length).toBe(2);
+        expect(window.GLPIImpact.redoStack.length).toBe(1);
+        expect(window.GLPIImpact.redoStack[0].code).toBe('action3');
+        window.GLPIImpact.undo();
+        expect(window.GLPIImpact.undoStack.length).toBe(1);
+        expect(window.GLPIImpact.redoStack.length).toBe(2);
+        expect(window.GLPIImpact.redoStack[1].code).toBe('action2');
+        window.GLPIImpact.redo();
+        expect(window.GLPIImpact.undoStack.length).toBe(2);
+        expect(window.GLPIImpact.redoStack.length).toBe(1);
+        expect(window.GLPIImpact.undoStack[1].code).toBe('action2');
+
+        // undo all + some extra to test handling empty stack
+        window.GLPIImpact.undo();
+        window.GLPIImpact.undo();
+        window.GLPIImpact.undo();
+        window.GLPIImpact.undo();
+        expect(window.GLPIImpact.undoStack.length).toBe(0);
+        expect(window.GLPIImpact.redoStack.length).toBe(3);
+
+        // redo all + some extra to test handling empty stack
+        window.GLPIImpact.redo();
+        window.GLPIImpact.redo();
+        window.GLPIImpact.redo();
+        window.GLPIImpact.redo();
+        expect(window.GLPIImpact.undoStack.length).toBe(3);
+        expect(window.GLPIImpact.redoStack.length).toBe(0);
+    });
+    it('Hidden selector', () => {
+        window.GLPIImpact.directionVisibility = {};
+        expect(window.GLPIImpact.DEFAULT_DEPTH).toBe(5);
+        window.GLPIImpact.maxDepth = 3;
+        expect(window.GLPIImpact.getHiddenSelector()).toBe(`[flag != 0], [depth > 3][depth !> ${Number.MAX_SAFE_INTEGER}]`);
+
+        window.GLPIImpact.directionVisibility = {[window.GLPIImpact.FORWARD]: 1};
+        expect(window.GLPIImpact.getHiddenSelector()).toBe(`[flag = 2], [depth > 3][depth !> ${Number.MAX_SAFE_INTEGER}]`);
+        window.GLPIImpact.directionVisibility = {[window.GLPIImpact.BACKWARD]: 1};
+        expect(window.GLPIImpact.getHiddenSelector()).toBe(`[flag = 1], [depth > 3][depth !> ${Number.MAX_SAFE_INTEGER}]`);
+        window.GLPIImpact.directionVisibility = {
+            [window.GLPIImpact.FORWARD]: 1,
+            [window.GLPIImpact.BACKWARD]: 1
+        };
+        expect(window.GLPIImpact.getHiddenSelector()).toBe(`[flag = -1], [depth > 3][depth !> ${Number.MAX_SAFE_INTEGER}]`);
+    });
+    it('Get network styles', () => {
+        const styles = window.GLPIImpact.getNetworkStyle();
+        expect(styles).toBeArray();
+        expect(styles.length).toBeGreaterThan(0);
+        styles.forEach((style) => {
+            expect(style).toBeObject();
+            expect(style).toHaveProperty('selector');
+            expect(style).toSatisfy((s) => Object.prototype.hasOwnProperty.call(s, 'style') || Object.prototype.hasOwnProperty.call(s, 'css'));
+        });
+    });
+    it('Get preset layout', () => {
+        const layout = window.GLPIImpact.getPresetLayout({
+            'node1': {x: 100, y: 100},
+            'node2': {x: 150, y: 200},
+            'node3': {x: 200, y: 300},
+        });
+        expect(window.GLPIImpact.no_positions).toHaveLength(0);
+        expect(layout.name).toBe('preset');
+        expect(layout.positions).toBeFunction();
+
+        expect(layout.positions({
+            data: (k) => ({id: 'node1'}[k]),
+            isParent: () => false,
+        })).toEqual({x: 100, y: 100});
+        expect(layout.positions({
+            data: (k) => ({id: 'node2'}[k]),
+            isParent: () => false,
+        })).toEqual({x: 150, y: 200});
+        expect(layout.positions({
+            data: (k) => ({id: 'node3'}[k]),
+            isParent: () => false,
+        })).toEqual({x: 200, y: 300});
+        expect(layout.positions({
+            data: (k) => ({id: 'node3'}[k]),
+            isParent: () => true,
+        })).toEqual({x: 0, y: 0});
+        expect(window.GLPIImpact.no_positions).toHaveLength(0);
+        expect(layout.positions({
+            data: (k) => ({id: 'node4'}[k]),
+            isParent: () => false,
+        })).toEqual({x: 0, y: 0});
+        expect(window.GLPIImpact.no_positions).toHaveLength(1);
+    });
+    it('Make ID for nodes and edges', () => {
+        expect(window.GLPIImpact.makeID(1, 'Computer', 2)).toBe('Computer::2');
+        expect(window.GLPIImpact.makeID(2, 'start', 'node1')).toBe('start->node1');
+        expect(window.GLPIImpact.makeID(99, 'start', 'node1')).toBeNull();
+    });
+    it('Make ID selector', () => {
+        expect(window.GLPIImpact.makeIDSelector('node1')).toBe('[id=\'node1\']');
+    });
 });

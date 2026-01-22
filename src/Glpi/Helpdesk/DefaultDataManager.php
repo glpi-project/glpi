@@ -80,13 +80,14 @@ final class DefaultDataManager
         $this->tiles_manager = TilesManager::getInstance();
     }
 
-    public function initializeDataIfNeeded(): void
+    public function initializeDataIfNeeded(): bool
     {
         if ($this->dataHasBeenInitialized()) {
-            return;
+            return false;
         }
 
         $this->initializeData();
+        return true;
     }
 
     public function initializeData(): void

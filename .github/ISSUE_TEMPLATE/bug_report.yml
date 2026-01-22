@@ -37,6 +37,15 @@ body:
     validations:
       required: true
   - type: checkboxes
+    id: plugins
+    attributes:
+      label: Disable plugins
+      description: Reproduce the issue with all plugins disabled on your GLPI instance.
+      options:
+        - label: I reproduce the issue with all plugins disabled
+    validations:
+      required: true
+  - type: checkboxes
     attributes:
       label: Is there an existing issue for this?
       description: Please search to see if an issue already exists for the bug you encountered.
