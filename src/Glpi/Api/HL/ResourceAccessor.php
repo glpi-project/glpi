@@ -134,9 +134,7 @@ final class ResourceAccessor
             return $is_dropdown_identifier || !$is_join;
         }, ARRAY_FILTER_USE_BOTH);
         foreach ($writable_props as $prop_name => $prop) {
-            $base_prop_name = strstr($prop_name, '.', true) ?: $prop_name;
-            $is_join = isset($joins[$base_prop_name]);
-            $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $prop_name);
+            $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $prop_name);
             if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
                 $prop_name = strstr($prop_name, '.', true);

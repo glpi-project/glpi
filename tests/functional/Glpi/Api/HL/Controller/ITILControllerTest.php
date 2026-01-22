@@ -57,6 +57,10 @@ class ITILControllerTest extends HLAPITestCase
                 'name' => $func_name,
                 'content' => 'test',
                 'entity' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'status' => 1,
+            ], [
+                'name' => $func_name . '2',
+                'status' => 6,
             ]);
         }
     }
