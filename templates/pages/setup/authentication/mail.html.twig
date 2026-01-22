@@ -34,12 +34,7 @@
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
 {% block form_fields %}
-    {{ fields.textField('name', item.fields['name'], __('Name'), field_options|merge({
-            'additional_attributes': {
-                'autocomplete': 'off'
-            }
-        })
-    ) }}
+    {{ fields.textField('name', item.fields['name'], __('Name'), field_options) }}
 
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments'), field_options) }}
 
