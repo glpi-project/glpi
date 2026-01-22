@@ -530,8 +530,8 @@ abstract class MainAsset extends InventoryAsset
         }
 
         // retrieve OS name from raw data because operating system are not handled yet
-        $input['osname'] =
-            $this->raw_data->content->operatingsystem->full_name
+        $input['osname']
+            = $this->raw_data->content->operatingsystem->full_name
             ?? $this->raw_data->content->operatingsystem->name
             ?? '';
 
