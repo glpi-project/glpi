@@ -125,7 +125,6 @@ test('Can add a file to a note', async ({ page, profile, api }) => {
     await entity_page.doAddFileToNote(0, "uploads/bar.txt");
 
     // The note should now have a linked document
-    await entity_page.doFocusNote(0);
     await expect(entity_page.getLink('File extension bar.txt'))
         .toBeAttached()
     ;
