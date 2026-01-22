@@ -279,16 +279,16 @@
         },
         {
             "name": "glpi-project/inventory_format",
-            "version": "1.2.2",
+            "version": "1.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/glpi-project/inventory_format.git",
-                "reference": "07ae1085aa58fac19bf1b8ef87478823c6a94d02"
+                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/07ae1085aa58fac19bf1b8ef87478823c6a94d02",
-                "reference": "07ae1085aa58fac19bf1b8ef87478823c6a94d02",
+                "url": "https://api.github.com/repos/glpi-project/inventory_format/zipball/89f177aa93595bdff01c3f670e32edd11ace0524",
+                "reference": "89f177aa93595bdff01c3f670e32edd11ace0524",
                 "shasum": ""
             },
             "require": {
@@ -300,14 +300,14 @@
                 "php": ">=7.4",
                 "seld/jsonlint": "^1.11",
                 "swaggest/json-schema": "^0.12.43",
-                "symfony/polyfill-php81": "^1.31"
+                "symfony/polyfill-php81": "^1.33"
             },
             "require-dev": {
                 "phpstan/extension-installer": "^1.4",
                 "phpstan/phpstan": "^1.12",
                 "phpstan/phpstan-deprecation-rules": "^1.2",
                 "phpunit/phpunit": "^9.6",
-                "squizlabs/php_codesniffer": "^3.12"
+                "squizlabs/php_codesniffer": "^4.0"
             },
             "bin": [
                 "bin/convert",
@@ -348,7 +348,7 @@
                 "issues": "https://github.com/glpi-project/inventory_format/issues",
                 "source": "https://github.com/glpi-project/inventory_format"
             },
-            "time": "2025-04-07T14:30:09+00:00"
+            "time": "2026-01-22T08:46:40+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -4021,7 +4021,7 @@
         },
         {
             "name": "symfony/polyfill-mbstring",
-            "version": "v1.32.0",
+            "version": "v1.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -4082,7 +4082,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.32.0"
+                "source": "https://github.com/symfony/polyfill-mbstring/tree/v1.33.0"
             },
             "funding": [
                 {
@@ -4091,6 +4091,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
@@ -4182,7 +4186,7 @@
         },
         {
             "name": "symfony/polyfill-php81",
-            "version": "v1.32.0",
+            "version": "v1.33.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php81.git",
@@ -4238,7 +4242,7 @@
                 "shim"
             ],
             "support": {
-                "source": "https://github.com/symfony/polyfill-php81/tree/v1.32.0"
+                "source": "https://github.com/symfony/polyfill-php81/tree/v1.33.0"
             },
             "funding": [
                 {
@@ -4247,6 +4251,10 @@
                 },
                 {
                     "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nicolas-grekas",
                     "type": "github"
                 },
                 {
