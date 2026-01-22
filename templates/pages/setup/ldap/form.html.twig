@@ -47,11 +47,7 @@
         {{ fields.nullField() }}
     {% endif %}
 
-    {{ fields.textField('name', item.fields['name'], __('Name'), {
-        additional_attributes: {
-            autocomplete: 'off',
-        }
-    }) }}
+    {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.nullField() }}
 
     {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server')) }}
