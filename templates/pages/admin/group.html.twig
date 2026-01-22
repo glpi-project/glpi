@@ -37,11 +37,7 @@
 
 {% block form_fields %}
    {% block more_fields %}
-      {{ fields.textField('name', item.fields['name'], __('Name'), {
-          additional_attributes: {
-              autocomplete: 'off',
-          }
-      }) }}
+      {{ fields.textField('name', item.fields['name'], __('Name')) }}
       {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
 
       {{ fields.textField('code', item.fields['code'], __('Code')) }}
