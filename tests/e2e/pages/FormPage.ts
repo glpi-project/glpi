@@ -67,6 +67,9 @@ export class FormPage extends GlpiPage
 
         const sectionIndex = await focusedInput.evaluate((input) => {
             const section = input.closest('[role="region"][aria-label="Form section"]');
+            if (!section) {
+                throw new Error('Section container not found');
+            }
             const allSections = Array.from(document.querySelectorAll('[role="region"][aria-label="Form section"]'));
             return allSections.indexOf(section);
         });
@@ -86,6 +89,9 @@ export class FormPage extends GlpiPage
 
         const questionIndex = await focusedInput.evaluate((input) => {
             const question = input.closest('[role="region"][aria-label="Question details"]');
+            if (!question) {
+                throw new Error('Question container not found');
+            }
             const allQuestions = Array.from(document.querySelectorAll('[role="region"][aria-label="Question details"]'));
             return allQuestions.indexOf(question);
         });
@@ -105,6 +111,9 @@ export class FormPage extends GlpiPage
 
         const commentIndex = await focusedInput.evaluate((input) => {
             const comment = input.closest('[role="region"][aria-label="Comment details"]');
+            if (!comment) {
+                throw new Error('Comment container not found');
+            }
             const allComments = Array.from(document.querySelectorAll('[role="region"][aria-label="Comment details"]'));
             return allComments.indexOf(comment);
         });
