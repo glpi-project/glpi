@@ -49,6 +49,7 @@ use Glpi\Api\HL\Controller\DashboardController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
+use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\NotepadController;
 use Glpi\Api\HL\Controller\ProjectController;
@@ -247,6 +248,7 @@ EOT;
             self::$instance->registerController(new SetupController());
             self::$instance->registerController(new NotepadController());
             self::$instance->registerController(new DashboardController());
+            self::$instance->registerController(new KnowbaseController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {

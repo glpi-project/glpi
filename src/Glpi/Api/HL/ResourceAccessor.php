@@ -317,7 +317,9 @@ final class ResourceAccessor
         }
         // Shortcut implementation using the search functionality with an injected RSQL filter and returning the first result.
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
-        $request_params['filter'] = $field . '==' . $request_attrs[$field];
+        $filters = $request_params['filter'] ?? '';
+        $filters .= ';' . $field . '==' . $request_attrs[$field];
+        $request_params['filter'] = $filters;
         $request_params['limit'] = 1;
         unset($request_params['start']);
         try {
