@@ -7982,7 +7982,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         usort($timeline, function ($a, $b) use ($reverse) {
             $date_a = $a['item']['date_creation'] ?? $a['item']['date'];
             $date_b = $b['item']['date_creation'] ?? $b['item']['date'];
-            $diff = strtotime($date_a) - strtotime($date_b);
+            $ts_a = is_string($date_a) ? strtotime($date_a) : 0;
+            $ts_b = is_string($date_b) ? strtotime($date_b) : 0;
+            $diff = $ts_a - $ts_b;
             if ($diff === 0) {
                 $diff = $a['item']['id'] - $b['item']['id'];
             }
