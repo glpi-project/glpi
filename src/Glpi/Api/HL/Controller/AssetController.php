@@ -63,6 +63,7 @@ use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Infocom;
 use Item_DeviceNetworkCard;
+use Item_OperatingSystem;
 use Item_Rack;
 use Location;
 use Manufacturer;
@@ -79,6 +80,12 @@ use NetworkPortFiberchannelType;
 use NetworkPortLocal;
 use NetworkPortWifi;
 use OperatingSystem;
+use OperatingSystemArchitecture;
+use OperatingSystemEdition;
+use OperatingSystemKernel;
+use OperatingSystemKernelVersion;
+use OperatingSystemServicePack;
+use OperatingSystemVersion;
 use PassiveDCEquipment;
 use PassiveDCEquipmentModel;
 use PassiveDCEquipmentType;
@@ -112,6 +119,18 @@ use function Safe\json_encode;
         ),
         new Doc\Parameter(
             name: 'id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            description: 'The ID of the Asset',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
             schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
             description: 'The ID of the Asset',
             location: Doc\Parameter::LOCATION_PATH,
@@ -208,6 +227,110 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        //TODO the OS dropdowns will be defined in the DropdownController after the related PR is merged
+        $schemas['OperatingSystemArchitecture'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemArchitecture::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemVersion'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemEdition'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemEdition::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemServicePack'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemServicePack::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemKernel'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemKernel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemKernelVersion'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemKernelVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'kernel' => self::getDropdownTypeSchema(class: OperatingSystemKernel::class, full_schema: 'OperatingSystemKernel'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -900,6 +1023,42 @@ final class AssetController extends AbstractController
                 'operating_system' => self::getDropdownTypeSchema(class: OperatingSystem::class, full_schema: 'OperatingSystem'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OSInstallation'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_OperatingSystem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'operatingsystem' => self::getDropdownTypeSchema(class: OperatingSystem::class, full_schema: 'OperatingSystem'),
+                'version' => self::getDropdownTypeSchema(class: OperatingSystemVersion::class, full_schema: 'OperatingSystemVersion'),
+                'edition' => self::getDropdownTypeSchema(class: OperatingSystemEdition::class, full_schema: 'OperatingSystemEdition'),
+                'servicepack' => self::getDropdownTypeSchema(class: OperatingSystemServicePack::class, full_schema: 'OperatingSystemServicePack'),
+                'architecture' => self::getDropdownTypeSchema(class: OperatingSystemArchitecture::class, full_schema: 'OperatingSystemArchitecture'),
+                'kernel_version' => self::getDropdownTypeSchema(class: OperatingSystemKernelVersion::class, full_schema: 'OperatingSystemKernelVersion'),
+                'license_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'licenseid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'company' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'owner' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'hostid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'date_install' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'install_date',
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
             ],
         ];
 
@@ -2647,5 +2806,82 @@ EOT,
     public function deleteSoftwareVersion(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'OSInstallation',
+        description: 'Add an operating system to an asset'
+    )]
+    public function createItemOSInstallation(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getOSInstallation'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: 'OSInstallation',
+        description: 'List or search operating systems installed on an asset'
+    )]
+    public function searchItemOSInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: 'OSInstallation',
+        description: 'Get an existing operating system installation by the installation ID'
+    )]
+    public function getOSInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'OSInstallation',
+        description: 'Update an existing operating system installation by the installation ID'
+    )]
+    public function updateOSInstallation(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'OSInstallation',
+        description: 'Delete an operating system installation by the installation ID',
+    )]
+    public function deleteOSInstallation(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

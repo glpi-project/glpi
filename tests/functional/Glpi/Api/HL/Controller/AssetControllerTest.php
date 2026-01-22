@@ -42,6 +42,12 @@ use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Group_Item;
+use OperatingSystem;
+use OperatingSystemArchitecture;
+use OperatingSystemEdition;
+use OperatingSystemKernelVersion;
+use OperatingSystemServicePack;
+use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Unmanaged;
 
@@ -664,5 +670,25 @@ class AssetControllerTest extends HLAPITestCase
                 'new_location_singleton' => true,
             ]);
         }
+    }
+
+    public function testCRUDOSInstallation()
+    {
+        $this->login();
+
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $create_input = [
+            'itemtype' => Computer::class,
+            'items_id' => $computer_id,
+            'operatingsystem' => getItemByTypeName(OperatingSystem::class, '_test_os_1', true),
+            'version' => getItemByTypeName(OperatingSystemVersion::class, '_test_os_version_1', true),
+            'edition' => getItemByTypeName(OperatingSystemEdition::class, '_test_os_edition_1', true),
+            'servicepack' => getItemByTypeName(OperatingSystemServicePack::class, '_test_os_sp_1', true),
+            'architecture' => getItemByTypeName(OperatingSystemArchitecture::class, '_test_os_arch_1', true),
+            'kernel_version' => getItemByTypeName(OperatingSystemKernelVersion::class, '_test_os_kernel_version_1', true),
+            'entity' => $this->getTestRootEntity(true),
+            'owner' => 'owner1',
+        ];
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computer_id . '/OSInstallation', $create_input, ['owner' => 'owner2']);
     }
 }
