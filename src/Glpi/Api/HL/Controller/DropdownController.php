@@ -292,6 +292,26 @@ final class DropdownController extends AbstractController
         return $types_only ? array_keys($dropdowns) : $dropdowns;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function getDropdownEndpointTypes20(): array
+    {
+        return [
+            'Location', 'State', 'Manufacturer', 'Calendar',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getDropdownEndpointTypes22(): array
+    {
+        return [
+            'WifiNetwork', 'NetworkPortFiberchannelType',
+        ];
+    }
+
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -312,34 +332,40 @@ final class DropdownController extends AbstractController
     )]
     public function index(Request $request): Response
     {
-        $asset_types = self::getDropdownTypes(false);
-        $asset_paths = [];
-        foreach ($asset_types as $asset_type => $asset_name) {
-            $asset_paths[] = [
-                'itemtype'  => $asset_type,
-                'name'      => $asset_name,
-                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $asset_type]),
+        $dropdown_types = self::getDropdownTypes(false);
+        $v20_dropdowns = self::getDropdownEndpointTypes20();
+        $schemas = self::getRawKnownSchemas();
+        $dropdown_paths = [];
+        foreach ($dropdown_types as $dropdown_type => $dropdown_name) {
+            $dropdown_paths[] = [
+                'itemtype'  => $schemas[$dropdown_type]['x-itemtype'],
+                'name'      => $dropdown_name,
+                'href'      => self::getAPIPathForRouteFunction(
+                    self::class,
+                    in_array($dropdown_type, $v20_dropdowns, true) ? 'search20' : 'search22',
+                    ['itemtype' => $dropdown_type]
+                ),
             ];
         }
-        return new JSONResponse($asset_paths);
+        return new JSONResponse($dropdown_paths);
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getDropdownTypes'],
+        'itemtype' => [self::class, 'getDropdownEndpointTypes20'],
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\SearchRoute(
         schema_name: '{itemtype}',
         description: 'List or search dropdowns of a specific type'
     )]
-    public function search(Request $request): Response
+    public function search20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getDropdownTypes'],
+        'itemtype' => [self::class, 'getDropdownEndpointTypes20'],
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -347,28 +373,28 @@ final class DropdownController extends AbstractController
         schema_name: '{itemtype}',
         description: 'Get an existing dropdown of a specific type'
     )]
-    public function getItem(Request $request): Response
+    public function getItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getDropdownTypes'],
+        'itemtype' => [self::class, 'getDropdownEndpointTypes20'],
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\CreateRoute(
         schema_name: '{itemtype}',
         description: 'Create a dropdown of a specific type'
     )]
-    public function createItem(Request $request): Response
+    public function createItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem20']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getDropdownTypes'],
+        'itemtype' => [self::class, 'getDropdownEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
@@ -376,14 +402,14 @@ final class DropdownController extends AbstractController
         schema_name: '{itemtype}',
         description: 'Update an existing dropdown of a specific type'
     )]
-    public function updateItem(Request $request): Response
+    public function updateItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getDropdownTypes'],
+        'itemtype' => [self::class, 'getDropdownEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
@@ -391,7 +417,80 @@ final class DropdownController extends AbstractController
         schema_name: '{itemtype}',
         description: 'Delete a dropdown of a specific type',
     )]
-    public function deleteItem(Request $request): Response
+    public function deleteItem20(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes22'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search dropdowns of a specific type'
+    )]
+    public function search22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes22'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing dropdown of a specific type'
+    )]
+    public function getItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes22'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a dropdown of a specific type'
+    )]
+    public function createItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem22']);
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes22'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing dropdown of a specific type'
+    )]
+    public function updateItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes22'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a dropdown of a specific type',
+    )]
+    public function deleteItem22(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
