@@ -80,7 +80,15 @@ if (isset($_POST["add"])) {
     $record = new DomainRecord();
     $_POST['id'] = $_POST['domainrecords_id'];
     unset($_POST['domainrecords_id']);
-    $record->check(-1, UPDATE, $_POST);
+    if (!$_POST['id']) {
+        Session::addMessageAfterRedirect(
+            __s('A record is required'),
+            false,
+            ERROR
+        );
+        Html::back();
+    }
+    $record->check($_POST['id'], UPDATE, $_POST);
     $record->update($_POST);
     Html::redirect($domain->getFormURLWithID($_POST['domains_id']));
 } elseif (isset($_POST["deleteitem"])) {
