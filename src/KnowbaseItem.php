@@ -42,6 +42,8 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Knowbase\EditorAction;
+use Glpi\Knowbase\EditorActionType;
 use Glpi\Knowbase\LastUpdateInfo;
 use Glpi\RichText\RichText;
 use Glpi\Search\Output\HTMLSearchOutput;
@@ -262,7 +264,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
         switch ($tabnum) {
             case 1:
-                return (bool) $item->showFull();
+                return (bool) $item->showFull(['edit_mode' => true]);
 
             case 2:
                 return $item->showVisibility();
@@ -884,6 +886,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
 
         $default_options = [
             'display' => true,
+            'edit_mode' => false,
         ];
         $options = array_merge($default_options, $options);
 
@@ -947,7 +950,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         }
 
         $last_update_info = $this->getLastUpdateInfo();
-
+        $actions = [];
+        if ($this->canComment()) {
+            $actions[] = new EditorAction(
+                label: "Comments",
+                icon: "ti ti-message-circle",
+                type: EditorActionType::LOAD_SIDE_PANEL,
+                params: [
+                    'id' => $this->fields['id'],
+                    'key' => 'comments',
+                ],
+            );
+        }
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
             'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),
@@ -957,6 +971,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'last_update_author_name' => $last_update_info->getAuthorName(),
             'last_update_author_link' => $last_update_info->getAuthorLink(),
             'last_update_can_view_author' => $last_update_info->canViewAuthor(),
+            'edit_mode' => $options['edit_mode'],
+            'actions' => $actions,
         ]);
         if ($options['display']) {
             echo $out;
