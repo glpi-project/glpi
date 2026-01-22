@@ -1951,8 +1951,8 @@ function setupFileUpload(config) {
                 $(this).closest('form').find(':submit').prop('disabled', false);
                 $.each(data.files, function(index, file) {
                     if (file.error) {
-                        $('#progress' + config.rand_id).show();
-                        $('#progress' + config.rand_id + ' .uploadbar')
+                        $('#progress' + CSS.escape(config.rand_id)).show();
+                        $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
                             .text(file.error)
                             .css('width', '100%')
                             .show();
@@ -1963,7 +1963,7 @@ function setupFileUpload(config) {
                             if (editor) {
                                 const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
                                 if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id="' + uploaded_image.upload_id + '"]');
+                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
                                     if (img.length > 0) {
                                         editor.dom.remove(img);
                                     }
@@ -1981,8 +1981,8 @@ function setupFileUpload(config) {
             messages: config.messages,
             progressall: function(event, data) {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
-                $('#progress' + config.rand_id).show();
-                $('#progress' + config.rand_id + ' .uploadbar')
+                $('#progress' + CSS.escape(config.rand_id)).show();
+                $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
                     .text(progress + '%')
                     .css('width', progress + '%')
                     .show();
