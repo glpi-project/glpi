@@ -67,12 +67,6 @@ use Manufacturer;
 use NetworkPortFiberchannelType;
 use State;
 use WifiNetwork;
-use OperatingSystemArchitecture;
-use OperatingSystemEdition;
-use OperatingSystemKernel;
-use OperatingSystemKernelVersion;
-use OperatingSystemServicePack;
-use OperatingSystemVersion;
 use PCIVendor;
 use PlanningEventCategory;
 use ProblemTemplate;
@@ -337,37 +331,8 @@ final class DropdownController extends AbstractController
                 'knowbase_category' => self::getDropdownTypeSchema(
                     class: KnowbaseItemCategory::class,
                     field: 'knowbaseitemcategories_id',
-                    full_schema: 'KnowbaseCategory'
+                    full_schema: 'KBCategory'
                 ) + ['x-version-introduced' => '2.2.0'],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-
-        $schemas['KnowbaseCategory'] = [
-            'x-version-introduced' => '2.2.0',
-            'x-itemtype' => KnowbaseItemCategory::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
-                ],
-                'level' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                ],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'parent' => self::getDropdownTypeSchema(class: KnowbaseItemCategory::class, full_schema: 'KnowbaseCategory'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -385,8 +350,8 @@ final class DropdownController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + ['x-version-introduced' => '2.2.0'],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.2.0'],
                 'completename' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_STRING,
@@ -785,103 +750,6 @@ EOT,
             ],
         ];
 
-        $schemas['OperatingSystemVersion'] = [
-            'x-version-introduced' => '2.2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => OperatingSystemVersion::class,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-        $schemas['OperatingSystemServicePack'] = [
-            'x-version-introduced' => '2.2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => OperatingSystemServicePack::class,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-        $schemas['OperatingSystemArchitecture'] = [
-            'x-version-introduced' => '2.2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => OperatingSystemArchitecture::class,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-        $schemas['OperatingSystemEdition'] = [
-            'x-version-introduced' => '2.2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => OperatingSystemEdition::class,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-        $schemas['OperatingSystemKernel'] = [
-            'x-version-introduced' => '2.2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => OperatingSystemKernel::class,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-        $schemas['OperatingSystemKernelVersion'] = [
-            'x-version-introduced' => '2.2.0',
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => OperatingSystemKernelVersion::class,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'kernel' => self::getDropdownTypeSchema(class: OperatingSystemKernel::class, full_schema: 'OperatingSystemKernel'),
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
         $schemas['AutoUpdateSystem'] = [
             'x-version-introduced' => '2.2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -919,7 +787,6 @@ EOT,
                 'DatabaseInstanceCategory' => DatabaseInstanceCategory::getTypeName(1),
                 'DatabaseInstanceType' => DatabaseInstanceType::getTypeName(1),
                 'ITILCategory' => ITILCategory::getTypeName(1),
-                'KnowbaseCategory' => KnowbaseItemCategory::getTypeName(1),
                 'TaskCategory' => TaskCategory::getTypeName(1),
                 'RequestType' => RequestType::getTypeName(1),
                 'EventCategory' => PlanningEventCategory::getTypeName(1),
@@ -937,12 +804,6 @@ EOT,
                 'VirtualMachineState' => VirtualMachineState::getTypeName(1),
                 'CableType' => CableType::getTypeName(1),
                 'CableStrand' => CableStrand::getTypeName(1),
-                'OperatingSystemVersion' => OperatingSystemVersion::getTypeName(1),
-                'OperatingSystemServicePack' => OperatingSystemServicePack::getTypeName(1),
-                'OperatingSystemArchitecture' => OperatingSystemArchitecture::getTypeName(1),
-                'OperatingSystemEdition' => OperatingSystemEdition::getTypeName(1),
-                'OperatingSystemKernel' => OperatingSystemKernel::getTypeName(1),
-                'OperatingSystemKernelVersion' => OperatingSystemKernelVersion::getTypeName(1),
                 'AutoUpdateSystem' => AutoUpdateSystem::getTypeName(1),
             ];
         }
@@ -962,13 +823,11 @@ EOT,
     public static function getDropdownEndpointTypes22(): array
     {
         return [
-            'WifiNetwork', 'NetworkPortFiberchannelType', 'DatabaseInstanceCategory', 'DatabaseInstanceType', 'ITILCategory',
-            'KnowbaseCategory', 'TaskCategory', 'RequestType', 'EventCategory', 'USBVendor', 'PCIVendor', 'DenyList',
-            'DeniedMailContent', 'CloseTime', 'BusinessCriticity', 'DocumentCategory', 'DocumentType', 'DatabaseInstanceCategory',
+            'WifiNetwork', 'NetworkPortFiberchannelType', 'DatabaseInstanceCategory', 'DatabaseInstanceType', 'ITILCategory', 'TaskCategory',
+            'RequestType', 'EventCategory', 'USBVendor', 'PCIVendor', 'DenyList', 'DeniedMailContent', 'CloseTime',
+            'BusinessCriticity', 'DocumentCategory', 'DocumentType', 'DatabaseInstanceCategory',
             'VirtualMachineType', 'VirtualMachineModel', 'VirtualMachineState',
-            'CableType', 'CableStrand', 'OperatingSystemVersion', 'OperatingSystemServicePack',
-            'OperatingSystemArchitecture', 'OperatingSystemEdition', 'OperatingSystemKernel',
-            'OperatingSystemKernelVersion', 'AutoUpdateSystem',
+            'CableType', 'CableStrand', 'AutoUpdateSystem',
         ];
     }
 

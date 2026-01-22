@@ -344,7 +344,7 @@ final class ManagementController extends AbstractController
                 ];
             }
             if ($item->isField('autoupdatesystems_id')) {
-                $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
+                $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
             }
 
             if ($item->maybeDeleted()) {
