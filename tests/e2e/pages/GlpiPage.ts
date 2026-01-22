@@ -264,16 +264,26 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string): Locator
+    public getRichTextByLabel(label: string, base?: Locator): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators
-        return this.page
+        return (base ?? this.page)
             .getByLabel(label)
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
             .locator('body')
         ;
+    }
+
+    /**
+     * Initialize a rich text editor by clicking on it, then return its body locator.
+     */
+    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        await (base ?? this.page).getByLabel(label).locator('+ div').click();
+        return this.getRichTextByLabel(label, base);
     }
 
     /**
