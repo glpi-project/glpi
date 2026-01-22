@@ -291,7 +291,7 @@ phpcsfixer-fix: ## Fix php coding standards issues
 .PHONY: phpcsfixer-fix
 
 ## —— Linters ——————————————————————————————————————————————————————————————————
-lint: lint-php lint-scss lint-twig lint-js ## Run all linters
+lint: lint-php lint-scss lint-twig lint-js lint-playwright ## Run all linters
 .PHONY: lint
 
 lint-php: ## Run the php linter script
