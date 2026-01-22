@@ -9669,4 +9669,66 @@ HTML,
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertNull($ticket->getRecipientUserID());
     }
+
+    /**
+     * @return array<array<string, int|string>, bool>
+     */
+    public static function contentsProvider(): array
+    {
+        $std_input = [Ticket::getTemplateFormFieldName() => 1];
+        $providers = [
+            [
+                'input' => $std_input,
+                'success' => false,
+            ],
+            [
+                'input' => $std_input + ['content' => 'sthing'],
+                'success' => true,
+            ],
+        ];
+
+        $ko_contents = [
+            ' ', //one space
+            '      ', //several spaces
+            ' ', // one nbsp space
+            '      ', // several nbsp space
+            '        ', // space/nbsp space mix
+        ];
+        foreach ($ko_contents as $ko_content) {
+            $providers[] = [
+                'input' => $std_input + ['content' => '<p>' . $ko_content . '</p>'],
+                'success' => false,
+            ];
+        }
+
+        //check adding some content is OK
+        foreach ($ko_contents as $ko_content) {
+            $providers[] = [
+                'input' => $std_input + ['content' => '<p>' . $ko_content . ' and any text, inclugind  some nbsp</p>'],
+                'success' => true,
+            ];
+        }
+
+        return $providers;
+    }
+
+    /**
+     * @param array<array<string, int|string> $input
+     */
+    #[DataProvider('contentsProvider')]
+    public function testMandatoryContent(array $input, bool $success): void
+    {
+        $this->login();
+
+        $ticket = new Ticket();
+
+        $result = $ticket->add($input);
+        if ($success) {
+            $this->assertNotFalse($result);
+        } else {
+            $this->assertFalse($result);
+            $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Description']);
+        }
+    }
+
 }

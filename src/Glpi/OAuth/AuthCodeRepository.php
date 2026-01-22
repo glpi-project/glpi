@@ -52,6 +52,11 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
     {
         global $DB;
 
+        // clean expired codes
+        $DB->delete('glpi_oauth_auth_codes', [
+            'date_expiration' => ['<', date('Y-m-d H:i:s')],
+        ]);
+
         $DB->insert('glpi_oauth_auth_codes', [
             'identifier' => $authCodeEntity->getIdentifier(),
             'client' => $authCodeEntity->getClient()->getIdentifier(),

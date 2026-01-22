@@ -67,6 +67,36 @@ final class CoreController extends AbstractController
 {
     public static function getRawKnownSchemas(): array
     {
+        $transfer_keep_option = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'default' => 0,
+            'enum' => [0, 1],
+            'description' => <<<EOT
+- 0: Delete permanently
+- 1: Keep
+EOT,
+        ];
+        $transfer_clean_option = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'default' => 0,
+            'enum' => [0, 1, 2],
+            'description' => <<<EOT
+- 0: Keep
+- 1: Put in trashbin
+- 2: Delete permanently
+EOT,
+        ];
+        $transfer_connection_option = [
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'default' => 0,
+            'enum' => [0, 1, 2],
+            'description' => <<<EOT
+- 0: Delete permanently
+- 1: Disconnect
+- 2: Keep
+EOT,
+        ];
+
         return [
             'Session' => [
                 'x-version-introduced' => '2.0',
@@ -108,7 +138,44 @@ final class CoreController extends AbstractController
                     'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'entity' => ['type' => Doc\Schema::TYPE_INTEGER],
-                    'options' => ['type' => Doc\Schema::TYPE_OBJECT],
+                    'options' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'properties' => [
+                            'keep_ticket'         => $transfer_connection_option,
+                            'keep_networklink'    => $transfer_connection_option,
+                            'keep_reservation'    => $transfer_keep_option,
+                            'keep_history'        => $transfer_keep_option,
+                            'keep_device'         => $transfer_keep_option,
+                            'keep_infocom'        => $transfer_keep_option,
+                            'keep_dc_monitor'     => $transfer_keep_option,
+                            'clean_dc_monitor'    => $transfer_clean_option,
+                            'keep_dc_phone'       => $transfer_keep_option,
+                            'clean_dc_phone'      => $transfer_clean_option,
+                            'keep_dc_peripheral'  => $transfer_keep_option,
+                            'clean_dc_peripheral' => $transfer_clean_option,
+                            'keep_dc_printer'     => $transfer_keep_option,
+                            'clean_dc_printer'    => $transfer_clean_option,
+                            'keep_supplier'       => $transfer_keep_option,
+                            'clean_supplier'      => $transfer_clean_option,
+                            'keep_contact'        => $transfer_keep_option,
+                            'clean_contact'       => $transfer_clean_option,
+                            'keep_contract'       => $transfer_keep_option,
+                            'clean_contract'      => $transfer_clean_option,
+                            'keep_disk'           => $transfer_keep_option,
+                            'keep_software'       => $transfer_keep_option,
+                            'clean_software'      => $transfer_clean_option,
+                            'keep_document'       => $transfer_keep_option,
+                            'clean_document'      => $transfer_clean_option,
+                            'keep_cartridgeitem'  => $transfer_keep_option,
+                            'clean_cartridgeitem' => $transfer_clean_option,
+                            'keep_cartridge'      => $transfer_keep_option,
+                            'keep_consumable'     => $transfer_keep_option,
+                            'keep_certificate'    => $transfer_keep_option,
+                            'clean_certificate'   => $transfer_clean_option,
+                            'lock_updated_fields' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                            'keep_location'       => $transfer_keep_option,
+                        ],
+                    ],
                 ],
             ],
             'APIInformation' => [
@@ -493,7 +560,7 @@ HTML;
         return new Response(200, ['Content-Type' => 'text/html'], $content);
     }
 
-    #[Route(path: '/status', methods: ['GET'], tags: ['Status'])]
+    #[Route(path: '/status', methods: ['GET'], tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(description: 'Get a list of all GLPI system status checker services.')]
     public function status(Request $request): Response
@@ -512,7 +579,7 @@ HTML;
         return new JSONResponse($data);
     }
 
-    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'])]
+    #[Route(path: '/status/all', methods: ['GET'], security_level: Route::SECURITY_NONE, tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the the status of all GLPI system status checker services',
@@ -542,7 +609,7 @@ HTML;
 
     #[Route(path: '/status/{service}', methods: ['GET'], requirements: [
         'service' => '[a-zA-Z0-9_]+',
-    ], priority: 9, tags: ['Status'])]
+    ], priority: 9, tags: ['Status'], scopes: ['status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the status of a GLPI system status checker service. Use "all" as the service to get the full system status.',

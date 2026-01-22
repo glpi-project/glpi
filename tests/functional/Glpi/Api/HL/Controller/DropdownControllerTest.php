@@ -37,6 +37,8 @@ namespace tests\units\Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Location;
+use Session;
 
 class DropdownControllerTest extends HLAPITestCase
 {
@@ -139,6 +141,36 @@ class DropdownControllerTest extends HLAPITestCase
                             items_id: (int) $new_items_id
                         );
                     }
+                });
+        });
+    }
+
+    public function testSearchParentEntityItem()
+    {
+        $this->loginWeb();
+        $this->createItem(Location::class, [
+            'name' => 'recursive_location',
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+        $this->assertTrue(Session::changeActiveEntities(getItemByTypeName('Entity', '_test_child_1', true)));
+        $this->login();
+        $this->api->call(new Request('GET', '/Dropdowns/Location', [
+            'GLPI-Entity' => getItemByTypeName('Entity', '_test_child_1', true),
+        ]), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) {
+                    $this->assertGreaterThanOrEqual(1, count($content));
+                    $found = false;
+                    foreach ($content as $dropdown) {
+                        if ($dropdown['name'] === 'recursive_location') {
+                            $found = true;
+                            break;
+                        }
+                    }
+                    $this->assertTrue($found, 'Item from parent entity not found in dropdown results');
                 });
         });
     }

@@ -190,11 +190,11 @@ class CalendarSegment extends CommonDBChild
     /**
      * Add a delay of a starting hour in a specific day
      *
-     * @param int $calendars_id    id of the calendar
-     * @param int $day             day number
-     * @param string  $begin_time      begin time
-     * @param int $delay           timestamp delay to add
-     * @param bool    $negative_delay  are we adding or removing time ?
+     * @param int    $calendars_id    id of the calendar
+     * @param int    $day             day number
+     * @param string $begin_time      begin time
+     * @param int    $delay           timestamp delay to add
+     * @param bool   $negative_delay  are we adding or removing time ?
      *
      * @return string|false Ending timestamp (HH:mm:dd) of delay or false if not applicable.
      **/
@@ -205,18 +205,7 @@ class CalendarSegment extends CommonDBChild
         $delay,
         bool $negative_delay = false
     ) {
-        // TODO: unit test this method with complex calendars using multiple
-        // disconnected segments per day
         global $DB;
-
-        // Common SELECT for both modes
-        $SELECT = [
-            QueryFunction::timediff(
-                expression1: 'end',
-                expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
-                alias: 'TDIFF'
-            ),
-        ];
 
         // Common WHERE for both modes
         $WHERE = [
@@ -224,10 +213,21 @@ class CalendarSegment extends CommonDBChild
             'day'          => $day,
         ];
 
+        // Build SELECT clauses based on delay direction
+        $SELECT = [];
 
         // Add specific SELECT and WHERE clauses
         if (!$negative_delay) {
-            $SELECT[] = QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))], 'BEGIN');
+            // For positive delay: calculate time from begin_time to end of segment
+            $SELECT[] = QueryFunction::timediff(
+                expression1: 'end',
+                expression2: QueryFunction::greatest(['begin', new QueryExpression($DB::quoteValue($begin_time))]),
+                alias: 'TDIFF'
+            );
+            $SELECT[] = QueryFunction::greatest(
+                params: ['begin', new QueryExpression($DB::quoteValue($begin_time))],
+                alias: 'BEGIN'
+            );
             $WHERE['end'] = ['>', $begin_time];
         } else {
             // When counting back time, "00:00:00" can't be used for some comparison
@@ -236,7 +236,17 @@ class CalendarSegment extends CommonDBChild
             // return no results but using 23:59:59 get us the correct behavior).
             $adjusted_time_for_comparaison_in_negative_delay_mode = $begin_time == "00:00:00" ? "23:59:59" : $begin_time;
 
-            $SELECT[] = QueryFunction::least(['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))], 'END');
+            // For negative delay: calculate time from begin of segment to begin_time
+            // This gives us the available time to go backwards in this segment
+            $SELECT[] = QueryFunction::timediff(
+                expression1: QueryFunction::least(['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))]),
+                expression2: 'begin',
+                alias: 'TDIFF'
+            );
+            $SELECT[] = QueryFunction::least(
+                params: ['end', new QueryExpression($DB::quoteValue($adjusted_time_for_comparaison_in_negative_delay_mode))],
+                alias: 'END'
+            );
             $WHERE['begin'] = ['<', $adjusted_time_for_comparaison_in_negative_delay_mode];
         }
 

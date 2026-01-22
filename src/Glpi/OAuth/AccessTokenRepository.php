@@ -66,6 +66,11 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
     {
         global $DB;
 
+        // clean expired tokens
+        $DB->delete('glpi_oauth_access_tokens', [
+            'date_expiration' => ['<', date('Y-m-d H:i:s')],
+        ]);
+
         $DB->insert('glpi_oauth_access_tokens', [
             'identifier' => $accessTokenEntity->getIdentifier(),
             'client' => $accessTokenEntity->getClient()->getIdentifier(),

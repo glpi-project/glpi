@@ -1051,7 +1051,7 @@ TWIG, $twig_params);
 
             echo '<div class="impact-side-filter-itemtypes-item">';
             echo '<h4><img class="impact-side-icon" src="' . htmlescape($icon) . '" title="' . htmlescape($itemtype::getTypeName()) . '" data-itemtype="' . htmlescape($itemtype) . '">';
-            echo "<span>" . htmlescape($itemtype::getTypeName()) . "</span></h4>";
+            echo "<span title=\"" . htmlescape($itemtype::getTypeName()) . "\">" . htmlescape($itemtype::getTypeName()) . "</span></h4>";
             echo '</div>'; // impact-side-filter-itemtypes-item
         }
         echo '</div>'; // impact-side-filter-itemtypes-items

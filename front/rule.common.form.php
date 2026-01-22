@@ -65,15 +65,20 @@ if (isset($_POST["update"])) {
 } elseif (isset($_POST["add"])) {
     $rulecollection->checkGlobal(CREATE);
 
-    $newID = $rule->add($_POST);
-    Event::log(
-        $newID,
-        "rules",
-        4,
-        "setup",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
-    );
-    Html::redirect($rule->getFormURLWithID($newID));
+    if (isset($_POST['profiles_id']) && isset($_POST['entities_id']) && isset($_POST['is_recursive'])) {
+        $entity = new Entity();
+        $entity->executeAddRule($_POST);
+    } else {
+        $newID = $rule->add($_POST);
+        Event::log(
+            $newID,
+            "rules",
+            4,
+            "setup",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
+        );
+        Html::redirect($rule->getFormURLWithID($newID));
+    }
 } elseif (isset($_POST["purge"])) {
     $rulecollection->checkGlobal(PURGE);
     $rulecollection->deleteRuleOrder($_POST["ranking"]);

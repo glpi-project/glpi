@@ -46,6 +46,18 @@ class RefreshTokenRepositoryTest extends DbTestCase
     {
         global $DB;
 
+        // add some preexisting tokens that are expired and current to test cleanup
+        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
+            'identifier' => 'expired_token',
+            'access_token' => 'access_token_expired',
+            'date_expiration' => date('Y-m-d H:i:s', time() - 3600),
+        ]));
+        $this->assertTrue($DB->insert('glpi_oauth_refresh_tokens', [
+            'identifier' => 'current_token',
+            'access_token' => 'access_token_current',
+            'date_expiration' => date('Y-m-d H:i:s', time() + 3600),
+        ]));
+
         $repo = new RefreshTokenRepository();
         $refresh_token = new RefreshToken();
         $access_token = new AccessToken();
@@ -63,6 +75,19 @@ class RefreshTokenRepositoryTest extends DbTestCase
         $data = $it->current();
         $this->assertEquals('access_token_0', $data['access_token']);
         $this->assertNotEmpty($data['date_expiration']);
+
+        // check that expired token is cleaned up
+        $it = $DB->request([
+            'FROM' => 'glpi_oauth_refresh_tokens',
+            'WHERE' => ['identifier' => 'expired_token'],
+        ]);
+        $this->assertCount(0, $it);
+        // check that current token is not removed
+        $it = $DB->request([
+            'FROM' => 'glpi_oauth_refresh_tokens',
+            'WHERE' => ['identifier' => 'current_token'],
+        ]);
+        $this->assertCount(1, $it);
     }
 
     public function testRevokeRefreshToken(): void

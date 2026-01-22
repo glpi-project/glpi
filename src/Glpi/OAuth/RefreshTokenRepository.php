@@ -52,6 +52,11 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     {
         global $DB;
 
+        // clean expired tokens
+        $DB->delete('glpi_oauth_refresh_tokens', [
+            'date_expiration' => ['<', date('Y-m-d H:i:s')],
+        ]);
+
         $DB->insert('glpi_oauth_refresh_tokens', [
             'identifier' => $refreshTokenEntity->getIdentifier(),
             'access_token' => $refreshTokenEntity->getAccessToken()->getIdentifier(),

@@ -126,9 +126,16 @@ header {
         flex-direction: row;
         align-items: flex-end;
         z-index: 0;
+        overflow: hidden;
 
         svg {
             height: 393px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
         }
 
         // Hide for screens smaller than 1600px

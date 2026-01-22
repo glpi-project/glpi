@@ -2484,7 +2484,7 @@ class CommonDBTM extends CommonGLPI
     public function canUpdateItem(): bool
     {
 
-        if (!$this->checkEntity(true)) {
+        if (!$this->checkEntity()) {
             return false;
         }
         return true;
@@ -2503,7 +2503,7 @@ class CommonDBTM extends CommonGLPI
     public function canDeleteItem(): bool
     {
 
-        if (!$this->checkEntity(true)) {
+        if (!$this->checkEntity()) {
             return false;
         }
         return true;
@@ -2522,7 +2522,7 @@ class CommonDBTM extends CommonGLPI
     public function canPurgeItem(): bool
     {
 
-        if (!$this->checkEntity(true)) {
+        if (!$this->checkEntity()) {
             return false;
         }
 

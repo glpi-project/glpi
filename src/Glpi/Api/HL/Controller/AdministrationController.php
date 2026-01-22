@@ -780,7 +780,7 @@ EOT,
         return $emails;
     }
 
-    #[Route(path: '/User/Me', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\GetRoute(
         schema_name: 'User',
@@ -792,7 +792,7 @@ EOT,
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), ['id' => $my_user_id], $request->getParameters());
     }
 
-    #[Route(path: '/User/Me/Email', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/Email', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the current user\'s email addresses',
@@ -805,7 +805,7 @@ EOT,
         return new JSONResponse($this->getEmailDataForUser($this->getMyUserID()));
     }
 
-    #[Route(path: '/User/Me/Email', methods: ['POST'])]
+    #[Route(path: '/User/Me/Email', methods: ['POST'], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Create a new email address for the current user',
@@ -864,7 +864,7 @@ EOT,
         return self::getCRUDCreateResponse($emails_id, self::getAPIPathForRouteFunction(self::class, 'getMyEmail', ['id' => $emails_id]));
     }
 
-    #[Route(path: '/User/Me/Email/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/Email/{id}', methods: ['GET'], requirements: ['id' => '\d+'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\GetRoute(
         schema_name: 'EmailAddress',
@@ -881,7 +881,7 @@ EOT,
         return self::getNotFoundErrorResponse();
     }
 
-    #[Route(path: '/User/Me/Emails/Default', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/Emails/Default', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user', 'email'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\GetRoute(
         schema_name: 'EmailAddress',
@@ -916,7 +916,7 @@ EOT,
         return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
     }
 
-    #[Route(path: '/User/Me/Picture', methods: ['GET'])]
+    #[Route(path: '/User/Me/Picture', methods: ['GET'], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
         description: 'Get the picture for the current user'
@@ -1053,7 +1053,7 @@ EOT,
         return ResourceAccessor::searchBySchema($schema, $request_params);
     }
 
-    #[Route(path: '/User/Me/UsedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/UsedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\SearchRoute(
         description: 'Get the used items for the current user',
@@ -1084,7 +1084,7 @@ EOT,
         return $this->getUsedOrManagedItems($users_id, false, $request->getParameters(), $this->getAPIVersion($request));
     }
 
-    #[Route(path: '/User/Me/ManagedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[Route(path: '/User/Me/ManagedItem', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class], scopes: ['user'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\SearchRoute(
         description: 'Get the managed items for the current user',

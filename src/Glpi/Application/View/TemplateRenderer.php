@@ -89,6 +89,15 @@ class TemplateRenderer
             'strict_variables' => GLPI_STRICT_ENV,
         ];
 
+        if (
+            $glpi_environment->shouldEnableTestResources()
+            && \file_exists("$rootdir/tests/templates")
+        ) {
+            // Add a dedicated namespace for specific test templates.
+            // For instance `@test/templates/path/to/template.html.twig`
+            $loader->addPath($rootdir . '/tests/templates', 'test');
+        }
+
         $tpl_cachedir = $cachedir . '/templates';
         if (
             (file_exists($tpl_cachedir) && !is_writable($tpl_cachedir))

@@ -367,6 +367,13 @@ jobs:
           name: glpi-playwright-logs
           path: tests/e2e/glpi_files/_log
           retention-days: 7
+      - name: "Upload output"
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: glpi-playwright-output
+          path: tests/e2e/output
+          retention-days: 7
       - name: Publish test summary results
         if: ${{ !cancelled() }}
         run: npx github-actions-ctrf ctrf/ctrf-report.json

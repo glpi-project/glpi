@@ -265,6 +265,7 @@ abstract class ITILTemplateField extends CommonDBChild
                             {{ fields.dropdownArrayField('num', 0, fields, null, {
                                 no_label: true,
                                 used: used,
+                                required: true,
                                 add_field_attribs: {
                                     'aria-label': itemtype_name
                                 },

@@ -498,7 +498,7 @@ EOT;
         $api_version = self::normalizeAPIVersion($request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION);
         // Filter routes by the requested API version and method
         $routes = array_filter($routes, static function ($route) use ($request, $api_version) {
-            if ($route->matchesAPIVersion($api_version) && in_array($request->getMethod(), $route->getRouteMethods(), true)) {
+            if (in_array($request->getMethod(), $route->getRouteMethods(), true) && $route->matchesAPIVersion($api_version)) {
                 // Verify the request uri path matches the compiled path
                 return (bool) preg_match('#^' . $route->getCompiledPath() . '$#i', $request->getUri()->getPath());
             }

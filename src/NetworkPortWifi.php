@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Wi-Fi instantitation of NetworkPort
  * @since 0.84
@@ -61,38 +63,27 @@ class NetworkPortWifi extends NetworkPortInstantiation
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         if (!$options['several']) {
-            echo "<tr class='tab_bg_1'>";
             $this->showNetworkCardField($netport, $options, $recursiveItems);
-            echo "<td>" . htmlescape(WifiNetwork::getTypeName(1)) . "</td><td>";
-            WifiNetwork::dropdown(['value'  => $this->fields["wifinetworks_id"]]);
-            echo "</td>";
-            echo "</tr>";
+            $twig_params = [
+                'item' => $this,
+                'netport' => $netport,
+                'params' => $options,
+                'wifinetworks_id' => $this->fields['wifinetworks_id'],
+                'wifinetworks_label' => WifiNetwork::getTypeName(1),
+                'mode_label' => __('Wifi mode'),
+                'modes' => WifiNetwork::getWifiCardModes(),
+                'version_label' => __('Wifi protocol version'),
+                'versions' => WifiNetwork::getWifiCardVersion(),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {{ fields.dropdownField('WifiNetwork', 'wifinetworks_id', wifinetworks_id, wifinetworks_label) }}
+            {{ fields.dropdownArrayField('mode', item.fields['mode'], modes, mode_label) }}
+            {{ fields.dropdownArrayField('version', item.fields['version'], versions, version_label) }}
+            {% do call([item, 'showMacField'], [netport, params]) %}
+TWIG, $twig_params);
 
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __s('Wifi mode') . "</td>";
-            echo "<td>";
-
-            Dropdown::showFromArray(
-                'mode',
-                WifiNetwork::getWifiCardModes(),
-                ['value' => $this->fields['mode']]
-            );
-
-            echo "</td>";
-            echo "<td>" . __s('Wifi protocol version') . "</td><td>";
-
-            Dropdown::showFromArray(
-                'version',
-                WifiNetwork::getWifiCardVersion(),
-                ['value' => $this->fields['version']]
-            );
-
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            $this->showMacField($netport, $options);
-            echo "</tr>";
         }
     }
 

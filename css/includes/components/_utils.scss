@@ -108,3 +108,11 @@
 .min-width-200 {
     min-width: 200px;
 }
+
+.auto-resize {
+    // Note: this is not yet supported by firefox
+    // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1832409
+    // A backlog entry has been added to review this and implement a fallback
+    // if it is still unsuported when we are ready to release the 12.0 version.
+    field-sizing: content;
+}

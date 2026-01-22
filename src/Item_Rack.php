@@ -113,6 +113,9 @@ class Item_Rack extends CommonDBRelation
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
+                        } else {
+                            // Item is not linked to a rack, not an error
+                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
                         }
                     } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);

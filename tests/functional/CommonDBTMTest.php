@@ -499,7 +499,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($printer->can($id[3], READ), "Fail can't read Printer 4");
 
         $this->assertFalse($printer->canEdit($id[0]), "Fail can't write Printer 1");
-        $this->assertTrue($printer->canEdit($id[1]), "Fail can't write Printer 2");
+        $this->assertFalse($printer->canEdit($id[1]), "Fail can't write Printer 2");
         $this->assertTrue($printer->canEdit($id[2]), "Fail can write Printer 3");
         $this->assertFalse($printer->canEdit($id[3]), "Fail can't write Printer 4");
 
@@ -512,7 +512,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($printer->can($id[3], READ), "Fail can read Printer 4");
 
         $this->assertFalse($printer->canEdit($id[0]), "Fail can't write Printer 1");
-        $this->assertTrue($printer->canEdit($id[1]), "Fail can't write Printer 2");
+        $this->assertFalse($printer->canEdit($id[1]), "Fail can't write Printer 2");
         $this->assertFalse($printer->canEdit($id[2]), "Fail can't write Printer 3");
         $this->assertTrue($printer->canEdit($id[3]), "Fail can write Printer 4");
     }

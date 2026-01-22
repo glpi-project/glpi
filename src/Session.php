@@ -1076,6 +1076,11 @@ class Session
         return $_SESSION["glpiID"] ?? false;
     }
 
+    public static function getCurrentUser(): ?User
+    {
+        return User::getById(Session::getLoginUserID()) ?: null;
+    }
+
     /**
      * Global check of session to prevent PHP vulnerability
      *

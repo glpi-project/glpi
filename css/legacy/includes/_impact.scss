@@ -488,14 +488,24 @@ i.fa-impact-manipulation {
 
 .impact-side-filter-itemtypes-item {
    cursor: pointer;
+   max-width: 100%; /* Ensure the container respects the sidebar width */
 
    span {
-      display: inline;
       margin-left: 4px;
+      /* Required for ellipsis in flexbox */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;       /* Takes up remaining space */
+      min-width: 0;  /* Allows the item to shrink below its text content size */
    }
+
    h4 {
       margin-top: 0;
       margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      width: 100%; /* Forces the flex container to fill the parent width */
    }
 }
 
