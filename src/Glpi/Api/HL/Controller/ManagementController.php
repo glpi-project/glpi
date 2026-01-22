@@ -149,6 +149,27 @@ final class ManagementController extends AbstractController
         return $schema_names_only ? array_column($management_types, 'schema_name') : $management_types;
     }
 
+    /**
+     * @return string[]
+     */
+    public static function getManagementEndpointTypes20(): array
+    {
+        return [
+            'Budget', 'Cluster', 'Contact', 'Contract', 'Database', 'DataCenter', 'Document',
+            'Domain', 'License', 'Line', 'Supplier',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getManagementEndpointTypes22(): array
+    {
+        return [
+            'DatabaseInstance',
+        ];
+    }
+
     protected static function getRawKnownSchemas(): array
     {
         global $CFG_GLPI;
@@ -607,44 +628,20 @@ final class ManagementController extends AbstractController
     public function index(Request $request): Response
     {
         $management_types = self::getManagementTypes(false);
-        $asset_paths = [];
+        $v20_types = self::getManagementEndpointTypes20();
+        $management_paths = [];
         foreach ($management_types as $m_class => $m_data) {
-            $asset_paths[] = [
+            $management_paths[] = [
                 'itemtype'  => $m_class,
                 'name'      => $m_data['label'],
-                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $m_data['schema_name']]),
+                'href'      => self::getAPIPathForRouteFunction(
+                    self::class,
+                    in_array($m_data['schema_name'], $v20_types, true) ? 'search20' : 'search22',
+                    ['itemtype' => $m_data['schema_name']]
+                ),
             ];
         }
-        return new JSONResponse($asset_paths);
-    }
-
-    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes'],
-    ], middlewares: [ResultFormatterMiddleware::class])]
-    #[RouteVersion(introduced: '2.0')]
-    #[Doc\SearchRoute(
-        schema_name: '{itemtype}',
-        description: 'List or search management items'
-    )]
-    public function searchItems(Request $request): Response
-    {
-        $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
-    }
-
-    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes'],
-        'id' => '\d+',
-    ], middlewares: [ResultFormatterMiddleware::class])]
-    #[RouteVersion(introduced: '2.0')]
-    #[Doc\GetRoute(
-        schema_name: '{itemtype}',
-        description: 'Get an existing management item'
-    )]
-    public function getItem(Request $request): Response
-    {
-        $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return new JSONResponse($management_paths);
     }
 
     #[Route(path: '/Document/{id}/Download', methods: ['GET'], requirements: ['id' => '\d+'])]
@@ -672,22 +669,55 @@ final class ManagementController extends AbstractController
         return self::getNotFoundErrorResponse();
     }
 
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes20'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search management items'
+    )]
+    public function searchItems20(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes20'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing management item'
+    )]
+    public function getItem20(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes'],
+        'itemtype' => [self::class, 'getManagementEndpointTypes20'],
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\CreateRoute(
         schema_name: '{itemtype}',
         description: 'Create a new management item'
     )]
-    public function createItem(Request $request): Response
+    public function createItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            $request->getParameters() + ['itemtype' => $itemtype],
+            [self::class, 'getItem20']
+        );
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes'],
+        'itemtype' => [self::class, 'getManagementEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
@@ -695,14 +725,14 @@ final class ManagementController extends AbstractController
         schema_name: '{itemtype}',
         description: 'Update an existing management item'
     )]
-    public function updateItem(Request $request): Response
+    public function updateItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes'],
+        'itemtype' => [self::class, 'getManagementEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
@@ -710,7 +740,84 @@ final class ManagementController extends AbstractController
         schema_name: '{itemtype}',
         description: 'Delete a management item'
     )]
-    public function deleteItem(Request $request): Response
+    public function deleteItem20(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes22'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search management items'
+    )]
+    public function searchItems22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes22'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing management item'
+    )]
+    public function getItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes22'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a new management item'
+    )]
+    public function createItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            $request->getParameters() + ['itemtype' => $itemtype],
+            [self::class, 'getItem22']
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes22'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing management item'
+    )]
+    public function updateItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes22'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a management item'
+    )]
+    public function deleteItem22(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
