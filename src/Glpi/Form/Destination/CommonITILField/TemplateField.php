@@ -203,7 +203,8 @@ final class TemplateField extends AbstractConfigField implements DestinationFiel
         $template_type = $itil_itemtype::getTemplateClass();
         $template = $template_type::getById($template_id);
         if (!$template) {
-            return $fallback;
+            $config[TemplateFieldConfig::TEMPLATE_ID] = 0;
+            return new DynamicExportDataField($config, []);
         }
 
         // Insert template name and requirement

@@ -49,10 +49,31 @@ use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ContentField;
+use Glpi\Form\Destination\CommonITILField\EntityField;
+use Glpi\Form\Destination\CommonITILField\EntityFieldConfig;
+use Glpi\Form\Destination\CommonITILField\EntityFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
+use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryField;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsField;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldConfig;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\LinkedITILObjectsFieldStrategyConfig;
+use Glpi\Form\Destination\CommonITILField\LocationField;
+use Glpi\Form\Destination\CommonITILField\LocationFieldConfig;
+use Glpi\Form\Destination\CommonITILField\LocationFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\RequesterField;
+use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
+use Glpi\Form\Destination\CommonITILField\SLATTRField;
+use Glpi\Form\Destination\CommonITILField\SLATTRFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLMFieldConfig;
+use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
+use Glpi\Form\Destination\CommonITILField\TemplateField;
+use Glpi\Form\Destination\CommonITILField\TemplateFieldConfig;
+use Glpi\Form\Destination\CommonITILField\TemplateFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Export\Context\DatabaseMapper;
@@ -1942,6 +1963,338 @@ final class FormSerializerTest extends DbTestCase
             'itemtype' => Computer::class,
             'items_id' => 'My computer',
         ], $data['forms'][0]['destinations'][0]['conditions'][0]['value']);
+    }
+
+    public function testDeletedCategoryInDestinationIsExportedAsZero(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has a specific category
+        $category = $this->createItem(ITILCategory::class, [
+            'name' => 'Category to delete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    ITILCategoryField::getKey() => (new ITILCategoryFieldConfig(
+                        strategy: ITILCategoryFieldStrategy::SPECIFIC_VALUE,
+                        specific_itilcategory_id: $category->getID(),
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete the category and export the form
+        $this->deleteItem(ITILCategory::class, $category->getID());
+        $json = $this->exportForm($form);
+
+        // Assert: the specific_itilcategory_id should be 0 in the exported JSON
+        $data = json_decode($json, associative: true);
+        $this->assertEquals(
+            0,
+            $data['forms'][0]['destinations'][0]['config'][ITILCategoryField::getKey()][ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID]
+        );
+    }
+
+    public function testDeletedEntityInDestinationIsExportedAsZero(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has a specific entity
+        $entity = $this->createItem(Entity::class, [
+            'name' => 'Entity to delete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    EntityField::getKey() => (new EntityFieldConfig(
+                        strategy: EntityFieldStrategy::SPECIFIC_VALUE,
+                        specific_entity_id: $entity->getID(),
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete the entity and export the form
+        $this->deleteItem(Entity::class, $entity->getID());
+        $json = $this->exportForm($form);
+
+        // Assert: the specific_entity_id should be 0 in the exported JSON
+        $data = json_decode($json, associative: true);
+        $this->assertEquals(
+            0,
+            $data['forms'][0]['destinations'][0]['config'][EntityField::getKey()][EntityFieldConfig::SPECIFIC_ENTITY_ID]
+        );
+    }
+
+    public function testDeletedSLMInDestinationIsExportedAsZero(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has a specific SLA
+        $sla = $this->createItem(\SLA::class, [
+            'name' => 'SLA to delete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+            'type' => \SLM::TTR,
+            'number_time' => 4,
+            'definition_time' => 'hour',
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    SLATTRField::getKey() => (new SLATTRFieldConfig(
+                        strategy: SLMFieldStrategy::SPECIFIC_VALUE,
+                        specific_slm_id: $sla->getID(),
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete the SLA and export the form
+        $this->deleteItem(\SLA::class, $sla->getID());
+        $json = $this->exportForm($form);
+
+        // Assert: the slm_id should be 0 in the exported JSON
+        $data = json_decode($json, associative: true);
+        $this->assertEquals(
+            0,
+            $data['forms'][0]['destinations'][0]['config'][SLATTRField::getKey()][SLMFieldConfig::SLM_ID]
+        );
+    }
+
+    public function testDeletedTemplateInDestinationIsExportedAsZero(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has a specific template
+        $template = $this->createItem(\TicketTemplate::class, [
+            'name' => 'Template to delete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    TemplateField::getKey() => (new TemplateFieldConfig(
+                        strategy: TemplateFieldStrategy::SPECIFIC_TEMPLATE,
+                        specific_template_id: $template->getID(),
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete the template and export the form
+        $this->deleteItem(\TicketTemplate::class, $template->getID());
+        $json = $this->exportForm($form);
+
+        // Assert: the template_id should be 0 in the exported JSON
+        $data = json_decode($json, associative: true);
+        $this->assertEquals(
+            0,
+            $data['forms'][0]['destinations'][0]['config'][TemplateField::getKey()][TemplateFieldConfig::TEMPLATE_ID]
+        );
+    }
+
+    public function testDeletedLocationInDestinationIsExportedAsZero(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has a specific location
+        $location = $this->createItem(Location::class, [
+            'name' => 'Location to delete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    LocationField::getKey() => (new LocationFieldConfig(
+                        strategy: LocationFieldStrategy::SPECIFIC_VALUE,
+                        specific_location_id: $location->getID(),
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete the location and export the form
+        $this->deleteItem(Location::class, $location->getID());
+        $json = $this->exportForm($form);
+
+        // Assert: the specific_location_id should be 0 in the exported JSON
+        $data = json_decode($json, associative: true);
+        $this->assertEquals(
+            0,
+            $data['forms'][0]['destinations'][0]['config'][LocationField::getKey()][LocationFieldConfig::SPECIFIC_LOCATION_ID]
+        );
+    }
+
+    public function testDeletedActorInDestinationIsRemovedFromExport(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has specific actors
+        $user1 = $this->createItem(\User::class, [
+            'name' => 'user_to_delete',
+        ]);
+        $user2 = $this->createItem(\User::class, [
+            'name' => 'user_to_keep',
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    RequesterField::getKey() => (new RequesterFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::getForeignKeyField() . '-' . $user1->getID(),
+                            \User::getForeignKeyField() . '-' . $user2->getID(),
+                        ],
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete one user and export the form
+        $this->deleteItem(\User::class, $user1->getID(), purge: true);
+        $json = $this->exportForm($form);
+
+        // Assert: only the remaining user should be in the exported JSON
+        $data = json_decode($json, associative: true);
+        $actors = $data['forms'][0]['destinations'][0]['config'][RequesterField::getKey()][ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS];
+        $this->assertCount(1, $actors[\User::class]);
+        $this->assertEquals('user_to_keep', $actors[\User::class][0]);
+    }
+
+    public function testDeletedAssociatedItemInDestinationIsRemovedFromExport(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has specific associated items
+        $computer1 = $this->createItem(Computer::class, [
+            'name' => 'computer_to_delete',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $computer2 = $this->createItem(Computer::class, [
+            'name' => 'computer_to_keep',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    AssociatedItemsField::getKey() => (new AssociatedItemsFieldConfig(
+                        strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
+                        specific_associated_items: [
+                            Computer::class => [$computer1->getID(), $computer2->getID()],
+                        ],
+                    ))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete one computer and export the form
+        $this->deleteItem(Computer::class, $computer1->getID(), purge: true);
+        $json = $this->exportForm($form);
+
+        // Assert: only the remaining computer should be in the exported JSON
+        $data = json_decode($json, associative: true);
+        $items = $data['forms'][0]['destinations'][0]['config'][AssociatedItemsField::getKey()][AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS];
+        $this->assertCount(1, $items[Computer::class]);
+        $this->assertEquals('computer_to_keep', $items[Computer::class][0]);
+    }
+
+    public function testDeletedLinkedITILObjectInDestinationIsExportedAsZero(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with a destination that has a specific linked ticket
+        $ticket = $this->createItem(\Ticket::class, [
+            'name' => 'Ticket to delete',
+            'content' => 'Test content',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+        $form = $this->createForm(new FormBuilder());
+
+        $destinations = $form->getDestinations();
+        $destination = current($destinations);
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    LinkedITILObjectsField::getKey() => (new LinkedITILObjectsFieldConfig([
+                        new LinkedITILObjectsFieldStrategyConfig(
+                            strategy: LinkedITILObjectsFieldStrategy::SPECIFIC_VALUES,
+                            linktype: \CommonITILObject_CommonITILObject::LINK_TO,
+                            specific_itilobject: [
+                                'itemtype' => \Ticket::class,
+                                'items_id' => $ticket->getID(),
+                            ],
+                        ),
+                    ]))->jsonSerialize(),
+                ],
+            ],
+            ["config"],
+        );
+
+        // Act: delete the ticket and export the form
+        $this->deleteItem(\Ticket::class, $ticket->getID(), purge: true);
+        $json = $this->exportForm($form);
+
+        // Assert: the items_id should be 0 in the exported JSON
+        $data = json_decode($json, associative: true);
+        $strategy_configs = $data['forms'][0]['destinations'][0]['config'][LinkedITILObjectsField::getKey()][LinkedITILObjectsFieldConfig::STRATEGY_CONFIGS];
+        $this->assertEquals(
+            0,
+            $strategy_configs[0][LinkedITILObjectsFieldStrategyConfig::SPECIFIC_ITILOBJECT]['items_id']
+        );
     }
 
     public function testItemsNamesInSubmitConditionAreHandledByImport(): void
