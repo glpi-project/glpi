@@ -1627,7 +1627,16 @@ class NotificationTarget extends CommonDBChild
 
         // Add global tags data, use `+` operator to preserve overriden values
         $this->data += $this->getGlobalTagsData();
+
+        if (isset($options['additionnaloption']['users_id'])) {
+            // Store current user info for plugins to access during ITEM_GET_DATA hook
+            $this->recipient_data = [
+                'itemtype' => User::class,
+                'items_id' => $options['additionnaloption']['users_id'],
+            ];
+        }
         Plugin::doHook(Hooks::ITEM_GET_DATA, $this);
+        $this->recipient_data = [];
 
         return $this->data;
     }

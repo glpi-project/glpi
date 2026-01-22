@@ -148,7 +148,7 @@ abstract class ITILTemplate extends CommonDropdown
                     sprintf('`%s` is not an instance of `%s`.', $ttr_class, ITILTemplateReadonlyField::class)
                 );
             }
-            $this->readonly = $ttr->getReadonlyFields($ID);
+            $this->readonly = $ttr->getReadonlyFields($ID, true);
 
             // Force items_id if itemtype is defined
             if (

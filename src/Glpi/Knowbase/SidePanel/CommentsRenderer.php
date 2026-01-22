@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,28 +32,40 @@
  * ---------------------------------------------------------------------
  */
 
-// KB Documents footer section
+namespace Glpi\Knowbase\SidePanel;
 
-.kb-documents-footer {
-    scroll-margin-top: 1rem;
-}
+use KnowbaseItem;
+use KnowbaseItem_Comment;
+use Override;
 
-// Document badge styling (matches mockup)
-.kb-document-badge {
-    padding: 0.5rem 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 400;
-    border: 1px solid var(--tblr-border-color);
-    transition: all 0.2s ease;
+final class CommentsRenderer implements RendererInterface
+{
+    #[Override]
+    public function canView(KnowbaseItem $item): bool
+    {
+        return $item->canComment();
+    }
 
-    &:hover {
-        background-color: var(--tblr-primary) !important;
-        color: var(--tblr-bg-surface) !important;
-        border-color: var(--tblr-primary);
-        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+    #[Override]
+    public function getTemplate(): string
+    {
+        return "pages/tools/kb/sidepanel/comments.html.twig";
+    }
 
-        i {
-            color: var(--tblr-bg-surface) !important;
-        }
+    #[Override]
+    public function getParams(KnowbaseItem $item): array
+    {
+        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
+            kbitem_id: $item->getID(),
+            lang: null,
+            parent: null,
+            user_data_cache: $users_infos,
+        );
+
+        return [
+            'id' => $item->getID(),
+            'comments' => $comments,
+            'users_infos' => $users_infos,
+        ];
     }
 }

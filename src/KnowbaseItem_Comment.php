@@ -52,6 +52,71 @@ class KnowbaseItem_Comment extends CommonDBTM
         return 'ti ti-message-circle';
     }
 
+    public static function canCreate(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canView(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canUpdate(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canDelete(): bool
+    {
+        return Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::COMMENTS);
+    }
+
+    public static function canPurge(): bool
+    {
+        return self::canDelete();
+    }
+
+    public function canCreateItem(): bool
+    {
+        return $this->canComment();
+    }
+
+    public function canViewItem(): bool
+    {
+        return $this->canComment();
+    }
+
+    public function canUpdateItem(): bool
+    {
+        if (!$this->canComment()) {
+            return false;
+        }
+        // Users can edit their own comments and admins can edit all comments
+        return Session::getLoginUserID() === $this->fields['users_id']
+            || Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN);
+    }
+
+    public function canDeleteItem(): bool
+    {
+        // No deletion support in the UI for now so return false to also block API deletion
+        return false;
+    }
+
+    public function canPurgeItem(): bool
+    {
+        return $this->canDeleteItem();
+    }
+
+    private function canComment(): bool
+    {
+        $kbitem = new KnowbaseItem();
+        if (!$kbitem->getFromDB($this->fields['knowbaseitems_id'])) {
+            return false;
+        }
+        return $kbitem->canComment();
+    }
+
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!($item instanceof KnowbaseItem) || !$item->canComment()) {
@@ -117,7 +182,7 @@ class KnowbaseItem_Comment extends CommonDBTM
      * Gat all comments for specified KB entry
      *
      * @param int $kbitem_id KB entry ID
-     * @param string  $lang      Requested language
+     * @param string|null  $lang      Requested language
      * @param int $parent    Parent ID (defaults to 0)
      * @param array   $user_data_cache
      *
@@ -149,6 +214,8 @@ class KnowbaseItem_Comment extends CommonDBTM
                         'link'   => $user->getLinkURL(),
                         'initials' => $user->getUserInitials(),
                         'initials_bg_color' => $user->getUserInitialsBgColor(),
+                        'name' => $user->getFriendlyName(),
+                        'user' => $user,
                     ];
                 } else {
                     // User has been deleted, use default values
@@ -157,6 +224,8 @@ class KnowbaseItem_Comment extends CommonDBTM
                         'link'   => '',
                         'initials' => '',
                         'initials_bg_color' => '#cccccc',
+                        'name' => __("Deleted user"),
+                        'user' => null,
                     ];
                 }
             }

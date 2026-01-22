@@ -1,0 +1,68 @@
+/*!
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2026 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+.kb-sidepanel {
+    background-color: var(--tblr-card-cap-bg);
+    border-left: 1px solid #e1e4e8;
+    height: calc(100vh - 150px);
+}
+
+.kb-article {
+    max-height: calc(100vh - 150px);
+    overflow: auto;
+}
+
+// KB Documents footer section
+
+.kb-documents-footer {
+    scroll-margin-top: 1rem;
+}
+
+// Document badge styling (matches mockup)
+.kb-document-badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    font-weight: 400;
+    border: 1px solid var(--tblr-border-color);
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: var(--tblr-primary) !important;
+        color: var(--tblr-bg-surface) !important;
+        border-color: var(--tblr-primary);
+        box-shadow: 0 2px 4px color-mix(in srgb, var(--tblr-primary), transparent 80%);
+
+        i {
+            color: var(--tblr-bg-surface) !important;
+        }
+    }
+}

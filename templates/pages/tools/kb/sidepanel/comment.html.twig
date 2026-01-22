@@ -1,0 +1,60 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+
+<div class="d-flex w-100" data-testid="comment">
+    {{ include('components/user/picture.html.twig', {
+        'user_object': user,
+        'avatar_size': 'avatar-sm',
+        'extra_class': 'me-2 align-self-start mt-1',
+        'circle': true,
+    }, with_context = false) }}
+
+    <div class="card rounded w-100">
+        <div class="card-body px-3 py-2">
+            <div class="card-title fs-4">
+                {{ user ? user.getFriendlyName() : __("Deleted user") }}
+                ·
+                <span
+                    class="text-muted fw-normal"
+                    title="{{ date_creation }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                >
+                    {{ date_creation|relative_datetime }}
+                </span>
+            </div>
+            {{ comment }}
+        </div>
+    </div>
+</div>
+
