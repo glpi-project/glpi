@@ -773,4 +773,30 @@ class AdministrationControllerTest extends HLAPITestCase
             $call->response->isAccessDenied();
         });
     }
+
+    public static function testCRUD22Provider()
+    {
+        return [
+            ['UserCategory'],
+            ['UserTitle'],
+            ['ApprovalSubstitute']
+        ];
+    }
+
+    #[DataProvider('testCRUD22Provider')]
+    public function testCRUD22(string $itemtype)
+    {
+        $create_params = [];
+        if ($itemtype === 'ApprovalSubstitute') {
+            $create_params = [
+                'user' => getItemByTypeName('User', TU_USER, true),
+                'substitute' => getItemByTypeName('User', 'tech', true),
+            ];
+        }
+        $this->api->autoTestCRUD(
+            endpoint: '/Administration/' . $itemtype,
+            create_params: $create_params,
+            extra_options: ['skip_update_test' => $itemtype === 'ApprovalSubstitute']
+        );
+    }
 }
