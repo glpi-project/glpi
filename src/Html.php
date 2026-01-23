@@ -35,6 +35,7 @@
 
 use donatj\UserAgent\UserAgentParser;
 use Glpi\Application\Environment;
+use Glpi\Application\View\Extension\FrontEndAssetsExtension;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -1683,7 +1684,7 @@ TWIG,
         }
 
         // Use the same path transformation as Twig templates
-        $assets = new \Glpi\Application\View\Extension\FrontEndAssetsExtension();
+        $assets = new FrontEndAssetsExtension();
 
         foreach ($css_files as $css) {
             $path = $css['path'] ?? '';

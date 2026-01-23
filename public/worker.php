@@ -91,4 +91,5 @@ $handleRequest = static function () use (&$kernel, &$requestCount, $maxRequests)
 };
 
 // Worker loop - handles requests persistently
-while (frankenphp_handle_request($handleRequest)) {}
+while (frankenphp_handle_request($handleRequest)) {
+}
