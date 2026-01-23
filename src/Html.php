@@ -5617,8 +5617,6 @@ JS);
                 break;
             case 'tiptap':
                 $_SESSION['glpi_js_toload'][$name][] = 'lib/tiptap.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/modules/SlashCommands.js';
-                $_SESSION['glpi_js_toload'][$name][] = 'js/modules/KnowbaseEditor.js';
                 break;
             default:
                 $found = false;

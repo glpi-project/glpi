@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,7 +32,8 @@
 
 /* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
-/* global SlashCommands */
+
+import { SlashCommands } from './SlashCommands.js';
 
 /**
  * Knowbase article editor based on Tiptap
@@ -101,8 +101,8 @@ class KnowbaseEditor {
         this.#bubbleMenuElement = this.#createBubbleMenu();
         document.body.appendChild(this.#bubbleMenuElement);
 
-        // Get SlashCommands extension if available
-        const slashCommandsExt = typeof window.SlashCommands !== 'undefined' ? window.SlashCommands : null;
+        // Get SlashCommands extension
+        const slashCommandsExt = SlashCommands;
 
         const extensions = [
             StarterKit.configure({
@@ -366,5 +366,4 @@ class KnowbaseEditor {
     }
 }
 
-// Expose to global scope
-window.KnowbaseEditor = KnowbaseEditor;
+export { KnowbaseEditor };

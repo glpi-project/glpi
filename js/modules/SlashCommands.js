@@ -328,5 +328,4 @@ const SlashCommands = Extension.create({
     },
 });
 
-// Expose to global scope
-window.SlashCommands = SlashCommands;
+export { SlashCommands };
