@@ -774,16 +774,16 @@ class AdministrationControllerTest extends HLAPITestCase
         });
     }
 
-    public static function testCRUD22Provider()
+    public static function crud22Provider()
     {
         return [
             ['UserCategory'],
             ['UserTitle'],
-            ['ApprovalSubstitute']
+            ['ApprovalSubstitute'],
         ];
     }
 
-    #[DataProvider('testCRUD22Provider')]
+    #[DataProvider('crud22Provider')]
     public function testCRUD22(string $itemtype)
     {
         $create_params = [];
