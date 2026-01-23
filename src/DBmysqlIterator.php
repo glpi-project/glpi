@@ -702,13 +702,6 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     continue;
                 }
 
-                // Just a subquery, no criteria
-                if ($jointablecrit instanceof QuerySubQuery) {
-                    $jointablekey = $jointablecrit->getQuery();
-                    $query .= " $jointype $jointablekey";
-                    continue;
-                }
-
                 if (isset($jointablecrit['TABLE'])) {
                     //not a "simple" FKEY
                     $jointablekey = $jointablecrit['TABLE'];

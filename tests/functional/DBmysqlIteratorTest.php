@@ -632,22 +632,6 @@ class DBmysqlIteratorTest extends DbTestCase
             $it->getSql()
         );
 
-        //Joining with only a subquery
-        $it = $this->it->execute(
-            [
-                'FROM' => 'foo',
-                'LEFT JOIN' => [
-                    [
-                        'TABLE'  => new QuerySubQuery(['FROM' => 'bar'], 't2'),
-                    ],
-                ],
-            ]
-        );
-        $this->assertSame(
-            'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2`',
-            $it->getSql()
-        );
-
     }
 
     public function testBadJoin()
