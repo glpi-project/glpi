@@ -839,6 +839,15 @@ EOT;
                     $path_schema['parameters'][$param['name']]['schema'] = $combined_schema;
                 }
             }
+            if ($method === 'delete') {
+                $path_schema['parameters']['force'] = [
+                    'name' => 'force',
+                    'in' => 'query',
+                    'description' => 'If "true", the item will be permanently deleted instead of being moved to the trash (if the item supported soft-deletion).',
+                    'default' => false,
+                    'schema' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ];
+            }
             // Inject global headers
             if ($route_path->getRouteSecurityLevel() !== Route::SECURITY_NONE) {
                 $path_schema['parameters']['GLPI-Entity'] = [
