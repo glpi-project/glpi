@@ -1,0 +1,84 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="card rounded" data-testid="revision">
+    <div class="card-body px-3 py-2">
+        <div class="d-flex align-items-center mb-1">
+            {% if revision.is_current %}
+                <span class="badge bg-success-lt me-2">{{ __("Current version") }}</span>
+            {% elseif revision.is_first %}
+                <span class="badge bg-secondary-lt me-2">{{ __("Initial version") }}</span>
+            {% else %}
+                <span class="badge bg-secondary-lt me-2">{{ __("Version %s")|format(revision.revision) }}</span>
+            {% endif %}
+
+            {% if can_revert and not revision.is_current and revision.id %}
+                <button
+                    type="button"
+                    class="btn btn-ghost-secondary btn-sm ms-auto"
+                    data-glpi-revert-revision="{{ revision.id }}"
+                    data-glpi-kb-id="{{ id }}"
+                    title="{{ __("Restore this version") }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="left"
+                >
+                    <i class="ti ti-restore"></i>
+                </button>
+            {% endif %}
+        </div>
+
+        <div class="text-muted small">
+            {% if revision.is_first %}
+                {{ __("Created by") }}
+            {% else %}
+                {{ __("Updated by") }}
+            {% endif %}
+            {% if revision.user %}
+                <a rel="author" href="{{ revision.user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
+                    @{{ revision.user.getFriendlyName() }}
+                </a>
+            {% else %}
+                <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>
+            {% endif %}
+        </div>
+
+        <div class="text-muted small">
+            <span
+                title="{{ revision.date }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="bottom"
+            >
+                {{ revision.date|relative_datetime }}
+            </span>
+        </div>
+    </div>
+</div>

@@ -1015,6 +1015,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 is_danger: true,
             );
         }
+        if ($this->canUpdateItem()) {
+            $actions[] = new EditorAction(
+                label: __("History"),
+                icon: "ti ti-history",
+                type: EditorActionType::LOAD_SIDE_PANEL,
+                params: [
+                    'id' => $this->fields['id'],
+                    'key' => 'revisions',
+                ],
+            );
+        }
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
             'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),

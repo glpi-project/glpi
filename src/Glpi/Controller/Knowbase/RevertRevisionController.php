@@ -37,54 +37,53 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Knowbase\SidePanel\CommentsRenderer;
-use Glpi\Knowbase\SidePanel\RendererInterface;
-use Glpi\Knowbase\SidePanel\ServiceCatalogRenderer;
-use Glpi\Knowbase\SidePanel\RevisionsRenderer;
 use KnowbaseItem;
+use KnowbaseItem_Revision;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class SidePanelController extends AbstractController
+final class RevertRevisionController extends AbstractController
 {
     #[Route(
-        "/Knowbase/{id}/SidePanel/{key}",
-        name: "knowbase_side_panel",
+        "/Knowbase/{id}/RevertTo/{revision_id}",
+        name: "knowbase_article_revert_revision",
+        methods: ["POST"],
         requirements: [
             'id' => '\d+',
+            'revision_id' => '\d+',
         ]
     )]
-    public function __invoke(int $id, string $key): Response
+    public function __invoke(int $id, int $revision_id): Response
     {
-        // Parse id
+        // Load the KnowbaseItem
         $kb = KnowbaseItem::getById($id);
         if (!$kb) {
             throw new BadRequestHttpException();
         }
-        if (!$kb->can($id, READ)) {
+
+        // Check permissions
+        if (!$kb->canUpdateItem()) {
             throw new AccessDeniedHttpException();
         }
 
-        // Get renderer
-        $renderer = $this->getRendererForKey($key);
-        if (!$renderer->canView($kb)) {
-            throw new AccessDeniedHttpException();
+        // Verify the revision exists and belongs to this KB item
+        $revision = KnowbaseItem_Revision::getById($revision_id);
+        if (!$revision || (int) $revision->fields['knowbaseitems_id'] !== $id) {
+            throw new BadRequestHttpException();
         }
 
-        // Render content
-        return $this->render(
-            $renderer->getTemplate(),
-            $renderer->getParams($kb),
-        );
-    }
+        // Perform the revert
+        if (!$kb->revertTo($revision_id)) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __("Failed to restore the revision."),
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
 
-    private function getRendererForKey(string $key): RendererInterface
-    {
-        return match ($key) {
-            'comments'        => new CommentsRenderer(),
-            'service-catalog' => new ServiceCatalogRenderer(),
-            'revisions'       => new RevisionsRenderer(),
-            default           => throw new BadRequestHttpException(),
-        };
+        return new JsonResponse([
+            'success' => true,
+            'message' => __("Article restored successfully."),
+        ]);
     }
 }
