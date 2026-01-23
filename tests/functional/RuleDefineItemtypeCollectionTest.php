@@ -77,6 +77,7 @@ class RuleDefineItemtypeCollectionTest extends InventoryTestCase
             'computertypes_id'       => 'Laptop',
             'contact'                => 'trasher/root',
             '_inventory_users'       => ['trasher', 'root'],
+            'osname'                 => 'Fedora 31 (Workstation Edition)',
             'entities_id'            => 0,
         ]);
 
