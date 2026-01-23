@@ -100,7 +100,7 @@ final class RevisionsRenderer implements RendererInterface
         $index = 0;
 
         foreach ($result as $row) {
-            $user_id = $row['users_id'];
+            $user_id = (int) $row['users_id'];
             if (!isset($user_cache[$user_id])) {
                 $user_cache[$user_id] = User::getById($user_id) ?: null;
             }
