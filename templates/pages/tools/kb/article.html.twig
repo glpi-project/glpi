@@ -150,7 +150,7 @@
                     {% if documents|length > 0 %}
                     <div class="d-flex flex-wrap gap-2 mb-2">
                         {% for doc in documents %}
-                        <a href="{{ doc.download_link }}"
+                        <a href="{{ doc.download_url }}"
                            class="kb-document-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
                            target="_blank"
                            data-testid="document-chip">

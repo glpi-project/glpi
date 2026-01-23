@@ -939,7 +939,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                         'extension' => $extension,
                         'icon_class' => $iconAndColor['icon_class'],
                         'color_class' => $iconAndColor['color_class'],
-                        'download_link' => $downloadlink,
+                        'download_url' => $document->getDownloadUrl(),
                     ];
                 }
 
