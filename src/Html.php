@@ -655,6 +655,7 @@ TWIG,
             'is_anonymous_page'  => false,
             'css_files'          => [],
             'js_files'           => [],
+            'js_modules'         => [],
             'custom_header_tags' => [],
         ];
 
@@ -827,8 +828,8 @@ TWIG,
         // Send HTTP/2 103 Early Hints for critical assets (FrankenPHP/compatible servers)
         self::sendEarlyHints(
             $tpl_vars['css_files'],
-            $tpl_vars['js_files'] ?? [],
-            $tpl_vars['js_modules'] ?? []
+            $tpl_vars['js_files'],
+            $tpl_vars['js_modules']
         );
 
         if ($display) {
@@ -1672,9 +1673,9 @@ TWIG,
      * Only effective with FrankenPHP or servers supporting headers_send().
      * Falls back gracefully on traditional setups (Apache/nginx with php-fpm/mod_php).
      *
-     * @param array $css_files  CSS files array with 'path' key
-     * @param array $js_files   JS files array with 'path' key
-     * @param array $js_modules JS modules array with 'path' key
+     * @param array<array{path: string, options?: array<string, mixed>}> $css_files  CSS files array with 'path' key
+     * @param array<array{path: string, options?: array<string, mixed>}> $js_files   JS files array with 'path' key
+     * @param array<array{path: string, options?: array<string, mixed>}> $js_modules JS modules array with 'path' key
      */
     public static function sendEarlyHints(array $css_files, array $js_files = [], array $js_modules = []): void
     {
@@ -1711,7 +1712,7 @@ TWIG,
         }
 
         // Send 103 Early Hints response
-        headers_send(103); // @phpstan-ignore function.notFound (early-hint-specific function)
+        headers_send(103);
     }
 
     /**
