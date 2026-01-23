@@ -46,6 +46,7 @@ use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\QuestionType\QuestionTypeDateTime;
 use InvalidArgumentException;
 use LevelAgreement;
 use Override;
@@ -76,7 +77,10 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/admin/form/itil_config_fields/slm.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
-            'CONFIG_SPECIFIC_VALUE'  => SLMFieldStrategy::SPECIFIC_VALUE->value,
+            'CONFIG_SPECIFIC_VALUE'                          => SLMFieldStrategy::SPECIFIC_VALUE->value,
+            'CONFIG_SPECIFIC_DATE_ANSWER'                    => SLMFieldStrategy::SPECIFIC_DATE_ANSWER->value,
+            'CONFIG_COMPUTED_DATE_FROM_FORM_SUBMISSION'      => SLMFieldStrategy::COMPUTED_DATE_FROM_FORM_SUBMISSION->value,
+            'CONFIG_COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER' => SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER->value,
 
             // General display options
             'options' => $display_options,
@@ -88,6 +92,30 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
                 'value'       => $config->getSpecificSLMID() ?? 0,
                 'input_name'  => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
                 'type'        => $this->getType(),
+            ],
+
+            // Specific additional config for SPECIFIC_DATE_ANSWER strategy
+            'specific_date_answer_extra_field' => [
+                'empty_label'     => __("Select a date question..."),
+                'value'           => $config->getQuestionId() ?? 0,
+                'input_name'      => $input_name . "[" . SLMFieldConfig::QUESTION_ID . "]",
+                'possible_values' => $this->getDateTimeQuestionsValuesForDropdown($form),
+            ],
+
+            // Specific additional config for COMPUTED_DATE_FROM_FORM_SUBMISSION strategy
+            'time_offset_extra_field' => [
+                'aria_label' => __("Select time offset..."),
+                'value'       => $config->getTimeOffset() ?? 0,
+                'input_name'  => $input_name . "[" . SLMFieldConfig::TIME_OFFSET . "]",
+                'min'         => -30,
+                'max'         => 30,
+            ],
+
+            'time_definition_extra_field' => [
+                'aria_label'      => __("Select time definition..."),
+                'value'           => $config->getTimeDefinition() ?? '',
+                'input_name'      => $input_name . "[" . SLMFieldConfig::TIME_DEFINITION . "]",
+                'possible_values' => LevelAgreement::getDefinitionTimeValues(),
             ],
         ]);
     }
@@ -110,11 +138,15 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
 
         // Do not edit input if invalid value was found
         $slm = $this->getSLM();
-        if (!$slm::getById($slm_id)) {
-            return $input;
+        if ($slm::getById($slm_id)) {
+            $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
         }
 
-        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
+        // Compute date value according to strategy
+        $date_slm = $strategy->getDateSLM($config, $answers_set);
+        if ($date_slm !== null) {
+            $input[$slm::getFieldNames($this->getType())[0]] = $date_slm;
+        }
 
         return $input;
     }
@@ -151,6 +183,26 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         foreach (SLMFieldStrategy::cases() as $strategies) {
             $values[$strategies->value] = $strategies->getLabel($this);
         }
+        return $values;
+    }
+
+    /**
+     * @return array<int, string> The array key is the question ID and the value is the question name.
+     */
+    private function getDateTimeQuestionsValuesForDropdown(Form $form): array
+    {
+        $values = [];
+        $questions = $form->getQuestionsByType(QuestionTypeDateTime::class);
+
+        foreach ($questions as $question) {
+            // Ensure the date part is enabled
+            if (!(new QuestionTypeDateTime())->isDateEnabled($question)) {
+                continue;
+            }
+
+            $values[$question->getId()] = $question->fields['name'];
+        }
+
         return $values;
     }
 

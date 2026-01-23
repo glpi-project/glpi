@@ -47,8 +47,11 @@ final class OLATTRFieldConfig extends SLMFieldConfig
         }
 
         return new self(
-            strategy: $strategy,
-            specific_slm_id: $data[self::SLM_ID] ?? null
+            strategy       : $strategy,
+            specific_slm_id: $data[self::SLM_ID] ?? null,
+            question_id    : $data[self::QUESTION_ID] ?? null,
+            time_offset    : $data[self::TIME_OFFSET] ?? null,
+            time_definition: $data[self::TIME_DEFINITION] ?? null,
         );
     }
 }
