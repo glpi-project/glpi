@@ -63,7 +63,7 @@ class NotificationTargetUser extends NotificationTarget
     #[Override]
     public function canNotificationContentBeDisclosed(string $event): bool
     {
-        if ($event === 'passwordforget') {
+        if ($event === 'passwordforget' || $event === 'passwordinit') {
             return false;
         }
 
@@ -161,19 +161,29 @@ class NotificationTargetUser extends NotificationTarget
                 );
                 break;
             case 'passwordforget':
+            case 'passwordinit':
                 $encrypted_token = $this->obj->fields['password_forget_token'];
                 $token = (new GLPIKey())->decrypt($encrypted_token);
 
-                $this->data['##user.token##']             = $token;
-                $this->data['##user.passwordforgeturl##'] = urldecode($this->getUrlBase()
-                . "/front/lostpassword.php?password_forget_token="
-                . $token);
-                break;
-            case 'passwordinit':
-                $this->data['##user.token##']           = $this->obj->getField("password_forget_token");
-                $this->data['##user.passwordiniturl##'] = urldecode($CFG_GLPI["url_base"]
-                . "/front/initpassword.php?password_forget_token="
-                . $this->obj->getField("password_forget_token"));
+                $this->data['##user.token##'] = $token;
+
+                $routes = [
+                    'passwordforget' => [
+                        'key'  => '##user.passwordforgeturl##',
+                        'path' => '/front/lostpassword.php'
+                    ],
+                    'passwordinit' => [
+                        'key'  => '##user.passwordiniturl##',
+                        'path' => '/front/initpassword.php'
+                    ]
+                ];
+
+                $this->data[$routes[$event]['key']] = urldecode(
+                    $this->getUrlBase()
+                    . $routes[$event]['path']
+                    . '?password_forget_token='
+                    . $token
+                );
                 break;
         }
 
