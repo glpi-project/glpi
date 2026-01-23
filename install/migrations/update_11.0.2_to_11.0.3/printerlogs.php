@@ -37,7 +37,8 @@
  */
 
 //Fix possible duplicates, see https://github.com/glpi-project/glpi/issues/22235
-$DB->doQuery("
+$DB->doQuery(
+    "
   DELETE FROM glpi_printerlogs WHERE id IN (
     SELECT id FROM (
       SELECT a.id FROM glpi_printerlogs AS a
