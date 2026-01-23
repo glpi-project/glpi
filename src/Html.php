@@ -823,6 +823,13 @@ TWIG,
             $tpl_vars['glpi_request_id'] = DebugProfile::getCurrent()->getID();
         }
 
+        // Send HTTP/2 103 Early Hints for critical assets (FrankenPHP/compatible servers)
+        self::sendEarlyHints(
+            $tpl_vars['css_files'],
+            $tpl_vars['js_files'] ?? [],
+            $tpl_vars['js_modules'] ?? []
+        );
+
         if ($display) {
             TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', $tpl_vars);
         } else {
@@ -1655,6 +1662,55 @@ TWIG,
     {
         header("Cache-Control: no-store, no-cache, must-revalidate"); // HTTP/1.1
         header("Expires: Mon, 26 Jul 1997 05:00:00 GMT"); // Date du passe
+    }
+
+    /**
+     * Send HTTP/2 103 Early Hints for critical assets.
+     *
+     * Allows browsers to start preloading CSS/JS while the response is being prepared.
+     * Only effective with FrankenPHP or servers supporting headers_send().
+     * Falls back gracefully on traditional setups (Apache/nginx with php-fpm/mod_php).
+     *
+     * @param array $css_files  CSS files array with 'path' key
+     * @param array $js_files   JS files array with 'path' key
+     * @param array $js_modules JS modules array with 'path' key
+     */
+    public static function sendEarlyHints(array $css_files, array $js_files = [], array $js_modules = []): void
+    {
+        // Early hints require headers_send() which is only supported on some servers (frankenphp, recent nginx or apache)
+        if (!function_exists('headers_send') || headers_sent()) {
+            return;
+        }
+
+        // Use the same path transformation as Twig templates
+        $assets = new \Glpi\Application\View\Extension\FrontEndAssetsExtension();
+
+        foreach ($css_files as $css) {
+            $path = $css['path'] ?? '';
+            if ($path !== '') {
+                $url = $assets->cssPath($path, $css['options'] ?? []);
+                header(sprintf('Link: <%s>; rel=preload; as=style', $url), false);
+            }
+        }
+
+        foreach ($js_files as $js) {
+            $path = $js['path'] ?? '';
+            if ($path !== '') {
+                $url = $assets->jsPath($path, $js['options'] ?? []);
+                header(sprintf('Link: <%s>; rel=preload; as=script', $url), false);
+            }
+        }
+
+        foreach ($js_modules as $js) {
+            $path = $js['path'] ?? '';
+            if ($path !== '') {
+                $url = $assets->jsPath($path, $js['options'] ?? []);
+                header(sprintf('Link: <%s>; rel=modulepreload', $url), false);
+            }
+        }
+
+        // Send 103 Early Hints response
+        headers_send(103); // @phpstan-ignore function.notFound (early-hint-specific function)
     }
 
     /**
