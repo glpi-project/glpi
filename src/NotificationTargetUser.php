@@ -170,12 +170,12 @@ class NotificationTargetUser extends NotificationTarget
                 $routes = [
                     'passwordforget' => [
                         'key'  => '##user.passwordforgeturl##',
-                        'path' => '/front/lostpassword.php'
+                        'path' => '/front/lostpassword.php',
                     ],
                     'passwordinit' => [
                         'key'  => '##user.passwordiniturl##',
-                        'path' => '/front/initpassword.php'
-                    ]
+                        'path' => '/front/initpassword.php',
+                    ],
                 ];
 
                 $this->data[$routes[$event]['key']] = urldecode(
