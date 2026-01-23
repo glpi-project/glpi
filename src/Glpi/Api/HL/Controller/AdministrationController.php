@@ -522,9 +522,7 @@ EOT,
                 'x-itemtype' => ValidatorSubstitute::class,
                 'type' => Doc\Schema::TYPE_OBJECT,
                 'x-rights-conditions' => [
-                    'read' => static function () {
-                        return ['WHERE' => ['users_id' => Session::getLoginUserID()]];
-                    },
+                    'read' => static fn() => ['WHERE' => ['users_id' => Session::getLoginUserID()]],
                 ],
                 'properties' => [
                     'id' => [
