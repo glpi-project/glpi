@@ -37,58 +37,52 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
-use KnowbaseItem;
+use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem_Comment;
 use RuntimeException;
-use Session;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class AddCommentController extends AbstractController
+final class UpdateCommentController extends AbstractController
 {
     #[Route(
-        "/Knowbase/{id}/AddComment",
-        name: "knowbase_article_add_comment",
+        "/Knowbase/Comment/{id}/Update",
+        name: "knowbase_comment_update",
+        methods: ["POST"],
         requirements: [
             'id' => '\d+',
         ]
     )]
     public function __invoke(int $id, Request $request): Response
     {
-        // Parse kb id
-        $kb = KnowbaseItem::getById($id);
-        if (!$kb) {
-            throw new BadRequestHttpException();
+        $comment = new KnowbaseItem_Comment();
+        if (!$comment->getFromDB($id)) {
+            throw new NotFoundHttpException();
         }
 
-        // Parse content
         $content = $request->request->getString('content');
         if (empty($content)) {
             throw new BadRequestHttpException();
         }
 
-        $comment = new KnowbaseItem_Comment();
-        $input = [
-            'knowbaseitems_id' => $id,
-            'comment' => $content,
-        ];
-        if (!$comment->can(-1, CREATE, $input)) {
+        if (!$comment->canUpdateItem()) {
             throw new AccessDeniedHttpException();
         }
 
-        // Try to add comment
-        if (!$comment->add($input)) {
-            throw new RuntimeException("Failed to create comment");
+        $success = $comment->update([
+            'id'      => $id,
+            'comment' => $content,
+        ]);
+
+        if (!$success) {
+            throw new RuntimeException("Failed to update comment");
         }
 
-        // Render new comment
-        return $this->render('pages/tools/kb/sidepanel/comment.html.twig', [
-            'comment_id'    => $comment->getID(),
-            'user'          => Session::getCurrentUser(),
-            'date_creation' => $comment->fields['date_creation'],
-            'comment'       => $comment->fields['comment'],
-            'can_edit'      => true,
+        return new JsonResponse([
+            'success' => true,
+            'comment' => $comment->fields['comment'],
         ]);
     }
 }
