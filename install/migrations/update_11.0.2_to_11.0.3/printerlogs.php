@@ -32,39 +32,23 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QuerySubQuery;
-
 /**
  * @var DBmysql $DB
  */
 
 //Fix possible duplicates, see https://github.com/glpi-project/glpi/issues/22235
-$sub_b = new QuerySubQuery(
-    [
-        'FROM' => 'glpi_printerlogs',
-        'FIELDS' => ['items_id', 'date'],
-        'GROUPBY' => ['items_id', 'date'],
-        'HAVING' => [new QueryExpression('COUNT(`items_id`) > 1')],
-    ],
-    'b'
+$DB->doQuery(
+    "DELETE FROM glpi_printerlogs WHERE id IN (
+  SELECT a.id FROM glpi_printerlogs AS a
+  JOIN(
+      SELECT items_id, date
+      FROM glpi_printerlogs
+      GROUP BY items_id, date
+      HAVING COUNT(items_id) > 1
+  ) AS b
+  WHERE a.items_id = b.items_id AND a.date = b.date AND a.itemtype = ''
+)"
 );
-
-$sub_a = new QuerySubQuery([
-    'FROM' => 'glpi_printerlogs AS a',
-    'JOIN' => ['TABLE' => $sub_b],
-    'WHERE' => [
-        'a.items_id' => new QueryExpression('b.items_id'),
-        'a.date'     => new QueryExpression('b.date'),
-        'a.itemtype' => '',
-    ]
-]);
-
-$DB->request([
-    'FROM' => 'glpi_printerlogs',
-    'FIELDS' => ['id'],
-    'WHERE' => ['id' => $sub_a]
-]);
 
 //add missing itemtype
 $DB->update('glpi_printerlogs', ['itemtype' => 'Printer'], ['itemtype' => '']);
