@@ -4,6 +4,12 @@ import { dynamicBase } from 'vite-plugin-dynamic-base';
 
 export default defineConfig(({ mode, command }) => {
     const plugins = [vue()];
+    const fs = require('fs');
+    let banner_text = fs.readFileSync('tools/HEADER', 'utf8');
+    banner_text = banner_text.split('\n').map((line) => {
+        return ` * ${line}`;
+    }).join('\n');
+    banner_text = `/**!\n${banner_text}\n */\n`;
 
     if (command !== 'serve') {
         plugins.push(dynamicBase({
@@ -26,6 +32,7 @@ export default defineConfig(({ mode, command }) => {
                     chunkFileNames: 'vue-sfc/[name]-[hash].js',
                     assetFileNames: 'vue-sfc/[name]-[hash][extname]',
                     legalComments: 'inline',
+                    postBanner: banner_text,
                 }
             },
         },

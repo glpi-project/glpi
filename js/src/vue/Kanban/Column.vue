@@ -1,10 +1,4 @@
 <script setup>
-    /*!
-     * GLPI - Gestionnaire Libre de Parc Informatique
-     * SPDX-License-Identifier: GPL-3.0-or-later
-     * SPDX-FileCopyrightText: 2015-2025 Teclib' and contributors.
-     */
-
     /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
     /**
      * @typedef ColumnMetadata
