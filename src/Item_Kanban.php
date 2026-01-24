@@ -242,14 +242,16 @@ class Item_Kanban extends CommonDBRelation
 
         $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
-        $all_columns = [];
         $all_columns = $item->getAllKanbanColumns();
         $new_column_index = array_keys(array_filter($state, fn($c, $k) => $c['column'] === $column, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
             if (isset($all_columns[(int) $column])) {
                 $drop_only = $all_columns[(int) $column]['drop_only'] ?? false;
-                if (isset($all_columns[(int) $column]) && !$drop_only) {
+                if (!$drop_only) {
+                    if (!array_key_exists('cards', $state[$new_column_index])) {
+                        $state[$new_column_index]['cards'] = [];
+                    }
                     array_splice($state[$new_column_index]['cards'], $position, 0, $card);
                 }
             }
