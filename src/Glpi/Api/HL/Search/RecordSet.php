@@ -210,6 +210,9 @@ final class RecordSet
                 unset($row['_itemtype']);
                 // Make sure we have all the needed data
                 foreach ($row as $fkey => $record_ids) {
+                    if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
+                        continue;
+                    }
                     $table = $this->search->getContext()->getTableForFKey($fkey, $schema_name);
                     if ($table === null) {
                         continue;
@@ -220,9 +223,6 @@ final class RecordSet
                     }
                     $itemtype = $itemtype_cache[$table];
 
-                    if ($record_ids === null || $record_ids === '' || $record_ids === "\0") {
-                        continue;
-                    }
                     // Find which IDs we need to fetch. We will avoid fetching records multiple times.
                     $ids_to_fetch = explode(chr(0x1D), $record_ids);
                     foreach ($ids_to_fetch as &$id) {

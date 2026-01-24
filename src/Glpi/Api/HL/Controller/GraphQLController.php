@@ -37,12 +37,12 @@ namespace Glpi\Api\HL\Controller;
 
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL;
-use Glpi\Api\HL\GraphQLGenerator;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use GraphQL\Utils\SchemaPrinter;
 
 #[Route(path: '/GraphQL', priority: 1, tags: ['GraphQL'])]
 final class GraphQLController extends AbstractController
@@ -60,7 +60,7 @@ final class GraphQLController extends AbstractController
     #[Doc\Route(description: 'GraphQL API Schema')]
     public function getSchema(Request $request): Response
     {
-        $graphql_generator = new GraphQLGenerator($this->getAPIVersion($request));
-        return new Response(200, [], $graphql_generator->getSchema());
+        $schema_generator = new GraphQL\SchemaGenerator($this->getAPIVersion($request));
+        return new Response(200, [], SchemaPrinter::doPrint($schema_generator->getSchema()));
     }
 }
