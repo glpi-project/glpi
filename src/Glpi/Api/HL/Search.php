@@ -92,7 +92,7 @@ final class Search
     private SearchContext $context;
     private DBmysql $db_read;
 
-    private function __construct(array $schema, array $request_params)
+    public function __construct(array $schema, array $request_params)
     {
         $this->context = new SearchContext($schema, $request_params);
         $this->rsql_parser = new Parser($this);
@@ -102,6 +102,11 @@ final class Search
     public function getContext(): SearchContext
     {
         return $this->context;
+    }
+
+    public function getRSQLParser(): Parser
+    {
+        return $this->rsql_parser;
     }
 
     public function getDBRead(): DBmysql
@@ -178,7 +183,7 @@ final class Search
      * @param bool $distinct_groups Whether to use DISTINCT in GROUP_CONCAT
      * @return QueryExpression|null
      */
-    private function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
+    public function getSelectCriteriaForProperty(string $prop_name, bool $distinct_groups = false): ?QueryExpression
     {
         $prop = $this->context->getFlattenedProperties()[$prop_name];
         if ($prop['writeOnly'] ?? false) {
@@ -275,7 +280,7 @@ final class Search
      * @param array $join_definition The join definition
      * @return array JOIN clauses in array format used bt {@link \DBmysqlIterator}
      */
-    private function getJoins(string $join_alias, array $join_definition): array
+    public function getJoins(string $join_alias, array $join_definition): array
     {
         $joins = [];
 
@@ -358,14 +363,24 @@ final class Search
      * @return array|array[]
      * @throws RSQLException
      */
-    private function getSearchCriteria(): array
+    public function getSearchCriteria(): array
     {
         // Handle fields to return
         $criteria = [
             'SELECT' => $this->getSelectCriteria(),
         ];
 
-        // Handle joins
+        $this->addJoinsCriteria($criteria);
+        $this->addRSQLCriteria($criteria);
+        $this->addVisibilityCriteria($criteria);
+        $this->addPaginationCriteria($criteria);
+        $this->addSortingCriteria($criteria);
+
+        return $criteria;
+    }
+
+    public function addJoinsCriteria(array &$criteria): void
+    {
         foreach ($this->context->getJoins() as $join_alias => $join_definition) {
             $join_clauses = $this->getJoins($join_alias, $join_definition);
             foreach ($join_clauses as $join_type => $join_tables) {
@@ -375,8 +390,10 @@ final class Search
                 $criteria[$join_type] = array_merge($criteria[$join_type], $join_tables);
             }
         }
+    }
 
-        // Handle RSQL filter
+    public function addRSQLCriteria(&$criteria): void
+    {
         if (!empty($this->context->getRequestParameter('filter'))) {
             $filter_result = $this->rsql_parser->parse(Lexer::tokenize($this->context->getRequestParameter('filter')));
             // Fail the request if any of the filters are invalid
@@ -389,9 +406,10 @@ final class Search
             $criteria['WHERE'] = [$filter_result->getSQLWhereCriteria()];
             $criteria['HAVING'] = [$filter_result->getSQLHavingCriteria()];
         }
+    }
 
-        // Handle entity and other visibility restrictions
-        $entity_restrict = [];
+    public function addVisibilityCriteria(array &$criteria): void
+    {
         if (!$this->context->isUnionSearchMode()) {
             $itemtype = $this->context->getSchemaItemtype(); //should not that use self::getItemFromSchema()?
             /** @var CommonDBTM $item */
@@ -484,8 +502,10 @@ final class Search
         if (!empty($entity_restrict) && $entity_restrict !== [0 => []]) {
             $criteria['WHERE'][] = ['AND' => $entity_restrict];
         }
+    }
 
-        // Handle pagination
+    public function addPaginationCriteria(array &$criteria): void
+    {
         $start = $this->context->getRequestParameter('start');
         $limit = $this->context->getRequestParameter('limit');
         if (is_numeric($start)) {
@@ -494,8 +514,10 @@ final class Search
         if (is_numeric($limit)) {
             $criteria['LIMIT'] = (int) $limit;
         }
+    }
 
-        // Handle sorting
+    public function addSortingCriteria(array &$criteria): void
+    {
         $sort = $this->context->getRequestParameter('sort');
         if ($sort !== null) {
             $sorts = array_map(static fn($s) => trim($s), explode(',', (string) $sort));
@@ -521,8 +543,6 @@ final class Search
             }
             $criteria['ORDERBY'] = $orderby;
         }
-
-        return $criteria;
     }
 
     /**
@@ -531,7 +551,7 @@ final class Search
      * @return void
      * @throws RightConditionNotMetException If the read condition check returns false indicating we know the user cannot view any of the resources without needing to check the database.
      */
-    private function addReadRestrictCriteria(array &$criteria): void
+    public function addReadRestrictCriteria(array &$criteria): void
     {
         $read_right_criteria = $this->context->getSchemaReadRestrictCriteria();
         if (is_callable($read_right_criteria)) {
