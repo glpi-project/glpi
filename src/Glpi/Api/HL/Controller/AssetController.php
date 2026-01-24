@@ -35,13 +35,19 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Appliance;
+use ApplianceType;
 use AutoUpdateSystem;
 use Cable;
 use Cartridge;
 use CartridgeItem;
 use CartridgeItem_PrinterModel;
+use Certificate;
+use CertificateType;
 use CommonDBTM;
 use Computer;
+use ComputerModel;
+use ComputerType;
 use Consumable;
 use ConsumableItem;
 use Datacenter;
@@ -66,8 +72,12 @@ use Item_Rack;
 use Location;
 use Manufacturer;
 use Monitor;
+use MonitorModel;
+use MonitorType;
 use Network;
 use NetworkEquipment;
+use NetworkEquipmentModel;
+use NetworkEquipmentType;
 use NetworkPort;
 use OperatingSystem;
 use PassiveDCEquipment;
@@ -77,15 +87,25 @@ use PDU;
 use PDUModel;
 use PDUType;
 use Peripheral;
+use PeripheralModel;
+use PeripheralType;
+use Phone;
+use PhoneModel;
+use PhoneType;
+use Printer;
 use PrinterModel;
+use PrinterType;
 use Rack;
 use RackModel;
 use RackType;
 use RuntimeException;
 use Software;
 use SoftwareCategory;
+use SoftwareLicense;
+use SoftwareLicenseType;
 use SoftwareVersion;
 use State;
+use Unmanaged;
 use User;
 
 use function Safe\json_decode;
@@ -114,7 +134,6 @@ final class AssetController extends AbstractController
 
     public static function getRawKnownSchemas(): array
     {
-        global $CFG_GLPI;
         $schemas = [];
 
         $fn_get_assignable_restriction = static function (string $itemtype) {
@@ -128,21 +147,6 @@ final class AssetController extends AbstractController
             }
             throw new RuntimeException("Itemtype $itemtype is not an AssignableItem");
         };
-
-        $schemas['_BaseAsset'] = [
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
 
         $schemas['PrinterModel'] = [
             'x-version-introduced' => '2.0',
@@ -402,164 +406,481 @@ final class AssetController extends AbstractController
             ],
         ];
 
-        $asset_types = self::getAssetTypes();
-
-        foreach ($asset_types as $asset_type) {
-            if (!is_subclass_of($asset_type, CommonDBTM::class)) {
-                continue;
-            }
-            // Replace namespace separator with underscore
-            $schema_name = str_replace('\\', '_', $asset_type);
-            $schemas[$schema_name] = $schemas['_BaseAsset'];
-            $schemas[$schema_name]['x-version-introduced'] = '2.0';
-            $schemas[$schema_name]['x-itemtype'] = $asset_type;
-
-            // Need instance since some fields are not static even if they aren't related to instances
-            $asset = new $asset_type();
-
-            if (in_array($asset_type, $CFG_GLPI['state_types'], true)) {
-                $schemas[$schema_name]['properties']['status'] = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
-            }
-
-            if (in_array($asset_type, $CFG_GLPI['location_types'], true)) {
-                $schemas[$schema_name]['properties']['location'] = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
-            }
-
-            if ($asset->isEntityAssign()) {
-                $schemas[$schema_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
-                // Add completename field
-                $schemas[$schema_name]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
-                $schemas[$schema_name]['properties']['is_recursive'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-            }
-
-            $type_class = $asset->getTypeClass();
-            if ($type_class !== null) {
-                $schemas[$schema_name]['properties']['type'] = self::getDropdownTypeSchema(class: $type_class);
-            }
-            if ($asset->isField('manufacturers_id')) {
-                $schemas[$schema_name]['properties']['manufacturer'] = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
-            }
-            $model_class = $asset->getModelClass();
-            if ($model_class !== null) {
-                $schemas[$schema_name]['properties']['model'] = self::getDropdownTypeSchema(class: $model_class);
-            }
-
-            if (in_array($asset_type, $CFG_GLPI['assignable_types'], true)) {
-                $schemas[$schema_name]['properties']['user'] = self::getDropdownTypeSchema(
-                    class: User::class,
-                    field: 'users_id',
-                    full_schema: 'User'
-                );
-                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
-                    class: User::class,
-                    field: 'users_id_tech',
-                    full_schema: 'User'
-                );
-                $schemas[$schema_name]['properties']['group'] = [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups', // The table with the desired data
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                            'ref-join' => [
-                                'table' => 'glpi_groups_items',
-                                'fkey' => 'id',
-                                'field' => 'items_id',
-                                'condition' => [
-                                    'itemtype' => $asset_type,
-                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ],
+        $fn_get_group_property = static function (string $asset_type) {
+            return [
+                'type' => Doc\Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => 'Group',
+                    'x-join' => [
+                        'table' => 'glpi_groups', // The table with the desired data
+                        'fkey' => 'groups_id',
+                        'field' => 'id',
+                        'ref-join' => [
+                            'table' => 'glpi_groups_items',
+                            'fkey' => 'id',
+                            'field' => 'items_id',
+                            'condition' => [
+                                'itemtype' => $asset_type,
+                                'type' => Group_Item::GROUP_TYPE_NORMAL,
                             ],
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
-                ];
-                $schemas[$schema_name]['properties']['group_tech'] = [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups', // The table with the desired data
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                            'ref-join' => [
-                                'table' => 'glpi_groups_items',
-                                'fkey' => 'id',
-                                'field' => 'items_id',
-                                'condition' => [
-                                    'itemtype' => $asset_type,
-                                    'type' => Group_Item::GROUP_TYPE_TECH,
-                                ],
-                            ],
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'description' => 'ID',
                         ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
+                        'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    ],
+                ],
+            ];
+        };
+        $fn_get_group_tech_property = static function (string $asset_type) {
+            return [
+                'type' => Doc\Schema::TYPE_ARRAY,
+                'items' => [
+                    'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => 'Group',
+                    'x-join' => [
+                        'table' => 'glpi_groups', // The table with the desired data
+                        'fkey' => 'groups_id',
+                        'field' => 'id',
+                        'ref-join' => [
+                            'table' => 'glpi_groups_items',
+                            'fkey' => 'id',
+                            'field' => 'items_id',
+                            'condition' => [
+                                'itemtype' => $asset_type,
+                                'type' => Group_Item::GROUP_TYPE_TECH,
                             ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
-                ];
-                $schemas[$schema_name]['x-rights-conditions'] = [
-                    'read' => static fn() => $fn_get_assignable_restriction($asset_type),
-                ];
-            }
+                    'properties' => [
+                        'id' => [
+                            'type' => Doc\Schema::TYPE_INTEGER,
+                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                            'description' => 'ID',
+                        ],
+                        'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    ],
+                ],
+            ];
+        };
+        $state_property = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
+        $location_property = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
+        $entity_property = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
+        $entity_property['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
+        $manufacturer_property = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
+        $user_property = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
+        $user_tech_property = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
+        $network_property = self::getDropdownTypeSchema(class: Network::class);
+        $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class);
 
-            if ($asset->isField('contact')) {
-                $schemas[$schema_name]['properties']['contact'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('contact_num')) {
-                $schemas[$schema_name]['properties']['contact_num'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('serial')) {
-                $schemas[$schema_name]['properties']['serial'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('otherserial')) {
-                $schemas[$schema_name]['properties']['otherserial'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('networks_id')) {
-                $schemas[$schema_name]['properties']['network'] = self::getDropdownTypeSchema(Network::class);
-            }
-
-            if ($asset->isField('uuid')) {
-                $schemas[$schema_name]['properties']['uuid'] = [
+        $schemas['Computer'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Computer::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Computer::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: ComputerType::class),
+                'model' => self::getDropdownTypeSchema(class: ComputerModel::class),
+                'group' => $fn_get_group_property(Computer::class),
+                'group_tech' => $fn_get_group_tech_property(Computer::class),
+                'uuid' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'pattern' => Doc\Schema::PATTERN_UUIDV4,
                     'readOnly' => true,
-                ];
-            }
-            if ($asset->isField('autoupdatesystems_id')) {
-                $schemas[$schema_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
-            }
-
-            if ($asset->maybeDeleted()) {
-                $schemas[$schema_name]['properties']['is_deleted'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-            }
-        }
-
-        // Post v2 additions to general assets
-        $schemas['SoftwareLicense']['properties']['completename'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_STRING,
-            'readOnly' => true,
+                ],
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
         ];
-        $schemas['SoftwareLicense']['properties']['level'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'readOnly' => true,
+
+        $schemas['Monitor'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Monitor::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Monitor::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: MonitorType::class),
+                'model' => self::getDropdownTypeSchema(class: MonitorModel::class),
+                'group' => $fn_get_group_property(Monitor::class),
+                'group_tech' => $fn_get_group_tech_property(Monitor::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['NetworkEquipment'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkEquipment::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(NetworkEquipment::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: NetworkEquipmentType::class),
+                'model' => self::getDropdownTypeSchema(class: NetworkEquipmentModel::class),
+                'group' => $fn_get_group_property(NetworkEquipment::class),
+                'group_tech' => $fn_get_group_tech_property(NetworkEquipment::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Peripheral'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Peripheral::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Peripheral::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: PeripheralType::class),
+                'model' => self::getDropdownTypeSchema(class: PeripheralModel::class),
+                'group' => $fn_get_group_property(Peripheral::class),
+                'group_tech' => $fn_get_group_tech_property(Peripheral::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Phone'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Phone::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Phone::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: PhoneType::class),
+                'model' => self::getDropdownTypeSchema(class: PhoneModel::class),
+                'group' => $fn_get_group_property(Phone::class),
+                'group_tech' => $fn_get_group_tech_property(Phone::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Printer'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Printer::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Printer::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: PrinterType::class),
+                'model' => self::getDropdownTypeSchema(class: PrinterModel::class),
+                'group' => $fn_get_group_property(Printer::class),
+                'group_tech' => $fn_get_group_tech_property(Printer::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['SoftwareLicense'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => SoftwareLicense::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(SoftwareLicense::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class),
+                'group' => $fn_get_group_property(SoftwareLicense::class),
+                'group_tech' => $fn_get_group_tech_property(SoftwareLicense::class),
+                'completename' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'level' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
+            ],
+        ];
+
+        $schemas['Certificate'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Certificate::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Certificate::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: CertificateType::class),
+                'group' => $fn_get_group_property(Certificate::class),
+                'group_tech' => $fn_get_group_tech_property(Certificate::class),
+            ],
+        ];
+
+        $schemas['Unmanaged'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Unmanaged::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Unmanaged::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'group' => $fn_get_group_property(Unmanaged::class),
+                'group_tech' => $fn_get_group_tech_property(Unmanaged::class),
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Appliance'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Appliance::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Appliance::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: ApplianceType::class),
+                'group' => $fn_get_group_property(Appliance::class),
+                'group_tech' => $fn_get_group_tech_property(Appliance::class),
+            ],
         ];
 
         // Additional asset schemas
