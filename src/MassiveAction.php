@@ -794,9 +794,9 @@ class MassiveAction
             }
         }
 
-        // Remove icons for outputs that doesn't expect html
+        // Remove icons and unescape text for outputs that doesn't expect html
         if ($items_id === null || isAPI()) {
-            $actions = array_map(fn($action) => strip_tags($action), $actions);
+            $actions = array_map(fn($action) => htmlspecialchars_decode(strip_tags($action)), $actions);
         }
 
         return $actions;
