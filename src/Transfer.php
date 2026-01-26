@@ -3877,7 +3877,10 @@ final class Transfer extends CommonDBTM
             $edit_form = false;
         }
 
-        $options['target'] = URL::sanitizeURL($options['target']);
+        $options = [
+            'target' => URL::sanitizeURL($options['target']),
+            'canedit' => Session::haveRight("transfer", READ),
+        ];
 
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [
