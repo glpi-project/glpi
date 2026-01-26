@@ -36,7 +36,7 @@
 {% block title %}{{ __("History") }}{% endblock %}
 
 {% block content %}
-    <div class="d-flex flex-column row-gap-3 overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4" data-glpi-revisions>
+    <ul class="steps steps-vertical overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4" data-glpi-revisions>
         {% for revision in revisions %}
             {{ include('pages/tools/kb/sidepanel/revision_item.html.twig', {
                 id: id,
@@ -44,5 +44,5 @@
                 can_revert: can_revert,
             }, with_context = false) }}
         {% endfor %}
-    </div>
+    </ul>
 {% endblock %}
