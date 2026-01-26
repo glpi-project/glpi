@@ -283,18 +283,6 @@ input[type="checkbox"].toggle_comments {
             }
         }
     }
-
-    // Edit mode styles
-    &.is-editing .ProseMirror {
-        border: 1px solid var(--tblr-border-color);
-        border-radius: var(--tblr-border-radius);
-        padding: 1rem;
-
-        &:focus {
-            border-color: var(--tblr-primary);
-            box-shadow: 0 0 0 0.25rem rgb(var(--tblr-primary-rgb) / 25%);
-        }
-    }
 }
 
 // Slash commands menu
