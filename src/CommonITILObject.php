@@ -8396,8 +8396,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * @return ITILTemplate|null
      *
      * @since 11.0.2
+     * @TODO Make this method private in GLPI 12.
      */
-    public function getITILTemplateFromInput(array $input = [], ?CommonITILObject $existing_object = null): ?ITILTemplate
+    public function getITILTemplateFromInput(array $input = [], $existing_object = null): ?ITILTemplate
     {
         if (!$existing_object) {
             $existing_object = $this;
