@@ -176,7 +176,8 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         // Try to load service level
         $slm = $this->getSLM()::getById($slm_id);
         if (!$slm) {
-            return $fallback;
+            $config[SLMFieldConfig::SLM_ID] = 0;
+            return new DynamicExportDataField($config, []);
         }
 
         // Insert service level name and requirement
