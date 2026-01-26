@@ -14,6 +14,8 @@ The present file will list all changes made to the project; according to the
 - New schemas/endpoints for Operating system installations on assets in the High-Level API v2.2.
 - New schemas/endpoints for software installations on assets in the High-Level API v2.2.
 - New schema/endpoints for DatabaseInstance in the High-Level API v2.2.
+- Several new properties for the User schema, and the timezone property for user preferences in the High-Level API v2.2.
+- New schemas/endpoints for user titles, user categories and approval substitutes in the High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
