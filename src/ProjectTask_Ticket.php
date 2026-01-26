@@ -272,53 +272,20 @@ class ProjectTask_Ticket extends CommonDBRelation
                 $finished_states_ids[] = $finished_state['id'];
             }
 
-            $p = ['projects_id'     => '__VALUE__',
+            $p = [
+                'projects_id'     => '__VALUE__',
                 'entity_restrict' => $ticket->getEntityID(),
                 'used'            => $used,
                 'rand'            => $rand,
-                'myname'          => "projects",
+                'myname'          => "projecttasks",
+            ];
+
+            $project_conditions = [
+                'glpi_projects.is_template' => 0,
             ];
 
             if (count($finished_states_ids)) {
-                $where = [
-                    'OR'  => [
-                        'projectstates_id'   => $finished_states_ids,
-                        'is_template'        => 1,
-                    ],
-                ];
-            } else {
-                $where = ['is_template' => 1];
-            }
-
-            $excluded_projects_it = $DB->request(
-                [
-                    'SELECT' => ['id'],
-                    'FROM'   => Project::getTable(),
-                    'WHERE'  => $where,
-                ]
-            );
-            $excluded_projects_ids = [];
-            foreach ($excluded_projects_it as $excluded_project) {
-                $excluded_projects_ids[] = $excluded_project['id'];
-            }
-
-            $dd_params = [
-                'used'        => $used,
-                'entity'      => $ticket->getEntityID(),
-                'entity_sons' => $ticket->isRecursive(),
-                'displaywith' => ['id'],
-            ];
-
-            $condition = [];
-            if (count($finished_states_ids)) {
-                $condition['glpi_projecttasks.projectstates_id'] = $finished_states_ids;
-            }
-            if (count($excluded_projects_ids)) {
-                $condition['glpi_projecttasks.projects_id'] = $excluded_projects_ids;
-            }
-
-            if (count($condition)) {
-                $dd_params['condition'] = ['NOT' => $condition];
+                $project_conditions['glpi_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
             }
 
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
@@ -328,17 +295,16 @@ class ProjectTask_Ticket extends CommonDBRelation
                 'source_items_id' => $ID,
                 'target_itemtype' => ProjectTask::class,
                 'dropdown_options' => [
-                    "itemtype" => Project::class,
+                    'label'       => Project::getTypeName(1),
+                    'itemtype' => Project::class,
                     'entity'      => $ticket->getEntityID(),
                     'entity_sons' => $ticket->isRecursive(),
-                    'condition'   => ['NOT' => ['glpi_projects.projectstates_id' => $finished_states_ids]],
+                    'condition'   => $project_conditions,
                 ],
                 'ajax_dropdown' => [
                     'toobserve' => "dropdown_projects_id$rand",
                     'toupdate' => [
                         "id" => "results_projects$rand",
-                        "itemtype" => ProjectTask::class,
-                        'params' => $dd_params,
                     ],
                     'url' => $CFG_GLPI["root_doc"] . "/ajax/dropdownProjectTaskTicket.php",
                     'params' => $p,
