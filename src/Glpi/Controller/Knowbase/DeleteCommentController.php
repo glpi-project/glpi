@@ -32,47 +32,46 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\SidePanel;
+namespace Glpi\Controller\Knowbase;
 
-use KnowbaseItem;
+use Glpi\Controller\AbstractController;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
 use KnowbaseItem_Comment;
-use Override;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
 
-final class CommentsRenderer implements RendererInterface
+final class DeleteCommentController extends AbstractController
 {
-    #[Override]
-    public function canView(KnowbaseItem $item): bool
+    #[Route(
+        "/Knowbase/Comment/{id}/Delete",
+        name: "knowbase_comment_delete",
+        methods: ["POST"],
+        requirements: [
+            'id' => '\d+',
+        ]
+    )]
+    public function __invoke(int $id): Response
     {
-        return $item->canComment();
-    }
-
-    #[Override]
-    public function getTemplate(): string
-    {
-        return "pages/tools/kb/sidepanel/comments.html.twig";
-    }
-
-    #[Override]
-    public function getParams(KnowbaseItem $item): array
-    {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
-            kbitem_id: $item->getID(),
-            lang: null,
-            parent: null,
-            user_data_cache: $users_infos,
-        );
-
-        foreach ($comments as &$comment) {
-            $comment_item = new KnowbaseItem_Comment();
-            $comment_item->getFromResultSet($comment);
-            $comment['can_edit'] = $comment_item->canUpdateItem();
-            $comment['can_delete'] = $comment_item->canDeleteItem();
+        $comment = new KnowbaseItem_Comment();
+        if (!$comment->getFromDB($id)) {
+            throw new NotFoundHttpException();
         }
 
-        return [
-            'id' => $item->getID(),
-            'comments' => $comments,
-            'users_infos' => $users_infos,
-        ];
+        $input = ['id' => $id];
+        if (!$comment->can($id, DELETE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $success = $comment->delete($input);
+        if (!$success) {
+            throw new RuntimeException("Failed to delete comment");
+        }
+
+        return new JsonResponse([
+            'success' => true,
+        ]);
     }
 }

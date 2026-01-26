@@ -30,13 +30,14 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, getAjaxCsrfToken */
+/* global glpi_toast_error, glpi_confirm_danger, getAjaxCsrfToken */
 
 const content_selector  = "[data-glpi-add-comments-content]";
 const submit_selector   = "[data-glpi-add-comments-submit]";
 const kb_id_selector    = "[data-glpi-kb-id]";
 const comments_selector = "[data-glpi-comments]";
 const comment_edit_selector = "[data-glpi-comment-edit]";
+const comment_delete_selector = "[data-glpi-comment-delete]";
 const comment_content_selector = "[data-glpi-comment-content]";
 const comment_edit_form_selector = "[data-glpi-comment-edit-form]";
 const comment_edit_textarea_selector = "[data-glpi-comment-edit-textarea]";
@@ -89,6 +90,12 @@ export class GlpiKnowbaseCommentsPanelController
             const submit_edit_btn = e.target.closest(comment_edit_submit_selector);
             if (submit_edit_btn) {
                 this.#submitEditComment(submit_edit_btn);
+            }
+
+            // Delete comment button
+            const delete_btn = e.target.closest(comment_delete_selector);
+            if (delete_btn) {
+                this.#deleteComment(delete_btn);
             }
         });
     }
@@ -159,6 +166,40 @@ export class GlpiKnowbaseCommentsPanelController
         content.innerHTML = result.comment.replace(/\n/g, '<br>');
         form.classList.add('d-none');
         content.classList.remove('d-none');
+    }
+
+    async #deleteComment(delete_btn)
+    {
+        const comment_card = delete_btn.closest('[data-testid="comment"]');
+        const comment_id   = comment_card.dataset.glpiCommentId;
+
+        // Ask for confirmation
+        const confirmed = await glpi_confirm_danger({
+            title: __('Delete comment'),
+            message: __('Are you sure you want to delete this comment?'),
+            confirm_label: __('Delete'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        // Delete comment on the backend
+        const base_url = CFG_GLPI.root_doc;
+        const url = `${base_url}/Knowbase/Comment/${comment_id}/Delete`;
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+            }
+        });
+        if (!response.ok) {
+            glpi_toast_error(__("An unexpected error occurred."));
+            return;
+        }
+
+        // Delete comment on the client
+        comment_card.remove();
     }
 
     #toggleSubmitButtonVisibility(textarea)
