@@ -744,6 +744,22 @@ export class GlpiFormEditorController
                 "name",
                 `${base_input_index}[${field}]${postfix}`
             );
+
+            // If the input is for fileupload, we need to escape the name
+            if ($(input).attr('data-form-data')) {
+                // Retrieve the input name
+                const input_name = $(input).attr('name');
+
+                // Update the fileupload formData name too if needed
+                if ($(input).data('blueimp-fileupload') !== undefined) {
+                    $(input).fileupload('option', 'formData').name = input_name;
+                }
+
+                // Update the name object attribute in the data-form-data attribute
+                const form_data = JSON.parse($(input).attr('data-form-data'));
+                form_data.name = input_name;
+                $(input).attr('data-form-data', JSON.stringify(form_data));
+            }
         });
     }
 
@@ -1539,7 +1555,19 @@ export class GlpiFormEditorController
             // Rename id to ensure it is unique
             const uid = getUUID();
             $(this).attr("id", `_tinymce_${uid}`);
-            id = $(this).attr("id"); // Reload ID
+
+            // Update id in fileupload configs if needed
+            for (const fileupload_config_id in window.fileupload_configs) {
+                const fileupload_config = window.fileupload_configs[fileupload_config_id];
+                if (fileupload_config.editor_id === id) {
+                    // Update editor_id to match the new textarea ID
+                    fileupload_config.editor_id = `_tinymce_${uid}`;
+                    window.fileupload_configs[fileupload_config_id] = fileupload_config;
+                }
+            }
+
+            // Reload ID
+            id = $(this).attr("id");
 
             // Push config into init queue, needed because we can't init
             // the rich text editor until the template is inserted into
@@ -1656,6 +1684,23 @@ export class GlpiFormEditorController
             });
         });
 
+        copy.find('div.fileupload > input[id][data-form-data]').each(function() {
+            const id = $(this).attr('id');
+            const rand = getUUID();
+            const new_id = `${id}_${rand}`;
+
+            // Update input id to make it unique
+            $(this).attr('id', new_id);
+
+            // Add new fileupload config if needed
+            const config = window.fileupload_configs[id];
+            if (config !== undefined) {
+                // Update fileupload config to use the new ID
+                window.fileupload_configs[new_id] = config;
+                window.fileupload_configs[new_id].field_id = new_id;
+            }
+        });
+
         // Insert the new question
         switch (action) {
             case "append":
@@ -1713,10 +1758,8 @@ export class GlpiFormEditorController
             popover_trigger_el => new bootstrap.Popover(popover_trigger_el)
         );
 
-        if (is_from_duplicate_action) {
-            // Compute state to update inputs names
-            this.computeState();
-        }
+        // Compute state to update inputs names
+        this.computeState();
 
         return copy;
     }

@@ -65,6 +65,7 @@ use function Safe\mkdir;
 use function Safe\ob_flush;
 use function Safe\parse_url;
 use function Safe\preg_match;
+use function Safe\preg_match_all;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
 use function Safe\preg_split;
@@ -1441,7 +1442,62 @@ class UploadHandler
      */
     protected function get_upload_data($id)
     {
-        return array_key_exists($id, $_FILES) ? $_FILES[$id] : '';
+        // Direct access: simple key lookup
+        if (array_key_exists($id, $_FILES)) {
+            return $_FILES[$id];
+        }
+
+        // No nested structure detected
+        if (!str_contains($id, '[')) {
+            return '';
+        }
+
+        // Parse nested array path (e.g., "_questions[0][_uploader_description][]")
+        // Extract root key and the remaining path
+        preg_match('/^([^\[]+)(.*)$/', $id, $matches);
+        $root_key = $matches[1];
+        $path = $matches[2];
+
+        if (!array_key_exists($root_key, $_FILES)) {
+            return '';
+        }
+
+        // Extract all indices from the path
+        preg_match_all('/\[([^\]]*)\]/', $path, $indices);
+        $keys = $indices[1];
+
+        // Navigate through nested arrays for each file property
+        $result = [];
+        foreach (['name', 'type', 'tmp_name', 'error', 'size'] as $property) {
+            $value = $_FILES[$root_key][$property];
+            foreach ($keys as $key) {
+                if ($key === '') {
+                    // Empty brackets indicate array: take first element
+                    if (is_array($value) && count($value) > 0) {
+                        $value = reset($value);
+                    } else {
+                        $value = null;
+                        break;
+                    }
+                } else {
+                    // Named index: navigate deeper
+                    if (is_array($value) && array_key_exists($key, $value)) {
+                        $value = $value[$key];
+                    } else {
+                        $value = null;
+                        break;
+                    }
+                }
+            }
+            $result[$property] = $value;
+        }
+
+        // Return empty string if no valid file data found
+        if ($result['name'] === null) {
+            return '';
+        }
+
+        return $result;
     }
 
     /**

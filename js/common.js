@@ -41,6 +41,7 @@
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
 /* global _ */
+/* global uploaded_images */
 
 var timeoutglobalvar;
 
@@ -53,6 +54,9 @@ var tinymce_editor_configs = {};
 // This is needed if a select2 need to be destroyed and recreated as select2
 // api does not provide any method to get the current configuration
 var select2_configs = {};
+
+// Store fileupload configurations
+var fileupload_configs = {};
 
 /**
  * modifier la propriete display d'un element
@@ -1923,6 +1927,97 @@ function setupAdaptDropdown(config)
     });
 
     return select2_el;
+}
+
+function setupFileUpload(config) {
+    // Field ID is used as a selector, so we need to escape special characters
+    // to avoid issues with jQuery.
+    const field_id = CSS.escape(config.field_id);
+
+    $(function() {
+        $('#' + field_id).fileupload({
+            dataType: 'json',
+            pasteZone: config.pasteZone,
+            dropZone: config.dropZone,
+            acceptFileTypes: config.acceptFileTypes,
+            maxFileSize: config.maxFileSize,
+            maxChunkSize: config.maxChunkSize,
+            add: function (e, data) {
+                // disable submit button during upload
+                $(this).closest('form').find(':submit').prop('disabled', true);
+                // randomize filename
+                for (var i = 0; i < data.files.length; i++) {
+                    data.files[i].uploadName = uniqid('', true) + data.files[i].name;
+                }
+                // call default handler
+                $.blueimp.fileupload.prototype.options.add.call(this, e, data);
+            },
+            done: function (event, data) {
+                const uploader_name = $('#' + field_id).fileupload('option', 'formData').name;
+                // eslint-disable-next-line no-undef
+                handleUploadedFile(
+                    data.files, // files as blob
+                    data.result[uploader_name], // response from '/ajax/fileupload.php'
+                    config.name,
+                    $('#' + CSS.escape(config.filecontainer)),
+                    config.editor_id
+                );
+                // enable submit button after upload
+                $(this).closest('form').find(':submit').prop('disabled', false);
+                // remove required
+                $('#' + field_id).removeAttr('required');
+            },
+            fail: function (e, data) {
+                // enable submit button after upload
+                $(this).closest('form').find(':submit').prop('disabled', false);
+                const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
+                    ? data.jqXHR.responseText
+                    : data.jqXHR.statusText;
+                alert(err);
+            },
+            processfail: function (e, data) {
+                // enable submit button after upload
+                $(this).closest('form').find(':submit').prop('disabled', false);
+                $.each(data.files, function(index, file) {
+                    if (file.error) {
+                        $('#progress' + CSS.escape(config.rand_id)).show();
+                        $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
+                            .text(file.error)
+                            .css('width', '100%')
+                            .show();
+
+                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
+                        if (config.editor_id && typeof tinyMCE !== 'undefined') {
+                            const editor = tinyMCE.get(config.editor_id);
+                            if (editor) {
+                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
+                                if (uploaded_image) {
+                                    const img = editor.dom.select('img[data-upload_id="' + CSS.escape(uploaded_image.upload_id) + '"]');
+                                    if (img.length > 0) {
+                                        editor.dom.remove(img);
+                                    }
+                                    const index = uploaded_images.findIndex((entry) => entry.upload_id === uploaded_image.upload_id);
+                                    if (index !== -1) {
+                                        uploaded_images.splice(index, 1);
+                                    }
+                                }
+                            }
+                        }
+                        return;
+                    }
+                });
+            },
+            messages: config.messages,
+            progressall: function(event, data) {
+                var progress = parseInt(data.loaded / data.total * 100, 10);
+                $('#progress' + CSS.escape(config.rand_id)).show();
+                $('#progress' + CSS.escape(config.rand_id) + ' .uploadbar')
+                    .text(progress + '%')
+                    .css('width', progress + '%')
+                    .show();
+            }
+        });
+    });
 }
 
 window.displaySessionMessages = () => {

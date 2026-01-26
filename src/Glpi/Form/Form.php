@@ -387,6 +387,12 @@ final class Form extends CommonDBTM implements
     {
         global $DB;
 
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'header',
+            'content_field' => 'header',
+            'force_update'  => true,
+        ]);
+
         $DB->beginTransaction();
         try {
             // Update questions and sections

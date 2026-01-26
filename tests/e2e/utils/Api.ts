@@ -66,6 +66,15 @@ export class Api
         return response.data;
     }
 
+    public async getSubItems(itemtype: string, id: number, subitemtype: string): Promise<any[]>
+    {
+        const response = await this.doCrudRequest(
+            'GET',
+            `${itemtype}/${id}/${subitemtype}`
+        );
+        return response.data;
+    }
+
     public async createItem(itemtype: string, fields: object): Promise<number>
     {
         if (itemtype === 'Entity') {
