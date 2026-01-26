@@ -219,25 +219,8 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                     break;
                                 }
 
-                                $users_id_requester = array_map('intval', $input['_users_id_requester'] ?? []);
-
-                                global $DB;
-                                $managers_rows = iterator_to_array(
-                                    $DB->request([
-                                        'SELECT' => 'groups_id',
-                                        'FROM'   => 'glpi_groups_users',
-                                        'WHERE'  => [
-                                            'groups_id' => new QuerySubQuery([
-                                                'SELECT'   => 'groups_id',
-                                                'DISTINCT' => true,
-                                                'FROM'     => 'glpi_groups_users',
-                                                'WHERE'    => ['users_id' => $users_id_requester],
-                                            ]),
-                                            'is_manager' => 1,
-                                        ],
-                                    ])
-                                );
-                                $manager_groups_ids = array_column($managers_rows, 'groups_id');
+                                $users_id_requester = array_map('intval', $input['_users_id_requester']);
+                                $manager_groups_ids = $this->getUserManagersGroupsIds($users_id_requester);
 
                                 // add these manager groups ids to output['_groups_id_requester']
                                 if (!isset($output['_groups_id_requester'])) {
@@ -1107,5 +1090,32 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     {
         $itemtype = static::getItemtype();
         return $itemtype::getIcon();
+    }
+
+    /**
+     * @param  array<int> $users_ids
+     * @return array<int>
+     */
+    private function getUserManagersGroupsIds(array $users_ids): array
+    {
+        global $DB;
+
+        $managers_rows = iterator_to_array(
+            $DB->request([
+                'SELECT' => 'groups_id',
+                'FROM'   => 'glpi_groups_users',
+                'WHERE'  => [
+                    'groups_id' => new QuerySubQuery([
+                        'SELECT'   => 'groups_id',
+                        'DISTINCT' => true,
+                        'FROM'     => 'glpi_groups_users',
+                        'WHERE'    => ['users_id' => $users_ids],
+                    ]),
+                    'is_manager' => 1,
+                ],
+            ])
+        );
+
+        return array_column($managers_rows, 'groups_id');
     }
 }
