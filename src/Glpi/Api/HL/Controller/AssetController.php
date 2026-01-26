@@ -406,68 +406,64 @@ final class AssetController extends AbstractController
             ],
         ];
 
-        $fn_get_group_property = static function (string $asset_type) {
-            return [
-                'type' => Doc\Schema::TYPE_ARRAY,
-                'items' => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'x-full-schema' => 'Group',
-                    'x-join' => [
-                        'table' => 'glpi_groups', // The table with the desired data
-                        'fkey' => 'groups_id',
-                        'field' => 'id',
-                        'ref-join' => [
-                            'table' => 'glpi_groups_items',
-                            'fkey' => 'id',
-                            'field' => 'items_id',
-                            'condition' => [
-                                'itemtype' => $asset_type,
-                                'type' => Group_Item::GROUP_TYPE_NORMAL,
-                            ],
+        $fn_get_group_property = (static fn(string $asset_type) => [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-full-schema' => 'Group',
+                'x-join' => [
+                    'table' => 'glpi_groups', // The table with the desired data
+                    'fkey' => 'groups_id',
+                    'field' => 'id',
+                    'ref-join' => [
+                        'table' => 'glpi_groups_items',
+                        'fkey' => 'id',
+                        'field' => 'items_id',
+                        'condition' => [
+                            'itemtype' => $asset_type,
+                            'type' => Group_Item::GROUP_TYPE_NORMAL,
                         ],
-                    ],
-                    'properties' => [
-                        'id' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
-                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                            'description' => 'ID',
-                        ],
-                        'name' => ['type' => Doc\Schema::TYPE_STRING],
                     ],
                 ],
-            ];
-        };
-        $fn_get_group_tech_property = static function (string $asset_type) {
-            return [
-                'type' => Doc\Schema::TYPE_ARRAY,
-                'items' => [
-                    'type' => Doc\Schema::TYPE_OBJECT,
-                    'x-full-schema' => 'Group',
-                    'x-join' => [
-                        'table' => 'glpi_groups', // The table with the desired data
-                        'fkey' => 'groups_id',
-                        'field' => 'id',
-                        'ref-join' => [
-                            'table' => 'glpi_groups_items',
-                            'fkey' => 'id',
-                            'field' => 'items_id',
-                            'condition' => [
-                                'itemtype' => $asset_type,
-                                'type' => Group_Item::GROUP_TYPE_TECH,
-                            ],
-                        ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
                     ],
-                    'properties' => [
-                        'id' => [
-                            'type' => Doc\Schema::TYPE_INTEGER,
-                            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                            'description' => 'ID',
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ]);
+        $fn_get_group_tech_property = (static fn(string $asset_type) => [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-full-schema' => 'Group',
+                'x-join' => [
+                    'table' => 'glpi_groups', // The table with the desired data
+                    'fkey' => 'groups_id',
+                    'field' => 'id',
+                    'ref-join' => [
+                        'table' => 'glpi_groups_items',
+                        'fkey' => 'id',
+                        'field' => 'items_id',
+                        'condition' => [
+                            'itemtype' => $asset_type,
+                            'type' => Group_Item::GROUP_TYPE_TECH,
                         ],
-                        'name' => ['type' => Doc\Schema::TYPE_STRING],
                     ],
                 ],
-            ];
-        };
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ]);
         $state_property = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
         $location_property = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
         $entity_property = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
