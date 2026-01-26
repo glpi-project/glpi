@@ -67,7 +67,7 @@ final class UpdateCommentController extends AbstractController
             throw new BadRequestHttpException();
         }
 
-        if (!$comment->canUpdateItem()) {
+        if (!$comment->can($id, UPDATE, $input)) {
             throw new AccessDeniedHttpException();
         }
 
