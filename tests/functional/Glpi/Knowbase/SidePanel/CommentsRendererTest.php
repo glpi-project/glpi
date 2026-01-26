@@ -76,10 +76,17 @@ final class CommentsRendererTest extends DbTestCase
         // Assert: validate the expected content for both comments
         $this->assertEquals(
             [
-                "GL glpi · 4 hours ago First comment",
-                "Deleted user · 2 hours ago Second comment",
+                "glpi · 4 hours ago",
+                "Deleted user · 2 hours ago",
             ],
-            $comments->filter('[data-testid=comment]')->each(fn($node) => $node->text()),
+            $comments->filter('[data-testid=comment-header]')->each(fn($node) => $node->text()),
+        );
+        $this->assertEquals(
+            [
+                "First comment",
+                "Second comment",
+            ],
+            $comments->filter('[data-testid=comment-content]')->each(fn($node) => $node->text()),
         );
     }
 

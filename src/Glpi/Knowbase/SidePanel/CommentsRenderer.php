@@ -62,6 +62,12 @@ final class CommentsRenderer implements RendererInterface
             user_data_cache: $users_infos,
         );
 
+        foreach ($comments as &$comment) {
+            $comment_item = new KnowbaseItem_Comment();
+            $comment_item->getFromResultSet($comment);
+            $comment['can_edit'] = $comment_item->canUpdateItem();
+        }
+
         return [
             'id' => $item->getID(),
             'comments' => $comments,

@@ -62,7 +62,7 @@ test('Can view and add comments', async ({ page, profile, api }) => {
 
     // Existing comment should be shown
     await expect(page.getByText('E2E API account · Just now')).toBeVisible();
-    await expect(page.getByText('My first comment')).toBeVisible();
+    await expect(kb.getCommentByContent('My first comment')).toBeVisible();
 
     // Add a new comment
     await expect(kb.getButton("Add comment")).toBeHidden();
@@ -74,5 +74,51 @@ test('Can view and add comments', async ({ page, profile, api }) => {
     await expect(kb.getButton("Add comment")).toBeHidden();
     await expect(page.getByPlaceholder("Add a comment...")).toBeEmpty();
     await expect(page.getByText(/E2E worker account \d+\s+·\s+Now/)).toBeVisible();
-    await expect(page.getByText('My second comment')).toBeVisible();
+    await expect(kb.getCommentByContent('My second comment')).toBeVisible();
+});
+
+test('Can edit a comment', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item with a comment
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'My kb entry for edit test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+    await api.createItem('KnowbaseItem_Comment', {
+        knowbaseitems_id: id,
+        comment: "Original comment",
+    });
+
+    // Go to article and open comments panel
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Comments').click();
+    await expect(kb.getHeading('Comments')).toBeVisible();
+
+    // Original comment should be visible
+    await expect(kb.getCommentByContent('Original comment')).toBeVisible();
+
+    // Open the edit form via the dropdown menu
+    const comment = page.getByTestId('comment').filter({ hasText: 'Original comment' });
+    await comment.getByTitle('More actions').click();
+    await comment.getByText('Edit comment').click();
+
+    // Edit form should be visible with original content
+    const textarea = comment.getByTestId('comment-edit-textarea');
+    await expect(textarea).toBeVisible();
+    await expect(textarea).toHaveValue('Original comment');
+
+    // Modify the comment
+    await textarea.fill('Updated comment');
+    await comment.getByRole('button', { name: 'Save' }).click();
+
+    // Updated comment should be visible
+    await expect(kb.getCommentByContent('Updated comment')).toBeVisible();
+    await expect(kb.getCommentByContent('Original comment')).not.toBeAttached();
+
+    // Edit form should be hidden
+    await expect(textarea).toBeHidden();
 });
