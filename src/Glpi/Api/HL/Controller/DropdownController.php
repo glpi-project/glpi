@@ -35,10 +35,19 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use AutoUpdateSystem;
+use Blacklist;
+use BlacklistedMailContent;
+use BusinessCriticity;
+use CableStrand;
+use CableType;
 use Calendar;
+use ChangeTemplate;
 use CommonDBTM;
 use DatabaseInstanceCategory;
 use DatabaseInstanceType;
+use DocumentCategory;
+use DocumentType;
 use DropdownVisibility;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
@@ -49,10 +58,25 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Group;
+use Holiday;
+use ITILCategory;
+use KnowbaseItemCategory;
 use Location;
 use Manufacturer;
 use NetworkPortFiberchannelType;
+use PCIVendor;
+use PlanningEventCategory;
+use ProblemTemplate;
+use RequestType;
 use State;
+use TaskCategory;
+use TicketTemplate;
+use USBVendor;
+use User;
+use VirtualMachineState;
+use VirtualMachineSystem;
+use VirtualMachineType;
 use WifiNetwork;
 
 #[Route(path: '/Dropdowns', priority: 1, tags: ['Dropdowns'])]
@@ -252,6 +276,229 @@ final class DropdownController extends AbstractController
             ],
         ];
 
+        $schemas['ITILCategory'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => 'ITILCategory',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'level' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'parent' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User') + ['x-version-introduced' => '2.2.0'],
+                'group' => self::getDropdownTypeSchema(class: Group::class, full_schema: 'Group') + ['x-version-introduced' => '2.2.0'],
+                'code' => ['type' => Doc\Schema::TYPE_STRING, 'x-version-introduced' => '2.2.0'],
+                'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_helpdeskvisible', 'x-version-introduced' => '2.2.0'],
+                'ticket_incident_template' => self::getDropdownTypeSchema(
+                    class: TicketTemplate::class,
+                    field: 'tickettemplates_id_incident',
+                    full_schema: 'TicketTemplate'
+                ) + ['x-version-introduced' => '2.2.0'],
+                'ticket_request_template' => self::getDropdownTypeSchema(
+                    class: TicketTemplate::class,
+                    field: 'tickettemplates_id_demand',
+                    full_schema: 'TicketTemplate'
+                ) + ['x-version-introduced' => '2.2.0'],
+                'change_template' => self::getDropdownTypeSchema(
+                    class: ChangeTemplate::class,
+                    field: 'changetemplates_id',
+                    full_schema: 'ChangeTemplate'
+                ) + ['x-version-introduced' => '2.2.0'],
+                'problem_template' => self::getDropdownTypeSchema(
+                    class: ProblemTemplate::class,
+                    field: 'problemtemplates_id',
+                    full_schema: 'ProblemTemplate'
+                ) + ['x-version-introduced' => '2.2.0'],
+                'is_incident_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_incident', 'x-version-introduced' => '2.2.0'],
+                'is_request_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_request', 'x-version-introduced' => '2.2.0'],
+                'is_change_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_change', 'x-version-introduced' => '2.2.0'],
+                'is_problem_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_problem', 'x-version-introduced' => '2.2.0'],
+                'knowbase_category' => self::getDropdownTypeSchema(
+                    class: KnowbaseItemCategory::class,
+                    field: 'knowbaseitemcategories_id',
+                    full_schema: 'KBCategory'
+                ) + ['x-version-introduced' => '2.2.0'],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['TaskCategory'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => TaskCategory::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + ['x-version-introduced' => '2.2.0'],
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.2.0'],
+                'completename' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'parent' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory') + ['x-version-introduced' => '2.1.0'],
+                'level' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
+                'is_helpdesk_visible' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_helpdeskvisible', 'x-version-introduced' => '2.2.0'],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.2.0'],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-version-introduced' => '2.2.0'],
+            ],
+        ];
+
+        $schemas['RequestType'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => RequestType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_helpdesk_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_followup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_mail_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_mailfollowup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_visible_ticket' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'x-field' => 'is_ticketheader',
+                ],
+                'is_visible_followup' => [
+                    'type' => Doc\Schema::TYPE_BOOLEAN,
+                    'x-field' => 'is_itilfollowup',
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['EventCategory'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => PlanningEventCategory::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'description' => PlanningEventCategory::getTypeName(1),
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'color' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['USBVendor'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => USBVendor::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'vendorid' => ['type' => Doc\Schema::TYPE_STRING],
+                'deviceid' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PCIVendor'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => PCIVendor::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'vendorid' => ['type' => Doc\Schema::TYPE_STRING],
+                'deviceid' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['DenyList'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Blacklist::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'type' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [
+                        Blacklist::IP, Blacklist::MAC, Blacklist::SERIAL, Blacklist::UUID, Blacklist::EMAIL,
+                        Blacklist::MODEL, Blacklist::NAME, Blacklist::MANUFACTURER,
+                    ],
+                    'description' => <<<EOT
+                        The type of denylist entry:
+                        - 1: IP Address
+                        - 2: MAC Address
+                        - 3: Serial Number
+                        - 4: UUID
+                        - 5: Email Address
+                        - 6: Model
+                        - 7: Name
+                        - 8: Manufacturer
+EOT,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'value' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         $schemas['NetworkPortFiberchannelType'] = [
             'x-version-introduced' => '2.2',
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -265,6 +512,120 @@ final class DropdownController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['DeniedMailContent'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => BlacklistedMailContent::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'content' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['CloseTime'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Holiday::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_begin' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'begin_date', 'required' => true],
+                'date_end' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME, 'x-field' => 'end_date', 'required' => true],
+                'is_perpetual' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['BusinessCriticity'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => BusinessCriticity::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'level' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'parent' => self::getDropdownTypeSchema(class: BusinessCriticity::class, full_schema: 'BusinessCriticity'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['DocumentCategory'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => DocumentCategory::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'completename' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'level' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'parent' => self::getDropdownTypeSchema(class: DocumentCategory::class, full_schema: 'DocumentCategory'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['DocumentType'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => DocumentType::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'extension' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'ext'],
+                'icon' => ['type' => Doc\Schema::TYPE_STRING],
+                'mime' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_uploadable' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -304,6 +665,106 @@ final class DropdownController extends AbstractController
             ],
         ];
 
+        $schemas['VirtualMachineType'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => VirtualMachineType::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['VirtualMachineModel'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => VirtualMachineSystem::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['VirtualMachineState'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => VirtualMachineState::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['CableType'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => CableType::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['CableStrand'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => CableStrand::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['AutoUpdateSystem'] = [
+            'x-version-introduced' => '2.2.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => AutoUpdateSystem::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -325,6 +786,24 @@ final class DropdownController extends AbstractController
                 'NetworkPortFiberchannelType' => NetworkPortFiberchannelType::getTypeName(1),
                 'DatabaseInstanceCategory' => DatabaseInstanceCategory::getTypeName(1),
                 'DatabaseInstanceType' => DatabaseInstanceType::getTypeName(1),
+                'ITILCategory' => ITILCategory::getTypeName(1),
+                'TaskCategory' => TaskCategory::getTypeName(1),
+                'RequestType' => RequestType::getTypeName(1),
+                'EventCategory' => PlanningEventCategory::getTypeName(1),
+                'USBVendor' => USBVendor::getTypeName(1),
+                'PCIVendor' => PCIVendor::getTypeName(1),
+                'DenyList' => Blacklist::getTypeName(1),
+                'DeniedMailContent' => BlacklistedMailContent::getTypeName(1),
+                'CloseTime' => Holiday::getTypeName(1),
+                'BusinessCriticity' => BusinessCriticity::getTypeName(1),
+                'DocumentCategory' => DocumentCategory::getTypeName(1),
+                'DocumentType' => DocumentType::getTypeName(1),
+                'VirtualMachineType' => VirtualMachineType::getTypeName(1),
+                'VirtualMachineModel' => VirtualMachineSystem::getTypeName(1),
+                'VirtualMachineState' => VirtualMachineState::getTypeName(1),
+                'CableType' => CableType::getTypeName(1),
+                'CableStrand' => CableStrand::getTypeName(1),
+                'AutoUpdateSystem' => AutoUpdateSystem::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
@@ -346,7 +825,11 @@ final class DropdownController extends AbstractController
     public static function getDropdownEndpointTypes22(): array
     {
         return [
-            'WifiNetwork', 'NetworkPortFiberchannelType', 'DatabaseInstanceCategory', 'DatabaseInstanceType',
+            'WifiNetwork', 'NetworkPortFiberchannelType', 'DatabaseInstanceCategory', 'DatabaseInstanceType', 'ITILCategory', 'TaskCategory',
+            'RequestType', 'EventCategory', 'USBVendor', 'PCIVendor', 'DenyList', 'DeniedMailContent', 'CloseTime',
+            'BusinessCriticity', 'DocumentCategory', 'DocumentType', 'DatabaseInstanceCategory',
+            'VirtualMachineType', 'VirtualMachineModel', 'VirtualMachineState',
+            'CableType', 'CableStrand', 'AutoUpdateSystem',
         ];
     }
 

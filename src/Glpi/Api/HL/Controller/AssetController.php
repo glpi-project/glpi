@@ -706,7 +706,7 @@ final class AssetController extends AbstractController
                 ];
             }
             if ($asset->isField('autoupdatesystems_id')) {
-                $schemas[$schema_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
+                $schemas[$schema_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
             }
 
             if ($asset->maybeDeleted()) {

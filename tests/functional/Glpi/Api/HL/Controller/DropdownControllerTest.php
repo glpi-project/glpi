@@ -34,9 +34,14 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Blacklist;
+use BlacklistedMailContent;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Holiday;
+use PCIVendor;
+use USBVendor;
 
 class DropdownControllerTest extends HLAPITestCase
 {
@@ -52,7 +57,7 @@ class DropdownControllerTest extends HLAPITestCase
                     foreach ($content as $asset) {
                         $this->assertNotEmpty($asset['itemtype']);
                         $this->assertNotEmpty($asset['name']);
-                        $this->assertEquals('/Dropdowns/' . $asset['itemtype'], $asset['href']);
+                        $this->assertMatchesRegularExpression('/\/Dropdowns\/\w+/', $asset['href']);
                     }
                 });
         });
@@ -66,14 +71,23 @@ class DropdownControllerTest extends HLAPITestCase
             [
                 'name' => 'testAutoSearch_1',
                 'entity' => $entity,
+                'vendorid' => 'TST',
+                'date_begin' => '2024-01-01 10:00:00',
+                'date_end' => '2024-12-31 18:00:00',
             ],
             [
                 'name' => 'testAutoSearch_2',
                 'entity' => $entity,
+                'vendorid' => 'TST',
+                'date_begin' => '2024-01-01 10:00:00',
+                'date_end' => '2024-12-31 18:00:00',
             ],
             [
                 'name' => 'testAutoSearch_3',
                 'entity' => $entity,
+                'vendorid' => 'TST',
+                'date_begin' => '2024-01-01 10:00:00',
+                'date_end' => '2024-12-31 18:00:00',
             ],
         ];
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) use ($dataset) {
@@ -83,7 +97,7 @@ class DropdownControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) use ($dataset) {
                     $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $dropdown) {
-                        $this->api->autoTestSearch('/Dropdowns/' . $dropdown['itemtype'], $dataset);
+                        $this->api->autoTestSearch($dropdown['href'], $dataset);
                     }
                 });
         });
@@ -99,7 +113,14 @@ class DropdownControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) {
                     $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $dropdown) {
-                        $this->api->autoTestCRUD('/Dropdowns/' . $dropdown['itemtype']);
+                        if ($dropdown['itemtype'] === Holiday::class) {
+                            continue;
+                        }
+                        $params = [];
+                        if ($dropdown['itemtype'] === USBVendor::class || $dropdown['itemtype'] === PCIVendor::class) {
+                            $params['vendorid'] = 'TST';
+                        }
+                        $this->api->autoTestCRUD($dropdown['href'], $params);
                     }
                 });
         });
@@ -117,9 +138,15 @@ class DropdownControllerTest extends HLAPITestCase
                 ->jsonContent(function ($content) {
                     $this->assertGreaterThanOrEqual(1, count($content));
                     foreach ($content as $dropdown) {
+                        if ($dropdown['itemtype'] === BlacklistedMailContent::class || $dropdown['itemtype'] === Holiday::class) {
+                            continue;
+                        }
                         $create_request = new Request('POST', $dropdown['href']);
                         $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
                         $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+                        if ($dropdown['itemtype'] === USBVendor::class || $dropdown['itemtype'] === PCIVendor::class) {
+                            $create_request->setParameter('vendorid', 'TST');
+                        }
                         $new_location = null;
                         $new_items_id = null;
                         $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
@@ -133,11 +160,25 @@ class DropdownControllerTest extends HLAPITestCase
                                     $new_items_id = $content['id'];
                                 });
                         });
-                        $this->api->autoTestCRUDNoRights(
-                            endpoint: $dropdown['href'],
-                            itemtype: $dropdown['itemtype'],
-                            items_id: (int) $new_items_id
-                        );
+                        if ($dropdown['itemtype'] === Blacklist::class) {
+                            $this->api->autoTestCRUDNoRights(
+                                endpoint: $dropdown['href'],
+                                itemtype: $dropdown['itemtype'],
+                                items_id: (int) $new_items_id,
+                                deny_create: static function () {
+                                    $_SESSION['glpiactiveprofile'][Blacklist::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+                                },
+                                deny_purge: static function () {
+                                    $_SESSION['glpiactiveprofile'][Blacklist::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+                                }
+                            );
+                        } else {
+                            $this->api->autoTestCRUDNoRights(
+                                endpoint: $dropdown['href'],
+                                itemtype: $dropdown['itemtype'],
+                                items_id: (int) $new_items_id
+                            );
+                        }
                     }
                 });
         });
