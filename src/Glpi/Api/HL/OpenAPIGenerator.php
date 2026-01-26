@@ -97,7 +97,10 @@ final class OpenAPIGenerator
 
     private function getPublicVendorExtensions(): array
     {
-        return ['x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed', 'x-itemtype', 'x-supports-mentions'];
+        return [
+            'writeOnly', 'readOnly', 'x-full-schema', 'x-introduced', 'x-deprecated', 'x-removed', 'x-itemtype',
+            'x-supports-mentions', 'x-label', 'x-right-scope',
+        ];
     }
 
     private function cleanVendorExtensions(array $schema, ?string $parent_key = null, ?array $parent_schema = null): array
@@ -294,8 +297,29 @@ EOT;
             if (!$route_path->matchesAPIVersion($this->api_version)) {
                 continue;
             }
-            /** @noinspection SlowArrayOperationsInLoopInspection */
-            $paths = array_merge_recursive($paths, $this->getPathSchemas($route_path));
+            $new_paths = $this->getPathSchemas($route_path);
+            foreach ($new_paths as $new_path => $new_pathinfo) {
+                if (!array_key_exists($new_path, $paths)) {
+                    $paths[$new_path] = $new_pathinfo;
+                } else {
+                    foreach ($new_pathinfo as $method => $method_info) {
+                        if (!array_key_exists($method, $paths[$new_path])) {
+                            $paths[$new_path][$method] = $method_info;
+                        } else {
+                            // Multiple paths with the same method (probably different parameter patterns)
+                            foreach ($method_info['parameters'] ?? [] as $pk => $param) {
+                                if (array_key_exists('pattern', $param['schema'])) {
+                                    foreach ($paths[$new_path][$method]['parameters'] as $existing_pk => $existing_param) {
+                                        if (($existing_param['name'] === $param['name']) && isset($existing_param['schema']['pattern']) && str_contains($existing_param['schema']['pattern'], '|')) {
+                                            $paths[$new_path][$method]['parameters'][$existing_pk]['schema']['pattern'] .= '|' . $param['schema']['pattern'];
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         $schema['paths'] = $this->expandGenericPaths($paths);
@@ -393,6 +417,92 @@ EOT;
     }
 
     /**
+     *
+     * @param string $path_url
+     * @param string $method
+     * @param array<string, mixed> $route
+     * @param array<string, mixed> $expanded
+     */
+    private function expandGenericPathRoute(string $path_url, string $method, array $route, array &$expanded): void
+    {
+        $new_urls = [];
+        /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
+        $all_expansions = [];
+        foreach ($route['parameters'] as $param_key => $param) {
+            if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
+                $all_expansions[$param['name']] = explode('|', $param['schema']['pattern']);
+            }
+        }
+        // enumerate all possible combinations of expansions (where keys are the placeholder name and the value is a single replacement) and generate a new URL and route for each
+        $combinations = [];
+        foreach ($all_expansions as $placeholder_name => $expansions) {
+            $new_combinations = [];
+            foreach ($expansions as $expansion) {
+                if (count($combinations) === 0) {
+                    $new_combinations[] = [$placeholder_name => $expansion];
+                } else {
+                    foreach ($combinations as $combination) {
+                        $new_combinations[] = array_merge($combination, [$placeholder_name => $expansion]);
+                    }
+                }
+            }
+            $combinations = $new_combinations;
+        }
+
+        foreach ($combinations as $combination) {
+            $new_url = $path_url;
+            $temp_expanded = $route;
+            $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
+                $route['responses'],
+                $combination,
+                $route['x-controller']
+            );
+            $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
+                $route['parameters'],
+                $combination,
+                $route['x-controller']
+            );
+            if (isset($route['requestBody'])) {
+                $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
+                    $route['requestBody'],
+                    $combination,
+                    $route['x-controller']
+                );
+            }
+            // Replace placeholders in the description if any
+            if (isset($temp_expanded['description'])) {
+                foreach ($combination as $placeholder => $value) {
+                    $temp_expanded['description'] = str_replace("{{$placeholder}}", $value, $temp_expanded['description']);
+                }
+            }
+
+            foreach ($combination as $placeholder => $value) {
+                $new_url = str_replace("{{$placeholder}}", $value, $new_url);
+                // Remove the itemtype path parameter now that it is a static value
+                foreach ($temp_expanded['parameters'] as $param_key => $param) {
+                    if ($param['name'] === $placeholder) {
+                        unset($temp_expanded['parameters'][$param_key]);
+                        break;
+                    }
+                }
+            }
+
+            $expanded[$new_url][$method] = $temp_expanded;
+
+            $new_urls[] = $new_url;
+        }
+
+        if (count($new_urls)) {
+            foreach ($new_urls as $new_url) {
+                // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
+                $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
+            }
+        } else {
+            $expanded[$path_url][$method] = $route;
+        }
+    }
+
+    /**
      * Replace any generic paths like `/Assets/{itemtype}` with the actual paths for each itemtype as long as the parameter pattern(s) are explicit lists.
      * Example: "Computer|Monitor|NetworkEquipment".
      * @param array $paths
@@ -403,80 +513,13 @@ EOT;
         $expanded = [];
         foreach ($paths as $path_url => $path) {
             foreach ($path as $method => $route) {
-                $new_urls = [];
-                /** @var array $all_expansions All path expansions where the keys are the placeholder name and the values are arrays of possible replacements */
-                $all_expansions = [];
-                foreach ($route['parameters'] as $param_key => $param) {
-                    if (isset($param['schema']['pattern']) && preg_match('/^[\w+|]+$/', $param['schema']['pattern'])) {
-                        $all_expansions[$param['name']] = explode('|', $param['schema']['pattern']);
-                    }
-                }
-                // enumerate all possible combinations of expansions (where keys are the placeholder name and the value is a single replacement) and generate a new URL and route for each
-                $combinations = [];
-                foreach ($all_expansions as $placeholder_name => $expansions) {
-                    $new_combinations = [];
-                    foreach ($expansions as $expansion) {
-                        if (count($combinations) === 0) {
-                            $new_combinations[] = [$placeholder_name => $expansion];
-                        } else {
-                            foreach ($combinations as $combination) {
-                                $new_combinations[] = array_merge($combination, [$placeholder_name => $expansion]);
-                            }
-                        }
-                    }
-                    $combinations = $new_combinations;
-                }
-
-                foreach ($combinations as $combination) {
-                    $new_url = $path_url;
-                    $temp_expanded = $route;
-                    $temp_expanded['responses'] = $this->replaceRefPlaceholdersInResponses(
-                        $route['responses'],
-                        $combination,
-                        $route['x-controller']
-                    );
-                    $temp_expanded['parameters'] = $this->replaceRefPlaceholdersInParameters(
-                        $route['parameters'],
-                        $combination,
-                        $route['x-controller']
-                    );
-                    if (isset($route['requestBody'])) {
-                        $temp_expanded['requestBody'] = $this->replaceRefPlaceholdersInRequestBody(
-                            $route['requestBody'],
-                            $combination,
-                            $route['x-controller']
-                        );
-                    }
-                    // Replace placeholders in the description if any
-                    if (isset($temp_expanded['description'])) {
-                        foreach ($combination as $placeholder => $value) {
-                            $temp_expanded['description'] = str_replace("{{$placeholder}}", $value, $temp_expanded['description']);
-                        }
-                    }
-
-                    foreach ($combination as $placeholder => $value) {
-                        $new_url = str_replace("{{$placeholder}}", $value, $new_url);
-                        // Remove the itemtype path parameter now that it is a static value
-                        foreach ($temp_expanded['parameters'] as $param_key => $param) {
-                            if ($param['name'] === $placeholder) {
-                                unset($temp_expanded['parameters'][$param_key]);
-                                break;
-                            }
-                        }
-                    }
-                    if (!isset($paths[$new_url][$method])) {
-                        $expanded[$new_url][$method] = $temp_expanded;
-                    }
-                    $new_urls[] = $new_url;
-                }
-
-                if (count($new_urls)) {
-                    foreach ($new_urls as $new_url) {
-                        // fix parameter array indexing. should not be associative, but unsetting the path parameter causes a gap and breaks openapi.
-                        $expanded[$new_url][$method]['parameters'] = array_values($expanded[$new_url][$method]['parameters']);
+                if (is_array($route['x-controller'])) {
+                    foreach ($route as $r) {
+                        // There are multiple routes with the same path, but probably different parameters
+                        $this->expandGenericPathRoute($path_url, $method, $r, $expanded);
                     }
                 } else {
-                    $expanded[$path_url][$method] = $route;
+                    $this->expandGenericPathRoute($path_url, $method, $route, $expanded);
                 }
             }
         }

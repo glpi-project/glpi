@@ -99,8 +99,7 @@ class KnowbaseItem_Comment extends CommonDBTM
 
     public function canDeleteItem(): bool
     {
-        // No deletion support in the UI for now so return false to also block API deletion
-        return false;
+        return $this->canUpdateItem();
     }
 
     public function canPurgeItem(): bool

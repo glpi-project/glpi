@@ -83,7 +83,7 @@ abstract class AbstractController
     }
 
     /**
-     * @return array<string, array>
+     * @return array<string, array<string, mixed>>
      */
     protected static function getRawKnownSchemas(): array
     {

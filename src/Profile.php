@@ -48,8 +48,9 @@ use Glpi\Toolbox\ArrayNormalizer;
 
 /**
  * Profile class
- * @phpstan-type RightDefinition array{rights: array{}, label: string, field: string, scope: string}
- **/
+ *
+ * @phpstan-type RightDefinition array{rights: array<int, string|array{short: string, long: string}>, label: string, field: string, scope: string}
+ */
 class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
     /** @use Clonable<static> */

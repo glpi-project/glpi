@@ -68,7 +68,10 @@ use Glpi\SocketModel;
 use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Infocom;
+use Item_DeviceNetworkCard;
+use Item_OperatingSystem;
 use Item_Rack;
+use Item_SoftwareVersion;
 use Location;
 use Manufacturer;
 use Monitor;
@@ -79,7 +82,21 @@ use NetworkEquipment;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkPort;
+use NetworkPortAggregate;
+use NetworkPortAlias;
+use NetworkPortDialup;
+use NetworkPortEthernet;
+use NetworkPortFiberchannel;
+use NetworkPortFiberchannelType;
+use NetworkPortLocal;
+use NetworkPortWifi;
 use OperatingSystem;
+use OperatingSystemArchitecture;
+use OperatingSystemEdition;
+use OperatingSystemKernel;
+use OperatingSystemKernelVersion;
+use OperatingSystemServicePack;
+use OperatingSystemVersion;
 use PassiveDCEquipment;
 use PassiveDCEquipmentModel;
 use PassiveDCEquipmentType;
@@ -107,6 +124,7 @@ use SoftwareVersion;
 use State;
 use Unmanaged;
 use User;
+use WifiNetwork;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -122,6 +140,29 @@ use function Safe\json_encode;
         ),
         new Doc\Parameter(
             name: 'id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            description: 'The ID of the Asset',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
             schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
             description: 'The ID of the Asset',
             location: Doc\Parameter::LOCATION_PATH,
@@ -202,6 +243,110 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        //TODO the OS dropdowns will be defined in the DropdownController after the related PR is merged
+        $schemas['OperatingSystemArchitecture'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemArchitecture::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemVersion'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemEdition'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemEdition::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemServicePack'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemServicePack::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemKernel'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemKernel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemKernelVersion'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemKernelVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'kernel' => self::getDropdownTypeSchema(class: OperatingSystemKernel::class, full_schema: 'OperatingSystemKernel'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -360,6 +505,25 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'itemtype' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'readOnly' => true,
+                ],
+                'items_id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-version-introduced' => '2.2.0',
+                    'readOnly' => true,
+                ],
+                'instantiation_type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'enum' => [
+                        'NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortAggregate', 'NetworkPortAlias',
+                        'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel',
+                    ],
+                ],
                 'logical_number' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'mac' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -472,7 +636,7 @@ final class AssetController extends AbstractController
         $user_property = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
         $user_tech_property = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
         $network_property = self::getDropdownTypeSchema(class: Network::class);
-        $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class);
+        $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
 
         $schemas['Computer'] = [
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -1191,6 +1355,61 @@ final class AssetController extends AbstractController
             ],
         ];
 
+        $schemas['OSInstallation'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_OperatingSystem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'operatingsystem' => self::getDropdownTypeSchema(class: OperatingSystem::class, full_schema: 'OperatingSystem'),
+                'version' => self::getDropdownTypeSchema(class: OperatingSystemVersion::class, full_schema: 'OperatingSystemVersion'),
+                'edition' => self::getDropdownTypeSchema(class: OperatingSystemEdition::class, full_schema: 'OperatingSystemEdition'),
+                'servicepack' => self::getDropdownTypeSchema(class: OperatingSystemServicePack::class, full_schema: 'OperatingSystemServicePack'),
+                'architecture' => self::getDropdownTypeSchema(class: OperatingSystemArchitecture::class, full_schema: 'OperatingSystemArchitecture'),
+                'kernel_version' => self::getDropdownTypeSchema(class: OperatingSystemKernelVersion::class, full_schema: 'OperatingSystemKernelVersion'),
+                'license_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'licenseid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'company' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'owner' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'hostid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'date_install' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'install_date',
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+            ],
+        ];
+
+        $schemas['SoftwareInstallation'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_SoftwareVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'softwareversion' => self::getDropdownTypeSchema(class: SoftwareVersion::class, full_schema: 'SoftwareVersion'),
+                'date_install' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
         $schemas['Rack'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Rack::class,
@@ -1744,6 +1963,187 @@ final class AssetController extends AbstractController
             ],
         ];
 
+        $schemas['NetworkPortEthernet'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortEthernet::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
+                'type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'T', 'SX', 'LX'],
+                    'description' => <<<EOT
+                        Type of Ethernet port.
+                        - '': Not specified
+                        - 'T': Twisted Pair (RJ-45)
+                        - 'SX': Multimode fiber
+                        - 'LX': Single mode fiber
+EOT,
+                ],
+                'speed' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Speed of the Ethernet port in Mbps',
+                    'default' => 10,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortWifi'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortWifi::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
+                'wifinetwork' => self::getDropdownTypeSchema(class: WifiNetwork::class, full_schema: 'WifiNetwork'),
+                'version' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'a', 'b', 'a/b', 'a/b/g', 'a/b/g/n', 'a/b/g/n/y', 'ac', 'ax', 'be', 'bn'],
+                    'description' => <<<EOT
+                        Wi-Fi version.
+                        - '': Not specified
+                        - 'a': 802.11a
+                        - 'b': 802.11b
+                        - 'a/b': 802.11a/b
+                        - 'a/b/g': 802.11a/b/g
+                        - 'a/b/g/n': 802.11a/b/g/n
+                        - 'a/b/g/n/y': 802.11a/b/g/n/y
+                        - 'ac': 802.11ac (Wi-Fi 5)
+                        - 'ax': 802.11ax (Wi-Fi 6)
+                        - 'be': 802.11be (Wi-Fi 7)
+                        - 'bn': 802.11bn (Wi-Fi 8)
+EOT,
+                ],
+                'mode' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'ad-hoc', 'managed', 'master', 'repeater', 'secondary', 'monitor', 'auto'],
+                    'description' => <<<EOT
+                        Wi-Fi mode.
+                        - '': Not specified
+                        - 'ad-hoc': Ad-Hoc mode
+                        - 'managed': Managed mode
+                        - 'master': Master mode
+                        - 'repeater': Repeater mode
+                        - 'secondary': Secondary mode
+                        - 'monitor': Monitor mode
+                        - 'auto': Automatic mode
+EOT,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortAggregate'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortAggregate::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_port_list' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-field' => 'networkports_id_list',
+                    'description' => 'JSON-encoded array of Network Port IDs that are part of this aggregate port',
+                ],
+                //TODO add network_ports property that uses something like JSON_TABLE to properly join the related ports. May need changes to the search code to support it.
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortAlias'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortAlias::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'aliased_network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, field: 'networkports_id_alias', full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortDialup'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortDialup::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortLocal'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortLocal::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortFiberchannel'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortFiberchannel::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
+                'type' => self::getDropdownTypeSchema(class: NetworkPortFiberchannelType::class, full_schema: 'NetworkPortFiberchannelType'),
+                'wwn' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 50],
+                'speed' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Speed of the Fiber Channel port in Mbps',
+                    'default' => 10,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         $schemas['CommonAsset'] = self::getGlobalAssetSchema($schemas);
 
         return $schemas;
@@ -1763,6 +2163,32 @@ final class AssetController extends AbstractController
             $types = ['Computer', 'Monitor', 'NetworkEquipment',
                 'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                 'Certificate', 'Unmanaged', 'Appliance',
+            ];
+            /**
+             * @var class-string<CommonDBTM> $type
+             */
+            foreach ($types as $type) {
+                $assets[$type] = $type::getTypeName(1);
+            }
+        }
+        return $types_only ? array_keys($assets) : $assets;
+    }
+
+    /**
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
+     * @return array<class-string<CommonDBTM>, string>
+     */
+    public static function getAssetInfocomTypes(bool $types_only = true): array
+    {
+        static $assets = null;
+
+        if ($assets === null) {
+            $assets = [];
+            $types = [
+                'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem',
+                'Computer', 'Monitor', 'NetworkEquipment',
+                'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
+                'Certificate', 'Appliance', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable',
             ];
             /**
              * @var class-string<CommonDBTM> $type
@@ -1895,7 +2321,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1924,6 +2350,108 @@ final class AssetController extends AbstractController
         }
         $results = reset($results);
         return $result->withBody(Utils::streamFor(json_encode($results)));
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'Infocom',
+        description: 'Create the financial and administration information for a specific asset'
+    )]
+    public function createItemInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $management_controller = new ManagementController();
+        $infocom_schema = $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request));
+        unset($infocom_schema['properties']['itemtype']['readOnly']);
+        unset($infocom_schema['properties']['items_id']['readOnly']);
+        return ResourceAccessor::createBySchema(
+            $infocom_schema,
+            $request->getParameters(),
+            [self::class, 'getItemInfocom'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'id' => $request->getAttribute('id'),
+                ],
+                'id' => 'noop',
+            ]
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Infocom',
+        description: 'Update the financial and administration information for a specific asset'
+    )]
+    public function updateItemInfocom(Request $request): Response
+    {
+        global $DB;
+
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        $management_controller = new ManagementController();
+        return ResourceAccessor::updateBySchema(
+            $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Infocom',
+        description: 'Delete the financial and administration information for a specific asset',
+    )]
+    public function deleteItemInfocom(Request $request): Response
+    {
+        global $DB;
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        $management_controller = new ManagementController();
+        return ResourceAccessor::deleteBySchema(
+            $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
@@ -2626,5 +3154,169 @@ final class AssetController extends AbstractController
     public function deleteSoftwareVersion(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'OSInstallation',
+        description: 'Add an operating system to an asset'
+    )]
+    public function createItemOSInstallation(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getOSInstallation'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: 'OSInstallation',
+        description: 'List or search operating systems installed on an asset'
+    )]
+    public function searchItemOSInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: 'OSInstallation',
+        description: 'Get an existing operating system installation by the installation ID'
+    )]
+    public function getOSInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'OSInstallation',
+        description: 'Update an existing operating system installation by the installation ID'
+    )]
+    public function updateOSInstallation(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'OSInstallation',
+        description: 'Delete an operating system installation by the installation ID',
+    )]
+    public function deleteOSInstallation(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Add a software version to an asset'
+    )]
+    public function createItemSoftwareVersion(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getSoftwareInstallation'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'List or search software installed on an asset'
+    )]
+    public function searchItemSoftware(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Get an existing software installation by the installation ID'
+    )]
+    public function getSoftwareInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Update an existing software installation by the installation ID'
+    )]
+    public function updateSoftwareInstallation(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Delete a software installation by the installation ID',
+    )]
+    public function deleteSoftwareInstallation(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

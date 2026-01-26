@@ -159,9 +159,16 @@ final class Lexer
                 $fn_validate_pos();
                 $in_value = true;
                 $char = mb_substr($query, $pos, 1, 'UTF-8');
-                if ($char === '') {
+                if ($char === '' || $char === self::CHAR_AND || $char === self::CHAR_OR) {
                     $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
-                    break;
+                    if ($char === '') {
+                        // End of string reached
+                        break;
+                    } else {
+                        // Probably a filter without a value in the middle of the query. Continue parsing assuming the start of a new filter (an operator).
+                        $in_filter = false;
+                        continue;
+                    }
                 }
                 // If the current char is ', ", or (, then the value continues until the matching closing quote or parenthesis is found.
                 // When matching, we ignore escaped quotes and parenthesis.

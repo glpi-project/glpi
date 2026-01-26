@@ -546,7 +546,7 @@ final class RuleController extends AbstractController
 
         $params = $request->getParameters();
         $filter = $params['filter'] ?? '';
-        $filter .= ';rule==' . $request->getAttribute('id');
+        $filter .= ';rule.id==' . $request->getAttribute('id');
         $params['filter'] = $filter;
 
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $params);
@@ -566,7 +566,7 @@ final class RuleController extends AbstractController
 
         $params = $request->getParameters();
         $filter = $params['filter'] ?? '';
-        $filter .= ';rule==' . $request->getAttribute('rule_id');
+        $filter .= ';rule.id==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleCriteria', $this->getAPIVersion($request)), $request->getAttributes(), $params);
@@ -588,7 +588,7 @@ final class RuleController extends AbstractController
 
         $params = $request->getParameters();
         $filter = $params['filter'] ?? '';
-        $filter .= ';rule==' . $request->getAttribute('rule_id');
+        $filter .= ';rule.id==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
         return ResourceAccessor::searchBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $params);
@@ -608,7 +608,7 @@ final class RuleController extends AbstractController
 
         $params = $request->getParameters();
         $filter = $params['filter'] ?? '';
-        $filter .= ';rule==' . $request->getAttribute('rule_id');
+        $filter .= ';rule.id==' . $request->getAttribute('rule_id');
         $params['filter'] = $filter;
 
         return ResourceAccessor::getOneBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $params);

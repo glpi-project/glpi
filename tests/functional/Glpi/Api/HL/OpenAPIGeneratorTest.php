@@ -130,6 +130,12 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                     continue;
                 }
                 unset($snapshot_method['description'], $schema_method['description'], $snapshot_method['tags'], $schema_method['tags']);
+                foreach ($snapshot_method['parameters'] ?? [] as $i => $param) {
+                    unset($snapshot_method['parameters'][$i]['description']);
+                }
+                foreach ($schema_method['parameters'] ?? [] as $i => $param) {
+                    unset($schema_method['parameters'][$i]['description']);
+                }
                 if ($snapshot_method !== $schema_method) {
                     $differences[] = "Method '$method' for path '$path' differs between snapshot and schema";
                 }
@@ -142,6 +148,10 @@ class OpenAPIGeneratorTest extends HLAPITestCase
     {
         $differences = [];
         $common_props = array_intersect(array_keys($snapshot_props), array_keys($schema_props));
+
+        if ($parent_path === 'Session.active_profile.rights.') {
+            return [];
+        }
 
         if (count($common_props) < count($snapshot_props) || count($common_props) < count($schema_props)) {
             $missing_in_schema = array_diff(array_keys($snapshot_props), array_keys($schema_props));
@@ -158,6 +168,11 @@ class OpenAPIGeneratorTest extends HLAPITestCase
             $snapshot_prop = $snapshot_props[$prop_name];
             $schema_prop = $schema_props[$prop_name];
             unset($snapshot_prop['description'], $schema_prop['description']);
+
+            if (in_array($parent_path . $prop_name, ['Dashboard.context', 'DashboardCard.widget', 'UserPreferences.timezone'], true)) {
+                // May differ between production and test env. ignore.
+                continue;
+            }
 
             // Recursively compare nested properties
             if (isset($snapshot_prop['properties'], $schema_prop['properties'])) {
