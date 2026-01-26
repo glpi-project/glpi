@@ -636,7 +636,7 @@ final class AssetController extends AbstractController
         $user_property = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
         $user_tech_property = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
         $network_property = self::getDropdownTypeSchema(class: Network::class);
-        $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class);
+        $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
 
         $schemas['Computer'] = [
             'type' => Doc\Schema::TYPE_OBJECT,
