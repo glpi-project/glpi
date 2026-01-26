@@ -30,55 +30,54 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="card rounded" data-testid="revision">
-    <div class="card-body px-3 py-2">
-        <div class="d-flex align-items-center mb-1">
-            {% if revision.is_current %}
-                <span class="badge bg-success-lt me-2">{{ __("Current version") }}</span>
-            {% elseif revision.is_first %}
-                <span class="badge bg-secondary-lt me-2">{{ __("Initial version") }}</span>
-            {% else %}
-                <span class="badge bg-secondary-lt me-2">{{ __("Version %s")|format(revision.revision) }}</span>
-            {% endif %}
-
-            {% if can_revert and not revision.is_current and revision.id %}
-                <button
-                    type="button"
-                    class="btn btn-ghost-secondary btn-sm ms-auto"
-                    data-glpi-revert-revision="{{ revision.id }}"
-                    data-glpi-kb-id="{{ id }}"
-                    title="{{ __("Restore this version") }}"
+<li class="step-item {{ revision.is_current ? 'active' : '' }}" data-testid="revision">
+    <div class="d-flex align-items-start justify-content-between">
+        <div>
+            <div class="h4 m-0">
+                {% if revision.is_current %}
+                    {{ __("Current version") }}
+                {% elseif revision.is_first %}
+                    {{ __("Initial version") }}
+                {% else %}
+                    {{ __("Version %s")|format(revision.revision) }}
+                {% endif %}
+            </div>
+            <div class="text-secondary small">
+                {% if revision.is_first %}
+                    {{ __("Created by") }}
+                {% else %}
+                    {{ __("Updated by") }}
+                {% endif %}
+                {% if revision.user %}
+                    <a rel="author" href="{{ revision.user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
+                        @{{ revision.user.getFriendlyName() }}
+                    </a>
+                {% else %}
+                    <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>
+                {% endif %}
+            </div>
+            <div class="text-secondary small">
+                <span
+                    title="{{ revision.date }}"
                     data-bs-toggle="tooltip"
-                    data-bs-placement="left"
+                    data-bs-placement="bottom"
                 >
-                    <i class="ti ti-restore"></i>
-                </button>
-            {% endif %}
+                    {{ revision.date|relative_datetime }}
+                </span>
+            </div>
         </div>
-
-        <div class="text-muted small">
-            {% if revision.is_first %}
-                {{ __("Created by") }}
-            {% else %}
-                {{ __("Updated by") }}
-            {% endif %}
-            {% if revision.user %}
-                <a rel="author" href="{{ revision.user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
-                    @{{ revision.user.getFriendlyName() }}
-                </a>
-            {% else %}
-                <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>
-            {% endif %}
-        </div>
-
-        <div class="text-muted small">
-            <span
-                title="{{ revision.date }}"
+        {% if can_revert and not revision.is_current and revision.id %}
+            <button
+                type="button"
+                class="btn btn-ghost-secondary btn-sm"
+                data-glpi-revert-revision="{{ revision.id }}"
+                data-glpi-kb-id="{{ id }}"
+                title="{{ __("Restore this version") }}"
                 data-bs-toggle="tooltip"
-                data-bs-placement="bottom"
+                data-bs-placement="left"
             >
-                {{ revision.date|relative_datetime }}
-            </span>
-        </div>
+                <i class="ti ti-restore"></i>
+            </button>
+        {% endif %}
     </div>
-</div>
+</li>
