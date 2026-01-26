@@ -37,15 +37,28 @@
     is_horizontal: false,
 } %}
 
-{% include 'components/tab/addlink_block.html.twig' with {
-    'add_link': 'javascript:return false;',
-    'button_label': _x('button', 'Add a note'),
-    'button_attributes': {
-        'data-bs-toggle': 'modal',
-        'data-bs-target': '#new-note-form',
-        'aria-label': __('Add a note'),
-    }
-} %}
+<div class="d-flex mb-3 justify-content-between align-items-center">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form" aria-label="{{ _x('button', 'Add a note') }}">
+        <i class="ti ti-link"></i>
+        <span>{{ _x('button', 'Add a note') }}</span>
+    </button>
+
+    {% if notes|length > 0 %}
+        <small class="me-2">
+            <a href="#" class="text-decoration-none text-secondary toggle-all-notes d-flex align-items-center gap-1"
+               style="cursor: pointer; transition: color 0.2s ease;"
+               onmouseover="this.style.color='#0d6efd'"
+               onmouseout="this.style.color=''"
+               data-expand-text="{{ __('Expand all') }}"
+               data-collapse-text="{{ __('Collapse all') }}"
+               data-expand-title="{{ __('Expand all') }}"
+               data-collapse-title="{{ __('Collapse all') }}">
+                <i class="ti ti-eye"></i>
+                <span>{{ __('Collapse all') }}</span>
+            </a>
+        </small>
+    {% endif %}
+</div>
 
 <div class="my-3">
     <div id="new-note-form" class="modal fade">
@@ -101,11 +114,11 @@
         <div class="accordion-item">
             <div class="accordion-header">
                 <button
-                    class="accordion-button collapsed d-flex align-self-center"
+                    class="accordion-button d-flex align-self-center"
                     type="button"
                     data-bs-toggle="collapse"
                     data-bs-target="#{{ id }}"
-                    aria-expanded="false"
+                    aria-expanded="true"
                     aria-controls="{{ id }}"
                     data-testid="note-container"
                 >
@@ -118,7 +131,7 @@
                 </button>
             </div>
 
-            <div id="{{ id }}" class="accordion-collapse collapse">
+            <div id="{{ id }}" class="accordion-collapse collapse show">
                 <div class="accordion-body pt-0">
                     <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
@@ -243,3 +256,72 @@
         </div>
     {% endfor %}
 </div>
+
+<script>
+/**
+ * Toggle all accordions in a notepad container with Bootstrap transitions
+ *
+ * @param {Element} element - The element that was clicked (button or link)
+ */
+function toggleNotesAccordion(element) {
+    // Find the accordion container - it's the next sibling div after the modal div
+    const buttonsContainer = element.closest('.d-flex.mb-3');
+    const modalContainer = buttonsContainer.nextElementSibling;
+    const accordionContainer = modalContainer.nextElementSibling;
+
+    if (!accordionContainer || !accordionContainer.classList.contains('accordion')) {
+        console.warn('Accordion container not found');
+        return;
+    }
+
+    const accordionElements = accordionContainer.querySelectorAll('.accordion-collapse');
+    const elementText = element.querySelector('span');
+    const elementIcon = element.querySelector('i');
+    const isExpanding = elementText.textContent.includes(element.dataset.expandText);
+
+    // Use Bootstrap's native collapse methods for smooth transitions
+    accordionElements.forEach(function(accordion) {
+        try {
+            const bsCollapse = new bootstrap.Collapse(accordion, { toggle: false });
+
+            if (isExpanding) {
+                bsCollapse.show();
+            } else {
+                bsCollapse.hide();
+            }
+        } catch (error) {
+            console.error('Error with bootstrap.Collapse:', error);
+        }
+    });
+
+    // Update element text and icon (if present)
+    if (isExpanding) {
+        elementText.textContent = element.dataset.collapseText;
+        element.title = element.dataset.collapseTitle;
+        if (elementIcon) {
+            elementIcon.className = 'ti ti-eye';
+        }
+    } else {
+        elementText.textContent = element.dataset.expandText;
+        element.title = element.dataset.expandTitle;
+        if (elementIcon) {
+            elementIcon.className = 'ti ti-eye-off';
+        }
+    }
+}
+
+// Event listener for toggle all notes button/link
+function setupToggleButton() {
+    const toggleButton = document.querySelector('.toggle-all-notes');
+
+    if (toggleButton && !toggleButton.hasAttribute('data-listener-added')) {
+        toggleButton.setAttribute('data-listener-added', 'true');
+        toggleButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            toggleNotesAccordion(this);
+        });
+    }
+}
+
+setupToggleButton();
+</script>
