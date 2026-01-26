@@ -172,7 +172,7 @@ describe("Ticket Form", () => {
         cy.get('.itilsolution').within(() => {
             cy.findByLabelText('Search in the knowledge base').click();
         });
-        cy.get('#modal_search_knowbaseitem').within(() => {
+        cy.get('#modal_search_knowbaseitem').should('have.attr', 'data-cy-shown', 'true').within(() => {
             cy.findByLabelText('Search…').should('have.value', 'Test search solution');
             cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
@@ -195,7 +195,7 @@ describe("Ticket Form", () => {
         cy.get('.itilfollowup').within(() => {
             cy.findByLabelText('Search in the knowledge base').click();
         });
-        cy.get('#modal_search_knowbaseitem').within(() => {
+        cy.get('#modal_search_knowbaseitem').should('have.attr', 'data-cy-shown', 'true').within(() => {
             cy.findByLabelText('Search…').should('have.value', 'Test search solution');
             cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
