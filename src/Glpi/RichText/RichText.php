@@ -46,6 +46,7 @@ use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 final class RichText
 {
