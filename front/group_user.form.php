@@ -61,14 +61,6 @@ if (isset($_POST["add"])) {
             );
         }
     } catch (ItemLinkException $e) {
-        Event::log(
-            $_POST["groups_id"],
-            "groups",
-            2,
-            "setup",
-            //TRANS: %s is the user login
-            sprintf(__('%s failed to add a user to a group'), $_SESSION["glpiname"])
-        );
     } finally {
         Html::back();
     }
