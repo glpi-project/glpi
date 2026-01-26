@@ -2379,7 +2379,14 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function enforceReadonlyFields(array $input, bool $isAdd = false): array
     {
-        $tt = $this->getITILTemplateFromInput($input);
+        $existing_object = new static();
+        if (array_key_exists('id', $input)) {
+            $existing_object->getFromDB($input['id']);
+        } else {
+            $existing_object = $this;
+        }
+
+        $tt = $this->getITILTemplateFromInput($input, $existing_object);
         if (!$tt) {
             return $input;
         }
@@ -8385,22 +8392,28 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      * If the input is not defined, it will get it from the object fields datas
      *
      * @param array $input
+     * @param CommonITILObject|null $existing_object Current object, if not defined will be $this. Can be overloaded in enforceReadonlyFields because it's called before any entity loading logic and prefered to loading $this earlier.
      * @return ITILTemplate|null
      *
      * @since 11.0.2
+     * @TODO Make this method private in GLPI 12.
      */
-    public function getITILTemplateFromInput(array $input = []): ?ITILTemplate
+    public function getITILTemplateFromInput(array $input = [], $existing_object = null): ?ITILTemplate
     {
-        $entid = $input['entities_id'] ?? $this->fields['entities_id'];
+        if (!$existing_object) {
+            $existing_object = $this;
+        }
+
+        $entid = $input['entities_id'] ?? $existing_object->fields['entities_id'];
 
         $type = null;
         if (isset($input['type'])) {
             $type = $input['type'];
-        } elseif (isset($this->fields['type'])) {
-            $type = $this->fields['type'];
+        } elseif (isset($existing_object->fields['type'])) {
+            $type = $existing_object->fields['type'];
         }
 
-        $categid = $input['itilcategories_id'] ?? $this->fields['itilcategories_id'] ?? null;
+        $categid = $input['itilcategories_id'] ?? $existing_object->fields['itilcategories_id'] ?? null;
         if (is_null($categid)) {
             return null;
         }
