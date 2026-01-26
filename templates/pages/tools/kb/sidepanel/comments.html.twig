@@ -46,6 +46,7 @@
                 date_creation: comment.date_creation,
                 comment: comment.comment,
                 can_edit: comment.can_edit ?? false,
+                can_delete: comment.can_delete ?? false,
             }, with_context = false) }}
         {% endfor %}
     </div>
