@@ -41,7 +41,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 class EventTest extends DbTestCase
 {
     #[DataProvider('eventLogLevelThresholdDataProvider')]
-    public function testEventLogThreshold(int $level, int $threshold, bool $should_be_logged_in_file): void
+    public function testEventLogThreshold(int $level, int $threshold, bool $should_be_logged_in_file, bool $should_be_logged_in_db): void
     {
         // --- arrange
         global $CFG_GLPI;
@@ -56,7 +56,8 @@ class EventTest extends DbTestCase
         Event::log(0, self::class, $level, $log_service, 'event');
 
         // --- assert
-        $expected_count = $level <= $threshold ? 1 : 0;
+        // logged in DB
+        $expected_count = $should_be_logged_in_db ? 1 : 0;
         $this->assertEquals(
             $expected_count,
             countElementsInTable(
@@ -65,17 +66,11 @@ class EventTest extends DbTestCase
             )
         );
 
-        $should_be_logged_in_file
-            ? $this->assertStringContainsString(
-                "[$log_service]",
-                file_get_contents($log_file),
-                implode(' ', ['service' => $log_service, 'level' => $level, 'should be logged in file' => $should_be_logged_in_file])
-            )
-            : $this->assertStringNotContainsString(
-                "[$log_service]",
-                file_get_contents($log_file),
-                implode(' ', ['service' => $log_service, 'level' => $level, 'should be logged in file' => $should_be_logged_in_file])
-            );
+        // logged in file
+        $this->assertEquals(
+            $should_be_logged_in_file,
+            str_contains(file_get_contents($log_file), "[$log_service]")
+        );
     }
 
     public static function eventLogLevelThresholdDataProvider(): iterable
@@ -86,9 +81,9 @@ class EventTest extends DbTestCase
                     'level' => $level,
                     'threshold' => $threshold,
                     'should_be_logged_in_file'
-                    => ($level <= $threshold) // should be logged if level is equal or more critical than threshold (notice glpi level are inverted compared to PSR)
-                        && $level <= 3 // no logging for level higher than 3
-                    ,
+                        => ($level <= $threshold) // should be logged if level is equal or more critical than threshold (notice glpi level are inverted compared to PSR)
+                        && $level <= 3, // no logging for level higher than 3
+                    'should_be_logged_in_db' => $level <= $threshold,
                 ];
             }
         }
