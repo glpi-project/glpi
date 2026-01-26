@@ -171,7 +171,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
             answers: [
                 $this->getQuestionId($form, 'Date Question') => '2026-01-02',
             ],
-            expected_tto_date: '2026-01-02 00:00:00'
+            expected_ttr_date: '2026-01-02 00:00:00'
         );
     }
 
@@ -191,7 +191,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
             answers: [
                 $this->getQuestionId($form, 'Date and Time Question') => '2026-01-02 12:34:56',
             ],
-            expected_tto_date: '2026-01-02 12:34:56'
+            expected_ttr_date: '2026-01-02 12:34:56'
         );
     }
 
@@ -209,7 +209,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
                 time_offset: 2,
                 time_definition: 'day'
             ),
-            expected_tto_date: '2026-01-03 10:00:00'
+            expected_ttr_date: '2026-01-03 10:00:00'
         );
     }
 
@@ -231,7 +231,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
             answers: [
                 $this->getQuestionId($form, 'Date Question') => '2026-01-05',
             ],
-            expected_tto_date: '2026-01-08 00:00:00'
+            expected_ttr_date: '2026-01-08 00:00:00'
         );
     }
 
@@ -253,7 +253,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
             answers: [
                 $this->getQuestionId($form, 'Date and Time Question') => '2026-01-05 15:30:00',
             ],
-            expected_tto_date: '2026-01-09 15:30:00'
+            expected_ttr_date: '2026-01-09 15:30:00'
         );
     }
 
@@ -262,7 +262,7 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         OLATTRFieldConfig $config,
         array $answers = [],
         int $expected_olas_ttr_id = 0,
-        ?string $expected_tto_date = null,
+        ?string $expected_ttr_date = null,
     ): Ticket {
         // Insert config
         $destinations = $form->getDestinations();
@@ -292,8 +292,8 @@ final class OLATTRFieldTest extends AbstractDestinationFieldTest
         $this->assertEquals($expected_olas_ttr_id, $ticket->fields['olas_id_ttr']);
 
         // Check internal_time_to_resolve field
-        if ($expected_tto_date !== null) {
-            $this->assertEquals($expected_tto_date, $ticket->fields['internal_time_to_resolve']);
+        if ($expected_ttr_date !== null) {
+            $this->assertEquals($expected_ttr_date, $ticket->fields['internal_time_to_resolve']);
         }
 
         // Return the created ticket to be able to check other fields

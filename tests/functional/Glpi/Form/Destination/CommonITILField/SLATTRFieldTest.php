@@ -354,5 +354,49 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
                 specific_slm_id: getItemByTypeName(SLA::class, '_test_sla_ttr', true)
             ),
         ];
+
+        yield 'Specific date answer' => [
+            'field_key'     => SLATTRField::getKey(),
+            'fields_to_set' => [
+                'due_date_rule'     => 2, // PluginFormcreatorAbstractItilTarget::DUE_DATE_RULE_ANSWER
+                'due_date_question' => 85, // Corresponds to 'Date question'
+            ],
+            'field_config' => fn($migration, $form) => new SLATTRFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
+                question_id: $migration->getMappedItemTarget('PluginFormcreatorQuestion', 85)['items_id']
+                    ?? throw new \Exception("Question not found"),
+            ),
+        ];
+
+        yield 'Computed date from form submission' => [
+            'field_key'     => SLATTRField::getKey(),
+            'fields_to_set' => [
+                'due_date_rule'   => 3, // PluginFormcreatorAbstractItilTarget::DUE_DATE_RULE_TICKET
+                'due_date_value'  => 4,
+                'due_date_period' => 3, // PluginFormcreatorAbstractItilTarget::DUE_DATE_PERIOD_DAY
+            ],
+            'field_config' => new SLATTRFieldConfig(
+                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_FORM_SUBMISSION,
+                time_offset: 4,
+                time_definition: 'day'
+            ),
+        ];
+
+        yield 'Computed date from specific date answer' => [
+            'field_key'     => SLATTRField::getKey(),
+            'fields_to_set' => [
+                'due_date_rule'     => 4, // PluginFormcreatorAbstractItilTarget::DUE_DATE_RULE_CALC
+                'due_date_question' => 85, // Corresponds to 'Date question'
+                'due_date_value'    => 5,
+                'due_date_period'   => 3, // PluginFormcreatorAbstractItilTarget::DUE_DATE_PERIOD_DAY
+            ],
+            'field_config' => fn($migration, $form) => new SLATTRFieldConfig(
+                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
+                question_id: $migration->getMappedItemTarget('PluginFormcreatorQuestion', 85)['items_id']
+                    ?? throw new \Exception("Question not found"),
+                time_offset: 5,
+                time_definition: 'day'
+            ),
+        ];
     }
 }
