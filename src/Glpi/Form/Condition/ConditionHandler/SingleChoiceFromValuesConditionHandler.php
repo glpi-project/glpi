@@ -34,9 +34,11 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Override;
 
 final class SingleChoiceFromValuesConditionHandler implements
@@ -77,7 +79,21 @@ final class SingleChoiceFromValuesConditionHandler implements
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
+        // Replace UUIDs by real values for less/greater than
+        if (
+            \in_array($operator, [
+                ValueOperator::LESS_THAN,
+                ValueOperator::LESS_THAN_OR_EQUALS,
+                ValueOperator::GREATER_THAN,
+                ValueOperator::GREATER_THAN_OR_EQUALS,
+            ], true)
+            && $config instanceof QuestionTypeSelectableExtraDataConfig
+        ) {
+            [$a, $b] = $this->mapSelectableValuesToRealValues($a, $b, $config);
+        }
+
         // Normalize values as strings.
         if (is_array($a)) {
             $a = array_pop($a);
@@ -105,5 +121,28 @@ final class SingleChoiceFromValuesConditionHandler implements
     public function convertConditionValue(string $value): int
     {
         return array_search($value, $this->values, true) ?: 0;
+    }
+
+    /**
+     * @return array{string, string}
+     */
+    private function mapSelectableValuesToRealValues(
+        mixed $answer,
+        mixed $condition_value,
+        QuestionTypeSelectableExtraDataConfig $config,
+    ): array {
+        $options = $config->getOptions();
+
+        if (is_array($answer)) {
+            $answer = array_pop($answer);
+        }
+        $answer = $options[$answer] ?? $answer;
+
+        if (is_array($condition_value)) {
+            $condition_value = array_pop($condition_value);
+        }
+        $condition_value = $options[$condition_value] ?? $condition_value;
+
+        return [$answer, $condition_value];
     }
 }

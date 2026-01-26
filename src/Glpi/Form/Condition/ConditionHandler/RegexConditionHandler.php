@@ -74,6 +74,7 @@ class RegexConditionHandler implements ConditionHandlerInterface
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         if ($this->questionType instanceof ConditionValueTransformerInterface) {
             $a = $this->questionType->transformConditionValueForComparisons($a, $this->question_config);
