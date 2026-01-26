@@ -176,7 +176,7 @@ class DropdownControllerTest extends HLAPITestCase
                             $this->api->autoTestCRUDNoRights(
                                 endpoint: $dropdown['href'],
                                 itemtype: $dropdown['itemtype'],
-                                items_id: (int)$new_items_id
+                                items_id: (int) $new_items_id
                             );
                         }
                     }

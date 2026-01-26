@@ -65,12 +65,11 @@ use KnowbaseItemCategory;
 use Location;
 use Manufacturer;
 use NetworkPortFiberchannelType;
-use State;
-use WifiNetwork;
 use PCIVendor;
 use PlanningEventCategory;
 use ProblemTemplate;
 use RequestType;
+use State;
 use TaskCategory;
 use TicketTemplate;
 use USBVendor;
@@ -78,6 +77,7 @@ use User;
 use VirtualMachineState;
 use VirtualMachineSystem;
 use VirtualMachineType;
+use WifiNetwork;
 
 #[Route(path: '/Dropdowns', priority: 1, tags: ['Dropdowns'])]
 #[Doc\Route(
