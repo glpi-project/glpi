@@ -243,8 +243,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertNotFalse($comment->add($new_comment_input));
         $this->assertTrue($comment->can($comment->getID(), READ));
         $this->assertTrue($comment->can($comment->getID(), UPDATE));
-        // No deletion support yet
-        $this->assertFalse($comment->can($comment->getID(), PURGE));
+        $this->assertTrue($comment->can($comment->getID(), PURGE));
         $_SESSION['glpiactiveprofile']['knowbase'] = $all_knowbase_rights & ~KnowbaseItem::COMMENTS;
         $this->assertFalse($comment::canCreate());
         $this->assertFalse($comment::canUpdate());
@@ -296,8 +295,7 @@ class KnowbaseItem_CommentTest extends DbTestCase
         $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), READ));
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), UPDATE));
         $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), UPDATE));
-        // No deletion support yet
         $this->assertFalse($kb2_comment1->can($kb2_comment1->getID(), PURGE));
-        $this->assertFalse($kb2_comment2->can($kb2_comment2->getID(), PURGE));
+        $this->assertTrue($kb2_comment2->can($kb2_comment2->getID(), PURGE));
     }
 }
