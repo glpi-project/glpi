@@ -96,13 +96,13 @@ final class SLATTRField extends SLMField
                     SLMFieldConfig::QUESTION_ID => $migration->getMappedItemTarget(
                         'PluginFormcreatorQuestion',
                         $rawData['due_date_question'] ?? 0
-                    )['items_id']
+                    )['items_id'],
                 ]]);
             case 3: // PluginFormcreatorAbstractItilTarget::DUE_DATE_RULE_TICKET
                 return $this->getConfig($form, [$this->getKey() => [
                     SLMFieldConfig::STRATEGY => SLMFieldStrategy::COMPUTED_DATE_FROM_FORM_SUBMISSION->value,
-                    SLMFieldConfig::TIME_OFFSET => (int)($rawData['due_date_value'] ?? 0),
-                    SLMFieldConfig::TIME_DEFINITION => $this->getTimeDefinitionFromLegacy($rawData['due_date_period'])
+                    SLMFieldConfig::TIME_OFFSET => (int) ($rawData['due_date_value'] ?? 0),
+                    SLMFieldConfig::TIME_DEFINITION => $this->getTimeDefinitionFromLegacy($rawData['due_date_period']),
                 ]]);
             case 4: // PluginFormcreatorAbstractItilTarget::DUE_DATE_RULE_CALC
                 return $this->getConfig($form, [$this->getKey() => [
@@ -111,8 +111,8 @@ final class SLATTRField extends SLMField
                         'PluginFormcreatorQuestion',
                         $rawData['due_date_question'] ?? 0
                     )['items_id'],
-                    SLMFieldConfig::TIME_OFFSET => (int)($rawData['due_date_value'] ?? 0),
-                    SLMFieldConfig::TIME_DEFINITION => $this->getTimeDefinitionFromLegacy($rawData['due_date_period'])
+                    SLMFieldConfig::TIME_OFFSET => (int) ($rawData['due_date_value'] ?? 0),
+                    SLMFieldConfig::TIME_DEFINITION => $this->getTimeDefinitionFromLegacy($rawData['due_date_period']),
                 ]]);
         }
 
@@ -122,10 +122,8 @@ final class SLATTRField extends SLMField
     private function getTimeDefinitionFromLegacy(int $due_date_value): string
     {
         $time_keys = array_keys(LevelAgreement::getDefinitionTimeValues());
-        $time_definition = $time_keys[$due_date_value - 1];
-
-        if ($time_definition !== null) {
-            return $time_definition;
+        if (array_key_exists($due_date_value - 1, $time_keys)) {
+            return $time_keys[$due_date_value - 1];
         }
 
         // Fallback to first value
