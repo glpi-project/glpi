@@ -31,7 +31,7 @@
  #}
 
 
-<div class="d-flex w-100" data-testid="comment">
+<div class="d-flex w-100" data-testid="comment" data-glpi-comment-id="{{ comment_id }}">
     {{ include('components/user/picture.html.twig', {
         'user_object': user,
         'avatar_size': 'avatar-sm',
@@ -41,19 +41,75 @@
 
     <div class="card rounded w-100">
         <div class="card-body px-3 py-2">
-            <div class="card-title fs-4">
-                {{ user ? user.getFriendlyName() : __("Deleted user") }}
-                ·
-                <span
-                    class="text-muted fw-normal"
-                    title="{{ date_creation }}"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="bottom"
-                >
-                    {{ date_creation|relative_datetime }}
-                </span>
+            <div class="card-title fs-4 d-flex align-items-start">
+                <div class="flex-grow-1" data-testid="comment-header">
+                    {{ user ? user.getFriendlyName() : __("Deleted user") }}
+                    ·
+                    <span
+                        class="text-muted fw-normal"
+                        title="{{ date_creation }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                    >
+                        {{ date_creation|relative_datetime }}
+                    </span>
+                </div>
+                {% set has_actions = can_edit %}
+                {% if has_actions %}
+                    <div class="dropdown ms-2">
+                        <button
+                            class="btn btn-sm btn-ghost-secondary"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            title="{{ __('More actions') }}"
+                            aria-label="{{ __('More actions') }}"
+                        >
+                            <i class="ti ti-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            {% if can_edit %}
+                                <li>
+                                    <button type="button" class="dropdown-item" data-glpi-comment-edit>
+                                        <i class="ti ti-edit me-2"></i>
+                                        <span>{{ __('Edit comment') }}</span>
+                                    </button>
+                                </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                {% endif %}
             </div>
-            {{ comment }}
+            <div data-glpi-comment-content data-testid="comment-content">{{ comment|nl2br }}</div>
+            <div class="d-none" data-glpi-comment-edit-form>
+                {% set lines_count = (comment|split('\n')|length) %}
+                {% set textarea_rows = min(lines_count, 20) %}
+                <textarea
+                    class="w-100 form-control auto-resize mb-2"
+                    rows="{{ textarea_rows }}"
+                    data-testid="comment-edit-textarea"
+                    data-glpi-comment-edit-textarea
+                >{{ comment }}</textarea>
+                <div class="d-flex justify-content-end gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-ghost-secondary"
+                        data-glpi-comment-edit-cancel
+                    >
+                        {{ __('Cancel') }}
+                    </button>
+                    <button
+                        type="button"
+                        class="btn btn-sm btn-primary"
+                        data-glpi-comment-edit-submit
+                        aria-label="{{ __('Save') }}"
+                    >
+                        <i class="ti ti-check" data-glpi-icon></i>
+                        <i class="ti ti-loader-2 fa-spin d-none" data-glpi-loading></i>
+                        <span>{{ __('Save') }}</span>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>

@@ -36,6 +36,12 @@ const content_selector  = "[data-glpi-add-comments-content]";
 const submit_selector   = "[data-glpi-add-comments-submit]";
 const kb_id_selector    = "[data-glpi-kb-id]";
 const comments_selector = "[data-glpi-comments]";
+const comment_edit_selector = "[data-glpi-comment-edit]";
+const comment_content_selector = "[data-glpi-comment-content]";
+const comment_edit_form_selector = "[data-glpi-comment-edit-form]";
+const comment_edit_textarea_selector = "[data-glpi-comment-edit-textarea]";
+const comment_edit_cancel_selector = "[data-glpi-comment-edit-cancel]";
+const comment_edit_submit_selector = "[data-glpi-comment-edit-submit]";
 
 export class GlpiKnowbaseCommentsPanelController
 {
@@ -66,7 +72,93 @@ export class GlpiKnowbaseCommentsPanelController
             if (submit) {
                 this.#submitComment();
             }
+
+            // Edit comment button
+            const edit_btn = e.target.closest(comment_edit_selector);
+            if (edit_btn) {
+                this.#showEditForm(edit_btn);
+            }
+
+            // Cancel edit button
+            const cancel_btn = e.target.closest(comment_edit_cancel_selector);
+            if (cancel_btn) {
+                this.#hideEditForm(cancel_btn);
+            }
+
+            // Submit edit button
+            const submit_edit_btn = e.target.closest(comment_edit_submit_selector);
+            if (submit_edit_btn) {
+                this.#submitEditComment(submit_edit_btn);
+            }
         });
+    }
+
+    #showEditForm(edit_btn)
+    {
+        const comment_card = edit_btn.closest('[data-testid="comment"]');
+        const content = comment_card.querySelector(comment_content_selector);
+        const form = comment_card.querySelector(comment_edit_form_selector);
+
+        content.classList.add('d-none');
+        form.classList.remove('d-none');
+
+        const textarea = form.querySelector(comment_edit_textarea_selector);
+        textarea.focus();
+    }
+
+    #hideEditForm(cancel_btn)
+    {
+        const comment_card = cancel_btn.closest('[data-testid="comment"]');
+        const content = comment_card.querySelector(comment_content_selector);
+        const form = comment_card.querySelector(comment_edit_form_selector);
+
+        form.classList.add('d-none');
+        content.classList.remove('d-none');
+    }
+
+    async #submitEditComment(submit_btn)
+    {
+        const comment_card = submit_btn.closest('[data-testid="comment"]');
+        const comment_id   = comment_card.dataset.glpiCommentId;
+        const form         = comment_card.querySelector(comment_edit_form_selector);
+        const textarea     = form.querySelector(comment_edit_textarea_selector);
+        const content      = comment_card.querySelector(comment_content_selector);
+
+        // Show loading state
+        submit_btn.classList.add('pointer-events-none');
+        submit_btn.querySelector('[data-glpi-loading]').classList.remove('d-none');
+        submit_btn.querySelector('[data-glpi-icon]').classList.add('d-none');
+
+        const data = new FormData();
+        data.append('content', textarea.value);
+
+        const base_url = CFG_GLPI.root_doc;
+        const url = `${base_url}/Knowbase/Comment/${comment_id}/Update`;
+        const response = await fetch(url, {
+            method: "POST",
+            body: data,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+            }
+        });
+
+        // Reset loading state
+        submit_btn.classList.remove('pointer-events-none');
+        submit_btn.querySelector('[data-glpi-icon]').classList.remove('d-none');
+        submit_btn.querySelector('[data-glpi-loading]').classList.add('d-none');
+
+        if (!response.ok) {
+            glpi_toast_error(__("An unexpected error occurred."));
+            return;
+        }
+
+        const result = await response.json();
+
+        // Update content and hide form
+        content.innerHTML = result.comment.replace(/\n/g, '<br>');
+        form.classList.add('d-none');
+        content.classList.remove('d-none');
     }
 
     #toggleSubmitButtonVisibility(textarea)

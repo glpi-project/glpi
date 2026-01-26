@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { Page } from "@playwright/test";
+import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
 
 export class KnowbaseItemPage extends GlpiPage
@@ -45,5 +45,12 @@ export class KnowbaseItemPage extends GlpiPage
         await this.page.goto(
             `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`
         );
+    }
+
+    public getCommentByContent(content: string): Locator
+    {
+        return this.page.getByText(content).filter({
+            'visible': true,
+        });
     }
 }
