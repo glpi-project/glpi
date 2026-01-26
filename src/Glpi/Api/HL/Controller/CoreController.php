@@ -62,7 +62,10 @@ use Throwable;
 use Transfer;
 use User;
 
+use function Safe\fclose;
 use function Safe\file_get_contents;
+use function Safe\fopen;
+use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -798,10 +801,11 @@ HTML;
                 }
             }
         }
+        fclose($po_file_handle);
 
         // Output messages and headers
         $messages[''] = $headers;
         $messages->ksort();
-        return new JSONResponse($messages);
+        return new JSONResponse((array) $messages);
     }
 }
