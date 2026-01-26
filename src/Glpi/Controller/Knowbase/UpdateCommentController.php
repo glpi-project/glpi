@@ -67,14 +67,15 @@ final class UpdateCommentController extends AbstractController
             throw new BadRequestHttpException();
         }
 
+        $input = [
+            'id'      => $id,
+            'comment' => $content,
+        ];
         if (!$comment->can($id, UPDATE, $input)) {
             throw new AccessDeniedHttpException();
         }
 
-        $success = $comment->update([
-            'id'      => $id,
-            'comment' => $content,
-        ]);
+        $success = $comment->update($input);
 
         if (!$success) {
             throw new RuntimeException("Failed to update comment");
