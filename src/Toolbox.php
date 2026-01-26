@@ -410,13 +410,11 @@ class Toolbox
     /**
      * Generate a Backtrace
      *
-     * @param string $log  Log file name (default php-errors) if false, return the string
+     * @param string $log  Log file name (default php-errors) no file loggin if falsy
      * @param string $hide Call to hide (but display script/line)
      * @param array  $skip Calls to not display at all
      *
-     * @return string
-     *
-     * @since 0.85
+     * @return string backtrace or script filename ($_SERVER["SCRIPT_FILENAME"])
      **/
     public static function backtrace($log = 'php-errors', $hide = '', array $skip = [])
     {
@@ -539,14 +537,12 @@ class Toolbox
     /**
      * Switch error mode for GLPI
      *
-     * @param int|null $mode       From Session::*_MODE
+     * @param Session::*_MODE|null $mode
      * @param bool|null $removed_param No longer used (Used to be $debug_sql)
      * @param bool|null $removed_param_2 No longer used (Used to be $debug_vars)
      * @param bool|null $log_in_files
      *
      * @return void
-     *
-     * @since 0.84
      **/
     public static function setDebugMode($mode = null, $removed_param = null, $removed_param_2 = null, $log_in_files = null)
     {
