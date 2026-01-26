@@ -926,7 +926,7 @@ EOT,
                 'is_default' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,
                     'description' => 'Indicates if this step is the default one for new approvals. If you set this to true, any other step previously set as the default will be unset.',
-                    'default' => false
+                    'default' => false,
                 ],
                 'min_required_approval_percent' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
