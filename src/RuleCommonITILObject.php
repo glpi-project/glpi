@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QuerySubQuery;
 
 use function Safe\preg_match;
 
@@ -213,6 +214,37 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                         switch ($action->fields['field']) {
                             case 'users_id_validate_requester_supervisor':
                                 $output['_add_validation'][] = 'requester_supervisor';
+
+                                if (empty($input['_users_id_requester'])) {
+                                    break;
+                                }
+
+                                $users_id_requester = array_map('intval', $input['_users_id_requester'] ?? []);
+
+                                global $DB;
+                                $managers_rows = iterator_to_array(
+                                    $DB->request([
+                                        'SELECT' => 'groups_id',
+                                        'FROM'   => 'glpi_groups_users',
+                                        'WHERE'  => [
+                                            'groups_id' => new QuerySubQuery([
+                                                'SELECT'   => 'groups_id',
+                                                'DISTINCT' => true,
+                                                'FROM'     => 'glpi_groups_users',
+                                                'WHERE'    => ['users_id' => $users_id_requester],
+                                            ]),
+                                            'is_manager' => 1,
+                                        ],
+                                    ])
+                                );
+                                $manager_groups_ids = array_column($managers_rows, 'groups_id');
+
+                                // add these manager groups ids to output['_groups_id_requester']
+                                if (!isset($output['_groups_id_requester'])) {
+                                    $output['_groups_id_requester'] = [];
+                                }
+                                $output['_groups_id_requester'] = array_merge($manager_groups_ids, $output['_groups_id_requester']);
+
                                 break;
 
                             case 'users_id_validate_assign_supervisor':
