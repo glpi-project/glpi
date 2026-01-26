@@ -339,13 +339,13 @@ class StateTest extends DbTestCase
         $this->login();
         $state = $this->createItem(
             \State::class,
-            ['entities_id' => $this->getTestRootEntity(true)] + $this->getMinimalCreationInput(\State::class), // // @todo virer entities_id
+            $this->getMinimalCreationInput(\State::class),
         );
 
         // --- act - create a custom asset (asset definition)
         $custom_asset = $this->initAssetDefinition();
 
-        // --- assert - state visibility associted to custom asset
+        // --- assert - state visibility associated to custom asset
         $this->assertEquals(1, countElementsInTable(
             DropdownVisibility::getTable(),
             ['itemtype' => \State::getType(), 'items_id' => $state->getID(), 'visible_itemtype' => $custom_asset->getAssetClassName()],
