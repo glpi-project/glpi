@@ -362,9 +362,9 @@ HTML;
      */
     private static function loadImagesLazy(string $content): string
     {
-        return preg_replace(
-            '/<img([\w\W]+?)\/+>/',
-            '<img$1 loading="lazy">',
+        return preg_replace_callback(
+            '/<img([^>]+)>/i',
+            fn($matches) => '<img' . $matches[1] . ' loading="lazy">',
             $content
         );
     }
