@@ -59,6 +59,7 @@ use function Safe\getimagesize;
 use function Safe\preg_grep;
 use function Safe\preg_match;
 use function Safe\preg_replace;
+use function Safe\unlink;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
@@ -5527,6 +5528,24 @@ class CommonDBTM extends CommonGLPI
                 && !empty($input[$tagUploadName][$key])
             ) {
                 $input['_tag'][$key] = $input[$tagUploadName][$key];
+            }
+
+            // Check if file is a pasted image (generated name pattern from fileupload.js)
+            $is_pasted_image = preg_match('/image_paste\d+\.\w+$/', $file);
+
+            // Only check tag presence for pasted images (they have image_paste prefix)
+            // Files from file picker should always be attached regardless of tag presence
+            if (
+                $is_pasted_image
+                && isset($input['_tag'][$key])
+                && isset($input[$options['content_field']])
+                && !str_contains($input[$options['content_field']], $input['_tag'][$key])
+            ) {
+                // Pasted image was deleted from editor before save - skip it
+                if (file_exists($filename)) {
+                    unlink($filename);
+                }
+                continue;
             }
 
             //retrieve entity
