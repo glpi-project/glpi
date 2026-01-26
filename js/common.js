@@ -1719,7 +1719,6 @@ function setupAjaxDropdown(config) {
         placeholder: config.placeholder,
         allowClear: config.allowclear,
         minimumInputLength: 0,
-        quietMillis: 100,
         dropdownAutoWidth: true,
         dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         minimumResultsForSearch: config.ajax_limit_count,
@@ -1727,6 +1726,7 @@ function setupAjaxDropdown(config) {
             url: config.url,
             dataType: 'json',
             type: 'POST',
+            delay: 250,
             data: function (params) {
                 query = params;
                 var data = $.extend({}, config.params, {
