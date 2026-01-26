@@ -209,7 +209,7 @@ enum Environment: string
         if (
             $this === self::TESTING
             || $this === self::DEVELOPMENT
-            || $this === self::E2E
+            //|| $this === self::E2E
         ) {
             return true;
         }
