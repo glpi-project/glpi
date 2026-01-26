@@ -798,7 +798,6 @@ EOT,
                 'BusinessCriticity' => BusinessCriticity::getTypeName(1),
                 'DocumentCategory' => DocumentCategory::getTypeName(1),
                 'DocumentType' => DocumentType::getTypeName(1),
-                'DatabaseInstanceCategory' => DatabaseInstanceCategory::getTypeName(1),
                 'VirtualMachineType' => VirtualMachineType::getTypeName(1),
                 'VirtualMachineModel' => VirtualMachineSystem::getTypeName(1),
                 'VirtualMachineState' => VirtualMachineState::getTypeName(1),
@@ -820,6 +819,9 @@ EOT,
         ];
     }
 
+    /**
+     * @return string[]
+     */
     public static function getDropdownEndpointTypes22(): array
     {
         return [
