@@ -34,16 +34,8 @@
 
 namespace tests\units;
 
-use Change;
-use Change_Change;
-use Change_Ticket;
 use Glpi\Tests\DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Problem;
-use Problem_Problem;
-use Problem_Ticket;
-use Ticket;
-use Ticket_Ticket;
 
 /*
  * Test for src/CommonITILObject_CommonITILObject.php
@@ -541,7 +533,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Ticket in root entity
         $ticket_root_id = $this->createItem(
-        Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket in root entity',
                 'content' => 'Test content',
@@ -549,11 +541,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $root_entity_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $ticket_root_id);
 
         // Ticket in child entity 1
         $ticket_child1_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket in child entity 1',
                 'content' => 'Test content',
@@ -561,11 +552,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $child_entity_1_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $ticket_child1_id);
 
         // Ticket in child entity 2
         $ticket_child2_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket in child entity 2',
                 'content' => 'Test content',
@@ -573,29 +563,25 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $child_entity_2_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $ticket_child2_id);
 
         // Link tickets together
-        $ticket_ticket = new \Ticket_Ticket();
-        $link_1_id = $this->createItem(
-            Ticket_Ticket::class,
+        $this->createItem(
+            \Ticket_Ticket::class,
             [
                 'tickets_id_1' => $ticket_root_id,
                 'tickets_id_2' => $ticket_child1_id,
                 'link' => \CommonITILObject_CommonITILObject::LINK_TO,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $link_1_id);
 
-        $link_2_id = $this->createItem(
-            Ticket_Ticket::class,
+        $this->createItem(
+            \Ticket_Ticket::class,
             [
                 'tickets_id_1' => $ticket_root_id,
                 'tickets_id_2' => $ticket_child2_id,
                 'link' => \CommonITILObject_CommonITILObject::LINK_TO,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $link_2_id);
 
         // Test 1: From root entity with recursive access - should see all linked tickets
         $this->setEntity('_test_root_entity', true);
@@ -636,7 +622,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Create a ticket in root entity
         $ticket_root_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket for getAllLinkedTo',
                 'content' => 'Test content',
@@ -644,11 +630,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $root_entity_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $ticket_root_id);
 
         // Create a change in child entity 1
         $change_child1_id = $this->createItem(
-            Change::class,
+            \Change::class,
             [
                 'name' => 'Test change in child entity 1',
                 'content' => 'Test content',
@@ -656,11 +641,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $child_entity_1_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $change_child1_id);
 
         // Create a problem in child entity 2
         $problem_child2_id = $this->createItem(
-            Problem::class,
+            \Problem::class,
             [
                 'name' => 'Test problem in child entity 2',
                 'content' => 'Test content',
@@ -668,11 +652,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $child_entity_2_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $problem_child2_id);
 
         // Link the ticket to the change
         $this->createItem(
-            Change_Ticket::class,
+            \Change_Ticket::class,
             [
                 'tickets_id' => $ticket_root_id,
                 'changes_id' => $change_child1_id,
@@ -681,7 +664,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         );
         // Link the ticket to the problem
         $this->createItem(
-            Problem_Ticket::class,
+            \Problem_Ticket::class,
             [
                 'tickets_id' => $ticket_root_id,
                 'problems_id' => $problem_child2_id,
@@ -725,7 +708,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Create a ticket in root entity
         $ticket_root_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket for countAllLinks',
                 'content' => 'Test content',
@@ -733,11 +716,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $root_entity_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $ticket_root_id);
 
         // Create linked tickets in child entities
         $ticket_child1_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket child 1 for countAllLinks',
                 'content' => 'Test content',
@@ -745,10 +727,9 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
                 'entities_id' => $child_entity_1_id,
             ]
         )->getID();
-        $this->assertGreaterThan(0, $ticket_child1_id);
 
         $ticket_child2_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket child 2 for countAllLinks',
                 'content' => 'Test content',
@@ -760,7 +741,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Link tickets
         $this->createItem(
-            Ticket_Ticket::class,
+            \Ticket_Ticket::class,
             [
                 'tickets_id_1' => $ticket_root_id,
                 'tickets_id_2' => $ticket_child1_id,
@@ -768,7 +749,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
             ]
         );
         $this->createItem(
-            Ticket_Ticket::class,
+            \Ticket_Ticket::class,
             [
                 'tickets_id_1' => $ticket_root_id,
                 'tickets_id_2' => $ticket_child2_id,
@@ -808,7 +789,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Create a ticket
         $ticket_id = $this->createItem(
-            Ticket::class,
+            \Ticket::class,
             [
                 'name' => 'Test ticket for self-link prevention',
                 'content' => 'Test content',
@@ -836,7 +817,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Same test for Change
         $change_id = $this->createItem(
-            Change::class,
+            \Change::class,
             [
                 'name' => 'Test change for self-link prevention',
                 'content' => 'Test content',
@@ -855,7 +836,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
 
         // Same test for Problem
         $problem_id = $this->createItem(
-            Problem::class,
+            \Problem::class,
             [
                 'name' => 'Test problem for self-link prevention',
                 'content' => 'Test content',
