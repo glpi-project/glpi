@@ -230,7 +230,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
                 'jointype'           => 'child',
             ],
             'computation' => new QueryExpression(
-                expression: QueryFunction::sum(new QueryExpression("CASE WHEN " . $DB::quoteName('TABLE.date_out') . " IS NULL THEN 1 ELSE 0 END"))
+                expression: QueryFunction::sum(new QueryExpression("CASE WHEN " . $DB::quoteName('TABLE.date_out') . " IS NOT NULL THEN 1 ELSE 0 END"))
             ),
         ];
 
@@ -248,7 +248,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
                 'jointype'           => 'child',
             ],
             'computation' => new QueryExpression(
-                expression: QueryFunction::sum(new QueryExpression("CASE WHEN " . $DB::quoteName('TABLE.date_out') . " IS NOT NULL THEN 1 ELSE 0 END"))
+                expression: QueryFunction::sum(new QueryExpression("CASE WHEN " . $DB::quoteName('TABLE.date_out') . " IS NULL THEN 1 ELSE 0 END"))
             ),
         ];
 
