@@ -37,4 +37,5 @@ namespace Glpi\Knowbase;
 enum EditorActionType: string
 {
     case LOAD_SIDE_PANEL = 'LOAD_SIDE_PANEL';
+    case TOGGLE_VALUE = 'TOGGLE_VALUE';
 }
