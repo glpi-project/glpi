@@ -36,6 +36,7 @@ namespace test\units\Glpi\Helpdesk;
 
 use CommonITILActor;
 use Computer;
+use Document_Item;
 use Entity;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
@@ -52,6 +53,7 @@ use ITILCategory;
 use Location;
 use Monitor;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Ramsey\Uuid\Uuid;
 use Session;
 use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
@@ -162,6 +164,15 @@ final class DefaultDataManagerTest extends DbTestCase
         $tech_user_id = getItemByTypeName(User::class, "tech", true);
         $normal_user_id = getItemByTypeName(User::class, "normal", true);
 
+        // Arrange: create a temporary file to upload
+        $prefix = uniqid(more_entropy: true);
+        $uuid = Uuid::uuid4()->toString();
+        file_put_contents(GLPI_TMP_DIR . '/' . "$prefix" . 'foo.txt', 'content');
+
+        // Arrange: store prefix and tag in $_POST as done by the form
+        $_POST['_prefix_answers_' . $this->getQuestionId($form, 'Attachments')] = $prefix;
+        $_POST['_tag_answers_' . $this->getQuestionId($form, 'Attachments')] = $uuid;
+
         // Act: submit the default incident form
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
             'Title' => 'My ticket title',
@@ -184,12 +195,21 @@ final class DefaultDataManagerTest extends DbTestCase
                 Monitor::class . '_' . $monitors[0]->getID(),
                 Monitor::class . '_' . $monitors[1]->getID(),
             ],
+        ], [
+            'filename' => [$prefix . 'foo.txt'],
+            'prefix'   => [$prefix],
+            'tag'      => [$uuid],
         ]);
 
         // Assert: check the created ticket properties
         $this->assertEquals(Ticket::INCIDENT_TYPE, $ticket->fields['type']);
         $this->assertEquals('My ticket title', $ticket->fields['name']);
         $this->assertEquals('My ticket content', $ticket->fields['content']);
+        $this->assertCount(4, $ticket->getTimelineItems());
+        $this->assertNotEmpty(array_filter(
+            $ticket->getTimelineItems(),
+            fn($item) => $item['type'] == Document_Item::class
+        ));
         $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
         $this->assertEquals($location->getID(), $ticket->fields['locations_id']);
         $this->assertEquals(
@@ -290,6 +310,15 @@ final class DefaultDataManagerTest extends DbTestCase
         $tech_user_id = getItemByTypeName(User::class, "tech", true);
         $normal_user_id = getItemByTypeName(User::class, "normal", true);
 
+        // Arrange: create a temporary file to upload
+        $prefix = uniqid(more_entropy: true);
+        $uuid = Uuid::uuid4()->toString();
+        file_put_contents(GLPI_TMP_DIR . '/' . "$prefix" . 'foo.txt', 'content');
+
+        // Arrange: store prefix and tag in $_POST as done by the form
+        $_POST['_prefix_answers_' . $this->getQuestionId($form, 'Attachments')] = $prefix;
+        $_POST['_tag_answers_' . $this->getQuestionId($form, 'Attachments')] = $uuid;
+
         // Act: submit the default incident form
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
             'Title' => 'My ticket title',
@@ -312,12 +341,22 @@ final class DefaultDataManagerTest extends DbTestCase
                 Monitor::class . '_' . $monitors[0]->getID(),
                 Monitor::class . '_' . $monitors[1]->getID(),
             ],
+            'Attachments' => [$prefix . 'foo.txt'],
+        ], [
+            'filename' => [$prefix . 'foo.txt'],
+            'prefix'   => [$prefix],
+            'tag'      => [$uuid],
         ]);
 
         // Assert: check the created ticket properties
         $this->assertEquals(Ticket::DEMAND_TYPE, $ticket->fields['type']);
         $this->assertEquals('My ticket title', $ticket->fields['name']);
         $this->assertEquals('My ticket content', $ticket->fields['content']);
+        $this->assertCount(4, $ticket->getTimelineItems());
+        $this->assertNotEmpty(array_filter(
+            $ticket->getTimelineItems(),
+            fn($item) => $item['type'] == Document_Item::class
+        ));
         $this->assertEquals($category->getID(), $ticket->fields['itilcategories_id']);
         $this->assertEquals($location->getID(), $ticket->fields['locations_id']);
         $this->assertEquals(5, $ticket->fields['urgency']);
