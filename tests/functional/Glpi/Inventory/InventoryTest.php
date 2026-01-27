@@ -9723,6 +9723,73 @@ JSON;
         $this->assertNotEquals(0, $computer->fields['manufacturers_id']);
         $this->assertTrue($manufacturer->getFromDB($computer->fields['manufacturers_id']));
         $this->assertSame('AnotherManufacturer', $manufacturer->fields['name']);
+    }
 
+    public function testNetdiscoUpdateComputer(): void
+    {
+        $json_source = <<<JSON
+{
+   "action": "inventory",
+   "content": {
+      "bios": {
+         "msn": "190653192602777"
+      },
+      "hardware": {
+         "name": "Computer inventoried name",
+         "uuid": "ea38cc5b-92eb-18b6-ec5e-04d9f521c777"
+      },
+
+      "networks": [
+         {
+            "description": "enp6s0",
+            "driver": "r8169",
+            "ipaddress": "192.168.1.135",
+            "ipgateway": "192.168.1.254",
+            "ipmask": "255.255.255.0",
+            "ipsubnet": "192.168.1.0",
+            "mac": "04:d9:f5:21:c6:77",
+            "pciid": "10EC:8168:1043:8677",
+            "pcislot": "0000:06:00.0",
+            "speed": "1000",
+            "status": "up",
+            "type": "ethernet",
+            "virtualdev": false
+         }
+      ],
+      "versionclient": "GLPI-Agent_v1.0.0"
+   },
+   "deviceid": "test-computer",
+   "itemtype": "Computer"
+}
+JSON;
+
+        $inv = $this->doInventory(json_decode($json_source));
+
+        //check created computer
+        $computer = $inv->getItem();
+        $this->assertSame('Computer inventoried name', $computer->fields['name']);
+        $computers_id = $computer->getID();
+
+        $xml_source = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <DNSHOSTNAME>192.168.1.135</DNSHOSTNAME>
+      <IP>192.168.1.135</IP>
+      <MAC>04:d9:f5:21:c6:77</MAC>
+    </DEVICE>
+    <MODULEVERSION>6.8</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>NETDISCOVERY</QUERY>
+</REQUEST>
+XML;
+
+        $this->doInventory($xml_source, true);
+        $this->assertTrue($computer->getFromDB($computers_id));
+        //check computer name has not changed
+        $this->assertSame('Computer inventoried name', $computer->fields['name']);
     }
 }
