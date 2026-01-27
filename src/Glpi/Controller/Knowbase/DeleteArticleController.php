@@ -32,11 +32,35 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase;
+namespace Glpi\Controller\Knowbase;
 
-enum EditorActionType: string
+use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
+use KnowbaseItem;
+use Session;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+final class DeleteArticleController extends AbstractController
 {
-    case LOAD_SIDE_PANEL = 'LOAD_SIDE_PANEL';
-    case TOGGLE_VALUE = 'TOGGLE_VALUE';
-    case DELETE_ARTICLE = 'DELETE_ARTICLE';
+    use CrudControllerTrait;
+
+    #[Route(
+        "/Knowbase/KnowbaseItem/{id}/Delete",
+        name: "knowbase_article_delete",
+        methods: ["POST"],
+        requirements: [
+            'id' => '\d+',
+        ]
+    )]
+    public function __invoke(int $id): Response
+    {
+        $this->delete(KnowbaseItem::class, $id);
+        Session::addMessageAfterRedirect(__s('Item successfully deleted.'));
+
+        return new JsonResponse([
+            'redirect' => KnowbaseItem::getSearchURL(),
+        ]);
+    }
 }

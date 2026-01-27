@@ -60,4 +60,21 @@ trait CrudControllerTrait
 
         return $item;
     }
+
+    private function delete(string $class, int $id): void
+    {
+        $item = getItemForItemtype($class);
+        if (!$item->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $input = ['id' => $id];
+        if (!$item->can($id, DELETE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if (!$item->delete($input)) {
+            throw new RuntimeException("Failed to delete item");
+        }
+    }
 }

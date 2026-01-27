@@ -35,16 +35,15 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Controller\CrudControllerTrait;
 use KnowbaseItem_Comment;
-use RuntimeException;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class DeleteCommentController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
         "/Knowbase/Comment/{id}/Delete",
         name: "knowbase_comment_delete",
@@ -55,23 +54,7 @@ final class DeleteCommentController extends AbstractController
     )]
     public function __invoke(int $id): Response
     {
-        $comment = new KnowbaseItem_Comment();
-        if (!$comment->getFromDB($id)) {
-            throw new NotFoundHttpException();
-        }
-
-        $input = ['id' => $id];
-        if (!$comment->can($id, DELETE, $input)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        $success = $comment->delete($input);
-        if (!$success) {
-            throw new RuntimeException("Failed to delete comment");
-        }
-
-        return new JsonResponse([
-            'success' => true,
-        ]);
+        $this->delete(KnowbaseItem_Comment::class, $id);
+        return new Response(); // OK
     }
 }
