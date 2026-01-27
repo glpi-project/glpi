@@ -219,8 +219,8 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                     break;
                                 }
 
-                                $users_id_requester = array_map('intval', $input['_users_id_requester']);
-                                $manager_groups_ids = $this->getUserManagersGroupsIds($users_id_requester);
+                                $users_ids = array_map('intval', $input['_users_id_requester']);
+                                $manager_groups_ids = $this->getUserManagersGroupsIds($users_ids);
 
                                 // add these manager groups ids to output['_groups_id_requester']
                                 if (!isset($output['_groups_id_requester'])) {
@@ -232,6 +232,15 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
 
                             case 'users_id_validate_assign_supervisor':
                                 $output['_add_validation'][] = 'assign_supervisor';
+                                //
+                                $users_ids = array_map('intval', $input['_users_id_assign']);
+                                $manager_groups_ids = $this->getUserManagersGroupsIds($users_ids);
+
+                                // add these manager groups ids to output['_groups_id_requester']
+                                if (!isset($output['_groups_id_assign'])) {
+                                    $output['_groups_id_assign'] = [];
+                                }
+                                $output['_groups_id_assign'] = array_merge($manager_groups_ids, $output['_groups_id_assign']);
                                 break;
 
                             case 'groups_id_validate':
@@ -1093,7 +1102,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     }
 
     /**
-     * @param  array<int> $users_ids
+     * @param  array<int>|int $users_ids
      * @return array<int>
      */
     private function getUserManagersGroupsIds(array $users_ids): array
