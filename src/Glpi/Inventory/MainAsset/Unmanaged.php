@@ -194,6 +194,9 @@ class Unmanaged extends MainAsset
                 );
                 //manage converted object
                 if (!empty($result) && is_a($result['itemtype'], CommonDBTM::class, true)) {
+                    if (!$this->isSnmpInventoriable((string) $result['itemtype'])) {
+                        return;
+                    }
                     $converted_object = new $result['itemtype']();
                     if ($converted_object->getFromDB($result['id'])) {
                         $this->item = $converted_object;
@@ -234,7 +237,7 @@ class Unmanaged extends MainAsset
         $this->agent->fields['items_id'] = $items_id;
         $this->agent->fields['entities_id'] = $entities_id;
 
-        //check for any old agent to remove only if it an unmanaged
+        //check for any old agent to remove only if it is an unmanaged
         //to prevent agentdeletion from another asset handle by another agent
         if ($need_to_add) {
             $agent = new Agent();
