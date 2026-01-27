@@ -98,12 +98,16 @@ abstract class ItemTranslation extends CommonDBChild
      */
     private function processRichTextFileUploads(): void
     {
+        $language = new CldrLanguage($this->fields['language']);
+        $category_index = $language->getPluralKey(1);
+
         $translations = json_decode($this->fields['translations'], true);
         $translations = $this->addFiles($translations, [
-            'name'          => 'one',
-            'content_field' => 'one',
+            'name'          => $category_index,
+            'content_field' => $category_index,
         ]);
-        $translations = ['one' => $translations['one'] ?? ''];
+
+        $translations = [$category_index => $translations[$category_index] ?? ''];
         $this->fields['translations'] = json_encode($translations);
         $this->updateInDB(['translations']);
     }
