@@ -44,7 +44,6 @@ use Glpi\Form\Comment;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
