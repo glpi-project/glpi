@@ -33,6 +33,7 @@
 /* global glpi_toast_error, glpi_toast_info, getAjaxCsrfToken */
 
 import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
+import { KnowbaseEditor } from "../KnowbaseEditor.js";
 
 export class GlpiKnowbaseArticleController
 {
@@ -47,19 +48,19 @@ export class GlpiKnowbaseArticleController
     #side_panel;
 
     /**
-     * @type {object|null}
+     * @type {KnowbaseEditor|null}
      */
     #editor = null;
 
     /**
      * @type {string}
      */
-    #originalContent = '';
+    #original_content = '';
 
     /**
      * @type {number|null}
      */
-    #itemId = null;
+    #item_id = null;
 
     constructor(container, side_panel_container)
     {
@@ -67,7 +68,7 @@ export class GlpiKnowbaseArticleController
         this.#side_panel = new GlpiKnowbaseArticleSidePanelController(
             side_panel_container,
         );
-        this.#itemId = parseInt(container.dataset.glpiKbItemId, 10) || null;
+        this.#item_id = parseInt(container.dataset.glpiKbItemId, 10) || null;
 
         this.#initEventListeners();
         this.#initEditor();
@@ -109,8 +110,8 @@ export class GlpiKnowbaseArticleController
 
         for (const [key, value] of Object.entries(dataset)) {
             if (key.startsWith(prefix)) {
-                const paramName = key.slice(prefix.length).toLowerCase();
-                params[paramName] = value;
+                const param_name = key.slice(prefix.length).toLowerCase();
+                params[param_name] = value;
             }
         }
 
@@ -122,36 +123,26 @@ export class GlpiKnowbaseArticleController
      */
     async #initEditor()
     {
-        const canEdit = this.#container.dataset.glpiKbCanEdit === 'true';
-        if (!canEdit) {
+        const can_edit = this.#container.dataset.glpiKbCanEdit === 'true';
+        if (!can_edit) {
             return;
         }
 
-        const editorElement = this.#container.querySelector('#kb-tiptap-editor');
-        const editButton = this.#container.querySelector('[data-action="toggle-edit"]');
-        const saveButton = this.#container.querySelector('[data-action="save"]');
-        const cancelButton = this.#container.querySelector('[data-action="cancel"]');
+        const editor_element = this.#container.querySelector('#kb-tiptap-editor');
+        const edit_button = this.#container.querySelector('[data-action="toggle-edit"]');
+        const save_button = this.#container.querySelector('[data-action="save"]');
+        const cancel_button = this.#container.querySelector('[data-action="cancel"]');
 
-        if (!editorElement || !editButton) {
-            return;
-        }
-
-        // Dynamic import of KnowbaseEditor module
-        let KnowbaseEditor;
-        try {
-            const module = await import("../KnowbaseEditor.js");
-            KnowbaseEditor = module.KnowbaseEditor;
-        } catch (error) {
-            console.error('[KnowbaseEditor] Failed to load module:', error);
+        if (!editor_element || !edit_button) {
             return;
         }
 
         // Store original content for cancel functionality
-        this.#originalContent = editorElement.innerHTML;
+        this.#original_content = editor_element.innerHTML;
 
         // Initialize editor in readonly mode
-        this.#editor = new KnowbaseEditor(editorElement, {
-            content: this.#originalContent,
+        this.#editor = new KnowbaseEditor(editor_element, {
+            content: this.#original_content,
             readonly: true,
             placeholder: __("Start writing..."),
             onUpdate: () => {
@@ -160,44 +151,49 @@ export class GlpiKnowbaseArticleController
         });
 
         // Toggle edit mode
-        editButton.addEventListener('click', () => {
+        edit_button.addEventListener('click', () => {
             this.#editor.setEditable(true);
             this.#editor.focus();
-            editButton.classList.add('d-none');
-            saveButton.classList.remove('d-none');
-            cancelButton.classList.remove('d-none');
+            edit_button.classList.add('d-none');
+            save_button.classList.remove('d-none');
+            cancel_button.classList.remove('d-none');
         });
 
         // Cancel editing
-        cancelButton.addEventListener('click', () => {
-            this.#editor.setContent(this.#originalContent);
+        cancel_button.addEventListener('click', () => {
+            this.#editor.setContent(this.#original_content);
             this.#editor.setEditable(false);
-            editButton.classList.remove('d-none');
-            saveButton.classList.add('d-none');
-            cancelButton.classList.add('d-none');
+            edit_button.classList.remove('d-none');
+            save_button.classList.add('d-none');
+            cancel_button.classList.add('d-none');
         });
 
         // Save content
-        saveButton.addEventListener('click', async () => {
-            await this.#saveContent(editButton, saveButton, cancelButton);
+        save_button.addEventListener('click', async () => {
+            await this.#saveContent(edit_button, save_button, cancel_button);
         });
     }
 
     /**
      * Save the editor content
-     * @param {HTMLElement} editButton
-     * @param {HTMLElement} saveButton
-     * @param {HTMLElement} cancelButton
+     * @param {HTMLElement} edit_button
+     * @param {HTMLElement} save_button
+     * @param {HTMLElement} cancel_button
      */
-    async #saveContent(editButton, saveButton, cancelButton)
+    async #saveContent(edit_button, save_button, cancel_button)
     {
-        const originalButtonHtml = saveButton.innerHTML;
-        saveButton.disabled = true;
-        saveButton.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
+        if (this.#item_id === null) {
+            glpi_toast_error(__("Cannot save: article ID is missing"));
+            return;
+        }
+
+        const original_button_html = save_button.innerHTML;
+        save_button.disabled = true;
+        save_button.innerHTML = `<i class="ti ti-loader me-1"></i>${__("Saving...")}`;
 
         try {
             const response = await fetch(
-                `${CFG_GLPI.root_doc}/Knowbase/KnowbaseItem/${this.#itemId}/Answer`,
+                `${CFG_GLPI.root_doc}/Knowbase/KnowbaseItem/${this.#item_id}/Answer`,
                 {
                     method: 'POST',
                     headers: {
@@ -211,30 +207,24 @@ export class GlpiKnowbaseArticleController
                 }
             );
 
-            const result = await response.json();
-
-            if (result.success) {
-                // Update original content for future cancel operations
-                this.#originalContent = this.#editor.getHTML();
-                this.#editor.setEditable(false);
-                editButton.classList.remove('d-none');
-                saveButton.classList.add('d-none');
-                cancelButton.classList.add('d-none');
-
-                // Show success notification
-                if (typeof glpi_toast_info === 'function') {
-                    glpi_toast_info(__("Article saved successfully"));
-                }
-            } else {
-                throw new Error(result.message || __("Failed to save"));
+            if (!response.ok) {
+                throw new Error(__("Failed to save"));
             }
+
+            // Update original content for future cancel operations
+            this.#original_content = this.#editor.getHTML();
+            this.#editor.setEditable(false);
+            edit_button.classList.remove('d-none');
+            save_button.classList.add('d-none');
+            cancel_button.classList.add('d-none');
+
+            // Show success notification
+            glpi_toast_info(__("Article saved successfully"));
         } catch (error) {
-            if (typeof glpi_toast_error === 'function') {
-                glpi_toast_error(error.message || __("An error occurred while saving"));
-            }
+            glpi_toast_error(error.message || __("An error occurred while saving"));
         } finally {
-            saveButton.disabled = false;
-            saveButton.innerHTML = originalButtonHtml;
+            save_button.disabled = false;
+            save_button.innerHTML = original_button_html;
         }
     }
 }
