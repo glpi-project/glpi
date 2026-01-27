@@ -57,6 +57,16 @@
                                 >
                                     <i class="{{ action.icon }}"></i>
                                     <span>{{ action.label }}</span>
+
+                                    {% if action.type.value == "TOGGLE_VALUE" %}
+                                        <label class="form-check form-switch ms-auto mb-0">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input"
+                                                {{ action.params.checked ? 'checked' : '' }}
+                                            >
+                                        </label>
+                                    {% endif %}
                                 </button>
                             </li>
                         {% endfor %}
