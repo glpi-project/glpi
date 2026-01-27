@@ -7973,13 +7973,13 @@ abstract class CommonITILObject extends CommonDBTM
         $can_view_itilobject = [
             Ticket::class => [
                 Ticket::READALL, Ticket::READMY, UPDATE,
-                Ticket::READASSIGN, Ticket::READGROUP, Ticket::OWN, READ
+                Ticket::READASSIGN, Ticket::READGROUP, Ticket::OWN, READ,
             ],
             Change::class => [
-                Change::READALL, Change::READMY
+                Change::READALL, Change::READMY,
             ],
             Problem::class => [
-                Problem::READALL, Problem::READMY
+                Problem::READALL, Problem::READMY,
             ],
         ];
 
