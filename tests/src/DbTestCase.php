@@ -268,7 +268,7 @@ class DbTestCase extends GLPITestCase
      *
      * @template T of CommonDBTM
      * @param class-string<T> $itemtype
-     * @param array $input
+     * @param array $input // @todo mettre à null et utiliser $this->getMinimal...
      * @param array $skip_fields Fields that won't be checked after creation
      *
      * @return T

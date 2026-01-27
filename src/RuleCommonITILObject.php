@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QuerySubQuery;
 
 use function Safe\preg_match;
 
@@ -220,7 +219,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                 }
 
                                 $users_ids = array_map('intval', $input['_users_id_requester']);
-                                $manager_groups_ids = $this->getUserManagersGroupsIds($users_ids);
+                                $manager_groups_ids = Group_User::getManagedGroupsIdsForUsers($users_ids);
 
                                 // add these manager groups ids to output['_groups_id_requester']
                                 if (!isset($output['_groups_id_requester'])) {
@@ -234,7 +233,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                 $output['_add_validation'][] = 'assign_supervisor';
                                 //
                                 $users_ids = array_map('intval', $input['_users_id_assign']);
-                                $manager_groups_ids = $this->getUserManagersGroupsIds($users_ids);
+                                $manager_groups_ids = Group_User::getManagedGroupsIdsForUsers($users_ids);
 
                                 // add these manager groups ids to output['_groups_id_requester']
                                 if (!isset($output['_groups_id_assign'])) {
@@ -1099,32 +1098,5 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
     {
         $itemtype = static::getItemtype();
         return $itemtype::getIcon();
-    }
-
-    /**
-     * @param  array<int>|int $users_ids
-     * @return array<int>
-     */
-    private function getUserManagersGroupsIds(array $users_ids): array
-    {
-        global $DB;
-
-        $managers_rows = iterator_to_array(
-            $DB->request([
-                'SELECT' => 'groups_id',
-                'FROM'   => 'glpi_groups_users',
-                'WHERE'  => [
-                    'groups_id' => new QuerySubQuery([
-                        'SELECT'   => 'groups_id',
-                        'DISTINCT' => true,
-                        'FROM'     => 'glpi_groups_users',
-                        'WHERE'    => ['users_id' => $users_ids],
-                    ]),
-                    'is_manager' => 1,
-                ],
-            ])
-        );
-
-        return array_column($managers_rows, 'groups_id');
     }
 }

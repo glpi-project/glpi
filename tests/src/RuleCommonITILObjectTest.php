@@ -1662,7 +1662,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
-     * Add an approval to the manager of the requester's group via a Rule Action
+     * Add approvals to the managers of the requester's groups
      */
     public function testApprovalRequestToRequesterGroupManager(): void
     {
@@ -1729,7 +1729,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
     }
 
     /**
-     * Add an approval to the manager of the requester's group via a Rule Action
+     * Add approvals to the managers of the tech's groups
      */
     public function testApprovalRequestToTechGroupManager(): void
     {
