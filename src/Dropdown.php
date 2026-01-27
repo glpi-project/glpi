@@ -3592,6 +3592,42 @@ HTML;
                     }
                     break;
 
+                case Change::class:
+                    $criteria = [
+                        'SELECT' => array_merge(["$table.*"], $addselect),
+                        'FROM'   => $table,
+                    ];
+                    if (count($ljoin)) {
+                        $criteria['LEFT JOIN'] = $ljoin;
+                    }
+                    if (!Session::haveRight(Change::$rightname, Change::READALL)) {
+                        $unused_ref = [];
+                        $joins_str = Search::addDefaultJoin(Change::class, Change::getTable(), $unused_ref);
+                        if (!empty($joins_str)) {
+                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        }
+                        $where[] = new QueryExpression(Search::addDefaultWhere(Change::class));
+                    }
+                    break;
+
+                case Problem::class:
+                    $criteria = [
+                        'SELECT' => array_merge(["$table.*"], $addselect),
+                        'FROM'   => $table,
+                    ];
+                    if (count($ljoin)) {
+                        $criteria['LEFT JOIN'] = $ljoin;
+                    }
+                    if (!Session::haveRight(Problem::$rightname, Problem::READALL)) {
+                        $unused_ref = [];
+                        $joins_str = Search::addDefaultJoin(Problem::class, Problem::getTable(), $unused_ref);
+                        if (!empty($joins_str)) {
+                            $criteria['LEFT JOIN'] = [new QueryExpression($joins_str)];
+                        }
+                        $where[] = new QueryExpression(Search::addDefaultWhere(Problem::class));
+                    }
+                    break;
+
                 case Project::getType():
                     $visibility = Project::getVisibilityCriteria();
                     if (count($visibility['LEFT JOIN'])) {

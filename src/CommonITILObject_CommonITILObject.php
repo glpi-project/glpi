@@ -283,10 +283,11 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
      * @param int $items_id ID of the ITIL Object
+     * @param bool $check_view_rights Whether to check view rights on linked items
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
-    public static function getLinkedTo(string $itemtype, int $items_id): array
+    public static function getLinkedTo(string $itemtype, int $items_id, bool $check_view_rights = false): array
     {
         if (static::class === self::class) {
             throw new LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
@@ -349,6 +350,14 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 }
             }
 
+            // Check view rights on linked item if requested
+            if ($check_view_rights) {
+                $linked_item = getItemForItemtype($link['itemtype']);
+                if ($linked_item === false || !$linked_item->can($link['items_id'], READ)) {
+                    continue;
+                }
+            }
+
             $links[static::class . '_' . $link['id']] = $link;
         }
 
@@ -362,10 +371,11 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
      * @param int $items_id ID of the ITIL Object
+     * @param bool $check_view_rights Whether to check view rights on linked items
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
-    public static function getAllLinkedTo(string $itemtype, int $items_id): array
+    public static function getAllLinkedTo(string $itemtype, int $items_id, bool $check_view_rights = false): array
     {
         $link_classes = self::getAllLinkClasses();
         $links = [];
@@ -373,7 +383,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         foreach ($link_classes as $link_class) {
             // If the link class is for the given itemtype
             if ($link_class::$itemtype_1 === $itemtype || $link_class::$itemtype_2 === $itemtype) {
-                $links = array_merge($links, $link_class::getLinkedTo($itemtype, $items_id));
+                $links = array_merge($links, $link_class::getLinkedTo($itemtype, $items_id, $check_view_rights));
             }
         }
 
@@ -499,12 +509,13 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @param string $itemtype
      * @param int $items_id
+     * @param bool $check_view_rights Whether to check view rights on linked items
      *
      * @return int
      */
-    public static function countAllLinks(string $itemtype, int $items_id): int
+    public static function countAllLinks(string $itemtype, int $items_id, bool $check_view_rights = false): int
     {
-        $links = static::getAllLinkedTo($itemtype, $items_id);
+        $links = static::getAllLinkedTo($itemtype, $items_id, $check_view_rights);
         return count($links);
     }
 

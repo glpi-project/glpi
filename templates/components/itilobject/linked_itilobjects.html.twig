@@ -33,7 +33,7 @@
 <input type="hidden" name="_link[itemtype_1]" value="{{ item.getType() }}" />
 <input type="hidden" name="_link[items_id_1]" value="{{ item.fields['id'] }}" />
 
-{% set linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::getAllLinkedTo', [item.getType(), item.getId()]) %}
+{% set linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::getAllLinkedTo', [item.getType(), item.getId(), true]) %}
 {% if linked_itilobjects|length %}
    <div class="card">
       <div class="list-group list-group-flush list-group-hoverable">
@@ -99,7 +99,8 @@
             'itemtype_name': '_link[itemtype_2]',
             'itemtypes': ['Ticket', 'Change', 'Problem'],
             'checkright': true,
-            'entity_restrict': session('glpiactive_entity'),
+            'entity_restrict': -1,
+            'used': {(item.getType()): [item.fields['id']]},
             'default_itemtype': params['_link']['itemtype_2'] ?? '',
             'default_items_id': params['_link']['items_id_2'] ?? ''
          }]) %}
