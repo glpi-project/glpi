@@ -44,6 +44,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
@@ -674,6 +675,7 @@ trait FormTesterTrait
     protected function sendFormAndGetAnswerSet(
         Form $form,
         array $answers = [],
+        array $files = [],
     ): AnswersSet {
         // The provider use a simplified answer format to be more readable.
         // Rewrite answers into expected format.
@@ -692,15 +694,17 @@ trait FormTesterTrait
         return $answers_handler->saveAnswers(
             $form,
             $formatted_answers,
-            getItemByTypeName(User::class, TU_USER, true)
+            getItemByTypeName(User::class, TU_USER, true),
+            $files
         );
     }
 
     protected function sendFormAndGetCreatedTicket(
         Form $form, // We assume $form has a single "Ticket" destination
         array $answers = [],
+        array $files = [],
     ): Ticket {
-        $answers = $this->sendFormAndGetAnswerSet($form, $answers);
+        $answers = $this->sendFormAndGetAnswerSet($form, $answers, $files);
 
         // Get created ticket
         $created_items = $answers->getCreatedItems();
