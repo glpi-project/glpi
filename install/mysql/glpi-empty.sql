@@ -8589,6 +8589,7 @@ CREATE TABLE `glpi_pdus` (
   `last_inventory_update` timestamp NULL DEFAULT NULL,
   `snmpcredentials_id` int unsigned NOT NULL DEFAULT '0',
   `autoupdatesystems_id` int unsigned NOT NULL DEFAULT '0',
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `is_template` tinyint NOT NULL DEFAULT '0',
   `template_name` varchar(255) DEFAULT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
@@ -8614,7 +8615,8 @@ CREATE TABLE `glpi_pdus` (
   KEY `date_creation` (`date_creation`),
   KEY `date_mod` (`date_mod`),
   KEY `snmpcredentials_id` (`snmpcredentials_id`),
-  KEY `autoupdatesystems_id` (`autoupdatesystems_id`)
+  KEY `autoupdatesystems_id` (`autoupdatesystems_id`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 DROP TABLE IF EXISTS `glpi_plugs`;
