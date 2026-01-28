@@ -39,6 +39,7 @@
       <div class="list-group list-group-flush list-group-hoverable">
          {% for id, linked in linked_itilobjects %}
             {% set new_itilobject = get_item(linked['itemtype'], linked['items_id']) %}
+            {% set can_view_item = new_itilobject.canViewItem() %}
             <div class="list-group-item">
                <div class="row">
                   <div class="col-auto">
@@ -49,14 +50,24 @@
                      ])|raw }}
                   </div>
                   <div class="col text-truncate">
-                     <a href="{{ linked['itemtype']|itemtype_form_path(linked['items_id']) }}" class="col-9 overflow-hidden text-nowrap">
-                        <i class="{{ linked['itemtype']|itemtype_icon }}" title="{{ linked['itemtype']|itemtype_name }}" data-bs-toggle="tootlip"></i>
-                        {{ new_itilobject.getStatusIcon(new_itilobject.fields['status'])|raw }}
-                        <span title="{{ new_itilobject.fields['name'] }}" data-bs-toggle="tooltip">
-                     {{ new_itilobject.fields['name'] }}
-                  </span>
-                        ({{ new_itilobject.fields['id'] }})
-                     </a>
+                     {% if can_view_item %}
+                        <a href="{{ linked['itemtype']|itemtype_form_path(linked['items_id']) }}" class="col-9 overflow-hidden text-nowrap">
+                           <i class="{{ linked['itemtype']|itemtype_icon }}" title="{{ linked['itemtype']|itemtype_name }}" data-bs-toggle="tooltip"></i>
+                           {{ new_itilobject.getStatusIcon(new_itilobject.fields['status'])|raw }}
+                           <span title="{{ new_itilobject.fields['name'] }}" data-bs-toggle="tooltip">
+                              {{ new_itilobject.fields['name'] }}
+                           </span>
+                           ({{ new_itilobject.fields['id'] }})
+                        </a>
+                     {% else %}
+                        <span class="col-9 overflow-hidden text-nowrap text-muted">
+                           <i class="{{ linked['itemtype']|itemtype_icon }}" title="{{ linked['itemtype']|itemtype_name }}" data-bs-toggle="tooltip"></i>
+                           <span title="{{ new_itilobject.fields['name'] }}" data-bs-toggle="tooltip">
+                              {{ new_itilobject.fields['name'] }}
+                           </span>
+                           ({{ new_itilobject.fields['id'] }})
+                        </span>
+                     {% endif %}
                   </div>
 
                   {% if canupdate %}
@@ -87,11 +98,10 @@
    {% for linked in linked_itilobjects %}
       {% set linked_type = linked['itemtype'] %}
       {% set linked_id = linked['items_id'] %}
-      {% if used_items[linked_type] is defined %}
-         {% set used_items = used_items|merge({(linked_type): used_items[linked_type]|merge([linked_id])}) %}
-      {% else %}
-         {% set used_items = used_items|merge({(linked_type): [linked_id]}) %}
+      {% if used_items[linked_type] is not defined %}
+         {% set used_items = used_items|merge({(linked_type): []}) %}
       {% endif %}
+      {% set used_items = used_items|merge({(linked_type): used_items[linked_type]|merge([linked_id])}) %}
    {% endfor %}
 
    <div class="mt-2">
@@ -112,7 +122,6 @@
             'itemtype_name': '_link[itemtype_2]',
             'itemtypes': ['Ticket', 'Change', 'Problem'],
             'checkright': true,
-            'entity_restrict': -1,
             'used': used_items,
             'default_itemtype': params['_link']['itemtype_2'] ?? '',
             'default_items_id': params['_link']['items_id_2'] ?? ''
