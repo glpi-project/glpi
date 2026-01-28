@@ -7098,7 +7098,7 @@ HTML;
      * User has at least one of the rights for given module.
      *
      * @param string  $module Module to check
-     * @param integer $right  Right to check
+     * @param array   $rights Rights to check
      * @param integer $entities_id Entity to check
      *
      * @return boolean|int
