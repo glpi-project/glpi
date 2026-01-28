@@ -54,7 +54,7 @@ class BudgetTest extends DbTestCase
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => 0,
-            'value'       => 10000
+            'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
         $this->assertTrue($budget->getFromDB($budgets_id));
@@ -67,7 +67,7 @@ class BudgetTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name'        => 'Test Computer ' . $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -78,7 +78,7 @@ class BudgetTest extends DbTestCase
             'items_id'    => $computers_id,
             'budgets_id'  => $budgets_id,
             'buy_date'    => date('Y-m-d'),
-            'value'       => 1000
+            'value'       => 1000,
         ]);
         $this->assertGreaterThan(0, $infocoms_id);
 
@@ -91,7 +91,7 @@ class BudgetTest extends DbTestCase
         $computer2 = new \Computer();
         $computers_id2 = $computer2->add([
             'name'        => 'Test Computer 2 ' . $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id2);
 
@@ -100,7 +100,7 @@ class BudgetTest extends DbTestCase
             'items_id'    => $computers_id2,
             'budgets_id'  => $budgets_id,
             'buy_date'    => date('Y-m-d'),
-            'value'       => 2000
+            'value'       => 2000,
         ]);
         $this->assertGreaterThan(0, $infocoms_id2);
 
@@ -122,7 +122,7 @@ class BudgetTest extends DbTestCase
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => 0,
-            'value'       => 10000
+            'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
         $this->assertTrue($budget->getFromDB($budgets_id));
@@ -131,7 +131,7 @@ class BudgetTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name'        => 'Test Computer ' . $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -141,7 +141,7 @@ class BudgetTest extends DbTestCase
             'items_id'    => $computers_id,
             'budgets_id'  => $budgets_id,
             'buy_date'    => date('Y-m-d'),
-            'value'       => 1000
+            'value'       => 1000,
         ]);
         $this->assertGreaterThan(0, $infocoms_id);
 
@@ -153,7 +153,7 @@ class BudgetTest extends DbTestCase
 
         $this->assertIsArray($tabs);
         $this->assertArrayHasKey(2, $tabs);
-        
+
         // The tab should contain a counter badge with value 1
         $tab_html = $tabs[2];
         $this->assertStringContainsString('badge', $tab_html);
@@ -162,10 +162,10 @@ class BudgetTest extends DbTestCase
         // Disable counter display
         $_SESSION['glpishow_count_on_tabs'] = 0;
         $tabs = $budget->getTabNameForItem($budget);
-        
+
         $this->assertIsArray($tabs);
         $this->assertArrayHasKey(2, $tabs);
-        
+
         // The tab should not contain a counter badge
         $tab_html = $tabs[2];
         // When count is 0, no badge is shown
@@ -184,7 +184,7 @@ class BudgetTest extends DbTestCase
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => 0,
-            'value'       => 50000
+            'value'       => 50000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
         $this->assertTrue($budget->getFromDB($budgets_id));
@@ -193,7 +193,7 @@ class BudgetTest extends DbTestCase
         $contract = new \Contract();
         $contracts_id = $contract->add([
             'name'        => 'Test Contract ' . $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $contracts_id);
 
@@ -203,7 +203,7 @@ class BudgetTest extends DbTestCase
             'contracts_id' => $contracts_id,
             'budgets_id'   => $budgets_id,
             'cost'         => 5000,
-            'name'         => 'Test cost'
+            'name'         => 'Test cost',
         ]);
         $this->assertGreaterThan(0, $cost_id);
 
@@ -225,7 +225,7 @@ class BudgetTest extends DbTestCase
         $budgets_id = $budget->add([
             'name'        => 'Test Budget ' . $this->getUniqueString(),
             'entities_id' => 0,
-            'value'       => 10000
+            'value'       => 10000,
         ]);
         $this->assertGreaterThan(0, $budgets_id);
 
@@ -233,7 +233,7 @@ class BudgetTest extends DbTestCase
         $computer = new \Computer();
         $computers_id = $computer->add([
             'name'        => 'Test Computer ' . $this->getUniqueString(),
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -243,7 +243,7 @@ class BudgetTest extends DbTestCase
             'items_id'    => $computers_id,
             'budgets_id'  => $budgets_id,
             'buy_date'    => date('Y-m-d'),
-            'value'       => 1000
+            'value'       => 1000,
         ]);
         $this->assertGreaterThan(0, $infocoms_id);
 
