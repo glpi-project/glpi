@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_ajax_dialog */
 
 import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
 
@@ -80,6 +80,9 @@ export class GlpiKnowbaseArticleController
             case 'LOAD_SIDE_PANEL':
                 this.#side_panel.load(params.id, params.key);
                 break;
+            case 'LOAD_MODAL':
+                this.#loadModal(params.id, params.key, params.title);
+                break;
         }
     }
 
@@ -97,5 +100,20 @@ export class GlpiKnowbaseArticleController
         }
 
         return params;
+    }
+
+    /**
+     * Load content in a modal dialog
+     * @param {string} id - KnowbaseItem ID
+     * @param {string} key - Content key (e.g., 'permissions')
+     * @param {string} title - Modal title
+     */
+    #loadModal(id, key, title)
+    {
+        glpi_ajax_dialog({
+            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/SidePanel/${key}`,
+            title: title || '',
+            dialogclass: 'modal-lg',
+        });
     }
 }

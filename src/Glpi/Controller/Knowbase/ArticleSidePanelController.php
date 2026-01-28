@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\SidePanel\CommentsRenderer;
+use Glpi\Knowbase\SidePanel\PermissionsRenderer;
 use Glpi\Knowbase\SidePanel\RendererInterface;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
@@ -79,8 +80,9 @@ final class ArticleSidePanelController extends AbstractController
     private function getRendererForKey(string $key): RendererInterface
     {
         return match ($key) {
-            'comments' => new CommentsRenderer(),
-            default    => throw new BadRequestHttpException(),
+            'comments'    => new CommentsRenderer(),
+            'permissions' => new PermissionsRenderer(),
+            default       => throw new BadRequestHttpException(),
         };
     }
 }
