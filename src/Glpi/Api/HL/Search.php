@@ -91,6 +91,7 @@ final class Search
     private Parser $rsql_parser;
     private SearchContext $context;
     private DBmysql $db_read;
+    private array $sql_field_cache = [];
 
     public function __construct(array $schema, array $request_params)
     {
@@ -134,8 +135,7 @@ final class Search
 
     public function getSQLFieldForProperty(string $prop_name): string
     {
-        static $cache = [];
-        if (!isset($cache[$prop_name]) || Environment::get() === Environment::TESTING) {
+        if (!isset($this->sql_field_cache[$prop_name]) || Environment::get() === Environment::TESTING) {
             $prop = $this->context->getFlattenedProperties()[$prop_name];
             $is_scalar_join = false;
             $is_join = $this->context->isJoinedProperty($prop_name);
@@ -150,8 +150,8 @@ final class Search
 
             // Computed fields may be used in HAVING clauses so we have no refer to the fields by the alias
             if ($is_computed) {
-                $cache[$prop_name] = str_replace('.', chr(0x1F), trim($prop_name, '.'));
-                return $cache[$prop_name];
+                $this->sql_field_cache[$prop_name] = str_replace('.', chr(0x1F), trim($prop_name, '.'));
+                return $this->sql_field_cache[$prop_name];
             }
 
             if (!$is_join) {
@@ -159,22 +159,22 @@ final class Search
                 // Still need to replace all except the last '.' with 0x1F in case it is a nested property.
                 $sql_field_parts = explode('.', $sql_field);
                 $field_name = array_pop($sql_field_parts);
-                $cache[$prop_name] = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
-                if (!str_contains($cache[$prop_name], chr(0x1F))) {
-                    $cache[$prop_name] = '_.' . $cache[$prop_name];
+                $this->sql_field_cache[$prop_name] = trim(implode(chr(0x1F), $sql_field_parts) . '.' . $field_name, '.');
+                if (!str_contains($this->sql_field_cache[$prop_name], chr(0x1F))) {
+                    $this->sql_field_cache[$prop_name] = '_.' . $this->sql_field_cache[$prop_name];
                 }
             } else {
                 if ($is_scalar_join) {
-                    $cache[$prop_name] = str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
-                    return $cache[$prop_name];
+                    $this->sql_field_cache[$prop_name] = str_replace('.', chr(0x1F), $prop_name) . '.' . $sql_field;
+                    return $this->sql_field_cache[$prop_name];
                 }
                 $join_alias = substr($prop_name, 0, strrpos($prop_name, '.'));
                 $sql_field = trim(preg_replace('/^' . preg_quote($join_alias, '/') . '/', '', $sql_field), '.');
                 $join_alias = str_replace('.', chr(0x1F), trim($join_alias, '.'));
-                $cache[$prop_name] = "{$join_alias}.{$sql_field}";
+                $this->sql_field_cache[$prop_name] = "{$join_alias}.{$sql_field}";
             }
         }
-        return $cache[$prop_name];
+        return $this->sql_field_cache[$prop_name];
     }
 
     /**
