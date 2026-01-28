@@ -75,7 +75,8 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         $this->setName('tools:plugin:release');
         $this->setDescription('Build a GLPI plugin release archive.');
 
-        $this->addOption('version-suffix', 's', InputOption::VALUE_REQUIRED, 'Suffix to append to version name');
+        $this->addOption('ref', 'r', InputOption::VALUE_REQUIRED, 'Git ref to build', 'HEAD');
+        $this->addOption('archive-name', 'a', InputOption::VALUE_REQUIRED, 'Release archive name, default to the Git ref name');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force rebuild even if release exists');
     }
 
@@ -97,20 +98,10 @@ final class PluginReleaseCommand extends AbstractPluginCommand
 
         $this->plugin_name = $this->getPluginName();
 
+        $ref = $input->getOption('ref');
+        $archive_name = $input->getOption('archive-name') ?: $ref;
 
-        // Release
-        $release_version = $this->getPluginVersion();
-        $suffix = $input->getOption('version-suffix');
-
-        $this->io->title("Releasing plugin {$this->plugin_name}...");
-
-        // Prepare Archive Name
-        $archive_name = "glpi-{$this->plugin_name}-{$release_version}";
-        if ($suffix) {
-            $archive_name .= '-' . $suffix;
-        }
-
-        $tarball = $this->dist_dir . DIRECTORY_SEPARATOR . $archive_name . '.tar.bz2';
+        $tarball = $this->dist_dir . DIRECTORY_SEPARATOR . "glpi-{$this->plugin_name}-{$archive_name}.tar.bz2";
 
         if (!$input->getOption('force') && file_exists($tarball)) {
             $this->io->warning("Archive $tarball already exists.");
@@ -119,9 +110,7 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             }
         }
 
-        // Build
-        $ref = $this->commit ?: $release_version;
-        return $this->build($release_version, $ref, $tarball);
+        return $this->build($ref, $tarball);
     }
 
     private function compileMo(): void
@@ -134,47 +123,11 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         $this->getApplication()->doRun($input, $this->output);
     }
 
-    private function getPluginVersion(): string
+    private function build(string $ref, string $dest): int
     {
+        $this->io->title("Releasing plugin {$this->plugin_name}@{$ref}...");
+
         $plugin_dir = $this->getPluginDirectory();
-        $setup_file = $plugin_dir . '/setup.php';
-
-        $this->io->writeln("Extracting plugin version from $setup_file", OutputInterface::VERBOSITY_VERBOSE);
-
-        if (!file_exists($setup_file)) {
-            throw new \RuntimeException("Setup file not found: $setup_file");
-        }
-
-        // Includes are made inside a function to prevent included files to override
-        // variables used in this function.
-        $include_plugin_info_fct = function () use ($setup_file) {
-            include_once $setup_file;
-
-            $function_name = 'plugin_version_' . $this->plugin_name;
-            if (!function_exists($function_name)) {
-                throw new \RuntimeException("Plugin version function not found: $function_name");
-            }
-
-            $plugin_info = $function_name();
-            if (!isset($plugin_info['version'])) {
-                throw new \RuntimeException("Version field not found in $function_name()");
-            }
-            return $plugin_info['version'];
-        };
-        return $include_plugin_info_fct();
-    }
-
-    private function build(string $ver, string $ref, string $dest): int
-    {
-        $plugin_dir = $this->getPluginDirectory();
-        $this->io->section("Building glpi-{$this->plugin_name}-{$ver}");
-
-        $type_str = ($ref !== $ver) ? 'Commit' : 'Tag';
-        if ($this->output->isVerbose()) {
-            $this->io->text("Release name: glpi-{$this->plugin_name}-{$ver}");
-            $this->io->text("{$type_str}: {$ref}");
-            $this->io->text("Dest: {$dest}");
-        }
 
         // git ls-tree
         $process = new Process(['git', 'ls-tree', '-r', $ref, '--name-only'], $plugin_dir);
@@ -214,8 +167,7 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             $cmd[] = $f;
         }
 
-        $type_str = ($ref !== $ver) ? 'commit' : 'tag';
-        $this->io->text("Archiving GIT {$type_str} {$ref}");
+        $this->io->text("Archiving GIT ref {$ref}...");
 
         $process = new Process($cmd, $plugin_dir);
         $process->setTimeout(600);

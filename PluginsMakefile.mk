@@ -85,8 +85,9 @@ locales-compile: ## Compile locales
 	@$(CONSOLE) tools:locales:compile --plugin=$(PLUGIN_DIR)
 .PHONY: locales-compile
 
-plugin-release: ## Build and create plugin release (version is based on setup.php)
-	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR)
+plugin-release: ## Build and create plugin release based on HEAD ref, example: make plugin-release n='1.0.12'
+	@$(eval n ?=)
+	@$(CONSOLE) tools:plugin:release --plugin=$(PLUGIN_DIR) --archive-name=$(n)
 .PHONY: plugin-release
 
 
