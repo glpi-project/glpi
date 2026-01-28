@@ -100,6 +100,24 @@
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
             </form>
 
+            <form
+                id="ch_ent_o_{{ rand }}"
+                method="POST"
+                action="{{ path('/Session/ChangeEntity') }}"
+            >
+                <input type="hidden" name="is_recursive" value="0">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
+
+            <form
+                id="ch_ent_r_{{ rand }}"
+                method="POST"
+                action="{{ path('/Session/ChangeEntity') }}"
+            >
+                <input type="hidden" name="is_recursive" value="1">
+                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+            </form>
+
             <div class="input-group">
                 <input type="text" class="form-control" name="entsearchtext" id="entsearchtext{{ rand }}"
                         placeholder="{{ __('Search entity') }}" autocomplete="off">
@@ -189,7 +207,7 @@
 
                 // load data by ajax
                 source: {
-                    url:  '{{ path("/ajax/entitytreesons.php") }}',
+                    url:  '{{ path("/ajax/entitytreesons.php?rand=" ~ rand) }}',
                     cache: false
                 },
 
