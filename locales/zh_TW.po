@@ -15,7 +15,8 @@
 # ShaoPin Cheng <cjt74392@ms10.hinet.net>, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
-# DWXXX, 2025
+# akong <akong@aspa.idv.tw>, 2026
+# DWXXX, 2026
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +25,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: DWXXX, 2025\n"
+"Last-Translator: DWXXX, 2026\n"
 "Language-Team: Chinese (Taiwan) (https://app.transifex.com/glpi/teams/1637/zh_TW/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -513,7 +514,7 @@ msgstr "到期日"
 
 #: templates/generic_show_form.html.twig
 msgid "Empty for infinite"
-msgstr ""
+msgstr "無限空白"
 
 #: templates/generic_show_form.html.twig
 #: src/NotificationTargetCartridgeItem.php:96
@@ -677,7 +678,7 @@ msgstr "財產編號"
 
 #: templates/generic_show_form.html.twig src/Unmanaged.php:176
 msgid "Sysdescr"
-msgstr ""
+msgstr "系统描述"
 
 #: templates/generic_show_form.html.twig src/RuleDictionnaryPrinter.php:101
 msgid "Management type"
@@ -807,7 +808,7 @@ msgstr "%1$s (%2$s)"
 #: src/DeviceMemory.php:43 src/DeviceMemory.php:254 src/Config.php:1815
 msgid "Memory"
 msgid_plural "Memories"
-msgstr[0] ""
+msgstr[0] "内存"
 
 #: templates/generic_show_form.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
@@ -898,7 +899,7 @@ msgstr "管理所有保存的查询"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "將此面板固定到目前頁面"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Close the panel"
@@ -1030,7 +1031,7 @@ msgstr "結案"
 
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
-msgstr ""
+msgstr "此版本不稳定并且存在安全修复未包括在内。"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -1044,11 +1045,11 @@ msgstr "一個新的可用版本：%s"
 #: templates/layout/parts/impersonate_banner.html.twig
 #, php-format
 msgid "You are impersonating %s."
-msgstr ""
+msgstr "你正在冒充 %s。"
 
 #: templates/layout/parts/impersonate_banner.html.twig
 msgid "Stop impersonating"
-msgstr ""
+msgstr "停止冒充"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Ctrl+Alt+G"
@@ -1064,7 +1065,7 @@ msgstr "查找菜单"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Back to top of the page"
-msgstr ""
+msgstr "回到页面顶端"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Top of the page"
@@ -1090,7 +1091,7 @@ msgstr "⌥ (option) + ⌘ (command) + E"
 #: templates/layout/parts/profile_selector.html.twig src/Html.php:6611
 #, php-format
 msgid "Tip: You can call this modal with %s keys combination"
-msgstr ""
+msgstr "提示：您可以使用 1%s 組合鍵呼叫此模態方塊。"
 
 #: templates/layout/parts/profile_selector.html.twig src/Entity.php:4221
 msgid "+ sub-entities"
@@ -1126,11 +1127,11 @@ msgstr "查找..."
 
 #: templates/layout/parts/page_header.html.twig
 msgid "Collapse menu"
-msgstr ""
+msgstr "收起選單"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "You have not recorded any saved searches yet"
-msgstr ""
+msgstr "您尚未儲存任何搜尋記錄。"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
@@ -1192,11 +1193,11 @@ msgstr "送出"
 
 #: templates/password_form.html.twig
 msgid "Forget it,"
-msgstr ""
+msgstr "放弃，"
 
 #: templates/password_form.html.twig
 msgid "send me back"
-msgstr ""
+msgstr "返回"
 
 #: templates/password_form.html.twig
 msgid "to the login screen."
@@ -1235,7 +1236,7 @@ msgstr ""
 #: templates/components/pager.html.twig
 #, php-format
 msgid "Showing %s to %s of %s rows"
-msgstr ""
+msgstr "顯示 %s 到 %s 行，共 %s 行"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -1373,15 +1374,15 @@ msgstr "沒有發現項目"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as map"
-msgstr ""
+msgstr "顯示為地圖"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle browse"
-msgstr ""
+msgstr "切換瀏覽"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
-msgstr ""
+msgstr "显示垃圾箱"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle search filters"
@@ -1505,12 +1506,12 @@ msgstr "標題"
 #: src/RuleDictionnarySoftware.php:124
 msgid "Category"
 msgid_plural "Categories"
-msgstr[0] ""
+msgstr[0] "分類"
 
 #: templates/components/user/info_card.html.twig src/RuleRight.php:374
 #: src/User.php:2998
 msgid "Default group"
-msgstr ""
+msgstr "默认群组"
 
 #: templates/components/user/info_card.html.twig
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
@@ -1524,7 +1525,7 @@ msgstr "編輯"
 #: templates/pages/assets/rack.html.twig src/PDU_Rack.php:286
 #: src/Item_Rack.php:688
 msgid "Background color"
-msgstr ""
+msgstr "背景颜色"
 
 #: templates/components/dashboard/widget_form.html.twig
 #: src/DomainRecord.php:114 src/DomainRecord.php:418
@@ -1534,19 +1535,19 @@ msgstr "資料"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Widget"
-msgstr ""
+msgstr "小工具"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Use gradient palette"
-msgstr ""
+msgstr "使用漸層調色板"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Display value labels on points/bars"
-msgstr ""
+msgstr "在點/柱上顯示數值標籤"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr ""
+msgstr "限制資料數量"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -1630,12 +1631,12 @@ msgstr[0] "樣板"
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/computervirtualmachine.html.twig
 msgid "Automatic Inventory"
-msgstr ""
+msgstr "自動盤點"
 
 #: templates/components/form/header_content.html.twig src/CommonGLPI.php:1098
 #, php-format
 msgid "Item has been deleted on %s"
-msgstr ""
+msgstr "該項目已於 %s 刪除。"
 
 #: templates/components/form/header_content.html.twig
 #: front/report.year.list.php:190 front/report.contract.list.php:219
@@ -1647,11 +1648,11 @@ msgstr "已刪除"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "變更子實體的可見性。"
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
+msgstr "無法變更此屬性。它繼承自其上層。"
 
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
@@ -1698,7 +1699,7 @@ msgstr "盘点信息"
 #: src/Features/Inventoriable.php:127
 #, php-format
 msgid "Download \"%1$s\" inventory file"
-msgstr ""
+msgstr "下載 “%1$s” 庫存檔案"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:147
@@ -1709,7 +1710,7 @@ msgstr "盘点文件缺失"
 #: templates/pages/admin/inventory/agent.html.twig
 #: src/Features/Inventoriable.php:185 src/Agent.php:132 src/Agent.php:326
 msgid "Useragent"
-msgstr ""
+msgstr "使用者代理"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/RuleImportAsset.php:148 src/RuleAsset.php:139
@@ -1722,7 +1723,7 @@ msgstr "资产标签"
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:165
 #: src/Agent.php:319
 msgid "Public contact address"
-msgstr ""
+msgstr "公共聯絡地址"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:106
@@ -1737,12 +1738,12 @@ msgstr "最后盘点更新"
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:197
 msgid "Agent status"
-msgstr ""
+msgstr "代理狀態"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:198
 msgid "Ask agent about its current status"
-msgstr ""
+msgstr "向代理人詢問其目前狀態"
 
 #: templates/components/form/inventory_info.html.twig
 #: front/notificationajaxsetting.form.php:51
@@ -1751,22 +1752,22 @@ msgstr ""
 #: src/Item_Devices.php:1064 src/Features/Inventoriable.php:200
 #: src/Agent.php:744 src/Agent.php:765
 msgid "Unknown"
-msgstr ""
+msgstr "未知"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:201
 msgid "Request inventory"
-msgstr ""
+msgstr " 請求庫存"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:202
 msgid "Request agent to proceed an new inventory"
-msgstr ""
+msgstr "要求代理人進行新的庫存盤點"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:156
 msgid "Agent information is not available."
-msgstr ""
+msgstr "代理人資訊不可用。"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Features/Inventoriable.php:192
@@ -1789,7 +1790,7 @@ msgstr "維護支援時間"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
-msgstr ""
+msgstr "一週"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
@@ -1797,7 +1798,7 @@ msgstr "在周六"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Saturday"
-msgstr ""
+msgstr "星期六"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Sundays and holidays"
@@ -1805,12 +1806,12 @@ msgstr "星期天和例假日"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Use Sunday"
-msgstr ""
+msgstr "星期日"
 
 #: templates/components/form/item_disk.html.twig
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "Item link"
-msgstr ""
+msgstr "項目連結"
 
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:252
 #: src/Item_Disk.php:353 src/Item_Disk.php:481 src/Lock.php:392
@@ -1819,7 +1820,7 @@ msgstr "分割"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Mount Point"
-msgstr ""
+msgstr "掛載點"
 
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:255
 #: src/Item_Disk.php:372 src/Item_Disk.php:420 src/Database.php:200
@@ -1834,19 +1835,19 @@ msgstr "可用容量"
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:305
 #: src/Item_Disk.php:527
 msgid "Encryption tool"
-msgstr ""
+msgstr "加密工具"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr ""
+msgstr "加密工具"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
-msgstr ""
+msgstr "加密算法"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Type"
-msgstr ""
+msgstr "加密方式"
 
 #. TRANS: %s is the datetime of insertion
 #. TRANS: %s is the datetime of update
@@ -1908,11 +1909,11 @@ msgstr "刪除"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Field will not be updated from inventory"
-msgstr ""
+msgstr "欄位將不會根據庫存進行更新。"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Last inventory value was:"
-msgstr ""
+msgstr "上次盤點數據為:"
 
 #: templates/components/form/item_device.html.twig src/Supplier.php:432
 #: src/Budget.php:351
@@ -1926,7 +1927,7 @@ msgstr "沒有相關的項目"
 #: src/Socket.php:941 src/Socket.php:980 src/Csv/ImpactCsvExport.php:62
 #: src/Lock.php:196 src/RuleImportEntity.php:118 src/Appliance_Item.php:196
 msgid "Itemtype"
-msgstr ""
+msgstr "物品類型"
 
 #: templates/components/form/item_device.html.twig front/devices.php:40
 #: front/devices.php:44 src/Event.php:164 src/CommonDevice.php:55
@@ -2009,7 +2010,7 @@ msgstr "取消"
 #: templates/components/form/modals_macros.html.twig
 msgctxt "button"
 msgid "Ok"
-msgstr ""
+msgstr "好"
 
 #: templates/components/form/modals_macros.html.twig
 msgctxt "button"
@@ -2030,7 +2031,7 @@ msgstr "防毒軟體 版本"
 #: src/ComputerAntivirus.php:130 src/ComputerAntivirus.php:214
 #: src/ComputerAntivirus.php:333
 msgid "Signature database version"
-msgstr ""
+msgstr "簽署資料庫版本"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/timeline/form_followup.html.twig
@@ -2104,7 +2105,7 @@ msgstr "永久刪除"
 
 #: templates/components/form/buttons.html.twig
 msgid "Keep the devices while deleting this item"
-msgstr ""
+msgstr "刪除此項目時請保留設備。"
 
 #: templates/components/form/buttons.html.twig
 #: templates/components/itilobject/footer.html.twig src/CommonDBTM.php:5452
@@ -2115,12 +2116,12 @@ msgstr "回收進垃圾桶"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "SNMP version"
-msgstr ""
+msgstr "SNMP 版本"
 
 #: templates/components/form/snmpcredential.html.twig
 #: src/SNMPCredential.php:74 src/SNMPCredential.php:90
 msgid "Community"
-msgstr ""
+msgstr "社区"
 
 #: templates/components/form/snmpcredential.html.twig src/User.php:107
 msgid "User"
@@ -2129,11 +2130,11 @@ msgstr[0] "使用者"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for authentication "
-msgstr ""
+msgstr "认证的加密协议"
 
 #: templates/components/form/snmpcredential.html.twig
 msgid "Encryption protocol for data"
-msgstr ""
+msgstr "数据的加密协议"
 
 #: templates/components/form/networkname.html.twig
 msgid "Dissociate"
@@ -2165,7 +2166,7 @@ msgstr "里程碑"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "Team"
-msgstr ""
+msgstr "團隊"
 
 #: templates/components/kanban/item_panels/default_panel.html.twig
 msgid "No team members"
@@ -2353,7 +2354,7 @@ msgstr "總期間"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetCommonITILObject.php:1997
 msgid "Actors"
-msgstr ""
+msgstr "参与人员"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: templates/pages/admin/inventory/upload_result.html.twig
@@ -2469,7 +2470,7 @@ msgstr "分配給"
 
 #: templates/components/itilobject/actors/main.html.twig
 msgid "Edit notification settings"
-msgstr ""
+msgstr "編輯通知設定"
 
 #: templates/components/itilobject/actors/main.html.twig src/Planning.php:1240
 #: src/Csv/PlanningCsv.php:71
@@ -2501,7 +2502,7 @@ msgstr "存檔"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Direct email"
-msgstr ""
+msgstr "直接電子郵件"
 
 #: templates/components/itilobject/actors/field.html.twig
 msgid "Number of tickets already assigned"
@@ -2534,7 +2535,7 @@ msgstr "私人"
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #, php-format
 msgid "%s was already promoted"
-msgstr ""
+msgstr "%s 已经被提升"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
@@ -2550,7 +2551,7 @@ msgstr "追蹤來源"
 #: templates/components/itilobject/timeline/form_task.html.twig
 #, php-format
 msgid "Merged from Ticket %1$s"
-msgstr ""
+msgstr "合併自聯絡單 %1$s"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
@@ -2562,7 +2563,7 @@ msgstr "已提升为工单 %1$s"
 #: src/ITILFollowupTemplate.php:50
 msgid "Followup template"
 msgid_plural "Followup templates"
-msgstr[0] ""
+msgstr[0] "追蹤範本"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
@@ -2581,7 +2582,7 @@ msgstr "保存並新增到知識庫"
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Set the status to pending"
-msgstr ""
+msgstr "將狀態設為待處理"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: src/RuleTicket.php:1088 src/TaskTemplate.php:52
@@ -2631,11 +2632,11 @@ msgstr "期間"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Confirm the deletion of planning?"
-msgstr ""
+msgstr "確認刪除計劃？"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Unplan"
-msgstr ""
+msgstr "計劃外"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Plan this task"
@@ -2688,7 +2689,7 @@ msgstr[0] "驗證"
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approve"
-msgstr ""
+msgstr "核准"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: templates/components/itilobject/timeline/approbation_form.html.twig
@@ -2713,7 +2714,7 @@ msgstr "核准者"
 #: templates/components/itilobject/timeline/todo-list-summary.html.twig
 #, php-format
 msgid "Total duration: %s"
-msgstr ""
+msgstr "總共時間：%s"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: src/ITILFollowup.php:81 src/ITILFollowup.php:674
@@ -2763,12 +2764,12 @@ msgstr "Timeline 篩選器"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 msgid "View TODO list"
-msgstr ""
+msgstr "查看執行列表"
 
 #: templates/components/itilobject/timeline/new_form.html.twig
 #, php-format
 msgid "%1$s will be added in entity %2$s"
-msgstr ""
+msgstr "%1$s 將會被加入到實體 %2$s 中"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #: src/Problem.php:675 src/Ticket.php:3820 src/Change.php:672
@@ -2785,17 +2786,17 @@ msgstr "下一次自动化跟进安排在 %s"
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #, php-format
 msgid "Automatic resolution scheduled on %s"
-msgstr ""
+msgstr "自動解析計劃於 %s 進行"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s by %2$s"
-msgstr ""
+msgstr "已建立：%1$s，作者：%2$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
 msgid "Created: %1$s"
-msgstr ""
+msgstr "已创建: %1$s"
 
 #: templates/components/itilobject/timeline/timeline_item_header_badges.html.twig
 #, php-format
@@ -2804,7 +2805,7 @@ msgstr "最后更新: %1$s  由  %2$s"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "File extension"
-msgstr ""
+msgstr "副檔名"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 #: src/NotificationTargetProjectTask.php:655
@@ -2843,13 +2844,13 @@ msgstr "拒絕"
 #: templates/components/itilobject/timeline/form_solution.html.twig
 #, php-format
 msgid "%1$s on %2$s by %3$s"
-msgstr ""
+msgstr "%1$s 在 %2$s 上由 %3$s 完成"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid ""
 "Warning: non closed children tickets depends on current ticket. Are you sure"
 " you want to close it?"
-msgstr ""
+msgstr "警告：未關閉的子聯絡單依賴目前聯絡單。您確定要關閉它嗎？"
 
 #: templates/components/itilobject/timeline/form_solution.html.twig
 msgid "Search a solution"
@@ -2863,11 +2864,11 @@ msgstr[0] "解決方案樣版"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic follow-up"
-msgstr ""
+msgstr "自動跟進"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic resolution"
-msgstr ""
+msgstr "自動解析度"
 
 #: templates/components/itilobject/timeline/approbation_form.html.twig
 msgid "Approval of the solution"
@@ -2940,7 +2941,7 @@ msgstr "核准時可填寫"
 #, php-format
 msgid "%1$s item not saved"
 msgid_plural "%1$s items not saved"
-msgstr[0] ""
+msgstr[0] "%1$s 項未保存"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Display all items"
@@ -2948,15 +2949,15 @@ msgstr "顯示所有項目"
 
 #: templates/components/itilobject/add_items.html.twig
 msgid "Please select an item to add"
-msgstr ""
+msgstr "请选择一项以添加"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "View other actions"
-msgstr ""
+msgstr "查看其他操作"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
-msgstr ""
+msgstr "切換面板寬度"
 
 #: templates/components/itilobject/fields/global_validation.html.twig
 #: src/ITILTemplate.php:337 src/Ticket.php:2644
@@ -2991,7 +2992,7 @@ msgstr "優先權"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "TTO"
-msgstr ""
+msgstr "TTO"
 
 #: templates/components/itilobject/service_levels.html.twig
 #: src/SlaLevel.php:194 src/RuleTicket.php:809 src/RuleTicket.php:831
@@ -3002,11 +3003,11 @@ msgstr ""
 #: src/Ticket.php:6337 src/LevelAgreement.php:947
 #: src/NotificationTargetTicket.php:625 src/Dashboard/Provider.php:1543
 msgid "Time to own"
-msgstr ""
+msgstr "保留時間"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "TTR"
-msgstr ""
+msgstr "解決時間"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Internal TTO"
@@ -3219,7 +3220,7 @@ msgstr[0] "提升層級"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Also delete date?"
-msgstr ""
+msgstr "也刪除日期?"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Assign a SLA"
@@ -3347,7 +3348,7 @@ msgstr "匯出"
 
 #: templates/components/logs.html.twig
 msgid "No historical matching your filters"
-msgstr ""
+msgstr "沒有符合您篩選條件的歷史記錄"
 
 #: templates/components/logs.html.twig
 #: templates/pages/admin/events_list.html.twig
@@ -3467,7 +3468,7 @@ msgstr "月 總成本"
 #: src/Infocom.php:1466 src/Infocom.php:1735
 msgid "Business criticity"
 msgid_plural "Business criticities"
-msgstr[0] ""
+msgstr[0] "商業評審"
 
 #: templates/components/infocom.html.twig src/Infocom.php:1354
 #: src/Infocom.php:1584
@@ -3555,21 +3556,21 @@ msgstr "蒐集資料"
 
 #: templates/install/step1.html.twig
 msgid "Checking write access to configuration files"
-msgstr ""
+msgstr "檢查設定檔案的寫入權限"
 
 #: templates/install/step1.html.twig
 msgid "Write access denied for configuration files"
-msgstr ""
+msgstr "設置檔案的寫入權限被禁止存取"
 
 #: templates/install/step1.html.twig src/Console/Application.php:564
 #, php-format
 msgid "A temporary write access to the following files is required: %s."
-msgstr ""
+msgstr "以下檔案的臨時寫入權限是必須的: %s。"
 
 #: templates/install/step1.html.twig src/Console/Application.php:565
 msgid ""
 "Write access to these files can be removed once the operation is finished."
-msgstr ""
+msgstr "操作完成後，即可移除這些檔案的寫入權限。"
 
 #: templates/install/step1.html.twig
 msgid ""
@@ -3614,11 +3615,11 @@ msgstr "資料庫連接成功"
 
 #: templates/install/step3.html.twig
 msgid "Database engine is not supported."
-msgstr ""
+msgstr "数据库引擎不受支持。"
 
 #: templates/install/step3.html.twig
 msgid "Database configuration is not supported."
-msgstr ""
+msgstr "数据库配置不受支持。"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database:"
@@ -3643,7 +3644,7 @@ msgstr "發生"
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Console/System/CheckRequirementsCommand.php:89
 msgid "Required"
-msgstr ""
+msgstr "必须"
 
 #: templates/install/blocks/requirements_table.html.twig src/Event.php:179
 #: src/Console/System/CheckRequirementsCommand.php:91 src/Config.php:2647
@@ -3653,7 +3654,7 @@ msgstr "安全"
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Console/System/CheckRequirementsCommand.php:93
 msgid "Suggested"
-msgstr ""
+msgstr "建議"
 
 #: templates/install/choose_language.html.twig front/tracking.injector.php:104
 #: src/Printer_CartridgeInfo.php:97
@@ -3726,7 +3727,7 @@ msgstr ""
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
-msgstr ""
+msgstr "編輯群組"
 
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/assets/cable.html.twig src/Cable.php:249
@@ -3791,17 +3792,17 @@ msgstr "內容"
 
 #: templates/maintenance.html.twig
 msgid "Temporarily down for maintenance"
-msgstr ""
+msgstr "由于维护临时停用"
 
 #: templates/maintenance.html.twig
 msgid ""
 "Sorry for the inconvenience but we’re performing some maintenance at the "
 "moment. We’ll be back online shortly!"
-msgstr ""
+msgstr "給您帶來不便，我們深表歉意，我們目前正在進行系統維護。很快就會恢復上線!"
 
 #: templates/maintenance.html.twig
 msgid "Take me home"
-msgstr ""
+msgstr "回到主页"
 
 #: templates/pages/tools/project_task.html.twig
 #: src/CommonITILValidation.php:900 src/CommonITILValidation.php:939
@@ -3830,11 +3831,11 @@ msgstr "完成百分比"
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child task percent done."
-msgstr ""
+msgstr "當自動計算處於啟用狀態時，百分比是根據所有子任務完成百分比的平均值來計算的。"
 
 #: templates/pages/tools/project_task.html.twig src/Project.php:1649
 msgid "Automatically calculate"
-msgstr ""
+msgstr "自动计算"
 
 #: templates/pages/tools/project_task.html.twig front/planning.php:161
 #: src/Event.php:165 src/Event.php:174 src/Planning.php:86
@@ -3910,7 +3911,7 @@ msgstr "待辦事項處理時間"
 
 #: templates/pages/tools/project_task.html.twig
 msgid "Details"
-msgstr ""
+msgstr "明细"
 
 #: templates/pages/login.html.twig
 msgid "Login to your account"
@@ -3945,7 +3946,7 @@ msgstr "記住我"
 
 #: templates/pages/login.html.twig
 msgid "Sign in"
-msgstr ""
+msgstr "登录"
 
 #: templates/pages/login.html.twig front/knowbaseitemtranslation.form.php:83
 #: front/knowbaseitemtranslation.form.php:85
@@ -3971,19 +3972,19 @@ msgstr "紀錄連線"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:127
 msgid "Filter access"
-msgstr ""
+msgstr "過濾存取"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "Leave these parameters empty to disable API access restriction"
-msgstr ""
+msgstr "請將這些參數保持空白以停用 API 存取限制"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range start"
-msgstr ""
+msgstr "IPv4 位址範圍起始"
 
 #: templates/pages/setup/apiclient.html.twig
 msgid "IPv4 address range end"
-msgstr ""
+msgstr "IPv4 位址範圍結束"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:150
 msgid "IPv6 address"
@@ -4012,7 +4013,7 @@ msgstr "通知設定"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
-msgstr ""
+msgstr "您必須啟用至少一種通知模式。"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "Enable followup"
@@ -4207,7 +4208,7 @@ msgstr "外在認證"
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
-msgstr ""
+msgstr "PHP解析器未安装LDAP扩展"
 
 #: templates/pages/setup/authentication.html.twig
 msgid "Others authentication methods"
@@ -4809,12 +4810,12 @@ msgstr "作業完成."
 
 #: install/update.php:160 src/Console/Database/UpdateCommand.php:245
 msgid "The database schema is not consistent with the current GLPI version."
-msgstr ""
+msgstr "資料庫架構與目前 GLPI 版本不一致。"
 
 #: install/update.php:163 src/Console/Database/UpdateCommand.php:247
 #, php-format
 msgid "It is recommended to run the \"%s\" command to see the differences."
-msgstr ""
+msgstr "建議執行 “%s” 命令來查看差異。"
 
 #: install/update.php:186
 msgid "Missing security key file"
@@ -5876,7 +5877,7 @@ msgstr "根據硬體"
 
 #: front/report.networking.php:83
 msgid "By network socket"
-msgstr ""
+msgstr "根據網路 Socket"
 
 #: front/contract_supplier.form.php:50 src/Transfer.php:4118
 #: src/NotificationTargetContract.php:200
@@ -6815,11 +6816,11 @@ msgstr "為了系統維護，系統已停止服務。將在短時間內恢復。
 msgid ""
 "The GLPI codebase has been updated. The update of the GLPI database is "
 "necessary."
-msgstr ""
+msgstr "GLPI 程式碼已更新。 GLPI 資料庫也需要更新。"
 
 #: inc/config.php:216
 msgid "Update needed"
-msgstr ""
+msgstr "需要更新"
 
 #: inc/config.php:263
 msgid ""
@@ -7564,7 +7565,7 @@ msgstr "強制同步"
 
 #: src/Auth.php:1530 src/User.php:3615
 msgid "Clean LDAP fields and force synchronisation"
-msgstr ""
+msgstr "清理 LDAP 欄位並強制同步"
 
 #: src/Auth.php:1545
 msgid "Change of the authentication method"
@@ -7591,7 +7592,7 @@ msgstr "CAS主機"
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1644
 msgid "CAS Version"
-msgstr ""
+msgstr "CAS 版本"
 
 #. TRANS: for CAS SSO system
 #: src/Auth.php:1653
@@ -7632,7 +7633,7 @@ msgstr "其它身份驗證發送的HTTP請求"
 
 #: src/Auth.php:1713
 msgid "SSO logout url"
-msgstr ""
+msgstr "SSO 登出網址"
 
 #: src/Auth.php:1719
 msgid "Remove the domain of logins like login@domain"
@@ -7832,7 +7833,7 @@ msgstr ""
 #: src/RSSFeed.php:785 src/RSSFeed.php:852
 #, php-format
 msgid "URL \"%s\" is not allowed by your administrator."
-msgstr ""
+msgstr "您的管理員不允許使用網址 \"%s\"。"
 
 #: src/Planning.php:1187
 msgid "Ical"
@@ -7988,7 +7989,7 @@ msgstr[0] "核准"
 #: src/CommonITILValidation.php:351 src/CommonITILValidation.php:510
 #, php-format
 msgid "Approval request sent to %s"
-msgstr ""
+msgstr "已向 %s 發送核准請求"
 
 #: src/CommonITILValidation.php:355
 #, php-format
@@ -8094,11 +8095,11 @@ msgstr ""
 msgid ""
 "This item is waiting for approval, do you really want to resolve or close "
 "it?"
-msgstr ""
+msgstr "此項目正在等待核准，您確定要解決還是關閉？"
 
 #: src/CommonITILValidation.php:1680
 msgid "This item is waiting for approval."
-msgstr ""
+msgstr "此項目正在等待核准。"
 
 #: src/CommonITILValidation.php:1681
 msgid "Do you really want to resolve or close it?"
@@ -8292,7 +8293,7 @@ msgstr "核准請求者群組管理者的請求"
 
 #: src/RuleTicket.php:1064
 msgid "Approval request to technician group manager"
-msgstr ""
+msgstr "向技術組管理員提出核准請求"
 
 #: src/RuleTicket.php:1079
 msgid "Take into account delay"
@@ -8996,7 +8997,7 @@ msgstr "行数量"
 
 #: src/DCRoom.php:168
 msgid "Background picture (blueprint)"
-msgstr ""
+msgstr "背景圖 (藍圖)"
 
 #: src/DCRoom.php:200 src/DCRoom.php:223
 msgid "Number of rows must be >= 1"
@@ -9009,7 +9010,7 @@ msgstr ""
 #: src/DCRoom.php:271 src/Features/AssetImage.php:77
 #: src/Features/AssetImage.php:123
 msgid "Unable to save picture file."
-msgstr ""
+msgstr "無法儲存圖片檔。"
 
 #: src/DCRoom.php:469
 msgid "New room for this datacenter..."
@@ -9062,7 +9063,7 @@ msgstr "核准請求已經由%s提交"
 #: src/NotificationTargetChange.php:231 src/NotificationTargetTicket.php:553
 #, php-format
 msgid "An answer to an approval request was produced by %s"
-msgstr ""
+msgstr "%s 對核准請求的回應"
 
 #: src/NotificationTargetChange.php:273 src/Search.php:8377
 #: src/Problem.php:573 src/NotificationTargetProject.php:707
@@ -9571,7 +9572,7 @@ msgstr "新增相容的印表機型號"
 
 #: src/AuthLDAP.php:302 src/AuthLDAP.php:553
 msgid "Synchronization field cannot be changed once in use."
-msgstr ""
+msgstr "一旦使用，同步字段无法更改。"
 
 #: src/AuthLDAP.php:456
 msgid "Preconfiguration"
@@ -9583,7 +9584,7 @@ msgstr "Active 目錄"
 
 #: src/AuthLDAP.php:460
 msgid "OpenLDAP"
-msgstr ""
+msgstr "OpenLDAP"
 
 #: src/AuthLDAP.php:462 src/Config.php:2639
 msgid "Default values"
@@ -9607,7 +9608,7 @@ msgstr "基本的 DN"
 
 #: src/AuthLDAP.php:503
 msgid "Use bind"
-msgstr ""
+msgstr "Use bind"
 
 #: src/AuthLDAP.php:504
 msgid ""
@@ -9632,7 +9633,7 @@ msgstr "登入欄位"
 #: src/AuthLDAP.php:1846 src/AuthLDAP.php:4030 src/User.php:2691
 #: src/User.php:3190 src/User.php:3773
 msgid "Synchronization field"
-msgstr ""
+msgstr "同上失败"
 
 #: src/AuthLDAP.php:589 src/Config.php:2924
 #, php-format
@@ -9698,16 +9699,16 @@ msgstr ""
 
 #: src/AuthLDAP.php:685
 msgid "TLS Certfile"
-msgstr ""
+msgstr "TLS认证文件"
 
 #: src/AuthLDAP.php:688
 msgid "TLS Keyfile"
-msgstr ""
+msgstr "TLS密钥文件"
 
 #: src/AuthLDAP.php:693 src/AuthLDAP.php:763 src/AuthLDAP.php:1370
 #: src/AuthLdapReplicate.php:95
 msgid "Timeout"
-msgstr ""
+msgstr "超时"
 
 #: src/AuthLDAP.php:700 src/AuthLDAP.php:1375 src/AuthLdapReplicate.php:105
 msgid "No timeout"
@@ -10420,7 +10421,7 @@ msgstr ""
 
 #: src/Search.php:294
 msgid "Search results for localized items only"
-msgstr ""
+msgstr "僅顯示本地化項目的搜尋結果"
 
 #: src/Search.php:406
 msgid "An error occurred loading data :("
@@ -10493,11 +10494,11 @@ msgstr "規則"
 
 #: src/Search.php:2642
 msgid "global rule"
-msgstr ""
+msgstr "全局规则"
 
 #: src/Search.php:2647
 msgid "group"
-msgstr ""
+msgstr "组"
 
 #: src/Search.php:2674 src/CronTask.php:674 src/CronTask.php:760
 msgid "Blank"
@@ -10509,7 +10510,7 @@ msgstr "删除一个规则"
 
 #: src/Search.php:3041
 msgid "Delete a global rule"
-msgstr ""
+msgstr "删除一个全局规则"
 
 #. TRANS: R for Recursive
 #. TRANS: letter 'D' for Dynamic
@@ -11173,7 +11174,7 @@ msgstr ""
 #: src/NotificationMailingSetting.php:347
 msgctxt "oauth"
 msgid "Client ID"
-msgstr ""
+msgstr "客戶端"
 
 #: src/NotificationMailingSetting.php:351
 msgctxt "oauth"
@@ -11285,7 +11286,7 @@ msgstr ""
 
 #: src/KnowbaseItem_Comment.php:314
 msgid "Add an answer"
-msgstr ""
+msgstr "新增答案"
 
 #: src/KnowbaseItem_Comment.php:364
 msgid "New comment"
@@ -11395,7 +11396,7 @@ msgstr "最後執行"
 
 #: src/CronTask.php:746 src/CronTask.php:980
 msgid "Maintenance mode enabled, running tasks is disabled"
-msgstr ""
+msgstr "维护模式已启用，禁止运行任务"
 
 #: src/CronTask.php:868 src/CronTask.php:1485
 msgid "Running"
@@ -11484,7 +11485,7 @@ msgstr[0] "%s 停止"
 #, php-format
 msgid "%s error"
 msgid_plural "%s errors"
-msgstr[0] ""
+msgstr[0] "%s 错误"
 
 #: src/CronTask.php:1260
 msgid "Minimal time"
@@ -12223,7 +12224,7 @@ msgstr ""
 #: src/GLPINetwork.php:96
 #, php-format
 msgid "Error was: %s"
-msgstr ""
+msgstr "错误是: %s"
 
 #: src/GLPINetwork.php:104
 msgid "Registration key"
@@ -12231,7 +12232,7 @@ msgstr "注册密钥"
 
 #: src/GLPINetwork.php:123
 msgid "Subscription"
-msgstr ""
+msgstr "订阅"
 
 #: src/GLPINetwork.php:128
 msgid "Registered by"
@@ -12596,7 +12597,7 @@ msgstr "无足够权限"
 
 #: src/Ticket_Contract.php:48
 msgid "Tickets / Contracts"
-msgstr ""
+msgstr "待辦事項/合約"
 
 #: src/Ticket_Contract.php:80 src/Contract_Item.php:302
 #: src/Contract_Supplier.php:143
@@ -13456,7 +13457,7 @@ msgstr "页数"
 
 #: src/PrinterLog.php:234
 msgid "Total pages"
-msgstr ""
+msgstr "全部頁數"
 
 #: src/PrinterLog.php:236
 msgid "Black & White pages"
@@ -13464,7 +13465,7 @@ msgstr ""
 
 #: src/PrinterLog.php:238
 msgid "Color pages"
-msgstr ""
+msgstr "彩色頁數"
 
 #: src/PrinterLog.php:240
 msgid "Scans"
@@ -13554,7 +13555,7 @@ msgstr "导入信息"
 
 #: src/RuleMatchedLog.php:225 src/RuleMatchedLog.php:302
 msgid "Rule import logs"
-msgstr ""
+msgstr "規則匯入日誌"
 
 #: src/RuleMatchedLog.php:236 src/RuleMatchedLog.php:313
 msgid "Rule name"
@@ -13570,11 +13571,11 @@ msgstr ""
 
 #: src/Item_RemoteManagement.php:135
 msgid "Add a remote management"
-msgstr ""
+msgstr "新增遠端管理"
 
 #: src/Item_RemoteManagement.php:163 src/Item_RemoteManagement.php:357
 msgid "Remote ID"
-msgstr ""
+msgstr "遠端 ID"
 
 #: src/AuthLdapReplicate.php:91
 msgid "Add a LDAP directory replica"
@@ -13832,7 +13833,7 @@ msgstr "實體的完整名稱"
 
 #: src/RuleRight.php:385 src/Config.php:1338
 msgid "Timezone"
-msgstr ""
+msgstr "时区"
 
 #: src/RuleRight.php:421
 msgid "LDAP criteria"
@@ -14241,7 +14242,7 @@ msgstr "預訂一個項目"
 
 #: src/Reservation.php:995
 msgid "Repetition"
-msgstr ""
+msgstr "重複"
 
 #: src/Reservation.php:998
 msgctxt "periodicity"
@@ -14265,7 +14266,7 @@ msgstr "月"
 
 #: src/Reservation.php:1043
 msgid "Delete all repetition"
-msgstr ""
+msgstr "刪除所有重複項目"
 
 #: src/Reservation.php:1218
 msgid "Reservations for this item"
@@ -14548,7 +14549,7 @@ msgstr "建立待辦事項"
 #: src/Ticket.php:173 src/Ticket.php:175 src/Ticket.php:5304
 #: src/Dashboard/Grid.php:1217
 msgid "Tickets waiting for your approval"
-msgstr ""
+msgstr "等待您批准的待辦事項"
 
 #: src/Ticket.php:763 src/Ticket.php:813
 msgid "Created tickets"
@@ -14614,7 +14615,7 @@ msgstr ""
 
 #: src/Ticket.php:2684
 msgid "Resolve selected tickets"
-msgstr ""
+msgstr "解決選擇的待辦事項"
 
 #: src/Ticket.php:2711
 msgid "Merge followups"
@@ -14757,7 +14758,7 @@ msgstr "父级工单"
 
 #: src/Ticket.php:3548
 msgid "Child tickets"
-msgstr ""
+msgstr "子待辦事項"
 
 #: src/Ticket.php:3570
 msgid "Number of sons tickets"
@@ -14797,11 +14798,11 @@ msgstr "您待檢驗的待辦事項"
 
 #: src/Ticket.php:4915
 msgid "Your tickets having rejected approval status"
-msgstr ""
+msgstr "您的待辦事項已被拒絕審批"
 
 #: src/Ticket.php:4932
 msgid "Your tickets having rejected solution"
-msgstr ""
+msgstr "您的待辦事項已被拒絕解決方案"
 
 #: src/Ticket.php:5165 src/Ticket.php:5701 src/Change.php:1403
 msgid "No ticket in progress."
@@ -14864,7 +14865,7 @@ msgstr "產生滿意度調查"
 
 #: src/Ticket.php:5779
 msgid "Automatic closed tickets purge"
-msgstr ""
+msgstr "自動清除已關閉的待辦事項"
 
 #: src/Ticket.php:6144
 msgid "See my ticket"
@@ -14955,7 +14956,7 @@ msgstr ""
 #: src/Ticket.php:6732
 #, php-format
 msgid "Failed to link tickets %d and %d"
-msgstr ""
+msgstr "無法關聯待辦事項 %d 和 %d"
 
 #: src/Ticket.php:6826
 #, php-format
@@ -15288,11 +15289,11 @@ msgstr ""
 
 #: src/NetworkPort.php:1051
 msgid "Up"
-msgstr ""
+msgstr "上"
 
 #: src/NetworkPort.php:1055
 msgid "Down"
-msgstr ""
+msgstr "下"
 
 #: src/NetworkPort.php:1059
 msgid "Test"
@@ -15319,7 +15320,7 @@ msgstr ""
 #: src/NetworkPort.php:1253 src/NetworkPort.php:1277
 #: src/NetworkPortConnectionLog.php:137
 msgid "Connected"
-msgstr ""
+msgstr "已連接"
 
 #: src/NetworkPort.php:1261
 msgid "Testing"
@@ -15327,7 +15328,7 @@ msgstr "測試中"
 
 #: src/NetworkPort.php:1265
 msgid "Dormant"
-msgstr ""
+msgstr "休眠"
 
 #: src/NetworkPort.php:1481 src/NetworkPort.php:1831
 msgid "Alias"
@@ -15546,7 +15547,7 @@ msgstr "操作符"
 msgid ""
 "Compare number of results the search returns against the specified value "
 "with selected operator"
-msgstr ""
+msgstr "使用選定的運算方式，將搜尋結果的數量與指定值進行比較。"
 
 #: src/SavedSearch_Alert.php:176
 msgid "Notification frequency"
@@ -15567,7 +15568,7 @@ msgstr[0] "已使用通知："
 
 #: src/SavedSearch_Alert.php:258
 msgid "Add an alert"
-msgstr ""
+msgstr "增加告警"
 
 #: src/SavedSearch_Alert.php:325
 msgid "Saved searches alerts"
@@ -16176,19 +16177,19 @@ msgstr ""
 
 #: src/Marketplace/View.php:516
 msgid "Homepage"
-msgstr ""
+msgstr "主页"
 
 #: src/Marketplace/View.php:523
 msgid "Get help"
-msgstr ""
+msgstr "获得帮助"
 
 #: src/Marketplace/View.php:530
 msgid "Readme"
-msgstr ""
+msgstr "讀我"
 
 #: src/Marketplace/View.php:537
 msgid "Changelog"
-msgstr ""
+msgstr "变更日志"
 
 #: src/Marketplace/View.php:701 src/Plugin.php:2963
 msgid "Clean"
@@ -18537,7 +18538,7 @@ msgstr "錯誤的回放規則"
 #: src/PendingReasonCron.php:52
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
-msgstr ""
+msgstr "自動跟進待處理待辦事項，必要時可解決待辦事項。"
 
 #: src/PendingReasonCron.php:209
 msgid "Automatic followups / resolution"
@@ -18625,16 +18626,16 @@ msgstr ""
 
 #: src/User.php:2779 src/User.php:3267 src/Config.php:1348
 msgid "Use server configuration"
-msgstr ""
+msgstr "服务配置"
 
 #: src/User.php:2784 src/User.php:3272 src/Config.php:1352
 msgid "Timezone usage has not been activated."
-msgstr ""
+msgstr "时区未激活"
 
 #: src/User.php:2786 src/User.php:3274 src/Config.php:1354
 #, php-format
 msgid "Run the \"%1$s\" command to activate it."
-msgstr ""
+msgstr "运行 \"%1$s\" 命令激活它。"
 
 #: src/User.php:2801
 msgid "Not enough rights to change this field"
@@ -19614,7 +19615,7 @@ msgstr ""
 #: src/ObjectLock.php:196
 #, php-format
 msgid "Force unlock %1s #%2s"
-msgstr ""
+msgstr "強制解鎖 %1s #%2s"
 
 #: src/ObjectLock.php:212
 msgid "Locked by you!"
@@ -20313,7 +20314,7 @@ msgstr ""
 
 #: src/System/Requirement/DirectoryWriteAccess.php:86
 msgid "Permissions for pictures files"
-msgstr ""
+msgstr "圖片檔案的權限"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:89
 msgid "Permissions for rss files"
@@ -21254,7 +21255,7 @@ msgstr ""
 
 #: src/SavedSearch.php:110 src/SavedSearch.php:507 src/SavedSearch.php:1215
 msgid "Auto"
-msgstr ""
+msgstr "自動"
 
 #: src/SavedSearch.php:310
 msgid "Is private"
@@ -21286,7 +21287,7 @@ msgstr ""
 
 #: src/SavedSearch.php:505
 msgid "Do count"
-msgstr ""
+msgstr "計算"
 
 #: src/SavedSearch.php:581
 msgid "Save as a new search"
@@ -21552,7 +21553,7 @@ msgstr "我的作業"
 
 #: src/Project.php:637 src/Project.php:1668
 msgid "Show on global Gantt"
-msgstr ""
+msgstr "显示在全局甘特图"
 
 #: src/Project.php:1081
 msgid "Planned Duration"
@@ -21574,15 +21575,15 @@ msgstr "為這個專案建立一個子專案"
 msgid ""
 "When automatic computation is active, percentage is computed based on the "
 "average of all child project and task percent done."
-msgstr ""
+msgstr "當自動運算處於啟用狀態時，百分比是根據所有子項目和任務完成百分比的平均值來計算的。"
 
 #: src/Project.php:1720
 msgid "Sum of planned durations of tasks"
-msgstr ""
+msgstr "各項任務計畫持續時間的總和"
 
 #: src/Project.php:1729
 msgid "Sum of total effective durations of tasks"
-msgstr ""
+msgstr "各項任務有效持續時間的總和"
 
 #: src/Project.php:2248
 msgid "No status"
@@ -21837,7 +21838,7 @@ msgstr "建立待辦事項時連結項目"
 
 #: src/Profile.php:1225 src/Profile.php:1606 src/Profile.php:3277
 msgid "Associable items to tickets, changes and problems"
-msgstr ""
+msgstr "與聯絡單、變更和問題相關的項目"
 
 #: src/Profile.php:1233 src/Profile.php:3198
 msgid "Default ticket template"
@@ -21937,7 +21938,7 @@ msgstr "ID標籤"
 #: src/Database.php:52 src/Config.php:732
 msgid "Database"
 msgid_plural "Databases"
-msgstr[0] ""
+msgstr[0] "数据库"
 
 #: src/Database.php:124 src/Database.php:461 src/DatabaseInstance.php:277
 msgid "Has backup"
@@ -22851,7 +22852,7 @@ msgstr "預設大小"
 
 #: src/CommonITILRecurrentCron.php:51
 msgid "Create recurrent tickets and changes"
-msgstr ""
+msgstr "建立重複性待辦事項和變更"
 
 #: src/CommonITILRecurrentCron.php:99
 #, php-format
@@ -23140,7 +23141,7 @@ msgstr "預設的 後續追蹤郵件 收件者"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
-msgstr ""
+msgstr "請求來源來看待辦事項"
 
 #: src/RequestType.php:73 src/RequestType.php:140
 msgid "Request source visible for followups"
@@ -23331,7 +23332,7 @@ msgstr[0] ""
 
 #: src/KnowbaseItem_Item.php:128
 msgid "Add a linked item"
-msgstr ""
+msgstr "新增已連結的項目"
 
 #: src/KnowbaseItem_Item.php:130
 msgid "Link a knowledge base entry"
@@ -23756,7 +23757,7 @@ msgstr "立即"
 
 #: src/Entity.php:1236 src/Entity.php:3096
 msgid "Automatic purge of closed tickets after"
-msgstr ""
+msgstr "自動清除已關閉的待辦事項"
 
 #: src/Entity.php:1255
 msgid "Alerts on tickets which are not solved"
@@ -23940,11 +23941,11 @@ msgstr ""
 
 #: src/Entity.php:2859
 msgid "Tickets configuration"
-msgstr ""
+msgstr "待辦事項設置"
 
 #: src/Entity.php:2904
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr ""
+msgstr "自動分配待辦事項、變更和問題"
 
 #: src/Entity.php:2924
 msgid "Mark followup added by a supplier though an email collector as private"
@@ -23956,7 +23957,7 @@ msgstr ""
 
 #: src/Entity.php:2974
 msgid "Display initials for users without pictures"
-msgstr ""
+msgstr "顯示沒有頭像使用者的姓名首字母"
 
 #: src/Entity.php:3045
 msgid "Automatic closing configuration"
@@ -24456,7 +24457,7 @@ msgstr "設備管理限制"
 
 #: src/Config.php:512
 msgid "End of fiscal year"
-msgstr ""
+msgstr "财务年末"
 
 #: src/Config.php:521
 msgid "Restrict phone management"
@@ -24476,7 +24477,7 @@ msgstr "印表機管理限制"
 
 #: src/Config.php:548
 msgid "Devices displayed in menu"
-msgstr ""
+msgstr "選單中顯示的設備"
 
 #: src/Config.php:578
 msgid "Automatically update of the elements related to the computers"
@@ -24524,7 +24525,7 @@ msgstr "當使用者從 LDAP目錄中刪除後執行"
 
 #: src/Config.php:677
 msgid "Action when a user is restored in the LDAP directory"
-msgstr ""
+msgstr "當使用者在 LDAP 目錄中復原時執行的操作"
 
 #: src/Config.php:682
 msgid "GLPI server time zone"
@@ -24560,19 +24561,19 @@ msgstr "啟用 Rest API"
 
 #: src/Config.php:813
 msgid "API inline Documentation"
-msgstr ""
+msgstr "API 內部文件"
 
 #: src/Config.php:822
 msgid "Enable login with credentials"
-msgstr ""
+msgstr "啟用憑證登入"
 
 #: src/Config.php:823
 msgid "Allow to login to API and get a session token with user credentials"
-msgstr ""
+msgstr "允許登入 API 並使用使用者憑證取得 session token"
 
 #: src/Config.php:829
 msgid "Enable login with external token"
-msgstr ""
+msgstr "啟用使用外部 token 登入"
 
 #: src/Config.php:830
 msgid ""
@@ -24622,7 +24623,7 @@ msgstr "允許匿名追蹤 (收件人)"
 
 #: src/Config.php:950
 msgid "Planning work days"
-msgstr ""
+msgstr "規劃工作日"
 
 #: src/Config.php:975
 msgid "Matrix of calculus for priority"
@@ -24662,15 +24663,15 @@ msgstr "新增後移到 新增項目"
 
 #: src/Config.php:1155
 msgid "Display the tree dropdown complete name in dropdown inputs"
-msgstr ""
+msgstr "在下拉清單中顯示樹狀下拉式選單的完整名稱"
 
 #: src/Config.php:1159
 msgid "Display the complete name of tree dropdown in search results"
-msgstr ""
+msgstr "在搜尋結果中顯示樹的完整名稱下拉式選單"
 
 #: src/Config.php:1170
 msgid "Display counters"
-msgstr ""
+msgstr "顯示計數器"
 
 #: src/Config.php:1192
 msgid "Show GLPI ID"
@@ -24678,7 +24679,7 @@ msgstr "顯示GLPI ID"
 
 #: src/Config.php:1199
 msgid "Keep devices when purging an item"
-msgstr ""
+msgstr "清理物品時保留設備"
 
 #: src/Config.php:1210
 msgid "Notifications for my changes"
@@ -24694,7 +24695,7 @@ msgstr "CSV的分隔符號"
 
 #: src/Config.php:1251
 msgid "Color palette"
-msgstr ""
+msgstr "色彩調色盤"
 
 #: src/Config.php:1284
 msgid "Page layout"
@@ -24702,15 +24703,15 @@ msgstr "页面布局"
 
 #: src/Config.php:1288
 msgid "Horizontal (menu in header)"
-msgstr ""
+msgstr "橫向 (頁首選單)"
 
 #: src/Config.php:1289
 msgid "Vertical (menu in sidebar)"
-msgstr ""
+msgstr "垂直 (側邊欄選單)"
 
 #: src/Config.php:1319
 msgid "Rich text field layout"
-msgstr ""
+msgstr "富文本字段布局"
 
 #: src/Config.php:1324
 msgid "Inline (no toolbars)"
@@ -24718,7 +24719,7 @@ msgstr "内连（无工具栏）"
 
 #: src/Config.php:1325
 msgid "Classic (toolbar on top)"
-msgstr ""
+msgstr "经典（工具栏在顶部）"
 
 #: src/Config.php:1334
 msgid "Enable high contrast"
@@ -24730,7 +24731,7 @@ msgstr ""
 
 #: src/Config.php:1363
 msgid "Timeline order"
-msgstr ""
+msgstr "时间线顺序"
 
 #: src/Config.php:1366
 msgid "Natural order (old items on top, recent on bottom)"
@@ -24738,7 +24739,7 @@ msgstr "自然排序(旧项在上，新项在下)"
 
 #: src/Config.php:1367
 msgid "Reverse order (old items on bottom, recent on top)"
-msgstr ""
+msgstr "反序排列（老的在底部，新的在上部）"
 
 #: src/Config.php:1379
 msgid "Private followups by default"
@@ -24762,7 +24763,7 @@ msgstr "預設任務狀態"
 
 #: src/Config.php:1407
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
-msgstr ""
+msgstr "幾分鐘內自動刷新資料 (聯絡單清單、項目看板)。"
 
 #: src/Config.php:1417
 msgid "Pre-select me as a technician when creating a ticket"
@@ -24774,27 +24775,27 @@ msgstr "当创建工单时预告选择我为请求者"
 
 #: src/Config.php:1431
 msgid "Action button layout"
-msgstr ""
+msgstr "动作按钮布局"
 
 #: src/Config.php:1434
 msgid "Merged"
-msgstr ""
+msgstr "合并的"
 
 #: src/Config.php:1435
 msgid "Splitted"
-msgstr ""
+msgstr "分割的"
 
 #: src/Config.php:1443
 msgid "Timeline date display"
-msgstr ""
+msgstr "时间线日期显示"
 
 #: src/Config.php:1446
 msgid "Relative"
-msgstr ""
+msgstr "关系"
 
 #: src/Config.php:1447
 msgid "Precise"
-msgstr ""
+msgstr "精确"
 
 #: src/Config.php:1455
 msgid "Priority colors"
@@ -24904,22 +24905,22 @@ msgstr "PHP opcode 缓存"
 #: src/Config.php:1803 src/Config.php:2917
 #, php-format
 msgid "%s extension is installed"
-msgstr ""
+msgstr "%s 扩展已安装"
 
 #: src/Config.php:1804
 #, php-format
 msgid "The \"%s\" extension is installed"
-msgstr ""
+msgstr "扩展\"%s\" 已安装"
 
 #: src/Config.php:1822
 #, php-format
 msgid "%1$s memory usage is too low or too high"
-msgstr ""
+msgstr "%1$s 的記憶體使用率過低或過高"
 
 #: src/Config.php:1825
 #, php-format
 msgid "%1$s memory usage is correct"
-msgstr ""
+msgstr "%1$s 記憶體使用量正常"
 
 #: src/Config.php:1834
 msgid "Hits rate"
@@ -24928,12 +24929,12 @@ msgstr "點擊率"
 #: src/Config.php:1841
 #, php-format
 msgid "%1$s hits rate is low"
-msgstr ""
+msgstr "%1$s 點擊率太低"
 
 #: src/Config.php:1844
 #, php-format
 msgid "%1$s hits rate is correct"
-msgstr ""
+msgstr "%1$s 點擊率正常"
 
 #: src/Config.php:1850
 msgid "Out of memory restart"
@@ -24942,12 +24943,12 @@ msgstr "内存不足重启"
 #: src/Config.php:1854
 #, php-format
 msgid "%1$s restart rate is too high"
-msgstr ""
+msgstr "%1$s 重啟率太高"
 
 #: src/Config.php:1857
 #, php-format
 msgid "%1$s restart rate is correct"
-msgstr ""
+msgstr "%1$s 重啟率正常"
 
 #: src/Config.php:1867 src/Config.php:1899 src/Config.php:1918
 msgid "Reset"
@@ -24956,12 +24957,12 @@ msgstr "重置"
 #: src/Config.php:1873 src/Config.php:2930
 #, php-format
 msgid "%s extension is not present"
-msgstr ""
+msgstr "%s 擴充功能不存在"
 
 #: src/Config.php:1874
 #, php-format
 msgid "Installing and enabling the \"%s\" extension may improve GLPI performance"
-msgstr ""
+msgstr "安裝並啟用 “%s” 擴充功能可能會提高 GLPI 效能"
 
 #: src/Config.php:1878
 msgid "User data cache"
@@ -24976,16 +24977,16 @@ msgstr ""
 #: src/Config.php:1884
 #, php-format
 msgid "The \"%s\" cache extension is installed"
-msgstr ""
+msgstr "已安裝 “%s” 快取擴充功能"
 
 #: src/Config.php:1886 src/Config.php:1908
 #, php-format
 msgid "\"%s\" cache system is used"
-msgstr ""
+msgstr "使用 “%s” 快取系統"
 
 #: src/Config.php:1905
 msgid "Translation cache"
-msgstr ""
+msgstr "翻譯快取"
 
 #: src/Config.php:1941
 msgid "Information about system installation and configuration"
@@ -25042,7 +25043,7 @@ msgstr "為升級檢查Proxy設定"
 
 #: src/Config.php:2195
 msgid "Copy system information"
-msgstr ""
+msgstr "复制系统信息"
 
 #: src/Config.php:2205
 msgid "Check if a new version is available"
@@ -25050,11 +25051,11 @@ msgstr "檢查是否有新版本可用"
 
 #: src/Config.php:2460
 msgid "Yes - Restrict to unit management"
-msgstr ""
+msgstr "是的 - 僅限單位管理"
 
 #: src/Config.php:2461
 msgid "Yes - Restrict to global management"
-msgstr ""
+msgstr "是的－僅限全域管理"
 
 #: src/Config.php:2648
 msgid "Performance"
@@ -25072,19 +25073,19 @@ msgstr ""
 
 #: src/Config.php:3207
 msgid "You are using a development version, be careful!"
-msgstr ""
+msgstr "您正在使用一个开发版本，请小心！"
 
 #: src/Config.php:3208
 msgid "You are using a pre-release version, be careful!"
-msgstr ""
+msgstr "你正在使用預發佈版本，請注意!"
 
 #: src/Config.php:3215
 msgid "I know I am using a unstable version."
-msgstr ""
+msgstr "我知道我使用的是不稳定版本。"
 
 #: src/Config.php:3223
 msgid "Please check the unstable version checkbox."
-msgstr ""
+msgstr "請勾選不穩定版本選擇框。"
 
 #: src/Config.php:3268
 msgid "Logs purge configuration"
@@ -25132,27 +25133,27 @@ msgstr ""
 
 #: src/Config.php:3385
 msgid "Add component"
-msgstr ""
+msgstr "增加组件"
 
 #: src/Config.php:3388
 msgid "Update component"
-msgstr ""
+msgstr "更新组件"
 
 #: src/Config.php:3393
 msgid "Disconnect a component"
-msgstr ""
+msgstr "断开组件"
 
 #: src/Config.php:3397
 msgid "Connect a component"
-msgstr ""
+msgstr "连接组件"
 
 #: src/Config.php:3402
 msgid "Delete component"
-msgstr ""
+msgstr "删除组件"
 
 #: src/Config.php:3408
 msgid "All sections"
-msgstr ""
+msgstr "所有区域"
 
 #: src/Config.php:3410
 msgid "Purge all log entries"
@@ -25160,7 +25161,7 @@ msgstr "清除所有日志条目"
 
 #: src/Config.php:3440
 msgid "Delete all"
-msgstr ""
+msgstr "删除所有"
 
 #: src/Config.php:3441
 msgid "Keep all"
@@ -25218,15 +25219,15 @@ msgstr ""
 
 #: src/Config.php:3650
 msgid "Do not deactivate"
-msgstr ""
+msgstr "不要禁用"
 
 #: src/Config.php:3692
 msgid "Documents setup"
-msgstr ""
+msgstr "文档设置"
 
 #: src/Config.php:3697
 msgid "Document files maximum size (Mio)"
-msgstr ""
+msgstr "文件檔案最大大小 (MB)"
 
 #: src/Dashboard/Provider.php:279 src/Dashboard/Grid.php:1216
 msgid "Late tickets"
@@ -25246,19 +25247,19 @@ msgstr "搁置工单"
 
 #: src/Dashboard/Provider.php:386 src/Dashboard/Grid.php:1221
 msgid "Assigned tickets"
-msgstr ""
+msgstr "已分配的待辦事項"
 
 #: src/Dashboard/Provider.php:394 src/Dashboard/Grid.php:1222
 msgid "Planned tickets"
-msgstr ""
+msgstr "計劃待辦事項"
 
 #: src/Dashboard/Provider.php:402 src/Dashboard/Grid.php:1223
 msgid "Solved tickets"
-msgstr ""
+msgstr "已解決的待辦事項"
 
 #: src/Dashboard/Provider.php:410 src/Dashboard/Grid.php:1224
 msgid "Closed tickets"
-msgstr ""
+msgstr "已關閉的待辦事項"
 
 #: src/Dashboard/Provider.php:568 src/Dashboard/Provider.php:712
 msgid "Late own and resolve"
@@ -25278,11 +25279,11 @@ msgstr "准时"
 
 #: src/Dashboard/Provider.php:608
 msgid "Tickets by SLA status and by technician"
-msgstr ""
+msgstr "按 SLA 狀態和技術人員分類的待辦事項"
 
 #: src/Dashboard/Provider.php:752
 msgid "Tickets by SLA status and by technician group"
-msgstr ""
+msgstr "按 SLA 狀態和技術人員群組劃分的待辦事項"
 
 #: src/Dashboard/Provider.php:869
 msgid "without"
@@ -25505,7 +25506,7 @@ msgstr "%s 依 %s"
 
 #: src/Dashboard/Grid.php:1219
 msgid "New tickets"
-msgstr ""
+msgstr "新的待辦事項"
 
 #: src/Dashboard/Grid.php:1247
 #, php-format
@@ -25514,7 +25515,7 @@ msgstr "%s 清单"
 
 #: src/Dashboard/Grid.php:1264
 msgid "Number of tickets by month"
-msgstr ""
+msgstr "按月統計的待辦事項"
 
 #: src/Dashboard/Grid.php:1273
 msgid "Evolution of ticket in the past year"
@@ -25522,23 +25523,23 @@ msgstr ""
 
 #: src/Dashboard/Grid.php:1282
 msgid "Tickets status by month"
-msgstr ""
+msgstr "按月查看待辦事項狀態"
 
 #: src/Dashboard/Grid.php:1291
 msgid "Tickets times (in hours)"
-msgstr ""
+msgstr "待辦事項時間 (小時)"
 
 #: src/Dashboard/Grid.php:1300
 msgid "Tickets summary"
-msgstr ""
+msgstr "待辦事項摘要"
 
 #: src/Dashboard/Grid.php:1310
 msgid "Number of tickets by SLA status and technician"
-msgstr ""
+msgstr "以 SLA 狀態和技術人員統計的待辦事項數量"
 
 #: src/Dashboard/Grid.php:1319
 msgid "Number of tickets by SLA status and technician group"
-msgstr ""
+msgstr "按 SLA 狀態和技術人員群組劃分的待辦事項數量"
 
 #: src/Dashboard/Grid.php:1326
 msgid "Top ticket's categories"
@@ -25766,11 +25767,11 @@ msgstr "在新页面打开此元素"
 
 #: js/impact.js:1335
 msgid "Show ongoing tickets"
-msgstr ""
+msgstr "顯示正在進行的待辦事項"
 
 #: js/impact.js:1336
 msgid "Show ongoing tickets for this item"
-msgstr ""
+msgstr "顯示此項目的未結待辦事項"
 
 #: js/impact.js:1342
 msgid "Group properties..."

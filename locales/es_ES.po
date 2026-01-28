@@ -10,7 +10,6 @@
 # David Abad Ruiz, 2022
 # José Javier Alamá Izquierdo, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
-# Pruebas, 2023
 # Óscar Beiro, 2023
 # Iván Ramírez, 2023
 # FranciscoFJ <dev-ooo@satel-sa.com>, 2023
@@ -28,6 +27,8 @@
 # LatinSuD <sdsd@latinsud.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # LukeZemp, 2025
+# Pruebas, 2025
+# Ángel Jueguen, 2026
 # 
 #, fuzzy
 msgid ""
@@ -36,7 +37,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: LukeZemp, 2025\n"
+"Last-Translator: Ángel Jueguen, 2026\n"
 "Language-Team: Spanish (Spain) (https://app.transifex.com/glpi/teams/1637/es_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15272,7 +15273,7 @@ msgstr "Tiempo interno para resolver + En curso"
 
 #: src/Ticket.php:3129
 msgid "Internal time to resolve exceeded"
-msgstr "Tiempo interno de respuesta excedido"
+msgstr "Tiempo interno de resolución excedido"
 
 #: src/Ticket.php:3139 src/Ticket.php:3311 src/Ticket.php:6329
 #: src/NotificationTargetTicket.php:635
@@ -20260,7 +20261,7 @@ msgstr "Tiempo para resolver + En curso"
 
 #: src/CommonITILObject.php:4148
 msgid "Time to resolve exceeded"
-msgstr "Se superó el tiempo de resolución"
+msgstr "Tiempo de resolución excedido"
 
 #: src/CommonITILObject.php:4212
 msgid "Last edit by"
@@ -22424,11 +22425,15 @@ msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
 msgstr ""
+"El archivo de clave de seguridad no existe. Debe ejecutar el comando \"%s\" "
+"para generar una clave."
 
 #: src/GLPIKey.php:135
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"No se pudo obtener el contenido del archivo de clave de seguridad. Corrija "
+"los permisos de %s."
 
 #: src/GLPIKey.php:140
 #, php-format
@@ -22436,6 +22441,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Contenido del archivo de clave de seguridad no válido. Debe ejecutar el "
+"comando \"%s\" para regenerar la clave."
 
 #: src/IPAddress.php:137 src/NetworkPortMigration.php:119
 msgid "Invalid IP address"

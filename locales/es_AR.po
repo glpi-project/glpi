@@ -28,7 +28,7 @@
 # Nicolás Gaviola, 2025
 # Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
-# Alan Ivés Lehoux, 2025
+# Alan Lehoux, 2025
 # 
 #, fuzzy
 msgid ""
@@ -37,7 +37,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Alan Ivés Lehoux, 2025\n"
+"Last-Translator: Alan Lehoux, 2025\n"
 "Language-Team: Spanish (Argentina) (https://app.transifex.com/glpi/teams/1637/es_AR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1589,7 +1589,7 @@ msgstr "Mostrar etiquetas de valor en puntos/barras"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "Limit number of data"
-msgstr "Limitar número de datos"
+msgstr "Limitar la cantidad de datos"
 
 #. TRANS: select action 'update' (before doing it)
 #: templates/components/dashboard/widget_form.html.twig
@@ -1692,7 +1692,7 @@ msgstr "Eliminado"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr "Cambiar permisos de acceso a subentidades."
+msgstr "Cambiar visibilidad en entidades hijas."
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
@@ -1701,11 +1701,11 @@ msgstr "No se puede cambiar este atributo. Se hereda de su padre."
 #: templates/components/form/header_content.html.twig
 msgid "You are not allowed to change the visibility flag for child entities."
 msgstr ""
-"Usted no está autorizado a cambiar la visibilidad de las subentidades."
+"No tiene permitido cambiar el indicador de visibilidad para entidades hijas."
 
 #: templates/components/form/header_content.html.twig
 msgid "Flag change forbidden. Linked items found."
-msgstr "Imposible cambiar el Flag. Se encontraron elementos vinculados."
+msgstr "Cambio de indicador prohibido. Se encontraron elementos vinculados."
 
 #: templates/components/form/header_content.html.twig
 #: templates/components/itilobject/fields_panel.html.twig
@@ -2467,7 +2467,7 @@ msgstr "Síntomas"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetChange.php:275 src/Change.php:506 src/Change.php:523
 msgid "Control list"
-msgstr "Lista de control"
+msgstr "Lista de restricciones"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Problem.php:487
 msgid "Analysis"
@@ -2486,7 +2486,7 @@ msgstr "Plan de resguardo"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetChange.php:278 src/Change.php:553
 msgid "Checklist"
-msgstr "Lista de control"
+msgstr "Lista de verificación"
 
 #: templates/components/itilobject/fields_panel.html.twig
 msgid "Plans"
@@ -2647,7 +2647,7 @@ msgstr "Guardar y agregar a la base de conocimientos"
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task.html.twig
 msgid "Set the status to pending"
-msgstr "Establecer el estado en pendiente"
+msgstr "Establecer el estado como en espera"
 
 #: templates/components/itilobject/timeline/form_task.html.twig
 #: src/RuleTicket.php:1088 src/TaskTemplate.php:52
@@ -4210,8 +4210,8 @@ msgstr ""
 msgid ""
 "Don't show search engine in dropdowns if the number of items is less than"
 msgstr ""
-"No volver a mostrar motor de búsqueda en el menú despegable si el número de "
-"elementos es menor que"
+"No mostrar el buscador en el menú desplegable si la cantidad de elementos es"
+" menor que"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Search engine"
@@ -4510,7 +4510,7 @@ msgstr "Renovación"
 
 #: templates/pages/management/contract.html.twig
 msgid "Max number of items"
-msgstr "Número máximo de elementos"
+msgstr "Cantidad máxima de elementos"
 
 #: templates/pages/management/contract.html.twig src/Infocom.php:1446
 #: src/Contract.php:723
@@ -4519,7 +4519,7 @@ msgstr "Alertas por correo"
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Bulk import groups from a LDAP directory"
-msgstr "Importar grupos masivamente desde un directorio LDAP"
+msgstr "Importación masiva de grupos desde un directorio LDAP"
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Import of new groups"
@@ -4692,7 +4692,7 @@ msgstr "Importación denegada (sin registro)"
 
 #: templates/pages/admin/ldap.users.html.twig
 msgid "Bulk import users from a LDAP directory"
-msgstr "Importar usuarios masivamente desde un directorio LDAP"
+msgstr "Importación masiva de usuarios desde un directorio LDAP"
 
 #: templates/pages/admin/ldap.users.html.twig src/AuthLDAP.php:3908
 msgid "Synchronizing already imported users"
@@ -4705,7 +4705,8 @@ msgstr "Importación de nuevos usuarios"
 #: templates/pages/admin/ldap.choose_directory.html.twig
 msgid "Please choose LDAP directory to import users and groups from"
 msgstr ""
-"Seleccione el Directorio LDAP desde el cual importar usuarios y grupos"
+"Por favor, seleccione el directorio LDAP desde el cual importar usuarios y "
+"grupos"
 
 #: templates/pages/admin/ldap.choose_directory.html.twig src/AuthLDAP.php:139
 msgid "LDAP directory"
@@ -4734,7 +4735,7 @@ msgstr "Enviar"
 
 #: templates/pages/admin/ldap.choose_directory.html.twig
 msgid "No LDAP directory defined in GLPI"
-msgstr "No hay servidores LDAP definidos en GLPI"
+msgstr "Ningún directorio LDAP definido en GLPI"
 
 #: templates/pages/assets/unmanaged.html.twig src/RefusedEquipment.php:117
 #: src/RuleImportAsset.php:124 src/Unmanaged.php:184 src/Blacklist.php:243
@@ -4847,7 +4848,7 @@ msgstr "Orientación de puerta en sala"
 
 #: templates/pages/assets/rack.html.twig src/Rack.php:214
 msgid "Number of units"
-msgstr "Número de unidades"
+msgstr "Cantidad de unidades"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Width"
@@ -5181,7 +5182,7 @@ msgstr "Migración de datos - %s"
 #: install/migrations/update_0.84.x_to_0.85.0.php:2084 src/Migration.php:800
 #, php-format
 msgid "Change of the database layout - %s"
-msgstr "Cambio de la disposición de la base de datos - %s"
+msgstr "Cambio de la estructura de la base de datos - %s"
 
 #: install/migrations/update_0.83.x_to_0.84.0.php:298
 #: install/migrations/update_0.83.x_to_0.84.0.php:299
@@ -5995,7 +5996,7 @@ msgstr "%1$s actualiza la licencia %2$s"
 
 #: front/user.form.php:47 front/user.form.php:198
 msgid "Lang has been changed!"
-msgstr "¡Se ha cambiado el lenguaje!"
+msgstr "¡Idioma cambiado!"
 
 #. TRANS: %s is the user login
 #: front/user.form.php:163 front/group_user.form.php:57
@@ -6377,7 +6378,7 @@ msgstr "%s purga un seguimiento"
 #: front/ldap.import.php:58 src/User.php:2513 src/Group.php:209
 #: src/Group.php:390
 msgid "LDAP directory link"
-msgstr "Enlace al directorio LDAP"
+msgstr "Enlace del directorio LDAP"
 
 #. TRANS: %s is the user login
 #: front/item_remotemanagement.form.php:63
@@ -6935,7 +6936,7 @@ msgstr "Ejecutar"
 
 #: front/crontask.php:66 front/crontask.php:67
 msgid "No action pending"
-msgstr "No hay acción pendiente"
+msgstr "Ninguna acción en espera"
 
 #: front/crontask.php:81
 msgid ""
@@ -7524,7 +7525,7 @@ msgstr "%1$s %2$s"
 #: src/Log.php:773
 #, php-format
 msgid "Change %1$s to %2$s"
-msgstr "Cambiar %1$s por %2$s"
+msgstr "Cambiar %1$s a %2$s"
 
 #: src/Log.php:1040
 msgid "Update a field"
@@ -7716,16 +7717,16 @@ msgstr "Inicio de sesión automático deshabilitado"
 #: src/Auth.php:908
 msgid "Connection to LDAP directory failed"
 msgid_plural "Connection to LDAP directories failed"
-msgstr[0] "La conexión a directorio LDAP falló"
-msgstr[1] "La conexión a directorios LDAP falló"
-msgstr[2] "La conexión a directorios LDAP falló"
+msgstr[0] "La conexión al directorio LDAP falló"
+msgstr[1] "La conexión a los directorios LDAP falló"
+msgstr[2] "La conexión a los directorios LDAP falló"
 
 #: src/Auth.php:917
 msgid "User not found in LDAP directory"
 msgid_plural "User not found in LDAP directories"
-msgstr[0] "No se encuentra el usuario en el directorio LDAP"
-msgstr[1] "No se encuentra el usuario en los directorios LDAP"
-msgstr[2] "No se encuentra el usuario en los directorios LDAP"
+msgstr[0] "Usuario no encontrado en el directorio LDAP"
+msgstr[1] "Usuario no encontrado en los directorios LDAP"
+msgstr[2] "Usuario no encontrado en los directorios LDAP"
 
 #: src/Auth.php:928 src/Auth.php:937
 msgid "Empty login or password"
@@ -7801,11 +7802,11 @@ msgstr "Forzar sincronización"
 
 #: src/Auth.php:1530 src/User.php:3615
 msgid "Clean LDAP fields and force synchronisation"
-msgstr "Limpie los campos LDAP y fuerce la sincronización"
+msgstr "Limpiar los campos LDAP y forzar la sincronización"
 
 #: src/Auth.php:1545
 msgid "Change of the authentication method"
-msgstr "Cambiar el método de autenticación"
+msgstr "Cambio del método de autenticación"
 
 #: src/Auth.php:1584
 msgid "Synchronization"
@@ -7951,7 +7952,7 @@ msgstr[2] "Últimas fechas"
 #: src/ITILFollowup.php:739 src/NotificationTargetCommonITILObject.php:1851
 msgctxt "quantity"
 msgid "Number of followups"
-msgstr "Número de seguimientos"
+msgstr "Cantidad de seguimientos"
 
 #: src/ITILFollowup.php:773
 msgid "Private followup"
@@ -8643,7 +8644,7 @@ msgstr "Cantidad de tickets"
 #: src/NotificationTargetTicket.php:715
 msgctxt "quantity"
 msgid "Number of changes"
-msgstr "Número de cambios"
+msgstr "Cantidad de cambios"
 
 #: src/NotificationTargetProblem.php:204
 #: src/NotificationTargetReservation.php:163
@@ -9216,7 +9217,7 @@ msgstr "Padre"
 #: src/NotificationTargetCommonITILObject.php:1922
 msgctxt "quantity"
 msgid "Number of tasks"
-msgstr "Número de tareas"
+msgstr "Cantidad de tareas"
 
 #: src/NotificationTargetProjectTask.php:574
 #: src/NotificationTargetProject.php:665
@@ -9231,14 +9232,14 @@ msgstr "Cantidad de miembros del equipo"
 #: src/NotificationTargetTicket.php:716
 msgctxt "quantity"
 msgid "Number of items"
-msgstr "Número de elementos"
+msgstr "Cantidad de elementos"
 
 #: src/NotificationTargetProjectTask.php:617
 #: src/NotificationTargetProject.php:709
 #: src/NotificationTargetCommonITILObject.php:1853 src/Document.php:991
 msgctxt "quantity"
 msgid "Number of documents"
-msgstr "Número de documentos"
+msgstr "Cantidad de documentos"
 
 #: src/NotificationTargetProjectTask.php:650
 #: src/NotificationTargetProject.php:752
@@ -9314,11 +9315,11 @@ msgstr[2] "Salas de servidor"
 
 #: src/DCRoom.php:141 src/DCRoom.php:323
 msgid "Number of columns"
-msgstr "Número de columnas"
+msgstr "Cantidad de columnas"
 
 #: src/DCRoom.php:153 src/DCRoom.php:331
 msgid "Number of rows"
-msgstr "Número de filas"
+msgstr "Cantidad de filas"
 
 #: src/DCRoom.php:168
 msgid "Background picture (blueprint)"
@@ -9353,9 +9354,9 @@ msgstr "col: %1$s, fila: %2$s"
 #: src/Change_Item.php:53
 msgid "Change item"
 msgid_plural "Change items"
-msgstr[0] "Ítem de cambio"
-msgstr[1] "Ítems de cambios"
-msgstr[2] "Ítems de cambios"
+msgstr[0] "Elemento de cambio"
+msgstr[1] "Elementos de cambio"
+msgstr[2] "Elementos de cambio"
 
 #: src/NotificationTargetChange.php:51
 msgid "New change"
@@ -9363,7 +9364,7 @@ msgstr "Nuevo cambio"
 
 #: src/NotificationTargetChange.php:52
 msgid "Update of a change"
-msgstr "Cambio actualizado"
+msgstr "Actualización de un cambio"
 
 #: src/NotificationTargetChange.php:53
 msgid "Change solved"
@@ -9376,11 +9377,11 @@ msgstr "Pregunta para validar solicitud"
 
 #: src/NotificationTargetChange.php:56
 msgid "Closure of a change"
-msgstr "Cambio cerrado"
+msgstr "Cierre de un cambio"
 
 #: src/NotificationTargetChange.php:57
 msgid "Deleting a change"
-msgstr "Cambio borrado"
+msgstr "Eliminación de un cambio"
 
 #: src/NotificationTargetChange.php:224 src/NotificationTargetTicket.php:547
 #, php-format
@@ -9398,7 +9399,7 @@ msgstr "Una respuesta a una solicitud de aprobación fue producida por %s"
 #: src/NotificationTargetTicket.php:714
 msgctxt "quantity"
 msgid "Number of problems"
-msgstr "Número de problemas"
+msgstr "Cantidad de problemas"
 
 #: src/NotificationTargetChange.php:304 src/NotificationTargetTicket.php:745
 msgid "Status of the approval request"
@@ -9425,9 +9426,9 @@ msgstr "Se produjo una respuesta a una solicitud de validación"
 #: src/Change_Problem.php:67
 msgid "Link Problem/Change"
 msgid_plural "Links Problem/Change"
-msgstr[0] "Enlace Problema/Cambio"
-msgstr[1] "Enlaces Problema/Cambio"
-msgstr[2] "Enlaces Problema/Cambio"
+msgstr[0] "Vínculo Problema/Cambio"
+msgstr[1] "Vínculos Problema/Cambio"
+msgstr[2] "Vínculos Problema/Cambio"
 
 #: src/DocumentType.php:48 src/DocumentType.php:95 src/ManualLink.php:151
 msgid "Icon"
@@ -9525,7 +9526,7 @@ msgstr "Licencias válidas"
 #: src/Software.php:487 src/SoftwareLicense.php:584
 msgctxt "quantity"
 msgid "Number of installations"
-msgstr "Número de instalaciones"
+msgstr "Cantidad de instalaciones"
 
 #: src/Software.php:958
 msgid "Merge"
@@ -9886,7 +9887,7 @@ msgstr "Tareas de problema a ejecutar"
 
 #: src/CommonITILTask.php:1686
 msgid "Change tasks to do"
-msgstr "Tareas de cambios para hacer"
+msgstr "Tareas a realizar del cambio"
 
 #: src/CommonITILTask.php:1829
 #, php-format
@@ -9924,7 +9925,8 @@ msgstr "Agregar un modelo de impresora compatible"
 
 #: src/AuthLDAP.php:302 src/AuthLDAP.php:553
 msgid "Synchronization field cannot be changed once in use."
-msgstr "El campo de sincronización no se puede cambiar una vez en uso."
+msgstr ""
+"El campo de sincronización no se puede cambiar una vez que está en uso."
 
 #: src/AuthLDAP.php:456
 msgid "Preconfiguration"
@@ -9968,9 +9970,9 @@ msgid ""
 "to LDAP server. Disabling this behaviour can be required when LDAPS bind is "
 "used."
 msgstr ""
-"Indica si se debe utilizar una operación de enlace simple durante la "
-"conexión con el servidor LDAP. Deshabilitar este comportamiento puede ser "
-"necesario cuando se utiliza LDAPS bind."
+"Indica si debe utilizarse una operación de enlace simple durante la conexión"
+" al servidor LDAP. Deshabilitar este comportamiento puede ser necesario "
+"cuando se utiliza enlace LDAPS."
 
 #: src/AuthLDAP.php:530
 msgid "RootDN (for non anonymous binds)"
@@ -9997,7 +9999,7 @@ msgstr "%s Falta la extensión"
 
 #: src/AuthLDAP.php:590
 msgid "Impossible to use LDAP as external source of connection"
-msgstr "Imposible utilizar LDAP como origen de conexión externa"
+msgstr "Imposible utilizar LDAP como fuente externa de conexión"
 
 #: src/AuthLDAP.php:621 src/AuthLDAP.php:4462 src/Entity.php:491
 #: src/Entity.php:883
@@ -10010,7 +10012,7 @@ msgstr "Utilizar TLS"
 
 #: src/AuthLDAP.php:628
 msgid "ldap_start_tls does not exist"
-msgstr "función ldap_start_tls inexistente"
+msgstr "ldap_start_tls no existe"
 
 #: src/AuthLDAP.php:631
 msgid "LDAP directory time zone"
@@ -10026,11 +10028,11 @@ msgstr "Tamaño de página"
 
 #: src/AuthLDAP.php:649
 msgid "Maximum number of results"
-msgstr "Número máximo de resultados"
+msgstr "Cantidad máxima de resultados"
 
 #: src/AuthLDAP.php:664
 msgid "How LDAP aliases should be handled"
-msgstr "Cómo se manejan los aliases LDAP"
+msgstr "Cómo deben manejarse los alias LDAP"
 
 #: src/AuthLDAP.php:666
 msgid "Never dereferenced (default)"
@@ -10124,7 +10126,7 @@ msgstr "Prueba de conexión al directorio LDAP"
 
 #: src/AuthLDAP.php:949
 msgid "Binding to the LDAP directory"
-msgstr "Enlazándose al directorio LDAP"
+msgstr "Enlace al directorio LDAP"
 
 #: src/AuthLDAP.php:983 src/AuthLDAP.php:1174 src/AuthLDAP.php:4049
 msgctxt "ldap"
@@ -10149,7 +10151,7 @@ msgstr "Ejemplo de lugares:  %{city} > %{roomnumber}"
 
 #: src/AuthLDAP.php:1042
 msgid "Import entities from LDAP directory"
-msgstr "Importar entidades del directorio LDAP"
+msgstr "Importar entidades desde el directorio LDAP"
 
 #: src/AuthLDAP.php:1045
 msgid "Attribute representing entity"
@@ -10226,7 +10228,7 @@ msgstr "Modo simple"
 
 #: src/AuthLDAP.php:3945 src/AuthLDAP.php:3975
 msgid "LDAP directory choice"
-msgstr "Elección de directorio LDAP"
+msgstr "Elección del directorio LDAP"
 
 #: src/AuthLDAP.php:3954 src/AuthLDAP.php:3986
 msgctxt "button"
@@ -10509,7 +10511,7 @@ msgstr "Dar"
 #: src/Consumable.php:271
 #, php-format
 msgid "%s gives a consumable"
-msgstr "%s otorga un insumo"
+msgstr "%s otorga un material"
 
 #. TRANS: For consumable. %1$d is total number, %2$d is unused number, %3$d is
 #. old number
@@ -10520,7 +10522,7 @@ msgstr "Total: %1$d, Nuevos: %2$d, Usados: %3$d"
 
 #: src/Consumable.php:431 src/Consumable.php:433
 msgid "No consumable"
-msgstr "Ningún insumo"
+msgstr "Ningún material"
 
 #: src/Consumable.php:499
 msgctxt "consumable"
@@ -11255,7 +11257,7 @@ msgstr "Estado por defecto"
 
 #: src/Inventory/Conf.php:553
 msgid "Do not change"
-msgstr "No realizar cambios"
+msgstr "No cambiar"
 
 #: src/Inventory/Conf.php:559
 msgid "Inventory frequency (in hours)"
@@ -11852,7 +11854,7 @@ msgstr "Período de ejecución"
 
 #: src/CronTask.php:657 src/CronTask.php:1729
 msgid "Number of days this action logs are stored"
-msgstr "Tiempo en días que se conservarán los registros de esta tarea"
+msgstr "Cantidad de días que se guardan los registros de esta acción"
 
 #: src/CronTask.php:662
 msgid "Infinite"
@@ -12096,7 +12098,7 @@ msgstr "Archivar y eliminar logs antiguos"
 
 #: src/CronTask.php:2100
 msgid "Number of days to keep archived logs"
-msgstr "Número de días para mantener registros archivados"
+msgstr "Cantidad de días para mantener los registros archivados"
 
 #: src/RackType.php:41
 msgid "Rack type"
@@ -12210,7 +12212,7 @@ msgstr "Resuelto + Cerrado"
 
 #: src/Problem.php:879 src/Problem.php:928
 msgid "Problems on pending status"
-msgstr "Problemas en estado pendiente"
+msgstr "Problemas en estado en espera"
 
 #: src/Problem.php:895 src/Problem.php:944
 msgid "Problems to be processed"
@@ -12439,7 +12441,7 @@ msgstr "Código"
 #: src/NotificationTargetProject.php:680
 #: src/NotificationTargetCommonITILObject.php:1858
 msgid "Number of costs"
-msgstr "Número de costos"
+msgstr "Cantidad de costos"
 
 #: src/NotificationAjax.php:97
 msgid "Error inserting browser notification to queue"
@@ -12501,7 +12503,7 @@ msgstr "Gestión global"
 #: src/Peripheral.php:398
 msgctxt "quantity"
 msgid "Number of peripherals"
-msgstr "Número de periféricos"
+msgstr "Cantidad de periféricos"
 
 #: src/Stat/Data/Location/StatDataOpened.php:51
 #, php-format
@@ -12856,7 +12858,7 @@ msgstr[2] "Monitores"
 #: src/Monitor.php:485
 msgctxt "quantity"
 msgid "Number of monitors"
-msgstr "Número de monitores"
+msgstr "Cantidad de monitores"
 
 #: src/Telemetry.php:40
 msgid "Telemetry"
@@ -14029,7 +14031,7 @@ msgstr "Grupo responsable de la licencia"
 
 #: src/SoftwareLicense.php:674
 msgid "Number of licenses"
-msgstr "Número de licencias"
+msgstr "Cantidad de licencias"
 
 #: src/SoftwareLicense.php:716 src/Certificate.php:440
 msgid "Never expire"
@@ -14416,7 +14418,7 @@ msgstr "No hay enlaces definidos"
 #: src/Phone.php:494
 msgctxt "quantity"
 msgid "Number of phones"
-msgstr "Número de teléfonos"
+msgstr "Cantidad de teléfonos"
 
 #: src/ReminderTranslation.php:56 src/KnowbaseItemTranslation.php:57
 #: src/DropdownTranslation.php:53
@@ -14502,7 +14504,7 @@ msgstr "Zona horaria"
 
 #: src/RuleRight.php:421
 msgid "LDAP criteria"
-msgstr "Criterio LDAP"
+msgstr "Criterios LDAP"
 
 #: src/CommonITILCost.php:157 src/CommonITILCost.php:236
 #: src/CommonITILCost.php:461 src/CommonITILCost.php:608
@@ -14566,7 +14568,7 @@ msgstr "Eliminar de un dispositivo"
 #: src/Certificate.php:307 src/Document.php:1130
 msgctxt "quantity"
 msgid "Number of associated items"
-msgstr "Número de elementos asociados"
+msgstr "Cantidad de elementos asociados"
 
 #: src/Certificate.php:545
 msgctxt "button"
@@ -14639,7 +14641,7 @@ msgstr "ID de mensaje"
 
 #: src/QueuedNotification.php:377 src/QueuedNotification.php:824
 msgid "Number of tries of sent"
-msgstr "Cantidad de intentos"
+msgstr "Cantidad de intentos de envío"
 
 #: src/QueuedNotification.php:395 src/Socket.php:445 src/Contract_Item.php:160
 msgid "Associated item ID"
@@ -14761,11 +14763,11 @@ msgstr "Cantidad de hilos"
 
 #: src/DeviceProcessor.php:251
 msgid "processor: number of cores"
-msgstr "procesador: número de núcleos"
+msgstr "procesador: cantidad de núcleos"
 
 #: src/DeviceProcessor.php:267
 msgid "processor: number of threads"
-msgstr "procesador: número de hilos"
+msgstr "procesador: cantidad de hilos"
 
 #: src/DeviceProcessor.php:297
 msgid "Processor frequency"
@@ -15198,7 +15200,7 @@ msgstr "Asignado a grupos"
 
 #: src/NotificationTargetCommonITILObject.php:1852
 msgid "Number of unresolved items"
-msgstr "Número de elementos no resueltos"
+msgstr "Cantidad de elementos no resueltos"
 
 #: src/NotificationTargetCommonITILObject.php:1913
 msgid "Category id"
@@ -15630,13 +15632,13 @@ msgstr "Aprobar solución/Responder encuesta (mi ticket)"
 
 #: src/Ticket.php:6169
 msgid "Approve solution and reply to survey for ticket created by me"
-msgstr "Aprobar solución y responder encuesta de incidentes creados por mi"
+msgstr "Aprobar solución y responder encuesta del ticket creado por mí"
 
 #: src/Ticket.php:6604 src/Ticket.php:6660 src/Ticket.php:6680
 #: src/Ticket.php:6845
 #, php-format
 msgid "Not enough rights to merge tickets %d and %d"
-msgstr "No hay suficientes derechos para fusionar los tickets %d y %d"
+msgstr "Permisos insuficientes para fusionar los tickets %d y %d"
 
 #: src/Ticket.php:6623
 #, php-format
@@ -15671,7 +15673,7 @@ msgstr "Error al eliminar el ticket %d"
 #: src/Ticket.php:6838
 #, php-format
 msgid "%s merges ticket %s into %s"
-msgstr "%s fusiona el incidente %s en %s"
+msgstr "%s fusiona el ticket %s en %s"
 
 #: src/Document_Item.php:54
 msgid "Document item"
@@ -15784,16 +15786,16 @@ msgstr "Fecha de lanzamiento"
 
 #: src/Printer.php:556 src/CartridgeItem.php:254
 msgid "Number of used cartridges"
-msgstr "Cartuchos usados"
+msgstr "Cantidad de cartuchos usados"
 
 #: src/Printer.php:573 src/CartridgeItem.php:271
 msgid "Number of worn cartridges"
-msgstr "Cartuchos deteriorados"
+msgstr "Cantidad de cartuchos gastados"
 
 #: src/Printer.php:696
 msgctxt "quantity"
 msgid "Number of printers"
-msgstr "Número de impresoras"
+msgstr "Cantidad de impresoras"
 
 #: src/DevicePowerSupplyModel.php:44
 msgid "Device power supply model"
@@ -16099,11 +16101,11 @@ msgstr "Último cambio"
 
 #: src/NetworkPort.php:1765
 msgid "Number of I/O bytes"
-msgstr "Número de bytes de E/S"
+msgstr "Cantidad de bytes de E/S"
 
 #: src/NetworkPort.php:1772
 msgid "Number of I/O errors"
-msgstr "Número de errores de E/S"
+msgstr "Cantidad de errores de E/S"
 
 #: src/NetworkPort.php:1779
 msgid "Duplex"
@@ -16142,9 +16144,9 @@ msgstr "Agregar un proyecto"
 #: src/Item_Ticket.php:55
 msgid "Ticket item"
 msgid_plural "Ticket items"
-msgstr[0] "Ítem del ticket"
-msgstr[1] "Ítems del ticket"
-msgstr[2] "Ítems del ticket"
+msgstr[0] "Elemento del ticket"
+msgstr[1] "Elementos del ticket"
+msgstr[2] "Elementos del ticket"
 
 #: src/Item_Ticket.php:453
 msgid "Knowledge base entries"
@@ -16216,7 +16218,7 @@ msgstr "Rechazado"
 
 #: src/Change.php:811
 msgid "Last changes"
-msgstr "Últimos Cambio"
+msgstr "Últimos cambios"
 
 #: src/Change.php:847
 msgid "New change for this item..."
@@ -16233,7 +16235,7 @@ msgstr[2] "Últimos %d cambios"
 
 #: src/Change.php:889 src/Change.php:936 src/Change.php:1644
 msgid "No change found."
-msgstr "Sin cambios."
+msgstr "No se encontró ningún cambio."
 
 #: src/Change.php:924
 msgid "Changes on linked items"
@@ -16241,15 +16243,15 @@ msgstr "Cambios en elementos vinculados"
 
 #: src/Change.php:1225 src/Change.php:1274
 msgid "Changes on pending status"
-msgstr "Controles de cambio con estado pendiente"
+msgstr "Cambios en estado en espera"
 
 #: src/Change.php:1241 src/Change.php:1290
 msgid "Changes to be processed"
-msgstr "Controles de cambio por atender"
+msgstr "Cambios a procesar"
 
 #: src/Change.php:1257 src/Change.php:1306
 msgid "Your changes in progress"
-msgstr "Tus cambios están en progreso"
+msgstr "Tus cambios están en curso"
 
 #: src/RuleDictionnaryPhoneTypeCollection.php:46
 msgid "Dictionary of phone types"
@@ -16293,8 +16295,8 @@ msgid ""
 "Compare number of results the search returns against the specified value "
 "with selected operator"
 msgstr ""
-"Comparar el número de resultar que la búsqueda retorna contra el valor "
-"seleccionado en el operador seleccionado"
+"Comparar la cantidad de resultados devueltos por la búsqueda con el valor "
+"especificado y el operador seleccionado"
 
 #: src/SavedSearch_Alert.php:176
 msgid "Notification frequency"
@@ -16582,7 +16584,7 @@ msgstr ""
 
 #: src/SlaLevel_Ticket.php:41
 msgid "SLA level for Ticket"
-msgstr "Nivel SLA para Incidente"
+msgstr "Nivel SLA para Ticket"
 
 #: src/SlaLevel_Ticket.php:147
 msgid "Automatic actions of SLA"
@@ -17369,7 +17371,7 @@ msgstr "Se produce un error al intentar desbloquear la tarea \"%s\"."
 #: src/Console/Task/UnlockCommand.php:156
 #, php-format
 msgid "Number of tasks unlocked: %d."
-msgstr "Número de tareas desbloqueadas: %d."
+msgstr "Cantidad de tareas desbloqueadas: %d."
 
 #: src/Console/Task/UnlockCommand.php:181
 msgid "Option --cycle is not compatible with option --delay."
@@ -17441,8 +17443,8 @@ msgid ""
 "Path of file where will be stored SQL queries that can be used to rollback "
 "changes"
 msgstr ""
-"Ruta del archivo donde se almacenarán las consultas SQL que se pueden usar "
-"para revertir los cambios"
+"Ruta del archivo donde se almacenarán las consultas SQL que pueden "
+"utilizarse para revertir los cambios"
 
 #: src/Console/Diagnostic/CheckHtmlEncodingCommand.php:128
 msgid "No item to fix."
@@ -17523,7 +17525,7 @@ msgstr "No se puede actualizar \"%s\" en el perfil \"%s\" (%s)."
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:162
 #: src/Console/Migration/AppliancesPluginToCoreCommand.php:302
 msgid "Associable items to a ticket"
-msgstr "Elementos asociables a un servicio"
+msgstr "Elementos asociables a un ticket"
 
 #: src/Console/Migration/DatabasesPluginToCoreCommand.php:182
 msgid "Importing relations with other itemtypes..."
@@ -18596,7 +18598,7 @@ msgstr "¿Qué complemento(s) desea desactivar (valores separados por comas)?"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:75
 msgid "Synchronize users against LDAP server information"
-msgstr "Sincronice los usuarios con la información del servidor LDAP"
+msgstr "Sincronizar usuarios con la información del servidor LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:81
 msgid "Only create new users"
@@ -18609,11 +18611,11 @@ msgstr ""
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:95
 msgid "Synchronize only users attached to this LDAP server"
-msgstr "Sincronizar solo los usuarios conectados a este servidor LDAP"
+msgstr "Sincronizar solo los usuarios asociados a este servidor LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:102
 msgid "Filter to apply on LDAP search"
-msgstr "Filtrar para aplicar en la búsqueda LDAP"
+msgstr "Filtro a aplicar en la búsqueda LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:110
 #, php-format
@@ -18671,7 +18673,7 @@ msgstr "Filtro LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:263
 msgid "Unable to load LDAP server information."
-msgstr "No se puede cargar la información del servidor LDAP."
+msgstr "Imposible cargar la información del servidor LDAP."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:268
 #, php-format
@@ -18679,7 +18681,7 @@ msgid ""
 "LDAP server \"%s\" is inactive, no synchronization will be done against it."
 msgstr ""
 "El servidor LDAP \"%s\" está inactivo, no se realizará ninguna "
-"sincronización contra él."
+"sincronización con él."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:277
 #, php-format
@@ -18694,7 +18696,7 @@ msgstr "Se excedió el límite de tamaño del servidor LDAP \"%s\"."
 #: src/Console/Ldap/SynchronizeUsersCommand.php:313
 #, php-format
 msgid "Error while contacting the LDAP server \"%s\"."
-msgstr "Error al contactar con el servidor LDAP \"%s\"."
+msgstr "Error al contactar al servidor LDAP \"%s\"."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:327
 #, php-format
@@ -18722,7 +18724,7 @@ msgstr "No se ha podido sincronizar el usuario \"%s\"."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:416
 msgid "LDAP server"
-msgstr "LDAP server"
+msgstr "Servidor LDAP"
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:417
 msgid "Imported"
@@ -18751,7 +18753,7 @@ msgstr ""
 #: src/Console/Ldap/SynchronizeUsersCommand.php:467
 #, php-format
 msgid "--ldap-server-id value \"%s\" is not a valid LDAP server id."
-msgstr "--ldap-server-id value \"%s\" no es un ID de servidor LDAP válido."
+msgstr "El valor --ldap-server-id  \"%s\" no es un id de servidor LDAP válido."
 
 #: src/Console/Ldap/SynchronizeUsersCommand.php:480
 #, php-format
@@ -18986,7 +18988,7 @@ msgstr "No se puede cargar el software con id \"%s\"."
 #: src/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:127
 #, php-format
 msgid "Number of software processed: %d."
-msgstr "Número de softwares procesados: %d."
+msgstr "Cantidad de software procesado: %d."
 
 #: src/Console/System/CheckStatusCommand.php:54
 msgid "Check system status"
@@ -19129,8 +19131,8 @@ msgid ""
 "Force execution of update from v-1 version of GLPI even if schema did not "
 "changed"
 msgstr ""
-"Forzar la ejecución de la actualización desde la versión v-1 de GLPI incluso"
-" si el esquema no cambió"
+"Forzar la ejecución de la actualización desde la versión v-1 de GLPI, "
+"incluso si el esquema no ha cambiado"
 
 #: src/Console/Database/UpdateCommand.php:164
 msgid "Current"
@@ -19566,8 +19568,8 @@ msgstr "Error ejecutando reglas"
 msgid ""
 "Send automated follow-ups on pending tickets and solve them if necessary"
 msgstr ""
-"Envíe seguimientos automatizados de los tickets pendientes y resuélvalos si "
-"es necesario"
+"Enviar seguimientos automáticos a tickets en espera y resolverlos si es "
+"necesario"
 
 #: src/PendingReasonCron.php:209
 msgid "Automatic followups / resolution"
@@ -19674,7 +19676,7 @@ msgstr "Ejecuta el comando \"%1$s\" para activarlo."
 
 #: src/User.php:2801
 msgid "Not enough rights to change this field"
-msgstr "No tenés los permisos necesarios para modificar este campo"
+msgstr "No tiene suficientes permisos para cambiar este campo"
 
 #: src/User.php:2818
 msgid "Valid since"
@@ -19695,7 +19697,7 @@ msgstr "DN del Usuario"
 
 #: src/User.php:2863
 msgid "User missing in LDAP directory"
-msgstr "Usuario no encontrado en directorio LDAP"
+msgstr "Usuario faltante en el directorio LDAP"
 
 #: src/User.php:3037 src/User.php:3435
 msgid "Nickname"
@@ -19770,7 +19772,7 @@ msgstr "Última conexión"
 
 #: src/User.php:3858
 msgid "LDAP directory for authentication"
-msgstr "Directorio LDAP para autenticación"
+msgstr "Directorio LDAP para la autenticación"
 
 #: src/User.php:3871
 msgid "Email server for authentication"
@@ -19782,15 +19784,15 @@ msgstr "Última sincronización"
 
 #: src/User.php:3967 src/Config.php:3377
 msgid "Deleted user in LDAP directory"
-msgstr "Usuario eliminado en directorio LDAP"
+msgstr "Usuario eliminado en el directorio LDAP"
 
 #: src/User.php:4068
 msgid "Number of written tickets"
-msgstr "Número de servicios creados"
+msgstr "Cantidad de tickets escritos"
 
 #: src/User.php:4083
 msgid "Number of assigned tickets"
-msgstr "Servicios asignados"
+msgstr "Cantidad de tickets asignados"
 
 #: src/User.php:4811 src/Dropdown.php:324
 #, php-format
@@ -19819,7 +19821,7 @@ msgstr "Actualizar método de autenticación a"
 
 #: src/User.php:5529
 msgid "Your password has expired. You must change it to be able to login."
-msgstr "Su contraseña ha expirado. Debe cambiarla para poder ingresar."
+msgstr "Su contraseña ha caducado. Debe cambiarla para poder iniciar sesión."
 
 #: src/User.php:5545
 msgid "Current password"
@@ -20220,20 +20222,20 @@ msgstr "Finalizar a las %s"
 #: src/RSSFeed.php:80 src/Central.php:74
 msgid "RSS feed"
 msgid_plural "RSS feed"
-msgstr[0] "Canal RSS"
-msgstr[1] "Canales RSS"
-msgstr[2] "Canales RSS"
+msgstr[0] "Fuente RSS"
+msgstr[1] "Fuentes RSS"
+msgstr[2] "Fuentes RSS"
 
 #: src/RSSFeed.php:82 src/RSSFeed.php:1008
 msgid "Personal RSS feed"
 msgid_plural "Personal RSS feed"
-msgstr[0] "Noticia RSS personal"
-msgstr[1] "Noticias RSS personales"
-msgstr[2] "Noticias RSS personales"
+msgstr[0] "Fuente RSS personal"
+msgstr[1] "Fuentes RSS personales"
+msgstr[2] "Fuentes RSS personales"
 
 #: src/RSSFeed.php:478 src/RSSFeed.php:770
 msgid "Number of items displayed"
-msgstr "Número de elementos mostrados"
+msgstr "Cantidad de elementos mostrados"
 
 #: src/RSSFeed.php:499 src/RSSFeed.php:751
 msgid "Refresh rate"
@@ -20254,7 +20256,7 @@ msgstr "Revise los permisos del directorio: %s"
 
 #: src/RSSFeed.php:782 src/RSSFeed.php:853
 msgid "Error retrieving RSS feed"
-msgstr "Error al obtener la fuente RSS"
+msgstr "Error al recuperar la fuente RSS"
 
 #: src/RSSFeed.php:898
 msgctxt "button"
@@ -20265,9 +20267,9 @@ msgstr "Usar"
 #: src/Profile.php:3536
 msgid "Public RSS feed"
 msgid_plural "Public RSS feeds"
-msgstr[0] "Fuente RSS Público"
-msgstr[1] "Fuentes RSS públicos"
-msgstr[2] "Fuentes RSS publicos"
+msgstr[0] "Fuente RSS pública"
+msgstr[1] "Fuentes RSS públicas"
+msgstr[2] "Fuentes RSS públicas"
 
 #: src/RSSFeed.php:1117 src/Reminder.php:1072
 msgid "Manage personal"
@@ -20791,7 +20793,7 @@ msgstr "El archivo es demasiado pequeño"
 
 #: src/UploadHandler.php:407
 msgid "Maximum number of files exceeded"
-msgstr "Se excedió el número máximo de archivos"
+msgstr "Cantidad máxima de archivos excedida"
 
 #: src/UploadHandler.php:411
 msgid "Image exceeds maximum width"
@@ -20886,8 +20888,8 @@ msgid ""
 "Plugin %1$s version changed. It has been deactivated as its update process "
 "has to be launched."
 msgstr ""
-"La versión del complemento %1$s cambió. Se ha desactivado porque hay que "
-"iniciar su proceso de actualización."
+"La versión del complemento %1$s ha cambiado. Ha sido desactivado ya que su "
+"proceso de actualización debe ser lanzado."
 
 #: src/Plugin.php:885
 #, php-format
@@ -21124,7 +21126,7 @@ msgid ""
 "Required for remote access to resources (inventory agent requests, "
 "marketplace, RSS feeds, ...)."
 msgstr ""
-"Necesario para el acceso remoto a los recursos (solicitudes de agentes de "
+"Necesario para el acceso remoto a recursos (solicitudes de agente de "
 "inventario, mercado, fuentes RSS, ...)."
 
 #: src/System/RequirementsManager.php:106
@@ -21446,7 +21448,7 @@ msgstr "Permisos para archivos de imágenes"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:89
 msgid "Permissions for rss files"
-msgstr "Permisos de archivos de fuentes RSS"
+msgstr "Permisos para archivos rss"
 
 #: src/System/Requirement/DirectoryWriteAccess.php:92
 msgid "Permissions for session files"
@@ -21841,7 +21843,7 @@ msgstr "Agregar nuevo item"
 
 #: src/LevelAgreement.php:443 src/SLM.php:202
 msgid "Calendar of the ticket"
-msgstr "Calendario del servicio"
+msgstr "Calendario del ticket"
 
 #: src/LevelAgreement.php:445 src/SLM.php:201 src/Entity.php:2864
 #: src/Entity.php:2876 src/Entity.php:3769
@@ -22050,7 +22052,7 @@ msgstr[2] "Modelos de cartucho"
 
 #: src/CartridgeItem.php:286
 msgid "Number of new cartridges"
-msgstr "Cartuchos nuevos"
+msgstr "Cantidad de cartuchos nuevos"
 
 #: src/CartridgeItem.php:375 src/CartridgeItem.php:577
 msgid "Send alarms on cartridges"
@@ -22132,7 +22134,7 @@ msgstr "No se encuentra descendiente en carpeta '%s'."
 #: src/MailCollector.php:495
 msgctxt "button"
 msgid "Get email tickets now"
-msgstr "Recuperar ahora"
+msgstr "Obtener tickets de correo ahora"
 
 #: src/MailCollector.php:602
 msgid "Date of last collection"
@@ -22168,8 +22170,8 @@ msgid ""
 "Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, "
 "refused=%4$d, errors=%5$d, blacklisted=%6$d"
 msgstr ""
-"Cantidad de mensajes: disponibles=%1$d, importados=%2$d, recuperados=%3$d, "
-"rechazados=%4$d, errores=%5$d, lista negra=%6$d"
+"Cantidad de mensajes: disponibles=%1$d, ya importados=%2$d, "
+"recuperados=%3$d, rechazados=%4$d, errores=%5$d, en lista negra=%6$d"
 
 #: src/MailCollector.php:1051
 msgid "Could not connect to mailgate server"
@@ -22207,7 +22209,7 @@ msgstr "Recuperar correo (receptores de correo)"
 
 #: src/MailCollector.php:2032
 msgid "Number of emails to process"
-msgstr "Cantidad de correos a recuperar"
+msgstr "Cantidad de correos a procesar"
 
 #: src/MailCollector.php:2036
 msgid "Send alarms on receiver errors"
@@ -22401,8 +22403,8 @@ msgstr "UUID de la computadora"
 msgid "Change template"
 msgid_plural "Change templates"
 msgstr[0] "Plantilla de cambio"
-msgstr[1] "Plantillas de cambios"
-msgstr[2] "Plantillas de cambios"
+msgstr[1] "Plantillas de cambio"
+msgstr[2] "Plantillas de cambio"
 
 #. TRANS: Always plural
 #: src/Notepad.php:54 src/Notepad.php:189
@@ -22451,7 +22453,7 @@ msgstr "No establecido por defecto"
 
 #: src/SavedSearch.php:94
 msgid "Change count method"
-msgstr "Cambio de método de conteo"
+msgstr "Cambiar método de conteo"
 
 #: src/SavedSearch.php:96
 msgid "Change visibility"
@@ -22591,8 +22593,8 @@ msgstr "Vista global"
 msgid ""
 "For security reasons, please change the password for the default users: %s"
 msgstr ""
-"Por razones de seguridad, por favor cambie la contraseña para los usuarios "
-"por defecto: %s"
+"Por motivos de seguridad, por favor cambie la contraseña de los usuarios por"
+" defecto: %s"
 
 #: src/Central.php:531 src/Html.php:1719
 msgid "SQL replica: read only"
@@ -22903,7 +22905,7 @@ msgstr[2] "Categorías ITIL"
 
 #: src/ITILCategory.php:378 src/ITILCategory.php:400
 msgid "Code representing the ticket category is already used"
-msgstr "El código que representa la categoría del ticket ya se ha utilizado"
+msgstr "El código que representa la categoría del ticket ya está en uso"
 
 #: src/NetworkPortConnectionLog.php:58
 msgid "Port connection history"
@@ -23008,7 +23010,7 @@ msgstr "Actualizar contraseña propia"
 
 #: src/Profile.php:812 src/Profile.php:2090
 msgid "Ticket creation form on login"
-msgstr "Formulario de creación de servicio al ingreso"
+msgstr "Formulario de creación de tickets al iniciar sesión"
 
 #: src/Profile.php:909 src/Profile.php:3508 src/Reminder.php:967
 #: src/Reminder.php:969
@@ -23058,7 +23060,7 @@ msgstr "Reglas para la asignación de categoría a un software"
 
 #: src/Profile.php:1058
 msgid "Business rules for tickets (entity)"
-msgstr "Reglas de negocio para servicios (entidad)"
+msgstr "Reglas de negocio para tickets (entidad)"
 
 #: src/Profile.php:1070 src/Profile.php:1906 src/Profile.php:2953
 msgid "Dropdowns dictionary"
@@ -23093,7 +23095,7 @@ msgstr "Ver hardware de mis grupos"
 
 #: src/Profile.php:1213 src/Profile.php:1595 src/Profile.php:3268
 msgid "Link with items for the creation of tickets"
-msgstr "Relación con los materiales para la creación de servicios"
+msgstr "Vincular con elementos para la creación de tickets"
 
 #: src/Profile.php:1225 src/Profile.php:1606 src/Profile.php:3277
 msgid "Associable items to tickets, changes and problems"
@@ -23101,11 +23103,11 @@ msgstr "Elementos asociables a tickets, cambios y problemas"
 
 #: src/Profile.php:1233 src/Profile.php:3198
 msgid "Default ticket template"
-msgstr "Plantilla de incidente por defecto"
+msgstr "Plantilla de ticket por defecto"
 
 #: src/Profile.php:1251
 msgid "Default change template"
-msgstr "Plantilla de cambio predeterminada"
+msgstr "Plantilla de cambio por defecto"
 
 #: src/Profile.php:1269
 msgid "Default problem template"
@@ -23137,7 +23139,7 @@ msgstr "Desde \\ Hasta"
 
 #: src/Profile.php:1715 src/Profile.php:1849 src/Profile.php:3307
 msgid "Life cycle of tickets"
-msgstr "Ciclo de vida de los servicios"
+msgstr "Ciclo de vida de los tickets"
 
 #: src/Profile.php:1723 src/Profile.php:3317
 msgid "Life cycle of problems"
@@ -23145,7 +23147,7 @@ msgstr "Ciclo de vida de los problemas"
 
 #: src/Profile.php:1731 src/Profile.php:3341
 msgid "Life cycle of changes"
-msgstr "Ciclo de vida de cambios"
+msgstr "Ciclo de vida de los cambios"
 
 #: src/Profile.php:2315
 msgid "Financial and administratives information"
@@ -23445,9 +23447,9 @@ msgstr[2] "%1$d bases de datos"
 #: src/PendingReason.php:52
 msgid "Pending reason"
 msgid_plural "Pending reasons"
-msgstr[0] "Motivos pendientes"
-msgstr[1] "Motivos pendientes"
-msgstr[2] "Motivos pendientes"
+msgstr[0] "Motivo de en espera"
+msgstr[1] "Motivos de en espera"
+msgstr[2] "Motivos de en espera"
 
 #: src/PendingReason.php:60 src/PendingReason.php:93
 msgid "Automatic follow-up frequency"
@@ -23826,7 +23828,7 @@ msgstr "Tiempo en uso, promedio"
 
 #: src/Cartridge.php:925 src/Cartridge.php:1220
 msgid "Average number of printed pages"
-msgstr "Número promedio de páginas impresas"
+msgstr "Cantidad promedio de páginas impresas"
 
 #: src/Cartridge.php:968
 msgid "Add cartridges"
@@ -23976,7 +23978,7 @@ msgstr[2] "Tipos de PDU"
 #: src/Contract.php:210
 msgctxt "quantity"
 msgid "Number of contracts"
-msgstr "Número de contratos"
+msgstr "Cantidad de contratos"
 
 #: src/Contract.php:427 src/Contact.php:221
 msgctxt "button"
@@ -24061,31 +24063,31 @@ msgstr "Sin ítem."
 
 #: src/Stat.php:531
 msgid "Real duration of treatment of the ticket"
-msgstr "Duración real del tratamiento del servicio"
+msgstr "Duración real del tratamiento del ticket"
 
 #: src/Stat.php:548
 msgid "Number of opened tickets"
-msgstr "Número de servicio abiertos"
+msgstr "Cantidad de tickets abiertos"
 
 #: src/Stat.php:549
 msgid "Number of solved tickets"
-msgstr "Número de servicios resueltos"
+msgstr "Cantidad de tickets resueltos"
 
 #: src/Stat.php:550
 msgid "Number of late tickets"
-msgstr "Número de servicios con resolución atrasada"
+msgstr "Cantidad de tickets vencidos"
 
 #: src/Stat.php:551
 msgid "Number of closed tickets"
-msgstr "Número de servicios cerrados"
+msgstr "Cantidad de tickets cerrados"
 
 #: src/Stat.php:567
 msgid "Number of opened satisfaction survey"
-msgstr "Número de encuestas de satisfación abiertas"
+msgstr "Cantidad de encuestas de satisfacción abiertas"
 
 #: src/Stat.php:572
 msgid "Number of answered satisfaction survey"
-msgstr "Número de encuestas de satisfacción completadas"
+msgstr "Cantidad de encuestas de satisfacción respondidas"
 
 #: src/Stat.php:577
 msgid "Average satisfaction"
@@ -24109,11 +24111,11 @@ msgstr "Tiempo promedio de cierre"
 
 #: src/Stat.php:616
 msgid "Average real duration of treatment of the ticket"
-msgstr "Duración real promedio para el tratamiento del servicio"
+msgstr "Duración real promedio del tratamiento del ticket"
 
 #: src/Stat.php:621
 msgid "Total real duration of treatment of the ticket"
-msgstr "Duración real total para el tratamiento del servicio"
+msgstr "Duración real total del tratamiento del ticket"
 
 #: src/Stat.php:940
 msgid "No statistics are available"
@@ -24121,11 +24123,11 @@ msgstr "No hay estadísticas disponibles"
 
 #: src/Stat.php:1675
 msgid "Number of tickets"
-msgstr "Cantidad de incidentes"
+msgstr "Cantidad de tickets"
 
 #: src/Stat.php:1757
 msgid "By ticket"
-msgstr "Por servicios"
+msgstr "Por ticket"
 
 #: src/Stat.php:1759
 msgid "By hardware characteristics"
@@ -24252,11 +24254,11 @@ msgstr "Para responder por correo electrónico, escribir bajo esta línea"
 
 #: src/NotificationTargetTicket.php:138
 msgid "Update of a ticket"
-msgstr "Actualización de un incidente"
+msgstr "Actualización de un ticket"
 
 #: src/NotificationTargetTicket.php:139
 msgid "Ticket solved"
-msgstr "Incidente resuelto"
+msgstr "Ticket resuelto"
 
 #: src/NotificationTargetTicket.php:140
 msgid "Solution rejected"
@@ -24264,11 +24266,11 @@ msgstr "Solución rechazada"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Closing of the ticket"
-msgstr "Cierre del incidente"
+msgstr "Cierre del ticket"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Deletion of a ticket"
-msgstr "Eliminación de un incidente"
+msgstr "Eliminación de un ticket"
 
 #: src/NotificationTargetTicket.php:146
 msgid "Automatic reminders of SLAs"
@@ -24288,14 +24290,11 @@ msgid "Without a reply, the ticket will be automatically closed after %s day"
 msgid_plural ""
 "Without a reply, the ticket will be automatically closed after %s days"
 msgstr[0] ""
-"Sin una respuesta, el incidente será cerrado automáticamente después de %s "
-"día"
+"Sin una respuesta, el ticket se cerrará automáticamente después de %s día"
 msgstr[1] ""
-"Sin una respuesta, el incidente será cerrado automáticamente después de %s "
-"días"
+"Sin una respuesta, el ticket se cerrará automáticamente después de %s días"
 msgstr[2] ""
-"Sin una respuesta, el incidente será cerrado automáticamente después de %s "
-"días"
+"Sin una respuesta, el ticket se cerrará automáticamente después de %s días"
 
 #: src/NotificationTargetTicket.php:650
 msgid "Location name"
@@ -24304,12 +24303,12 @@ msgstr "Nombre del lugar"
 #: src/NotificationTargetTicket.php:713
 msgctxt "quantity"
 msgid "Number of linked tickets"
-msgstr "Número de servicios vinculados"
+msgstr "Cantidad de tickets vinculados"
 
 #: src/NotificationTargetTicket.php:717 src/Entity.php:1217
 #: src/Entity.php:3048
 msgid "Automatic closing of solved tickets after"
-msgstr "Cerrar automáticamente incidentes resueltos después de"
+msgstr "Cierre automático de tickets resueltos después de"
 
 #: src/NotificationTargetTicket.php:731
 msgid "Solution rejection comment"
@@ -24461,7 +24460,7 @@ msgstr[2] "Origenes de las solicitudes"
 
 #: src/RequestType.php:53 src/RequestType.php:88
 msgid "Default for tickets"
-msgstr "Valor por defecto para servicios"
+msgstr "Por defecto para tickets"
 
 #: src/RequestType.php:57 src/RequestType.php:97
 msgid "Default for followups"
@@ -24477,7 +24476,7 @@ msgstr "Recipiente de correo predeterminado para seguimientos"
 
 #: src/RequestType.php:69 src/RequestType.php:132
 msgid "Request source visible for tickets"
-msgstr "Fuente de solicitud visible para servicios"
+msgstr "Fuente de la solicitud visible para tickets"
 
 #: src/RequestType.php:73 src/RequestType.php:140
 msgid "Request source visible for followups"
@@ -24658,7 +24657,7 @@ msgstr "Alerta de búsqueda privada"
 
 #: src/NotificationTargetSavedSearch_Alert.php:107
 msgid "Number of results"
-msgstr "Número de resultados"
+msgstr "Cantidad de resultados"
 
 #: src/NotificationTargetSavedSearch_Alert.php:109
 msgid "Load saved search"
@@ -24717,9 +24716,9 @@ msgstr "Rechazado"
 #: src/ProjectTask_Ticket.php:68
 msgid "Link Ticket/Project task"
 msgid_plural "Links Ticket/Project task"
-msgstr[0] "Enlace de Tareas de Incidentes/Proyectos"
-msgstr[1] "Enlaces de Tareas de Incidentes/Proyectos"
-msgstr[2] "Enlaces de Tareas de Incidentes/Proyectos"
+msgstr[0] "Vínculo Ticket/Tarea de proyecto"
+msgstr[1] "Vínculos Ticket/Tarea de proyecto"
+msgstr[2] "Vínculos Ticket/Tarea de proyecto"
 
 #: src/RuleDictionnaryOperatingSystemCollection.php:46
 msgid "Dictionary of operating systems"
@@ -24988,7 +24987,7 @@ msgstr "Diccionario de modelos de dispositivos"
 
 #: src/TicketRecurrent.php:55
 msgid "Recurrent tickets"
-msgstr "Incidentes recurrentes"
+msgstr "Tickets recurrentes"
 
 #: src/DeviceBatteryModel.php:44
 msgid "Device battery model"
@@ -25130,19 +25129,19 @@ msgstr "Inmediatamente"
 
 #: src/Entity.php:1236 src/Entity.php:3096
 msgid "Automatic purge of closed tickets after"
-msgstr "Borrado automático de tickets cerrados después de"
+msgstr "Purga automática de tickets cerrados después de"
 
 #: src/Entity.php:1255
 msgid "Alerts on tickets which are not solved"
-msgstr "Alertas de incidente no resueltos"
+msgstr "Alertas sobre tickets sin resolver"
 
 #: src/Entity.php:1265
 msgid "Automatic assignment of tickets"
-msgstr "Asignación automática de incidentes"
+msgstr "Asignación automática de tickets"
 
 #: src/Entity.php:1286 src/Entity.php:2883
 msgid "Tickets default type"
-msgstr "Tipo por defecto para los incidentes"
+msgstr "Tipo de tickets por defecto"
 
 #: src/Entity.php:1296 src/Entity.php:2999
 msgid "Default contract"
@@ -25249,7 +25248,7 @@ msgstr "Copiar fecha de entrega"
 
 #: src/Entity.php:1910 src/Entity.php:3750 src/Entity.php:3911
 msgid "No change of entity"
-msgstr "No cambia entidad"
+msgstr "Ningún cambio de entidad"
 
 #: src/Entity.php:1940
 msgid "Model for automatic entity transfer on inventories"
@@ -25285,7 +25284,7 @@ msgstr "Frecuencia de recordatorios para alertas de certificados"
 
 #: src/Entity.php:2444
 msgid "Alerts on tickets which are not solved since"
-msgstr "Alertas de incidentes no resueltos"
+msgstr "Alertas sobre tickets sin resolver desde"
 
 #: src/Entity.php:2463
 msgid "Alarms on domains expiries"
@@ -25321,7 +25320,7 @@ msgstr "Configuración de tickets"
 
 #: src/Entity.php:2904
 msgid "Automatic assignment of tickets, changes and problems"
-msgstr "Asignación automática de tickets, control de cambios y problemas"
+msgstr "Asignación automática de tickets, cambios y problemas"
 
 #: src/Entity.php:2924
 msgid "Mark followup added by a supplier though an email collector as private"
@@ -25343,7 +25342,7 @@ msgstr "Cerrar configuración automaticamente"
 
 #: src/Entity.php:3058
 msgid "Close ticket action is disabled."
-msgstr "La acción cerrar ticket esta deshabilitada."
+msgstr "La acción de cerrar ticket está desactivada."
 
 #: src/Entity.php:3106
 msgid "Purge ticket action is disabled."
@@ -25568,8 +25567,8 @@ msgid ""
 "To increase the limit: change max_input_vars or suhosin.post.max_vars in php"
 " configuration."
 msgstr ""
-"Para incrementar el límite: cambiar max_input_vars o suhosin.post.max_vars "
-"en la configuración de php."
+"Para incrementar el límite: cambie max_input_vars o suhosin.post.max_vars en"
+" la configuración de php."
 
 #: src/Html.php:2659
 msgid "Massive actions"
@@ -25701,7 +25700,7 @@ msgstr "Matriz vacía"
 
 #: src/Html.php:4368 src/Html.php:4372
 msgid "Display (number of items)"
-msgstr "Registros a mostrar:"
+msgstr "Mostrar (cantidad de elementos)"
 
 #: src/Html.php:4402
 #, php-format
@@ -25958,7 +25957,7 @@ msgstr "Si está sincronizado (todos los cambios)"
 
 #: src/Config.php:748
 msgid "If synced (current user changes)"
-msgstr "Si está sincronizado (cambios de usuario actual)"
+msgstr "Si está sincronizado (cambios del usuario actual)"
 
 #: src/Config.php:749
 msgid "If synced or read-only account"
@@ -26112,7 +26111,7 @@ msgstr "Mantener los dispositivos cuando se purga un elemento"
 
 #: src/Config.php:1210
 msgid "Notifications for my changes"
-msgstr "Notificaciones para mis cambios"
+msgstr "Notificaciones para mis modificaciones"
 
 #: src/Config.php:1214
 msgid "Results to display on home page"
@@ -26463,7 +26462,7 @@ msgstr "5- Completo (todo)"
 
 #: src/Config.php:2125
 msgid "Maximal number of automatic actions (run by CLI)"
-msgstr "Número máximo de tareas (ejecución externa)"
+msgstr "Cantidad máxima de acciones automáticas (ejecutadas por CLI)"
 
 #: src/Config.php:2134
 msgid "Logs in files (SQL, email, automatic action...)"
@@ -26570,7 +26569,7 @@ msgstr "Agregar / remover grupos de los usuarios"
 
 #: src/Config.php:3374
 msgid "User authentication method changes"
-msgstr "Cambios del método de autenticación de usuario"
+msgstr "Cambios en el método de autenticación del usuario"
 
 #: src/Config.php:3385
 msgid "Add component"
@@ -26686,7 +26685,7 @@ msgstr "Tickets entrantes"
 
 #: src/Dashboard/Provider.php:378 src/Dashboard/Grid.php:1220
 msgid "Pending tickets"
-msgstr "Tickets pendientes"
+msgstr "Tickets en espera"
 
 #: src/Dashboard/Provider.php:386 src/Dashboard/Grid.php:1221
 msgid "Assigned tickets"
@@ -26928,12 +26927,12 @@ msgstr "¡Error al renderizar la tarjeta!"
 #: src/Dashboard/Grid.php:1231
 #, php-format
 msgid "Number of %s"
-msgstr "Número de %s"
+msgstr "Cantidad de %s"
 
 #: src/Dashboard/Grid.php:1143
 #, php-format
 msgid "Number of %s by type"
-msgstr "Número de %s por tipo"
+msgstr "Cantidad de %s por tipo"
 
 #: src/Dashboard/Grid.php:1151 src/Dashboard/Grid.php:1160
 #: src/Dashboard/Grid.php:1172
@@ -26946,7 +26945,7 @@ msgstr[2] "Periféricos"
 #: src/Dashboard/Grid.php:1174
 #, php-format
 msgid "Number of type of %s"
-msgstr "Número de tipo de %s"
+msgstr "Cantidad de tipos de %s"
 
 #: src/Dashboard/Grid.php:1199
 #, php-format
@@ -27074,14 +27073,14 @@ msgid ""
 "Threshold of alarm reached for the type of consumable: %1$s - Reference %2$s"
 " - Remaining %3$d"
 msgstr ""
-"Umbral de alarma alcanzado para insumo tipo %1$s - Referencia %2$s - "
-"Remanente %3$d"
+"Se alcanzó el umbral de alarma para el tipo de material: %1$s - Referencia "
+"%2$s - Restante %3$d"
 
 #. TRANS: %s is entity name
 #: src/ConsumableItem.php:421
 #, php-format
 msgid "%s: send consumable alert failed"
-msgstr "%s: falló el envío de alerta de insumo"
+msgstr "%s: falló el envío de la alerta de material"
 
 #: js/planning.js:280
 msgid "Clone"
@@ -27119,8 +27118,8 @@ msgid ""
 "The resized event is a recurring event. Do you want to change the serie or "
 "instance ?"
 msgstr ""
-"El evento redimensionado es un evento recurrente. ¿Desea cambiar la serie o "
-"la instancia?"
+"El evento redimensionado es un evento recurrente. ¿ Desea cambiar la serie o"
+" la instancia ?"
 
 #: js/planning.js:536
 msgid "Recurring event dragged"

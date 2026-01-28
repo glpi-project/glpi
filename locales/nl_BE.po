@@ -10,6 +10,7 @@
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Pieter Liekens <pieter.liekens@sint-gillis-waas.be>, 2025
 # Steven <Nevets82@gmail.com>, 2025
+# Serge Mille, 2026
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Steven <Nevets82@gmail.com>, 2025\n"
+"Last-Translator: Serge Mille, 2026\n"
 "Language-Team: Dutch (Belgium) (https://app.transifex.com/glpi/teams/1637/nl_BE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -356,7 +357,7 @@ msgstr[1] "Types"
 
 #: templates/generic_show_form.html.twig src/Domain.php:135
 msgid "Registration date"
-msgstr ""
+msgstr "Registratiedatum"
 
 #: templates/generic_show_form.html.twig src/Auth.php:1746
 #: src/AuthLDAP.php:961 src/User.php:2909 src/User.php:3390 src/User.php:3950
@@ -676,7 +677,7 @@ msgstr "Inventarisnummer"
 
 #: templates/generic_show_form.html.twig src/Unmanaged.php:176
 msgid "Sysdescr"
-msgstr ""
+msgstr "Systeem beschrijving"
 
 #: templates/generic_show_form.html.twig src/RuleDictionnaryPrinter.php:101
 msgid "Management type"
@@ -901,11 +902,11 @@ msgstr "Beheer alle opgeslagen zoekopdrachten"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "Pin dit scherm voor de huidige pagina"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Close the panel"
-msgstr ""
+msgstr "Sluit het scherm"
 
 #: templates/layout/parts/saved_searches.html.twig src/Log.php:961
 #: src/Log.php:983 src/Log.php:1037 src/Log.php:1051 src/Auth.php:125
@@ -919,12 +920,12 @@ msgstr "Filter lijst"
 
 #: templates/layout/parts/menu.html.twig src/Central.php:79 src/Html.php:6660
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
 msgid "You are bypassing a needed update"
-msgstr ""
+msgstr "Je slaat een benodigde update over"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/breadcrumbs.html.twig
@@ -980,7 +981,7 @@ msgstr ""
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Transfer list"
-msgstr ""
+msgstr "Transfer lijst"
 
 #: templates/layout/parts/context_links.html.twig
 #: templates/pages/setup/authentication.html.twig front/rule.test.php:64
@@ -1120,7 +1121,7 @@ msgstr "Zoekopdracht verwijderen"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Select all"
-msgstr ""
+msgstr "Selecteer alles"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "No entity found"
@@ -1145,11 +1146,11 @@ msgstr "Standaard zoekopdracht"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "mark as default"
-msgstr ""
+msgstr "Markeer als standaard"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
-msgstr ""
+msgstr "Privé"
 
 #: templates/password_form.html.twig src/User.php:5646
 msgid ""
@@ -1186,7 +1187,7 @@ msgstr "Wachtwoord beveiligingsbeleid"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
-msgstr ""
+msgstr "Bewaar nieuw wachtwoord"
 
 #: templates/password_form.html.twig
 msgid ""
@@ -3279,7 +3280,7 @@ msgstr "Markeer/demarkeer alles"
 #: templates/components/plugin_uninstall_modal.html.twig
 msgctxt "uninstall_plugin"
 msgid "Are you sure?"
-msgstr ""
+msgstr "Bent u zeker?"
 
 #: templates/components/plugin_uninstall_modal.html.twig
 #, php-format
@@ -19026,18 +19027,19 @@ msgstr "Wijzig authenticatie methode in"
 #: src/User.php:5529
 msgid "Your password has expired. You must change it to be able to login."
 msgstr ""
+"Uw wachtwoord is vervallen. U moet dit aan passen om in te kunnen loggen."
 
 #: src/User.php:5545
 msgid "Current password"
-msgstr ""
+msgstr "Huidig wachtwoord"
 
 #: src/User.php:5554
 msgid "New password"
-msgstr ""
+msgstr "Nieuw wachtwoord"
 
 #: src/User.php:5563
 msgid "New password confirmation"
-msgstr ""
+msgstr "Nieuw wachtwoord bevestiging"
 
 #: src/User.php:5654 src/User.php:5664
 msgid "Unable to reset password, please contact your administrator"
@@ -19176,11 +19178,11 @@ msgstr "Aan de rechterkant"
 
 #: src/Features/DCBreadcrumb.php:86 src/PDU_Rack.php:451
 msgid "On top"
-msgstr ""
+msgstr "Bovenaan"
 
 #: src/Features/DCBreadcrumb.php:89 src/PDU_Rack.php:455
 msgid "On bottom"
-msgstr ""
+msgstr "Onderaan"
 
 #: src/Features/DCBreadcrumb.php:210 src/Features/DCBreadcrumb.php:236
 #, php-format

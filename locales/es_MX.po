@@ -16,9 +16,10 @@
 # Luis Vicente Gómez Ontiveros <lvonti51@gmail.com>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2023
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2023
-# CYA Sistemas, 2024
 # Cédric Anne, 2025
 # Carlos Moreno Rodríguez <carlosm.rodriguez@prodigy.net.mx>, 2025
+# Edwin Elias Alvarez <sistemas@cyalimentos.com>, 2026
+# Edwin Elias Alvarez <elias986@yahoo.com>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -27,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: Carlos Moreno Rodríguez <carlosm.rodriguez@prodigy.net.mx>, 2025\n"
+"Last-Translator: Edwin Elias Alvarez <elias986@yahoo.com>, 2026\n"
 "Language-Team: Spanish (Mexico) (https://app.transifex.com/glpi/teams/1637/es_MX/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -192,7 +193,7 @@ msgstr "Apellido"
 #: src/User.php:3167 src/User.php:3742 src/User.php:6724 src/Contact.php:265
 #: src/NotificationTargetUser.php:161
 msgid "First name"
-msgstr "Nombre(s)"
+msgstr "Nombre"
 
 #: templates/generic_show_form.html.twig
 #: templates/components/form/header_content.html.twig src/Software.php:432
@@ -937,7 +938,7 @@ msgstr "Lista de filtros"
 
 #: templates/layout/parts/menu.html.twig src/Central.php:79 src/Html.php:6660
 msgid "Dashboard"
-msgstr "Dashboard"
+msgstr "Tableros"
 
 #: templates/layout/parts/page_header_empty.html.twig
 #: templates/layout/parts/page_header.html.twig
@@ -1034,7 +1035,7 @@ msgstr "Acerca de"
 
 #: templates/layout/parts/user_header.html.twig src/Html.php:1399
 msgid "My settings"
-msgstr "Preferencias"
+msgstr "Mis preferencias"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Logout"
@@ -1052,6 +1053,8 @@ msgstr "Cerrar"
 #: templates/layout/parts/user_header.html.twig src/Config.php:1972
 msgid "This version is UNSTABLE and some SECURITY FIXES may not be included."
 msgstr ""
+"Esta versión es INESTABLE y algunas CORRECCIONES DE SEGURIDAD pueden no "
+"estar incluidas."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "You will find it on the GLPI-PROJECT.org site."
@@ -2236,7 +2239,7 @@ msgstr "Éste ticket es de mi interés"
 
 #: templates/components/itilobject/selfservice.html.twig
 msgid "Check your personal information"
-msgstr ""
+msgstr "Compruebe su información personal"
 
 #: templates/components/itilobject/selfservice.html.twig
 #: templates/components/itilobject/fields/priority_matrix.html.twig
@@ -3832,7 +3835,7 @@ msgstr "Tickets en curso"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Helpdesk reporting form"
-msgstr "Formulario de reporte de la Mesa de Ayuda"
+msgstr "Formulario de reporte de de mesa de ayuda"
 
 #: templates/anonymous_helpdesk.html.twig
 msgid "Select an urgency level"
@@ -5222,7 +5225,7 @@ msgstr "Soporte"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:344
 msgid "Mini tickets dashboard"
-msgstr "Mini Dashboard de tickets"
+msgstr "Mini tablero de tickets"
 
 #: install/install.php:246
 msgid "Initialization of the database"
@@ -5476,7 +5479,7 @@ msgstr "¡El modo de depuración ha sido deshabilitado!"
 
 #: ajax/mailcollector.php:79
 msgid "Password is required to list mail folders."
-msgstr ""
+msgstr "Se requiere contraseña para listar las carpetas de correo."
 
 #: ajax/massiveaction.php:80 src/Inventory/Conf.php:906 src/RuleAction.php:100
 #: src/RuleAction.php:747 src/Rule.php:1183 src/MailCollector.php:238
@@ -5941,7 +5944,7 @@ msgstr "%s asoció un artículo y una licencia"
 
 #: front/dashboard_helpdesk.php:58
 msgid "Helpdesk Dashboard"
-msgstr "Dashboard de mesa de ayuda"
+msgstr "Tablero de mesa de ayuda"
 
 #. TRANS: %s is the user login
 #: front/change_user.form.php:72 front/change_supplier.form.php:67
@@ -6958,7 +6961,7 @@ msgstr "%s agregó consumibles"
 
 #: front/dashboard_assets.php:57
 msgid "Assets Dashboard"
-msgstr "Dashboard de activos"
+msgstr "Tablero de activos"
 
 #. TRANS: %s is the user login
 #: front/computerantivirus.form.php:60
@@ -8711,7 +8714,7 @@ msgstr "Fecha de creación"
 
 #: src/DomainRecord.php:267
 msgid "A domain is required"
-msgstr ""
+msgstr "Se requiere un dominio"
 
 #: src/DomainRecord.php:300
 msgid "You are not allowed to use this type of records"
@@ -9317,11 +9320,11 @@ msgstr "Imagen de fondo (plano)"
 
 #: src/DCRoom.php:200 src/DCRoom.php:223
 msgid "Number of rows must be >= 1"
-msgstr ""
+msgstr "El número de filas debe ser >= 1"
 
 #: src/DCRoom.php:209 src/DCRoom.php:232
 msgid "Number of columns must be >= 1"
-msgstr ""
+msgstr "El número de columnas debe ser >= 1"
 
 #: src/DCRoom.php:271 src/Features/AssetImage.php:77
 #: src/Features/AssetImage.php:123
@@ -12377,7 +12380,7 @@ msgstr[2] "Modelos de adaptadores de red"
 
 #: src/Item_Enclosure.php:111
 msgid "Add new item to this enclosure..."
-msgstr "Agregar elemento para este enclosure..."
+msgstr "Agregar elemento para este gabinete..."
 
 #: src/Item_Enclosure.php:132 src/MassiveAction.php:800
 msgctxt "button"
@@ -12386,7 +12389,7 @@ msgstr "Eliminar permanentemente la relación con los elementos seleccionados"
 
 #: src/Item_Enclosure.php:339
 msgid "An enclosure is required"
-msgstr "Se requiere un enclosure"
+msgstr "Se requiere un gabinete"
 
 #: src/Item_Enclosure.php:345 src/PDU_Rack.php:103 src/Item_Rack.php:980
 msgid "A position is required"
@@ -13981,6 +13984,7 @@ msgstr "Debes seleccionar un elemento asociado"
 msgid ""
 "Predefined task templates will be added according to their creation order"
 msgstr ""
+"Las plantillas de tareas predefinidas se añadirán según su orden de creación"
 
 #: src/ITILTemplatePredefinedField.php:325
 msgid "Add a predefined field"
@@ -14849,7 +14853,7 @@ msgstr "%s %d creado exitosamente"
 #: src/CommonITILRecurrent.php:624
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
-msgstr "La creación de %s falló"
+msgstr "Fallo en la creación de %s (verificá los campos obligatorios)"
 
 #: src/CommonITILRecurrent.php:630
 #, php-format
@@ -14858,11 +14862,11 @@ msgstr "La creación de %s falló (sin plantilla)"
 
 #: src/Reservation.php:194
 msgid "You do not have permission to create reservations"
-msgstr ""
+msgstr "No tiene permiso para crear reservas."
 
 #: src/Reservation.php:204
 msgid "You do not have permission to create reservations for other users"
-msgstr ""
+msgstr "No tiene permiso para crear reservas para otros usuarios."
 
 #: src/Reservation.php:218 src/MassiveAction.php:386
 msgid "No selected items"
@@ -14992,7 +14996,7 @@ msgid "Enclosure model"
 msgid_plural "Enclosure models"
 msgstr[0] "Modelo de enclosure"
 msgstr[1] "Modelos de enclosure"
-msgstr[2] "Modelos de enclosure"
+msgstr[2] "Modelos de gabinete"
 
 #: src/Item_SoftwareLicense.php:110 src/Item_SoftwareVersion.php:99
 msgctxt "software"
@@ -19402,16 +19406,16 @@ msgstr ""
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:206
 msgid "Unable to fetch GLPI version."
-msgstr ""
+msgstr "No se puede obtener la versión GLPI."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:218
 msgid "The database contains no GLPI tables."
-msgstr ""
+msgstr "La base de datos no contiene tablas GLPI."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:219
 #, php-format
 msgid "The database contains no tables of the plugin \"%s\"."
-msgstr ""
+msgstr "La base de datos no contiene tablas del complemento \"%s\"."
 
 #: src/Console/Database/CheckSchemaIntegrityCommand.php:228
 #, php-format
@@ -22350,7 +22354,7 @@ msgid "Enclosure"
 msgid_plural "Enclosures"
 msgstr[0] "Enclosure"
 msgstr[1] "Enclosures"
-msgstr[2] "Enclosures"
+msgstr[2] "Gabinetes"
 
 #: src/Ticket_Ticket.php:234
 msgid "Duplicated by"
@@ -22606,11 +22610,15 @@ msgid ""
 "The security key file does not exist. You have to run the \"%s\" command to "
 "generate a key."
 msgstr ""
+"El archivo de clave de seguridad no existe. Debe ejecutar el comando \"%s\" "
+"para generar una clave."
 
 #: src/GLPIKey.php:135
 #, php-format
 msgid "Unable to get security key file contents. Fix file permissions of %s."
 msgstr ""
+"No se pudo obtener el contenido del archivo de clave de seguridad. Corrija "
+"los permisos de %s."
 
 #: src/GLPIKey.php:140
 #, php-format
@@ -22618,6 +22626,8 @@ msgid ""
 "Invalid security key file contents. You have to run the \"%s\" command to "
 "regenerate a key."
 msgstr ""
+"Contenido del archivo de clave de seguridad no válido. Debe ejecutar el "
+"comando \"%s\" para regenerar la clave."
 
 #: src/IPAddress.php:137 src/NetworkPortMigration.php:119
 msgid "Invalid IP address"
@@ -23050,7 +23060,7 @@ msgstr "Diccionario de impresoras"
 
 #: src/Profile.php:1096 src/Profile.php:2695
 msgid "All dashboards"
-msgstr "Todos los dashboards"
+msgstr "Todos los tableros"
 
 #: src/Profile.php:1107
 msgid "Global dropdown"
@@ -24933,12 +24943,12 @@ msgstr "Gestión unitaria"
 #: src/Dropdown.php:4012
 #, php-format
 msgid "My %s"
-msgstr ""
+msgstr "Mi %s"
 
 #: src/Dropdown.php:4121
 #, php-format
 msgid "My groups %s"
-msgstr ""
+msgstr "Mis grupos %s"
 
 #: src/Dropdown.php:4234
 msgid "version"
@@ -24951,7 +24961,7 @@ msgstr "Software instalado."
 #: src/Dropdown.php:4368
 #, php-format
 msgid "Connected %s"
-msgstr ""
+msgstr "Conectado %s"
 
 #: src/RuleDictionnaryPeripheralModelCollection.php:46
 msgid "Dictionary of device models"
@@ -25350,6 +25360,8 @@ msgid ""
 "Replace the agent name with a customisable nickname and the group name with "
 "a generic name"
 msgstr ""
+"Reemplazar el nombre del agente con un apodo personalizable y el nombre del "
+"grupo con un nombre genérico"
 
 #: src/Entity.php:3565
 msgid "Replace the agent's name with a generic name"
@@ -26245,7 +26257,7 @@ msgstr ""
 
 #: src/Config.php:1543
 msgid "Dashboards"
-msgstr "Dashboards"
+msgstr "Tableros"
 
 #: src/Config.php:1546
 msgid "Default for central"
@@ -26261,7 +26273,7 @@ msgstr "Predeterminado para los tickets"
 
 #: src/Config.php:1565
 msgid "Default for tickets (mini dashboard)"
-msgstr "Predeterminado para tickets (mini dashboard)"
+msgstr "Predeterminado para tickets (mini tablero)"
 
 #: src/Config.php:1616 src/Config.php:3511
 msgid "Password minimum length"
@@ -26815,11 +26827,11 @@ msgstr "Tipo de texto marcado aquí"
 
 #: src/Dashboard/Grid.php:284 js/dashboard.js:194
 msgid "Share or embed this dashboard"
-msgstr "Compartir o insertar este dashboard"
+msgstr "Compartir o insertar este tablero"
 
 #: src/Dashboard/Grid.php:285 js/dashboard.js:950
 msgid "Delete this dashboard"
-msgstr "Eliminar dashboard"
+msgstr "Eliminar tablero"
 
 #: src/Dashboard/Grid.php:286
 msgid "Toggle auto-refresh"
@@ -26831,7 +26843,7 @@ msgstr "Cambiar modo oscuro"
 
 #: src/Dashboard/Grid.php:289
 msgid "Clone this dashboard"
-msgstr "Clonar este dashboard"
+msgstr "Clonar este tablero"
 
 #: src/Dashboard/Grid.php:290
 msgid "Toggle edit mode"
@@ -26843,7 +26855,7 @@ msgstr "Agregar filtro"
 
 #: src/Dashboard/Grid.php:292 js/dashboard.js:972
 msgid "Add a new dashboard"
-msgstr "Agregar Dashoboard"
+msgstr "Agregar tablero"
 
 #: src/Dashboard/Grid.php:620 js/dashboard.js:603
 msgid "Refresh this card"
@@ -26879,14 +26891,14 @@ msgstr "iFrame"
 
 #: src/Dashboard/Grid.php:845
 msgid "Or share the dashboard to these target objects:"
-msgstr "O comparte el dashboard con objetos destino:"
+msgstr "O comparte el tablero con objetos destino:"
 
 #: src/Dashboard/Grid.php:860
 msgid ""
 "A personal dashboard is not visible by other administrators unless you "
 "explicitly share the dashboard"
 msgstr ""
-"Otros administradores no pueden ver el Dashboarda menos que lo compartas"
+"Otros administradores no pueden ver el tablero a menos que lo compartas"
 
 #: src/Dashboard/Grid.php:905
 msgid "empty card!"
@@ -26972,7 +26984,7 @@ msgstr "Pricipales tickets por entidades"
 
 #: src/Dashboard/Grid.php:1328
 msgid "Top ticket's request sources"
-msgstr ""
+msgstr "Principales fuentes de solicitud de tickets"
 
 #: src/Dashboard/Grid.php:1329
 msgid "Top ticket's locations"
@@ -27132,7 +27144,7 @@ msgstr "Guardado"
 #: js/dashboard.js:948
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr "¿Deseas eliminar el dashboard %s?"
+msgstr "¿Deseas eliminar el tablero %s?"
 
 #: js/reservations.js:129
 msgid "Timeline Week"

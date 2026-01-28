@@ -8,12 +8,12 @@
 # Gorka Olalde Mendia <gorka.olalde@alumni.mondragon.edu>, 2022
 # DOMBRE Julien <moyo@indepnet.net>, 2022
 # Iñigo Salbidea, 2024
-# Alexander Gabilondo <alexgabi@disroot.org>, 2025
 # Argi Gastaka, 2025
 # Xabier Amadoz, 2025
 # Marcos Crespo de la Vega, 2025
 # eleak <leire@izt.coop>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Alexander Gabilondo <alexgabi@disroot.org>, 2026
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +22,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-11-18 16:31+0100\n"
 "PO-Revision-Date: 2021-05-26 09:06+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2026\n"
 "Language-Team: Basque (Spain) (https://app.transifex.com/glpi/teams/1637/eu_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1250,7 +1250,7 @@ msgstr ""
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s/%s"
-msgstr ""
+msgstr "%s-%s/%s"
 
 #: templates/components/pager.html.twig
 #: templates/components/form/support_hours.html.twig src/APIClient.php:134

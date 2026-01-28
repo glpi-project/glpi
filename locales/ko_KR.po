@@ -12,7 +12,7 @@
 # jisuk Lee <playhop@gmail.com>, 2023
 # Park Jinho, 2024
 # Cédric Anne, 2025
-# 조성현 (jaymz9634) <jaymz9634@gmail.com>, 2025
+# SeongHyeon Cho <jaymz9634@gmail.com>, 2025
 # gyeongho kang, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 
