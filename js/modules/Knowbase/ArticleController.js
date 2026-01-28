@@ -30,8 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_confirm_danger */
 
+import { post } from "../Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
 
 export class GlpiKnowbaseArticleController
@@ -46,6 +47,10 @@ export class GlpiKnowbaseArticleController
      */
     #side_panel;
 
+    /**
+     * @param {HTMLElement} container
+     * @param {HTMLElement} side_panel_container
+     */
     constructor(container, side_panel_container)
     {
         this.#container = container;
@@ -53,6 +58,13 @@ export class GlpiKnowbaseArticleController
             side_panel_container,
         );
         this.#initEventListeners();
+
+        // Enable dots menu once listeners are ready
+        this.#container
+            .querySelector('[data-glpi-kb-dots]')
+            .classList
+            .remove('pointer-events-none')
+        ;
     }
 
     #initEventListeners()
@@ -61,7 +73,7 @@ export class GlpiKnowbaseArticleController
         for (const action of actions) {
             action.addEventListener("click", (e) => {
                 try {
-                    this.#executeAction(e.currentTarget);
+                    this.#executeAction(e);
                 } catch (e) {
                     console.error(e);
                     glpi_toast_error(__("An unexpected error occurred."));
@@ -70,15 +82,35 @@ export class GlpiKnowbaseArticleController
         }
     }
 
-    /** @param {HTMLElement} element */
-    #executeAction(element)
+    /**
+     * @param {Event} event
+     */
+    #executeAction(event)
     {
+        const element = event.currentTarget;
+        const target = event.target;
+
         const type = element.dataset.glpiKbAction;
         const params = this.#extractParamsFromDataset(element.dataset);
 
         switch (type) {
             case 'LOAD_SIDE_PANEL':
                 this.#side_panel.load(params.id, params.key);
+                break;
+            case 'TOGGLE_VALUE': {
+                event.stopPropagation();
+                const toggle = element.querySelector('input[type="checkbox"]');
+                if (toggle) {
+                    const clicked_on_toggle = target === toggle;
+                    if (!clicked_on_toggle) {
+                        toggle.checked = !toggle.checked;
+                    }
+                    this.#toggleValue(params.id, params.field, toggle);
+                }
+                break;
+            }
+            case 'DELETE_ARTICLE':
+                this.#deleteItem(params.id);
                 break;
         }
     }
@@ -97,5 +129,46 @@ export class GlpiKnowbaseArticleController
         }
 
         return params;
+    }
+
+    /**
+     * @param {number} id
+     * @param {string} field
+     * @param {HTMLInputElement} toggle
+     */
+    async #toggleValue(id, field, toggle)
+    {
+        const value = toggle.checked;
+        try {
+            await post(`Knowbase/KnowbaseItem/${id}/ToggleField`, {
+                field: field,
+                value: value,
+            });
+        } catch {
+            toggle.checked = !value;
+        }
+    }
+
+    /**
+     * @param {number} id
+     */
+    async #deleteItem(id)
+    {
+        const confirmed = await glpi_confirm_danger({
+            title: __('Delete article'),
+            message: __('Are you sure you want to delete this article?'),
+            confirm_label: __('Delete'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+            const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
+            const body = await response.json();
+            window.location.href = body.redirect;
+        } catch {
+            // Error already handled by post()
+        }
     }
 }

@@ -1,5 +1,3 @@
-<?php
-
 /**
  * ---------------------------------------------------------------------
  *
@@ -32,47 +30,40 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\SidePanel;
+/* global getAjaxCsrfToken, glpi_toast_error */
 
-use KnowbaseItem;
-use KnowbaseItem_Comment;
-use Override;
-
-final class CommentsRenderer implements RendererInterface
+/**
+ * Perform a POST request to a GLPI endpoint.
+ *
+ * @param {string} url - The relative URL path (without root_doc prefix).
+ * @param {Object} values - The data to send as JSON in the request body.
+ * @returns {Promise<Response>} The fetch Response object.
+ * @throws {Error} If the request fails or returns a non-ok status.
+ */
+export async function post(url, values)
 {
-    #[Override]
-    public function canView(KnowbaseItem $item): bool
-    {
-        return $item->canComment();
-    }
-
-    #[Override]
-    public function getTemplate(): string
-    {
-        return "pages/tools/kb/sidepanel/comments.html.twig";
-    }
-
-    #[Override]
-    public function getParams(KnowbaseItem $item): array
-    {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
-            kbitem_id: $item->getID(),
-            lang: null,
-            parent: null,
-            user_data_cache: $users_infos,
+    try {
+        const response = await fetch(
+            `${CFG_GLPI.root_doc}/${url}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                },
+                body: JSON.stringify(values),
+            }
         );
 
-        foreach ($comments as &$comment) {
-            $comment_item = new KnowbaseItem_Comment();
-            $comment_item->getFromResultSet($comment);
-            $comment['can_edit'] = $comment_item->canUpdateItem();
-            $comment['can_delete'] = $comment_item->canDeleteItem();
+        if (!response.ok) {
+            throw new Error("POST request failed");
         }
 
-        return [
-            'id' => $item->getID(),
-            'comments' => $comments,
-            'users_infos' => $users_infos,
-        ];
+        return response;
+    } catch (e) {
+        glpi_toast_error(__("An unexpected error occurred."));
+        console.error(e);
+        throw e;
     }
 }

@@ -32,47 +32,49 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Knowbase\SidePanel;
+namespace Glpi\Controller;
 
-use KnowbaseItem;
-use KnowbaseItem_Comment;
-use Override;
+use CommonDBTM;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+use RuntimeException;
 
-final class CommentsRenderer implements RendererInterface
+trait CrudControllerTrait
 {
-    #[Override]
-    public function canView(KnowbaseItem $item): bool
+    /** @param array<mixed> $input */
+    private function update(string $class, int $id, array $input): CommonDBTM
     {
-        return $item->canComment();
-    }
-
-    #[Override]
-    public function getTemplate(): string
-    {
-        return "pages/tools/kb/sidepanel/comments.html.twig";
-    }
-
-    #[Override]
-    public function getParams(KnowbaseItem $item): array
-    {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
-            kbitem_id: $item->getID(),
-            lang: null,
-            parent: null,
-            user_data_cache: $users_infos,
-        );
-
-        foreach ($comments as &$comment) {
-            $comment_item = new KnowbaseItem_Comment();
-            $comment_item->getFromResultSet($comment);
-            $comment['can_edit'] = $comment_item->canUpdateItem();
-            $comment['can_delete'] = $comment_item->canDeleteItem();
+        $item = getItemForItemtype($class);
+        if (!$item->getFromDB($id)) {
+            throw new NotFoundHttpException();
         }
 
-        return [
-            'id' => $item->getID(),
-            'comments' => $comments,
-            'users_infos' => $users_infos,
-        ];
+        $input['id'] = $id;
+        if (!$item->can($id, UPDATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if (!$item->update($input)) {
+            throw new RuntimeException("Failed to update item");
+        }
+
+        return $item;
+    }
+
+    private function delete(string $class, int $id): void
+    {
+        $item = getItemForItemtype($class);
+        if (!$item->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $input = ['id' => $id];
+        if (!$item->can($id, DELETE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if (!$item->delete($input)) {
+            throw new RuntimeException("Failed to delete item");
+        }
     }
 }
