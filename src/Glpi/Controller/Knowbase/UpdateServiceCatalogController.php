@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,39 +32,41 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, glpi_toast_error */
+namespace Glpi\Controller\Knowbase;
 
-/**
- * Perform a POST request to a GLPI endpoint.
- *
- * @param {string} url - The relative URL path (without root_doc prefix).
- * @param {Object} values - The data to send as JSON in the request body.
- * @returns {Promise<Response>} The fetch Response object.
- * @throws {Error} If the request fails or returns a non-ok status.
- */
-export async function post(url, values)
+use Glpi\Controller\AbstractController;
+use Glpi\Controller\CrudControllerTrait;
+use KnowbaseItem;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+use function Safe\json_decode;
+
+final class UpdateServiceCatalogController extends AbstractController
 {
-    try {
-        const response = await fetch(
-            `${CFG_GLPI.root_doc}/${url}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-                },
-                body: JSON.stringify(values),
-            }
-        );
+    use CrudControllerTrait;
 
-        if (!response.ok) {
-            throw new Error("POST request failed");
-        }
+    #[Route(
+        "/Knowbase/{id}/UpdateServiceCatalog",
+        name: "knowbase_item_update_service_catalog",
+        methods: ["POST"],
+        requirements: [
+            'id' => '\d+',
+        ]
+    )]
+    public function __invoke(int $id, Request $request): Response
+    {
+        $data = json_decode($request->getContent(), true);
+        $this->validateInputHasExactKeys($data, [
+            'id',
+            'show_in_service_catalog',
+            'description',
+            'forms_categories_id',
+            'is_pinned',
+        ]);
 
-        return response;
-    } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
-        throw e;
+        $this->update(KnowbaseItem::class, $id, $data);
+        return new Response(); // OK
     }
 }
