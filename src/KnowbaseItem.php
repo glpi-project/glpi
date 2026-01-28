@@ -227,7 +227,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);
         $this->addStandardTab(ServiceCatalog::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
-        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
@@ -959,6 +958,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 params: [
                     'id' => $this->fields['id'],
                     'key' => 'comments',
+                ],
+            );
+        }
+        if ($this->canUpdateItem()) {
+            $actions[] = new EditorAction(
+                label: __("History"),
+                icon: "ti ti-history",
+                type: EditorActionType::LOAD_SIDE_PANEL,
+                params: [
+                    'id' => $this->fields['id'],
+                    'key' => 'revisions',
                 ],
             );
         }

@@ -33,6 +33,7 @@
 /* global bootstrap */
 
 import { GlpiKnowbaseCommentsPanelController } from "./CommentsPanelController.js";
+import { GlpiKnowbaseRevisionsPanelController } from "./RevisionsPanelController.js";
 
 export class GlpiKnowbaseArticleSidePanelController
 {
@@ -47,6 +48,7 @@ export class GlpiKnowbaseArticleSidePanelController
         this.#initEventListeners();
 
         new GlpiKnowbaseCommentsPanelController(this.#container);
+        new GlpiKnowbaseRevisionsPanelController(this.#container);
     }
 
     #initEventListeners()
