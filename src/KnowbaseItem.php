@@ -962,6 +962,18 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 ],
             );
         }
+        if ($this->canUpdateItem()) {
+            $actions[] = new EditorAction(
+                label: "Add to FAQ",
+                icon: "ti ti-bookmark",
+                type: EditorActionType::TOGGLE_VALUE,
+                params: [
+                    'id' => $this->fields['id'],
+                    'field' => 'is_faq',
+                    'checked' => $this->fields['is_faq'],
+                ],
+            );
+        }
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
             'views' => $this->fields['view'],
             'answer' => $this->getAnswer(),
