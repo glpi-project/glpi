@@ -37,6 +37,12 @@
 
 {% block content %}
     <div class="d-flex flex-column row-gap-4 overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4" data-glpi-comments>
+        <p
+            class="text-muted fs-3 mt-auto mb-auto align-self-center {{ comments|length > 0 ? 'd-none' : '' }}"
+            data-glpi-comments-empty
+        >
+            {{ __('No comments yet.') }}
+        </p>
         {% for comment in comments %}
             {% set user_info = users_infos[comment.users_id] %}
 
