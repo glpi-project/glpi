@@ -33,7 +33,7 @@
 <input type="hidden" name="_link[itemtype_1]" value="{{ item.getType() }}" />
 <input type="hidden" name="_link[items_id_1]" value="{{ item.fields['id'] }}" />
 
-{% set linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::getAllLinkedTo', [item.getType(), item.getId(), true]) %}
+{% set linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::getAllLinkedTo', [item.getType(), item.getId()]) %}
 {% if linked_itilobjects|length %}
    <div class="card">
       <div class="list-group list-group-flush list-group-hoverable">

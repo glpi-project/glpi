@@ -470,7 +470,7 @@
    {% endif %}
 
    {% set linked_itilobjects_show = headers_states['linked_itilobjects'] is defined and headers_states['linked_itilobjects'] == "true" ? true : false %}
-   {% set nb_linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::countAllLinks', [item.getType(), item.getId(), true]) %}
+   {% set nb_linked_itilobjects = item.isNewItem() ? 0 : call('CommonITILObject_CommonITILObject::countAllLinks', [item.getType(), item.getId()]) %}
    <section class="accordion-item" aria-label="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}">
       <div class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
          <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">

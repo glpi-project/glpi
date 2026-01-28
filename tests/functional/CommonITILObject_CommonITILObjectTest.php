@@ -71,8 +71,8 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        // Check the number of links
-        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
+        // Check the number of links (bypass rights check as we don't test rights here)
+        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id, true));
 
         // Create a Problem
         $problem = new \Problem();
@@ -92,7 +92,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->assertEquals(2, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
+        $this->assertEquals(2, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id, true));
 
         // Add another ticket
         $tickets_id2 = $ticket->add([
@@ -111,9 +111,9 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $ticket_ticket_id);
 
-        // Count links for both tickets
-        $this->assertEquals(3, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
-        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id2));
+        // Count links for both tickets (bypass rights check as we don't test rights here)
+        $this->assertEquals(3, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id, true));
+        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id2, true));
     }
 
     public function testCountLinksByStatus()
@@ -234,9 +234,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->assertCount(0, \Ticket_Ticket::getLinkedTo('Ticket', $tickets_id));
-        $this->assertCount(1, \Change_Ticket::getLinkedTo('Ticket', $tickets_id));
-        $this->assertCount(1, \Problem_Ticket::getLinkedTo('Ticket', $tickets_id));
+        // Bypass rights check as we don't test rights here
+        $this->assertCount(0, \Ticket_Ticket::getLinkedTo('Ticket', $tickets_id, true));
+        $this->assertCount(1, \Change_Ticket::getLinkedTo('Ticket', $tickets_id, true));
+        $this->assertCount(1, \Problem_Ticket::getLinkedTo('Ticket', $tickets_id, true));
     }
 
     public function testGetAllLinkedTo()
@@ -286,9 +287,10 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->assertCount(2, \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $tickets_id));
-        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Change', $changes_id));
-        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Problem', $problems_id));
+        // Bypass rights check as we don't test rights here
+        $this->assertCount(2, \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $tickets_id, true));
+        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Change', $changes_id, true));
+        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Problem', $problems_id, true));
     }
 
     public function testGetLinkName()
@@ -514,7 +516,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
     }
 
     /**
-     * Test getLinkedTo with check_view_rights parameter across entities.
+     * Test getLinkedTo with bypass_right_checks parameter across entities.
      * This test verifies that linked ITIL objects in child entities are visible
      * when accessing from the root entity, and that users without access to certain
      * entities don't see tickets they don't have rights to view.
@@ -586,30 +588,30 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         // Test 1: From root entity with recursive access - should see all linked tickets
         $this->setEntity('_test_root_entity', true);
 
-        // Without check_view_rights - should see all links
-        $links_no_check = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id, false);
-        $this->assertCount(2, $links_no_check);
+        // With bypass_right_checks=true - should see all links (bypassing rights check)
+        $links_bypass = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id, true);
+        $this->assertCount(2, $links_bypass);
 
-        // With check_view_rights - should still see all links (user has access)
-        $links_with_check = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id, true);
+        // Default (bypass_right_checks=false) - should still see all links (user has access)
+        $links_with_check = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id);
         $this->assertCount(2, $links_with_check);
 
         // Test 2: From child entity 1 without recursive access
         $this->setEntity('_test_child_1', false);
 
-        // Without check_view_rights - still returns all database links
-        $links_no_check = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id, false);
-        $this->assertCount(2, $links_no_check);
+        // With bypass_right_checks=true - returns all database links
+        $links_bypass = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id, true);
+        $this->assertCount(2, $links_bypass);
 
-        // With check_view_rights - should only see the ticket in child entity 1
-        $links_with_check = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id, true);
+        // Default (bypass_right_checks=false) - should only see the ticket in child entity 1
+        $links_with_check = \Ticket_Ticket::getLinkedTo('Ticket', $ticket_root_id);
         $this->assertCount(1, $links_with_check);
         $link_item = reset($links_with_check);
         $this->assertEquals($ticket_child1_id, $link_item['items_id']);
     }
 
     /**
-     * Test getAllLinkedTo with check_view_rights parameter.
+     * Test getAllLinkedTo with bypass_right_checks parameter.
      */
     public function testGetAllLinkedToWithCheckViewRightsAcrossEntities()
     {
@@ -675,19 +677,19 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         // Test from root entity with recursive access
         $this->setEntity('_test_root_entity', true);
 
-        // Without check_view_rights - should see all links
-        $all_links_no_check = \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $ticket_root_id, false);
-        $this->assertCount(2, $all_links_no_check);
+        // With bypass_right_checks=true - should see all links
+        $all_links_bypass = \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $ticket_root_id, true);
+        $this->assertCount(2, $all_links_bypass);
 
-        // With check_view_rights - should still see all links
-        $all_links_with_check = \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $ticket_root_id, true);
+        // Default (bypass_right_checks=false) - should still see all links
+        $all_links_with_check = \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $ticket_root_id);
         $this->assertCount(2, $all_links_with_check);
 
         // Test from child entity 1 without recursive access
         $this->setEntity('_test_child_1', false);
 
-        // With check_view_rights - should only see the change (in child entity 1)
-        $all_links_with_check = \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $ticket_root_id, true);
+        // Default (bypass_right_checks=false) - should only see the change (in child entity 1)
+        $all_links_with_check = \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $ticket_root_id);
         $this->assertCount(1, $all_links_with_check);
         $link_item = reset($all_links_with_check);
         $this->assertEquals('Change', $link_item['itemtype']);
@@ -695,7 +697,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
     }
 
     /**
-     * Test countAllLinks with check_view_rights parameter.
+     * Test countAllLinks with bypass_right_checks parameter.
      */
     public function testCountAllLinksWithCheckViewRightsAcrossEntities()
     {
@@ -760,23 +762,23 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         // Test from root entity with recursive access
         $this->setEntity('_test_root_entity', true);
 
-        // Without check_view_rights
-        $count_no_check = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id, false);
-        $this->assertEquals(2, $count_no_check);
+        // With bypass_right_checks=true
+        $count_bypass = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id, true);
+        $this->assertEquals(2, $count_bypass);
 
-        // With check_view_rights
-        $count_with_check = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id, true);
+        // Default (bypass_right_checks=false)
+        $count_with_check = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id);
         $this->assertEquals(2, $count_with_check);
 
         // Test from child entity 1 without recursive access
         $this->setEntity('_test_child_1', false);
 
-        // Without check_view_rights - still counts all database links
-        $count_no_check = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id, false);
-        $this->assertEquals(2, $count_no_check);
+        // With bypass_right_checks=true - still counts all database links
+        $count_bypass = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id, true);
+        $this->assertEquals(2, $count_bypass);
 
-        // With check_view_rights - should only count visible links
-        $count_with_check = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id, true);
+        // Default (bypass_right_checks=false) - should only count visible links
+        $count_with_check = \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $ticket_root_id);
         $this->assertEquals(1, $count_with_check);
     }
 
