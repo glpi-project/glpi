@@ -91,6 +91,19 @@ class DBTest extends GLPITestCase
             ['field AS f', '`field` AS `f`'],
             ['field as f', '`field` AS `f`'],
             ['table.field as f', '`table`.`field` AS `f`'],
+
+            // various spacing around AS
+            ['`table`.`field`AS`alias`', '`table`.`field` AS `alias`'],
+            ['`table`.`field` AS`alias`', '`table`.`field` AS `alias`'],
+            ['`table`.`field`AS `alias`', '`table`.`field` AS `alias`'],
+            ['`table`.`field`  AS `alias`', '`table`.`field` AS `alias`'],
+
+            // db.table.name cases
+            ['db.table.field', '`db`.`table`.`field`'],
+            ['db.table.field as f', '`db`.`table`.`field` AS `f`'],
+            ['`db`.`table`.`field` AS alias', '`db`.`table`.`field` AS `alias`'],
+
+            // names containing a backtick
             ['ta`ble', '`ta``ble`'],
             ['ta`ble.f`i`e`l`d', '`ta``ble`.`f``i``e``l``d`'],
         ];
