@@ -76,12 +76,16 @@ export class FormTranslationPage extends GlpiPage
         await expect(dropdown).toBeVisible();
     }
 
-    /**
-     * The translation key is stored in an hidden input inside td inside the row
-     */
     public async getTranslationRow(translation_name: string): Promise<Locator>
     {
         return this.page.getByRole('row', { name: `Translation row for ${translation_name}` });
+    }
+
+    public async getTranslationRichTextByLabel(translation_name: string): Promise<Locator>
+    {
+        // Initialize rich text if not done yet
+        await this.initRichTextByLabel('Enter translation', await this.getTranslationRow(translation_name));
+        return this.getRichTextByLabel('Enter translation');
     }
 
     public async saveTranslation(): Promise<void>

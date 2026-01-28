@@ -39,6 +39,7 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\Form;
 use Glpi\Form\FormTranslation;
 use Glpi\Http\RedirectResponse;
+use Glpi\ItemTranslation\CldrLanguage;
 use Glpi\ItemTranslation\ItemTranslation;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -60,7 +61,12 @@ final class UpdateFormTranslationController extends AbstractTranslationControlle
         // Validate the language code
         $this->validateLanguage($language);
 
+        $cldr_language = new CldrLanguage($language);
+        $category_index = $cldr_language->getPluralKey(1);
+
         $input = $request->request->all();
+        $input['translations'] = $this->remapFileUploadsToTranslations($category_index, $input);
+
         if ($this->processTranslations($input['translations'] ?? [], $language)) {
             $this->addSuccessMessage($language);
         }
@@ -86,5 +92,32 @@ final class UpdateFormTranslationController extends AbstractTranslationControlle
     protected function getContextTranslations(?string $language = null): array
     {
         return FormTranslation::getTranslationsForItem($this->form);
+    }
+
+    /**
+     * @param array<string, mixed> $input
+     * @return array<string, mixed>
+     */
+    private function remapFileUploadsToTranslations(string $category_index, array $input): array
+    {
+        $translations = $input['translations'] ?? [];
+        $file_upload_prefixes = ['_', '_prefix_', '_tag_'];
+
+        foreach ($file_upload_prefixes as $prefix) {
+            $prefixed_key = $prefix . 'translations';
+            if (!isset($input[$prefixed_key])) {
+                continue;
+            }
+
+            foreach ($input[$prefixed_key] as $translation_key => $data) {
+                if (!is_array($data) || !isset($data['translations'][$category_index])) {
+                    continue;
+                }
+
+                $translations[$translation_key]['translations'][$prefix . $category_index] = $data['translations'][$category_index];
+            }
+        }
+
+        return $translations;
     }
 }
