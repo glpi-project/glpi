@@ -45,6 +45,14 @@ use Glpi\Exception\Http\BadRequestHttpException;
 Session::checkCentralAccess();
 $contactsupplier = new Contact_Supplier();
 if (isset($_POST["add"])) {
+    if (!isset($_POST['suppliers_id']) || empty($_POST['suppliers_id'])) {
+        $message = sprintf(
+            __('Mandatory fields are not filled. Please correct: %s'),
+            _n('Supplier', 'Suppliers', 1)
+        );
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+        Html::back();
+    }
     $contactsupplier->check(-1, CREATE, $_POST);
 
     if (
