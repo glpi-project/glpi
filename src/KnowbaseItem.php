@@ -236,19 +236,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (!$withtemplate) {
-            $nb = 0;
             switch ($item::class) {
                 case self::class:
                     $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
-                        if ($_SESSION['glpishow_count_on_tabs']) {
-                            $nb = $item->countVisibilities();
-                        }
-                        $ong[2] = self::createTabEntry(
-                            _n('Target', 'Targets', Session::getPluralNumber()),
-                            $nb,
-                            $item::getType()
-                        );
                         $ong[3] = self::createTabEntry(__('Edit'), 0, $item::class, 'ti ti-pencil');
                     }
                     return $ong;
@@ -265,9 +256,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         switch ($tabnum) {
             case 1:
                 return (bool) $item->showFull(['edit_mode' => true]);
-
-            case 2:
-                return $item->showVisibility();
 
             case 3:
                 return $item->showForm($item->getID());
