@@ -37,13 +37,14 @@
         <form method="post" action="{{ 'KnowbaseItem'|itemtype_form_path }}">
             <input type="hidden" name="knowbaseitems_id" value="{{ id }}">
             {{ fields.csrfField() }}
-            <div class="d-flex flex-wrap">
-                {{ fields.dropdownItemTypes('_type', '', __('Add a target'), {
-                    types: ['Entity', 'Group', 'Profile', 'User'],
-                    rand: rand,
-                    inline_add_field_html: true,
-                    add_field_html: "<span id='visibility" ~ rand ~ "'></span>",
-                }) }}
+            <div class="d-flex flex-column gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    {{ fields.dropdownItemTypes('_type', '', __('Add a target'), {
+                        types: ['Entity', 'Group', 'Profile', 'User'],
+                        rand: rand,
+                    }) }}
+                </div>
+                <div id="visibility{{ rand }}"></div>
             </div>
             <script>
                 $('#dropdown__type{{ rand }}').on('change', (e) => {
