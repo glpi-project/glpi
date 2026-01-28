@@ -298,6 +298,10 @@ class Budget extends CommonDropdown
         /** @var DBmysql $DB */
         global $DB;
 
+        if (!$item instanceof Budget) {
+            throw new InvalidArgumentException('Item must be of type Budget');
+        }
+
         // Check if user can read the budget
         if (!$item->can($item->fields['id'], READ)) {
             return 0;
