@@ -99,8 +99,15 @@ class KnowbaseItem_Comment extends CommonDBTM
 
     public function canDeleteItem(): bool
     {
-        // No deletion support in the UI for now so return false to also block API deletion
-        return false;
+        if (!$this->canComment()) {
+            return false;
+        }
+
+        // Users can delete their own comments and admins can delete all comments
+        return
+            Session::getLoginUserID() === $this->fields['users_id']
+            || Session::haveRight(KnowbaseItem::$rightname, KnowbaseItem::KNOWBASEADMIN)
+        ;
     }
 
     public function canPurgeItem(): bool
