@@ -33,6 +33,7 @@
 /* global bootstrap */
 
 import { GlpiKnowbaseCommentsPanelController } from "/js/modules/Knowbase/CommentsPanelController.js";
+import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
 
 export class GlpiKnowbaseArticleSidePanelController
 {
@@ -47,6 +48,7 @@ export class GlpiKnowbaseArticleSidePanelController
         this.#initEventListeners();
 
         new GlpiKnowbaseCommentsPanelController(this.#container);
+        new GlpiKnowbaseServiceCatalogPanelController(this.#container);
     }
 
     #initEventListeners()
@@ -72,7 +74,8 @@ export class GlpiKnowbaseArticleSidePanelController
             throw new Error("Failed to load side panel content.");
         }
 
-        this.#container.innerHTML = await response.text();
+        // jQuery's .html() trigger scripts execution, which is needed for select2 and tinymce
+        $(this.#container).html(await response.text());
         this.#container.classList.remove('d-none');
 
         // Trigger bootstrap tooltips

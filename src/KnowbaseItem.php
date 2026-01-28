@@ -40,7 +40,6 @@ use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
-use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\Knowbase\EditorAction;
 use Glpi\Knowbase\EditorActionType;
@@ -230,7 +229,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
         $this->addStandardTab(Document_Item::class, $ong, $options);
         $this->addStandardTab(KnowbaseItemTranslation::class, $ong, $options);
-        $this->addStandardTab(ServiceCatalog::class, $ong, $options);
         $this->addStandardTab(Log::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
         $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
@@ -994,6 +992,15 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'id' => $this->fields['id'],
                     'field' => 'is_faq',
                     'checked' => $this->fields['is_faq'],
+                ],
+            );
+            $actions[] = new EditorAction(
+                label: "Service catalog",
+                icon: "ti ti-library",
+                type: EditorActionType::LOAD_SIDE_PANEL,
+                params: [
+                    'id' => $this->fields['id'],
+                    'key' => 'service-catalog',
                 ],
             );
         }
