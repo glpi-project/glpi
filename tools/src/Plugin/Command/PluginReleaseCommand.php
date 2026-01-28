@@ -113,16 +113,6 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         return $this->build($ref, $tarball);
     }
 
-    private function compileMo(): void
-    {
-        $input = new ArrayInput([
-            'command'  => 'tools:locales:compile',
-            '--plugin' => $this->getPluginName(),
-        ]);
-        $input->setInteractive(false);
-        $this->getApplication()->doRun($input, $this->output);
-    }
-
     private function build(string $ref, string $dest): int
     {
         $this->io->title("Releasing plugin {$this->plugin_name}@{$ref}...");
@@ -245,9 +235,6 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             }
             $this->io->writeln("<info>Npm dependencies installed.</info>");
         }
-
-        // Compile MO
-        $this->compileMo();
 
         // Compress to bz2
         $this->io->section("Generating the archive");
