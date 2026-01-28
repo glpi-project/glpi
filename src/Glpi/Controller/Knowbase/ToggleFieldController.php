@@ -37,42 +37,48 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
-use KnowbaseItem_Comment;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class UpdateCommentController extends AbstractController
+use function Safe\json_decode;
+
+final class ToggleFieldController extends AbstractController
 {
     use CrudControllerTrait;
 
+    private const ALLOWED_FIELDS = ['is_faq'];
+
     #[Route(
-        "/Knowbase/Comment/{id}/Update",
-        name: "knowbase_comment_update",
-        methods: ["POST"],
+        "/Knowbase/KnowbaseItem/{id}/ToggleField",
+        name: "knowbase_toggle_field",
         requirements: [
             'id' => '\d+',
         ]
     )]
     public function __invoke(int $id, Request $request): Response
     {
-        // Get submitted comment
-        $content = $request->request->getString('content');
-        if (empty($content)) {
+        // Decode submitted data
+        $data = json_decode($request->getContent(), true);
+        $field = $data['field'] ?? null;
+        $value = $data['value'] ?? null;
+
+        // Validate parameters
+        if ($field === null || $value === null) {
+            throw new BadRequestHttpException();
+        }
+        if (!in_array($field, self::ALLOWED_FIELDS, true)) {
             throw new BadRequestHttpException();
         }
 
         // Update item
-        $comment = $this->update(
-            KnowbaseItem_Comment::class,
+        $this->update(
+            KnowbaseItem::class,
             $id,
-            ['comment' => $content],
+            [$field => $value ? 1 : 0],
         );
 
-        return new JsonResponse([
-            'success' => true,
-            'comment' => $comment->fields['comment'],
-        ]);
+        return new Response(); // OK
     }
 }

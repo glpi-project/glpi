@@ -32,7 +32,8 @@
 
 /* global glpi_toast_error */
 
-import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
+import { post } from "/js/modules/Ajax.js";
+import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 
 export class GlpiKnowbaseArticleController
 {
@@ -46,6 +47,10 @@ export class GlpiKnowbaseArticleController
      */
     #side_panel;
 
+    /**
+     * @param {HTMLElement} container
+     * @param {HTMLElement} side_panel_container
+     */
     constructor(container, side_panel_container)
     {
         this.#container = container;
@@ -61,7 +66,7 @@ export class GlpiKnowbaseArticleController
         for (const action of actions) {
             action.addEventListener("click", (e) => {
                 try {
-                    this.#executeAction(e.currentTarget);
+                    this.#executeAction(e);
                 } catch (e) {
                     console.error(e);
                     glpi_toast_error(__("An unexpected error occurred."));
@@ -70,9 +75,14 @@ export class GlpiKnowbaseArticleController
         }
     }
 
-    /** @param {HTMLElement} element */
-    #executeAction(element)
+    /**
+     * @param {Event} event
+     */
+    #executeAction(event)
     {
+        const element = event.currentTarget;
+        const target = event.target;
+
         const type = element.dataset.glpiKbAction;
         const params = this.#extractParamsFromDataset(element.dataset);
 
@@ -80,6 +90,18 @@ export class GlpiKnowbaseArticleController
             case 'LOAD_SIDE_PANEL':
                 this.#side_panel.load(params.id, params.key);
                 break;
+            case 'TOGGLE_VALUE': {
+                event.stopPropagation();
+                const toggle = element.querySelector('input[type="checkbox"]');
+                if (toggle) {
+                    const clicked_on_toggle = target === toggle;
+                    if (!clicked_on_toggle) {
+                        toggle.checked = !toggle.checked;
+                    }
+                    this.#toggleValue(params.id, params.field, toggle);
+                }
+                break;
+            }
         }
     }
 
@@ -97,5 +119,23 @@ export class GlpiKnowbaseArticleController
         }
 
         return params;
+    }
+
+    /**
+     * @param {number} id
+     * @param {string} field
+     * @param {HTMLInputElement} toggle
+     */
+    async #toggleValue(id, field, toggle)
+    {
+        const value = toggle.checked;
+        try {
+            await post(`Knowbase/KnowbaseItem/${id}/ToggleField`, {
+                field: field,
+                value: value,
+            });
+        } catch {
+            toggle.checked = !value;
+        }
     }
 }

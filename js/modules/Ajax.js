@@ -30,37 +30,40 @@
  * ---------------------------------------------------------------------
  */
 
-import { Locator, Page } from "@playwright/test";
-import { GlpiPage } from "./GlpiPage";
+/* global getAjaxCsrfToken, glpi_toast_error */
 
-export class KnowbaseItemPage extends GlpiPage
+/**
+ * Perform a POST request to a GLPI endpoint.
+ *
+ * @param {string} url - The relative URL path (without root_doc prefix).
+ * @param {Object} values - The data to send as JSON in the request body.
+ * @returns {Promise<Response>} The fetch Response object.
+ * @throws {Error} If the request fails or returns a non-ok status.
+ */
+export async function post(url, values)
 {
-    public constructor(page: Page)
-    {
-        super(page);
-    }
-
-    public async goto(id: number): Promise<void>
-    {
-        await this.page.goto(
-            `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`
+    try {
+        const response = await fetch(
+            `${CFG_GLPI.root_doc}/${url}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+                },
+                body: JSON.stringify(values),
+            }
         );
-    }
 
-    public async doToggleFaqStatus(): Promise<void>
-    {
-        const faq_toggle = this.getButton('Add to FAQ');
-        const response_promise = this.page.waitForResponse(
-            response => response.url().includes('/ToggleField')
-        );
-        await faq_toggle.click();
-        await response_promise;
-    }
+        if (!response.ok) {
+            throw new Error("POST request failed");
+        }
 
-    public getCommentByContent(content: string): Locator
-    {
-        return this.page.getByText(content).filter({
-            'visible': true,
-        });
+        return response;
+    } catch (e) {
+        glpi_toast_error(__("An unexpected error occurred."));
+        console.error(e);
+        throw e;
     }
 }

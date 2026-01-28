@@ -32,7 +32,7 @@
 
 /* global bootstrap */
 
-import { GlpiKnowbaseCommentsPanelController } from "./CommentsPanelController.js";
+import { GlpiKnowbaseCommentsPanelController } from "/js/modules/Knowbase/CommentsPanelController.js";
 
 export class GlpiKnowbaseArticleSidePanelController
 {

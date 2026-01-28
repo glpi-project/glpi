@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,37 +32,32 @@
  * ---------------------------------------------------------------------
  */
 
-import { Locator, Page } from "@playwright/test";
-import { GlpiPage } from "./GlpiPage";
+namespace Glpi\Controller;
 
-export class KnowbaseItemPage extends GlpiPage
+use CommonDBTM;
+use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\NotFoundHttpException;
+use RuntimeException;
+
+trait CrudControllerTrait
 {
-    public constructor(page: Page)
+    /** @param array<mixed> $input */
+    private function update(string $class, int $id, array $input): CommonDBTM
     {
-        super(page);
-    }
+        $item = getItemForItemtype($class);
+        if (!$item->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
 
-    public async goto(id: number): Promise<void>
-    {
-        await this.page.goto(
-            `/front/knowbaseitem.form.php?id=${id}&forcetab=KnowbaseItem$1`
-        );
-    }
+        $input['id'] = $id;
+        if (!$item->can($id, UPDATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
 
-    public async doToggleFaqStatus(): Promise<void>
-    {
-        const faq_toggle = this.getButton('Add to FAQ');
-        const response_promise = this.page.waitForResponse(
-            response => response.url().includes('/ToggleField')
-        );
-        await faq_toggle.click();
-        await response_promise;
-    }
+        if (!$item->update($input)) {
+            throw new RuntimeException("Failed to update item");
+        }
 
-    public getCommentByContent(content: string): Locator
-    {
-        return this.page.getByText(content).filter({
-            'visible': true,
-        });
+        return $item;
     }
 }
