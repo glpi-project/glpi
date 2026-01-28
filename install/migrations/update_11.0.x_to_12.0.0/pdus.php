@@ -70,6 +70,14 @@ $migration->addField(
     ['after' => 'snmpcredentials_id']
 );
 
+$migration->addField(
+    'glpi_pdus',
+    'is_dynamic',
+    'bool',
+    ['after' => 'autoupdatesystems_id']
+);
+
 $migration->addKey('glpi_pdus', 'snmpcredentials_id');
 $migration->addKey('glpi_pdus', 'autoupdatesystems_id');
+$migration->addKey('glpi_pdus', 'is_dynamic');
 $migration->migrationOneTable('glpi_pdus');
