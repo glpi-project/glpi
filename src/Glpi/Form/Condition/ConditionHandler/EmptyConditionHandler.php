@@ -78,6 +78,7 @@ class EmptyConditionHandler implements ConditionHandlerInterface
         mixed $a,
         ValueOperator $operator,
         mixed $b,
+        ?JsonFieldInterface $config,
     ): bool {
         if ($this->question_type instanceof ConditionValueTransformerInterface) {
             $a = $this->question_type->transformConditionValueForComparisons($a, $this->question_config);
