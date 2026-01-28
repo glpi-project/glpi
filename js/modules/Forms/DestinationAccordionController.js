@@ -30,8 +30,8 @@
  * ---------------------------------------------------------------------
  */
 
-import { GlpiFormDestinationAutoConfigController } from "./DestinationAutoConfigController.js";
-import { GlpiFormDestinationConditionController } from "./DestinationConditionController.js";
+import { GlpiFormDestinationAutoConfigController } from "/js/modules/Forms/DestinationAutoConfigController.js";
+import { GlpiFormDestinationConditionController } from "/js/modules/Forms/DestinationConditionController.js";
 
 export class GlpiFormDestinationAccordionController
 {
