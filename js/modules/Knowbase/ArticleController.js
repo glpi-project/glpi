@@ -134,8 +134,9 @@ export class GlpiKnowbaseArticleController
                 field: field,
                 value: value,
             });
-        } catch {
+        } catch (e) {
             toggle.checked = !value;
+            throw e;
         }
     }
 }

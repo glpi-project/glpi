@@ -1,3 +1,5 @@
+<?php
+
 /**
  * ---------------------------------------------------------------------
  *
@@ -30,39 +32,34 @@
  * ---------------------------------------------------------------------
  */
 
-/* global getAjaxCsrfToken, glpi_toast_error */
+namespace Glpi\Knowbase\SidePanel;
 
-/**
- * Perform a POST request to a GLPI endpoint.
- *
- * @param {string} url - The relative URL path (without root_doc prefix).
- * @param {Object} values - The data to send as JSON in the request body.
- * @returns {Promise<Response>} The fetch Response object.
- * @throws {Error} If the request fails or returns a non-ok status.
- */
-export async function post(url, values)
+use KnowbaseItem;
+use Override;
+
+final class ServiceCatalogRenderer implements RendererInterface
 {
-    try {
-        const response = await fetch(
-            `${CFG_GLPI.root_doc}/${url}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
-                },
-                body: JSON.stringify(values),
-            }
-        );
+    #[Override]
+    public function canView(KnowbaseItem $item): bool
+    {
+        return $item->canUpdateItem();
+    }
 
-        if (!response.ok) {
-            throw new Error("POST request failed");
-        }
+    #[Override]
+    public function getTemplate(): string
+    {
+        return "pages/tools/kb/sidepanel/service_catalog.html.twig";
+    }
 
-        return response;
-    } catch (e) {
-        glpi_toast_error(__("An unexpected error occurred."));
-        throw e;
+    #[Override]
+    public function getParams(KnowbaseItem $item): array
+    {
+        return [
+            'id'                      => $item->getID(),
+            'show_in_service_catalog' => (bool) ($item->fields['show_in_service_catalog'] ?? false),
+            'description'             => $item->fields['description'] ?? '',
+            'forms_categories_id'     => $item->fields['forms_categories_id'] ?? 0,
+            'is_pinned'               => (bool) ($item->fields['is_pinned'] ?? false),
+        ];
     }
 }

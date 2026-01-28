@@ -35,54 +35,46 @@
 namespace Glpi\Controller\Knowbase;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Knowbase\SidePanel\CommentsRenderer;
-use Glpi\Knowbase\SidePanel\RendererInterface;
-use Glpi\Knowbase\SidePanel\ServiceCatalogRenderer;
 use KnowbaseItem;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class ArticleSidePanelController extends AbstractController
+use function Safe\json_decode;
+
+final class UpdateServiceCatalogController extends AbstractController
 {
+    use CrudControllerTrait;
+
     #[Route(
-        "/Knowbase/{id}/SidePanel/{key}",
-        name: "knowbase_article_side_panel",
+        "/Knowbase/{id}/UpdateServiceCatalog",
+        name: "knowbase_item_update_service_catalog",
+        methods: ["POST"],
         requirements: [
             'id' => '\d+',
         ]
     )]
-    public function __invoke(int $id, string $key): Response
+    public function __invoke(int $id, Request $request): Response
     {
-        // Parse id
-        $kb = KnowbaseItem::getById($id);
-        if (!$kb) {
+        $data = json_decode($request->getContent(), true);
+
+        $allowed_keys = [
+            'id',
+            'show_in_service_catalog',
+            'description',
+            'forms_categories_id',
+            'is_pinned',
+        ];
+        ksort($data);
+        sort($allowed_keys);
+        if (array_keys($data) !== $allowed_keys) {
+            \Toolbox::logDebug(array_keys($data), $allowed_keys);
             throw new BadRequestHttpException();
         }
-        if (!$kb->can($id, READ)) {
-            throw new AccessDeniedHttpException();
-        }
 
-        // Get renderer
-        $renderer = $this->getRendererForKey($key);
-        if (!$renderer->canView($kb)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        // Render content
-        return $this->render(
-            $renderer->getTemplate(),
-            $renderer->getParams($kb),
-        );
-    }
-
-    private function getRendererForKey(string $key): RendererInterface
-    {
-        return match ($key) {
-            'comments'        => new CommentsRenderer(),
-            'service-catalog' => new ServiceCatalogRenderer(),
-            default           => throw new BadRequestHttpException(),
-        };
+        $this->update(KnowbaseItem::class, $id, $data);
+        return new Response(); // OK
     }
 }

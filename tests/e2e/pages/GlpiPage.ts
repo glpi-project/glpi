@@ -89,6 +89,7 @@ export class GlpiPage
         const simple_dropdown = this.page
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
+            .first()
         ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
