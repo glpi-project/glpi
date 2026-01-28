@@ -200,6 +200,7 @@ export class GlpiKnowbaseCommentsPanelController
 
         // Delete comment on the client
         comment_card.remove();
+        this.#updateCounter(-1);
     }
 
     #toggleSubmitButtonVisibility(textarea)
@@ -248,6 +249,7 @@ export class GlpiKnowbaseCommentsPanelController
         // Insert new comment
         const html = await response.text();
         this.#getCommentsDiv().insertAdjacentHTML('beforeend', html);
+        this.#updateCounter(1);
 
         // Clear input/UI
         this.#getContentTextarea().value = "";
@@ -284,5 +286,14 @@ export class GlpiKnowbaseCommentsPanelController
     #getCommentsDiv()
     {
         return this.#container.querySelector(comments_selector);
+    }
+
+    #updateCounter(delta)
+    {
+        const counter = document.querySelector('[data-glpi-kb-action-counter="comments"]');
+        if (counter) {
+            const current = parseInt(counter.textContent, 10) || 0;
+            counter.textContent = Math.max(0, current + delta);
+        }
     }
 }
