@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error, glpi_toast_info, glpi_confirm, getAjaxCsrfToken */
+/* global glpi_toast_error, glpi_toast_info, glpi_html_dialog, getAjaxCsrfToken */
 
 const revert_selector = "[data-glpi-revert-revision]";
 
@@ -64,12 +64,19 @@ export class GlpiKnowbaseRevisionsPanelController
         const kbId = button.dataset.glpiKbId;
 
         // Confirmation dialog
-        glpi_confirm({
+        glpi_html_dialog({
             title: __("Restore revision"),
-            message: __("Are you sure you want to restore this version? The current content will be saved as a new revision."),
-            confirm_callback: () => {
-                this.#performRevert(button, kbId, revisionId);
-            },
+            body: __("Are you sure you want to restore this version? The current content will be saved as a new revision."),
+            buttons: [{
+                label: __("Cancel"),
+                class: 'btn-outline-secondary',
+            }, {
+                label: __("Confirm"),
+                class: 'btn-primary',
+                click: () => {
+                    this.#performRevert(button, kbId, revisionId);
+                },
+            }],
         });
     }
 
