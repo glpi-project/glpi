@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,16 +33,26 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 $migration->addField(
     'glpi_profiles',
     'last_rights_update',
     'timestamp',
     [
         'null' => false,
-        'value' => null
+        'value' => null,
     ]
 );
 $migration->addKey('glpi_profiles', 'last_rights_update');
+
+$migration->addField(
+    'glpi_profiles',
+    'use_mentions',
+    'int',
+    [
+        'null' => false,
+        'value' => '1',
+        'after' => 'helpdesk_item_type',
+    ]
+);

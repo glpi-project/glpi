@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -69,12 +69,12 @@ class KnowbaseItem_Revision extends CommonDBTM
             if ($item instanceof KnowbaseItem) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
-                    'language'         => ''
+                    'language'         => '',
                 ];
             } else {
                 $where = [
                     'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
+                    'language'         => $item->fields['language'],
                 ];
             }
 
@@ -88,6 +88,10 @@ class KnowbaseItem_Revision extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         self::showForItem($item, $withtemplate);
         return true;
     }
@@ -96,17 +100,16 @@ class KnowbaseItem_Revision extends CommonDBTM
      * Show linked items of a knowbase item
      *
      * @param CommonDBTM $item
-     * @param integer $withtemplate withtemplate param (default 0)
-     **/
+     * @param int $withtemplate withtemplate param (default 0)
+     *
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         if (isset($_GET["start"])) {
-            $start = (int)$_GET["start"];
+            $start = (int) $_GET["start"];
         } else {
             $start = 0;
         }
@@ -115,7 +118,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         if ($item::class === KnowbaseItem::class) {
             $kb_item_id = $item->getID();
         } else {
-            $kb_item_id = $item->fields['knowbaseitems_id'];
+            $kb_item_id = (int) $item->fields['knowbaseitems_id'];
             $language   = $item->fields['language'];
         }
         $where = [
@@ -138,13 +141,21 @@ class KnowbaseItem_Revision extends CommonDBTM
         $user = new User();
         $user->getFromDB($item->fields['users_id']);
         $revisions = $DB->request([
+            'SELECT' => [
+                'id',
+                'knowbaseitems_id',
+                'revision',
+                'users_id',
+                'date',
+            ],
             'FROM' => 'glpi_knowbaseitems_revisions',
             'WHERE' => $where,
-            'ORDER' => 'id DESC'
+            'ORDER' => 'id DESC',
         ]);
+
         $is_checked = true;
         $author_cache = [
-            $item->fields['users_id'] => $user->getLink()
+            $item->fields['users_id'] => $user->getLink(),
         ];
         $entries = [
             [
@@ -152,8 +163,8 @@ class KnowbaseItem_Revision extends CommonDBTM
                 'selections' => '<input type="radio" name="oldid" value="0" style="visibility:hidden"/><input type="radio" name="diff" value="0" checked="checked"/>',
                 'author' => $author_cache[$item->fields['users_id']],
                 'date_creation' => $item->fields['date_mod'],
-                'actions' => ''
-            ]
+                'actions' => '',
+            ],
         ];
         $show_msg = __s('show');
         $restore_msg = __s('restore');
@@ -169,31 +180,34 @@ class KnowbaseItem_Revision extends CommonDBTM
             if ($is_checked) {
                 $is_checked = false;
             }
-            $selection_controls = <<<HTML
-                <input type='radio' name='oldid' value='{$revision['id']}' $oldid_checked/>
-                <input type='radio' name='diff' value='{$revision['id']}'/>
-HTML;
+            $selection_controls = '
+                <input type="radio" name="oldid" value="' . htmlescape($revision['id']) . '" ' . $oldid_checked . '/>
+                <input type="radio" name="diff" value="' . htmlescape($revision['id']) . '"/>
+            ';
 
             if ($item::class === KnowbaseItem::class) {
                 $form = KnowbaseItem::getFormURLWithID($revision['knowbaseitems_id']);
             } else {
                 $form = KnowbaseItemTranslation::getFormURLWithID($revision['knowbaseitems_id']);
             }
-            $actions = <<<HTML
-                <a href='#' data-rev='{$revision['revision']}' data-revid="{$revision['id']}" class='show_rev'>
-                    {$show_msg}
+            $actions = '
+                <a href="#"
+                   data-rev="' . htmlescape($revision['revision']) . '"
+                   data-revid="' . htmlescape($revision['id']) . '"
+                   class="show_rev">
+                    ' . $show_msg . '
                 </a>
-                - <a href='{$form}&to_rev={$revision['id']}' class='restore_rev'>
-                    {$restore_msg}
+                - <a href="' . htmlescape("{$form}&to_rev={$revision['id']}") . '" class="restore_rev">
+                    ' . $restore_msg . '
                 </a>
-HTML;
+            ';
 
             $entries[] = [
                 'number' => $revision['revision'],
                 'selections' => $selection_controls,
                 'author' => $author_cache[$revision['users_id']],
                 'date_creation' => $revision['date'],
-                'actions' => $actions
+                'actions' => $actions,
             ];
         }
 
@@ -205,11 +219,11 @@ HTML;
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
-                'number' => __('#'),
+                'number' => '#',
                 'selections' => '',
                 'author' => __('Author'),
                 'date_creation' => __('Creation date'),
-                'actions' => ''
+                'actions' => '',
             ],
             'formatters' => [
                 'selections' => 'raw_html',
@@ -219,7 +233,6 @@ HTML;
             ],
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => false,
         ]);
         echo "<button class='btn btn-sm btn-secondary compare' data-kbitem_id='{$kb_item_id}'>" . _sx('button', 'Compare selected revisions') . "</button>";
@@ -230,7 +243,7 @@ HTML;
      *
      * @param KnowbaseItem|KnowbaseItemTranslation $item Knowledge base item
      *
-     * @return integer|false ID of the revision created, or false on error
+     * @return int|false ID of the revision created, or false on error
      */
     public function createNew(KnowbaseItem|KnowbaseItemTranslation $item)
     {
@@ -252,11 +265,10 @@ HTML;
     /**
      * Get new revision number for item
      *
-     * @return integer
+     * @return int
      */
     private function getNewRevision()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -264,8 +276,8 @@ HTML;
             'FROM'   => 'glpi_knowbaseitems_revisions',
             'WHERE'  => [
                 'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
-                'language'           => $this->fields['language']
-            ]
+                'language'           => $this->fields['language'],
+            ],
         ])->current();
 
         $rev = $result['revision'];

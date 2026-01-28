@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,12 +31,100 @@
  */
 
 describe("Ticket Form", () => {
+    let test_tickets_id;
+    let search_sol_ticket_id;
+    const rand = Math.floor(Math.random() * 1000);
+
+    before(() => {
+        cy.createWithAPI('Ticket', {
+            name: 'Test ticket',
+            content: 'Test ticket',
+        }).then(ticket_id => test_tickets_id = ticket_id);
+        cy.createWithAPI('Ticket', {
+            name: 'Test search solution',
+            content: 'Test search solution',
+        }).then(ticket_id => search_sol_ticket_id = ticket_id);
+        cy.createWithAPI('KnowbaseItem', {
+            name: 'Test kb item for search solution test',
+            answer: 'Test kb item for search solution test',
+            description: 'Test kb item for search solution test',
+        });
+
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test user 2 ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).then((validationtemplates_id) => {
+            cy.createWithAPI('ITILValidationTemplate_Target', {
+                itilvalidationtemplates_id: validationtemplates_id,
+                itemtype: 'User',
+                items_id: 2,
+                validationsteps_id: 0,
+            });
+        });
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test no approver ${rand}`,
+            content: 'no approver test content ',
+            entities_id: 1,
+        });
+
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test validation template with group ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).then((validationtemplates_id) => {
+            cy.createWithAPI('Group', {
+                name: `test group ${rand}`,
+            }).then((group_id) => {
+                cy.createWithAPI('ITILValidationTemplate_Target', {
+                    itilvalidationtemplates_id: validationtemplates_id,
+                    itemtype: 'Group',
+                    items_id: group_id
+                });
+            });
+        });
+
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test validation template with group user ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).then((validationtemplates_id) => {
+            cy.createWithAPI('Group', {
+                name: `test group user ${rand}`,
+            }).then((group_id) => {
+                cy.createWithAPI('Group_User', {
+                    groups_id: group_id,
+                    users_id: 2 // glpi user
+                });
+                cy.createWithAPI('ITILValidationTemplate_Target', {
+                    itilvalidationtemplates_id: validationtemplates_id,
+                    itemtype: 'User',
+                    items_id: 2, // glpi user
+                    groups_id: group_id
+                });
+            });
+        });
+
+        // create a validation step + create validation template with this step
+        cy.createWithAPI('ValidationStep', {
+            name: `User Validation step ${rand}`,
+            minimal_required_validation_percent: 100,
+        }).then((validationsteps_id) => {
+            cy.createWithAPI('ITILValidationTemplate', {
+                name: `template with validation step ${rand}`,
+                content: 'template with validation step',
+                entities_id: 1,
+                validationsteps_id: validationsteps_id
+            });
+        });
+    });
+
     beforeEach(() => {
         cy.login();
     });
+
     it('TODO List', () => {
-        cy.visit('/front/ticket.php');
-        cy.get('td[data-searchopt-content-id="1"] a').first().click();
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
 
         cy.get('.itil-timeline').should('exist').then((container) => {
             // Append fake content to the timeline
@@ -79,32 +166,274 @@ describe("Ticket Form", () => {
     });
 
     it('Search for Solution', () => {
+        cy.visit(`/front/ticket.form.php?id=${search_sol_ticket_id}`);
+        cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+        cy.findByText('Add a solution').click();
+        cy.get('.itilsolution').within(() => {
+            cy.findByLabelText('Search in the knowledge base').click();
+        });
+        cy.get('#modal_search_knowbaseitem').within(() => {
+            cy.findByLabelText('Search…').should('have.value', 'Test search solution');
+            cy.findAllByRole('listitem').should('have.length.at.least', 1);
+
+            cy.findAllByTitle('Preview').first().click();
+            cy.findByTestId('content').invoke('text').should('not.be.empty').as('content');
+            cy.findAllByRole('listitem').should('have.length', 0);
+            cy.findByText('Back to results').click();
+
+            cy.findAllByTitle('Use this entry').first().click();
+        });
+        cy.get('#modal_search_knowbaseitem').should('not.exist');
+        cy.get('@content').then((content) => {
+            cy.get('textarea[name="content"]').eq(2).awaitTinyMCE().should('contain.text', content.trim());
+        });
+
+        cy.visit(`/front/ticket.form.php?id=${search_sol_ticket_id}`);
+        cy.findByText('Answer').click();
+        cy.get('.itilfollowup').within(() => {
+            cy.findByLabelText('Search in the knowledge base').click();
+        });
+        cy.get('#modal_search_knowbaseitem').within(() => {
+            cy.findByLabelText('Search…').should('have.value', 'Test search solution');
+            cy.findAllByRole('listitem').should('have.length.at.least', 1);
+
+            cy.findAllByTitle('Preview').first().click();
+            cy.findByTestId('content').invoke('text').should('not.be.empty').as('content');
+            cy.findAllByRole('listitem').should('have.length', 0);
+            cy.findByText('Back to results').click();
+
+            cy.findAllByTitle('Use this entry').first().click();
+        });
+        cy.get('#modal_search_knowbaseitem').should('not.exist');
+        cy.get('@content').then((content) => {
+            cy.get('textarea[name="content"]').eq(0).awaitTinyMCE().should('contain.text', content.trim());
+        });
+    });
+
+    /**
+     * User choose a template without validation step set
+     * Selected validation step should not change
+     */
+    it('Validation step template without validation step set', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test user 2 ${rand}`).waitForNetworkIdle(25);
+            cy.getDropdownByLabelText('Approval step').invoke('text').should('equal', 'Approval');
+        });
+    });
+
+    /**
+     * User choose a template with a validation step set
+     * Selected validation step should change to the template one
+     */
+    it('Validation step template with validation step set', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`template with validation step ${rand}`).waitForNetworkIdle(25);
+            cy.getDropdownByLabelText('Approval step').invoke('text').should('equal', `User Validation step ${rand}`);
+        });
+    });
+
+    it('Validation Template', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test user 2 ${rand}`);
+            cy.getDropdownByLabelText('Approver type').should('have.text', 'User');
+            cy.getDropdownByLabelText('Select a user').should('have.text', 'glpi');
+            cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+        });
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test no approver ${rand}`);
+            cy.getDropdownByLabelText('Approver type').should('have.text', '-----');
+            cy.getDropdownByLabelText('Select a user').should('not.exist');
+            cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'no approver test content');
+        });
+    });
+
+    it('Switch between validation templates', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Ask for approval').click();
+        cy.get('.ITILValidation.show').within(() => {
+            // Select user validation template
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test user 2 ${rand}`);
+            cy.getDropdownByLabelText('Approver type').should('have.text', 'User');
+            cy.getDropdownByLabelText('Select a user').should('have.text', 'glpi');
+            cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+
+            // Switch to group validation template
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with group ${rand}`);
+            cy.getDropdownByLabelText('Approver type').should('have.text', 'Group');
+            cy.getDropdownByLabelText('Select a group').should('have.text', `test group ${rand}`);
+            cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+
+            // Switch to group user validation template
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with group user ${rand}`);
+            cy.getDropdownByLabelText('Approver type').should('have.text', 'Group user(s)');
+            cy.getDropdownByLabelText('Select a group').should('have.text', `test group user ${rand}`);
+            cy.getDropdownByLabelText('Select users').should('have.text', '×glpi');
+            cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+
+            // Switch to no approver validation template
+            cy.getDropdownByLabelText('Template').selectDropdownValue(`test no approver ${rand}`);
+            cy.getDropdownByLabelText('Approver type').should('have.text', '-----');
+            cy.getDropdownByLabelText('Select a user').should('not.exist');
+            cy.getDropdownByLabelText('Select a group').should('not.exist');
+            cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'no approver test content');
+        });
+    });
+
+    it('Enter key in requester field reloads new ticket form', () => {
+        cy.visit(`/front/ticket.form.php`);
+
+        // intercept form submit
+        cy.intercept('POST', '/front/ticket.form.php').as('submit');
+
+        // Need to manually trigger the enter key event as 'typing' {enter} is not matching real-life behavior
+        cy.findByLabelText('Requester').next().find('.select2-search__field').type('tec');
+        cy.get('.select2-results__option--highlighted').contains('tech');
+        cy.findByLabelText('Requester').next().find('.select2-search__field').trigger('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            which: 13,
+        });
+
+        // We should still be creating a new ticket, but the form should have been 'submitted'
+        cy.wait('@submit').its('response.statusCode').should('eq', 200);
+        cy.url().should('match', /\/front\/ticket\.form\.php$/);
+    });
+
+    it('Costs tab loads', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('tab', { name: 'Costs' }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.findByRole('button', { name: 'Add a new cost' }).should('be.visible');
+            cy.findByRole('cell').should('contain.text', 'No results found');
+        });
+    });
+
+    it('Items tab loads', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('tab', { name: 'Items' }).click();
+        cy.findByRole('tabpanel').within(() => {
+            cy.findByRole('combobox').should('be.visible');
+            cy.findByRole('button', { name: 'Add' }).should('be.visible');
+            cy.findByRole('cell').should('contain.text', 'No results found');
+        });
+    });
+
+    it('Create/update a ticket using a template with readonly fields', () => {
+        const ticket_template_name = `test template ${rand}`;
+        cy.createWithAPI('TicketTemplate', {
+            'name': ticket_template_name,
+        }).as('ticket_template_id');
+
+        cy.get('@ticket_template_id').then((ticket_template_id) => {
+            cy.createWithAPI('TicketTemplatePredefinedField', {
+                'tickettemplates_id': ticket_template_id, // Default template
+                'num': 10, // Urgency
+                'value': 4, // High
+            });
+
+            cy.createWithAPI('TicketTemplateReadonlyField', {
+                'tickettemplates_id': ticket_template_id,
+                'num': 10,
+            });
+
+            cy.createWithAPI('ITILCategory', {
+                'name':ticket_template_name,
+                'tickettemplates_id': ticket_template_id,
+                'tickettemplates_id_incident': ticket_template_id,
+                'tickettemplates_id_demand': ticket_template_id,
+                'changetemplates_id': ticket_template_id,
+                'problemtemplates_id': ticket_template_id,
+            });
+        });
+
+        // Create form
+        cy.visit(`/front/ticket.form.php`);
+
+        // intercept form submit
+        cy.intercept('POST', '/front/ticket.form.php').as('submit');
+
+        cy.getDropdownByLabelText('Category').selectDropdownValue(`»${ticket_template_name}`);
+
+        // We change the value of a readonly field, it should be ignored
+        cy.get('input[name="urgency"]').invoke('val', '1');
+        cy.findByRole('button', {'name': 'Add'}).click();
+        cy.wait('@submit').its('response.statusCode').should('eq', 200);
+        cy.get('input[name="urgency"]').should('have.value', '4'); // Should be the template 4 value
+
+        // We try updating it
+        cy.get('input[name="urgency"]').invoke('val', '1');
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.get('input[name="urgency"]').should('have.value', '4'); // Should be the template 4 value
+    });
+
+    it('Priority recalculates when urgency or impact changes', () => {
         cy.createWithAPI('Ticket', {
-            name: 'apple',
-            content: 'apple',
-        }).as('ticket_id');
-        cy.get('@ticket_id').then((ticket_id) => {
+            name: 'Test priority recalculation',
+            content: 'Test priority recalculation',
+            urgency: 3,
+            impact: 3,
+        }).then((ticket_id) => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
-            cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
-            cy.findByText('Add a solution').click();
-            cy.findByLabelText('Search a solution').click();
-            cy.get('#modal_searchSolution').within(() => {
-                cy.findByLabelText('Search…').should('have.value', 'apple');
-                cy.findAllByRole('listitem').should('have.length.at.least', 2);
 
-                cy.findAllByTitle('Preview').first().click();
-                cy.findByText('Subject').should('be.visible');
-                cy.findByText('Content').should('be.visible');
-                cy.findByText('Content').parent().next().invoke('text').should('not.be.empty').as('content');
-                cy.findAllByRole('listitem').should('have.length', 0);
-                cy.findByText('Back to results').click();
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'Medium');
 
-                cy.findAllByTitle('Use as a solution').first().click();
-            });
-            cy.get('#modal_searchSolution').should('not.exist');
-            cy.get('@content').then((content) => {
-                cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
-            });
+            cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'High');
+
+            cy.getDropdownByLabelText('Impact').selectDropdownValue('Very high');
+            cy.getDropdownByLabelText('Priority').should('contain.text', 'Very high');
+        });
+    });
+
+    it('Add followup', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'Answer' }).click();
+
+        cy.get('.ITILFollowup.show').within(() => {
+            cy.get('textarea[name="content"]').awaitTinyMCE().type('Test followup content');
+            cy.get('select[name="requesttypes_id"] + .select2 [role=combobox]:visible').selectDropdownValue('Direct');
+            cy.get('input[type="checkbox"][name="is_private"]').click();
+            cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.get('.itil-timeline div[data-itemtype="ITILFollowup"]:last').within(() => {
+            cy.get('.read-only-content .rich_text_container').should('contain.text', 'Test followup content');
+            cy.findByTitle('Source of followup').should('contain.text', 'Direct');
+            cy.get('.timeline-header .is-private .ti-eye-off').should('be.visible');
+        });
+    });
+
+    it('Add task', () => {
+        cy.visit(`/front/ticket.form.php?id=${test_tickets_id}`);
+        cy.findByRole('button', { name: 'View other actions' }).click();
+        cy.findByText('Create a task').click();
+
+        cy.get('.ITILTask.show').within(() => {
+            cy.get('textarea[name="content"]').awaitTinyMCE().type('Test task content');
+            cy.get('select[name="state"]').select('Done', { force: true });
+            cy.get('input[type="checkbox"][name="is_private"]').click();
+            cy.get('select[name="actiontime"]').select('1h30', { force: true });
+            cy.findByRole('button', { name: 'Add' }).click();
+        });
+
+        cy.get('.itil-timeline div[data-itemtype="TicketTask"]:last').within(() => {
+            cy.get('.read-only-content .rich_text_container').should('contain.text', 'Test task content');
+            cy.get('.todo-list-state .state').should('have.attr', 'title', 'Done');
+            cy.get('.timeline-header .is-private .ti-eye-off').should('be.visible');
+            cy.get('span.actiontime').should('contain.text', '1 hours 30 minutes 0 seconds');
         });
     });
 });

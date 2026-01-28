@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +34,24 @@
 
 namespace Glpi\Application;
 
+use Glpi\Altcha\AltchaManager;
 use Glpi\Error\ErrorHandler;
 use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+use Safe\Exceptions\InfoException;
+use Safe\Exceptions\PcreException;
+
+use function Safe\define;
+use function Safe\ini_get;
+use function Safe\ini_set;
+use function Safe\mkdir;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\preg_replace_callback;
+use function Safe\session_name;
 
 final class SystemConfigurator
 {
@@ -48,9 +60,13 @@ final class SystemConfigurator
     public function __construct(private string $root_dir, private ?string $env)
     {
         $this->computeConstants();
-        $this->setSessionConfiguration();
         $this->initLogger();
         $this->registerErrorHandler();
+
+        $this->setSessionConfiguration();
+
+        // Keep it after `registerErrorHandler()` call to be sure that messages are correctly handled.
+        $this->checkForObsoleteConstants();
     }
 
     public function getLogger(): LoggerInterface
@@ -63,7 +79,8 @@ final class SystemConfigurator
         if ($this->env !== null) {
             // Force the `GLPI_ENVIRONMENT_TYPE` constant.
             // The value defined in the server env variables will be ignored.
-            define('GLPI_ENVIRONMENT_TYPE', $this->env);
+            $env = Environment::from($this->env);
+            Environment::set($env);
         }
 
         // Define GLPI_* constants that can be customized by admin.
@@ -75,7 +92,7 @@ final class SystemConfigurator
         $constants = [
             'default' => [
                 // GLPI environment
-                'GLPI_ENVIRONMENT_TYPE' => 'production',
+                'GLPI_ENVIRONMENT_TYPE' => Environment::PRODUCTION->value,
 
                 // Constants related to system paths
                 'GLPI_CONFIG_DIR'      => $this->root_dir . '/config', // Path for configuration files (db, security key, ...)
@@ -99,7 +116,7 @@ final class SystemConfigurator
 
                 // Where to load plugins.
                 // Order in this array is important (priority to first found).
-                'PLUGINS_DIRECTORIES'  => [
+                'GLPI_PLUGINS_DIRECTORIES' => [
                     '{GLPI_MARKETPLACE_DIR}',
                     $this->root_dir . '/plugins',
                 ],
@@ -109,53 +126,71 @@ final class SystemConfigurator
                 'GLPI_SERVERSIDE_URL_ALLOWLIST'  => [
                     // allowlist (regex format) of URL that can be fetched from server side (used for RSS feeds and external calendars, among others)
                     // URL will be considered as safe as long as it matches at least one entry of the allowlist
-                    '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // only accept http/https/feed protocols, and reject presence of @ (username) and : (protocol) in host part of URL
+
+                    // Based on https://github.com/symfony/symfony/blob/7.3/src/Symfony/Component/Validator/Constraints/UrlValidator.php
+                    '~^
+                        (http|https|feed)://                                                # protocol
+                        (
+                            (?:
+                                (?:xn--[a-z0-9-]++\.)*+xn--[a-z0-9-]++                      # a domain name using punycode
+                                    |
+                                (?:[\pL\pN\pS\pM\-\_]++\.)+[\pL\pN\pM]++                    # a multi-level domain name
+                                    |
+                                [a-z0-9\-\_]++                                              # a single-level domain name
+                            )\.?
+                                |                                                           # or
+                            \d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}                              # an IP address
+                                |                                                           # or
+                            \[
+                                (?:(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){6})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:::(?:(?:(?:[0-9a-f]{1,4})):){5})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){4})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,1}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){3})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,2}(?:(?:[0-9a-f]{1,4})))?::(?:(?:(?:[0-9a-f]{1,4})):){2})(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,3}(?:(?:[0-9a-f]{1,4})))?::(?:(?:[0-9a-f]{1,4})):)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,4}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:(?:(?:(?:[0-9a-f]{1,4})):(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9]))\.){3}(?:(?:25[0-5]|(?:[1-9]|1[0-9]|2[0-4])?[0-9])))))))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,5}(?:(?:[0-9a-f]{1,4})))?::)(?:(?:[0-9a-f]{1,4})))|(?:(?:(?:(?:(?:(?:[0-9a-f]{1,4})):){0,6}(?:(?:[0-9a-f]{1,4})))?::))))
+                            \]                                                              # an IPv6 address
+                        )
+                        (?:/ (?:[\pL\pN\pS\pM\-._\~!$&\'()*+,;=:@]|%[0-9A-Fa-f]{2})* )*     # a path
+                        (?:\? (?:[\pL\pN\-._\~!$&\'\[\]()*+,;=:@/?]|%[0-9A-Fa-f]{2})* )?    # a query (optional)
+                    $~ixuD',
                 ],
+                'GLPI_DISALLOWED_UPLOADS_PATTERN' => '/\.(php\d*|phar)$/i', // Prevent upload of any PHP file / PHP archive; can be set to an empty value to allow every files
 
                 // Constants related to GLPI Project / GLPI Network external services
                 'GLPI_TELEMETRY_URI'                => 'https://telemetry.glpi-project.org', // Telemetry project URL
                 'GLPI_INSTALL_MODE'                 => is_dir($this->root_dir . '/.git') ? 'GIT' : 'TARBALL', // Install mode for telemetry
                 'GLPI_NETWORK_MAIL'                 => 'glpi@teclib.com',
                 'GLPI_NETWORK_SERVICES'             => 'https://services.glpi-network.com', // GLPI Network services project URL
-                'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_SERVICES}/api/registration/',
+                'GLPI_NETWORK_API_URL'              => '{GLPI_NETWORK_SERVICES}/api', // GLPI Network API base URL
+                'GLPI_NETWORK_REGISTRATION_API_URL' => '{GLPI_NETWORK_API_URL}/registration/',
                 'GLPI_MARKETPLACE_ENABLE'           => 3, // 0 = Completely disabled, 1 = CLI only, 2 = Web only, 3 = CLI and Web
-                'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_SERVICES}/api/marketplace/',
+                'GLPI_MARKETPLACE_PLUGINS_API_URI'  => '{GLPI_NETWORK_API_URL}/marketplace/',
                 'GLPI_MARKETPLACE_PRERELEASES'      => preg_match('/-(dev|alpha\d*|beta\d*|rc\d*)$/', GLPI_VERSION) === 1, // allow marketplace to expose unstable plugins versions
                 'GLPI_MARKETPLACE_ALLOW_OVERRIDE'   => true, // allow marketplace to override a plugin found outside GLPI_MARKETPLACE_DIR
                 'GLPI_MARKETPLACE_MANUAL_DOWNLOADS' => true, // propose manual download link of plugins which cannot be installed/updated by marketplace
                 'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
                 'GLPI_DOCUMENTATION_ROOT_URL'       => 'https://links.glpi-project.org', // Official documentations root URL
 
-                // SQL compatibility
+                // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
+                'GLPI_LOG_LVL'                             => LogLevel::WARNING,
+                'GLPI_SKIP_UPDATES'                        => false, // `true` to bypass minor versions DB updates
+                'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
 
                 // Other constants
                 'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
                 'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
                 'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
+                'GLPI_SYSTEM_CRON'            => false, // `true` to use the system cron provided by the downstream package
                 'GLPI_TEXT_MAXSIZE'           => '4000', // character threshold for displaying read more button
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '0', // allow (1) or not (0) to save webhook response in database
-            ],
-            'production' => [
-            ],
-            'staging' => [
-            ],
-            'testing' => [
-                'GLPI_CONFIG_DIR'               => $this->root_dir . '/tests/config',
-                'GLPI_VAR_DIR'                  => $this->root_dir . '/tests/files',
-                'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
-                    '/^(https?|feed):\/\/[^@:]+(\/.*)?$/', // default allowlist entry
-                    '/^file:\/\/.*\.ics$/', // calendar mockups
-                ],
-                'PLUGINS_DIRECTORIES'           => [
-                    $this->root_dir . '/plugins',
-                    $this->root_dir . '/tests/fixtures/plugins',
-                ],
-            ],
-            'development' => [
-                'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1'
+                'GLPI_WEBHOOK_CRA_MANDATORY' => false, // make challenge-response authentication mandatory or not for webhooks
+
+                // Altcha
+                'GLPI_ALTCHA_MODE'                => AltchaManager::DEFAULT_MODE,
+                'GLPI_ALTCHA_MAX_NUMBER'          => AltchaManager::DEFAULT_COMPLEXITY,
+                'GLPI_ALTCHA_EXPIRATION_INTERVAL' => AltchaManager::DEFAULT_EXPIRATION_INTERVAL,
             ],
         ];
+
+        foreach (Environment::cases() as $env) {
+            $constants[$env->value] = $env->getConstantsOverride($this->root_dir);
+        }
 
         $constants_names = array_keys($constants['default']);
 
@@ -176,21 +211,16 @@ final class SystemConfigurator
             include_once($this->root_dir . '/inc/downstream.php');
         }
 
-        // Check custom values
-        $allowed_envs = ['production', 'staging', 'testing', 'development'];
-        if (defined('GLPI_ENVIRONMENT_TYPE') && !in_array(GLPI_ENVIRONMENT_TYPE, $allowed_envs)) {
-            throw new \UnexpectedValueException(
-                sprintf(
-                    'Invalid GLPI_ENVIRONMENT_TYPE constant value `%s`. Allowed values are: `%s`',
-                    GLPI_ENVIRONMENT_TYPE,
-                    implode('`, `', $allowed_envs)
-                )
-            );
+        // Handle deprecated/obsolete constants
+        if (defined('PLUGINS_DIRECTORIES') && !defined('GLPI_PLUGINS_DIRECTORIES')) {
+            define('GLPI_PLUGINS_DIRECTORIES', PLUGINS_DIRECTORIES);
         }
 
         // Configure environment type if not defined by user.
-        if (!defined('GLPI_ENVIRONMENT_TYPE')) {
-            define('GLPI_ENVIRONMENT_TYPE', $constants['default']['GLPI_ENVIRONMENT_TYPE']);
+        if (Environment::isSet()) {
+            Environment::validate();
+        } else {
+            Environment::set(Environment::PRODUCTION);
         }
 
         // Define constants values from defaults
@@ -215,9 +245,7 @@ final class SystemConfigurator
                 // Replace {GLPI_*} by value of corresponding constant
                 $value = preg_replace_callback(
                     '/\{(?<name>GLPI_[\w]+)\}/',
-                    function ($matches) {
-                        return defined($matches['name']) ? constant($matches['name']) : '';
-                    },
+                    fn($matches) => defined($matches['name']) ? constant($matches['name']) : '',
                     $constants[GLPI_ENVIRONMENT_TYPE][$name] ?? $constants['default'][$name]
                 );
 
@@ -228,13 +256,16 @@ final class SystemConfigurator
         // Try to create sub directories of `GLPI_VAR_DIR`, if they are not existing.
         // Silently fail, as handling errors is not really possible here.
         foreach ($constants_names as $name) {
-            if (preg_match('/^GLPI_[\w]+_DIR$/', $name) !== 1) {
+            try {
+                if (preg_match('/^GLPI_[\w]+_DIR$/', $name) !== 1) {
+                    continue;
+                }
+            } catch (PcreException $e) {
                 continue;
             }
             $value = constant($name);
             if (
-                preg_match('/^GLPI_[\w]+_DIR$/', $name)
-                && preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
+                preg_match('/^' . preg_quote(GLPI_VAR_DIR, '/') . '\//', $value)
                 && !is_dir($value)
             ) {
                 @mkdir($value, recursive: true);
@@ -244,12 +275,36 @@ final class SystemConfigurator
 
     private function setSessionConfiguration(): void
     {
-        // Force session to use cookies.
-        ini_set('session.use_trans_sid', '0');
-        ini_set('session.use_only_cookies', '1');
+        if (PHP_SAPI === 'cli') {
+            // Adapting session cookie params is useless in CLI mode.
+            return;
+        }
 
-        // Force session cookie security.
-        ini_set('session.cookie_httponly', '1');
+        // Set secure cookie config
+        $target_configs = [
+            'session.use_trans_sid'     => false,
+            'session.use_only_cookies'  => true,
+            'session.cookie_httponly'   => true,
+        ];
+
+        foreach ($target_configs as $name => $target_value) {
+            $current_value = filter_var(ini_get($name), FILTER_VALIDATE_BOOLEAN);
+            if ($current_value !== $target_value) {
+                try {
+                    ini_set($name, $target_value ? '1' : '0');
+                } catch (InfoException $e) {
+                    $this->logger->error(
+                        sprintf(
+                            'Unable to set `%s` to `%s`. You should enforce the value in your PHP configuration. Error is: %s',
+                            $name,
+                            $target_value ? '1' : '0',
+                            $e->getMessage()
+                        ),
+                        ['exception' => $e]
+                    );
+                }
+            }
+        }
 
         // Force session cookie name.
         // The cookie name contains the root dir + HTTP host + HTTP port to ensure that it is unique
@@ -259,9 +314,6 @@ final class SystemConfigurator
 
     private function initLogger(): void
     {
-        /**
-         * @var LoggerInterface $PHPLOGGER
-         */
         global $PHPLOGGER;
 
         $PHPLOGGER = new Logger('glpi');
@@ -275,5 +327,22 @@ final class SystemConfigurator
     {
         $errorHandler = new ErrorHandler($this->logger);
         $errorHandler::register($errorHandler);
+    }
+
+    private function checkForObsoleteConstants(): void
+    {
+        if (defined('GLPI_USE_CSRF_CHECK')) {
+            trigger_error(
+                'The `GLPI_USE_CSRF_CHECK` constant is now ignored for security reasons.',
+                E_USER_WARNING
+            );
+        }
+
+        if (defined('PLUGINS_DIRECTORIES')) {
+            trigger_error(
+                'The `PLUGINS_DIRECTORIES` constant is deprecated. Use the `GLPI_PLUGINS_DIRECTORIES` constant instead.',
+                E_USER_DEPRECATED
+            );
+        }
     }
 }

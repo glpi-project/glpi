@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,14 +40,14 @@ use Glpi\DBAL\QueryExpression;
  **/
 class CronTaskLog extends CommonDBChild
 {
-    public static $itemtype  = 'CronTask';
+    public static $itemtype = CronTask::class;
     public static $items_id  = 'crontasks_id';
 
-   // Class constant
-    const STATE_START = 0;
-    const STATE_RUN   = 1;
-    const STATE_STOP  = 2;
-    const STATE_ERROR = 3;
+    // Class constant
+    public const STATE_START = 0;
+    public const STATE_RUN   = 1;
+    public const STATE_STOP  = 2;
+    public const STATE_ERROR = 3;
 
     public static function getIcon()
     {
@@ -57,14 +57,13 @@ class CronTaskLog extends CommonDBChild
     /**
      * Clean old event for a task
      *
-     * @param $id     integer  ID of the CronTask
-     * @param $days   integer  number of day to keep
+     * @param int $id   ID of the CronTask
+     * @param int $days number of day to keep
      *
-     * @return integer number of events deleted
+     * @return int number of events deleted
      **/
     public static function cleanOld($id, $days)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $secs      = $days * DAY_TIMESTAMP;
@@ -73,7 +72,7 @@ class CronTaskLog extends CommonDBChild
             'glpi_crontasklogs',
             [
                 'crontasks_id' => $id,
-                new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(" . $DB->quoteName("date") . ") < UNIX_TIMESTAMP()-$secs"),
             ]
         );
 
@@ -93,7 +92,7 @@ class CronTaskLog extends CommonDBChild
                     $nb =  countElementsInTable(
                         $this->getTable(),
                         ['crontasks_id' => $item->getID(),
-                            'state'        => self::STATE_STOP
+                            'state'        => self::STATE_STOP,
                         ]
                     );
                 }

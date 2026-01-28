@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,36 +37,19 @@ use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Store ports connections log
- *
- * FIXME This class should inherit from CommonDBRelation, as it is linked
- * to both 'networkports_id_source' and 'networkports_id_destination'
  */
-class NetworkPortConnectionLog extends CommonDBChild
+class NetworkPortConnectionLog extends CommonDBRelation
 {
-    public static $itemtype        = 'NetworkPort';
-    public static $items_id        = 'networkports_id';
-    public $dohistory              = false;
+    public static $itemtype_1 = NetworkPort::class;
+    public static $items_id_1 = 'networkports_id_source';
+    public static $itemtype_2 = NetworkPort::class;
+    public static $items_id_2 = 'networkports_id_destination';
 
-
-    /**
-     * Get name of this type by language of the user connected
-     *
-     * @param integer $nb number of elements
-     *
-     * @return string name of this type
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Port connection history');
     }
 
-    /**
-     * Get the tab name used for item
-     *
-     * @param CommonGLPI $item the item object
-     * @param integer $withtemplate 1 if is a template form
-     * @return array name of the tab
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         $array_ret = [];
@@ -78,24 +61,21 @@ class NetworkPortConnectionLog extends CommonDBChild
         return $array_ret;
     }
 
+    /**
+     * @param NetworkPort $netport
+     *
+     * @return array
+     */
     public function getCriteria(NetworkPort $netport)
     {
         return [
             'OR' => [
                 'networkports_id_source'      => $netport->fields['id'],
-                'networkports_id_destination' => $netport->fields['id']
-            ]
+                'networkports_id_destination' => $netport->fields['id'],
+            ],
         ];
     }
 
-    /**
-     * Display the content of the tab
-     *
-     * @param CommonGLPI $item
-     * @param integer $tabnum number of the tab to display
-     * @param integer $withtemplate 1 if is a template form
-     * @return boolean
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === NetworkPort::class && $item->getID() > 0) {
@@ -106,14 +86,19 @@ class NetworkPortConnectionLog extends CommonDBChild
         return false;
     }
 
+    /**
+     * @param NetworkPort $netport
+     * @param array       $user_filters
+     *
+     * @return void
+     */
     public function showForItem(NetworkPort $netport, $user_filters = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
-            'WHERE'  => $this->getCriteria($netport)
+            'WHERE'  => $this->getCriteria($netport),
         ]);
 
         $entries = [];
@@ -131,7 +116,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
             $cport = new NetworkPort();
             if ($cport->getFromDB($netports_id)) {
-                $citem = new $cport->fields["itemtype"]();
+                $citem = getItemForItemtype($cport->fields["itemtype"]);
                 $citem->getFromDB($cport->fields["items_id"]);
 
                 $cport_link = sprintf(
@@ -140,27 +125,26 @@ class NetworkPortConnectionLog extends CommonDBChild
                     htmlescape(trim($cport->fields['name']) === '' ? __('Without name') : $cport->fields['name'])
                 );
 
-                $entries = [
+                $entries[] = [
                     'status' => '<i class="ti ' . $co_class . '" title="' . $title . '"></i>',
                     'date' => $row['date'],
                     'connected_item' => sprintf(
-                        '%1$s on %2$s',
+                        __s('%1$s on %2$s'),
                         $cport_link,
                         $citem->getLink()
-                    )
+                    ),
                 ];
-            } else if ($row['connected'] === 1) {
+            } elseif ($row['connected'] === 1) {
                 $entries[] = [
                     'status' => __s('No longer exists in database'),
                     'date' => $row['date'],
-                    'connected_item' => __s('Unknown')
+                    'connected_item' => __s('Unknown'),
                 ];
             }
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -171,11 +155,10 @@ class NetworkPortConnectionLog extends CommonDBChild
             'formatters' => [
                 'status' => 'raw_html',
                 'date' => 'datetime',
-                'connected_item' => 'raw_html'
+                'connected_item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
     }

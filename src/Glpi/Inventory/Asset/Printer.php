@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,17 @@
 namespace Glpi\Inventory\Asset;
 
 use AutoUpdateSystem;
+use CommonDBTM;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
-use RuleDictionnaryPrinterCollection;
 use Printer as GPrinter;
+use RuleDictionnaryPrinterCollection;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
+use RuntimeException;
+
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 class Printer extends InventoryAsset
 {
@@ -92,7 +98,6 @@ class Printer extends InventoryAsset
 
     public function handle()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();
@@ -107,21 +112,23 @@ class Printer extends InventoryAsset
             $lclass = 'Item_' . $this->item->getType();
         } elseif (in_array($this->item->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
             $lclass = Asset_PeripheralAsset::class;
-        } else {
-            throw new \RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
+        }
+
+        if (!\is_a($lclass, CommonDBTM::class, true)) {
+            throw new RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
         }
 
         foreach ($this->data as $key => $val) {
             $input = [
-                'itemtype'     => \Printer::class,
+                'itemtype'     => GPrinter::class,
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = \Printer::class;
+                $itemtype = GPrinter::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add printer
                     $val->entities_id = $entities_id;
@@ -133,18 +140,18 @@ class Printer extends InventoryAsset
                 }
 
                 $printers[] = $items_id;
-                $rulesmatched = new \RuleMatchedLog();
+                $rulesmatched = new RuleMatchedLog();
                 $agents_id = $this->agent->fields['id'];
                 if (empty($agents_id)) {
                     $agents_id = 0;
                 }
                 $inputrulelog = [
                     'date'      => date('Y-m-d H:i:s'),
-                    'rules_id'  => $data['rules_id'],
+                    'rules_id'  => $data['_ruleid'],
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata(end($printers), 'Printer');
@@ -155,25 +162,25 @@ class Printer extends InventoryAsset
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_printers.id',
-                $relation_table . '.id AS link_id'
+                $relation_table . '.id AS link_id',
             ],
             'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_printers' => [
                     'FKEY' => [
                         'glpi_printers' => 'id',
-                        $relation_table => 'items_id_peripheral'
-                    ]
-                ]
+                        $relation_table => 'items_id_peripheral',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'itemtype_peripheral'           => \Printer::class,
+                'itemtype_peripheral'           => GPrinter::class,
                 'itemtype_asset'                => $this->item::class,
                 'items_id_asset'                => $this->item->fields['id'],
                 'entities_id'                   => $entities_id,
                 $relation_table . '.is_dynamic' => 1,
-                'glpi_printers.is_global'       => 0
-            ]
+                'glpi_printers.is_global'       => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -194,7 +201,7 @@ class Printer extends InventoryAsset
             }
 
             // Delete printers links in DB
-            foreach ($db_printers as $idtmp => $data) {
+            foreach (array_keys($db_printers) as $idtmp) {
                 (new $lclass())->delete(['id' => $idtmp], true);
             }
         }
@@ -204,9 +211,9 @@ class Printer extends InventoryAsset
                 'entities_id'  => $entities_id,
                 'itemtype_asset' => $this->item::class,
                 'items_id_asset' => $this->item->fields['id'],
-                'itemtype_peripheral' => \Printer::class,
+                'itemtype_peripheral' => GPrinter::class,
                 'items_id_peripheral' => $printers_id,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $this->addOrMoveItem($input);
         }
@@ -214,13 +221,12 @@ class Printer extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_printer == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }
 
     public function getItemtype(): string
     {
-        return \Printer::class;
+        return GPrinter::class;
     }
 }

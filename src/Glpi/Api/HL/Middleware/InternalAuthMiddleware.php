@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL\Middleware;
 
+use Session;
+
 /**
  * This middleware is not loaded by default when using the API.
  * It may be manually added on the Router instance in cases where GLPI itself needs to access the API.
@@ -44,11 +46,11 @@ class InternalAuthMiddleware extends AbstractMiddleware implements AuthMiddlewar
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        if (\Session::getLoginUserID()) {
+        if (Session::getLoginUserID(false)) {
             $input->client = [
                 'client_id' => 'internal', // Internal just means the user was authenticated internally either by cookie or an already existing session.
-                'users_id'  => \Session::getLoginUserID(),
-                'scopes' => []
+                'users_id'  => Session::getLoginUserID(),
+                'scopes' => [],
             ];
             $input->response = null;
         } else {

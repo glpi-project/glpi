@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -55,6 +54,9 @@
         different background color than the parent item #}
         mt-n2
         mb-n2
+        {% if not can_update %}
+            form-editor-readonly
+        {% endif %}
     "
     method="POST"
     action="{{ item.getFormURL() }}"
@@ -62,104 +64,211 @@
     data-ajax-submit-itemtype="Glpi\Form\Form" {# Target itemtype #}
     data-track-changes="true"
 >
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
 
     {# Form editor page #}
     {# UX and items placement are a work in progress #}
     {# Need more elements (questions, sections) before finalizing the design #}
     <div data-glpi-form-editor class="form-editor row flex-reverse">
 
-        <div class="designer col-12 px-4 py-3">
-            <div class="row">
-                <div
-                    class="col-12 col-xl-7"
-                    data-glpi-form-editor-form
-                    data-glpi-form-editor-active-form
-                >
-                    <section
-                        data-glpi-form-editor-form-details
-                        data-glpi-form-editor-on-click="set-active"
-                        aria-label="{{ __("Form details") }}"
+        <div class="designer col-12">
+            <div class="row h-full">
+                <div class="d-flex">
+                    <div
+                        class="flex-grow-1 d-flex px-4 py-3 me-6"
+                        data-glpi-form-editor-form
+                        data-glpi-form-editor-active-form
+                        data-testid="form-editor-left-panel"
                     >
-                        {# Card containing the main form data: title, header and status #}
-                        <div class="card form-details">
-                            <div
-                                class="card-status-start bg-primary"
-                                data-glpi-form-editor-active-form-status-indicator
-                            ></div>
-                            <div class="card-body">
+                        <div class="flex-grow-1">
+                            <section
+                                data-glpi-form-editor-form-details
+                                data-glpi-form-editor-on-click="set-active"
+                                aria-label="{{ __("Form details") }}"
+                            >
+                                {% if invalid_questions|length %}
+                                    <div class="alert alert-danger" role="alert">
+                                        <div class="alert-icon">
+                                            <i class="ti ti-exclamation-circle"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="alert-heading">{{ __("These questions have an unknown type and will be deleted the next time this form is saved:") }}</h4>
+                                            <div class="alert-description">
+                                                <ul class="alert-list">
+                                                    {% for invalid_question in invalid_questions %}
+                                                        <li>{{ invalid_question.fields['name'] }}</li>
+                                                    {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endif %}
 
-                                {# Header #}
-                                <div class="d-flex">
-                                    {# Form's name #}
-                                    <input
-                                        title="{{ __("Form name") }}"
-                                        type="text"
-                                        class="form-control content-editable-h1"
-                                        name="name"
-                                        value="{{ item.fields.name }}"
-                                        data-glpi-form-editor-form-details-name
-                                    >
+                                {# Card containing the main form data: title, header and status #}
+                                <div class="card form-details">
+                                    <div
+                                        class="card-status-start bg-primary"
+                                        data-glpi-form-editor-active-form-status-indicator
+                                    ></div>
+                                    <div class="card-body">
 
-                                    {# Form's status #}
-                                    <label class="form-check form-switch ms-3" style="margin-top: 2px">
-                                        <input type="hidden" value="0" name="is_active">
-                                        <input
-                                            class="form-check-input"
-                                            name="is_active"
-                                            type="checkbox"
-                                            value="1"
-                                            {% if item.fields.is_active %} checked {% endif %}
-                                        >
-                                        <span class="form-check-label">{{ __("Active") }}</span>
-                                    </label>
+                                        {# Header #}
+                                        <div class="d-flex">
+                                            {# Form's name #}
+                                            <input
+                                                title="{{ __("Form name") }}"
+                                                type="text"
+                                                class="form-control content-editable-h1"
+                                                name="name"
+                                                value="{{ item.fields.name }}"
+                                                data-glpi-form-editor-form-details-name
+                                                maxlength="255"
+                                            >
+
+                                            {# Form's status #}
+                                            <label class="form-check form-switch ms-3" style="margin-top: 2px">
+                                                <input type="hidden" value="0" name="is_active">
+                                                <input
+                                                    class="form-check-input"
+                                                    name="is_active"
+                                                    type="checkbox"
+                                                    value="1"
+                                                    {% if item.fields.is_active %} checked {% endif %}
+                                                >
+                                                <span class="form-check-label">{{ __("Active") }}</span>
+                                            </label>
+                                        </div>
+
+                                        {# Form's header #}
+                                        <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
+                                            {{ fields.textareaField(
+                                                'header',
+                                                item.fields.header,
+                                                __('Header'),
+                                                base_field_options|merge({
+                                                    'enable_richtext': true,
+                                                    'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                                    'editor_height': "0",
+                                                    'rows' : 1,
+                                                    'toolbar_location': 'bottom',
+                                                    'mb': 'mb-0',
+                                                    'aria_label': __("Form description"),
+                                                    'placeholder': __("Add a description to your form..."),
+                                                    'init': false,
+                                                    'init_on_demand': true,
+                                                })
+                                            ) }}
+                                        </div>
+                                    </div>
                                 </div>
+                            </section>
 
-                                {# Form's hader #}
-                                <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
-                                    {{ fields.textareaField(
-                                        'header',
-                                        item.fields.header,
-                                        __('Header'),
-                                        base_field_options|merge({
-                                            'enable_richtext': true,
-                                            'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                            'editor_height': "0",
-                                            'rows' : 1,
-                                            'toolbar_location': 'bottom',
-                                            'mb': 'mb-0',
-                                            'aria_label': __("Form description"),
-                                            'placeholder': __("Add a description to your form..."),
-                                        })
-                                    ) }}
-                                </div>
+                            {# Display all questions here #}
+                            <div data-glpi-form-editor-blocks>
+                                {% set number_of_sections = item.getSections()|length %}
+                                {% for section in item.getSections() %}
+                                    {{ include('pages/admin/form/form_section.html.twig', {
+                                        'form'                        : item,
+                                        'section'                     : section,
+                                        'question_types_manager'      : question_types_manager,
+                                        'section_index'               : loop.index,
+                                        'can_update'                  : can_update,
+                                        'show_section_form'           : number_of_sections > 1,
+                                        'number_of_sections'          : number_of_sections,
+                                        'allow_unauthenticated_access': allow_unauthenticated_access
+
+                                    }, with_context = false) }}
+                                {% endfor %}
                             </div>
                         </div>
-                    </section>
 
-                    {# Display all questions here #}
-                    <div data-glpi-form-editor-blocks>
-                        {% set number_of_sections = item.getSections()|length %}
-                        {% for section in item.getSections() %}
-                            {{ include('pages/admin/form/form_section.html.twig', {
-                                'form'                  : item,
-                                'section'               : section,
-                                'question_types_manager': question_types_manager,
-                                'section_index'         : loop.index,
-                                'can_update'            : item.canUpdate(),
-                                'show_section_form'     : number_of_sections > 1,
-                                'number_of_sections'    : number_of_sections,
+                        <div class="mb-3" data-glpi-form-editor-form-extra-details>
+                            {{ include('pages/admin/form/form_toolbar.html.twig', {
+                                'can_update'     : can_update,
+                                'form'           : item,
+                                'vertical_layout': true,
+                                'extra_class'    : 'mt-2'
                             }, with_context = false) }}
-                        {% endfor %}
+                        </div>
                     </div>
 
-                    <div data-glpi-form-editor-form-extra-details>
-                        {{ include('pages/admin/form/form_toolbar.html.twig', {
-                            'can_update'     : item.canUpdate(),
-                            'form'           : item,
-                            'vertical_layout': false,
-                        }, with_context = false) }}
-                    </div>
+                    <section class="col-12 col-lg-4 mt-0 p-0 rounded-0 card-footer border-start border-top-0 ms-auto">
+                        <section
+                            id="glpi-form-properties-accordion"
+                            class="accordion open accordion-flush h-full"
+                            aria-label="Form properties accordion"
+                        >
+                            <section class="accordion-item">
+                                <div class="accordion-header" id="heading-item-properties">
+                                    <button
+                                        class="accordion-button"
+                                        type="button"
+                                        {# Disable collapse while we only have one item #}
+                                        {# data-bs-toggle="collapse"
+                                        data-bs-target="#item-properties"
+                                        aria-expanded="true"
+                                        aria-controls="item-properties" #}
+                                        aria-label="Properties"
+                                    >
+                                        <i class="ti ti-alert-circle item-icon"></i>
+                                        <span class="item-title">{{ __('Form properties') }}</span>
+                                    </button>
+                                </div>
+                                <section id="item-properties" class="accordion-collapse collapse show" aria-labelledby="heading-item-properties" data-bs-parent="#glpi-form-properties-accordion">
+                                    <div class="accordion-body d-flex flex-column">
+                                        <script>
+                                            function renderLayoutTemplateResult(data) {
+                                                const icons = {{ enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getIcon()})|reduce((carry, item) => carry|merge(item), {})|json_encode|raw }};
+
+                                                return $(`<span class="w-full d-flex align-items-center gap-2" title="${_.escape(data.text)}""><i class="${_.escape(icons[data.id])}"></i>${_.escape(data.text)}</span>`);
+                                            }
+
+                                            function renderLayoutTemplateSelection(data) {
+                                                return renderLayoutTemplateResult(data).addClass('flex-row-reverse');
+                                            }
+                                        </script>
+
+                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+                                        {{ fields.dropdownArrayField(
+                                            'render_layout',
+                                            item.fields.render_layout,
+                                            enum('Glpi\\Form\\RenderLayout').cases|map((case) => {(case.value): case.getLabel()})|reduce((carry, item) => carry|merge(item), {}),
+                                            __('Render layout'),
+                                            {
+                                                'is_horizontal' : false,
+                                                'full_width'    : true,
+                                                'templateSelection': 'renderLayoutTemplateSelection',
+                                                'templateResult': 'renderLayoutTemplateResult',
+                                                'add_field_attribs': {
+                                                    'data-fix-dropdown-flex': '',
+                                                },
+                                            }
+                                        ) }}
+
+                                        {% set visibility_dropdown_field = include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
+                                                'item'      : item,
+                                            }, with_context = false) %}
+
+                                        {{ fields.field(
+                                            '',
+                                            visibility_dropdown_field,
+                                            __('Conditional visibility for submit button'),
+                                            {
+                                                'is_horizontal'    : false,
+                                                'full_width'       : true,
+                                                'add_field_attribs': {
+                                                    'data-glpi-form-editor-submit-button-conditional-visibility-field': '',
+                                                },
+                                            }
+                                        ) }}
+
+                                        {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
+
+                                    </div>
+                                </section>
+                            </section>
+                        </section>
+                    </section>
                 </div>
             </div>
         </div>
@@ -169,6 +278,7 @@
         editor-footer
         justify-content-end
         d-flex
+        flex-row-reverse
         py-2
         px-3
         {# Negative margins to cancel parent padding, this is needed as we want
@@ -176,65 +286,30 @@
         ms-n2
         me-n2
     ">
-        {# Preview form action #}
-        {# Mostly useful to test forms ATM. Final UI/UX are not really thought out #}
-        {# TODO: UI/UX #}
-        <div class="me-auto" data-glpi-form-editor-preview-actions>
-            <a
-                href="{{ path('/Form/Render/' ~ item.fields.id) }}"
-                target="_blank"
-                class="btn btn-secondary"
-                type="button"
-                name="preview"
-                form="main-form"
-                title="{{ __("Preview") }}"
-                data-glpi-form-editor-preview-action
-            >
-                <i class="ti ti-eye me-1"></i>
-                <span class="d-none d-xl-block">{{ __("Preview") }}</span>
-            </a>
+        {% if item.fields.is_draft %}
+            {# Add action (which is an update form as we just change the is_draft field's value) #}
             <button
-                class="btn btn-secondary d-none"
+                class="btn btn-primary"
                 type="submit"
                 name="update"
                 form="main-form"
-                title="{{ __("Save and preview") }}"
-                data-glpi-form-editor-save-and-preview-action
-                data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
+                title="{{ __("Add") }}"
             >
-                <i class="ti ti-eye me-1"></i>
-                <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
+                <i class="ti ti-plus me-1"></i>
+                <span class="d-block add-label">{{ __("Add") }}</span>
             </button>
-        </div>
-
-        {# Move to trashbin form action #}
-        {% if item.canDelete() %}
-            {# Hidden if the item is still in draft mode #}
+        {% elseif can_update %}
+            {# Update action #}
             <button
-                class="
-                    btn
-                    btn-ghost-warning
-                    me-2
-                    {{ item.fields.is_deleted ? "d-none" : "" }}
-                    {{ item.fields.is_draft ? "d-none" : "" }}
-                "
+                class="btn btn-primary"
                 type="submit"
-                name="delete"
+                name="update"
                 form="main-form"
+                title="{{ __("Save") }}"
+                aria-label="{{ __("Save") }}"
             >
-                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
-            </button>
-        {% endif %}
-
-        {# Purge action #}
-        {% if item.canPurge() %}
-            <button
-                class="btn btn-ghost-danger me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
-                type="submit"
-                name="purge"
-                form="main-form"
-            >
-                <i class="ti ti-trash me-1"></i>{{ __("Delete permanently") }}
+                <i class="ti ti-device-floppy me-1"></i>
+                <span class="d-block save-label">{{ __("Save") }}</span>
             </button>
         {% endif %}
 
@@ -255,36 +330,73 @@
             </button>
         {% endif %}
 
-        {% if item.fields.is_draft %}
-            {# Add action (which is an update form as we just change the is_draft field's value) #}
+        {# Purge action #}
+        {% if item.canPurge() %}
             <button
-                class="btn btn-primary"
+                class="btn btn-ghost-danger me-2 {{ not item.fields.is_deleted ? "d-none" : "" }}"
                 type="submit"
-                name="update"
+                name="purge"
                 form="main-form"
-                title="{{ __("Add") }}"
             >
-                <i class="ti ti-plus me-1"></i>
-                <span class="d-block add-label">{{ __("Add") }}</span>
-            </button>
-        {% elseif item.canUpdate() %}
-            {# Update action #}
-            <button
-                class="btn btn-primary"
-                type="submit"
-                name="update"
-                form="main-form"
-                title="{{ __("Save") }}"
-            >
-                <i class="ti ti-device-floppy me-1"></i>
-                <span class="d-block save-label">{{ __("Save") }}</span>
+                <i class="ti ti-trash me-1"></i>{{ _x("button", "Delete permanently") }}
             </button>
         {% endif %}
-        </button>
+
+        {# Move to trashbin form action #}
+        {% if item.canDelete() %}
+            {# Hidden if the item is still in draft mode #}
+            <button
+                class="
+                    btn
+                    btn-ghost-warning
+                    me-2
+                    {{ item.fields.is_deleted ? "d-none" : "" }}
+                    {{ item.fields.is_draft ? "d-none" : "" }}
+                "
+                type="submit"
+                name="delete"
+                form="main-form"
+            >
+                <i class="ti ti-trash me-1"></i>{{ __("Put in trashbin") }}
+            </button>
+        {% endif %}
+
+        {# Preview form action #}
+        <div class="me-auto" data-glpi-form-editor-preview-actions>
+            <a
+                href="{{ path('/Form/Render/' ~ item.fields.id) }}"
+                target="_blank"
+                class="btn btn-secondary"
+                type="button"
+                name="preview"
+                form="main-form"
+                title="{{ __("Preview") }}"
+                data-glpi-form-editor-preview-action
+            >
+                <i class="ti ti-eye me-1"></i>
+                <span class="d-none d-xl-block">{{ __("Preview") }}</span>
+            </a>
+            <button
+                class="btn btn-secondary d-none"
+                type="submit"
+                name="update"
+                form="main-form"
+                title="{{ __("Save and preview") }}"
+                data-glpi-form-editor-on-click="queue-preview"
+                data-glpi-form-editor-save-and-preview-action
+                data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
+            >
+                <i class="ti ti-eye me-1"></i>
+                <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
+            </button>
+        </div>
     </div>
 
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
+
+    {# Form uuid #}
+    <input type="hidden" name="uuid" value="{{ item.fields.uuid }}">
 
     {# Special inputs to indicate that missing sections and question must be deleted #}
     <input type="hidden" name="_delete_missing_questions" value="1">
@@ -298,19 +410,25 @@
 
     {# TODO: add bootstrap tooltips on each buttons #}
 
-    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {'item': item, 'options': params}) }}
-
     {# Move section modal #}
     {{ include('pages/admin/form/move_section_modal.html.twig') }}
+
+    {# Block has conditions modal #}
+    {{ include('pages/admin/form/item_has_conditions_for_deletion_modal.html.twig') }}
+    {{ include('pages/admin/form/item_has_conditions_for_new_question_type_modal.html.twig') }}
+    {{ include('pages/admin/form/section_element_has_conditions_for_deletion_modal.html.twig') }}
+
+    {# Delete non-empty section modal #}
+    {{ include('pages/admin/form/delete_non_empty_section_modal.html.twig') }}
 </form>
 
-{% if item.canUpdate() %}
+{% if can_update %}
     {# Templates, must be outside the main form to avoid submitting their inputs #}
     <div data-glpi-form-editor-templates class="d-none">
 
         {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-        {% for key, question_type in question_types_manager.getQuestionTypes() %}
-            <div data-glpi-form-editor-question-template="{{ key }}">
+        {% for question_type in question_types_manager.getQuestionTypes() %}
+            <div data-glpi-form-editor-question-template="{{ get_class(question_type) }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
                     'form'                        : item,
@@ -328,9 +446,6 @@
         <div data-glpi-form-editor-comment-template>
             {{ include('pages/admin/form/form_comment.html.twig', {
                 'form'                   : item,
-                'question_types_manager' : question_types_manager,
-                'question_type'          : question_type,
-                'question'               : null,
                 'section'                : null,
                 'can_update'             : true,
             }, with_context = false) }}
@@ -339,20 +454,22 @@
         {# Load new section template #}
         <div data-glpi-form-editor-section-template>
             {{ include('pages/admin/form/form_section.html.twig', {
-                'form'               : item,
-                'section'            : null,
-                'can_update'         : true,
-                'show_section_form'  : true,
-                'number_of_sections' : 0,
+                'form'                        : item,
+                'section'                     : null,
+                'can_update'                  : true,
+                'show_section_form'           : true,
+                'number_of_sections'          : 0,
+                'allow_unauthenticated_access': allow_unauthenticated_access
             }, with_context = false) }}
         </div>
 
         {# Load new horizontal block template #}
         <div data-glpi-form-editor-horizontal-block-template>
             {{ include('pages/admin/form/form_horizontal_block.html.twig', {
-                'blocks' : null,
-                'can_update' : true,
-                'form' : item,
+                'blocks'                      : null,
+                'can_update'                  : true,
+                'form'                        : item,
+                'allow_unauthenticated_access': allow_unauthenticated_access,
             }, with_context = false) }}
         </div>
 
@@ -366,10 +483,13 @@
 
         {# Load all possible question types values #}
         <select data-glpi-form-editor-question-types-values>
-            {% for key, question_type in question_types_manager.getQuestionTypes() %}
+            {% for question_type in question_types_manager.getQuestionTypes() %}
+                {% set parent_category = question_types_manager.getCategoryKey(
+                    question_type.getCategory()
+                ) %}
                 <option
-                    data-glpi-form-editor-question-type="{{ question_type.getCategory().value }}"
-                    value="{{ key }}"
+                    data-glpi-form-editor-question-type="{{ parent_category }}"
+                    value="{{ get_class(question_type) }}"
                 >
                     {{ question_type.getName() }}
                 </option>
@@ -382,23 +502,32 @@
 <script defer type="module">
 (async () => {
     const modules = await Promise.all([
-        import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
-        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}")
+        import("/js/modules/Forms/EditorController.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedDefaultValue.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js")
     ]);
     const GlpiFormEditorController = modules[0].GlpiFormEditorController;
     const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
+    const EditorConvertedExtractedSelectableDefaultValue = modules[2].GlpiFormEditorConvertedExtractedSelectableDefaultValue;
 
     const container_selector = "[data-glpi-form-editor-container]";
     const controller = new GlpiFormEditorController(
         container_selector,
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]"
+        "[data-glpi-form-editor-templates]",
+        {{ item.getDestinations()|map(destination => {
+            'id': destination.fields.id,
+            'name': destination.fields.name,
+            'conditions': destination.getConfiguredConditionsData(),
+        })|json_encode|raw }},
+        {{ can_update ? 'false' : 'true' }}, // is_readonly
     );
 
     // Temporary solution, would be better to import it directly where it is needed but the current
     // design doesn't allow it.
     $(container_selector).data('EditorConvertedExtractedDefaultValue', EditorConvertedExtractedDefaultValue);
+    $(container_selector).data('EditorConvertedExtractedSelectableDefaultValue', EditorConvertedExtractedSelectableDefaultValue);
 
     {% for question_type in question_types_manager.getQuestionTypes() %}
         controller.registerQuestionTypeOptions(

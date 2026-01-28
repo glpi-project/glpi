@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,9 @@
 
 namespace Glpi\Mail\SMTP\OauthProvider;
 
+use League\OAuth2\Client\Provider\ResourceOwnerInterface;
 use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 
 interface ProviderInterface
 {
@@ -48,7 +50,10 @@ interface ProviderInterface
     public function getAuthorizationUrl(array $options = []);
 
     /**
-     * @return \League\OAuth2\Client\Token\AccessTokenInterface
+     * @param string $grant
+     * @param array $options
+     *
+     * @return AccessTokenInterface
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getAccessToken()
      */
     public function getAccessToken($grant, array $options = []);
@@ -57,7 +62,7 @@ interface ProviderInterface
      * Requests and returns the resource owner of given access token.
      *
      * @param  AccessToken $token
-     * @return \League\OAuth2\Client\Provider\ResourceOwnerInterface
+     * @return ResourceOwnerInterface
      * @see \League\OAuth2\Client\Provider\AbstractProvider::getResourceOwner()
      */
     public function getResourceOwner(AccessToken $token);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,11 +42,11 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Change_Ticket extends CommonITILObject_CommonITILObject
 {
-   // From CommonDBRelation
-    public static $itemtype_1   = 'Change';
+    // From CommonDBRelation
+    public static $itemtype_1 = Change::class;
     public static $items_id_1   = 'changes_id';
 
-    public static $itemtype_2   = 'Ticket';
+    public static $itemtype_2 = Ticket::class;
     public static $items_id_2   = 'tickets_id';
 
 
@@ -142,22 +142,22 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
                         if ($ticket->getFromDB($item->fields['tickets_id'])) {
-                              $input2 = [$field              => $item->fields['tickets_id'],
-                                  'taskcategories_id' => $input['taskcategories_id'],
-                                  'actiontime'        => $input['actiontime'],
-                                  'content'           => $input['content']
-                              ];
-                              if ($task->can(-1, CREATE, $input2)) {
-                                  if ($task->add($input2)) {
-                                      $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
-                                  } else {
-                                      $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                                  }
-                              } else {
-                                  $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                              }
+                            $input2 = [$field              => $item->fields['tickets_id'],
+                                'taskcategories_id' => $input['taskcategories_id'],
+                                'actiontime'        => $input['actiontime'],
+                                'content'           => $input['content'],
+                            ];
+                            if ($task->can(-1, CREATE, $input2)) {
+                                if ($task->add($input2)) {
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
+                                } else {
+                                    $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
+                                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                                }
+                            } else {
+                                $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            }
                         } else {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
@@ -166,35 +166,35 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 }
                 return;
             case 'solveticket':
+                if (!$item instanceof Ticket) {
+                    throw new InvalidArgumentException();
+                }
+
                 $input  = $ma->getInput();
-                $ticket = new Ticket();
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
-                        if (
-                            $ticket->getFromDB($item->fields['tickets_id'])
-                            && $ticket->canSolve()
-                        ) {
+                        if ($item->canSolve()) {
                             $solution = new ITILSolution();
                             $added = $solution->add([
-                                'itemtype'  => $ticket::class,
-                                'items_id'  => $ticket->getID(),
-                                'solutiontypes_id'   => $input['solutiontypes_id'],
-                                'content'            => $input['content']
+                                'itemtype'         => $item::class,
+                                'items_id'         => $item->getID(),
+                                'solutiontypes_id' => $input['solutiontypes_id'],
+                                'content'          => $input['content'],
                             ]);
 
                             if ($added) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage($ticket->getErrorMessage(ERROR_ON_ACTION));
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                            $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                        $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 return;
@@ -206,15 +206,15 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * Show tickets for a change
      *
      * @param Change $change
+     * @return void
      **/
     public static function showForChange(Change $change)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $change->getField('id');
         if (!$change->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $change->canEdit($ID);
@@ -223,7 +223,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_changes_tickets.id AS linkid',
-                'glpi_tickets.*'
+                'glpi_tickets.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_changes_tickets',
@@ -231,16 +231,16 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 'glpi_tickets' => [
                     'ON' => [
                         'glpi_changes_tickets'  => 'tickets_id',
-                        'glpi_tickets'          => 'id'
-                    ]
-                ]
+                        'glpi_tickets'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_changes_tickets.changes_id'   => $ID
+                'glpi_changes_tickets.changes_id'   => $ID,
             ],
             'ORDERBY'          => [
-                'glpi_tickets.name'
-            ]
+                'glpi_tickets.name',
+            ],
         ]);
 
         $tickets = [];
@@ -256,7 +256,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Change::class,
                 'source_items_id' => $ID,
                 'link_types' => $link_types,
@@ -265,9 +265,11 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     'entity'      => $change->getEntityID(),
                     'entity_sons' => $change->isRecursive(),
                     'used'        => $used,
-                    'displaywith' => ['id']
+                    'displaywith' => ['id'],
                 ],
-                'create_link' => false
+                'create_link' => false,
+                'form_label' => __('Add a change'),
+                'button_label' => __('Create a change from this ticket'),
             ]);
         }
 
@@ -280,25 +282,23 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
                 'specific_actions' => [
                     'purge' => _sx('button', 'Delete permanently'),
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task')
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
+                    self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task'),
                 ],
                 'extraparams'      => ['changes_id' => $change->getID()],
-            ]
+            ],
         ]);
     }
 
@@ -307,15 +307,15 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
      * Show changes for a ticket
      *
      * @param Ticket $ticket object
+     * @return void
      **/
     public static function showForTicket(Ticket $ticket)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $ticket->getField('id');
         if (!$ticket->can($ID, READ)) {
-            return false;
+            return;
         }
 
         $canedit = $ticket->canEdit($ID);
@@ -324,7 +324,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         $iterator = $DB->request([
             'SELECT'          => [
                 'glpi_changes_tickets.id AS linkid',
-                'glpi_changes.*'
+                'glpi_changes.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_changes_tickets',
@@ -332,16 +332,16 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 'glpi_changes' => [
                     'ON' => [
                         'glpi_changes_tickets'  => 'changes_id',
-                        'glpi_changes'          => 'id'
-                    ]
-                ]
+                        'glpi_changes'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_changes_tickets.tickets_id'   => $ID
+                'glpi_changes_tickets.tickets_id'   => $ID,
             ],
             'ORDERBY'          => [
-                'glpi_changes.name'
-            ]
+                'glpi_changes.name',
+            ],
         ]);
 
         $changes = [];
@@ -357,7 +357,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
         if ($canedit) {
             echo TemplateRenderer::getInstance()->render('components/form/link_existing_or_new.html.twig', [
                 'rand' => $rand,
-                'link_itemtype' => __CLASS__,
+                'link_itemtype' => self::class,
                 'source_itemtype' => Ticket::class,
                 'source_items_id' => $ID,
                 'link_types' => $link_types,
@@ -369,7 +369,9 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                     'displaywith' => ['id'],
                     'condition'   => Change::getOpenCriteria(),
                 ],
-                'create_link' => Session::haveRight(Change::$rightname, CREATE)
+                'create_link' => Session::haveRight(Change::$rightname, CREATE),
+                'form_label' => __('Add a change'),
+                'button_label' => __('Create a change from this ticket'),
             ]);
         }
 
@@ -382,19 +384,17 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,13 +38,13 @@
  **/
 class Alert extends CommonDBTM
 {
-   // ALERTS TYPE
-    const THRESHOLD   = 1;
-    const END         = 2;
-    const NOTICE      = 3;
-    const NOTCLOSED   = 4;
-    const ACTION      = 5;
-    const PERIODICITY = 6;
+    // ALERTS TYPE
+    public const THRESHOLD   = 1;
+    public const END         = 2;
+    public const NOTICE      = 3;
+    public const NOTCLOSED   = 4;
+    public const ACTION      = 5;
+    public const PERIODICITY = 6;
 
     public function prepareInputForAdd($input)
     {
@@ -61,14 +61,14 @@ class Alert extends CommonDBTM
      *
      * @param string  $itemtype   ID of the type to clear
      * @param string  $ID         ID of the item to clear
-     * @param integer $alert_type ID of the alert type to clear
+     * @param int $alert_type ID of the alert type to clear
      *
-     * @return boolean
+     * @return bool
      */
     public function clear($itemtype, $ID, $alert_type)
     {
 
-        return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], 1);
+        return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID, 'type' => $alert_type], true);
     }
 
 
@@ -78,14 +78,14 @@ class Alert extends CommonDBTM
      * @since 0.84
      *
      * @param string  $itemtype ID of the type to clear
-     * @param integer $ID       ID of the item to clear
+     * @param int $ID       ID of the item to clear
      *
-     * @return boolean
+     * @return bool
      */
     public function cleanDBonItemDelete($itemtype, $ID)
     {
 
-        return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], 1);
+        return $this->deleteByCriteria(['itemtype' => $itemtype, 'items_id' => $ID], true);
     }
 
     public static function dropdown($options = [])
@@ -216,14 +216,13 @@ class Alert extends CommonDBTM
      *
      * @since 9.5.0 Made all params required. Dropped invalid defaults.
      * @param string  $itemtype The item type
-     * @param integer $items_id The item's ID
-     * @param integer $type     The type of alert (see constants in {@link \Alert} class)
+     * @param int $items_id The item's ID
+     * @param int $type     The type of alert (see constants in {@link \Alert} class)
      *
-     * @return integer|boolean
+     * @return int|bool
      */
     public static function alertExists($itemtype, $items_id, $type)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id <= 0 || $type <= 0) {
@@ -244,14 +243,13 @@ class Alert extends CommonDBTM
      * @since 9.5.0 Made all params required. Dropped invalid defaults.
      *
      * @param string  $itemtype The item type
-     * @param integer $items_id The item's ID
-     * @param integer $type     The type of alert (see constants in {@link \Alert} class)
+     * @param int $items_id The item's ID
+     * @param int $type     The type of alert (see constants in {@link \Alert} class)
      *
-     * @return mixed|boolean
+     * @return mixed|bool
      */
     public static function getAlertDate($itemtype, $items_id, $type)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id <= 0 || $type <= 0) {
@@ -269,13 +267,12 @@ class Alert extends CommonDBTM
      * Display last alert
      *
      * @param string  $itemtype The item type
-     * @param integer $items_id The item's ID
+     * @param int $items_id The item's ID
      *
      * @return void
      */
     public static function displayLastAlert($itemtype, $items_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id) {
@@ -285,11 +282,11 @@ class Alert extends CommonDBTM
                 'ORDER'    => 'date DESC',
                 'LIMIT'    => 1,
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
+                'items_id' => $items_id,
             ]);
             if ($row = $iter->current()) {
-                 //TRANS: %s is the date
-                 echo sprintf(__('Alert sent on %s'), Html::convDateTime($row['date']));
+                //TRANS: %s is the date
+                echo htmlescape(sprintf(__('Alert sent on %s'), Html::convDateTime($row['date'])));
             }
         }
     }

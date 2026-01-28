@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -55,7 +55,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
      * Method that must be overloaded. This method provides the ancestor of the current item
      * according to $this->input
      *
-     * @return integer the id of the current object ancestor
+     * @return int the id of the current object ancestor
      **/
     public function getNewAncestor()
     {
@@ -78,7 +78,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     {
 
         $input[$this->getForeignKeyField()] = $this->getNewAncestor();
-       // We call the parent to manage tree
+        // We call the parent to manage tree
         return parent::prepareInputForAdd($input);
     }
 
@@ -86,7 +86,7 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     {
 
         $input[$this->getForeignKeyField()] = $this->getNewAncestor();
-       // We call the parent to manage tree
+        // We call the parent to manage tree
         return parent::prepareInputForUpdate($input);
     }
 
@@ -115,17 +115,23 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
     /**
      * The haveChildren=false must be defined to be sure that CommonDropdown allows the deletion of a
      * node of the tree
+     *
+     * @return false
      **/
     public function haveChildren()
     {
         return false;
     }
 
-
-   // Key function to manage the children of the node
-    private function alterElementInsideTree($step)
+    /**
+     * Key function to manage the children of the node
+     *
+     * @param string $step
+     *
+     * @return void
+     */
+    private function alterElementInsideTree(string $step): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $oldParent     = null;
@@ -159,14 +165,14 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
          **/
 
         if ($step != "add" && count($potentialSons)) { // Because there is no old sons of new node
-           // First, get all my current direct sons (old ones) that are not new potential sons
+            // First, get all my current direct sons (old ones) that are not new potential sons
             $iterator = $DB->request([
                 'SELECT' => ['id'],
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     $this->getForeignKeyField()   => $this->getID(),
-                    'NOT'                         => ['id' => $potentialSons]
-                ]
+                    'NOT'                         => ['id' => $potentialSons],
+                ],
             ]);
             $oldSons = [];
             foreach ($iterator as $oldSon) {
@@ -176,28 +182,28 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
                 $DB->update(
                     $this->getTable(),
                     [
-                        $this->getForeignKeyField() => $oldParent
+                        $this->getForeignKeyField() => $oldParent,
                     ],
                     [
-                        'id' => $oldSons
+                        'id' => $oldSons,
                     ]
                 );
-               // Then, regenerate the old sons to reflect there new ancestors
+                // Then, regenerate the old sons to reflect there new ancestors
                 $this->regenerateTreeUnderID($oldParent, true, true);
                 $this->cleanParentsSons($oldParent);
             }
         }
 
         if ($step != "delete" && count($potentialSons)) { // Because their is no new sons for deleted nodes
-           // And, get all direct sons of my new Father that must be attached to me (ie : that are
-           // potential sons
+            // And, get all direct sons of my new Father that must be attached to me (ie : that are
+            // potential sons
             $iterator = $DB->request([
                 'SELECT' => ['id'],
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     $this->getForeignKeyField()   => $newParent,
-                    'id'                          => $potentialSons
-                ]
+                    'id'                          => $potentialSons,
+                ],
             ]);
             $newSons = [];
             foreach ($iterator as $newSon) {
@@ -207,13 +213,13 @@ class CommonImplicitTreeDropdown extends CommonTreeDropdown
                 $DB->update(
                     $this->getTable(),
                     [
-                        $this->getForeignKeyField() => $this->getID()
+                        $this->getForeignKeyField() => $this->getID(),
                     ],
                     [
-                        'id' => $newSons
+                        'id' => $newSons,
                     ]
                 );
-               // Then, regenerate the new sons to reflect there new ancestors
+                // Then, regenerate the new sons to reflect there new ancestors
                 $this->regenerateTreeUnderID($this->getID(), true, true);
                 $this->cleanParentsSons();
             }

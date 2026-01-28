@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,12 @@
 
 namespace Glpi\Api\HL\Controller;
 
-use Appliance;
 use AutoUpdateSystem;
 use Budget;
-use Certificate;
+use BusinessCriticity;
 use Cluster;
+use CommonDBTM;
+use CommonITILObject;
 use Contact;
 use Contract;
 use Database;
@@ -50,15 +51,16 @@ use Domain;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
+use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group_Item;
 use Line;
 use Location;
+use LogicException;
 use Manufacturer;
 use Network;
 use SoftwareLicense;
@@ -69,11 +71,9 @@ use User;
 #[Route(path: '/Management', tags: ['Management'])]
 final class ManagementController extends AbstractController
 {
-    use CRUDControllerTrait;
-
     /**
      * @param bool $schema_names_only If true, only the schema names are returned.
-     * @return array<class-string<CommonDBTM>, string>
+     * @return array<class-string<CommonDBTM>, array>
      */
     public static function getManagementTypes(bool $schema_names_only = true): array
     {
@@ -84,57 +84,57 @@ final class ManagementController extends AbstractController
                 Budget::class => [
                     'schema_name' => 'Budget',
                     'label' => Budget::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Cluster::class => [
                     'schema_name' => 'Cluster',
                     'label' => Cluster::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Contact::class => [
                     'schema_name' => 'Contact',
                     'label' => Contact::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Contract::class => [
                     'schema_name' => 'Contract',
                     'label' => Contract::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Database::class => [
                     'schema_name' => 'Database',
                     'label' => Database::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Datacenter::class => [
                     'schema_name' => 'DataCenter',
                     'label' => Datacenter::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Document::class => [
                     'schema_name' => 'Document',
                     'label' => Document::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Domain::class => [
                     'schema_name' => 'Domain',
                     'label' => Domain::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 SoftwareLicense::class => [
                     'schema_name' => 'License',
                     'label' => SoftwareLicense::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Line::class => [
                     'schema_name' => 'Line',
                     'label' => Line::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
                 Supplier::class => [
                     'schema_name' => 'Supplier',
                     'label' => Supplier::getTypeName(1),
-                    'version_introduced' => '2.0'
+                    'version_introduced' => '2.0',
                 ],
             ];
         }
@@ -143,13 +143,27 @@ final class ManagementController extends AbstractController
 
     protected static function getRawKnownSchemas(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $schemas = [];
 
         $management_types = self::getManagementTypes(false);
+        $fn_get_assignable_restriction = static function (string $itemtype) {
+            if (method_exists($itemtype, 'getAssignableVisiblityCriteria')) {
+                $criteria = $itemtype::getAssignableVisiblityCriteria('_');
+                if (count($criteria) === 1 && isset($criteria[0]) && is_numeric((string) $criteria[0])) {
+                    // Return true for QueryExpression('1') and false for QueryExpression('0') to support fast pass/fail
+                    return (bool) $criteria[0];
+                }
+                return ['WHERE' => $criteria];
+            }
+            return true;
+        };
 
         foreach ($management_types as $m_class => $m_data) {
+            if (!\is_a($m_class, CommonDBTM::class, true)) {
+                throw new LogicException();
+            }
+
             $m_name = $m_data['schema_name'];
             $schemas[$m_name] = [
                 'x-version-introduced' => $m_data['version_introduced'],
@@ -159,11 +173,17 @@ final class ManagementController extends AbstractController
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                        'x-readonly' => true,
+                        'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
-                ]
+                ],
             ];
+
+            if (method_exists($m_class, 'getAssignableVisiblityCriteria')) {
+                $schemas[$m_name]['x-rights-conditions'] = [
+                    'read' => static fn() => $fn_get_assignable_restriction($m_class),
+                ];
+            }
 
             // Need instance since some fields are not static even if they aren't related to instances
             $item = new $m_class();
@@ -221,8 +241,8 @@ final class ManagementController extends AbstractController
                                 'condition' => [
                                     'itemtype' => $m_class,
                                     'type' => Group_Item::GROUP_TYPE_TECH,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -231,8 +251,8 @@ final class ManagementController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
 
                 $schemas[$m_name]['properties']['user'] = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
@@ -253,8 +273,8 @@ final class ManagementController extends AbstractController
                                 'condition' => [
                                     'itemtype' => $m_class,
                                     'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'properties' => [
                             'id' => [
@@ -263,8 +283,8 @@ final class ManagementController extends AbstractController
                                 'description' => 'ID',
                             ],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
             }
 
@@ -285,7 +305,11 @@ final class ManagementController extends AbstractController
             }
 
             if ($item->isField('uuid')) {
-                $schemas[$m_name]['properties']['uuid'] = ['type' => Doc\Schema::TYPE_STRING];
+                $schemas[$m_name]['properties']['uuid'] = [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ];
             }
             if ($item->isField('autoupdatesystems_id')) {
                 $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
@@ -314,9 +338,7 @@ final class ManagementController extends AbstractController
         $schemas['Document']['properties']['filepath'] = [
             'type' => Doc\Schema::TYPE_STRING,
             'x-mapped-from' => 'id',
-            'x-mapper' => static function ($v) use ($CFG_GLPI) {
-                return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
-            }
+            'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
         ];
         $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
         $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
@@ -328,30 +350,66 @@ final class ManagementController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'items_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'documents_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'filepath' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'x-mapped-from' => 'documents_id',
-                    'x-mapper' => static function ($v) use ($CFG_GLPI) {
-                        return $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v;
-                    }
-                ]
-            ]
+                    'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
+                ],
+                'timeline_position' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'enum' => [
+                        CommonITILObject::NO_TIMELINE,
+                        CommonITILObject::TIMELINE_NOTSET,
+                        CommonITILObject::TIMELINE_LEFT,
+                        CommonITILObject::TIMELINE_MIDLEFT,
+                        CommonITILObject::TIMELINE_MIDRIGHT,
+                        CommonITILObject::TIMELINE_RIGHT,
+                    ],
+                    'description' => <<<EOT
+                        The position in the timeline.
+                        - 0: No timeline
+                        - 1: Not set
+                        - 2: Left
+                        - 3: Mid left
+                        - 4: Mid right
+                        - 5: Right
+                        EOT,
+                ],
+            ],
+        ];
+
+        // Post v2 additions
+        $schemas['License']['properties']['is_recursive'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_BOOLEAN,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['completename'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_STRING,
+            'readOnly' => true,
+        ];
+        $schemas['License']['properties']['level'] = [
+            'x-version-introduced' => '2.1.0',
+            'type' => Doc\Schema::TYPE_INTEGER,
+            'readOnly' => true,
         ];
 
         $schemas['Infocom'] = [
@@ -362,16 +420,16 @@ final class ManagementController extends AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'itemtype' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'items_id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => true,
+                    'readOnly' => true,
                 ],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),
@@ -427,23 +485,29 @@ final class ManagementController extends AbstractController
                 'value' => ['type' => Doc\Schema::TYPE_NUMBER, 'format' => Doc\Schema::FORMAT_NUMBER_FLOAT],
                 'amortization_type' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'enum' => ['None', 'Decreasing', 'Linear'],
-                    'x-field' => 'sink_type'
+                    'enum' => [0, 1, 2],
+                    'description' => <<<EOT
+                        The amortization type:
+                        - 0: No amortization
+                        - 1: Decreasing
+                        - 2: Linear
+                        EOT,
+                    'x-field' => 'sink_type',
                 ],
                 'amortization_time' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT32,
                     'description' => 'Amortization duration in years',
-                    'x-field' => 'sink_time'
+                    'x-field' => 'sink_time',
                 ],
                 'amortization_coeff' => [
                     'type' => Doc\Schema::TYPE_NUMBER,
                     'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
                     'description' => 'Amortization coefficient',
-                    'x-field' => 'sink_coeff'
+                    'x-field' => 'sink_coeff',
                 ],
-                'business_criticity' => self::getDropdownTypeSchema(\BusinessCriticity::class),
-            ]
+                'business_criticity' => self::getDropdownTypeSchema(BusinessCriticity::class),
+            ],
         ];
 
         return $schemas;
@@ -455,20 +519,17 @@ final class ManagementController extends AbstractController
         description: 'Get all available management types',
         methods: ['GET'],
         responses: [
-            '200' => [
-                'description' => 'List of management types',
-                'schema' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'properties' => [
-                            'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                            'href' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                ]
-            ]
+            new Doc\Response(new Doc\Schema(
+                type: Doc\Schema::TYPE_ARRAY,
+                items: new Doc\Schema(
+                    type: Doc\Schema::TYPE_OBJECT,
+                    properties: [
+                        'itemtype' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'name' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                        'href' => new Doc\Schema(Doc\Schema::TYPE_STRING),
+                    ]
+                )
+            )),
         ]
     )]
     public function index(Request $request): Response
@@ -486,55 +547,44 @@ final class ManagementController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes']
+        'itemtype' => [self::class, 'getManagementTypes'],
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'List or search management items',
-        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
-        responses: [
-            ['schema' => '{itemtype}[]']
-        ]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search management items'
     )]
     public function searchItems(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Get a management item by ID',
-        responses: [
-            ['schema' => '{itemtype}']
-        ]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing management item'
     )]
     public function getItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/Document/{id}/Download', methods: ['GET'], requirements: ['id' => '\d+'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
-        description: 'Download a document by ID',
+        description: 'Download a document',
         parameters: [
-            [
-                'name' => 'HTTP_IF_NONE_MATCH',
-                'location' => Doc\Parameter::LOCATION_HEADER,
-            ],
-            [
-                'name' => 'HTTP_IF_MODIFIED_SINCE',
-                'location' => Doc\Parameter::LOCATION_HEADER,
-            ]
+            new Doc\Parameter(name: 'HTTP_IF_NONE_MATCH', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING), location: Doc\Parameter::LOCATION_HEADER),
+            new Doc\Parameter(name: 'HTTP_IF_MODIFIED_SINCE', schema: new Doc\Schema(type: Doc\Schema::TYPE_STRING), location: Doc\Parameter::LOCATION_HEADER),
         ],
         responses: [
-            ['schema' => 'Document', 'media_type' => 'application/octet-stream']
+            new Doc\Response(schema: new Doc\SchemaReference('Document'), media_type: 'application/octet-stream'),
         ]
     )]
     public function downloadDocument(Request $request): Response
@@ -542,7 +592,8 @@ final class ManagementController extends AbstractController
         $document = new Document();
         if ($document->getFromDB($request->getAttribute('id'))) {
             if ($document->canViewFile()) {
-                return $document->send(true);
+                $symfony_response = $document->getAsResponse();
+                return new Response($symfony_response->getStatusCode(), $symfony_response->headers->all(), $symfony_response->getContent());
             }
             return self::getAccessDeniedErrorResponse();
         }
@@ -550,55 +601,46 @@ final class ManagementController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getManagementTypes']
+        'itemtype' => [self::class, 'getManagementTypes'],
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Create a new management item', parameters: [
-        [
-            'name' => '_',
-            'location' => Doc\Parameter::LOCATION_BODY,
-            'schema' => '{itemtype}',
-        ]
-    ])]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a new management item'
+    )]
     public function createItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'Update a management item by ID',
-        parameters: [
-            [
-                'name' => '_',
-                'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => '{itemtype}',
-            ]
-        ],
-        responses: [
-            ['schema' => '{itemtype}']
-        ]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing management item'
     )]
     public function updateItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
         'itemtype' => [self::class, 'getManagementTypes'],
-        'id' => '\d+'
+        'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(description: 'Delete a management item by ID')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a management item'
+    )]
     public function deleteItem(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return Search::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

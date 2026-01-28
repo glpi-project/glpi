@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,13 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Kernel\Kernel;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new Kernel('testing');
+$kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 
 $conf = new Conf();
@@ -60,7 +61,7 @@ fclose($f);
 try {
     $inventory_request = new Request();
     $inventory_request->handleRequest($contents);
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
     $inventory_request->addError($e->getMessage());
 }
 

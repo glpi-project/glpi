@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -70,14 +70,9 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     if ($_POST["action"] == "disable_plugin") {
         $marketplace_ctrl->disablePlugin();
     }
-    if ($_POST["action"] == "suspend_plugin") {
-        header("Content-Type: application/json; charset=UTF-8");
-        echo json_encode(['success' => $marketplace_ctrl->suspendPlugin()]);
-        return;
-    }
 
     echo MarketplaceView::getButtons($_POST['key']);
-} else if (($_GET["action"] ?? null) == "refresh_plugin_list") {
+} elseif (($_GET["action"] ?? null) == "refresh_plugin_list") {
     switch ($_GET['tab']) {
         default:
         case 'discover':
@@ -94,7 +89,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
             MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
             break;
     }
-} else if (($_GET["action"] ?? null) == "getPagination") {
+} elseif (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
         (int) $_GET['page'],
         (int) $_GET['total'],

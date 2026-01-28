@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,11 +35,10 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\TooManyResultsException;
 
-/**
- * Virtual machine management
- */
-
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * ItemVirtualMachine Class
@@ -48,7 +47,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 class ItemVirtualMachine extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
@@ -71,8 +70,11 @@ class ItemVirtualMachine extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if (!$item instanceof CommonDBTM) {
+            throw new RuntimeException("Only CommonDBTM items are supported");
+        }
 
         if (
             !$withtemplate
@@ -86,7 +88,7 @@ class ItemVirtualMachine extends CommonDBChild
                     [
                         'itemtype' => $item->getType(),
                         'items_id' => $item->getID(),
-                        'is_deleted' => 0
+                        'is_deleted' => 0,
                     ]
                 );
             }
@@ -101,8 +103,8 @@ class ItemVirtualMachine extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -110,7 +112,9 @@ class ItemVirtualMachine extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
         self::showForVirtualMachine($item);
         self::showForAsset($item);
         return true;
@@ -125,41 +129,33 @@ class ItemVirtualMachine extends CommonDBChild
     }
 
 
-    /**
-     * Display form
-     *
-     * @param integer $ID
-     * @param array   $options
-     *
-     * @return boolean TRUE if form is ok
-     **/
     public function showForm($ID, array $options = [])
     {
-        if (!Session::haveRight("computer", UPDATE)) {
-            return false;
+        if (isset($options['parent'])) {
+            $options['itemtype'] = $options['parent']::class;
+            $options['items_id'] = $options['parent']->getID();
         }
 
-
         if ($ID > 0) {
-            $asset = new $this->fields['itemtype']();
+            $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
             $asset->getFromDB($this->fields['items_id']);
         } else {
-           // Create item
-            $asset = new $options['itemtype']();
+            // Create item
+            $asset = getItemForItemtype($options['itemtype']);
             $this->check(-1, CREATE, $options);
             $asset->getFromDB($options['items_id']);
         }
 
         $linked_asset = "";
         if ($link_asset = self::findVirtualMachine($this->fields)) {
-            $asset = new $this->fields['itemtype']();
-            if ($asset->getFromDB($link_asset)) {
-                $linked_asset = $asset->getLink(['comments' => true]);
+            $asset_to_link = getItemForItemtype($this->fields['itemtype']);
+            if ($asset_to_link->getFromDB($link_asset)) {
+                $linked_asset = $asset_to_link->getLink(['comments' => true]);
             }
         }
 
-        $options['canedit'] = Session::haveRight($asset::$rightname, UPDATE);
+        $options['canedit'] = $asset->can($asset->getID(), UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/itemvirtualmachine.html.twig', [
             'item'                      => $this,
@@ -173,15 +169,14 @@ class ItemVirtualMachine extends CommonDBChild
 
 
     /**
-     * Show hosts for a virtualmachine
+     * Show hosts for a virtual machine
      *
-     * @param $asset CommonDBTM object that represents the virtual machine
+     * @param CommonDBTM $asset object that represents the virtual machine
      *
      * @return void
-     **/
+     */
     public static function showForVirtualMachine(CommonDBTM $asset)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID = $asset->fields['id'];
@@ -195,8 +190,8 @@ class ItemVirtualMachine extends CommonDBChild
                 self::getTable(),
                 [
                     'RAW' => [
-                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($asset->fields['uuid'])
-                    ]
+                        (string) QueryFunction::lower('uuid') => self::getUUIDRestrictCriteria($asset->fields['uuid']),
+                    ],
                 ]
             );
 
@@ -207,37 +202,35 @@ class ItemVirtualMachine extends CommonDBChild
                 foreach ($hosts as $host) {
                     if ($computer->can($host['items_id'], READ)) {
                         $entries[] = [
-                            'name' => $computer->getLink($host['items_id']),
+                            'name' => $computer->getLink(),
                             'serial' => $computer->fields['serial'],
                             'comment' => $computer->fields['comment'],
-                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
+                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']),
                         ];
                     } else {
                         $entries[] = [
                             'name' => htmlescape($computer->fields['name']),
                             'serial' => NOT_AVAILABLE,
                             'comment' => NOT_AVAILABLE,
-                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id'])
+                            'entity' => Dropdown::getDropdownName('glpi_entities', $computer->fields['entities_id']),
                         ];
                     }
                 }
                 TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => [
                         'name' => __('Name'),
                         'serial' => __('Serial number'),
-                        'comment' => __('Comments'),
-                        'entity' => _n('Entity', 'Entities', 1)
+                        'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
+                        'entity' => _n('Entity', 'Entities', 1),
                     ],
                     'formatters' => [
-                        'name' => 'raw_html'
+                        'name' => 'raw_html',
                     ],
                     'entries' => $entries,
                     'total_number' => count($entries),
-                    'filtered_number' => count($entries),
                 ]);
             }
         }
@@ -249,8 +242,8 @@ class ItemVirtualMachine extends CommonDBChild
      *
      * @param CommonDBTM $asset Asset instance
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
-     **/
+     * @return void
+     */
     public static function showForAsset(CommonDBTM $asset)
     {
 
@@ -258,7 +251,7 @@ class ItemVirtualMachine extends CommonDBChild
         $itemtype = $asset->getType();
 
         if (!$asset->getFromDB($ID) || !$asset->can($ID, READ)) {
-            return false;
+            return;
         }
         $canedit = $asset->canEdit($ID);
 
@@ -267,89 +260,86 @@ class ItemVirtualMachine extends CommonDBChild
             [
                 'WHERE'  => [
                     'itemtype' => $itemtype,
-                    'items_id' => $ID
+                    'items_id' => $ID,
                 ],
-                'ORDER'  => 'name'
+                'ORDER'  => 'name',
             ]
         );
-        $has_vm = !empty($virtualmachines);
 
-        TemplateRenderer::getInstance()->display('components/form/item_virtualmachine.html.twig', [
-            'asset'                     => $asset,
-            'ID'                        => $ID,
-            'itemtype'                  => $itemtype,
-            'canedit'                   => $canedit,
-            'vmformurl'                 => ItemVirtualMachine::getFormURL() . "?itemtype=$itemtype&items_id=$ID",
-            'has_vm'                    => $has_vm
+        TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+            'type' => 'ItemVirtualMachine',
+            'parenttype' => $itemtype,
+            'items_id' => $asset::getForeignKeyField(),
+            'id' => $ID,
+            'cancreate' => $canedit,
+            'add_new_label' => __('Add a virtual machine'),
+            'ajax_form_submit' => true,
+            'reload_tab' => true,
         ]);
 
-        if ($has_vm) {
-            $entries = [];
-            foreach ($virtualmachines as $virtualmachine) {
-                $vm = new self();
-                if (!$vm->getFromDB($virtualmachine['id'])) {
-                    continue;
-                }
-
-                $type = VirtualMachineType::getById($virtualmachine['virtualmachinetypes_id']);
-                $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
-                $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
-
-                $entries[] = [
-                    'name'                      => $vm->getLink(),
-                    'comment'                   => $virtualmachine['comment'],
-                    'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
-                    'virtualmachinesystems_id'  => $system ? $system->getLink() : NOT_AVAILABLE,
-                    'virtualmachinestates_id'   => $state ? $state->getLink() : NOT_AVAILABLE,
-                    'uuid'                      => $virtualmachine['uuid'],
-                    'vcpu'                      => $virtualmachine['vcpu'],
-                    'ram'                       => $virtualmachine['ram'],
-                    'asset'                     => $type ? $type->getLink() : NOT_AVAILABLE
-                ];
+        $entries = [];
+        foreach ($virtualmachines as $virtualmachine) {
+            $vm = new self();
+            if (!$vm->getFromDB($virtualmachine['id'])) {
+                continue;
             }
 
-            TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-                'is_tab' => true,
-                'nopager' => true,
-                'nofilter' => true,
-                'nosort' => true,
-                'columns' => [
-                    'name' => __('Name'),
-                    'comment' => _n('Comment', 'Comments', 1),
-                    'dynamic' => __('Automatic inventory'),
-                    'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
-                    'virtualmachinestates_id' => _n('State', 'States', 1),
-                    'uuid' => __('UUID'),
-                    'vcpu' => __('Processors number'),
-                    'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
-                    'asset' => __('Machine')
-                ],
-                'formatters' => [
-                    'name' => 'raw_html',
-                    'virtualmachinesystems_id' => 'raw_html',
-                    'virtualmachinestates_id' => 'raw_html',
-                    'vcpu' => 'integer',
-                    'ram' => 'integer',
-                    'asset' => 'raw_html'
-                ],
-                'entries' => $entries,
-                'total_number' => count($entries),
-                'filtered_number' => count($entries),
-            ]);
+            $type = VirtualMachineType::getById($virtualmachine['virtualmachinetypes_id']);
+            $system = VirtualMachineSystem::getById($virtualmachine['virtualmachinesystems_id']);
+            $state = VirtualMachineState::getById($virtualmachine['virtualmachinestates_id']);
+
+            $entries[] = [
+                'name'                      => $vm->getLink(),
+                'comment'                   => $virtualmachine['comment'],
+                'dynamic'                   => $virtualmachine['is_dynamic'] ? __('Yes') : __('No'),
+                'virtualmachinesystems_id'  => $system ? $system->getLink() : htmlescape(NOT_AVAILABLE),
+                'virtualmachinestates_id'   => $state ? $state->getLink() : htmlescape(NOT_AVAILABLE),
+                'uuid'                      => $virtualmachine['uuid'],
+                'vcpu'                      => $virtualmachine['vcpu'],
+                'ram'                       => $virtualmachine['ram'],
+                'asset'                     => $type ? $type->getLink() : htmlescape(NOT_AVAILABLE),
+            ];
         }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+            'is_tab' => true,
+            'nofilter' => true,
+            'nosort' => true,
+            'columns' => [
+                'name' => __('Name'),
+                'comment' => _n('Comment', 'Comments', 1),
+                'dynamic' => __('Automatic inventory'),
+                'virtualmachinesystems_id' => VirtualMachineSystem::getTypeName(1),
+                'virtualmachinestates_id' => _n('State', 'States', 1),
+                'uuid' => __('UUID'),
+                'vcpu' => __('Processors number'),
+                'ram' => sprintf(__('%1$s (%2$s)'), _n('Memory', 'Memories', 1), __('Mio')),
+                'asset' => __('Machine'),
+            ],
+            'formatters' => [
+                'name' => 'raw_html',
+                'virtualmachinesystems_id' => 'raw_html',
+                'virtualmachinestates_id' => 'raw_html',
+                'vcpu' => 'integer',
+                'ram' => 'integer',
+                'asset' => 'raw_html',
+            ],
+            'entries' => $entries,
+            'total_number' => count($entries),
+        ]);
     }
 
 
     /**
-     * Get correct uuid sql search for virtualmachines
+     * Get correct uuid SQL search for virtual machines
      *
      * @since 9.3.1
      *
      * @param string $uuid the uuid given
      *
-     * @return array the restrict SQL clause which contains uuid, uuid with first block flipped,
+     * @return string[] the restrict SQL clause which contains uuid, uuid with first block flipped,
      * uuid with 3 first block flipped
-     **/
+     */
     public static function getUUIDRestrictCriteria($uuid)
     {
         //More infos about uuid, please see wikipedia :
@@ -368,11 +358,11 @@ class ItemVirtualMachine extends CommonDBChild
         }
 
         //Case two : why this code ? Because some dmidecode < 2.10 is buggy.
-        //On unix is flips first block of uuid and on windows flips 3 first blocks...
+        //On unix is flips first block of uuid and on Windows flips 3 first blocks...
         $in      = [strtolower($uuid)];
         $regexes = [
             "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})(.*)/"                                        => "$4$3$2$1$5",
-            "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"  => "$4$3$2$1-$6$5-$8$7$9"
+            "/([\w]{2})([\w]{2})([\w]{2})([\w]{2})-([\w]{2})([\w]{2})-([\w]{2})([\w]{2})(.*)/"  => "$4$3$2$1-$6$5-$8$7$9",
         ];
         foreach ($regexes as $pattern => $replace) {
             $reverse_uuid = preg_replace($pattern, $replace, $uuid);
@@ -388,13 +378,12 @@ class ItemVirtualMachine extends CommonDBChild
     /**
      * Find a virtual machine by uuid
      *
-     * @param array $fields  Array of virtualmachine fields
+     * @param array<string,mixed> $fields  Array of virtual machine fields
      *
-     * @return integer|boolean ID of the asset that have this uuid or false otherwise
+     * @return int|bool ID of the asset that have this uuid or false otherwise
      **/
     public static function findVirtualMachine($fields = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($fields['uuid']) || empty($fields['uuid'])) {
@@ -402,7 +391,7 @@ class ItemVirtualMachine extends CommonDBChild
         }
 
         $itemtype = $fields['itemtype'];
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         if (!$item->isField('uuid')) {
             return false;
         }
@@ -412,23 +401,23 @@ class ItemVirtualMachine extends CommonDBChild
             'FROM'   => $itemtype::getTable(),
             'WHERE'  => [
                 'RAW' => [
-                    (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid'])
-                ]
-            ]
+                    (string) QueryFunction::lower('uuid')  => self::getUUIDRestrictCriteria($fields['uuid']),
+                ],
+            ],
         ]);
 
-       //Virtual machine found, return ID
+        //Virtual machine found, return ID
         if (count($iterator) == 1) {
             $result = $iterator->current();
             return $result['id'];
-        } else if (count($iterator) > 1) {
-            trigger_error(
+        } elseif (count($iterator) > 1) {
+            throw new TooManyResultsException(
                 sprintf(
-                    'findVirtualMachine expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::findVirtualMachine()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iterator),
                     $iterator->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
 
@@ -442,7 +431,7 @@ class ItemVirtualMachine extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -495,15 +484,20 @@ class ItemVirtualMachine extends CommonDBChild
                     'table'              => ItemVirtualMachine::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'item_itemtype',
-                        'specific_itemtype'  => 'Computer'
-                    ]
-                ]
-            ]
+                        'specific_itemtype'  => 'Computer',
+                    ],
+                ],
+            ],
         ];
 
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array<array<string,mixed>>
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
         $tab = [];
@@ -511,7 +505,7 @@ class ItemVirtualMachine extends CommonDBChild
         $name = _n('Virtual machine', 'Virtual machines', Session::getPluralNumber());
         $tab[] = [
             'id'                 => 'virtualmachine',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -523,8 +517,8 @@ class ItemVirtualMachine extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -539,10 +533,10 @@ class ItemVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -557,10 +551,10 @@ class ItemVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -575,10 +569,10 @@ class ItemVirtualMachine extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -590,8 +584,8 @@ class ItemVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -604,8 +598,8 @@ class ItemVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -616,8 +610,8 @@ class ItemVirtualMachine extends CommonDBChild
             'forcegroupby'       => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -629,8 +623,8 @@ class ItemVirtualMachine extends CommonDBChild
             'datatype'           => 'string',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;

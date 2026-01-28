@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,8 @@
 
 namespace Glpi\Console\Marketplace;
 
-use GLPINetwork;
 use Glpi\Marketplace\Controller;
+use GLPINetwork;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -69,9 +69,7 @@ class InfoCommand extends AbstractMarketplaceCommand
         $controller = new Controller();
         $plugins = $controller::getAPI()->getAllPlugins();
 
-        $result = array_filter($plugins, static function ($p) use ($plugin) {
-            return strtolower($p['key']) === strtolower($plugin);
-        });
+        $result = array_filter($plugins, static fn($p) => strtolower($p['key']) === strtolower($plugin));
 
         if (count($result) === 0) {
             $output->writeln('<error>' . sprintf(__('Plugin %1$s not found!'), $plugin) . '</error>');

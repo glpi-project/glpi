@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,12 +35,14 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
+use Glpi\Features\Clonable;
 
 class Appliance_Item extends CommonDBRelation
 {
-    use Glpi\Features\Clonable;
+    /** @use Clonable<static> */
+    use Clonable;
 
-    public static $itemtype_1 = 'Appliance';
+    public static $itemtype_1 = Appliance::class;
     public static $items_id_1 = 'appliances_id';
     public static $take_entity_1 = false;
 
@@ -51,7 +53,7 @@ class Appliance_Item extends CommonDBRelation
     public function getCloneRelations(): array
     {
         return [
-            Appliance_Item_Relation::class
+            Appliance_Item_Relation::class,
         ];
     }
 
@@ -63,19 +65,19 @@ class Appliance_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if (!Appliance::canView()) {
+        if (!Appliance::canView() || !$item instanceof CommonDBTM) {
             return '';
         }
 
         $nb = 0;
-        if ($item->getType() == Appliance::class) {
+        if ($item instanceof Appliance) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 if (!$item->isNewItem()) {
                     $nb = self::countForMainItem($item);
                 }
             }
             return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-        } else if (in_array($item->getType(), Appliance::getTypes(true))) {
+        } elseif (in_array($item->getType(), Appliance::getTypes(true))) {
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
             }
@@ -87,9 +89,12 @@ class Appliance_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
-        switch ($item->getType()) {
-            case Appliance::class:
+        switch (true) {
+            case $item instanceof Appliance:
                 self::showItems($item);
                 break;
             default:
@@ -105,11 +110,10 @@ class Appliance_Item extends CommonDBRelation
      *
      * @param Appliance $appliance  Appliance object wanted
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showItems(Appliance $appliance)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $appliance->fields['id'];
@@ -126,8 +130,8 @@ class Appliance_Item extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $ID
-            ]
+                self::$items_id_1 => $ID,
+            ],
         ]);
 
         Session::initNavigateListItems(
@@ -145,12 +149,12 @@ class Appliance_Item extends CommonDBRelation
             echo "<div class='firstbloc'>";
             echo "<form method='post' name='appliances_form$rand'
                      id='appliances_form$rand'
-                     action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                     action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "'>";
 
             echo "<table class='tab_cadre_fixe'>";
             echo "<tr class='tab_bg_2'>";
-            echo "<th colspan='2'>" .
-               __s('Add an item') . "</th></tr>";
+            echo "<th colspan='2'>"
+               . __s('Add an item') . "</th></tr>";
 
             echo "<tr class='tab_bg_1'><td class='center'>";
             Dropdown::showSelectItemFromItemtypes(
@@ -176,7 +180,7 @@ class Appliance_Item extends CommonDBRelation
 
         $entries = [];
         foreach ($items as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $entries[] = [
                 'itemtype' => self::class,
@@ -185,7 +189,7 @@ class Appliance_Item extends CommonDBRelation
                 'item' => $item->getLink(),
                 'serial' => $item->fields['serial'] ?? "",
                 'otherserial' => $item->fields['otherserial'] ?? "",
-                'relations' => "<div class='relations_list'>" . Appliance_Item_Relation::showListForApplianceItem($row["id"], $canedit) . "</div>"
+                'relations' => "<div class='relations_list'>" . Appliance_Item_Relation::showListForApplianceItem($row["id"], $canedit) . "</div>",
             ];
         }
 
@@ -197,19 +201,18 @@ class Appliance_Item extends CommonDBRelation
                 'item' => _n('Item', 'Items', 1),
                 'serial' => __('Serial'),
                 'otherserial' => __('Inventory number'),
-                'relations' => Appliance_Item_Relation::getTypeName(Session::getPluralNumber())
+                'relations' => Appliance_Item_Relation::getTypeName(Session::getPluralNumber()),
             ],
             'formatters' => [
                 'item' => 'raw_html',
-                'relations' => 'raw_html'
+                'relations' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
         echo Appliance_Item_Relation::getListJSForApplianceItem($appliance, $canedit);
@@ -221,15 +224,13 @@ class Appliance_Item extends CommonDBRelation
      * @since 9.5.2
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param integer    $withtemplate not used (to be deleted)
+     * @param int    $withtemplate not used (to be deleted)
      *
      * @return void
      **/
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-
-        $itemtype = $item->getType();
-        $ID       = $item->fields['id'];
+        $ID = $item->getID();
 
         if (
             !Appliance::canView()
@@ -250,27 +251,27 @@ class Appliance_Item extends CommonDBRelation
             $used[$data['id']]      = $data['id'];
         }
         if ($canedit && ($withtemplate != 2)) {
-            echo "<div class='mt-1 mb-3 text-center'>";
+            echo "<div class='firstbloc'>";
             echo "<form name='applianceitem_form$rand' id='applianceitem_form$rand' method='post'
-                action='" . Toolbox::getItemTypeFormURL(__CLASS__) . "'>";
+                action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "'>";
+            echo __s('Add to an appliance');
+            echo "<div class='d-flex'>";
             echo "<input type='hidden' name='items_id' value='$ID'>";
-            echo "<input type='hidden' name='itemtype' value='$itemtype'>";
-
-            echo "<table class='tab_cadre_fixe'>";
-            echo "<tr class='tab_bg_2'><th colspan='2'>" . __s('Add to an appliance') . "</th></tr>";
-
-            echo "<tr class='tab_bg_1'><td>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>";
+            echo "<div class='auto'>";
             Appliance::dropdown([
                 'entity'  => $item->getEntityID(),
-                'used'    => $used
+                'used'    => $used,
             ]);
-
-            echo "</td><td class='center'>";
-            echo "<input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
             echo "</div>";
+            echo "<div class='auto'>";
+            echo "<button type='submit' name='add' value='1' class='btn btn-primary ms-1'>";
+            echo "<i class='ti ti-link'></i>" . _sx('button', 'Add');
+            echo "</button>";
+            echo "</div>";
+            echo "</div>"; //d-flex
+            Html::closeForm();
+            echo "</div>"; //firstbloc
         }
 
         $entries = [];
@@ -283,7 +284,7 @@ class Appliance_Item extends CommonDBRelation
                 'itemtype' => self::class,
                 'id' => $assocID,
                 'name' => $app->getLink(),
-                'relations' => "<div class='relations_list'>" . Appliance_Item_Relation::showListForApplianceItem($assocID, $canedit) . "</div>"
+                'relations' => "<div class='relations_list'>" . Appliance_Item_Relation::showListForApplianceItem($assocID, $canedit) . "</div>",
             ];
         }
 
@@ -292,19 +293,18 @@ class Appliance_Item extends CommonDBRelation
             'nofilter' => true,
             'columns' => [
                 'name' => __('Name'),
-                'relations' => Appliance_Item_Relation::getTypeName(Session::getPluralNumber())
+                'relations' => Appliance_Item_Relation::getTypeName(Session::getPluralNumber()),
             ],
             'formatters' => [
                 'name' => 'raw_html',
-                'relations' => 'raw_html'
+                'relations' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
         echo Appliance_Item_Relation::getListJSForApplianceItem($item, $canedit);
@@ -332,7 +332,7 @@ class Appliance_Item extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
@@ -393,7 +393,6 @@ class Appliance_Item extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();

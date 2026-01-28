@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,15 +33,36 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Features\Kanban;
+use Glpi\Features\KanbanInterface;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\strtotime;
 
 class Item_Kanban extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = 'User';
+    public static $itemtype_2 = User::class;
     public static $items_id_2 = 'users_id';
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+
+    public static function getKanbanItemForItemtype(string $itemtype): KanbanInterface&CommonDBTM
+    {
+        $item = getItemForItemtype($itemtype);
+
+        if (!$item instanceof KanbanInterface) {
+            $message = "Given itemtype do not implement KanbanInterface: " . $itemtype;
+            throw new RuntimeException($message);
+        }
+
+        if (!$item instanceof CommonDBTM) {
+            $message = "Given itemtype do not extends CommonDBTM: " . $itemtype;
+            throw new RuntimeException($message);
+        }
+
+        return $item;
+    }
 
     /**
      * Save the state of a Kanban's columns for a specific item for the current user or globally.
@@ -54,25 +75,19 @@ class Item_Kanban extends CommonDBRelation
      */
     public static function saveStateForItem($itemtype, $items_id, $state, array $columns = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $force_global = false;
-        if (method_exists($item, 'forceGlobalState')) {
-            $force_global = $item->forceGlobalState();
-        }
+        $force_global = $item->forceGlobalState();
 
         $oldstate = self::loadStateForItem($itemtype, $items_id);
         $users_id = $force_global ? 0 : Session::getLoginUserID();
-        if (method_exists($item, 'prepareKanbanStateForUpdate')) {
-            $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
-        }
+        $state = $item->prepareKanbanStateForUpdate($oldstate, $state, $users_id);
 
         if ($state === null || $state === 'null' || $state === false) {
-           // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
+            // Save was probably denied in prepareKanbanStateForUpdate or an invalid state was given
             return false;
         }
 
@@ -81,20 +96,20 @@ class Item_Kanban extends CommonDBRelation
             'items_id'  => $items_id,
             'users_id'  => $users_id,
             'state'     => json_encode($state, JSON_FORCE_OBJECT),
-            'date_mod'  => $_SESSION['glpi_currenttime']
+            'date_mod'  => $_SESSION['glpi_currenttime'],
         ];
         $criteria = [
             'users_id' => $users_id,
             'itemtype' => $itemtype,
-            'items_id' => $items_id
+            'items_id' => $items_id,
         ];
         if (countElementsInTable('glpi_items_kanbans', $criteria)) {
             $DB->update('glpi_items_kanbans', [
-                'date_mod'  => $_SESSION['glpi_currenttime']
+                'date_mod'  => $_SESSION['glpi_currenttime'],
             ] + $common_input, $criteria);
         } else {
             $DB->insert('glpi_items_kanbans', [
-                'date_creation'   => $_SESSION['glpi_currenttime']
+                'date_creation'   => $_SESSION['glpi_currenttime'],
             ] + $common_input);
         }
         return true;
@@ -108,11 +123,9 @@ class Item_Kanban extends CommonDBRelation
      */
     public static function hasStateForItem(string $itemtype, int $items_id): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var Kanban|CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $force_global = $item->forceGlobalState();
 
@@ -122,8 +135,8 @@ class Item_Kanban extends CommonDBRelation
             'WHERE'  => [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ])->count() > 0;
     }
 
@@ -133,22 +146,17 @@ class Item_Kanban extends CommonDBRelation
      * @param string $itemtype Type of the item.
      * @param int $items_id ID of the item.
      * @param string $timestamp Timestamp string of last check or null to always get the state.
-     * @return array Array of Kanban column state data.
+     * @return ?array Array of Kanban column state data.
      *       Null is returned if $timestamp is specified, but no changes have been made to the state since then
      *       An empty array is returned if the state is not in the DB.
      */
     public static function loadStateForItem($itemtype, $items_id, $timestamp = null)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
-        $force_global = false;
-        if (method_exists($item, 'forceGlobalState')) {
-            $force_global = $item->forceGlobalState();
-        }
+        $force_global = $item->forceGlobalState();
 
         $iterator = $DB->request([
             'SELECT' => ['date_mod', 'state'],
@@ -156,23 +164,23 @@ class Item_Kanban extends CommonDBRelation
             'WHERE'  => [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
-            ]
+                'items_id' => $items_id,
+            ],
         ]);
 
         if (count($iterator)) {
             $data = $iterator->current();
-            if ($timestamp !== null) {
+            if (!empty($timestamp)) {
                 if (strtotime($timestamp) < strtotime($data['date_mod'])) {
                     return json_decode($data['state'], true);
                 } else {
-                   // No changes since last check
+                    // No changes since last check
                     return null;
                 }
             }
             return json_decode($data['state'], true);
         } else {
-           // State is not saved
+            // State is not saved
             return [];
         }
     }
@@ -186,25 +194,31 @@ class Item_Kanban extends CommonDBRelation
      */
     public static function clearStateForItem(string $itemtype, int $items_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         try {
-            /** @var Kanban|CommonDBTM $item */
-            $item = new $itemtype();
+            $item = self::getKanbanItemForItemtype($itemtype);
             $item->getFromDB($items_id);
             $force_global = $item->forceGlobalState();
 
             return (bool) $DB->delete('glpi_items_kanbans', [
                 'users_id' => $force_global ? 0 : Session::getLoginUserID(),
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
+                'items_id' => $items_id,
             ]);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return false;
         }
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param array $card
+     * @param string $column
+     * @param int $position
+     * @return void
+     */
     public static function moveCard($itemtype, $items_id, $card, $column, $position)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -213,7 +227,7 @@ class Item_Kanban extends CommonDBRelation
             $position = 0;
         }
 
-       // Search for old location and remove card
+        // Search for old location and remove card
         foreach ($state as $column_index => $col) {
             if (isset($col['cards'])) {
                 foreach ($col['cards'] as $card_index => $card_id) {
@@ -226,16 +240,11 @@ class Item_Kanban extends CommonDBRelation
             }
         }
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getKanbanItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $all_columns = [];
-        if (method_exists($item, 'getAllKanbanColumns')) {
-            $all_columns = $item->getAllKanbanColumns();
-        }
-        $new_column_index = array_keys(array_filter($state, function ($c, $k) use ($column) {
-            return $c['column'] === $column;
-        }, ARRAY_FILTER_USE_BOTH));
+        $all_columns = $item->getAllKanbanColumns();
+        $new_column_index = array_keys(array_filter($state, fn($c, $k) => $c['column'] === $column, ARRAY_FILTER_USE_BOTH));
         if (count($new_column_index)) {
             $new_column_index = reset($new_column_index);
             if (isset($all_columns[(int) $column])) {
@@ -249,12 +258,24 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return array
+     */
     public static function getAllShownColumns($itemtype, $items_id)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
         return array_column($state, 'column');
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     * @return void
+     */
     public static function showColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -272,12 +293,19 @@ class Item_Kanban extends CommonDBRelation
                 'column' => $column,
                 'visible' => true,
                 'folded' => false,
-                'cards' => []
+                'cards' => [],
             ];
         }
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     *
+     * @return void
+     */
     public static function hideColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -290,6 +318,13 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     *
+     * @return void
+     */
     public static function collapseColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
@@ -302,10 +337,16 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     * @return void
+     */
     public static function expandColumn($itemtype, $items_id, $column)
     {
         $state = self::loadStateForItem($itemtype, $items_id);
-        foreach ($state as $column_index => &$col) {
+        foreach ($state as &$col) {
             if ($col['column'] === $column) {
                 $col['folded'] = false;
                 break;
@@ -314,6 +355,14 @@ class Item_Kanban extends CommonDBRelation
         self::saveStateForItem($itemtype, $items_id, $state);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $column
+     * @param int $position
+     *
+     * @return void
+     */
     public static function moveColumn($itemtype, $items_id, $column, $position)
     {
         $state = self::loadStateForItem($itemtype, $items_id);

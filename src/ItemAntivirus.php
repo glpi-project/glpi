@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class ItemAntivirus extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
@@ -55,8 +55,11 @@ class ItemAntivirus extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            throw new RuntimeException("Only CommonDBTM items are supported");
+        }
 
-       // can exists for template
+        // can exists for template
         if ($item::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -73,7 +76,9 @@ class ItemAntivirus extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
         self::showForItem($item, $withtemplate);
         return true;
     }
@@ -84,8 +89,8 @@ class ItemAntivirus extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -97,7 +102,7 @@ class ItemAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -134,13 +139,16 @@ class ItemAntivirus extends CommonDBChild
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'itemantivirus_types',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
     }
 
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -148,7 +156,7 @@ class ItemAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'antivirus',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -161,7 +169,7 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'searchtype'         => ['contains'],
         ];
@@ -176,8 +184,8 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -188,12 +196,12 @@ class ItemAntivirus extends CommonDBChild
             'name'               => __('Active'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -204,12 +212,12 @@ class ItemAntivirus extends CommonDBChild
             'name'               => __('Is up to date'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -222,8 +230,8 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -236,8 +244,8 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'date',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;
@@ -246,30 +254,29 @@ class ItemAntivirus extends CommonDBChild
     /**
      * Display form for antivirus
      *
-     * @param integer $ID      id of the antivirus
+     * @param int $ID      id of the antivirus
      * @param array   $options
      *
-     * @return boolean TRUE if form is ok
+     * @return bool TRUE if form is ok
      **/
     public function showForm($ID, array $options = [])
     {
-        /** @var CommonDBTM $itemtype */
-        $itemtype = $this->fields['itemtype'];
-
-        if (!Session::haveRight($itemtype::$rightname, READ)) {
-            return false;
+        if (isset($options['parent'])) {
+            $options['itemtype'] = $options['parent']::class;
+            $options['items_id'] = $options['parent']->getID();
         }
 
-        $asset = new $itemtype();
         if ($ID > 0) {
+            $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
             $asset->getFromDB($this->fields['items_id']);
         } else {
+            $asset = getItemForItemtype($options['itemtype']);
             $this->check(-1, CREATE, $options);
             $asset->getFromDB($options['items_id']);
         }
 
-        $options['canedit'] = Session::haveRight($itemtype::$rightname, UPDATE);
+        $options['canedit'] = $asset->can($asset->getID(), UPDATE);
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('components/form/item_antivirus.html.twig', [
             'item'   => $this,
@@ -285,13 +292,12 @@ class ItemAntivirus extends CommonDBChild
      * Print the items antiviruses
      *
      * @param CommonDBTM $asset         Asset
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
     private static function showForItem(CommonDBTM $asset, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $asset->fields['id'];
@@ -316,11 +322,15 @@ class ItemAntivirus extends CommonDBChild
             ]
         );
 
-        TemplateRenderer::getInstance()->display('components/form/item_antivirus_item.html.twig', [
-            'canedit'               => ($canedit && !(!empty($withtemplate) && ($withtemplate == 2))),
-            'has_antivirus'         => ($result->numrows() != 0),
-            'antivirus_form_url'    => ItemAntivirus::getFormURL() .
-                                        "?itemtype=$itemtype&items_id=$ID&withtemplate=" . $withtemplate,
+        TemplateRenderer::getInstance()->display('components/form/viewsubitem.html.twig', [
+            'type' => self::class,
+            'parenttype' => $itemtype,
+            'items_id' => $asset::getForeignKeyField(),
+            'id' => $ID,
+            'cancreate' => ($canedit && !(!empty($withtemplate) && ($withtemplate == 2))),
+            'add_new_label' => __('Add an antivirus'),
+            'ajax_form_submit' => true,
+            'reload_tab' => true,
         ]);
 
         $antivirus = new self();
@@ -342,7 +352,6 @@ class ItemAntivirus extends CommonDBChild
         }
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -362,7 +371,6 @@ class ItemAntivirus extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
         ]);
     }
 

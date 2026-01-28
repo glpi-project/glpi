@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +36,7 @@ namespace Glpi\Asset\CustomFieldType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldOption\NumberOption;
+use InvalidArgumentException;
 
 class NumberType extends AbstractType
 {
@@ -80,7 +81,7 @@ TWIG, $twig_params);
             return null;
         }
         if (!is_numeric($value)) {
-            throw new \InvalidArgumentException('The value must be a number');
+            throw new InvalidArgumentException('The value must be a number');
         }
         $opts = $this->custom_field->fields['field_options'] ?? [];
         $min = $opts['min'] ?? 0;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,7 +48,7 @@ final class Google extends \League\OAuth2\Client\Provider\Google implements Prov
     public function getAuthorizationUrl(array $options = [])
     {
         $options = [
-            'prompt' => 'login', // ensure user will have to specify the account to use
+            'prompt' => 'consent select_account', // ensure user will have to specify the account to use
             'scope'  => $this->getScopes(),
         ];
 

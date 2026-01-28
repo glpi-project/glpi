@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,13 @@
 
 namespace Glpi\Api\HL;
 
+use Closure;
+use Glpi\Api\HL\Doc as Doc;
+use Glpi\Debug\Profiler;
+use GraphQL\Type\Definition\ListOfType;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use Throwable;
 
 final class GraphQLGenerator
 {
@@ -51,20 +56,28 @@ final class GraphQLGenerator
 
     private function normalizeTypeName(string $type_name): string
     {
-        return str_replace(array(' ', '-'), array('', '_'), $type_name);
+        return str_replace([' ', '-'], ['', '_'], $type_name);
     }
 
+    /**
+     * @return string
+     */
     public function getSchema()
     {
+        Profiler::getInstance()->start('GraphQLGenerator::loadTypes', Profiler::CATEGORY_HLAPI);
         $this->loadTypes();
+        Profiler::getInstance()->stop('GraphQLGenerator::loadTypes');
         $schema_str = '';
+        Profiler::getInstance()->start('GraphQLGenerator::writeTypes', Profiler::CATEGORY_HLAPI);
         foreach ($this->types as $type_name => $type) {
             $schema_str .= $this->writeType($type_name, $type);
         }
+        Profiler::getInstance()->stop('GraphQLGenerator::writeTypes');
 
+        Profiler::getInstance()->start('GraphQLGenerator::normalizeTypeNames', Profiler::CATEGORY_HLAPI);
         // Write Query
         $schema_str .= "type Query {\n";
-        foreach ($this->types as $type_name => $type) {
+        foreach (array_keys($this->types) as $type_name) {
             if (str_starts_with($type_name, '_')) {
                 continue;
             }
@@ -74,29 +87,43 @@ final class GraphQLGenerator
             $schema_str .= "  {$type_name}{$args_str}: [$type_name]\n";
         }
         $schema_str .= "}\n";
+        Profiler::getInstance()->stop('GraphQLGenerator::normalizeTypeNames');
 
         return $schema_str;
     }
 
-    private function writeType($type_name, ObjectType|callable $type): string
+    private function writeType(string $type_name, ObjectType|callable $type): string
     {
         $type_name = $this->normalizeTypeName($type_name);
         $type_str = "type $type_name {\n";
         if (is_callable($type)) {
             $type = $type();
         }
+        // Ignore types with no fields (For example, maybe a custom asset from a definition without any custom fields generates an invalid type like "_CustomAsset_Car_custom_fields")
+        if (empty($type->getFields())) {
+            return '';
+        }
         foreach ($type->getFields() as $field_name => $field) {
+            $field_type = $field->config['type'];
+            if ($field_type instanceof ObjectType && empty($field->config['type']->getFields())) {
+                // Ignore properties that would like to types with no fields
+                continue;
+            }
             try {
                 $type_str .= "  $field_name: {$field->getType()}\n";
-            } catch (\Throwable $e) {
-                trigger_error("Error writing field $field_name for type $type_name: {$e->getMessage()}", E_USER_WARNING);
+            } catch (Throwable $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    "Error writing field $field_name for type $type_name: {$e->getMessage()}",
+                    ['exception' => $e]
+                );
             }
         }
         $type_str .= "}\n";
         return $type_str;
     }
 
-    private function loadTypes()
+    private function loadTypes(): void
     {
         $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
         foreach ($component_schemas as $schema_name => $schema) {
@@ -119,13 +146,16 @@ final class GraphQLGenerator
 
         // Handle "internal" types that are used for object properties
         foreach ($schema['properties'] as $prop_name => $prop) {
-            if (isset($prop['x-full-schema'])) {
-                continue;
-            }
             if ($prop['type'] === Doc\Schema::TYPE_OBJECT) {
+                if (isset($prop['x-full-schema'])) {
+                    continue;
+                }
                 $namespaced_type = "{$schema_name}_{$prop_name}";
                 $types['_' . $namespaced_type] = $this->convertRESTPropertyToGraphQLType($prop, $namespaced_type);
-            } else if ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
+            } elseif ($prop['type'] === Doc\Schema::TYPE_ARRAY) {
+                if (isset($prop['items']['x-full-schema'])) {
+                    continue;
+                }
                 $items = $prop['items'];
                 if ($items['type'] === Doc\Schema::TYPE_OBJECT) {
                     $namespaced_type = "{$schema_name}_{$prop_name}";
@@ -142,9 +172,7 @@ final class GraphQLGenerator
         foreach ($schema['properties'] as $name => $property) {
             $fields[$name] = [
                 'type' => $this->convertRESTPropertyToGraphQLType($property, $name, $schema_name),
-                'resolve' => function () {
-                    return '';
-                }
+                'resolve' => fn() => '',
             ];
         }
         return new ObjectType([
@@ -153,6 +181,13 @@ final class GraphQLGenerator
         ]);
     }
 
+    /**
+     * @param array $property
+     * @param string|null $name
+     * @param string $prefix
+     *
+     * @return Type|ListOfType<Type|Closure>|Closure|null
+     */
     private function convertRESTPropertyToGraphQLType(array $property, ?string $name = null, string $prefix = '')
     {
         $type = $property['type'] ?? 'string';
@@ -171,7 +206,7 @@ final class GraphQLGenerator
         if ($type === Doc\Schema::TYPE_ARRAY) {
             $items = $property['items'];
             $graphql_type = $this->convertRESTPropertyToGraphQLType($items, $name, $prefix);
-            return Type::listOf($graphql_type);
+            return new ListOfType($graphql_type);
         }
 
         if ($type === Doc\Schema::TYPE_OBJECT) {
@@ -180,20 +215,17 @@ final class GraphQLGenerator
             foreach ($properties as $prop_name => $prop_value) {
                 $fields[$prop_name] = [
                     'type' => $this->convertRESTPropertyToGraphQLType($prop_value, $prop_name, $prefix),
-                    'resolve' => function () {
-                        return '';
-                    }
+                    'resolve' => fn() => '',
                 ];
             }
             if (isset($property['x-full-schema'])) {
-                return function () use ($property) {
-                    return $this->types[$property['x-full-schema']];
-                };
+                return fn() => $this->types[$property['x-full-schema']];
             }
             return new ObjectType([
                 'name' => "_{$prefix}_{$name}",
                 'fields' => $fields,
             ]);
         }
+        return null;
     }
 }

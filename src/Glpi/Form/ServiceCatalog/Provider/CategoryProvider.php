@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,7 +41,7 @@ use Glpi\FuzzyMatcher\FuzzyMatcher;
 use Glpi\FuzzyMatcher\PartialMatchStrategy;
 use Override;
 
-/** @implements CompositeProviderInterface<\Glpi\Form\Category> */
+/** @implements CompositeProviderInterface<Category> */
 final class CategoryProvider implements CompositeProviderInterface
 {
     private FuzzyMatcher $matcher;
@@ -54,17 +54,22 @@ final class CategoryProvider implements CompositeProviderInterface
     #[Override]
     public function getItems(ItemRequest $item_request): array
     {
-        $category = $item_request->getCategory();
+        $category_id = $item_request->getCategoryID();
         $filter = $item_request->getFilter();
 
-        $categories = [];
-        $raw_categories = (new Category())->find([
-            'forms_categories_id' => $category ? $category->getID() : 0,
-        ], ['name']);
+        $category_restriction = [];
+        if ($category_id !== null) {
+            $category_restriction = [
+                'forms_categories_id' => $category_id,
+            ];
+        }
 
-        foreach ($raw_categories as $raw_categoriy) {
+        $categories = [];
+        $raw_categories = (new Category())->find($category_restriction, ['name']);
+
+        foreach ($raw_categories as $raw_category) {
             $category = new Category();
-            $category->getFromResultSet($raw_categoriy);
+            $category->getFromResultSet($raw_category);
             $category->post_getFromDB();
 
             // Fuzzy matching
@@ -78,6 +83,39 @@ final class CategoryProvider implements CompositeProviderInterface
             }
 
             $categories[] = $category;
+        }
+
+        return $categories;
+    }
+
+    /**
+     * @param ItemRequest $item_request
+     * @return array<array{id: int, name: string}>
+     */
+    public function getAncestors(ItemRequest $item_request): array
+    {
+        $category_id = $item_request->getCategoryID();
+        $category = Category::getById($category_id);
+        if (!$category) {
+            return [];
+        }
+
+        $categories = [];
+        $current_category = [
+            'id' => $category->getID(),
+            'name' => $category->fields['name'],
+        ];
+
+        /** @var Category $ancestor */
+        foreach ($category->getAncestors() as $ancestor) {
+            $categories[] = [
+                'id' => $ancestor->getID(),
+                'name' => $ancestor->fields['name'],
+            ];
+        }
+
+        if (!in_array($current_category['id'], array_column($categories, 'id'), true)) {
+            $categories[] = $current_category;
         }
 
         return $categories;

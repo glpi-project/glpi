@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,8 +44,8 @@ use Glpi\DBAL\QuerySubQuery;
  **/
 class ProfileRight extends CommonDBChild
 {
-   // From CommonDBChild:
-    public static $itemtype = 'Profile';
+    // From CommonDBChild:
+    public static $itemtype = Profile::class;
     public static $items_id = 'profiles_id'; // Field name
     public $dohistory       = true;
 
@@ -56,9 +56,8 @@ class ProfileRight extends CommonDBChild
      *       Therefore, we need to use update or insert DB queries rather than `CommonDBTM::add`.
      *       The $clone_as_template parameter is ignored.
      */
-    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false)
+    public function clone(array $override_input = [], bool $history = true, bool $clone_as_template = false, bool $clean_mapper = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -93,10 +92,6 @@ class ProfileRight extends CommonDBChild
      */
     public static function getAllPossibleRights()
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $rights = $GLPI_CACHE->get('all_possible_rights', []);
@@ -105,7 +100,7 @@ class ProfileRight extends CommonDBChild
             $iterator = $DB->request([
                 'SELECT'          => 'name',
                 'DISTINCT'        => true,
-                'FROM'            => self::getTable()
+                'FROM'            => self::getTable(),
             ]);
             foreach ($iterator as $right) {
                 // By default, all rights are NULL ...
@@ -118,25 +113,28 @@ class ProfileRight extends CommonDBChild
     }
 
 
+    /**
+     * @return void
+     */
     public static function cleanAllPossibleRights()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('all_possible_rights');
     }
 
     /**
-     * @param $profiles_id
-     * @param $rights         array
-     **/
+     * @param int $profiles_id
+     * @param array $rights
+     *
+     * @return array
+     */
     public static function getProfileRights($profiles_id, array $rights = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
             'FROM'   => 'glpi_profilerights',
-            'WHERE'  => ['profiles_id' => $profiles_id]
+            'WHERE'  => ['profiles_id' => $profiles_id],
         ];
         if (count($rights) > 0) {
             $query['WHERE']['name'] = $rights;
@@ -153,14 +151,10 @@ class ProfileRight extends CommonDBChild
     /**
      * @param $rights   array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function addProfileRights(array $rights)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $ok = true;
@@ -168,7 +162,7 @@ class ProfileRight extends CommonDBChild
 
         $iterator = $DB->request([
             'SELECT'   => ['id'],
-            'FROM'     => Profile::getTable()
+            'FROM'     => Profile::getTable(),
         ]);
 
         foreach ($iterator as $profile) {
@@ -178,11 +172,11 @@ class ProfileRight extends CommonDBChild
                     self::getTable(),
                     [
                         'profiles_id'  => $profiles_id,
-                        'name'         => $name
+                        'name'         => $name,
                     ]
                 );
                 if (!$res) {
-                     $ok = false;
+                    $ok = false;
                 }
             }
         }
@@ -193,14 +187,10 @@ class ProfileRight extends CommonDBChild
     /**
      * @param $rights   array
      *
-     * @return boolean
+     * @return bool
      **/
     public static function deleteProfileRights(array $rights)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $GLPI_CACHE->set('all_possible_rights', []);
@@ -209,30 +199,31 @@ class ProfileRight extends CommonDBChild
             $result = $DB->delete(
                 self::getTable(),
                 [
-                    'name' => $name
+                    'name' => $name,
                 ]
             );
             if (!$result) {
-                 $ok = false;
+                $ok = false;
             }
         }
         return $ok;
     }
 
     /**
-     * @param $profiles_id
-     **/
+     * @param int $profiles_id
+     *
+     * @return void
+     */
     public static function fillProfileRights($profiles_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $subq = new QuerySubQuery([
             'FROM'   => 'glpi_profilerights AS CURRENT',
             'WHERE'  => [
                 'CURRENT.profiles_id'   => $profiles_id,
-                'CURRENT.NAME'          => new QueryExpression('POSSIBLE.NAME')
-            ]
+                'CURRENT.NAME'          => new QueryExpression('POSSIBLE.NAME'),
+            ],
         ]);
 
         $expr = 'NOT EXISTS ' . $subq->getQuery();
@@ -241,8 +232,8 @@ class ProfileRight extends CommonDBChild
             'DISTINCT'        => true,
             'FROM'            => 'glpi_profilerights AS POSSIBLE',
             'WHERE'           => [
-                new QueryExpression($expr)
-            ]
+                new QueryExpression($expr),
+            ],
         ]);
 
         if ($iterator->count() === 0) {
@@ -265,10 +256,12 @@ class ProfileRight extends CommonDBChild
 
 
     /**
-     * Update the rights of a profile (static since 0.90.1)
+     * Update the rights of a profile
      *
-     * @param $profiles_id
-     * @param $rights         array
+     * @param int $profiles_id
+     * @param array $rights
+     *
+     * @return void
      */
     public static function updateProfileRights($profiles_id, array $rights = [])
     {
@@ -278,28 +271,33 @@ class ProfileRight extends CommonDBChild
             if (isset($right)) {
                 if (
                     $me->getFromDBByCrit(['profiles_id'   => $profiles_id,
-                        'name'          => $name
+                        'name'          => $name,
                     ])
                 ) {
                     $input = ['id'          => $me->getID(),
-                        'rights'      => $right
+                        'rights'      => $right,
                     ];
                     $me->update($input);
                 } else {
                     $input = ['profiles_id' => $profiles_id,
                         'name'        => $name,
-                        'rights'      => $right
+                        'rights'      => $right,
                     ];
                     $me->add($input);
                 }
             }
         }
 
-       // Don't forget to complete the profile rights ...
+        // Don't forget to complete the profile rights ...
         self::fillProfileRights($profiles_id);
     }
 
 
+    /**
+     * @param bool $history
+     *
+     * @return void
+     */
     public function post_addItem($history = true)
     {
         // Refresh session rights to avoid log out and login when rights change
@@ -322,7 +320,7 @@ class ProfileRight extends CommonDBChild
     {
         Profile::getById($profile_id)->update([
             'id'                 => $profile_id,
-            'last_rights_update' => Session::getCurrentTime()
+            'last_rights_update' => Session::getCurrentTime(),
         ]);
     }
 
@@ -337,11 +335,13 @@ class ProfileRight extends CommonDBChild
     {
 
         $itemtype = $options['searchopt']['rightclass'];
-        $item     = new $itemtype();
+        if (!($item = getItemForItemtype($itemtype))) {
+            return __s('None');
+        }
         $rights   = '';
         $prem     = true;
         foreach ($item->getRights() as $val => $name) {
-            if (is_numeric($values['rights']) && ((int)$values['rights'] & $val)) {
+            if (is_numeric($values['rights']) && ((int) $values['rights'] & $val)) {
                 if ($prem) {
                     $prem = false;
                 } else {
@@ -354,7 +354,7 @@ class ProfileRight extends CommonDBChild
                 }
             }
         }
-        return ($rights ? $rights : __('None'));
+        return htmlescape($rights ?: __('None'));
     }
 
 

@@ -1,0 +1,13 @@
+Subject: [GLPI #0000150] New ticket
+From: noreply@glpi-project.org
+To: tech@glpi-project.org
+Message-ID: <GLPI-150.1716977698.1280320605@localhost>
+Date: Wed, 29 May 2024 11:48:25 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr-FR
+Content-Transfer-Encoding: 7bit
+
+This is a notification for a new ticket, sent by GLPI < 10.0.0.
+It should be blacklisted by hardcoded rules, based on its Message-ID header,
+as it will be considered as a Ticket notification sent by the current GLPI instance.

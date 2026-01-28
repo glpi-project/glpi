@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,15 +39,15 @@
 class SlaLevel extends LevelAgreementLevel
 {
     protected $rules_id_field     = 'slalevels_id';
-    protected $ruleactionclass    = 'SlaLevelAction';
-    protected static $parentclass = 'SLA';
+    protected $ruleactionclass    = SlaLevelAction::class;
+    protected static $parentclass = SLA::class;
     protected static $fkparent    = 'slas_id';
-   // No criteria
-    protected $rulecriteriaclass = 'SlaLevelCriteria';
+    // No criteria
+    protected $rulecriteriaclass = SlaLevelCriteria::class;
 
     public static function getTable($classname = null)
     {
-        return CommonDBTM::getTable(__CLASS__);
+        return CommonDBTM::getTable(self::class);
     }
 
     public static function getSectorizedDetails(): array
@@ -64,9 +64,10 @@ class SlaLevel extends LevelAgreementLevel
         $slt->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
     }
 
-    public function showForParent(SLA $sla)
+    #[Override]
+    public function showForParent(LevelAgreement $la)
     {
-        $this->showForLA($sla);
+        $this->showForLA($la);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -91,15 +92,14 @@ class SlaLevel extends LevelAgreementLevel
     /**
      * Get first level for a SLA
      *
-     * @param integer $slas_id id of the SLA
+     * @param int $slas_id id of the SLA
      *
      * @since 9.1 (before getFirst SlaLevel)
      *
-     * @return integer id of the sla level : 0 if not exists
+     * @return int id of the sla level : 0 if not exists
      **/
     public static function getFirstSlaLevel($slas_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -107,10 +107,10 @@ class SlaLevel extends LevelAgreementLevel
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'slas_id'   => $slas_id,
-                'is_active' => 1
+                'is_active' => 1,
             ],
             'ORDER'  => 'execution_time ASC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if ($result = $iterator->current()) {
@@ -122,20 +122,19 @@ class SlaLevel extends LevelAgreementLevel
     /**
      * Get next level for a SLA
      *
-     * @param integer $slas_id      id of the SLA
-     * @param integer $slalevels_id id of the current SLA level
+     * @param int $slas_id      id of the SLA
+     * @param int $slalevels_id id of the current SLA level
      *
-     * @return integer id of the sla level : 0 if not exists
+     * @return int id of the sla level : 0 if not exists
      **/
     public static function getNextSlaLevel($slas_id, $slalevels_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => 'execution_time',
             'FROM'   => self::getTable(),
-            'WHERE'  => ['id' => $slalevels_id]
+            'WHERE'  => ['id' => $slalevels_id],
         ]);
 
         if ($result = $iterator->current()) {
@@ -148,14 +147,14 @@ class SlaLevel extends LevelAgreementLevel
                     'slas_id'         => $slas_id,
                     'is_active'       => 1,
                     'id'              => ['<>', $slalevels_id],
-                    'execution_time'  => ['>', $execution_time]
+                    'execution_time'  => ['>', $execution_time],
                 ],
                 'ORDER'  => 'execution_time ASC',
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
 
             if ($result = $lvl_iterator->current()) {
-                 return $result['id'];
+                return $result['id'];
             }
         }
         return 0;

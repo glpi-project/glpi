@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Inventory;
 
+use Agent;
+use Exception;
 use Glpi\Agent\Communication\AbstractRequest;
 use Glpi\Agent\Communication\Headers\Common;
 use Glpi\Plugin\Hooks;
@@ -57,6 +59,7 @@ class Request extends AbstractRequest
 
     /** @var string */
     private string $network_inventory_mode;
+    private Conf $conf;
 
     protected function initHeaders(): Common
     {
@@ -70,11 +73,13 @@ class Request extends AbstractRequest
      * @param string $action   Query mode (one of self::*_QUERY or self::*_ACTION)
      * @param mixed|null $content Contents, optional
      *
-     * @return boolean
+     * @return bool
      */
     protected function handleAction(string $action, mixed $content = null): bool
     {
         $this->query = $action;
+        $this->conf = new Conf();
+
         switch ($action) {
             case self::GET_PARAMS:
                 $this->getParams($content);
@@ -115,13 +120,13 @@ class Request extends AbstractRequest
      *
      * @param string $task  Task (one of self::*_TASK)
      *
-     * @return array
+     * @return array{}|array{version: string, server: string}
      */
     protected function handleTask(string $task): array
     {
         $params = [
             'options' => [
-                'response' => []
+                'response' => [],
             ],
             'item' => $this->inventory->getAgent(),
         ];
@@ -158,23 +163,22 @@ class Request extends AbstractRequest
      */
     public function getParams(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->inventory = new Inventory();
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-            'status'     => 'ok'
+            'expiration' => $this->conf->inventory_frequency,
+            'status'     => 'ok',
         ];
 
         $params = [
             'options' => [
                 'content' => $data,
-                'response' => $response
+                'response' => $response,
             ],
-            'item' => $this->inventory->getAgent()
+            'item' => $this->inventory->getAgent(),
         ];
 
         $params = Plugin::doHookFunction(Hooks::INVENTORY_GET_PARAMS, $params);
@@ -192,26 +196,25 @@ class Request extends AbstractRequest
      */
     public function prolog(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->headers->hasHeader('GLPI-Agent-ID')) {
             $this->setMode(self::JSON_MODE);
             $response = [
-                'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-                'status'     => 'ok'
+                'expiration' => $this->conf->inventory_frequency,
+                'status'     => 'ok',
             ];
         } else {
             $response = [
-                'PROLOG_FREQ'  => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-                'RESPONSE'     => 'SEND'
+                'PROLOG_FREQ'  => $this->conf->inventory_frequency,
+                'RESPONSE'     => 'SEND',
             ];
         }
 
         $hook_params = [
             'mode' => $this->getMode(),
             'deviceid' => $this->getDeviceID(),
-            'response' => $response
+            'response' => $response,
         ];
         $hook_response = Plugin::doHookFunction(
             Hooks::PROLOG_RESPONSE,
@@ -272,7 +275,7 @@ class Request extends AbstractRequest
             'inventory' => $this->inventory,
             'deviceid' => $this->getDeviceID(),
             'response' => $response,
-            'query' => $this->query
+            'query' => $this->query,
         ];
 
         $hook_response = Plugin::doHookFunction(
@@ -287,7 +290,7 @@ class Request extends AbstractRequest
             //try to use hook response
             if (isset($hook_response['response']) && count($hook_response['response'])) {
                 $this->addToResponse($response);
-            } else if (isset($hook_response['errors']) && count($hook_response['errors'])) {
+            } elseif (isset($hook_response['errors']) && count($hook_response['errors'])) {
                 $this->addError($hook_response['errors'], 400);
             } else {
                 //nothing expected happens; this is an error
@@ -305,15 +308,14 @@ class Request extends AbstractRequest
      */
     public function contact(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->inventory = new Inventory();
         $this->inventory->contact($data);
 
         $response = [
-            'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-            'status'     => 'ok'
+            'expiration' => $this->conf->inventory_frequency,
+            'status'     => 'ok',
         ];
 
         //For the moment it's the Agent who informs us about the active tasks
@@ -330,8 +332,8 @@ class Request extends AbstractRequest
                 'remoteinventory',
             ];
             if (
-                !empty(array_intersect($enabled_tasks, $taskneededinv)) &&
-                !in_array('inventory', $enabled_tasks)
+                !empty(array_intersect($enabled_tasks, $taskneededinv))
+                && !in_array('inventory', $enabled_tasks)
             ) {
                 $enabled_tasks[] = 'inventory';
             }
@@ -345,7 +347,7 @@ class Request extends AbstractRequest
                     // Task is not supported, disable it and add unsupported message in response
                     $this->addToResponse([
                         "message" => "$task task not supported",
-                        "disabled" => $task
+                        "disabled" => $task,
                     ]);
                 }
             }
@@ -363,7 +365,6 @@ class Request extends AbstractRequest
      */
     public function inventory(mixed $data): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         try {
@@ -372,7 +373,7 @@ class Request extends AbstractRequest
                 $this->addError('Rejected by a plugin: No reason specified', 400);
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->addError('Rejected by a plugin: ' . $e->getMessage(), 400);
             return;
         }
@@ -403,8 +404,8 @@ class Request extends AbstractRequest
         } else {
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
                 $response = [
-                    'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-                    'status'     => 'ok'
+                    'expiration' => $this->conf->inventory_frequency,
+                    'status'     => 'ok',
                 ];
             } else {
                 $response = ['RESPONSE' => 'SEND'];
@@ -418,16 +419,16 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled inventory task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleInventoryTask(array $params): array
     {
         // Preset response as GLPI supports native inventory by default
         $params['options']['response'][self::INVENT_TASK] = [
             'server' => 'glpi',
-            'version' => GLPI_VERSION
+            'version' => GLPI_VERSION,
         ];
         $params = Plugin::doHookFunction(Hooks::HANDLE_INVENTORY_TASK, $params);
 
@@ -438,9 +439,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled netdiscovery task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleNetDiscoveryTask(array $params): array
     {
@@ -452,9 +453,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled netinventory task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleNetInventoryTask(array $params): array
     {
@@ -466,9 +467,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled ESX task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleESXTask(array $params): array
     {
@@ -480,9 +481,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled collect task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleCollectTask(array $params): array
     {
@@ -494,9 +495,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled deploy task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleDeployTask(array $params): array
     {
@@ -508,9 +509,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled wakeonlan task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleWakeOnLanTask(array $params): array
     {
@@ -522,9 +523,9 @@ class Request extends AbstractRequest
     /**
      * Handle agent enabled remoteinventory task support on contact request
      *
-     * @param array $params Required hooks params
+     * @param array{options: array{response: array{}}, item: Agent} $params Required hooks params
      *
-     * @return array
+     * @return array{version: string, server: string}
      */
     public function handleRemoteInventoryTask(array $params): array
     {
@@ -536,29 +537,29 @@ class Request extends AbstractRequest
     /**
      * Get inventory request status
      *
-     * @return array
+     * @return array<string, mixed>
      */
     public function getInventoryStatus(): array
     {
         $items = $this->inventory->getItems();
         $status = [
             'metadata' => $this->inventory->getMetadata(),
-            'items'    => $items
+            'items'    => $items,
         ];
 
         if (count($items) == 1) {
             $item = $items[0];
             $status += [
                 'itemtype' => $item->getType(),
-                'items_id' => $item->fields['id']
+                'items_id' => $item->fields['id'],
             ];
-        } else if (count($items)) {
+        } elseif (count($items)) {
             // Defines 'itemtype' only if all items has same type
             $itemtype = null;
             foreach ($items as $item) {
-                if ($itemtype === null && $item->getType() != Unmanaged::class) {
+                if ($itemtype === null && !$item instanceof Unmanaged) {
                     $itemtype = $item->getType();
-                } else if ($itemtype !== $item->getType()) {
+                } elseif ($itemtype !== $item->getType()) {
                     $itemtype = false;
                     break;
                 }

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +34,12 @@
 
 namespace Glpi\Application\View;
 
-use GLPI;
+use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
 use Glpi\Application\View\Extension\FrontEndAssetsExtension;
+use Glpi\Application\View\Extension\HtmlExtension;
 use Glpi\Application\View\Extension\I18nExtension;
 use Glpi\Application\View\Extension\IllustrationExtension;
 use Glpi\Application\View\Extension\ItemtypeExtension;
@@ -51,9 +51,10 @@ use Glpi\Application\View\Extension\SecurityExtension;
 use Glpi\Application\View\Extension\SessionExtension;
 use Glpi\Application\View\Extension\TeamExtension;
 use Glpi\Debug\Profiler;
+use Glpi\Kernel\Kernel;
 use Plugin;
 use Session;
-use Twig\Environment;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
@@ -63,27 +64,39 @@ use Twig\Loader\FilesystemLoader;
  */
 class TemplateRenderer
 {
-    /**
-     * @var Environment
-     */
-    private $environment;
+    private TwigEnvironment $environment;
 
-    public function __construct(string $rootdir = GLPI_ROOT, string $cachedir = GLPI_CACHE_DIR)
+    public function __construct(string $rootdir = GLPI_ROOT, ?string $cachedir = null)
     {
+        if ($cachedir === null) {
+            $cachedir = Kernel::getCacheRootDir();
+        }
+
         $loader = new FilesystemLoader($rootdir . '/templates', $rootdir);
 
         $active_plugins = Plugin::getPlugins();
         foreach ($active_plugins as $plugin_key) {
-           // Add a dedicated namespace for each active plugin, so templates would be loadable using
-           // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
-           // is the path of the template inside the `/templates` directory of the plugin.
+            // Add a dedicated namespace for each active plugin, so templates would be loadable using
+            // `@my_plugin/path/to/template.html.twig` where `my_plugin` is the plugin key and `path/to/template.html.twig`
+            // is the path of the template inside the `/templates` directory of the plugin.
             $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
         }
 
+        $glpi_environment = GLPIEnvironment::get();
         $env_params = [
-            'debug'       => $_SESSION['glpi_use_mode'] ?? null === Session::DEBUG_MODE,
-            'auto_reload' => GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_PRODUCTION,
+            'debug' => $glpi_environment->shouldEnableExtraDevAndDebugTools() || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
+            'auto_reload' => $glpi_environment->shouldExpectResourcesToChange(),
+            'strict_variables' => GLPI_STRICT_ENV,
         ];
+
+        if (
+            $glpi_environment->shouldEnableTestResources()
+            && \file_exists("$rootdir/tests/templates")
+        ) {
+            // Add a dedicated namespace for specific test templates.
+            // For instance `@test/templates/path/to/template.html.twig`
+            $loader->addPath($rootdir . '/tests/templates', 'test');
+        }
 
         $tpl_cachedir = $cachedir . '/templates';
         if (
@@ -95,19 +108,20 @@ class TemplateRenderer
             $env_params['cache'] = $tpl_cachedir;
         }
 
-        $this->environment = new Environment(
+        $this->environment = new TwigEnvironment(
             $loader,
             $env_params
         );
-       // Vendor extensions
+        // Vendor extensions
         $this->environment->addExtension(new DebugExtension());
         $this->environment->addExtension(new StringExtension());
-       // GLPI extensions
+        // GLPI extensions
         $this->environment->addExtension(new ConfigExtension());
         $this->environment->addExtension(new SecurityExtension());
         $this->environment->addExtension(new DataHelpersExtension());
         $this->environment->addExtension(new DocumentExtension());
         $this->environment->addExtension(new FrontEndAssetsExtension());
+        $this->environment->addExtension(new HtmlExtension());
         $this->environment->addExtension(new I18nExtension());
         $this->environment->addExtension(new IllustrationExtension());
         $this->environment->addExtension(new ItemtypeExtension());
@@ -118,7 +132,7 @@ class TemplateRenderer
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
 
-       // add superglobals
+        // add superglobals
         $this->environment->addGlobal('_post', $_POST);
         $this->environment->addGlobal('_get', $_GET);
         $this->environment->addGlobal('_request', $_REQUEST);
@@ -143,9 +157,9 @@ class TemplateRenderer
     /**
      * Return Twig environment used to handle templates.
      *
-     * @return Environment
+     * @return TwigEnvironment
      */
-    public function getEnvironment(): Environment
+    public function getEnvironment(): TwigEnvironment
     {
         return $this->environment;
     }

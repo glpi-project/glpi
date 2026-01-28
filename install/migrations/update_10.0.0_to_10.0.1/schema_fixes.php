@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,9 +33,8 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // Remove '' default values on glpi_impactcontexts.positions
 // MySQL does not allow default values on TEXT fields, while MariaDB does
 // Default was removed in installation file GLPI 9.5.4, see #8415

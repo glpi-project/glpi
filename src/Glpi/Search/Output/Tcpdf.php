@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,9 @@
 
 namespace Glpi\Search\Output;
 
-use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
+use GLPIPDF;
+
+use function Safe\preg_replace;
 
 class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
 {
@@ -48,12 +50,17 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
                 'format' => $paperSize,
                 'font_size' => 8,
                 'font' => $_SESSION['glpipdffont'] ?? 'helvetica',
-                'margin_bottom' => 30
+                'margin_bottom' => 30,
             ],
             $this->spreadsheet->getProperties()->getCustomPropertyValue('items count'),
             null,
             false
-        ) extends \GLPIPDF {
+        ) extends GLPIPDF {
+            /**
+             * @param bool $val
+             *
+             * @return void
+             */
             public function setPrintFooter($val = true)
             {
                 //override because \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf::save() explicitly calls setPrintFooter(false) -_-
@@ -62,21 +69,19 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
         };
 
         //remove size considerations so TCPDF do its work.
-        $callback = function ($html) {
-            return preg_replace(
-                [
-                    '|</style>|',
-                    '|width:\d+pt"|',
-                    '|padding-left:\dpx;|'
-                ],
-                [
-                    'table { width: 100%; };</style>',
-                    '"',
-                    ''
-                ],
-                $html
-            );
-        };
+        $callback = (fn($html) => preg_replace(
+            [
+                '|</style>|',
+                '|width:\d+pt"|',
+                '|padding-left:\dpx;|',
+            ],
+            [
+                'table { width: 100%; };</style>',
+                '"',
+                '',
+            ],
+            $html
+        ));
         $this->setEditHtmlCallback($callback);
 
         return $instance;

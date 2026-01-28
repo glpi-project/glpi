@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,16 +39,18 @@
 
 use Glpi\RichText\RichText;
 
+use function Safe\json_encode;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
 Session::checkCentralAccess();
 
 if (!isset($_POST['kbid']) || !isset($_POST['oldid']) || !isset($_POST['diffid'])) {
-    throw new \RuntimeException('Required argument missing!');
+    throw new RuntimeException('Required argument missing!');
 }
 
-$item = new \KnowbaseItem();
+$item = new KnowbaseItem();
 if (!$item->getFromDB($_POST['kbid']) || !$item->can($_POST['kbid'], READ)) {
     return;
 }
@@ -61,17 +63,17 @@ $revision = new KnowbaseItem_Revision();
 $revision->getFromDB($oldid);
 $old = [
     'name'   => $revision->fields['name'],
-    'answer' => RichText::getSafeHtml($revision->fields['answer'])
+    'answer' => RichText::getSafeHtml($revision->fields['answer']),
 ];
 
 $revision = $diffid == 0 ? new KnowbaseItem() : new KnowbaseItem_Revision();
 $revision->getFromDB($diffid == 0 ? $kbid : $diffid);
 $diff = [
     'name'   => $revision->fields['name'],
-    'answer' => RichText::getSafeHtml($revision->fields['answer'])
+    'answer' => RichText::getSafeHtml($revision->fields['answer']),
 ];
 
 echo json_encode([
     'old'  => $old,
-    'diff' => $diff
+    'diff' => $diff,
 ]);

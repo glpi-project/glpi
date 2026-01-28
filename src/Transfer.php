@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
 use Glpi\Socket;
@@ -49,7 +50,7 @@ final class Transfer extends CommonDBTM
 {
     /**
      * Array of items that have already been transferred
-     * @var array
+     * @var array<class-string<CommonDBTM>, int[]>
      */
     public array $already_transfer      = [];
 
@@ -67,7 +68,7 @@ final class Transfer extends CommonDBTM
 
     /**
      * Options used to transfer
-     * @var array
+     * @var array<string, int>
      */
     public array $options               = [];
 
@@ -104,6 +105,9 @@ final class Transfer extends CommonDBTM
         ];
     }
 
+    /**
+     * @return int
+     */
     public function maxActionsCount()
     {
         return 0;
@@ -115,7 +119,7 @@ final class Transfer extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -133,7 +137,7 @@ final class Transfer extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -142,15 +146,15 @@ final class Transfer extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => self::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -162,7 +166,7 @@ final class Transfer extends CommonDBTM
      * Associated items will be evaluated based on the passed options and transferred/copied as well if required.
      * This will disable notifications for the rest of the request execution.
      *
-     * @param array $items    Array of items to transfer in the format [itemtype => [ids]]
+     * @param array<class-string<CommonDBTM>, int[]> $items    Array of items to transfer in the format [itemtype => [ids]]
      * @param int $to         entity destination ID
      * @param array $options  options used to transfer
      *
@@ -170,7 +174,6 @@ final class Transfer extends CommonDBTM
      **/
     public function moveItems(array $items, int $to, array $options): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // unset notifications
@@ -223,7 +226,7 @@ final class Transfer extends CommonDBTM
             'clean_certificate'   => 0,
 
             'lock_updated_fields' => 0,
-            'keep_location'       => 1
+            'keep_location'       => 1,
         ], $options);
 
         if ($to < 0) {
@@ -233,11 +236,8 @@ final class Transfer extends CommonDBTM
         // Store to
         $this->to = $to;
 
-        $intransaction = $DB->inTransaction();
         try {
-            if (!$intransaction) {
-                $DB->beginTransaction();
-            }
+            $DB->beginTransaction();
 
             // Simulate transfers To know which items need to be transfer
             $this->simulateTransfer($items);
@@ -247,7 +247,7 @@ final class Transfer extends CommonDBTM
             foreach ($INVENTORY_TYPES as $itemtype) {
                 if (isset($items[$itemtype]) && count($items[$itemtype])) {
                     foreach ($items[$itemtype] as $ID) {
-                         $this->transferItem($itemtype, $ID, $ID);
+                        $this->transferItem($itemtype, $ID, $ID);
                     }
                 }
             }
@@ -267,13 +267,9 @@ final class Transfer extends CommonDBTM
             // FIXME: only if Software or SoftwareLicense has been changed?
             $this->cleanSoftwareVersions();
             $this->cleanSoftwares();
-            if (!$intransaction && $DB->inTransaction()) {
-                $DB->commit();
-            }
-        } catch (\Throwable $e) {
-            if (!$intransaction && $DB->inTransaction()) {
-                $DB->rollBack();
-            }
+            $DB->commit();
+        } catch (Throwable $e) {
+            $DB->rollBack();
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
         }
@@ -346,7 +342,7 @@ final class Transfer extends CommonDBTM
             $entities_id = $item->getEntityID();
             $is_recursive = (bool) $item->isRecursive();
         }
-        $is_recursive = $is_recursive ?? false;
+        $is_recursive ??= false;
         if (
             $is_recursive
             && in_array($entities_id, $this->getDestinationEntityAncestors(), true)
@@ -359,25 +355,24 @@ final class Transfer extends CommonDBTM
 
     private function simulateDirectConnections(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $DC_CONNECT = [];
         // TODO base on directconnect_types dynamically
         if ($this->options['keep_dc_monitor']) {
-            $DC_CONNECT[] = 'Monitor';
+            $DC_CONNECT[] = Monitor::class;
         }
         if ($this->options['keep_dc_phone']) {
-            $DC_CONNECT[] = 'Phone';
+            $DC_CONNECT[] = Phone::class;
         }
         if ($this->options['keep_dc_peripheral']) {
-            $DC_CONNECT[] = 'Peripheral';
+            $DC_CONNECT[] = Peripheral::class;
         }
         if ($this->options['keep_dc_printer']) {
-            $DC_CONNECT[] = 'Printer';
+            $DC_CONNECT[] = Printer::class;
         }
 
-        if (empty($DC_CONNECT)) {
+        if ($DC_CONNECT === []) {
             return;
         }
 
@@ -401,9 +396,9 @@ final class Transfer extends CommonDBTM
                                     'ON' => [
                                         $relation_table       => 'items_id_peripheral',
                                         $peripheral_itemtable => 'id',
-                                    ]
-                                ]
-                            ]
+                                    ],
+                                ],
+                            ],
                         ]
                     );
 
@@ -421,8 +416,8 @@ final class Transfer extends CommonDBTM
                         'WHERE'           => [
                             'itemtype_peripheral' => $peripheral_itemtype,
                             'itemtype_asset'      => $asset_itemtype,
-                            'items_id_asset'      => $this->needtobe_transfer[$asset_itemtype]
-                        ]
+                            'items_id_asset'      => $this->needtobe_transfer[$asset_itemtype],
+                        ],
                     ]);
 
                     foreach ($iterator as $data) {
@@ -435,10 +430,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateSoftware(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->options['keep_software']) {
@@ -450,10 +441,10 @@ final class Transfer extends CommonDBTM
                 'glpi_softwareversions'  => [
                     'ON' => [
                         'glpi_items_softwareversions' => 'softwareversions_id',
-                        'glpi_softwareversions'       => 'id'
-                    ]
-                ]
-            ]
+                        'glpi_softwareversions'       => 'id',
+                    ],
+                ],
+            ],
         ]);
 
         // Clean DB
@@ -462,26 +453,26 @@ final class Transfer extends CommonDBTM
                 'glpi_softwares'  => [
                     'ON' => [
                         'glpi_softwareversions' => 'softwares_id',
-                        'glpi_softwares'        => 'id'
-                    ]
-                ]
-            ]
+                        'glpi_softwares'        => 'id',
+                    ],
+                ],
+            ],
         ]);
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
             $itemtable = getTableForItemType($itemtype);
             // Clean DB
             $DB->delete('glpi_items_softwareversions', [
                 "{$itemtable}.id"  => null,
-                'glpi_items_softwareversions.itemtype' => $itemtype
+                'glpi_items_softwareversions.itemtype' => $itemtype,
             ], [
                 'LEFT JOIN' => [
                     $itemtable  => [
                         'ON' => [
                             'glpi_items_softwareversions' => 'items_id',
-                            $itemtable                    => 'id'
-                        ]
-                    ]
-                ]
+                            $itemtable                    => 'id',
+                        ],
+                    ],
+                ],
             ]);
 
             if ($this->haveItemsToTransfer($itemtype)) {
@@ -490,27 +481,27 @@ final class Transfer extends CommonDBTM
                         'glpi_softwares.id',
                         'glpi_softwares.entities_id',
                         'glpi_softwares.is_recursive',
-                        'glpi_softwareversions.id AS vID'
+                        'glpi_softwareversions.id AS vID',
                     ],
                     'FROM'         => 'glpi_items_softwareversions',
                     'INNER JOIN'   => [
                         'glpi_softwareversions' => [
                             'ON' => [
                                 'glpi_items_softwareversions' => 'softwareversions_id',
-                                'glpi_softwareversions'       => 'id'
-                            ]
+                                'glpi_softwareversions'       => 'id',
+                            ],
                         ],
                         'glpi_softwares'        => [
                             'ON' => [
                                 'glpi_softwareversions' => 'softwares_id',
-                                'glpi_softwares'        => 'id'
-                            ]
-                        ]
+                                'glpi_softwares'        => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'        => [
                         'glpi_items_softwareversions.items_id' => $this->needtobe_transfer[$itemtype],
-                        'glpi_items_softwareversions.itemtype' => $itemtype
-                    ]
+                        'glpi_items_softwareversions.itemtype' => $itemtype,
+                    ],
                 ]);
 
                 foreach ($iterator as $data) {
@@ -522,7 +513,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateSoftwareLicenses(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         if ($this->haveItemsToTransfer(Software::class)) {
             // Move license of software
@@ -530,7 +520,7 @@ final class Transfer extends CommonDBTM
             $iterator = $DB->request([
                 'SELECT' => ['id', 'softwareversions_id_buy', 'softwareversions_id_use'],
                 'FROM'   => 'glpi_softwarelicenses',
-                'WHERE'  => ['softwares_id' => $this->needtobe_transfer['Software']]
+                'WHERE'  => ['softwares_id' => $this->needtobe_transfer['Software']],
             ]);
 
             foreach ($iterator as $lic) {
@@ -538,10 +528,10 @@ final class Transfer extends CommonDBTM
 
                 // Force version transfer
                 if ($lic['softwareversions_id_buy'] > 0) {
-                    $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_buy']);
+                    $this->addToBeTransfer(SoftwareVersion::class, $lic['softwareversions_id_buy']);
                 }
                 if ($lic['softwareversions_id_use'] > 0) {
-                    $this->addToBeTransfer('SoftwareVersion', $lic['softwareversions_id_use']);
+                    $this->addToBeTransfer(SoftwareVersion::class, $lic['softwareversions_id_use']);
                 }
             }
         }
@@ -549,7 +539,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateDevices(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->options['keep_device']) {
@@ -568,7 +557,7 @@ final class Transfer extends CommonDBTM
                     'SELECT'          => [
                         "$itemdevicetable.$fk",
                         "$devicetable.entities_id",
-                        "$devicetable.is_recursive"
+                        "$devicetable.is_recursive",
                     ],
                     'DISTINCT'        => true,
                     'FROM'            => $itemdevicetable,
@@ -576,14 +565,14 @@ final class Transfer extends CommonDBTM
                         $devicetable   => [
                             'ON' => [
                                 $itemdevicetable  => $fk,
-                                $devicetable      => 'id'
-                            ]
-                        ]
+                                $devicetable      => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'           => [
                         "$itemdevicetable.itemtype"   => $itemtype,
-                        "$itemdevicetable.items_id"   => $this->needtobe_transfer[$itemtype]
-                    ]
+                        "$itemdevicetable.items_id"   => $this->needtobe_transfer[$itemtype],
+                    ],
                 ]);
 
                 foreach ($iterator as $data) {
@@ -601,8 +590,8 @@ final class Transfer extends CommonDBTM
                                 'WHERE'  => [
                                     $fk   => $data[$fk],
                                     'itemtype'  => $itemtype,
-                                    'items_id'  => $this->needtobe_transfer[$itemtype]
-                                ]
+                                    'items_id'  => $this->needtobe_transfer[$itemtype],
+                                ],
                             ]);
                             foreach ($iterator2 as $data2) {
                                 $this->addToBeTransfer($itemdevicetype, $data2['id']);
@@ -616,10 +605,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateTickets(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->options['keep_ticket']) {
@@ -636,28 +621,24 @@ final class Transfer extends CommonDBTM
                     'glpi_items_tickets' => [
                         'ON' => [
                             'glpi_items_tickets' => 'tickets_id',
-                            'glpi_tickets'       => 'id'
-                        ]
-                    ]
+                            'glpi_tickets'       => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'itemtype'  => $itemtype,
-                    'items_id'  => $this->needtobe_transfer[$itemtype]
-                ]
+                    'items_id'  => $this->needtobe_transfer[$itemtype],
+                ],
             ]);
 
             foreach ($iterator as $data) {
-                $this->addToBeTransfer('Ticket', $data['id']);
+                $this->addToBeTransfer(Ticket::class, $data['id']);
             }
         }
     }
 
     private function simulateCertificates(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$this->options['keep_certificate']) {
@@ -674,7 +655,7 @@ final class Transfer extends CommonDBTM
                 'glpi_certificates_items',
                 [
                     "$itemtable.id"                 => null,
-                    "glpi_certificates_items.itemtype" => $itemtype
+                    "glpi_certificates_items.itemtype" => $itemtype,
                 ],
                 [
                     'LEFT JOIN' => [
@@ -682,9 +663,9 @@ final class Transfer extends CommonDBTM
                             'ON' => [
                                 'glpi_certificates_items'  => 'items_id',
                                 $itemtable              => 'id',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ]
             );
 
@@ -692,17 +673,17 @@ final class Transfer extends CommonDBTM
             $DB->delete(
                 'glpi_certificates_items',
                 [
-                    'glpi_certificates.id'  => null
+                    'glpi_certificates.id'  => null,
                 ],
                 [
                     'LEFT JOIN' => [
                         'glpi_certificates'  => [
                             'ON' => [
                                 'glpi_certificates_items'  => 'certificates_id',
-                                'glpi_certificates'        => 'id'
-                            ]
-                        ]
-                    ]
+                                'glpi_certificates'        => 'id',
+                            ],
+                        ],
+                    ],
                 ]
             );
 
@@ -710,21 +691,21 @@ final class Transfer extends CommonDBTM
                 'SELECT'    => [
                     'certificates_id',
                     'glpi_certificates.entities_id',
-                    'glpi_certificates.is_recursive'
+                    'glpi_certificates.is_recursive',
                 ],
                 'FROM'      => 'glpi_certificates_items',
                 'LEFT JOIN' => [
                     'glpi_certificates' => [
                         'ON' => [
                             'glpi_certificates_items'  => 'certificates_id',
-                            'glpi_certificates'        => 'id'
-                        ]
-                    ]
+                            'glpi_certificates'        => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'itemtype'  => $itemtype,
-                    'items_id'  => $this->needtobe_transfer[$itemtype]
-                ]
+                    'items_id'  => $this->needtobe_transfer[$itemtype],
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -735,10 +716,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateContracts(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
         if (!$this->options['keep_contract']) {
             return;
@@ -754,7 +731,7 @@ final class Transfer extends CommonDBTM
                 'glpi_contracts_items',
                 [
                     "$itemtable.id"                 => null,
-                    "glpi_contracts_items.itemtype" => $itemtype
+                    "glpi_contracts_items.itemtype" => $itemtype,
                 ],
                 [
                     'LEFT JOIN' => [
@@ -762,9 +739,9 @@ final class Transfer extends CommonDBTM
                             'ON' => [
                                 'glpi_contracts_items'  => 'items_id',
                                 $itemtable              => 'id',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ]
             );
 
@@ -774,31 +751,31 @@ final class Transfer extends CommonDBTM
                     'glpi_contracts'  => [
                         'ON' => [
                             'glpi_contracts_items'  => 'contracts_id',
-                            'glpi_contracts'        => 'id'
-                        ]
-                    ]
-                ]
+                            'glpi_contracts'        => 'id',
+                        ],
+                    ],
+                ],
             ]);
 
             $iterator = $DB->request([
                 'SELECT'    => [
                     'contracts_id',
                     'glpi_contracts.entities_id',
-                    'glpi_contracts.is_recursive'
+                    'glpi_contracts.is_recursive',
                 ],
                 'FROM'      => 'glpi_contracts_items',
                 'LEFT JOIN' => [
                     'glpi_contracts' => [
                         'ON' => [
                             'glpi_contracts_items'  => 'contracts_id',
-                            'glpi_contracts'        => 'id'
-                        ]
-                    ]
+                            'glpi_contracts'        => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'itemtype'  => $itemtype,
-                    'items_id'  => $this->needtobe_transfer[$itemtype]
-                ]
+                    'items_id'  => $this->needtobe_transfer[$itemtype],
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -809,7 +786,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateSuppliers(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->options['keep_supplier']) {
@@ -822,10 +798,10 @@ final class Transfer extends CommonDBTM
                 'glpi_contracts'  => [
                     'ON' => [
                         'glpi_contracts_suppliers' => 'contracts_id',
-                        'glpi_contracts'           => 'id'
-                    ]
-                ]
-            ]
+                        'glpi_contracts'           => 'id',
+                    ],
+                ],
+            ],
         ]);
 
         // Clean DB
@@ -834,10 +810,10 @@ final class Transfer extends CommonDBTM
                 'glpi_suppliers'  => [
                     'ON' => [
                         'glpi_contracts_suppliers' => 'suppliers_id',
-                        'glpi_suppliers'           => 'id'
-                    ]
-                ]
-            ]
+                        'glpi_suppliers'           => 'id',
+                    ],
+                ],
+            ],
         ]);
 
         if ($this->haveItemsToTransfer(Contract::class)) {
@@ -846,20 +822,20 @@ final class Transfer extends CommonDBTM
                 'SELECT'    => [
                     'suppliers_id',
                     'glpi_suppliers.entities_id',
-                    'glpi_suppliers.is_recursive'
+                    'glpi_suppliers.is_recursive',
                 ],
                 'FROM'      => 'glpi_contracts_suppliers',
                 'LEFT JOIN' => [
                     'glpi_suppliers' => [
                         'ON' => [
                             'glpi_contracts_suppliers' => 'suppliers_id',
-                            'glpi_suppliers'           => 'id'
-                        ]
-                    ]
+                            'glpi_suppliers'           => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    'contracts_id' => $this->needtobe_transfer[Contract::class]
-                ]
+                    'contracts_id' => $this->needtobe_transfer[Contract::class],
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -871,7 +847,7 @@ final class Transfer extends CommonDBTM
         $itil_with_suppliers = [
             Ticket::class => Supplier_Ticket::class,
             Problem::class => Problem_Supplier::class,
-            Change::class => Change_Supplier::class
+            Change::class => Change_Supplier::class,
         ];
         foreach ($itil_with_suppliers as $itil_class => $itil_supplier_class) {
             if (!$this->haveItemsToTransfer($itil_class)) {
@@ -883,27 +859,27 @@ final class Transfer extends CommonDBTM
                 'SELECT' => [
                     "$link_table.suppliers_id",
                     'glpi_suppliers.entities_id',
-                    'glpi_suppliers.is_recursive'
+                    'glpi_suppliers.is_recursive',
                 ],
                 'FROM' => $itil_table,
                 'LEFT JOIN' => [
                     $link_table => [
                         'ON' => [
                             $link_table => $itil_class::getForeignKeyField(),
-                            $itil_table => 'id'
-                        ]
+                            $itil_table => 'id',
+                        ],
                     ],
                     'glpi_suppliers' => [
                         'ON' => [
                             $link_table => 'suppliers_id',
-                            'glpi_suppliers' => 'id'
-                        ]
-                    ]
+                            'glpi_suppliers' => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     "$link_table.suppliers_id" => ['>', 0],
-                    "$itil_table.id" => $this->needtobe_transfer[$itil_class]
-                ]
+                    "$itil_table.id" => $this->needtobe_transfer[$itil_class],
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -932,9 +908,9 @@ final class Transfer extends CommonDBTM
                                 'ON' => [
                                     'glpi_infocoms'   => 'items_id',
                                     $itemtable        => 'id',
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ]
                 );
 
@@ -942,22 +918,22 @@ final class Transfer extends CommonDBTM
                     'SELECT'    => [
                         'suppliers_id',
                         'glpi_suppliers.entities_id',
-                        'glpi_suppliers.is_recursive'
+                        'glpi_suppliers.is_recursive',
                     ],
                     'FROM'      => 'glpi_infocoms',
                     'LEFT JOIN' => [
                         'glpi_suppliers'  => [
                             'ON' => [
                                 'glpi_infocoms'   => 'suppliers_id',
-                                'glpi_suppliers'  => 'id'
-                            ]
-                        ]
+                                'glpi_suppliers'  => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         'suppliers_id' => ['>', 0],
                         'itemtype'     => $itemtype,
-                        'items_id'     => $this->needtobe_transfer[$itemtype]
-                    ]
+                        'items_id'     => $this->needtobe_transfer[$itemtype],
+                    ],
                 ]);
 
                 foreach ($iterator as $data) {
@@ -969,7 +945,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateContacts(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         if (!$this->options['keep_contact']) {
             return;
@@ -981,10 +956,10 @@ final class Transfer extends CommonDBTM
                 'glpi_contacts' => [
                     'ON' => [
                         'glpi_contacts_suppliers'  => 'contacts_id',
-                        'glpi_contacts'            => 'id'
-                    ]
-                ]
-            ]
+                        'glpi_contacts'            => 'id',
+                    ],
+                ],
+            ],
         ]);
 
         // Clean DB
@@ -993,10 +968,10 @@ final class Transfer extends CommonDBTM
                 'glpi_suppliers' => [
                     'ON' => [
                         'glpi_contacts_suppliers'  => 'suppliers_id',
-                        'glpi_suppliers'           => 'id'
-                    ]
-                ]
-            ]
+                        'glpi_suppliers'           => 'id',
+                    ],
+                ],
+            ],
         ]);
 
         if ($this->haveItemsToTransfer(Supplier::class)) {
@@ -1005,20 +980,20 @@ final class Transfer extends CommonDBTM
                 'SELECT'    => [
                     'contacts_id',
                     'glpi_contacts.entities_id',
-                    'glpi_contacts.is_recursive'
+                    'glpi_contacts.is_recursive',
                 ],
                 'FROM'      => 'glpi_contacts_suppliers',
                 'LEFT JOIN' => [
                     'glpi_contacts'  => [
                         'ON' => [
                             'glpi_contacts_suppliers'  => 'contacts_id',
-                            'glpi_contacts'            => 'id'
-                        ]
-                    ]
+                            'glpi_contacts'            => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    'suppliers_id' => $this->needtobe_transfer[Supplier::class]
-                ]
+                    'suppliers_id' => $this->needtobe_transfer[Supplier::class],
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -1029,7 +1004,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateDocuments(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
         if (!$this->options['keep_document']) {
             return;
@@ -1052,9 +1026,9 @@ final class Transfer extends CommonDBTM
                             'ON' => [
                                 'glpi_documents_items'  => 'items_id',
                                 $itemtable              => 'id',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ]
             );
 
@@ -1062,7 +1036,7 @@ final class Transfer extends CommonDBTM
                 'SELECT'    => [
                     'documents_id',
                     'glpi_documents.entities_id',
-                    'glpi_documents.is_recursive'
+                    'glpi_documents.is_recursive',
                 ],
                 'FROM'      => 'glpi_documents_items',
                 'LEFT JOIN' => [
@@ -1071,15 +1045,15 @@ final class Transfer extends CommonDBTM
                             'glpi_documents_items'  => 'documents_id',
                             'glpi_documents'        => 'id', [
                                 'AND' => [
-                                    'itemtype' => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    'items_id' => $this->needtobe_transfer[$itemtype]
-                ]
+                    'items_id' => $this->needtobe_transfer[$itemtype],
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -1090,7 +1064,6 @@ final class Transfer extends CommonDBTM
 
     private function simulateCartridges(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!$this->options['keep_cartridgeitem'] || !$this->haveItemsToTransfer(Printer::class)) {
@@ -1099,11 +1072,11 @@ final class Transfer extends CommonDBTM
         $iterator = $DB->request([
             'SELECT' => 'cartridgeitems_id',
             'FROM'   => 'glpi_cartridges',
-            'WHERE'  => ['printers_id' => $this->needtobe_transfer[Printer::class]]
+            'WHERE'  => ['printers_id' => $this->needtobe_transfer[Printer::class]],
         ]);
 
         foreach ($iterator as $data) {
-            $this->addToBeTransfer('CartridgeItem', $data['cartridgeitems_id']);
+            $this->addToBeTransfer(CartridgeItem::class, $data['cartridgeitems_id']);
         }
     }
 
@@ -1111,13 +1084,12 @@ final class Transfer extends CommonDBTM
      * Simulate the transfer to know which items need to be transfer.
      * This method will reset the needtobe_transfer and noneedtobe_transfer arrays.
      *
-     * @param array<string, int[]> $items Array of items to transfer in the format [itemtype => [ids]]
+     * @param array<class-string<CommonDBTM>, int[]> $items Array of items to transfer in the format [itemtype => [ids]]
      *
      * @return void
      **/
     private function simulateTransfer(array $items): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Init types :
@@ -1154,7 +1126,7 @@ final class Transfer extends CommonDBTM
     /**
      * transfer an item to another item (may be the same) in the new entity
      *
-     * @param string $itemtype Itemtype of the item
+     * @param class-string<CommonDBTM> $itemtype Itemtype of the item
      * @param int $ID          ID of the item
      * @param int $newID       ID of the new item
      *
@@ -1162,9 +1134,8 @@ final class Transfer extends CommonDBTM
      *                                $ID!=$new ID -> copy datas (like template system)
      * @return void
      **/
-    private function transferItem($itemtype, $ID, $newID)
+    private function transferItem(string $itemtype, int $ID, int $newID): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -1238,11 +1209,11 @@ final class Transfer extends CommonDBTM
                     $itil_item->getAssociatedDocumentsCriteria(true)
                 );
                 foreach ($document_items as $document_item) {
-                      $this->transferDocuments(
-                          $document_item['itemtype'],
-                          $document_item['items_id'],
-                          $document_item['items_id']
-                      );
+                    $this->transferDocuments(
+                        $document_item['itemtype'],
+                        $document_item['items_id'],
+                        $document_item['items_id']
+                    );
                 }
             }
         }
@@ -1262,7 +1233,7 @@ final class Transfer extends CommonDBTM
             'id'                   => $newID,
             'entities_id'          => $this->to,
             '_transfer'            => 1,
-            '_lock_updated_fields' => $this->options['lock_updated_fields']
+            '_lock_updated_fields' => $this->options['lock_updated_fields'],
         ];
 
         // Manage Location dropdown
@@ -1272,7 +1243,7 @@ final class Transfer extends CommonDBTM
             $input['locations_id'] = 0;
         }
 
-        if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
+        if (in_array($itemtype, [Ticket::class, Problem::class, Change::class])) {
             $input2 = $this->transferHelpdeskAdditionalInformations($item->fields);
             $input  = array_merge($input, $input2);
         }
@@ -1281,20 +1252,20 @@ final class Transfer extends CommonDBTM
         $this->addToAlreadyTransfer($itemtype, $ID, $newID);
 
         // Do it after item transfer for entity checks
-        if (in_array($itemtype, ['Ticket', 'Problem', 'Change'])) {
+        if (in_array($itemtype, [Ticket::class, Problem::class, Change::class])) {
             $this->transferTaskCategory($itemtype, $ID, $newID);
             $this->transferLinkedSuppliers($itemtype, $ID, $newID);
         }
 
         if (in_array($itemtype, Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
             // Monitor Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Monitor');
+            $this->transferDirectConnection($itemtype, $ID, Monitor::class);
             // Peripheral Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Peripheral');
+            $this->transferDirectConnection($itemtype, $ID, Peripheral::class);
             // Phone Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Phone');
+            $this->transferDirectConnection($itemtype, $ID, Phone::class);
             // Printer Direct Connect : keep / delete + clean unused / keep unused
-            $this->transferDirectConnection($itemtype, $ID, 'Printer');
+            $this->transferDirectConnection($itemtype, $ID, Printer::class);
             // Computer Disks :  delete them or not ?
             $this->transferItem_Disks($itemtype, $ID);
         }
@@ -1308,22 +1279,24 @@ final class Transfer extends CommonDBTM
             'type'        => $itemtype,
             'id'          => $ID,
             'newID'       => $newID,
-            'entities_id' => $this->to
+            'entities_id' => $this->to,
         ]);
     }
 
     /**
      * Add an item to already transfer array
      *
-     * @param class-string<CommonDBTM> $itemtype Itemtype of the item
-     * @param int $ID          ID of the item
-     * @param int $newID       ID of the new item
+     * @param class-string<CommonDBTM> $key         Itemtype of the item
+     * @param int    $ID          ID of the item
+     * @param int    $newID       ID of the new item
      *
      * @return void
+     *
+     * @FIXME Parameter $key should be class-string<CommonDBTM> (and `$already_transfer` array shape should be specified).
      **/
-    private function addToAlreadyTransfer(string $itemtype, int $ID, int $newID): void
+    private function addToAlreadyTransfer(string $key, int $ID, int $newID): void
     {
-        $this->already_transfer[$itemtype][$ID] = $newID;
+        $this->already_transfer[$key][$ID] = $newID;
     }
 
     /**
@@ -1331,16 +1304,16 @@ final class Transfer extends CommonDBTM
      *
      * @param int $locID location ID
      *
-     * @return int The new location ID. May be 0 if the location is not transfered.
+     * @return int The new location ID. May be 0 if the location is not transferred.
      **/
     private function transferDropdownLocation(int $locID): int
     {
         if ($locID > 0) {
-            if (isset($this->already_transfer['locations_id'][$locID])) {
-                return $this->already_transfer['locations_id'][$locID];
+            if (isset($this->already_transfer[Location::class][$locID])) {
+                return $this->already_transfer[Location::class][$locID];
             }
-           // else  // Not already transfer
-           // Search init item
+            // else  // Not already transfer
+            // Search init item
             $location = new Location();
             if ($location->getFromDB($locID)) {
                 $data = $location->fields;
@@ -1350,11 +1323,13 @@ final class Transfer extends CommonDBTM
                 $newID                 = $location->findID($input);
 
                 if ($newID < 0) {
-                    $newID = $location->import($input);
+                    $newID = (int) $location->import($input);
                 }
 
-                $this->addToAlreadyTransfer('locations_id', $locID, $newID);
-                return $newID;
+                if ($newID > 0) {
+                    $this->addToAlreadyTransfer(Location::class, $locID, $newID);
+                    return $newID;
+                }
             }
         }
         return 0;
@@ -1365,54 +1340,55 @@ final class Transfer extends CommonDBTM
      *
      * @param int $sockets_id socket ID
      *
-     * @return int The new socket ID. May be 0 if the socket is not transfered.
+     * @return int The new socket ID. May be 0 if the socket is not transferred.
      **/
     private function transferDropdownSocket(int $sockets_id): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($sockets_id > 0) {
-            if (isset($this->already_transfer['sockets_id'][$sockets_id])) {
-                return $this->already_transfer['sockets_id'][$sockets_id];
+            if (isset($this->already_transfer[Socket::class][$sockets_id])) {
+                return $this->already_transfer[Socket::class][$sockets_id];
             }
-           // else  // Not already transfer
-           // Search init item
+            // else  // Not already transfer
+            // Search init item
             $socket = new Socket();
             if ($socket->getFromDB($sockets_id)) {
                 $data  = $socket->fields;
                 $locID = $this->transferDropdownLocation($socket->fields['locations_id']);
 
-               // Search if the locations_id already exists in the destination entity
+                // Search if the locations_id already exists in the destination entity
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => 'glpi_sockets',
                     'WHERE'  => [
                         'entities_id'  => $this->to,
                         'name'         => $socket->fields['name'],
-                        'locations_id' => $locID
-                    ]
+                        'locations_id' => $locID,
+                    ],
                 ]);
 
                 if (count($iterator)) {
-                      // Found : -> use it
-                      $row = $iterator->current();
-                      $newID = $row['id'];
-                      $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
-                      return $newID;
+                    // Found : -> use it
+                    $row = $iterator->current();
+                    $newID = $row['id'];
+                    $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
+                    return $newID;
                 }
 
-               // Not found :
-               // add item
-                $newID    = $socket->add([
+                // Not found :
+                // add item
+                $newID    = (int) $socket->add([
                     'name'         => $data['name'],
                     'comment'      => $data['comment'],
                     'entities_id'  => $this->to,
-                    'locations_id' => $locID
+                    'locations_id' => $locID,
                 ]);
 
-                $this->addToAlreadyTransfer('sockets_id', $sockets_id, $newID);
-                return $newID;
+                if ($newID > 0) {
+                    $this->addToAlreadyTransfer(Socket::class, $sockets_id, $newID);
+                    return $newID;
+                }
             }
         }
         return 0;
@@ -1426,16 +1402,15 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferPrinterCartridges($ID, $newID): void
+    private function transferPrinterCartridges(int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // Get cartrdiges linked
+        // Get cartridges linked
         $iterator = $DB->request([
             'SELECT' => ['id', 'cartridgeitems_id'],
             'FROM'   => 'glpi_cartridges',
-            'WHERE'  => ['printers_id' => $ID]
+            'WHERE'  => ['printers_id' => $ID],
         ]);
 
         if (count($iterator)) {
@@ -1445,20 +1420,20 @@ final class Transfer extends CommonDBTM
             foreach ($iterator as $data) {
                 $need_clean_process = false;
 
-               // Foreach cartridges
-               // if keep
+                // Foreach cartridges
+                // if keep
                 if ($this->options['keep_cartridgeitem']) {
                     $newcartID     = - 1;
                     $newcarttypeID = -1;
 
                     // 1 - Search carttype destination ?
                     // Already transfer carttype :
-                    if (isset($this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']])) {
+                    if (isset($this->already_transfer[CartridgeItem::class][$data['cartridgeitems_id']])) {
                         $newcarttypeID
-                           = $this->already_transfer['CartridgeItem'][$data['cartridgeitems_id']];
+                           = $this->already_transfer[CartridgeItem::class][$data['cartridgeitems_id']];
                     } else {
                         if ($this->haveItemsToTransfer(Printer::class)) {
-                        // Not already transfer cartype
+                            // Not already transfer cartype
                             $ccriteria = [
                                 'COUNT'  => 'cpt',
                                 'FROM'   => 'glpi_cartridges',
@@ -1466,59 +1441,61 @@ final class Transfer extends CommonDBTM
                                     'cartridgeitems_id'  => $data['cartridgeitems_id'],
                                     'printers_id'        => ['>', 0],
                                     'NOT'                => [
-                                        'printers_id'  => $this->needtobe_transfer[Printer::class]
-                                    ]
-                                ]
+                                        'printers_id'  => $this->needtobe_transfer[Printer::class],
+                                    ],
+                                ],
                             ];
 
                             $result = $DB->request($ccriteria)->current();
 
-                        // Is the carttype will be completly transfer ?
+                            // Is the carttype will be completely transfer?
                             if ($result['cpt'] == 0) {
-                                   // Yes : transfer
-                                   $need_clean_process = false;
-                                   $this->transferItem(
-                                       'CartridgeItem',
-                                       $data['cartridgeitems_id'],
-                                       $data['cartridgeitems_id']
-                                   );
-                                      $newcarttypeID = $data['cartridgeitems_id'];
+                                // Yes : transfer
+                                $need_clean_process = false;
+                                $this->transferItem(
+                                    'CartridgeItem',
+                                    $data['cartridgeitems_id'],
+                                    $data['cartridgeitems_id']
+                                );
+                                $newcarttypeID = $data['cartridgeitems_id'];
                             } else {
-                                   // No : copy carttype
-                                   $need_clean_process = true;
-                                   $carttype->getFromDB($data['cartridgeitems_id']);
-                                   // Is existing carttype in the destination entity ?
-                                   $items_iterator = $DB->request([
-                                       'FROM'   => 'glpi_cartridgeitems',
-                                       'WHERE'  => [
-                                           'entities_id'  => $this->to,
-                                           'name'         => $carttype->fields['name']
-                                       ]
-                                   ]);
+                                // No : copy carttype
+                                $need_clean_process = true;
+                                $carttype->getFromDB($data['cartridgeitems_id']);
+                                // Is existing carttype in the destination entity ?
+                                $items_iterator = $DB->request([
+                                    'FROM'   => 'glpi_cartridgeitems',
+                                    'WHERE'  => [
+                                        'entities_id'  => $this->to,
+                                        'name'         => $carttype->fields['name'],
+                                    ],
+                                ]);
 
                                 if (count($items_iterator)) {
                                     $row = $items_iterator->current();
                                     $newcarttypeID = $row['id'];
                                 }
 
-                             // Not found -> transfer copy
+                                // Not found -> transfer copy
                                 if ($newcarttypeID < 0) {
-                                 // 1 - create new item
+                                    // 1 - create new item
                                     unset($carttype->fields['id']);
                                     $input                = $carttype->fields;
                                     $input['entities_id'] = $this->to;
-                                    unset($carttype->fields);
-                                    $newcarttypeID        = $carttype->add($input);
-                                 // 2 - transfer as copy
-                                    $this->transferItem(
-                                        'CartridgeItem',
-                                        $data['cartridgeitems_id'],
-                                        $newcarttypeID
-                                    );
+                                    $carttype->fields = [];
+                                    $newcarttypeID        = (int) $carttype->add($input);
+                                    // 2 - transfer as copy
+                                    if ($newcarttypeID > 0) {
+                                        $this->transferItem(
+                                            CartridgeItem::class,
+                                            $data['cartridgeitems_id'],
+                                            $newcarttypeID
+                                        );
+                                    }
                                 }
                             }
 
-                        // Found -> use to link : nothing to do
+                            // Found -> use to link : nothing to do
                         }
                     }
 
@@ -1528,29 +1505,29 @@ final class Transfer extends CommonDBTM
                         && ($newcarttypeID != $data['cartridgeitems_id'])
                     ) {
                         $cart->update(['id'                => $data['id'],
-                            'cartridgeitems_id' => $newcarttypeID
+                            'cartridgeitems_id' => $newcarttypeID,
                         ]);
                     }
                 } else { // Do not keep
-                  // If same printer : delete cartridges
+                    // If same printer : delete cartridges
                     if ($ID == $newID) {
-                         $DB->delete('glpi_cartridges', ['printers_id' => $ID]);
+                        $DB->delete('glpi_cartridges', ['printers_id' => $ID]);
                     }
                     $need_clean_process = true;
                 }
 
-              // CLean process
+                // CLean process
                 if (
                     $need_clean_process
                     && $this->options['clean_cartridgeitem']
                 ) {
-                 // Clean carttype
+                    // Clean carttype
                     $result = $DB->request([
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_cartridges',
                         'WHERE'  => [
-                            'cartridgeitems_id'  => $data['cartridgeitems_id']
-                        ]
+                            'cartridgeitems_id'  => $data['cartridgeitems_id'],
+                        ],
                     ])->current();
 
                     if ($result['cpt'] === 0) {
@@ -1558,7 +1535,7 @@ final class Transfer extends CommonDBTM
                             $carttype->delete(['id' => $data['cartridgeitems_id']]);
                         }
                         if ($this->options['clean_cartridgeitem'] == 2) { // purge
-                            $carttype->delete(['id' => $data['cartridgeitems_id']], 1);
+                            $carttype->delete(['id' => $data['cartridgeitems_id']], true);
                         }
                     }
                 }
@@ -1573,13 +1550,12 @@ final class Transfer extends CommonDBTM
      *
      * @return int ID of the new software (could be the same)
      **/
-    private function copySingleSoftware($ID): int
+    private function copySingleSoftware(int $ID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-        if (isset($this->already_transfer['Software'][$ID])) {
-            return $this->already_transfer['Software'][$ID];
+        if (isset($this->already_transfer[Software::class][$ID])) {
+            return $this->already_transfer[Software::class][$ID];
         }
 
         $soft = new Software();
@@ -1591,7 +1567,7 @@ final class Transfer extends CommonDBTM
                     $this->to
                 ))
             ) {
-               // no need to copy
+                // no need to copy
                 $newsoftID = $ID;
             } else {
                 $manufacturer = [];
@@ -1607,23 +1583,23 @@ final class Transfer extends CommonDBTM
                     'FROM'   => 'glpi_softwares',
                     'WHERE'  => [
                         'entities_id'  => $this->to,
-                        'name'         => $soft->fields['name']
-                    ] + $manufacturer
+                        'name'         => $soft->fields['name'],
+                    ] + $manufacturer,
                 ]);
 
                 if ($data = $iterator->current()) {
                     $newsoftID = $data["id"];
                 } else {
-                   // create new item (don't check if move possible => clean needed)
+                    // create new item (don't check if move possible => clean needed)
                     unset($soft->fields['id']);
                     $input                = $soft->fields;
                     $input['entities_id'] = $this->to;
-                    unset($soft->fields);
+                    $soft->fields = [];
                     $newsoftID            = $soft->add($input);
                 }
             }
 
-            $this->addToAlreadyTransfer('Software', $ID, $newsoftID);
+            $this->addToAlreadyTransfer(Software::class, $ID, $newsoftID);
             return $newsoftID;
         }
 
@@ -1637,13 +1613,12 @@ final class Transfer extends CommonDBTM
      *
      * @return int ID of the new version (could be the same)
      **/
-    private function copySingleVersion($ID): int
+    private function copySingleVersion(int $ID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-        if (isset($this->already_transfer['SoftwareVersion'][$ID])) {
-            return $this->already_transfer['SoftwareVersion'][$ID];
+        if (isset($this->already_transfer[SoftwareVersion::class][$ID])) {
+            return $this->already_transfer[SoftwareVersion::class][$ID];
         }
 
         $vers = new SoftwareVersion();
@@ -1651,7 +1626,7 @@ final class Transfer extends CommonDBTM
             $newsoftID = $this->copySingleSoftware($vers->fields['softwares_id']);
 
             if ($newsoftID == $vers->fields['softwares_id']) {
-               // no need to copy
+                // no need to copy
                 $newversID = $ID;
             } else {
                 $iterator = $DB->request([
@@ -1659,14 +1634,14 @@ final class Transfer extends CommonDBTM
                     'FROM'   => 'glpi_softwareversions',
                     'WHERE'  => [
                         'softwares_id' => $newsoftID,
-                        'name'         => $vers->fields['name']
-                    ]
+                        'name'         => $vers->fields['name'],
+                    ],
                 ]);
 
                 if ($data = $iterator->current()) {
                     $newversID = $data["id"];
                 } else {
-                   // create new item (don't check if move possible => clean needed)
+                    // create new item (don't check if move possible => clean needed)
                     unset($vers->fields['id']);
                     $input                 = $vers->fields;
                     $vers->fields = [];
@@ -1679,7 +1654,7 @@ final class Transfer extends CommonDBTM
                 }
             }
 
-            $this->addToAlreadyTransfer('SoftwareVersion', $ID, $newversID);
+            $this->addToAlreadyTransfer(SoftwareVersion::class, $ID, $newversID);
             return $newversID;
         }
 
@@ -1689,12 +1664,12 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer disks of an item
      *
-     * @param string  $itemtype Item type
-     * @param integer $ID       ID of the item
+     * @param class-string<CommonDBTM>  $itemtype Item type
+     * @param int $ID       ID of the item
      *
      * @return void
      */
-    private function transferItem_Disks($itemtype, $ID): void
+    private function transferItem_Disks(string $itemtype, int $ID): void
     {
         if (!$this->options['keep_disk']) {
             $disk = new Item_Disk();
@@ -1705,29 +1680,28 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer software of an item
      *
-     * @param string $itemtype  Type of the item
+     * @param class-string<CommonDBTM> $itemtype  Type of the item
      * @param int    $ID        ID of the item
      *
      * @return void
      **/
-    private function transferItemSoftwares($itemtype, $ID): void
+    private function transferItemSoftwares(string $itemtype, int $ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // Get Installed version
+        // Get Installed version
         $criteria = [
             'SELECT' => ['id', 'softwareversions_id'],
             'FROM'   => 'glpi_items_softwareversions',
             'WHERE'  => [
                 'items_id'     => $ID,
                 'itemtype'     => $itemtype,
-            ]
+            ],
         ];
 
-        if (!empty($this->noneedtobe_transfer['SoftwareVersion'])) {
+        if (!empty($this->noneedtobe_transfer[SoftwareVersion::class])) {
             $criteria['WHERE']['NOT'] = [
-                'softwareversions_id' => $this->noneedtobe_transfer['SoftwareVersion'],
+                'softwareversions_id' => $this->noneedtobe_transfer[SoftwareVersion::class],
             ];
         }
 
@@ -1744,28 +1718,28 @@ final class Transfer extends CommonDBTM
                     $DB->update(
                         'glpi_items_softwareversions',
                         [
-                            'softwareversions_id' => $newversID
+                            'softwareversions_id' => $newversID,
                         ],
                         [
-                            'id' => $data['id']
+                            'id' => $data['id'],
                         ]
                     );
                 }
             } else { // Do not keep
-               // Delete inst software for item
+                // Delete inst software for item
                 $DB->delete('glpi_items_softwareversions', ['id' => $data['id']]);
             }
         }
 
-       // Affected licenses
+        // Affected licenses
         if ($this->options['keep_software']) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => 'glpi_items_softwarelicenses',
                 'WHERE'  => [
                     'items_id'  => $ID,
-                    'itemtype'  => $itemtype
-                ]
+                    'itemtype'  => $itemtype,
+                ],
             ]);
             foreach ($iterator as $data) {
                 $this->transferAffectedLicense($data['id']);
@@ -1773,7 +1747,7 @@ final class Transfer extends CommonDBTM
         } else {
             $DB->delete('glpi_items_softwarelicenses', [
                 'items_id'  => $ID,
-                'itemtype'  => $itemtype
+                'itemtype'  => $itemtype,
             ]);
         }
     }
@@ -1785,9 +1759,8 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferAffectedLicense($ID): void
+    private function transferAffectedLicense(int $ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $item_softwarelicense = new Item_SoftwareLicense();
@@ -1799,10 +1772,10 @@ final class Transfer extends CommonDBTM
                 if ($license->getField('number') > 1) {
                     $license->update([
                         'id'     => $license->getID(),
-                        'number' => ($license->getField('number') - 1)
+                        'number' => ($license->getField('number') - 1),
                     ]);
-                } else if ($license->getField('number') == 1) {
-                   // Drop license
+                } elseif ($license->getField('number') == 1) {
+                    // Drop license
                     $license->delete(['id' => $license->getID()]);
                 }
 
@@ -1811,31 +1784,31 @@ final class Transfer extends CommonDBTM
                 $newsoftID = $this->copySingleSoftware($license->fields['softwares_id']);
 
                 if ($newsoftID > 0) {
-                   //// If license already exists : increment number by one
+                    //// If license already exists : increment number by one
                     $iterator = $DB->request([
                         'SELECT' => ['id', 'number'],
                         'FROM'   => 'glpi_softwarelicenses',
                         'WHERE'  => [
                             'softwares_id' => $newsoftID,
                             'name'         => $license->fields['name'],
-                            'serial'       => $license->fields['serial']
-                        ]
+                            'serial'       => $license->fields['serial'],
+                        ],
                     ]);
 
                     $newlicID = -1;
-                   //// If exists : increment number by 1
+                    //// If exists : increment number by 1
                     if (count($iterator)) {
-                         $data     = $iterator->current();
-                         $newlicID = $data['id'];
-                         $license->update(['id'     => $data['id'],
-                             'number' => $data['number'] + 1
-                         ]);
+                        $data     = $iterator->current();
+                        $newlicID = $data['id'];
+                        $license->update(['id'     => $data['id'],
+                            'number' => $data['number'] + 1,
+                        ]);
                     } else {
-                      //// If not exists : create with number = 1
+                        //// If not exists : create with number = 1
                         $input = $license->fields;
                         foreach (
                             ['softwareversions_id_buy',
-                                'softwareversions_id_use'
+                                'softwareversions_id_use',
                             ] as $field
                         ) {
                             if ($license->fields[$field] > 0) {
@@ -1858,7 +1831,7 @@ final class Transfer extends CommonDBTM
 
                     if ($newlicID > 0) {
                         $input = ['id'                  => $ID,
-                            'softwarelicenses_id' => $newlicID
+                            'softwarelicenses_id' => $newlicID,
                         ];
                         $item_softwarelicense->update($input);
                     }
@@ -1874,30 +1847,29 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferSoftwareLicensesAndVersions($ID): void
+    private function transferSoftwareLicensesAndVersions(int $ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => 'glpi_softwarelicenses',
-            'WHERE'  => ['softwares_id' => $ID]
+            'WHERE'  => ['softwares_id' => $ID],
         ]);
 
         foreach ($iterator as $data) {
-            $this->transferItem('SoftwareLicense', $data['id'], $data['id']);
+            $this->transferItem(SoftwareLicense::class, $data['id'], $data['id']);
         }
 
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => 'glpi_softwareversions',
-            'WHERE'  => ['softwares_id' => $ID]
+            'WHERE'  => ['softwares_id' => $ID],
         ]);
 
         foreach ($iterator as $data) {
             // Just Store the info.
-            $this->addToAlreadyTransfer('SoftwareVersion', $data['id'], $data['id']);
+            $this->addToAlreadyTransfer(SoftwareVersion::class, $data['id'], $data['id']);
         }
     }
 
@@ -1907,12 +1879,12 @@ final class Transfer extends CommonDBTM
      */
     private function cleanSoftwareVersions(): void
     {
-        if (!isset($this->already_transfer['SoftwareVersion'])) {
+        if (!isset($this->already_transfer[SoftwareVersion::class])) {
             return;
         }
 
         $vers = new SoftwareVersion();
-        foreach ($this->already_transfer['SoftwareVersion'] as $old => $new) {
+        foreach (array_keys($this->already_transfer[SoftwareVersion::class]) as $old) {
             if (
                 (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_buy' => $old]) === 0)
                 && (countElementsInTable("glpi_softwarelicenses", ['softwareversions_id_use' => $old]) === 0)
@@ -1932,20 +1904,20 @@ final class Transfer extends CommonDBTM
      */
     public function cleanSoftwares()
     {
-        if (!isset($this->already_transfer['Software']) || (int) $this->options['clean_software'] === 0) {
+        if (!isset($this->already_transfer[Software::class]) || (int) $this->options['clean_software'] === 0) {
             // Nothing to clean
             return;
         }
 
         $soft = new Software();
-        foreach ($this->already_transfer['Software'] as $old => $new) {
+        foreach (array_keys($this->already_transfer[Software::class]) as $old) {
             if (
                 (countElementsInTable("glpi_softwarelicenses", ['softwares_id' => $old]) == 0)
                 && (countElementsInTable("glpi_softwareversions", ['softwares_id' => $old]) == 0)
             ) {
                 if ($this->options['clean_software'] == 1) { // delete
                     $soft->delete(['id' => $old]);
-                } else if ($this->options['clean_software'] == 2) { // purge
+                } elseif ($this->options['clean_software'] == 2) { // purge
                     $soft->delete(['id' => $old], true);
                 }
             }
@@ -1955,51 +1927,50 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer certificates
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the certificate
      * @param int $newID        New ID of the certificate
      *
      * @return void
      **/
-    private function transferCertificates($itemtype, $ID, $newID): void
+    private function transferCertificates(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // if keep
+        // if keep
         if ($this->options['keep_certificate']) {
             $certificate = new Certificate();
-           // Get certificates for the item
+            // Get certificates for the item
             $certificates_items_query = [
                 'SELECT' => ['id', 'certificates_id'],
                 'FROM'   => 'glpi_certificates_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
-                ]
+                ],
             ];
             if (!empty($this->noneedtobe_transfer[Certificate::class])) {
                 $certificates_items_query['WHERE'][] = [
-                    'NOT' => ['certificates_id' => $this->noneedtobe_transfer[Certificate::class]]
+                    'NOT' => ['certificates_id' => $this->noneedtobe_transfer[Certificate::class]],
                 ];
             }
             $iterator = $DB->request($certificates_items_query);
 
-           // Foreach get item
+            // Foreach get item
             foreach ($iterator as $data) {
                 $need_clean_process = false;
                 $item_ID            = $data['certificates_id'];
                 $newcertificateID   = -1;
 
-               // is already transfer ?
-                if (isset($this->already_transfer['Certificate'][$item_ID])) {
-                    $newcertificateID = $this->already_transfer['Certificate'][$item_ID];
+                // is already transfer ?
+                if (isset($this->already_transfer[Certificate::class][$item_ID])) {
+                    $newcertificateID = $this->already_transfer[Certificate::class][$item_ID];
                     if ($newcertificateID != $item_ID) {
                         $need_clean_process = true;
                     }
                 } else {
-                   // No
-                   // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
+                    // No
+                    // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                     $canbetransfer = true;
                     $types_iterator = Certificate_Item::getDistinctTypes($item_ID);
 
@@ -2007,19 +1978,19 @@ final class Transfer extends CommonDBTM
                         $dtype = $data_type['itemtype'];
 
                         if ($this->haveItemsToTransfer($dtype)) {
-                             // No items to transfer -> exists links
-                             $result = $DB->request([
-                                 'COUNT'  => 'cpt',
-                                 'FROM'   => 'glpi_certificates_items',
-                                 'WHERE'  => [
-                                     'certificates_id' => $item_ID,
-                                     'itemtype'        => $dtype,
-                                     'NOT'             => ['items_id' => $this->needtobe_transfer[$dtype]]
-                                 ]
-                             ])->current();
+                            // No items to transfer -> exists links
+                            $result = $DB->request([
+                                'COUNT'  => 'cpt',
+                                'FROM'   => 'glpi_certificates_items',
+                                'WHERE'  => [
+                                    'certificates_id' => $item_ID,
+                                    'itemtype'        => $dtype,
+                                    'NOT'             => ['items_id' => $this->needtobe_transfer[$dtype]],
+                                ],
+                            ])->current();
 
                             if ($result['cpt'] > 0) {
-                                 $canbetransfer = false;
+                                $canbetransfer = false;
                             }
                         } else {
                             $canbetransfer = false;
@@ -2030,82 +2001,84 @@ final class Transfer extends CommonDBTM
                         }
                     }
 
-                   // Yes : transfer
+                    // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Certificate', $item_ID, $item_ID);
+                        $this->transferItem(Certificate::class, $item_ID, $item_ID);
                         $newcertificateID = $item_ID;
                     } else {
                         $need_clean_process = true;
                         $certificate->getFromDB($item_ID);
-                       // No : search certificate
+                        // No : search certificate
                         $certificate_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_certificates',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
-                                'name'         => $certificate->fields['name']
-                            ]
+                                'name'         => $certificate->fields['name'],
+                            ],
                         ]);
 
                         if (count($certificate_iterator)) {
                             $result = $iterator->current();
                             $newcertificateID = $result['id'];
-                            $this->addToAlreadyTransfer('Certificate', $item_ID, $newcertificateID);
+                            $this->addToAlreadyTransfer(Certificate::class, $item_ID, $newcertificateID);
                         }
 
-                       // found : use it
-                       // not found : copy certificate
+                        // found : use it
+                        // not found : copy certificate
                         if ($newcertificateID < 0) {
-                           // 1 - create new item
+                            // 1 - create new item
                             unset($certificate->fields['id']);
                             $input                = $certificate->fields;
                             $input['entities_id'] = $this->to;
-                            unset($certificate->fields);
-                            $newcertificateID     = $certificate->add($input);
-                           // 2 - transfer as copy
-                            $this->transferItem('Certificate', $item_ID, $newcertificateID);
+                            $certificate->fields = [];
+                            $newcertificateID     = (int) $certificate->add($input);
+                            // 2 - transfer as copy
+                            if ($newcertificateID > 0) {
+                                $this->transferItem(Certificate::class, $item_ID, $newcertificateID);
+                            }
                         }
                     }
                 }
 
-               // Update links
+                // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newcertificateID) {
                         $DB->update(
                             'glpi_certificates_items',
                             [
-                                'certificates_id' => $newcertificateID
+                                'certificates_id' => $newcertificateID,
                             ],
                             [
-                                'id' => $data['id']
+                                'id' => $data['id'],
                             ]
                         );
                     }
                 } else { // Same Item -> update links
-                   // Copy Item -> copy links
+                    // Copy Item -> copy links
                     if ($item_ID != $newcertificateID) {
                         $DB->insert(
                             'glpi_certificates_items',
                             [
                                 'certificates_id' => $newcertificateID,
                                 'items_id'        => $newID,
-                                'itemtype'        => $itemtype
+                                'itemtype'        => $itemtype,
                             ]
                         );
                     } else { // same certificate for new item update link
                         $DB->update(
                             'glpi_certificates_items',
                             [
-                                'items_id' => $newID
+                                'items_id' => $newID,
                             ],
                             [
-                                'id' => $data['id']
+                                'id' => $data['id'],
                             ]
                         );
                     }
                 }
 
-               // If clean and unused ->
+                // If clean and unused ->
                 if (
                     $need_clean_process
                     && $this->options['clean_certificate']
@@ -2113,7 +2086,7 @@ final class Transfer extends CommonDBTM
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_certificates_items',
-                        'WHERE'  => ['certificates_id' => $item_ID]
+                        'WHERE'  => ['certificates_id' => $item_ID],
                     ])->current();
 
                     if ($remain['cpt'] == 0) {
@@ -2121,7 +2094,7 @@ final class Transfer extends CommonDBTM
                             $certificate->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_certificate'] == 2) { // purge
-                            $certificate->delete(['id' => $item_ID], 1);
+                            $certificate->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2131,7 +2104,7 @@ final class Transfer extends CommonDBTM
                 'glpi_certificates_items',
                 [
                     'items_id'  => $ID,
-                    'itemtype'  => $itemtype
+                    'itemtype'  => $itemtype,
                 ]
             );
         }
@@ -2140,51 +2113,50 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer contracts
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the contract
      * @param int $newID        New ID of the contract
      *
      * @return void
      **/
-    private function transferContracts($itemtype, $ID, $newID): void
+    private function transferContracts(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // if keep
+        // if keep
         if ($this->options['keep_contract']) {
             $contract = new Contract();
-           // Get contracts for the item
+            // Get contracts for the item
             $contracts_items_query = [
                 'SELECT' => ['id', 'contracts_id'],
                 'FROM'   => 'glpi_contracts_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
-                ]
+                ],
             ];
             if (!empty($this->noneedtobe_transfer[Contract::class])) {
                 $contracts_items_query['WHERE'][] = [
-                    'NOT' => ['contracts_id' => $this->noneedtobe_transfer[Contract::class]]
+                    'NOT' => ['contracts_id' => $this->noneedtobe_transfer[Contract::class]],
                 ];
             }
             $iterator = $DB->request($contracts_items_query);
 
-           // Foreach get item
+            // Foreach get item
             foreach ($iterator as $data) {
                 $need_clean_process = false;
                 $item_ID            = $data['contracts_id'];
                 $newcontractID      = -1;
 
-               // is already transfer ?
-                if (isset($this->already_transfer['Contract'][$item_ID])) {
-                    $newcontractID = $this->already_transfer['Contract'][$item_ID];
+                // is already transfer ?
+                if (isset($this->already_transfer[Contract::class][$item_ID])) {
+                    $newcontractID = $this->already_transfer[Contract::class][$item_ID];
                     if ($newcontractID != $item_ID) {
                         $need_clean_process = true;
                     }
                 } else {
-                   // No
-                   // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
+                    // No
+                    // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                     $canbetransfer = true;
                     $types_iterator = Contract_Item::getDistinctTypes($item_ID);
 
@@ -2192,19 +2164,19 @@ final class Transfer extends CommonDBTM
                         $dtype = $data_type['itemtype'];
 
                         if ($this->haveItemsToTransfer($dtype)) {
-                             // No items to transfer -> exists links
-                             $result = $DB->request([
-                                 'COUNT'  => 'cpt',
-                                 'FROM'   => 'glpi_contracts_items',
-                                 'WHERE'  => [
-                                     'contracts_id' => $item_ID,
-                                     'itemtype'     => $dtype,
-                                     'NOT'          => ['items_id' => $this->needtobe_transfer[$dtype]]
-                                 ]
-                             ])->current();
+                            // No items to transfer -> exists links
+                            $result = $DB->request([
+                                'COUNT'  => 'cpt',
+                                'FROM'   => 'glpi_contracts_items',
+                                'WHERE'  => [
+                                    'contracts_id' => $item_ID,
+                                    'itemtype'     => $dtype,
+                                    'NOT'          => ['items_id' => $this->needtobe_transfer[$dtype]],
+                                ],
+                            ])->current();
 
                             if ($result['cpt'] > 0) {
-                                 $canbetransfer = false;
+                                $canbetransfer = false;
                             }
                         } else {
                             $canbetransfer = false;
@@ -2215,82 +2187,85 @@ final class Transfer extends CommonDBTM
                         }
                     }
 
-                   // Yes : transfer
+                    // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Contract', $item_ID, $item_ID);
+                        $this->transferItem(Contract::class, $item_ID, $item_ID);
                         $newcontractID = $item_ID;
                     } else {
                         $need_clean_process = true;
                         $contract->getFromDB($item_ID);
-                       // No : search contract
+                        // No : search in target entity if existing contract
                         $contract_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_contracts',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
-                                'name'         => $contract->fields['name']
-                            ]
+                                'name'         => $contract->fields['name'],
+                            ],
                         ]);
 
                         if (count($contract_iterator)) {
-                            $result = $iterator->current();
+                            // Found existing contract
+                            $result = $contract_iterator->current();
                             $newcontractID = $result['id'];
-                            $this->addToAlreadyTransfer('Contract', $item_ID, $newcontractID);
+                            $this->addToAlreadyTransfer(Contract::class, $item_ID, $newcontractID);
                         }
 
-                       // found : use it
-                       // not found : copy contract
+                        // found : use it
+                        // not found : copy contract
                         if ($newcontractID < 0) {
-                           // 1 - create new item
+                            // 1 - create new item
                             unset($contract->fields['id']);
                             $input                = $contract->fields;
                             $input['entities_id'] = $this->to;
-                            unset($contract->fields);
-                            $newcontractID        = $contract->add($input);
-                           // 2 - transfer as copy
-                            $this->transferItem('Contract', $item_ID, $newcontractID);
+                            $contract->fields = [];
+                            $newcontractID        = (int) $contract->add($input);
+                            // 2 - transfer as copy
+                            if ($newcontractID > 0) {
+                                $this->transferItem(Contract::class, $item_ID, $newcontractID);
+                            }
                         }
                     }
                 }
 
-               // Update links
+                // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newcontractID) {
                         $DB->update(
                             'glpi_contracts_items',
                             [
-                                'contracts_id' => $newcontractID
+                                'contracts_id' => $newcontractID,
                             ],
                             [
-                                'id' => $data['id']
+                                'id' => $data['id'],
                             ]
                         );
                     }
                 } else { // Same Item -> update links
-                   // Copy Item -> copy links
+                    // Copy Item -> copy links
                     if ($item_ID != $newcontractID) {
                         $DB->insert(
                             'glpi_contracts_items',
                             [
                                 'contracts_id' => $newcontractID,
                                 'items_id'     => $newID,
-                                'itemtype'     => $itemtype
+                                'itemtype'     => $itemtype,
                             ]
                         );
                     } else { // same contract for new item update link
                         $DB->update(
                             'glpi_contracts_items',
                             [
-                                'items_id' => $newID
+                                'items_id' => $newID,
                             ],
                             [
-                                'id' => $data['id']
+                                'id' => $data['id'],
                             ]
                         );
                     }
                 }
 
-               // If clean and unused ->
+                // If clean and unused ->
                 if (
                     $need_clean_process
                     && $this->options['clean_contract']
@@ -2298,7 +2273,7 @@ final class Transfer extends CommonDBTM
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_contracts_items',
-                        'WHERE'  => ['contracts_id' => $item_ID]
+                        'WHERE'  => ['contracts_id' => $item_ID],
                     ])->current();
 
                     if ($remain['cpt'] == 0) {
@@ -2306,7 +2281,7 @@ final class Transfer extends CommonDBTM
                             $contract->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_contract'] == 2) { // purge
-                            $contract->delete(['id' => $item_ID], 1);
+                            $contract->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2316,7 +2291,7 @@ final class Transfer extends CommonDBTM
                 'glpi_contracts_items',
                 [
                     'items_id'  => $ID,
-                    'itemtype'  => $itemtype
+                    'itemtype'  => $itemtype,
                 ]
             );
         }
@@ -2325,68 +2300,67 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer documents
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the document
      * @param int $newID        New ID of the document
      *
      * @return void
      **/
-    private function transferDocuments($itemtype, $ID, $newID): void
+    private function transferDocuments(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // if keep
+        // if keep
         if ($this->options['keep_document']) {
             $document = new Document();
-           // Get documents for the item
+            // Get documents for the item
             $documents_items_query = [
                 'SELECT' => ['id', 'documents_id'],
                 'FROM'   => 'glpi_documents_items',
                 'WHERE'  => [
                     'items_id'  => $ID,
                     'itemtype'  => $itemtype,
-                ]
+                ],
             ];
             if (!empty($this->noneedtobe_transfer[Document::class])) {
                 $documents_items_query['WHERE'][] = [
-                    'NOT' => ['documents_id' => $this->noneedtobe_transfer[Document::class]]
+                    'NOT' => ['documents_id' => $this->noneedtobe_transfer[Document::class]],
                 ];
             }
             $iterator = $DB->request($documents_items_query);
 
-           // Foreach get item
+            // Foreach get item
             foreach ($iterator as $data) {
                 $need_clean_process = false;
                 $item_ID            = $data['documents_id'];
                 $newdocID           = -1;
 
-               // is already transfer ?
-                if (isset($this->already_transfer['Document'][$item_ID])) {
-                    $newdocID = $this->already_transfer['Document'][$item_ID];
+                // is already transfer ?
+                if (isset($this->already_transfer[Document::class][$item_ID])) {
+                    $newdocID = $this->already_transfer[Document::class][$item_ID];
                     if ($newdocID != $item_ID) {
                         $need_clean_process = true;
                     }
                 } else {
-                   // No
-                   // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
+                    // No
+                    // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
                     $canbetransfer = true;
                     $types_iterator = Document_Item::getDistinctTypes($item_ID);
 
                     foreach ($types_iterator as $data_type) {
                         $dtype = $data_type['itemtype'];
                         if (isset($this->needtobe_transfer[$dtype])) {
-                             // No items to transfer -> exists links
-                             $NOT = $this->needtobe_transfer[$dtype];
+                            // No items to transfer -> exists links
+                            $NOT = $this->needtobe_transfer[$dtype];
 
-                             // contacts, contracts, and suppliers are linked as device.
+                            // contacts, contracts, and suppliers are linked as device.
                             if (!empty($this->noneedtobe_transfer[$dtype])) {
                                 $NOT = [...$NOT, ...$this->noneedtobe_transfer[$dtype]];
                             }
 
                             $where = [
                                 'documents_id' => $item_ID,
-                                'itemtype'     => $dtype
+                                'itemtype'     => $dtype,
                             ];
                             if (count($NOT)) {
                                 $where['NOT'] = ['items_id' => $NOT];
@@ -2395,11 +2369,11 @@ final class Transfer extends CommonDBTM
                             $result = $DB->request([
                                 'COUNT'  => 'cpt',
                                 'FROM'   => 'glpi_documents_items',
-                                'WHERE'  => $where
+                                'WHERE'  => $where,
                             ])->current();
 
                             if ($result['cpt'] > 0) {
-                                 $canbetransfer = false;
+                                $canbetransfer = false;
                             }
                         }
 
@@ -2408,82 +2382,151 @@ final class Transfer extends CommonDBTM
                         }
                     }
 
-                   // Yes : transfer
+                    // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Document', $item_ID, $item_ID);
+                        $this->transferItem(Document::class, $item_ID, $item_ID);
                         $newdocID = $item_ID;
                     } else {
                         $need_clean_process = true;
                         $document->getFromDB($item_ID);
-                       // No : search contract
+                        // No : search contract
                         $doc_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_documents',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
-                                'name'         => $document->fields['name']
-                            ]
+                                'name'         => $document->fields['name'],
+                            ],
                         ]);
 
                         if (count($doc_iterator)) {
                             $result = $doc_iterator->current();
                             $newdocID = $result['id'];
-                            $this->addToAlreadyTransfer('Document', $item_ID, $newdocID);
+                            $this->addToAlreadyTransfer(Document::class, $item_ID, $newdocID);
                         }
 
-                       // found : use it
-                       // not found : copy doc
+                        // found : use it
+                        // not found : copy doc
                         if ($newdocID < 0) {
-                           // 1 - create new item
+                            // 1 - create new item
                             unset($document->fields['id']);
                             $input    = $document->fields;
-                           // Not set new entity Do by transferItem
-                            unset($document->fields);
-                            $newdocID = $document->add($input);
-                           // 2 - transfer as copy
-                            $this->transferItem('Document', $item_ID, $newdocID);
+                            // Not set new entity Do by transferItem
+                            $document->fields = [];
+                            $newdocID = (int) $document->add($input);
+                            // 2 - transfer as copy
+                            if ($newdocID > 0) {
+                                $this->transferItem(Document::class, $item_ID, $newdocID);
+                            }
                         }
                     }
                 }
 
-               // Update links
+                // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newdocID) {
-                        $DB->update(
-                            'glpi_documents_items',
-                            [
-                                'documents_id' => $newdocID
+                        // Check if the target relation already exists
+                        $existing = $DB->request([
+                            'COUNT'  => 'cpt',
+                            'FROM'   => 'glpi_documents_items',
+                            'WHERE'  => [
+                                'documents_id'      => $newdocID,
+                                'itemtype'          => $itemtype,
+                                'items_id'          => $newID,
+                                'timeline_position' => new QuerySubQuery([
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ]),
+                                'NOT'               => ['id' => $data['id']],
                             ],
-                            [
-                                'id' => $data['id']
-                            ]
-                        );
+                        ])->current();
+
+                        if ($existing['cpt'] > 0) {
+                            // Relation already exists, delete the old one
+                            $DB->delete('glpi_documents_items', ['id' => $data['id']]);
+                        } else {
+                            // No duplicate, safe to update
+                            $DB->update(
+                                'glpi_documents_items',
+                                [
+                                    'documents_id' => $newdocID,
+                                ],
+                                [
+                                    'id' => $data['id'],
+                                ]
+                            );
+                        }
                     }
                 } else { // Same Item -> update links
-                   // Copy Item -> copy links
+                    // Copy Item -> copy links
                     if ($item_ID != $newdocID) {
-                        $DB->insert(
-                            'glpi_documents_items',
-                            [
-                                'documents_id' => $newdocID,
-                                'items_id'     => $newID,
-                                'itemtype'     => $itemtype
-                            ]
-                        );
-                    } else { // same doc for new item update link
-                        $DB->update(
-                            'glpi_documents_items',
-                            [
-                                'items_id' => $newID
+                        // Get timeline_position to check for duplicates
+                        $existing = $DB->request([
+                            'COUNT'  => 'cpt',
+                            'FROM'   => 'glpi_documents_items',
+                            'WHERE'  => [
+                                'documents_id'      => $newdocID,
+                                'itemtype'          => $itemtype,
+                                'items_id'          => $newID,
+                                'timeline_position' => new QuerySubQuery([
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ]),
                             ],
-                            [
-                                'id' => $data['id']
-                            ]
-                        );
+                        ])->current();
+
+                        if ($existing['cpt'] == 0) {
+                            // No duplicate, safe to insert
+                            $DB->insert(
+                                'glpi_documents_items',
+                                [
+                                    'documents_id'      => $newdocID,
+                                    'items_id'          => $newID,
+                                    'itemtype'          => $itemtype,
+                                    'timeline_position' => $existing['timeline_position'],
+                                ]
+                            );
+                        }
+                        // If relation already exists, we simply skip the insert (no error)
+                    } else { // same doc for new item update link
+                        // Get timeline_position to check for duplicates
+                        $existing = $DB->request([
+                            'COUNT' => 'cpt',
+                            'FROM'  => 'glpi_documents_items',
+                            'WHERE' => [
+                                'documents_id' => $item_ID,
+                                'itemtype'     => $itemtype,
+                                'items_id'     => $newID,
+                                'timeline_position' => [
+                                    'SELECT' => 'timeline_position',
+                                    'FROM'   => 'glpi_documents_items',
+                                    'WHERE'  => ['id' => $data['id']],
+                                ],
+                                'NOT' => ['id' => $data['id']],
+                            ],
+                        ])->current();
+
+                        if ($existing['cpt'] > 0) {
+                            // Relation already exists, delete the old one
+                            $DB->delete('glpi_documents_items', ['id' => $data['id']]);
+                        } else {
+                            // No duplicate, safe to update
+                            $DB->update(
+                                'glpi_documents_items',
+                                [
+                                    'items_id' => $newID,
+                                ],
+                                [
+                                    'id' => $data['id'],
+                                ]
+                            );
+                        }
                     }
                 }
 
-               // If clean and unused ->
+                // If clean and unused ->
                 if (
                     $need_clean_process
                     && $this->options['clean_document']
@@ -2492,8 +2535,8 @@ final class Transfer extends CommonDBTM
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_documents_items',
                         'WHERE'  => [
-                            'documents_id' => $item_ID
-                        ]
+                            'documents_id' => $item_ID,
+                        ],
                     ])->current();
 
                     if ($remain['cpt'] == 0) {
@@ -2501,7 +2544,7 @@ final class Transfer extends CommonDBTM
                             $document->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_document'] == 2) { // purge
-                            $document->delete(['id' => $item_ID], 1);
+                            $document->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2511,7 +2554,7 @@ final class Transfer extends CommonDBTM
                 'glpi_documents_items',
                 [
                     'items_id'  => $ID,
-                    'itemtype'  => $itemtype
+                    'itemtype'  => $itemtype,
                 ]
             );
         }
@@ -2520,85 +2563,85 @@ final class Transfer extends CommonDBTM
     /**
      * Delete direct connection for a linked item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           ID of the item
-     * @param string $link_type Type of the linked items to transfer
+     * @param class-string<Printer|Monitor|Peripheral|Phone> $link_type Type of the linked items to transfer
      *
      * @return void
      **/
-    private function transferDirectConnection($itemtype, $ID, $link_type): void
+    private function transferDirectConnection(string $itemtype, int $ID, string $link_type): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // Only same Item case : no duplication of computers
-       // Default : delete
+        // Only same Item case : no duplication of computers
+        // Default : delete
         $keep      = 0;
         $clean     = 0;
 
         switch ($link_type) {
-            case 'Printer':
+            case Printer::class:
                 $keep      = $this->options['keep_dc_printer'];
                 $clean     = $this->options['clean_dc_printer'];
                 break;
 
-            case 'Monitor':
+            case Monitor::class:
                 $keep      = $this->options['keep_dc_monitor'];
                 $clean     = $this->options['clean_dc_monitor'];
                 break;
 
-            case 'Peripheral':
+            case Peripheral::class:
                 $keep      = $this->options['keep_dc_peripheral'];
                 $clean     = $this->options['clean_dc_peripheral'];
                 break;
 
-            case 'Phone':
+            case Phone::class:
                 $keep  = $this->options['keep_dc_phone'];
                 $clean = $this->options['clean_dc_phone'];
                 break;
         }
 
-        if (!($link_item = getItemForItemtype($link_type))) {
+        $link_item = getItemForItemtype($link_type);
+        if (!($link_item instanceof CommonDBTM)) {
             return;
         }
 
-       // Get connections
+        // Get connections
         $criteria = [
             'SELECT' => ['id', 'items_id_peripheral'],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
                 'itemtype_asset'      => $itemtype,
                 'items_id_asset'      => $ID,
-                'itemtype_peripheral' => $link_type
-            ]
+                'itemtype_peripheral' => $link_type,
+            ],
         ];
 
         if ($link_item->maybeRecursive() && !empty($this->noneedtobe_transfer[$link_type])) {
-            $criteria['WHERE']['NOT'] = ['items_id' => $this->noneedtobe_transfer[$link_type]];
+            $criteria['WHERE']['NOT'] = ['items_id_peripheral' => $this->noneedtobe_transfer[$link_type]];
         }
 
         $iterator = $DB->request($criteria);
 
-       // Foreach get item
+        // Foreach get item
         foreach ($iterator as $data) {
             $item_ID = $data['items_id_peripheral'];
             if ($link_item->getFromDB($item_ID)) {
-               // If global :
+                // If global :
                 if ($link_item->fields['is_global'] == 1) {
                     $need_clean_process = false;
                     // if keep
                     if ($keep) {
                         $newID = -1;
 
-                      // Is already transfer ?
+                        // Is already transfer ?
                         if (isset($this->already_transfer[$link_type][$item_ID])) {
-                             $newID = $this->already_transfer[$link_type][$item_ID];
-                             // Already transfer as a copy : need clean process
+                            $newID = $this->already_transfer[$link_type][$item_ID];
+                            // Already transfer as a copy : need clean process
                             if ($newID != $item_ID) {
                                 $need_clean_process = true;
                             }
-                        } else { // Not yet tranfer
-                            // Can be managed like a non global one ?
+                        } else { // Not yet transferred
+                            // Can be managed like a non-global one ?
                             // = all linked assets need to be transfer (so not copy)
                             $asset_criteria = [
                                 'COUNT'  => 'cpt',
@@ -2606,12 +2649,12 @@ final class Transfer extends CommonDBTM
                                 'WHERE'  => [
                                     'itemtype_asset'      => $itemtype,
                                     'itemtype_peripheral' => $link_type,
-                                    'items_id_peripheral' => $item_ID
-                                ]
+                                    'items_id_peripheral' => $item_ID,
+                                ],
                             ];
                             if ($this->haveItemsToTransfer($itemtype)) {
                                 $asset_criteria['WHERE']['NOT'] = [
-                                    'items_id_asset' => $this->needtobe_transfer[$itemtype]
+                                    'items_id_asset' => $this->needtobe_transfer[$itemtype],
                                 ];
                             }
                             $result = $DB->request($asset_criteria)->current();
@@ -2623,40 +2666,43 @@ final class Transfer extends CommonDBTM
                                 $newID = $item_ID;
                             } else { // else Transfer by Copy
                                 $need_clean_process = true;
-                           // Is existing global item in the destination entity ?
+                                // Is existing global item in the destination entity ?
                                 $type_iterator = $DB->request([
                                     'SELECT' => 'id',
                                     'FROM'   => getTableForItemType($link_type),
                                     'WHERE'  => [
                                         'is_global'    => 1,
                                         'entities_id'  => $this->to,
-                                        'name'         => $link_item->getField('name')
-                                    ]
+                                        'name'         => $link_item->getField('name'),
+                                    ],
                                 ]);
 
                                 if (count($type_iterator)) {
-                                      $result = $type_iterator->current();
-                                      $newID = $result['id'];
-                                      $this->addToAlreadyTransfer($link_type, $item_ID, $newID);
+                                    $result = $type_iterator->current();
+                                    $newID = $result['id'];
+                                    $this->addToAlreadyTransfer($link_type, $item_ID, $newID);
                                 }
 
-                           // Not found -> transfer copy
+                                // Not found -> transfer copy
                                 if ($newID < 0) {
-                                     // 1 - create new item
-                                      unset($link_item->fields['id']);
-                                      $input                = $link_item->fields;
-                                      $input['entities_id'] = $this->to;
-                                      unset($link_item->fields);
-                                      $newID = $link_item->add($input);
-                                     // 2 - transfer as copy
-                                      $this->transferItem($link_type, $item_ID, $newID);
+                                    // 1 - create new item
+                                    unset($link_item->fields['id']);
+                                    $input                = $link_item->fields;
+                                    $input['entities_id'] = $this->to;
+
+                                    $link_item = new $link_item();
+                                    $newID = (int) $link_item->add($input);
+                                    // 2 - transfer as copy
+                                    if ($newID > 0) {
+                                        $this->transferItem($link_type, $item_ID, $newID);
+                                    }
                                 }
 
-                           // Found -> use to link : nothing to do
+                                // Found -> use to link : nothing to do
                             }
                         }
 
-                      // Finish updated link if needed
+                        // Finish updated link if needed
                         if (
                             ($newID > 0)
                             && ($newID != $item_ID)
@@ -2664,10 +2710,10 @@ final class Transfer extends CommonDBTM
                             $DB->update(
                                 Asset_PeripheralAsset::getTable(),
                                 [
-                                    'items_id_peripheral' => $newID
+                                    'items_id_peripheral' => $newID,
                                 ],
                                 [
-                                    'id' => $data['id']
+                                    'id' => $data['id'],
                                 ]
                             );
                         }
@@ -2676,20 +2722,20 @@ final class Transfer extends CommonDBTM
                         // Call Disconnect for global device (no disconnect behavior, but history )
                         (new Asset_PeripheralAsset())->delete([
                             'id'              => $data['id'],
-                            '_no_auto_action' => true
+                            '_no_auto_action' => true,
                         ]);
 
                         $need_clean_process = true;
                     }
-                   // If clean and not linked dc -> delete
+                    // If clean and not linked dc -> delete
                     if ($need_clean_process && $clean) {
                         $result = $DB->request([
                             'COUNT'  => 'cpt',
                             'FROM'   => Asset_PeripheralAsset::getTable(),
                             'WHERE'  => [
                                 'items_id_peripheral' => $item_ID,
-                                'itemtype_peripheral' => $link_type
-                            ]
+                                'itemtype_peripheral' => $link_type,
+                            ],
                         ])->current();
 
                         if ($result['cpt'] == 0) {
@@ -2697,23 +2743,23 @@ final class Transfer extends CommonDBTM
                                 $link_item->delete(['id' => $item_ID]);
                             }
                             if ($clean == 2) { // purge
-                                $link_item->delete(['id' => $item_ID], 1);
+                                $link_item->delete(['id' => $item_ID], true);
                             }
                         }
                     }
                 } else { // If unique :
-                   //if keep -> transfer list else unlink
+                    //if keep -> transfer list else unlink
                     if ($keep) {
                         $this->transferItem($link_type, $item_ID, $item_ID);
                     } else {
                         // Else delete link (apply disconnect behavior)
                         (new Asset_PeripheralAsset())->delete(['id' => $data['id']]);
 
-                       //if clean -> delete
+                        //if clean -> delete
                         if ($clean == 1) {
                             $link_item->delete(['id' => $item_ID]);
-                        } else if ($clean == 2) { // purge
-                            $link_item->delete(['id' => $item_ID], 1);
+                        } elseif ($clean == 2) { // purge
+                            $link_item->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -2722,16 +2768,16 @@ final class Transfer extends CommonDBTM
                 (new Asset_PeripheralAsset())->delete([
                     'id'              => $data['id'],
                     '_no_history'     => true,
-                    '_no_auto_action' => true
+                    '_no_auto_action' => true,
                 ]);
             }
         }
     }
 
     /**
-     * Handle direct connection between a peripheral and its main asset when transfering the peripheral.
+     * Handle direct connection between a peripheral and its main asset when transferring the peripheral.
      *
-     * @param string $peripheral_itemtype
+     * @param class-string<CommonDBTM> $peripheral_itemtype
      * @param int    $ID
      *
      * @return void
@@ -2739,29 +2785,28 @@ final class Transfer extends CommonDBTM
      **/
     private function managePeripheralMainAsset(string $peripheral_itemtype, int $ID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // Get connections
+        // Get connections
         $criteria = [
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
                 'itemtype_peripheral' => $peripheral_itemtype,
-                'items_id_peripheral' => $ID
-            ]
+                'items_id_peripheral' => $ID,
+            ],
         ];
 
-        $transfered_itemtypes = array_intersect(
+        $transferred_itemtypes = array_intersect(
             Asset_PeripheralAsset::getPeripheralHostItemtypes(),
             array_keys($this->needtobe_transfer)
         );
-        if (count($transfered_itemtypes) > 0) {
+        if (count($transferred_itemtypes) > 0) {
             $where_not = [];
-            foreach ($transfered_itemtypes as $itemtype) {
+            foreach ($transferred_itemtypes as $itemtype) {
                 if ($this->haveItemsToTransfer($itemtype)) {
                     $where_not[] = [
                         'itemtype_asset' => $itemtype,
-                        'items_id_asset' => $this->needtobe_transfer[$itemtype]
+                        'items_id_asset' => $this->needtobe_transfer[$itemtype],
                     ];
                 }
             }
@@ -2787,7 +2832,7 @@ final class Transfer extends CommonDBTM
                     // Unexisting item / Force disconnect
                     $delete_params += [
                         '_no_history'     => true,
-                        '_no_auto_action' => true
+                        '_no_auto_action' => true,
                     ];
                 }
                 (new Asset_PeripheralAsset())->delete($delete_params);
@@ -2798,15 +2843,14 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer tickets
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the ticket
      * @param int $newID        New ID of the ticket
      *
      * @return void
      **/
-    private function transferTickets($itemtype, $ID, $newID): void
+    private function transferTickets(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $job   = new Ticket();
@@ -2815,26 +2859,26 @@ final class Transfer extends CommonDBTM
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_tickets.*',
-                'glpi_items_tickets.id AS _relid'
+                'glpi_items_tickets.id AS _relid',
             ],
             'FROM'      => 'glpi_tickets',
             'LEFT JOIN' => [
                 'glpi_items_tickets' => [
                     'ON' => [
                         'glpi_items_tickets' => 'tickets_id',
-                        'glpi_tickets'       => 'id'
-                    ]
-                ]
+                        'glpi_tickets'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'items_id'  => $ID,
-                'itemtype'  => $itemtype
-            ]
+                'itemtype'  => $itemtype,
+            ],
         ]);
 
         if (count($iterator)) {
             switch ($this->options['keep_ticket']) {
-               // Transfer
+                // Transfer
                 case 2:
                     // Same Item / Copy Item -> update entity
                     foreach ($iterator as $data) {
@@ -2851,29 +2895,29 @@ final class Transfer extends CommonDBTM
 
                         $rel->update($input);
 
-                        $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
-                        $this->transferTaskCategory('Ticket', $data['id'], $data['id']);
+                        $this->addToAlreadyTransfer(Ticket::class, $data['id'], $data['id']);
+                        $this->transferTaskCategory(Ticket::class, $data['id'], $data['id']);
                     }
                     break;
 
-               // Clean ref : keep ticket but clean link
+                    // Clean ref : keep ticket but clean link
                 case 1:
-                  // Same Item / Copy Item : keep and clean ref
+                    // Same Item / Copy Item : keep and clean ref
                     foreach ($iterator as $data) {
-                         $rel->delete(['id'       => $data['_relid']]);
-                         $this->addToAlreadyTransfer('Ticket', $data['id'], $data['id']);
+                        $rel->delete(['id'       => $data['_relid']]);
+                        $this->addToAlreadyTransfer(Ticket::class, $data['id'], $data['id']);
                     }
                     break;
 
-               // Delete
+                    // Delete
                 case 0:
-                 // Same item -> delete
+                    // Same item -> delete
                     if ($ID == $newID) {
                         foreach ($iterator as $data) {
                             $job->delete(['id' => $data['id']]);
                         }
                     }
-                 // Copy Item : nothing to do
+                    // Copy Item : nothing to do
                     break;
             }
         }
@@ -2884,15 +2928,14 @@ final class Transfer extends CommonDBTM
      *
      * @since 0.84
      *
-     * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
+     * @param class-string<CommonITILObject> $itemtype ITIL Object Itemtype (Only CommonITILObject supported)
      * @param int $ID          Original ITIL Object ID
      * @param int $newID       New ITIL Object ID (not used)
      *
      * @return void
      **/
-    private function transferLinkedSuppliers($itemtype, $ID, $newID): void
+    private function transferLinkedSuppliers(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonITILObject::class, true)) {
@@ -2913,7 +2956,7 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'FROM'   => $table,
-            'WHERE'  => [$field => $ID]
+            'WHERE'  => [$field => $ID],
         ]);
 
         foreach ($iterator as $data) {
@@ -2929,21 +2972,21 @@ final class Transfer extends CommonDBTM
                         'FROM'   => 'glpi_suppliers',
                         'WHERE'  => [
                             'entities_id'  => $this->to,
-                            'name'         => $supplier->fields['name']
-                        ]
+                            'name'         => $supplier->fields['name'],
+                        ],
                     ]);
 
                     if (count($iterator)) {
-                          $result = $iterator->current();
-                          $newID = $result['id'];
+                        $result = $iterator->current();
+                        $newID = $result['id'];
                     }
                     if ($newID < 0) {
-                       // 1 - create new item
+                        // 1 - create new item
                         unset($supplier->fields['id']);
                         $input                 = $supplier->fields;
                         $input['entities_id']  = $this->to;
-                       // Not set new entity Do by transferItem
-                        unset($supplier->fields);
+                        // Not set new entity Do by transferItem
+                        $supplier->fields = [];
                         $newID                 = $supplier->add($input);
                     }
 
@@ -2961,15 +3004,14 @@ final class Transfer extends CommonDBTM
      *
      * @since 0.83
      *
-     * @param string $itemtype ITIL Object Itemtype (Only Ticket, Change, and Problem supported)
+     * @param class-string<CommonITILObject> $itemtype ITIL Object Itemtype (Only CommonITILObject supported)
      * @param int $ID          Original ITIL Object ID
      * @param int $newID       New ITIL Object ID (not used))
      *
      * @return void
      **/
-    private function transferTaskCategory($itemtype, $ID, $newID): void
+    private function transferTaskCategory(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonITILObject::class, true)) {
@@ -2977,7 +3019,7 @@ final class Transfer extends CommonDBTM
         }
 
         $taskclass = $itemtype::getTaskClass();
-        if (!is_a($taskclass, CommonITILTask::class, true)) {
+        if (!is_a($taskclass ?? '', CommonITILTask::class, true)) {
             return;
         }
 
@@ -2988,7 +3030,7 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request([
             'FROM'   => $table,
-            'WHERE'  => [$field => $ID]
+            'WHERE'  => [$field => $ID],
         ]);
 
         foreach ($iterator as $data) {
@@ -3025,14 +3067,13 @@ final class Transfer extends CommonDBTM
     {
 
         $input               = [];
-        $suppliers_id_assign = 0;
 
         //TODO Is there a replacement needed for this commented code or is it obsolete?
-       // if ($data['suppliers_id_assign'] > 0) {
-       //   $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
-       // }
+        // if ($data['suppliers_id_assign'] > 0) {
+        //   $suppliers_id_assign = $this->transferSingleSupplier($data['suppliers_id_assign']);
+        // }
 
-       // Transfer ticket category
+        // Transfer ticket category
         $catid = 0;
         if ($data['itilcategories_id'] > 0) {
             $categ = new ITILCategory();
@@ -3054,15 +3095,14 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer history
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferHistory($itemtype, $ID, $newID): void
+    private function transferHistory(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($ID == $newID) {
@@ -3074,15 +3114,15 @@ final class Transfer extends CommonDBTM
                 'FROM'   => 'glpi_logs',
                 'WHERE'  => [
                     'itemtype'  => $itemtype,
-                    'items_id'  => $ID
-                ]
+                    'items_id'  => $ID,
+                ],
             ]);
 
             foreach ($iterator as $data) {
                 unset($data['id']);
                 $data = [
                     'items_id'  => $newID,
-                    'itemtype'  => $itemtype
+                    'itemtype'  => $itemtype,
                 ] + $data;
                 $DB->insert('glpi_logs', $data);
             }
@@ -3090,7 +3130,7 @@ final class Transfer extends CommonDBTM
             // Delete history if transferred
             $DB->delete('glpi_logs', [
                 'items_id'  => $ID,
-                'itemtype'  => $itemtype
+                'itemtype'  => $itemtype,
             ]);
         }
     }
@@ -3103,9 +3143,8 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferCompatiblePrinters($ID, $newID): void
+    private function transferCompatiblePrinters(int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         if ($ID == $newID) {
@@ -3116,7 +3155,7 @@ final class Transfer extends CommonDBTM
         $iterator = $DB->request([
             'SELECT' => ['printermodels_id'],
             'FROM'   => 'glpi_cartridgeitems_printermodels',
-            'WHERE'  => ['cartridgeitems_id' => $ID]
+            'WHERE'  => ['cartridgeitems_id' => $ID],
         ]);
 
         if (count($iterator)) {
@@ -3129,15 +3168,14 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer infocoms of an item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferInfocoms($itemtype, $ID, $newID): void
+    private function transferInfocoms(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $ic = new Infocom();
@@ -3145,45 +3183,45 @@ final class Transfer extends CommonDBTM
             switch ($this->options['keep_infocom']) {
                 // delete
                 case 0:
-                   // Same item -> delete
+                    // Same item -> delete
                     if ($ID == $newID) {
                         $DB->delete(
                             'glpi_infocoms',
                             [
                                 'items_id'  => $ID,
-                                'itemtype'  => $itemtype
+                                'itemtype'  => $itemtype,
                             ]
                         );
                     }
-                   // Copy : nothing to do
+                    // Copy : nothing to do
                     break;
 
-                // Keep
+                    // Keep
                 default:
-                   // transfer supplier
+                    // transfer supplier
                     $suppliers_id = 0;
                     if ($ic->fields['suppliers_id'] > 0) {
                         $suppliers_id = $this->transferSingleSupplier($ic->fields['suppliers_id']);
                     }
 
-                   // Copy : copy infocoms
+                    // Copy : copy infocoms
                     if ($ID != $newID) {
-                     // Copy items
+                        // Copy items
                         $input                 = $ic->fields;
                         $input['items_id']     = $newID;
                         $input['suppliers_id'] = $suppliers_id;
                         unset($input['id']);
-                        unset($ic->fields);
+                        $ic->fields = [];
                         $ic->add($input);
                     } else {
-                     // Same Item : manage only supplier move
-                     // Update supplier
+                        // Same Item : manage only supplier move
+                        // Update supplier
                         if (
                             ($suppliers_id > 0)
                             && ($suppliers_id != $ic->fields['suppliers_id'])
                         ) {
                             $ic->update(['id'           => $ic->fields['id'],
-                                'suppliers_id' => $suppliers_id
+                                'suppliers_id' => $suppliers_id,
                             ]);
                         }
                     }
@@ -3200,35 +3238,34 @@ final class Transfer extends CommonDBTM
      *
      * @return int ID of the new supplier
      **/
-    private function transferSingleSupplier($ID): int
+    private function transferSingleSupplier(int $ID): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // TODO clean system : needed ?
+        // TODO clean system : needed ?
         $ent = new Supplier();
         if (
             $this->options['keep_supplier']
             && $ent->getFromDB($ID)
         ) {
-            if (isset($this->noneedtobe_transfer['Supplier'][$ID])) {
-               // recursive supplier
+            if (isset($this->noneedtobe_transfer[Supplier::class][$ID])) {
+                // recursive supplier
                 return $ID;
             }
-            if (isset($this->already_transfer['Supplier'][$ID])) {
-               // Already transfer
-                return $this->already_transfer['Supplier'][$ID];
+            if (isset($this->already_transfer[Supplier::class][$ID])) {
+                // Already transfer
+                return $this->already_transfer[Supplier::class][$ID];
             }
 
             $newID           = -1;
-           // All linked items need to be transfer so transfer supplier ?
-           // Search for contract
+            // All linked items need to be transfer so transfer supplier ?
+            // Search for contract
             $criteria = [
                 'COUNT'  => 'cpt',
                 'FROM'   => 'glpi_contracts_suppliers',
                 'WHERE'  => [
-                    'suppliers_id' => $ID
-                ]
+                    'suppliers_id' => $ID,
+                ],
             ];
             if ($this->haveItemsToTransfer(Contract::class)) {
                 $criteria['WHERE']['NOT'] = ['contracts_id' => $this->needtobe_transfer[Contract::class]];
@@ -3238,7 +3275,7 @@ final class Transfer extends CommonDBTM
             $links_remaining = $result['cpt'];
 
             if ($links_remaining === 0) {
-               // Search for infocoms
+                // Search for infocoms
                 if ($this->options['keep_infocom']) {
                     foreach (Infocom::getItemtypesThatCanHave() as $itemtype) {
                         if ($this->haveItemsToTransfer($itemtype)) {
@@ -3247,8 +3284,8 @@ final class Transfer extends CommonDBTM
                                 'FROM'   => 'glpi_infocoms',
                                 'WHERE'  => [
                                     'suppliers_id' => $ID,
-                                    'itemtype'     => $itemtype
-                                ]
+                                    'itemtype'     => $itemtype,
+                                ],
                             ];
                             $icriteria['WHERE']['NOT'] = ['items_id' => $this->needtobe_transfer[$itemtype]];
 
@@ -3259,39 +3296,41 @@ final class Transfer extends CommonDBTM
                 }
             }
 
-           // All linked items need to be transfer -> use unique transfer system
+            // All linked items need to be transfer -> use unique transfer system
             if ($links_remaining === 0) {
-                $this->transferItem('Supplier', $ID, $ID);
+                $this->transferItem(Supplier::class, $ID, $ID);
                 $newID = $ID;
             } else { // else Transfer by Copy
-               // Is existing item in the destination entity ?
+                // Is existing item in the destination entity ?
                 $iterator = $DB->request([
                     'FROM'   => 'glpi_suppliers',
                     'WHERE'  => [
                         'entities_id'  => $this->to,
-                        'name'         => $ent->fields['name']
-                    ]
+                        'name'         => $ent->fields['name'],
+                    ],
                 ]);
 
                 if (count($iterator)) {
                     $result = $iterator->current();
                     $newID = $result['id'];
-                    $this->addToAlreadyTransfer('Supplier', $ID, $newID);
+                    $this->addToAlreadyTransfer(Supplier::class, $ID, $newID);
                 }
 
-               // Not found -> transfer copy
+                // Not found -> transfer copy
                 if ($newID < 0) {
-                   // 1 - create new item
+                    // 1 - create new item
                     unset($ent->fields['id']);
                     $input                = $ent->fields;
                     $input['entities_id'] = $this->to;
-                    unset($ent->fields);
-                    $newID                = $ent->add($input);
-                   // 2 - transfer as copy
-                    $this->transferItem('Supplier', $ID, $newID);
+                    $ent->fields = [];
+                    $newID                = (int) $ent->add($input);
+                    // 2 - transfer as copy
+                    if ($newID > 0) {
+                        $this->transferItem(Supplier::class, $ID, $newID);
+                    }
                 }
 
-               // Found -> use to link : nothing to do
+                // Found -> use to link : nothing to do
             }
             return $newID;
         }
@@ -3306,51 +3345,50 @@ final class Transfer extends CommonDBTM
      *
      * @return void
      **/
-    private function transferSupplierContacts($ID, $newID): void
+    private function transferSupplierContacts(int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         // if keep
         if ($this->options['keep_contact']) {
             $contact = new Contact();
-           // Get contracts for the item
+            // Get contracts for the item
             $criteria = [
                 'FROM'   => 'glpi_contacts_suppliers',
                 'WHERE'  => [
                     'suppliers_id' => $ID,
-                ]
+                ],
             ];
             if (!empty($this->noneedtobe_transfer[Contact::class])) {
                 $criteria['WHERE']['NOT'] = ['contacts_id' => $this->noneedtobe_transfer[Contact::class]];
             }
             $iterator = $DB->request($criteria);
 
-           // Foreach get item
+            // Foreach get item
             foreach ($iterator as $data) {
                 $need_clean_process = false;
                 $item_ID            = $data['contacts_id'];
                 $newcontactID       = -1;
 
-               // is already transfer ?
-                if (isset($this->already_transfer['Contact'][$item_ID])) {
-                    $newcontactID = $this->already_transfer['Contact'][$item_ID];
+                // is already transfer ?
+                if (isset($this->already_transfer[Contact::class][$item_ID])) {
+                    $newcontactID = $this->already_transfer[Contact::class][$item_ID];
                     if ($newcontactID != $item_ID) {
                         $need_clean_process = true;
                     }
                 } else {
                     $canbetransfer = true;
-                   // Transfer supplier : is the contact used for another supplier ?
+                    // Transfer supplier : is the contact used for another supplier ?
                     if ($ID == $newID) {
                         $scriteria = [
                             'COUNT'  => 'cpt',
                             'FROM'   => 'glpi_contacts_suppliers',
                             'WHERE'  => [
-                                'contacts_id'  => $item_ID
-                            ]
+                                'contacts_id'  => $item_ID,
+                            ],
                         ];
-                        $exclusions = [...($this->needtobe_transfer['Supplier'] ?? []), ...($this->noneedtobe_transfer['Supplier'] ?? [])];
-                        if (!empty($exclusions)) {
+                        $exclusions = [...($this->needtobe_transfer[Supplier::class] ?? []), ...($this->noneedtobe_transfer[Supplier::class] ?? [])];
+                        if ($exclusions !== []) {
                             $scriteria['WHERE']['NOT'] = ['suppliers_id' => $exclusions];
                         }
 
@@ -3360,82 +3398,84 @@ final class Transfer extends CommonDBTM
                         }
                     }
 
-                   // Yes : transfer
+                    // Yes : transfer
                     if ($canbetransfer) {
-                        $this->transferItem('Contact', $item_ID, $item_ID);
+                        $this->transferItem(Contact::class, $item_ID, $item_ID);
                         $newcontactID = $item_ID;
                     } else {
                         $need_clean_process = true;
                         $contact->getFromDB($item_ID);
-                       // No : search contract
+                        // No : search contract
                         $contact_iterator = $DB->request([
                             'SELECT' => 'id',
                             'FROM'   => 'glpi_contacts',
                             'WHERE'  => [
                                 'entities_id'  => $this->to,
                                 'name'         => $contact->fields['name'],
-                                'firstname'    => $contact->fields['firstname']
-                            ]
+                                'firstname'    => $contact->fields['firstname'],
+                            ],
                         ]);
 
                         if (count($contact_iterator)) {
                             $result = $contact_iterator->current();
                             $newcontactID = $result['id'];
-                            $this->addToAlreadyTransfer('Contact', $item_ID, $newcontactID);
+                            $this->addToAlreadyTransfer(Contact::class, $item_ID, $newcontactID);
                         }
 
-                       // found : use it
-                       // not found : copy contract
+                        // found : use it
+                        // not found : copy contract
                         if ($newcontactID < 0) {
-                           // 1 - create new item
+                            // 1 - create new item
                             unset($contact->fields['id']);
                             $input                = $contact->fields;
                             $input['entities_id'] = $this->to;
-                            unset($contact->fields);
-                            $newcontactID         = $contact->add($input);
-                           // 2 - transfer as copy
-                            $this->transferItem('Contact', $item_ID, $newcontactID);
+                            $contact->fields = [];
+                            $newcontactID         = (int) $contact->add($input);
+                            // 2 - transfer as copy
+                            if ($newcontactID > 0) {
+                                $this->transferItem(Contact::class, $item_ID, $newcontactID);
+                            }
                         }
                     }
                 }
 
-               // Update links
+                // Update links
                 if ($ID == $newID) {
                     if ($item_ID != $newcontactID) {
                         $DB->update(
                             'glpi_contacts_suppliers',
                             [
-                                'contacts_id' => $newcontactID
+                                'contacts_id' => $newcontactID,
                             ],
                             [
-                                'id' => $data['id']
+                                'id' => $data['id'],
                             ]
                         );
                     }
                 } else { // Same Item -> update links
-                   // Copy Item -> copy links
+                    // Copy Item -> copy links
                     if ($item_ID != $newcontactID) {
                         $DB->insert(
                             'glpi_contacts_suppliers',
                             [
                                 'contacts_id'  => $newcontactID,
-                                'suppliers_id' => $newID
+                                'suppliers_id' => $newID,
                             ]
                         );
                     } else { // transfer contact but copy supplier : update link
                         $DB->update(
                             'glpi_contacts_suppliers',
                             [
-                                'suppliers_id' => $newID
+                                'suppliers_id' => $newID,
                             ],
                             [
-                                'id' => $data['id']
+                                'id' => $data['id'],
                             ]
                         );
                     }
                 }
 
-               // If clean and unused ->
+                // If clean and unused ->
                 if (
                     $need_clean_process
                     && $this->options['clean_contact']
@@ -3443,7 +3483,7 @@ final class Transfer extends CommonDBTM
                     $remain = $DB->request([
                         'COUNT'  => 'cpt',
                         'FROM'   => 'glpi_contacts_suppliers',
-                        'WHERE'  => ['contacts_id' => $item_ID]
+                        'WHERE'  => ['contacts_id' => $item_ID],
                     ])->current();
 
                     if ($remain['cpt'] == 0) {
@@ -3451,7 +3491,7 @@ final class Transfer extends CommonDBTM
                             $contact->delete(['id' => $item_ID]);
                         }
                         if ($this->options['clean_contact'] == 2) { // purge
-                            $contact->delete(['id' => $item_ID], 1);
+                            $contact->delete(['id' => $item_ID], true);
                         }
                     }
                 }
@@ -3460,7 +3500,7 @@ final class Transfer extends CommonDBTM
             $DB->delete(
                 'glpi_contacts_suppliers',
                 [
-                    'suppliers_id' => $ID
+                    'suppliers_id' => $ID,
                 ]
             );
         }
@@ -3469,13 +3509,13 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer reservations of an item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferReservations($itemtype, $ID, $newID): void
+    private function transferReservations(string $itemtype, int $ID, int $newID): void
     {
         $ri = new ReservationItem();
 
@@ -3483,24 +3523,24 @@ final class Transfer extends CommonDBTM
             switch ($this->options['keep_reservation']) {
                 // delete
                 case 0:
-                   // Same item -> delete
+                    // Same item -> delete
                     if ($ID == $newID) {
                         $ri->delete(['id' => $ri->fields['id']], true);
                     }
-                   // Copy : nothing to do
+                    // Copy : nothing to do
                     break;
 
-                // Keep
+                    // Keep
                 default:
-                   // Copy : set item as reservable
+                    // Copy : set item as reservable
                     if ($ID != $newID) {
                         $input['itemtype']  = $itemtype;
                         $input['items_id']  = $newID;
                         $input['is_active'] = $ri->fields['is_active'];
-                        unset($ri->fields);
+                        $ri->fields = [];
                         $ri->add($input);
                     }
-                   // Same item -> nothing to do
+                    // Same item -> nothing to do
                     break;
             }
         }
@@ -3509,20 +3549,19 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer devices of an item
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferDevices($itemtype, $ID, $newID): void
+    private function transferDevices(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
-       // Only same case because no duplication of computers
+        // Only same case because no duplication of computers
         switch ($this->options['keep_device']) {
-           // delete devices
+            // delete devices
             case 0:
                 foreach (Item_Devices::getItemAffinities($itemtype) as $type) {
                     $table = getTableForItemType($type);
@@ -3530,7 +3569,7 @@ final class Transfer extends CommonDBTM
                         $table,
                         [
                             'items_id'  => $ID,
-                            'itemtype'  => $itemtype
+                            'itemtype'  => $itemtype,
                         ]
                     );
                 }
@@ -3543,14 +3582,19 @@ final class Transfer extends CommonDBTM
                     $devicetable     = getTableForItemType($devicetype);
                     $fk              = getForeignKeyFieldForTable($devicetable);
 
-                    $device          = new $devicetype();
+                    $device          = getItemForItemtype($devicetype);
+
+                    if (!($device instanceof CommonDevice)) {
+                        continue;
+                    }
+
                     // Get contracts for the item
                     $criteria = [
                         'FROM'   => $itemdevicetable,
                         'WHERE'  => [
                             'items_id'  => $ID,
-                            'itemtype'  => $itemtype
-                        ]
+                            'itemtype'  => $itemtype,
+                        ],
                     ];
                     if (!empty($this->noneedtobe_transfer[$devicetype])) {
                         $criteria['WHERE']['NOT'] = [$fk => $this->noneedtobe_transfer[$devicetype]];
@@ -3558,14 +3602,14 @@ final class Transfer extends CommonDBTM
                     $iterator = $DB->request($criteria);
 
                     if (count($iterator)) {
-                       // Foreach get item
+                        // Foreach get item
                         foreach ($iterator as $data) {
                             $item_ID     = $data[$fk];
                             $newdeviceID = -1;
 
-                          // is already transfer ?
+                            // is already transfer ?
                             if (isset($this->already_transfer[$devicetype][$item_ID])) {
-                                 $newdeviceID = $this->already_transfer[$devicetype][$item_ID];
+                                $newdeviceID = $this->already_transfer[$devicetype][$item_ID];
                             } else {
                                 // No
                                 // Can be transfer without copy ? = all linked items need to be transfer (so not copy)
@@ -3574,31 +3618,31 @@ final class Transfer extends CommonDBTM
                                     'SELECT'          => 'itemtype',
                                     'DISTINCT'        => true,
                                     'FROM'            => $itemdevicetable,
-                                    'WHERE'           => [$fk => $item_ID]
+                                    'WHERE'           => [$fk => $item_ID],
                                 ]);
 
                                 foreach ($type_iterator as $data_type) {
                                     $dtype = $data_type['itemtype'];
 
                                     if ($this->haveItemsToTransfer($dtype)) {
-                                         // No items to transfer -> exists links
-                                         $dcriteria = [
-                                             'COUNT'  => 'cpt',
-                                             'FROM'   => $itemdevicetable,
-                                             'WHERE'  => [
-                                                 $fk         => $item_ID,
-                                                 'itemtype'  => $dtype,
-                                                 'NOT'       => [
-                                                     'items_id'  => $this->needtobe_transfer[$dtype]
-                                                 ]
-                                             ]
-                                         ];
+                                        // No items to transfer -> exists links
+                                        $dcriteria = [
+                                            'COUNT'  => 'cpt',
+                                            'FROM'   => $itemdevicetable,
+                                            'WHERE'  => [
+                                                $fk         => $item_ID,
+                                                'itemtype'  => $dtype,
+                                                'NOT'       => [
+                                                    'items_id'  => $this->needtobe_transfer[$dtype],
+                                                ],
+                                            ],
+                                        ];
 
-                                         $result = $DB->request($dcriteria)->current();
+                                        $result = $DB->request($dcriteria)->current();
 
-                                         if ($result['cpt'] > 0) {
-                                             $canbetransfer = false;
-                                         }
+                                        if ($result['cpt'] > 0) {
+                                            $canbetransfer = false;
+                                        }
                                     } else {
                                         $canbetransfer = false;
                                     }
@@ -3608,13 +3652,13 @@ final class Transfer extends CommonDBTM
                                     }
                                 }
 
-                               // Yes : transfer
+                                // Yes : transfer
                                 if ($canbetransfer) {
                                     $this->transferItem($devicetype, $item_ID, $item_ID);
                                     $newdeviceID = $item_ID;
                                 } else {
                                     $device->getFromDB($item_ID);
-                               // No : search device
+                                    // No : search device
                                     $field = "name";
                                     if (!$DB->fieldExists($devicetable, "name")) {
                                         $field = "designation";
@@ -3625,8 +3669,8 @@ final class Transfer extends CommonDBTM
                                         'FROM'   => $devicetable,
                                         'WHERE'  => [
                                             'entities_id'  => $this->to,
-                                            $field         => $device->fields[$field]
-                                        ]
+                                            $field         => $device->fields[$field],
+                                        ],
                                     ]);
 
                                     if (count($device_iterator)) {
@@ -3635,36 +3679,39 @@ final class Transfer extends CommonDBTM
                                         $this->addToAlreadyTransfer($devicetype, $item_ID, $newdeviceID);
                                     }
 
-                               // found : use it
-                               // not found : copy contract
+                                    // found : use it
+                                    // not found : copy contract
                                     if ($newdeviceID < 0) {
-                                    // 1 - create new item
+                                        // 1 - create new item
                                         unset($device->fields['id']);
                                         $input                = $device->fields;
-                                    // Fix for fields with NULL in DB
+                                        // Fix for fields with NULL in DB
                                         foreach ($input as $key => $value) {
                                             if ($value == '') {
                                                 unset($input[$key]);
                                             }
                                         }
                                         $input['entities_id'] = $this->to;
-                                        unset($device->fields);
-                                        $newdeviceID = $device->add($input);
-                                    // 2 - transfer as copy
-                                        $this->transferItem($devicetype, $item_ID, $newdeviceID);
+
+                                        $device = new $device();
+                                        $newdeviceID = (int) $device->add($input);
+                                        // 2 - transfer as copy
+                                        if ($newdeviceID > 0) {
+                                            $this->transferItem($devicetype, $item_ID, $newdeviceID);
+                                        }
                                     }
                                 }
                             }
 
-                          // Update links
+                            // Update links
                             $DB->update(
                                 $itemdevicetable,
                                 [
                                     $fk         => $newdeviceID,
-                                    'items_id'  => $newID
+                                    'items_id'  => $newID,
                                 ],
                                 [
-                                    'id' => $data['id']
+                                    'id' => $data['id'],
                                 ]
                             );
                             $this->transferItem($itemdevicetype, $data['id'], $data['id']);
@@ -3678,62 +3725,61 @@ final class Transfer extends CommonDBTM
     /**
      * Transfer network links
      *
-     * @param string $itemtype  The original type of transferred item
+     * @param class-string<CommonDBTM> $itemtype  The original type of transferred item
      * @param int $ID           Original ID of the item
      * @param int $newID        New ID of the item
      *
      * @return void
      **/
-    private function transferNetworkLink($itemtype, $ID, $newID): void
+    private function transferNetworkLink(string $itemtype, int $ID, int $newID): void
     {
-        /** @var DBmysql $DB */
         global $DB;
-       /// TODO manage with new network system
+        /// TODO manage with new network system
         $np = new NetworkPort();
         $nn = new NetworkPort_NetworkPort();
 
         $iterator = $DB->request([
             'SELECT'    => [
-                'glpi_networkports.*'
+                'glpi_networkports.*',
             ],
             'FROM'      => 'glpi_networkports',
             'LEFT JOIN' => [
                 'glpi_networkportethernets'   => [
                     'ON' => [
                         'glpi_networkportethernets'   => 'networkports_id',
-                        'glpi_networkports'           => 'id'
-                    ]
-                ]
+                        'glpi_networkports'           => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_networkports.items_id'  => $ID,
-                'glpi_networkports.itemtype'  => $itemtype
-            ]
+                'glpi_networkports.itemtype'  => $itemtype,
+            ],
         ]);
 
         if (count($iterator)) {
             switch ($this->options['keep_networklink']) {
-               // Delete netport
+                // Delete netport
                 case 0:
                     // Not a copy -> delete
                     if ($ID == $newID) {
                         foreach ($iterator as $data) {
-                            $np->delete(['id' => $data['id']], 1);
+                            $np->delete(['id' => $data['id']], true);
                         }
                     }
                     // Copy -> do nothing
                     break;
 
-               // Disconnect
+                    // Disconnect
                 case 1:
-                  // Not a copy -> disconnect
+                    // Not a copy -> disconnect
                     if ($ID == $newID) {
                         foreach ($iterator as $data) {
                             if ($nn->getFromDBForNetworkPort($data['id'])) {
-                                 $nn->delete($data);
+                                $nn->delete($data);
                             }
 
-                         //find socket attached to NetworkPortEthernet and transfer it
+                            //find socket attached to NetworkPortEthernet and transfer it
                             $socket = new Socket();
                             if ($socket->getFromDBByCrit(["networkports_id" => $data['id']])) {
                                 if ($socket->getID()) {
@@ -3754,15 +3800,15 @@ final class Transfer extends CommonDBTM
                             }
                             unset($data['id']);
                             $data['items_id'] = $newID;
-                            unset($np->fields);
+                            $np->fields = [];
                             $np->add($data);
                         }
                     }
                     break;
 
-               // Keep network links
+                    // Keep network links
                 default:
-                 // Copy -> Copy sockets (do not keep links)
+                    // Copy -> Copy sockets (do not keep links)
                     if ($ID != $newID) {
                         foreach ($iterator as $data) {
                             $socket = new Socket();
@@ -3773,7 +3819,7 @@ final class Transfer extends CommonDBTM
                             }
                             unset($data['id']);
                             $data['items_id'] = $newID;
-                            unset($np->fields);
+                            $np->fields = [];
                             $np->add($data);
                         }
                     } else {
@@ -3812,7 +3858,7 @@ final class Transfer extends CommonDBTM
             'item' => $this,
             'edit_mode' => $edit_form,
             'can_change_options' => Session::haveRightsOr("transfer", [CREATE, UPDATE, PURGE]),
-            'params' => $options
+            'params' => $options,
         ]);
         return true;
     }
@@ -3823,7 +3869,6 @@ final class Transfer extends CommonDBTM
      */
     public function showTransferList(): void
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $transfer_list = [];
@@ -3839,19 +3884,19 @@ final class Transfer extends CommonDBTM
                             "$table.id",
                             $table_name_field,
                             'entities.completename AS entname',
-                            'entities.id AS entID'
+                            'entities.id AS entID',
                         ],
                         'FROM' => $table,
                         'LEFT JOIN' => [
                             'glpi_entities AS entities' => [
                                 'ON' => [
                                     'entities' => 'id',
-                                    $table => 'entities_id'
-                                ]
-                            ]
+                                    $table => 'entities_id',
+                                ],
+                            ],
                         ],
                         'WHERE' => ["$table.id" => $tab],
-                        'ORDERBY' => ['entname', $table_name_field]
+                        'ORDERBY' => ['entname', $table_name_field],
                     ]);
 
                     foreach ($iterator as $data) {
@@ -3863,20 +3908,20 @@ final class Transfer extends CommonDBTM
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/transfer_list.html.twig', [
-            'transfer_list' => $transfer_list
+            'transfer_list' => $transfer_list,
         ]);
     }
 
     public static function getIcon()
     {
-        return "fas fa-level-up-alt";
+        return "ti ti-corner-right-up";
     }
 
     public function getItemtypes(): array
     {
         $itemtypes = [
-            'Software', // Software first (to avoid copy during computer transfer)
-            'Computer', // Computer before all other items
+            Software::class, // Software first (to avoid copy during computer transfer)
+            Computer::class, // Computer before all other items
         ];
 
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
@@ -3887,24 +3932,24 @@ final class Transfer extends CommonDBTM
         $itemtypes = array_merge(
             $itemtypes,
             [
-                'CartridgeItem',
-                'ConsumableItem',
-                'Monitor',
-                'NetworkEquipment',
-                'Peripheral',
-                'Phone',
-                'Printer',
-                'SoftwareLicense',
-                'Certificate',
-                'Contact',
-                'Contract',
-                'Document',
-                'Supplier',
-                'Group',
-                'Link',
-                'Ticket',
-                'Problem',
-                'Change'
+                CartridgeItem::class,
+                ConsumableItem::class,
+                Monitor::class,
+                NetworkEquipment::class,
+                Peripheral::class,
+                Phone::class,
+                Printer::class,
+                SoftwareLicense::class,
+                Certificate::class,
+                Contact::class,
+                Contract::class,
+                Document::class,
+                Supplier::class,
+                Group::class,
+                Link::class,
+                Ticket::class,
+                Problem::class,
+                Change::class,
             ]
         );
 

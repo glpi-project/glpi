@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,25 +36,29 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 
+use function Safe\strtotime;
+
 /**
  * LevelAgreement base Class for OLA & SLA
  * @since 9.2
  **/
 abstract class LevelAgreement extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public static $rightname       = 'slm';
 
-   // From CommonDBChild
-    public static $itemtype = 'SLM';
+    // From CommonDBChild
+    public static $itemtype = SLM::class;
     public static $items_id = 'slms_id';
 
+    /** @var string  */
     protected static $prefix            = '';
+    /** @var string  */
     protected static $prefixticket      = '';
-    /** @var class-string<LevelAgreementLevel> */
+    /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
-    /** @var class-string<CommonDBTM> */
+    /** @var string|class-string<CommonDBTM> */
     protected static $levelticketclass  = '';
 
 
@@ -76,7 +80,7 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Get table fields
      *
-     * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     * @param int $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
      * @return array of 'date' and 'sla' field names
      */
@@ -109,8 +113,8 @@ abstract class LevelAgreement extends CommonDBChild
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(static::$levelclass, $ong, $options);
-        $this->addStandardTab('Rule', $ong, $options);
-        $this->addStandardTab('Item_Ticket', $ong, $options);
+        $this->addStandardTab(Rule::class, $ong, $options);
+        $this->addStandardTab(Ticket::class, $ong, $options);
 
         return $ong;
     }
@@ -118,8 +122,10 @@ abstract class LevelAgreement extends CommonDBChild
     /**
      * Define calendar of the ticket using the SLA/OLA when using this calendar as sla/ola-s calendar
      *
-     * @param integer $calendars_id calendars_id of the ticket
-     **/
+     * @param int $calendars_id calendars_id of the ticket
+     *
+     * @return void
+     */
     public function setTicketCalendar($calendars_id)
     {
         if ($this->fields['use_ticket_calendar']) {
@@ -180,8 +186,7 @@ abstract class LevelAgreement extends CommonDBChild
         if ($ID > 0) {
             echo "<tr class='tab_bg_1'>";
             echo "<td>" . __s('Last update') . "</td>";
-            echo "<td>" . ($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"])
-                                                : __s('Never'));
+            echo "<td>" . htmlescape($this->fields["date_mod"] ? Html::convDateTime($this->fields["date_mod"]) : __('Never'));
             echo "</td></tr>";
         }
 
@@ -195,29 +200,34 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
             'min'   => 0,
-            'max'   => 1000
+            'max'   => 1000,
         ]);
         $possible_values = self::getDefinitionTimeValues();
         $rand = Dropdown::showFromArray(
             'definition_time',
             $possible_values,
             ['value'     => $this->fields["definition_time"],
-                'on_change' => 'appearhideendofworking()'
+                'on_change' => 'appearhideendofworking()',
             ]
         );
-        echo "<script type='text/javascript' >";
-        echo "function appearhideendofworking() {";
-        echo "if ($('#dropdown_definition_time$rand option:selected').val() == 'day'
-                  || $('#dropdown_definition_time$rand option:selected').val() == 'month') {
-               $('#title_endworkingday').show();
-               $('#dropdown_endworkingday').show();
-            } else {
-               $('#title_endworkingday').hide();
-               $('#dropdown_endworkingday').hide();
-            }";
-        echo "}";
-        echo "appearhideendofworking();";
-        echo "</script>";
+
+        echo Html::scriptBlock(
+            <<<JAVASCRIPT
+            function appearhideendofworking() {
+                if (
+                    $('#dropdown_definition_time$rand option:selected').val() == 'day'
+                    || $('#dropdown_definition_time$rand option:selected').val() == 'month'
+                ) {
+                    $('#title_endworkingday').show();
+                    $('#dropdown_endworkingday').show();
+                } else {
+                    $('#title_endworkingday').hide();
+                    $('#dropdown_endworkingday').hide();
+                }
+            }
+            appearhideendofworking();
+JAVASCRIPT
+        );
 
         echo "</td></tr>";
 
@@ -250,7 +260,7 @@ abstract class LevelAgreement extends CommonDBChild
             'minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
             'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
             'day'    => _n('Day', 'Days', Session::getPluralNumber()),
-            'month'  => _n('Month', 'Months', Session::getPluralNumber())
+            'month'  => _n('Month', 'Months', Session::getPluralNumber()),
         ];
     }
 
@@ -285,7 +295,7 @@ abstract class LevelAgreement extends CommonDBChild
         }
 
         $pre  = static::$prefix;
-        $nextlevel  = new static::$levelclass();
+        $nextlevel  = getItemForItemtype(static::$levelclass);
         if (!$nextlevel->getFromDB($nextaction->fields[$pre . 'levels_id'])) {
             return false;
         }
@@ -299,14 +309,15 @@ abstract class LevelAgreement extends CommonDBChild
      * since 10.0
      *
      * @param Ticket $ticket
-     * @param int $type
+     * @param SLM::TTO|SLM::TTR $type
      *
      * @return false|OlaLevel_Ticket|SlaLevel_Ticket
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getNextActionForTicket(Ticket $ticket, int $type)
     {
-        $nextaction = new static::$levelticketclass();
+        /** @var OlaLevel_Ticket|SlaLevel_Ticket $nextaction */
+        $nextaction = getItemForItemtype(static::$levelticketclass);
         if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
             return false;
         }
@@ -318,11 +329,13 @@ abstract class LevelAgreement extends CommonDBChild
      * Print the HTML for a SLM
      *
      * @param SLM $slm Slm item
+     *
+     * @return void
      */
     public static function showForSLM(SLM $slm)
     {
         if (!$slm->can($slm->fields['id'], READ)) {
-            return false;
+            return;
         }
 
         $instID   = $slm->fields['id'];
@@ -372,9 +385,9 @@ TWIG, $twig_params);
             $link = '';
             if ($slm->fields['use_ticket_calendar']) {
                 $link = __s('Calendar of the ticket');
-            } else if (!$slm->fields['calendars_id']) {
-                 $link =  __s('24/7');
-            } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
+            } elseif (!$slm->fields['calendars_id']) {
+                $link =  __s('24/7');
+            } elseif ($calendar->getFromDB($slm->fields['calendars_id'])) {
                 $link = $calendar->getLink();
             }
             $entries[] = [
@@ -385,36 +398,34 @@ TWIG, $twig_params);
                 'type'     => $la::getSpecificValueToDisplay('type', $la->fields['type']),
                 'maximum_time' => $la::getSpecificValueToDisplay('number_time', [
                     'number_time'     => $la->fields['number_time'],
-                    'definition_time' => $la->fields['definition_time']
+                    'definition_time' => $la->fields['definition_time'],
                 ]),
-                'calendar' => $link
+                'calendar' => $link,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'levelagreement' . $instID,
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'name' => __('Name'),
                 'type' => _n('Type', 'Types', 1),
                 'maximum_time' => __('Maximum time'),
-                'calendar' => _n('Calendar', 'Calendars', 1)
+                'calendar' => _n('Calendar', 'Calendars', 1),
             ],
             'formatters' => [
                 'name' => 'raw_html',
-                'calendar' => 'raw_html'
+                'calendar' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -424,7 +435,6 @@ TWIG, $twig_params);
      */
     public function showRulesList()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $fk      = static::getFieldNames($this->fields['type'])[1];
@@ -437,8 +447,8 @@ TWIG, $twig_params);
             'FROM'            => 'glpi_ruleactions',
             'WHERE'           => [
                 'field' => $fk,
-                'value' => $this->getID()
-            ]
+                'value' => $this->getID(),
+            ],
         ]));
         $nb = count($rules_id_list);
 
@@ -450,35 +460,33 @@ TWIG, $twig_params);
                 'id'       => $rule->getID(),
                 'rule'     => $canedit ? $rule->getLink() : htmlescape($rule->fields["name"]),
                 'active'   => Dropdown::getYesNo($rule->fields["is_active"]),
-                'description' => $rule->fields["description"]
+                'description' => $rule->fields["description"],
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'rule' => RuleTicket::getTypeName($nb),
                 'active' => __('Active'),
-                'description' => __('Description')
+                'description' => __('Description'),
             ],
             'formatters' => [
                 'rule' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . RuleTicket::class . mt_rand(),
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),
-                    'purge'  => _x('button', 'Delete permanently')
-                ]
-            ]
+                    'purge'  => _x('button', 'Delete permanently'),
+                ],
+            ],
         ]);
     }
 
@@ -488,7 +496,7 @@ TWIG, $twig_params);
             $nb = 0;
             switch ($item->getType()) {
                 case 'SLM':
-                    /** @var \SLM $item */
+                    /** @var SLM $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             self::getTable(),
@@ -503,8 +511,8 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case 'SLM':
+        switch (true) {
+            case $item instanceof SLM:
                 self::showForSLM($item);
                 break;
         }
@@ -512,16 +520,15 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get data by type and ticket
+     * Get all LevelAgreements related to the ticket, filtered by LevelAgreement type (SLM::TTR | SLM::TTO)
      *
-     * @param $tickets_id
-     * @param $type
+     * @param int $tickets_id
+     * @param int $type
      * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
     public function getDataForTicket($tickets_id, $type)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         [, $field] = static::getFieldNames($type);
@@ -533,12 +540,12 @@ TWIG, $twig_params);
                 'glpi_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field
-                    ]
-                ]
+                        'glpi_tickets'       => $field,
+                    ],
+                ],
             ],
             'WHERE'        => ['glpi_tickets.id' => $tickets_id],
-            'LIMIT'        => 1
+            'LIMIT'        => 1,
         ]);
 
         if (count($iterator)) {
@@ -553,7 +560,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -571,7 +578,7 @@ TWIG, $twig_params);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -582,7 +589,7 @@ TWIG, $twig_params);
             'datatype'           => 'specific',
             'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields'   => ['definition_time']
+            'additionalfields'   => ['definition_time'],
         ];
 
         $tab[] = [
@@ -591,7 +598,7 @@ TWIG, $twig_params);
             'field'              => 'end_of_working_day',
             'name'               => __('End of working day'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -599,7 +606,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -607,15 +614,15 @@ TWIG, $twig_params);
             'table'              => 'glpi_slms',
             'field'              => 'name',
             'name'               => __('SLM'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -630,16 +637,16 @@ TWIG, $twig_params);
             case 'number_time':
                 switch ($values['definition_time']) {
                     case 'minute':
-                        return sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]);
+                        return htmlescape(sprintf(_n('%d minute', '%d minutes', $values[$field]), $values[$field]));
                     case 'hour':
-                        return sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]);
+                        return htmlescape(sprintf(_n('%d hour', '%d hours', $values[$field]), $values[$field]));
                     case 'day':
-                        return sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]);
+                        return htmlescape(sprintf(_n('%d day', '%d days', $values[$field]), $values[$field]));
                 }
                 break;
 
             case 'type':
-                return self::getOneTypeName($values[$field]);
+                return htmlescape(self::getOneTypeName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -659,9 +666,11 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get computed resolution time
+     * Get delay (due time duration) in seconds for the current agreement
      *
-     * @return integer resolution time (default 0)
+     * The time to own or to resolve duration
+     *
+     * @return int own/resolution time (default 0)
      **/
     public function getTime()
     {
@@ -678,12 +687,12 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get active time between to date time for the active calendar
+     * Elapsed time between two dates in seconds
      *
-     * @param datetime $start begin
-     * @param datetime $end end
+     * @param string $start start date formated 'Y-m-d H:i:s'
+     * @param string $end end date formated 'Y-m-d H:i:s'
      *
-     * @return integer timestamp of delay
+     * @return int elapsed time in seconds
      **/
     public function getActiveTimeBetween($start, $end)
     {
@@ -709,12 +718,12 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get date for current agreement
+     * Get due date for current agreement
      *
-     * @param string  $start_date        datetime start date
-     * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)
+     * @param string  $start_date        datetime start date ('Y-m-d H:i:s')
+     * @param int $additional_delay  integer  additional delay to add or substract (for waiting time)
      *
-     * @return string|null  due date time (NULL if sla/ola not exists)
+     * @return string|null  due datetime 'Y-m-d H:i:s' (NULL if sla/ola not exists)
      **/
     public function computeDate($start_date, $additional_delay = 0)
     {
@@ -765,15 +774,15 @@ TWIG, $twig_params);
      * Get execution date of a level
      *
      * @param string  $start_date        start date
-     * @param integer $levels_id         sla/ola level id
-     * @param integer $additional_delay  additional delay to add or substract (for waiting time)
+     * @param int $levels_id         sla/ola level id
+     * @param int $additional_delay  additional delay to add or substract (for waiting time)
      *
      * @return string|null  execution date time (NULL if ola/sla not exists)
      **/
     public function computeExecutionDate($start_date, $levels_id, $additional_delay = 0)
     {
         if (isset($this->fields['id'])) {
-            $level = new static::$levelclass();
+            $level = getItemForItemtype(static::$levelclass);
             $fk = getForeignKeyFieldForItemType(static::class);
 
             if ($level->getFromDB($levels_id)) { // level exists
@@ -830,14 +839,14 @@ TWIG, $twig_params);
     {
         return [
             SLM::TTO => __('Time to own'),
-            SLM::TTR => __('Time to resolve')
+            SLM::TTR => __('Time to resolve'),
         ];
     }
 
     /**
      * Get types name
      *
-     * @param  integer $type
+     * @param  int $type
      * @return string  name
      **/
     public static function getOneTypeName($type)
@@ -903,8 +912,11 @@ TWIG, $twig_params);
     /**
      * Add a level to do for a ticket
      *
+     * Add an entry in slalevels_tickets | olalevels_tickets table
+     * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
+     *
      * @param Ticket  $ticket Ticket object
-     * @param integer $levels_id SlaLevel or OlaLevel ID
+     * @param int $levels_id SlaLevel or OlaLevel ID
      *
      * @return void
      **/
@@ -952,7 +964,7 @@ TWIG, $twig_params);
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
-                $levelticket             = new static::$levelticketclass();
+                $levelticket             = getItemForItemtype(static::$levelticketclass);
                 $levelticket->add($toadd);
             }
         }
@@ -967,41 +979,39 @@ TWIG, $twig_params);
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ticketfield = static::$prefix . "levels_id_ttr";
 
         if ($ticket->fields[$ticketfield] > 0) {
-            $levelticket = new static::$levelticketclass();
+            $levelticket = getItemForItemtype(static::$levelticketclass);
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $levelticket::getTable(),
-                'WHERE'  => ['tickets_id' => $ticket->fields['id']]
+                'WHERE'  => ['tickets_id' => $ticket->fields['id']],
             ]);
 
             foreach ($iterator as $data) {
-                 $levelticket->delete(['id' => $data['id']]);
+                $levelticket->delete(['id' => $data['id']]);
             }
         }
     }
 
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // Clean levels
         $fk        = getForeignKeyFieldForItemType(static::class);
-        $level     = new static::$levelclass();
+        $level     = getItemForItemtype(static::$levelclass);
         $level->deleteByCriteria([$fk => $this->getID()]);
 
-       // Update tickets : clean SLA/OLA
+        // Update tickets : clean SLA/OLA
         [, $laField] = static::getFieldNames($this->fields['type']);
         $iterator =  $DB->request([
             'SELECT' => 'id',
             'FROM'   => 'glpi_tickets',
-            'WHERE'  => [$laField => $this->fields['id']]
+            'WHERE'  => [$laField => $this->fields['id']],
         ]);
 
         if (count($iterator)) {
@@ -1017,9 +1027,9 @@ TWIG, $twig_params);
     public function post_clone($source, $history)
     {
         // Clone levels
-        $classname = get_called_class();
+        $classname = static::class;
         $fk        = getForeignKeyFieldForItemType($classname);
-        $level     = new static::$levelclass();
+        $level     = getItemForItemtype(static::$levelclass);
         foreach ($level->find([$fk => $source->getID()]) as $data) {
             $level->getFromDB($data['id']);
             $level->clone([$fk => $this->getID()]);
@@ -1058,8 +1068,9 @@ TWIG, $twig_params);
         // CLear levels of others LA of the same type
         // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
         $level_ticket_class = $this->getLevelTicketClass();
+        $level_ticket = getItemForItemtype($level_ticket_class);
         $level_class = $this->getLevelClass();
-        $levels = (new $level_ticket_class())->find([
+        $levels = $level_ticket->find([
             'tickets_id' => $tickets_id,
             [$level_class::getForeignKeyField() => ['!=', $this->getID()]],
             [
@@ -1071,16 +1082,15 @@ TWIG, $twig_params);
                             'SELECT' => 'id',
                             'FROM' => static::getTable(),
                             'WHERE' => ['type' => $this->fields['type']],
-                        ])
-                    ]
+                        ]),
+                    ],
                 ]),
-            ]
+            ],
         ]);
 
         // Delete invalid levels
         foreach ($levels as $level) {
-            $em = new $level_ticket_class();
-            $em->delete(['id' => $level['id']]);
+            $level_ticket->delete(['id' => $level['id']]);
         }
     }
 }

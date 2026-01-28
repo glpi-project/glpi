@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,18 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
+use InvalidArgumentException;
 use Override;
+use Toolbox;
 
 final class DirectAccess implements ControlTypeInterface
 {
@@ -59,26 +63,27 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): string
+    public function getConfig(): JsonFieldInterface
     {
-        return DirectAccessConfig::class;
+        return new DirectAccessConfig();
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $this->addWarningIfFormHasBlacklistedQuestionTypes($form, $warnings);
+        return $this->getWarningIfFormHasBlacklistedQuestionTypes($form);
     }
 
-    private function addWarningIfFormHasBlacklistedQuestionTypes(
+    private function getWarningIfFormHasBlacklistedQuestionTypes(
         Form $form,
-        array $warnings
     ): array {
+        $warnings = [];
+
         if (
             FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
             && array_reduce(
                 $form->getQuestions(),
-                fn ($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
+                fn($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
             )
         ) {
             $warnings[] = __('This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.');
@@ -90,12 +95,11 @@ final class DirectAccess implements ControlTypeInterface
     #[Override]
     public function renderConfigForm(FormAccessControl $access_control): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $config = $access_control->getConfig();
         if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         // Build form URL with integrated token parameter
@@ -130,18 +134,19 @@ final class DirectAccess implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         if (!$this->validateSession($config, $parameters)) {
             return AccessVote::Abstain;
         }
 
-        if (!$this->validateToken($config, $parameters)) {
+        if (!$this->validateToken($form, $config, $parameters)) {
             return AccessVote::Abstain;
         };
 
@@ -160,13 +165,37 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     private function validateToken(
+        Form $form,
         DirectAccessConfig $config,
         FormAccessParameters $parameters,
     ): bool {
+        // Try to read the token from the query parameters
         $token = $parameters->getUrlParameters()['token'] ?? null;
+        $has_supplied_token = $token !== null;
+
+        // Read context about current and previous pages
+        $current_route_path = $_SERVER['REQUEST_URI'] ?? "";
+
+        // If the token is missing, we'll also look for the token in the session.
+        // This make it more convenient for AJAX calls from the form renderer
+        // as they don't need to manually include the token.
+        if (
+            !$has_supplied_token
+            // Disable this fallback for non ajax requests as the token should
+            // always be re-specified in this case
+            && Toolbox::isAjax()
+            // Disable this fallback for the service catalog, as it is out of scope
+            && !str_contains($current_route_path, "ServiceCatalog")
+        ) {
+            $token = $_SESSION['helpdesk_form_access_control'][$form->getId()] ?? null;
+        }
+
         if ($token === null) {
             return false;
         }
+
+        // Store token in the session so it can be reused for AJAX requests
+        $_SESSION['helpdesk_form_access_control'][$form->getId()] = $token;
 
         return hash_equals($config->getToken(), $token);
     }
@@ -174,9 +203,24 @@ final class DirectAccess implements ControlTypeInterface
     public function allowUnauthenticated(JsonFieldInterface $config): bool
     {
         if (!$config instanceof DirectAccessConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         return $config->allowUnauthenticated();
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($config->jsonSerialize(), []);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        return $config;
     }
 }

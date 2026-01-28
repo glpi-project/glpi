@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -30,6 +30,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+/* global _ */
 
 class Screenhot {
 
@@ -201,7 +203,7 @@ class Screenhot {
      */
     appendPreviewImg(preview_container, canvas, height, filename) {
         const preview_item = $(`
-            <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${filename}" style="height: ${height}">
+            <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${_.escape(filename)}" style="height: ${_.escape(height)}">
                 <button class="btn btn-sm btn-danger position-absolute top-0 start-0" type="button" title="${__('Delete')}">
                     <i class="ti ti-x"></i>
                 </button>
@@ -214,7 +216,7 @@ class Screenhot {
         preview_item.append(img);
 
         const form = preview_container.closest('form');
-        const fileupload_btn_selector = `.fileupload input[name^="_filename"][value$="${filename}"]`;
+        const fileupload_btn_selector = `.fileupload input[name^="_filename"][value$="${CSS.escape(filename)}"]`;
         preview_item.find('button').on('click', () => {
             form.find(fileupload_btn_selector)
                 .parent().find('.ti-circle-x').click();
@@ -231,7 +233,7 @@ class Screenhot {
      */
     appendPreviewVideo(preview_container, blob, height, filename) {
         const preview_item = $(`
-            <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${filename}" style="height: ${height}">
+            <div class="position-relative d-inline-block overflow-hidden upload-preview-item" data-filename="${_.escape(filename)}" style="height: ${_.escape(height)}">
                 <button class="btn btn-sm btn-danger position-absolute top-0 start-0" type="button" title="${__('Delete')}">
                     <i class="ti ti-x"></i>
                 </button>
@@ -245,7 +247,7 @@ class Screenhot {
         preview_item.append(video);
 
         const form = preview_container.closest('form');
-        const fileupload_btn_selector = `.fileupload input[name^="_filename"][value$="${filename}"]`;
+        const fileupload_btn_selector = `.fileupload input[name^="_filename"][value$="${CSS.escape(filename)}"]`;
         preview_item.find('button').on('click', () => {
             form.find(fileupload_btn_selector)
                 .parent().find('.ti-circle-x').click();

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,52 +32,55 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
+use Glpi\Application\ResourcesChecker;
 use Glpi\Cache\CacheManager;
 use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
-define('GLPI_STRICT_DEPRECATED', true); //enable strict depreciations
+define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost');
 
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');
+
+define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
+
+// Check the resources state before trying to be sure that the tests are executed with up-to-date dependencies.
+require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
+(new ResourcesChecker(dirname(__DIR__)))->checkResources();
+
+// Make sure cached content like twig template is cleared before running the tests.
+// It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
+// leading to some issues. It is safer to use the console directly as it goes
+// throught another process.
+exec(sprintf("php %s cache:clear --env='testing'", realpath(GLPI_ROOT . '/bin/console')));
 
 global $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new Kernel('testing');
+$kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 
 if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
     echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
     exit(1);
 }
-if (!defined('SKIP_UPDATES') && !Update::isDbUpToDate()) {
+if (Update::isUpdateMandatory()) {
     echo 'The GLPI codebase has been updated. The update of the GLPI database is necessary.' . PHP_EOL;
     exit(1);
 }
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
-   // Use configured cache for cache tests
+    // Use configured cache for cache tests
     $cache_manager = new CacheManager();
     $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 } else {
-   // Use "in-memory" cache for other tests
+    // Use "in-memory" cache for other tests
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
-
-// To prevent errors caught by `error` asserter to also generate logs, unregister GLPI error handler.
-// Errors that are pushed directly to logs (SQL errors/warnings for instance) will still have to be explicitly
-// validated by `$this->has*LogRecord*()` asserters, otherwise it will make test fails.
-set_error_handler(null);
-
-include_once __DIR__ . '/GLPITestCase.php';
-include_once __DIR__ . '/DbTestCase.php';
-include_once __DIR__ . '/FrontBaseClass.php';
-include_once __DIR__ . '/RuleBuilder.php';
 
 loadDataset();
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,11 +40,15 @@ use CommonDropdown;
 use CommonITILObject;
 use CommonTreeDropdown;
 use DropdownTranslation;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Html;
 use ITILCategory;
-use Glpi\DBAL\QuerySubQuery;
-use Glpi\DBAL\QueryExpression;
 use Search;
+
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * TreeBrowse
@@ -53,17 +57,13 @@ use Search;
  */
 trait TreeBrowse
 {
-    /**
-     * Show the browse view
-     */
+    /** @see TreeBrowseInterface::showBrowseView() */
     public static function showBrowseView(string $itemtype, array $params, $update = false)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $ajax_url    = $CFG_GLPI["root_doc"] . "/ajax/treebrowse.php";
+        $ajax_url    = \jsescape($CFG_GLPI["root_doc"] . "/ajax/treebrowse.php");
 
-        $loading_txt = __s('Loading...');
         $start       = isset($params['start'])
                             ? (int) $params['start']
                             : 0;
@@ -77,36 +77,35 @@ trait TreeBrowse
                             ? (int) $params['unpublished']
                             : 1;
 
+        $js_itemtype = \jsescape($itemtype);
         $criteria    = json_encode($params['criteria']);
         $sort        = json_encode($_REQUEST['sort'] ?? []);
         $order       = json_encode($_REQUEST['order'] ?? []);
 
         $category_list = json_encode(self::getTreeCategoryList($itemtype, $params));
-        $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
-        var loadingindicator  = $("<div class='loadingindicator'>$loading_txt</div>");
-        $('#items_list').html(loadingindicator);
-        window.loadNode = function(cat_id) {
-            $('#items_list').html(loadingindicator);
-            $('#items_list').load('$ajax_url', {
-                'action': 'getItemslist',
-                'cat_id': cat_id,
-                'itemtype': '$itemtype',
-                'start': $start,
-                'browse': $browse,
-                'is_deleted': $is_deleted,
-                'unpublished': $unpublished,
-                'criteria': $criteria,
-                'sort': $sort,
-                'order': $order,
-            });
-        };
+            $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
+            window.loadNode = function(cat_id) {
+                $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
+                $('#items_list').load('$ajax_url', {
+                    'action': 'getItemslist',
+                    'cat_id': cat_id,
+                    'itemtype': '$js_itemtype',
+                    'start': $start,
+                    'browse': $browse,
+                    'is_deleted': $is_deleted,
+                    'unpublished': $unpublished,
+                    'criteria': $criteria,
+                    'sort': $sort,
+                    'order': $order,
+                });
+            };
 JAVASCRIPT;
 
         if ($update) {
             $JS .= <<<JAVASCRIPT
-            $('#tree_category').fancytree('option', 'source', {$category_list});
+                $('#tree_category').fancytree('option', 'source', {$category_list});
 JAVASCRIPT;
 
             $params['criteria'][] = $_SESSION['treebrowse'][$itemtype];
@@ -114,6 +113,8 @@ JAVASCRIPT;
             $results['searchform_id'] = $params['searchform_id'] ?? null;
             Search::displayData($results);
         } else {
+            $no_cat_found  = jsescape(__("No category found"));
+
             $JS .= <<<JAVASCRIPT
             $(function() {
                 $('#tree_category').fancytree({
@@ -130,7 +131,7 @@ JAVASCRIPT;
                     },
 
                     persist: {
-                        cookiePrefix: '$itemtype',
+                        cookiePrefix: '$js_itemtype',
                         expandLazy: true,
                         overrideSource: true,
                         store: "auto"
@@ -167,7 +168,7 @@ JAVASCRIPT;
             });
 
 JAVASCRIPT;
-            echo "<div id='tree_browse'>
+            echo "<div id='tree_browse' data-testid='tree-browse'>
             <div class='browser_tree d-flex flex-column'>
                 <input type='text' class='browser_tree_search' placeholder='" . __s("Search…") . "' id='browser_tree_search'>
                 <div id='tree_category' class='browser-tree-container'></div>
@@ -178,22 +179,12 @@ JAVASCRIPT;
         echo Html::scriptBlock($JS);
     }
 
-    /**
-     * Get list of document categories in fancytree format.
-     *
-     * @param class-string<CommonDBTM> $itemtype
-     * @param array $params
-     *
-     * @return array
-     */
+    /** @see TreeBrowseInterface::getTreeCategoryList() */
     public static function getTreeCategoryList(string $itemtype, array $params): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var class-string<CommonDBTM> $cat_itemtype */
-        $cat_itemtype = static::getCategoryItemType($itemtype);
-        $cat_item     = new $cat_itemtype();
+        $cat_item = static::getCategoryItem($itemtype);
 
         $params['export_all'] = true;
 
@@ -210,12 +201,12 @@ JAVASCRIPT;
 
         $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )');
 
-        $cat_table = $cat_itemtype::getTable();
-        $cat_fk    = $cat_itemtype::getForeignKeyField();
-        $cat_join = $itemtype . '_' . $cat_itemtype;
+        $cat_table = $cat_item::getTable();
+        $cat_fk    = $cat_item::getForeignKeyField();
+        $cat_join = $itemtype . '_' . $cat_item::class;
 
         if (class_exists($cat_join)) {
-            $cat_criteria = [1];
+            $cat_criteria = [new QueryExpression('true')];
             // If there is a category filter, apply this filter to the tree too
             if (preg_match("/$cat_table/", $data['sql']['raw']['WHERE'])) {
                 // This query is used to get the IDs of all results matching the search criteria
@@ -232,10 +223,10 @@ JAVASCRIPT;
                 $cat_join::getTable() => [
                     'ON'  => [
                         $cat_join::getTable() => $itemtype::getForeignKeyField(),
-                        $itemtype::getTable() => 'id'
+                        $itemtype::getTable() => 'id',
                     ],
                     $cat_criteria,
-                ]
+                ],
             ];
         } else {
             $join = [];
@@ -249,42 +240,41 @@ JAVASCRIPT;
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
                     $cat_join::getTableField($cat_fk) => new QueryExpression(
-                        $DB->quoteName($cat_itemtype::getTableField('id'))
+                        $DB->quoteName($cat_item::getTableField('id'))
                     ),
-                    $id_criteria
-                ]
+                    $id_criteria,
+                ],
             ],
             'items_count'
         );
 
-        $select[] = $cat_itemtype::getTableField('id');
-        $select[] = $cat_itemtype::getTableField('name');
+        $select[] = $cat_item::getTableField('id');
+        $select[] = $cat_item::getTableField('name');
         if ($cat_item instanceof CommonTreeDropdown) {
-            $select[] = $cat_itemtype::getTableField($cat_fk);
+            $select[] = $cat_item::getTableField($cat_fk);
         }
         $select[] = $items_subquery;
 
         if ($cat_item instanceof CommonTreeDropdown) {
-            $order[] = $cat_itemtype::getTableField('level') . ' DESC';
-            $order[] = $cat_itemtype::getTableField('name');
+            $order[] = $cat_item::getTableField('level') . ' DESC';
+            $order[] = $cat_item::getTableField('name');
         } else {
-            $order[] = $cat_itemtype::getTableField('name') . ' DESC';
+            $order[] = $cat_item::getTableField('name') . ' DESC';
         }
 
         $cat_iterator = $DB->request([
             'SELECT' => $select,
             'FROM' => $cat_table,
-            'ORDER' => $order
+            'ORDER' => $order,
         ]);
 
-        $inst = new $cat_itemtype();
         $categories = [];
         $parents = [];
         foreach ($cat_iterator as $category) {
             if ($category instanceof CommonDropdown && $category->maybeTranslated()) {
                 $tname = DropdownTranslation::getTranslatedValue(
                     $category['id'],
-                    $inst->getType()
+                    $cat_item::class
                 );
                 if (!empty($tname)) {
                     $category['name'] = $tname;
@@ -299,9 +289,9 @@ JAVASCRIPT;
         // Without category
         $join[$cat_table] = [
             'ON' => [
-                $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
-                $cat_table => 'id'
-            ]
+                $cat_join::getTable() => $cat_item::getForeignKeyField(),
+                $cat_table => 'id',
+            ],
         ];
         $no_cat_count = $DB->request(
             [
@@ -309,9 +299,9 @@ JAVASCRIPT;
                 'FROM'   => $itemtype::getTable(),
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $cat_itemtype::getTableField('id') => null,
+                    $cat_item::getTableField('id') => null,
                     $id_criteria,
-                ]
+                ],
             ]
         )->current();
         $categories[] = [
@@ -330,12 +320,12 @@ JAVASCRIPT;
                 'title'  => $category['name'],
                 'parent' => $category[$cat_fk] ?? 0,
                 'a_attr' => [
-                    'data-id' => $cat_id
+                    'data-id' => $cat_id,
                 ],
             ];
 
             if ($category['items_count'] > 0) {
-                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . __s('This category contains ') . $itemtype::getTypeName() . '">'
+                $node['title'] .= ' <span class="badge bg-azure-lt" title="' . \htmlescape(\sprintf(__('This category contains %s'), $itemtype::getTypeName())) . '">'
                 . $category['items_count']
                 . '</span>';
             }
@@ -365,17 +355,18 @@ JAVASCRIPT;
         return $newtree;
     }
 
-    /**
-     * Return category itemtype for given itemtype.
-     *
-     * @param string $itemtype
-     *
-     * @return string|null
-     */
-    public static function getCategoryItemType(string $itemtype): ?string
+    /** @see TreeBrowseInterface::getCategoryItem() */
+    public static function getCategoryItem(string $itemtype): ?CommonDBTM
     {
-        return is_a($itemtype, CommonITILObject::class, true)
-            ? ITILCategory::class
-            : $itemtype . 'Category';
+        if (\is_a($itemtype, CommonITILObject::class, true)) {
+            return new ITILCategory();
+        }
+
+        $expected_class = $itemtype . 'Category';
+        if (is_a($expected_class, CommonDBTM::class, true)) {
+            return new $expected_class();
+        }
+
+        return null;
     }
 }

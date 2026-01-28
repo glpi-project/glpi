@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,12 +38,13 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 use RequestType;
 
-class RequestSourceField extends AbstractConfigField
+final class RequestSourceField extends AbstractConfigField
 {
     #[Override]
     public function getLabel(): string
@@ -61,6 +61,7 @@ class RequestSourceField extends AbstractConfigField
     #[Override]
     public function renderConfigForm(
         Form $form,
+        FormDestination $destination,
         JsonFieldInterface $config,
         string $input_name,
         array $display_options
@@ -93,7 +94,6 @@ class RequestSourceField extends AbstractConfigField
         array $input,
         AnswersSet $answers_set
     ): array {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$config instanceof RequestSourceFieldConfig) {
@@ -113,7 +113,7 @@ class RequestSourceField extends AbstractConfigField
             $valid_values[] = $data['id'];
         }
 
-        if (!array_search($request_source, $valid_values)) {
+        if (!in_array($request_source, $valid_values)) {
             return $input;
         }
 
@@ -142,6 +142,12 @@ class RequestSourceField extends AbstractConfigField
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 60;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
     }
 }

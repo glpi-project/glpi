@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /**
@@ -51,7 +50,7 @@ class CommonITILValidationCron extends CommonDBTM
     public static function cronInfo(): array
     {
         return [
-            'description' => __("Alerts on approval which are waiting")
+            'description' => __("Alerts on approval which are waiting"),
         ];
     }
 
@@ -64,10 +63,6 @@ class CommonITILValidationCron extends CommonDBTM
      */
     public static function cronApprovalReminder(CronTask $task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $cron_status = 1;
@@ -81,7 +76,7 @@ class CommonITILValidationCron extends CommonDBTM
 
             foreach ($targets as $target) {
                 $validation = new $target();
-                $itemtype = $validation->getItilObjectItemType($target);
+                $itemtype = $validation->getItilObjectItemType();
                 foreach (Entity::getEntitiesToNotify('approval_reminder_repeat_interval') as $entity => $repeat) {
                     $iterator = $DB->request([
                         'SELECT' => 'validation.*',
@@ -91,8 +86,8 @@ class CommonITILValidationCron extends CommonDBTM
                                 'ON' => [
                                     $itemtype::getTable() => 'id',
                                     'validation' => $itemtype::getForeignKeyField(),
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         'WHERE'  => [
                             'validation.status'          => CommonITILValidation::WAITING,
@@ -102,7 +97,7 @@ class CommonITILValidationCron extends CommonDBTM
                                     date: QueryFunction::now(),
                                     interval: $repeat,
                                     interval_unit: 'SECOND'
-                                )
+                                ),
                             ],
                             'OR'              => [
                                 ['validation.last_reminder_date' => null],
@@ -112,19 +107,19 @@ class CommonITILValidationCron extends CommonDBTM
                                             date: QueryFunction::now(),
                                             interval: $repeat,
                                             interval_unit: 'SECOND'
-                                        )
-                                    ]
+                                        ),
+                                    ],
                                 ],
                             ],
                             $itemtype::getOpenCriteria(),
-                        ]
+                        ],
                     ]);
 
                     foreach ($iterator as $data) {
                         $validation->getFromDB($data['id']);
                         $options = [
                             'validation_id'     => $validation->fields["id"],
-                            'validation_status' => $validation->fields["status"]
+                            'validation_status' => $validation->fields["status"],
                         ];
                         $item = $validation->getItem();
                         if (NotificationEvent::raiseEvent('validation_reminder', $item, $options, $validation)) {

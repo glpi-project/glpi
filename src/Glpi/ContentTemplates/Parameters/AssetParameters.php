@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,7 @@ use CommonDBTM;
 use Entity;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\AttributeParameter;
 use Glpi\ContentTemplates\Parameters\ParametersTypes\ObjectParameter;
+use State;
 
 /**
  * Parameters for "Assets" items (Computer, Monitor, ...).
@@ -59,7 +60,6 @@ class AssetParameters extends AbstractParameters
 
     protected function getTargetClasses(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $CFG_GLPI["asset_types"];
     }
@@ -71,6 +71,9 @@ class AssetParameters extends AbstractParameters
             new AttributeParameter("name", __('Name')),
             new AttributeParameter("itemtype", __('Itemtype')),
             new AttributeParameter("serial", __('Serial number')),
+            new AttributeParameter("model", _n('Model', 'Models', 1)),
+            new AttributeParameter("type", _n('Type', 'Types', 1)),
+            new AttributeParameter("state", __('Status')),
             new ObjectParameter(new EntityParameters()),
         ];
     }
@@ -84,9 +87,44 @@ class AssetParameters extends AbstractParameters
             'name'     => $fields['name'],
             'itemtype' => $asset->getType(),
             'serial'   => $fields['serial'],
+            'model'    => '',
+            'type'     => '',
+            'state'    => '',
         ];
 
-       // Add asset's entity
+        // Add model if asset has a model
+        $model_class = $asset->getModelClass();
+        if ($model_class !== null) {
+            $model_fk = $model_class::getForeignKeyField();
+            if (isset($fields[$model_fk]) && $fields[$model_fk] > 0) {
+                $model = getItemForItemtype($model_class);
+                if ($model && $model->getFromDB($fields[$model_fk])) {
+                    $values['model'] = $model->getName();
+                }
+            }
+        }
+
+        // Add type if asset has a type
+        $type_class = $asset->getTypeClass();
+        if ($type_class !== null) {
+            $type_fk = $type_class::getForeignKeyField();
+            if (isset($fields[$type_fk]) && $fields[$type_fk] > 0) {
+                $type = getItemForItemtype($type_class);
+                if ($type && $type->getFromDB($fields[$type_fk])) {
+                    $values['type'] = $type->getName();
+                }
+            }
+        }
+
+        // Add state if asset has a state
+        if (isset($fields['states_id']) && $fields['states_id'] > 0) {
+            $state = new State();
+            if ($state->getFromDB($fields['states_id'])) {
+                $values['state'] = $state->getName();
+            }
+        }
+
+        // Add asset's entity
         if ($entity = Entity::getById($fields['entities_id'])) {
             $entity_parameters = new EntityParameters();
             $values['entity'] = $entity_parameters->getValues($entity);

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,17 +33,15 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
-CronTask::Register(
+$migration->addCrontask(
     'CommonITILValidationCron',
     'approvalreminder',
     1 * WEEK_TIMESTAMP,
-    [
-        'mode'  => CronTask::MODE_INTERNAL,
-        'state' => CronTask::STATE_DISABLE
+    options: [
+        'state' => 0, // CronTask::STATE_DISABLE
     ]
 );
 
@@ -66,7 +63,7 @@ if (!$DB->fieldExists("glpi_entities", "approval_reminder_repeat_interval")) {
             'after'     => "agent_base_url",
             'value'     => -2,               // Inherit as default value
             'update'    => '0',              // Disabled for root entity
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
 }

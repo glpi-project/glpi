@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,14 +33,22 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Event;
+require_once(__DIR__ . '/_check_webserver_config.php');
 
-/** @var \DBmysql $DB */
+use Glpi\Event;
+use Glpi\Exception\Http\NotFoundHttpException;
+
 global $DB;
 
 $solution = new ITILSolution();
 $track = getItemForItemtype($_POST['itemtype']);
-$track->getFromDB($_POST['items_id']);
+
+if (
+    !($track instanceof CommonITILObject)
+    || !$track->getFromDB($_POST['items_id'])
+) {
+    throw new NotFoundHttpException();
+}
 
 $redirect = null;
 $handled = false;
@@ -62,7 +70,7 @@ if (isset($_POST["add"])) {
         }
         $handled = true;
     }
-} else if (isset($_POST['update'])) {
+} elseif (isset($_POST['update'])) {
     $solution->getFromDB($_POST['id']);
     $solution->check($_POST['id'], UPDATE);
     $solution->update($_POST);
@@ -81,15 +89,15 @@ if (isset($_POST["add"])) {
 
 if ($handled) {
     if (isset($_POST['kb_linked_id']) && (int) $_POST['kb_linked_id'] > 0) {
-       //if solution should be linked to selected KB entry
+        //if solution should be linked to selected KB entry
         $params = [
             'knowbaseitems_id' => $_POST['kb_linked_id'],
             'itemtype'         => $track->getType(),
-            'items_id'         => $track->getID()
+            'items_id'         => $track->getID(),
         ];
         $existing = $DB->request([
             'FROM' => 'glpi_knowbaseitems_items',
-            'WHERE' => $params
+            'WHERE' => $params,
         ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
@@ -99,7 +107,7 @@ if ($handled) {
 
     if ($track->can($_POST["items_id"], READ)) {
         $toadd = '';
-       // Copy solution to KB redirect to KB
+        // Copy solution to KB redirect to KB
         if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
             $toadd = "&_sol_to_kb=1";
         }

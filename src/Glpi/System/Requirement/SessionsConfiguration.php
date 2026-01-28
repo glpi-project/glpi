@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,9 @@
 
 namespace Glpi\System\Requirement;
 
+use function Safe\ini_get;
+use function Safe\session_name;
+
 /**
  * @since 9.5.0
  */
@@ -49,14 +52,14 @@ class SessionsConfiguration extends AbstractRequirement
 
     protected function check()
     {
-       // Check session extension
+        // Check session extension
         if (!$this->isExtensionLoaded()) {
             $this->validated = false;
             $this->validation_messages[] = __('session extension is not installed.');
             return;
         }
 
-       // Check configuration values
+        // Check configuration values
         $is_autostart_on   = $this->isAutostartOn();
 
         if ($is_autostart_on) {

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,10 +38,10 @@ use Glpi\Application\View\TemplateRenderer;
 class Contract_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'Contract';
+    public static $itemtype_1 = Contract::class;
     public static $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = 'User';
+    public static $itemtype_2 = User::class;
     public static $items_id_2 = 'users_id';
 
     public static $check_entity_coherency = false; // `entities_id`/`is_recursive` fields from user should not be used here
@@ -97,13 +97,13 @@ class Contract_User extends CommonDBRelation
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if (Contract::canView() && $item::class === User::class) {
-            self::showForUser($item, $withtemplate);
+            self::showForUser($item, (int) $withtemplate);
         }
 
         return true;
     }
 
-    private static function showForUser(User $user, $withtemplate = 0): void
+    private static function showForUser(User $user, int $withtemplate = 0): void
     {
         $ID = $user->fields['id'];
 
@@ -125,7 +125,7 @@ class Contract_User extends CommonDBRelation
             $contracts[$data['id']] = $data;
             $used[$data['id']]      = $data['id'];
         }
-        if ($canedit && ((int) $withtemplate !== 2)) {
+        if ($canedit && ($withtemplate !== 2)) {
             $twig_params = [
                 'user' => $user,
                 'used' => $used,
@@ -162,7 +162,7 @@ TWIG, $twig_params);
                 'itemtype'  => self::class,
                 'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'num'       => $data['num']
+                'num'       => $data['num'],
             ];
             $contract = new Contract();
             $contract->getFromResultSet($data);
@@ -209,7 +209,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -227,12 +226,11 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
-            'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
+            'showmassiveactions' => $canedit && $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,11 +33,19 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
+use Glpi\Application\Environment;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Safe\Exceptions\JsonException;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\realpath;
 
 /**
  * Database utilities
@@ -51,7 +59,9 @@ final class DbUtils
      *
      * @param string $table table name
      *
-     * @return string field name used for a foreign key to the parameter table
+     * @return string|''
+     *      field name used for a foreign key to the parameter table,
+     *      or an empty string if the table name does match the GLPI table name pattern
      */
     public function getForeignKeyFieldForTable($table)
     {
@@ -67,12 +77,12 @@ final class DbUtils
      *
      * @param string $field field name
      *
-     * @return boolean
+     * @return bool
      */
     public function isForeignKeyField($field)
     {
-       //check empty, then strpos, then regexp; for performances
-        return !empty($field) && strpos($field, '_id', 1) !== false && preg_match("/._id(_.+)?$/", $field);
+        //check empty, then strpos, then regexp; for performances
+        return !empty($field) && str_contains(substr($field, 1), '_id') && preg_match("/._id(_.+)?$/", $field);
     }
 
 
@@ -81,7 +91,9 @@ final class DbUtils
      *
      * @param string $fkname foreign key name
      *
-     * @return string table name corresponding to a foreign key name
+     * @return string|''
+     *      table name corresponding to a foreign key name
+     *      or an empty string if the foreign key name does match the GLPI foreign key name pattern
      */
     public function getTableNameForForeignKeyField($fkname)
     {
@@ -89,7 +101,7 @@ final class DbUtils
             return '';
         }
 
-       // If $fkname begin with _ strip it
+        // If $fkname begin with _ strip it
         if (str_starts_with($fkname, '_')) {
             $fkname = substr($fkname, 1);
         }
@@ -107,11 +119,11 @@ final class DbUtils
     public function getPlural($string)
     {
         $rules = [
-         //'singular'         => 'plural'
-         // special case for acronym pdu (to avoid us rule)
+            //'singular'         => 'plural'
+            // special case for acronym pdu (to avoid us rule)
             'pdus$'              => 'pdus',
             'pdu$'               => 'pdus',
-         //FIXME: singular is criterion, plural is criteria
+            //FIXME: singular is criterion, plural is criteria
             'criterias$'         => 'criterias',// Special case (criterias) when getPlural is called on already plural form
             'ch$'                => 'ches',
             'ches$'              => 'ches',
@@ -126,7 +138,7 @@ final class DbUtils
             '([aeiou]{2})ses$'   => '\1ses', // Case like aliases
             '([aeiou]{2})s$'     => '\1ses', // Case like aliases
             'x$'                 => 'xes',
-         // 's$'              =>'ses',
+            // 's$'              =>'ses',
             '([^s])$'            => '\1s',   // Add at the end if not exists
         ];
 
@@ -151,7 +163,7 @@ final class DbUtils
     {
 
         $rules = [
-         //'plural'           => 'singular'
+            //'plural'           => 'singular'
             'pdus$'              => 'pdu', // special case for acronym pdu (to avoid us rule)
             'Metrics$'           => 'Metrics',// Special case
             'metrics$'           => 'metrics',// Special case
@@ -168,7 +180,7 @@ final class DbUtils
             '([^aeiou])ies$'     => '\1y', // special case : category
             '([^aeiou])y$'       => '\1y', // special case : category
             'xes$'               => 'x',
-            's$'                 => ''
+            's$'                 => '',
         ]; // Add at the end if not exists
 
         foreach ($rules as $plural => $singular) {
@@ -185,13 +197,12 @@ final class DbUtils
     /**
      * Return table name for an item type
      *
-     * @param string $itemtype itemtype
+     * @param class-string<CommonDBTM> $itemtype itemtype
      *
-     * @return string table name corresponding to the itemtype  parameter
+     * @return string table name corresponding to the itemtype parameter
      */
     public function getTableForItemType($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($CFG_GLPI['glpitablesitemtype'][$itemtype])) {
@@ -218,6 +229,9 @@ final class DbUtils
     {
         $dbu = new DbUtils();
 
+        // Handle anonymous classes used for mocks (ex: \Foo\Bar\Baz@anonymous)
+        $classname = explode('@', $classname)[0];
+
         // Force singular for itemtype : States case
         $singular = $dbu->getSingular($classname);
 
@@ -230,7 +244,7 @@ final class DbUtils
             $table   = strtolower($plug['class']);
         } else {
             $table = strtolower($singular);
-            if (substr($singular, 0, \strlen(NS_GLPI)) === NS_GLPI) {
+            if (str_starts_with($singular, NS_GLPI)) {
                 $table = substr($table, \strlen(NS_GLPI));
             }
         }
@@ -262,11 +276,12 @@ final class DbUtils
      *
      * @param string $table table name
      *
-     * @return string itemtype corresponding to a table name parameter
+     * @return class-string<CommonDBTM>|null
+     *      itemtype corresponding to a table name parameter,
+     *      or null if no valid itemtype is attached to the table
      */
     public function getItemTypeForTable($table)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($CFG_GLPI['glpiitemtypetables'][$table])) {
@@ -354,8 +369,23 @@ final class DbUtils
                 return $itemtype;
             }
 
-            return "UNKNOWN";
+            return null;
         }
+    }
+
+    /**
+     * Return an item instance for the corresponding table.
+     */
+    public function getItemForTable(string $table): ?CommonDBTM
+    {
+        $itemtype = $this->getItemTypeForTable($table);
+
+        if ($itemtype === null) {
+            return null;
+        }
+
+        $item = $this->getItemForItemtype($itemtype);
+        return $item ?: null;
     }
 
     /**
@@ -367,9 +397,8 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
+    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         // If a class exists for this itemtype, just return the declared class name.
@@ -384,11 +413,11 @@ final class DbUtils
         $context = 'glpi-core';
         $plugin_matches = [];
         if (preg_match('/^Plugin(?<plugin>[A-Z][a-z]+)(?<class>[A-Z][a-z]+)/', $itemtype, $plugin_matches)) {
-           // Nota: plugin classes that does not use any namespace cannot be completely case insensitive
-           // indeed, we must be able to separate plugin name (directory) from class name (file)
-           // so pattern must be the one provided by getItemTypeForTable: PluginDirectorynameClassname
+            // Nota: plugin classes that does not use any namespace cannot be completely case insensitive
+            // indeed, we must be able to separate plugin name (directory) from class name (file)
+            // so pattern must be the one provided by getItemTypeForTable: PluginDirectorynameClassname
             $context = strtolower($plugin_matches['plugin']);
-        } else if (preg_match('/^' . preg_quote(NS_PLUG, '/') . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
+        } elseif (preg_match('/^' . preg_quote(NS_PLUG, '/') . '(?<plugin>[a-z]+)\\\/i', $itemtype, $plugin_matches)) {
             $context = strtolower($plugin_matches['plugin']);
         }
 
@@ -429,7 +458,7 @@ final class DbUtils
         if (
             (
                 $mapping[$unique_key] !== null
-                && !in_array(GLPI_ENVIRONMENT_TYPE, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING])
+                && !Environment::get()->shouldExpectResourcesToChange()
             )
             || in_array($unique_key, $already_scanned)
         ) {
@@ -463,7 +492,7 @@ final class DbUtils
                 );
                 /** @var SplFileInfo $file */
                 foreach ($files_iterator as $file) {
-                    if (!$file->isReadable() || !$file->isFile() || '.php' === !$file->getExtension()) {
+                    if (!$file->isReadable() || !$file->isFile() || $file->getExtension() !== 'php') {
                         continue;
                     }
                     $relative_path = str_replace($srcdir . DIRECTORY_SEPARATOR, '', $file->getPathname());
@@ -495,7 +524,7 @@ final class DbUtils
      *
      * @param string $itemtype itemtype
      *
-     * @return string|null
+     * @return class-string<CommonGLPI>|null
      */
     public function getClassForItemtype(string $itemtype): ?string
     {
@@ -506,7 +535,7 @@ final class DbUtils
         $classname = $this->fixItemtypeCase($itemtype);
 
         if (!is_subclass_of($classname, CommonGLPI::class, true)) {
-           // Only CommonGLPI sublasses are valid itemtypes
+            // Only CommonGLPI sublasses are valid itemtypes
             return null;
         }
 
@@ -517,17 +546,18 @@ final class DbUtils
     /**
      * Get new item objet for an itemtype
      *
-     * @param string $itemtype itemtype
-     *
-     * @return CommonDBTM|false itemtype instance or false if class does not exists
-     * @template T
-     * @phpstan-param class-string<T> $itemtype
-     * @phpstan-return T|false
+     * @template T of CommonDBTM
+     * @param class-string<T>|string $itemtype
+     * @return ($itemtype is class-string<T> ? T : false)
      */
     public function getItemForItemtype($itemtype)
     {
         $classname = $this->getClassForItemtype($itemtype);
         if ($classname === null) {
+            return false;
+        }
+
+        if (!is_a($classname, CommonGLPI::class, true)) {
             return false;
         }
 
@@ -540,31 +570,31 @@ final class DbUtils
             return false;
         }
 
+        // @phpstan-ignore return.type (Template should be `of CommonGLPI`, but it result in about 1000 errors due to usage of `CommonDBTM` properties and methods on the result without checking it is a `CommonDBTM`)
         return new $classname();
     }
 
     /**
      * Count the number of elements in a table.
      *
-     * @param string|array   $table     table name(s)
-     * @param string|array   $condition array of criteria
+     * @param string|string[]            $table     table name(s)
+     * @param string|array<mixed, mixed> $condition filtering criteria
      *
-     * @return integer Number of elements in table
+     * @return int Number of elements in table
      */
     public function countElementsInTable($table, $condition = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!is_array($table)) {
             $table = [$table];
         }
 
-       /*foreach ($table as $t) {
-         if (!$DB->tableExists($table)) {
-            throw new \RuntimeException("$t is not an existing table!");
-         }
-       }*/
+        /*foreach ($table as $t) {
+          if (!$DB->tableExists($table)) {
+             throw new \RuntimeException("$t is not an existing table!");
+          }
+        }*/
 
         if (!is_array($condition)) {
             Toolbox::Deprecated('Condition must be an array!');
@@ -576,15 +606,15 @@ final class DbUtils
         $condition['FROM']  = $table;
 
         $row = $DB->request($condition)->current();
-        return ($row ? (int)$row['cpt'] : 0);
+        return ($row ? (int) $row['cpt'] : 0);
     }
 
     /**
      * Count the number of elements in a table.
      *
-     * @param string|array   $table     table name(s)
-     * @param string         $field     field name
-     * @param array|string|null          $condition array of criteria
+     * @param string|string[]            $table     table name(s)
+     * @param string                     $field     field name
+     * @param string|array<mixed, mixed> $condition filtering criteria
      *
      * @return int nb of elements in table
      */
@@ -607,17 +637,18 @@ final class DbUtils
     /**
      * Count the number of elements in a table for a specific entity
      *
-     * @param string|array $table     table name(s)
-     * @param array        $condition array of criteria
+     * @param string|string[]            $table     table name(s)
+     * @param string|array<mixed, mixed> $condition filtering criteria
      *
-     * @return integer Number of elements in table
+     * @return int Number of elements in table
+     *
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function countElementsInTableForMyEntities($table, $condition = [])
     {
 
-       /// TODO clean it / maybe include when review of SQL requests
-        $itemtype = $this->getItemTypeForTable($table);
-        $item     = new $itemtype();
+        /// TODO clean it / maybe include when review of SQL requests
+        $item = $this->getItemForTable($table);
 
         $criteria = $this->getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
         $criteria = array_merge($condition, $criteria);
@@ -628,19 +659,18 @@ final class DbUtils
     /**
      * Count the number of elements in a table for a specific entity
      *
-     * @param string|array $table     table name(s)
-     * @param integer      $entity    the entity ID
-     * @param array        $condition condition to use (default '') or array of criteria
-     * @param boolean      $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
+     * @param string|string[]            $table     table name(s)
+     * @param int                        $entity    the entity ID
+     * @param string|array<mixed, mixed> $condition filtering criteria
+     * @param bool                       $recursive Whether to recurse or not. If true, will be conditionned on item recursivity
      *
-     * @return integer number of elements in table
+     * @return int number of elements in table
      */
     public function countElementsInTableForEntity($table, $entity, $condition = [], $recursive = true)
     {
 
-       /// TODO clean it / maybe include when review of SQL requests
-        $itemtype = $this->getItemTypeForTable($table);
-        $item     = new $itemtype();
+        /// TODO clean it / maybe include when review of SQL requests
+        $item = $this->getItemForTable($table);
 
         if ($recursive) {
             $recursive = $item->maybeRecursive();
@@ -652,19 +682,18 @@ final class DbUtils
     }
 
     /**
-     * Get data from a table in an array :
-     * CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
+     * Get data from a table in an array.
+     * /!\ CAUTION TO USE ONLY FOR SMALL TABLES OR USING A STRICT CONDITION
      *
-     * @param string         $table    Table name
-     * @param array|string|null          $criteria Request criteria
-     * @param boolean        $usecache Use cache (false by default)
-     * @param string         $order    Result order (default '')
+     * @param string                     $table    Table name
+     * @param string|array<mixed, mixed> $criteria filtering criteria
+     * @param bool                       $usecache Use cache (false by default)
+     * @param string                     $order    Result order (default '')
      *
-     * @return array containing all the datas
+     * @return array containing all the data
      */
     public function getAllDataFromTable($table, $criteria = [], $usecache = false, $order = '')
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         static $cache = [];
@@ -705,11 +734,10 @@ final class DbUtils
      * @param string $table table of the index
      * @param string $field name of the index
      *
-     * @return boolean
+     * @return bool
      */
     public function isIndex($table, $field)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$DB->tableExists($table)) {
@@ -735,11 +763,10 @@ final class DbUtils
      * @param string $table
      * @param string $keyname
      *
-     * @return boolean
+     * @return bool
      */
     public function isForeignKeyContraint($table, $keyname)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -748,7 +775,7 @@ final class DbUtils
                 'constraint_schema' => $DB->dbdefault,
                 'table_name'        => $table,
                 'constraint_name'   => $keyname,
-            ]
+            ],
         ];
 
         $iterator = $DB->request($query);
@@ -759,19 +786,18 @@ final class DbUtils
     /**
      * Get SQL request to restrict to current entities of the user
      *
-     * @param string  $separator        separator in the begin of the request (default AND)
-     * @param string  $table            table where apply the limit (if needed, multiple tables queries)
-     *                                  (default '')
-     * @param string  $field            field where apply the limit (id != entities_id) (default '')
-     * @param mixed   $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string']).
-     *                                  single item or array (default '')
-     * @param boolean $is_recursive     need to use recursive process to find item
-     *                                  (field need to be named recursive) (false by default)
-     * @param boolean $complete_request need to use a complete request and not a simple one
-     *                                  when have acces to all entities (used for reminders)
-     *                                  (false by default)
+     * @param string        $separator        separator in the begin of the request (default AND)
+     * @param string        $table            table where apply the limit (if needed, multiple tables queries)
+     * @param string        $field            field where apply the limit (id != entities_id)
+     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities_string'])
+     * @param bool          $is_recursive     need to use recursive process to find item
+     *                                        (field need to be named recursive)
+     * @param bool          $complete_request need to use a complete request and not a simple one
+     *                                        when have acces to all entities (used for reminders)
      *
      * @return string the WHERE clause to restrict
+     *
+     * @TODO Deprecate this method in GLPI 12.0, usages should be replaced by `getEntitiesRestrictCriteria()`.
      */
     public function getEntitiesRestrictRequest(
         $separator = "AND",
@@ -781,12 +807,11 @@ final class DbUtils
         $is_recursive = false,
         $complete_request = false
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $query = $separator . " ( ";
 
-       // !='0' needed because consider as empty
+        // !='0' needed because consider as empty
         if (
             !$complete_request
             && ($value != '0')
@@ -794,7 +819,7 @@ final class DbUtils
             && isset($_SESSION['glpishowallentities'])
             && $_SESSION['glpishowallentities']
         ) {
-           // Not ADD "AND 1" if not needed
+            // Not ADD "AND 1" if not needed
             if (trim($separator) == "AND") {
                 return "";
             }
@@ -820,7 +845,7 @@ final class DbUtils
             $query .= " IN ('" . implode("','", $value) . "') ";
         } else {
             if (strlen($value) == 0 && !isset($_SESSION['glpiactiveentities_string'])) {
-               //set root entity if not set
+                //set root entity if not set
                 $value = 0;
             }
             if (strlen($value) == 0) {
@@ -842,7 +867,7 @@ final class DbUtils
                 if (is_array($value)) {
                     $ancestors = $this->getAncestorsOf("glpi_entities", $value);
                     $ancestors = array_diff($ancestors, $value);
-                } else if (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
+                } elseif (strlen($value) == 0 && isset($_SESSION['glpiparententities'])) {
                     $ancestors = $_SESSION['glpiparententities'];
                 } else {
                     $ancestors = $this->getAncestorsOf("glpi_entities", $value);
@@ -868,18 +893,15 @@ final class DbUtils
      *
      * @since 9.2
      *
-     * @param string $table             table where apply the limit (if needed, multiple tables queries)
-     *                                  (default '')
-     * @param string $field             field where apply the limit (id != entities_id) (default '')
-     * @param mixed $value              entity to restrict (if not set use $_SESSION['glpiactiveentities']).
-     *                                  single item or array (default '')
-     * @param boolean $is_recursive     need to use recursive process to find item
-     *                                  (field need to be named recursive) (false by default, set to auto to automatic detection)
-     * @param boolean $complete_request need to use a complete request and not a simple one
-     *                                  when have acces to all entities (used for reminders)
-     *                                  (false by default)
+     * @param string        $table            table where apply the limit (if needed, multiple tables queries)
+     * @param string        $field            field where apply the limit (id != entities_id)
+     * @param int|int[]|''  $value            entity to restrict (if not set use $_SESSION['glpiactiveentities'])
+     * @param bool|'auto'   $is_recursive     need to use recursive process to find item
+     *                                        (field need to be named recursive) (false by default, set to 'auto' to automatic detection)
+     * @param bool          $complete_request need to use a complete request and not a simple one
+     *                                        when have acces to all entities (used for reminders)
      *
-     * @return array of criteria
+     * @return array<mixed, mixed>
      */
     public function getEntitiesRestrictCriteria(
         $table = '',
@@ -889,7 +911,7 @@ final class DbUtils
         $complete_request = false
     ) {
 
-       // !='0' needed because consider as empty
+        // !='0' needed because consider as empty
         if (
             !$complete_request
             && ($value != '0')
@@ -897,7 +919,9 @@ final class DbUtils
             && isset($_SESSION['glpishowallentities'])
             && $_SESSION['glpishowallentities']
         ) {
-            return [];
+            return [new QueryExpression('true')];
+        } elseif ($value === []) {
+            return [new QueryExpression('false')];
         }
 
         if (empty($field)) {
@@ -914,7 +938,7 @@ final class DbUtils
         if (!is_array($value) && strlen($value) == 0) {
             if (isset($_SESSION['glpiactiveentities'])) {
                 $value = $_SESSION['glpiactiveentities'];
-            } else if (isCommandLine() || Session::isCron()) {
+            } elseif (isCommandLine() || Session::isCron()) {
                 $value = '0'; // If value is not set, fallback to root entity in cron / command line
             }
         }
@@ -933,7 +957,7 @@ final class DbUtils
             if (is_array($value)) {
                 $ancestors = $this->getAncestorsOf("glpi_entities", $value);
                 $ancestors = array_diff($ancestors, $value);
-            } else if (strlen($value) == 0) {
+            } elseif (strlen($value) == 0) {
                 $ancestors = $_SESSION['glpiparententities'] ?? [];
             } else {
                 $ancestors = $this->getAncestorsOf('glpi_entities', $value);
@@ -950,8 +974,8 @@ final class DbUtils
                     $crit = [
                         'OR' => [
                             $field => $value,
-                            [$recur => 1, $field => $ancestors]
-                        ]
+                            [$recur => 1, $field => $ancestors],
+                        ],
                     ];
                 }
             }
@@ -960,19 +984,15 @@ final class DbUtils
     }
 
     /**
-     * Get the sons of an item in a tree dropdown. Get datas in cache if available
+     * Get the sons of an item in a tree dropdown.
      *
      * @param string  $table table name
-     * @param integer $IDf   The ID of the father
+     * @param int     $IDf   The ID of the father
      *
-     * @return array of IDs of the sons
+     * @return int[] IDs of the sons
      */
     public function getSonsOf($table, $IDf)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $ckey = 'sons_cache_' . $table . '_' . $IDf;
@@ -992,7 +1012,7 @@ final class DbUtils
             $iterator = $DB->request([
                 'SELECT' => 'sons_cache',
                 'FROM'   => $table,
-                'WHERE'  => ['id' => $IDf]
+                'WHERE'  => ['id' => $IDf],
             ]);
 
             if (count($iterator) > 0) {
@@ -1005,18 +1025,18 @@ final class DbUtils
         }
 
         if (!is_array($sons)) {
-           // IDs to be present in the final array
+            // IDs to be present in the final array
             $sons = [
                 $IDf => $IDf,
             ];
-           // current ID found to be added
+            // current ID found to be added
             $found = [];
-           // First request init the  varriables
+            // First request init the  varriables
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $table,
                 'WHERE'  => [$parentIDfield => $IDf],
-                'ORDER'  => 'name'
+                'ORDER'  => 'name',
             ]);
 
             if (count($iterator) > 0) {
@@ -1026,16 +1046,16 @@ final class DbUtils
                 }
             }
 
-           // Get the leafs of previous found item
+            // Get the leafs of previous found item
             while (count($found) > 0) {
-               // Get next elements
+                // Get next elements
                 $iterator = $DB->request([
                     'SELECT' => 'id',
                     'FROM'   => $table,
-                    'WHERE'  => [$parentIDfield => $found]
+                    'WHERE'  => [$parentIDfield => $found],
                 ]);
 
-               // CLear the found array
+                // CLear the found array
                 unset($found);
                 $found = [];
 
@@ -1049,7 +1069,7 @@ final class DbUtils
                 }
             }
 
-           // Store cache data in DB
+            // Store cache data in DB
             if (
                 $use_cache
                 && ($IDf > 0)
@@ -1057,10 +1077,10 @@ final class DbUtils
                 $DB->update(
                     $table,
                     [
-                        'sons_cache' => $this->exportArrayToDB($sons)
+                        'sons_cache' => $this->exportArrayToDB($sons),
                     ],
                     [
-                        'id' => $IDf
+                        'id' => $IDf,
                     ]
                 );
             }
@@ -1072,21 +1092,17 @@ final class DbUtils
     }
 
     /**
-     * Get the ancestors of an item in a tree dropdown
+     * Get the ancestors of an item in a tree dropdown.
      *
-     * @param string       $table    Table name
-     * @param array|string|int $items_id The IDs of the items. If an array is passed, the result will be the union of the ancestors of each item.
-     * @phpstan-param non-empty-array<int>|int|numeric-string $items_id
+     * @param string    $table    Table name
+     * @param int|int[] $items_id The IDs of the items. If an array is passed, the result will be the union of the ancestors of each item.
      *
-     * @return array Array of IDs of the ancestors. The keys and values should be identical. The result *may* include the IDs passed in the $items_id parameter.
-     * @todo Should this function really allow returning the requested ID in the result? Especially if only a single ID is requested?
+     * @return int[] IDs of the ancestors.
+     *
+     * @TODO Cache and only array values, keys are useless.
      */
     public function getAncestorsOf($table, $items_id)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         if ($items_id === null) {
@@ -1123,18 +1139,14 @@ final class DbUtils
         if (!is_array($items_id)) {
             $items_id = (array) $items_id;
         }
-        $ids_needed_to_fetch = array_map(static function ($id) {
-            return (int) $id;
-        }, $items_id);
+        $ids_needed_to_fetch = array_map(static fn($id) => (int) $id, $items_id);
 
         if ($ckey !== null && ($ancestors = $GLPI_CACHE->get($ckey)) !== null) {
             // If we only need to get ancestors for a single item, we can use the cached values if they exist
             return $ancestors;
-        } else if ($ckey === null) {
+        } elseif ($ckey === null) {
             // For multiple IDs, we need to check the cache for each ID
-            $from_cache = $GLPI_CACHE->getMultiple(array_map(static function ($id) use ($table) {
-                return "ancestors_cache_{$table}_{$id}";
-            }, $ids_needed_to_fetch));
+            $from_cache = $GLPI_CACHE->getMultiple(array_map(static fn($id) => "ancestors_cache_{$table}_{$id}", $ids_needed_to_fetch));
             foreach ($ids_needed_to_fetch as $id) {
                 if (($ancestors = $from_cache["ancestors_cache_{$table}_{$id}"]) !== null) {
                     $ancestors_by_id[$id] = $ancestors;
@@ -1161,7 +1173,7 @@ final class DbUtils
             $iterator = $DB->request([
                 'SELECT' => ['id', 'ancestors_cache', $parentIDfield],
                 'FROM'   => $table,
-                'WHERE'  => ['id' => $ids_needed_to_fetch]
+                'WHERE'  => ['id' => $ids_needed_to_fetch],
             ]);
 
             foreach ($iterator as $row) {
@@ -1188,10 +1200,10 @@ final class DbUtils
                         $DB->update(
                             $table,
                             [
-                                'ancestors_cache' => $this->exportArrayToDB($loc_id_found)
+                                'ancestors_cache' => $this->exportArrayToDB($loc_id_found),
                             ],
                             [
-                                'id' => $row['id']
+                                'id' => $row['id'],
                             ]
                         );
 
@@ -1209,7 +1221,7 @@ final class DbUtils
                     $iterator = $DB->request([
                         'SELECT' => [$parentIDfield],
                         'FROM'   => $table,
-                        'WHERE'  => ['id' => $IDf]
+                        'WHERE'  => ['id' => $IDf],
                     ]);
 
                     if (count($iterator) > 0) {
@@ -1262,14 +1274,14 @@ final class DbUtils
     }
 
     /**
-     * Get the sons and the ancestors of an item in a tree dropdown. Rely on getSonsOf and getAncestorsOf
+     * Get the sons and the ancestors of an item in a tree dropdown.
      *
      * @since 0.84
      *
      * @param string $table table name
-     * @param string $IDf   The ID of the father
+     * @param int    $IDf   The ID of the father
      *
-     * @return array of IDs of the sons and the ancestors
+     * @return int[] IDs of the sons and the ancestors
      */
     public function getSonsAndAncestorsOf($table, $IDf)
     {
@@ -1280,17 +1292,19 @@ final class DbUtils
      * Get the Name of the element of a Dropdown Tree table
      *
      * @param string  $table       Dropdown Tree table
-     * @param integer $ID          ID of the element
-     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
-     * @param boolean $translate   (true by default)
+     * @param int     $ID          ID of the element
+     * @param bool    $withcomment whether to get the array with the comments
+     * @param bool    $translate   whether to get translated values
      *
-     * @return string name of the element
+     * @return ($withcomment is true ? array{name: string, comment: string} : string)
      *
      * @see DbUtils::getTreeValueCompleteName
+     *
+     * @TODO Deprecate the `$withcomment` parameter, it is never used.
+     * @TODO Deprecate the `$translate` parameter, it is never used.
      */
     public function getTreeLeafValueName($table, $ID, $withcomment = false, $translate = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $name    = "";
@@ -1310,10 +1324,10 @@ final class DbUtils
                             'AND' => [
                                 'namet.itemtype'  => $this->getItemTypeForTable($table),
                                 'namet.language'  => $_SESSION['glpilanguage'],
-                                'namet.field'     => 'name'
-                            ]
-                        ]
-                    ]
+                                'namet.field'     => 'name',
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (Session::haveTranslations($this->getItemTypeForTable($table), 'comment')) {
@@ -1325,10 +1339,10 @@ final class DbUtils
                             'AND' => [
                                 'namec.itemtype'  => $this->getItemTypeForTable($table),
                                 'namec.language'  => $_SESSION['glpilanguage'],
-                                'namec.field'     => 'comment'
-                            ]
-                        ]
-                    ]
+                                'namec.field'     => 'comment',
+                            ],
+                        ],
+                    ],
                 ];
             }
 
@@ -1342,10 +1356,10 @@ final class DbUtils
                 "$table.name",
                 "$table.comment",
                 $SELECTNAME,
-                $SELECTCOMMENT
+                $SELECTCOMMENT,
             ],
             'FROM'   => $table,
-            'WHERE'  => ["$table.id" => $ID]
+            'WHERE'  => ["$table.id" => $ID],
         ] + $JOIN;
         $iterator = $DB->request($criteria);
         $result = $iterator->current();
@@ -1358,20 +1372,20 @@ final class DbUtils
                 $name = $result['name'];
             }
 
-            $comment      = $name . " :<br/>";
+            $comment      = htmlescape($name) . " :<br/>";
             $transcomment = $result['transcomment'];
 
             if ($translate && !empty($transcomment)) {
-                $comment .= nl2br($transcomment);
-            } else if (!empty($result['comment'])) {
-                $comment .= nl2br($result['comment']);
+                $comment .= nl2br(htmlescape($transcomment));
+            } elseif (!empty($result['comment'])) {
+                $comment .= nl2br(htmlescape($result['comment']));
             }
         }
 
         if ($withcomment) {
             return [
                 'name'      => $name,
-                'comment'   => $comment
+                'comment'   => $comment,
             ];
         }
         return $name;
@@ -1381,13 +1395,13 @@ final class DbUtils
      * Get completename of a Dropdown Tree table
      *
      * @param string  $table       Dropdown Tree table
-     * @param integer $ID          ID of the element
-     * @param boolean $withcomment 1 if you want to give the array with the comments (false by default)
-     * @param boolean $translate   (true by default)
-     * @param boolean $tooltip     (true by default) returns a tooltip, else returns only 'comment'
+     * @param int     $ID          ID of the element
+     * @param bool    $withcomment whether to get the array with the comments
+     * @param bool    $translate   whether to get translated values
+     * @param bool    $tooltip     whether to get a tooltip for additional comments
      * @param string  $default     default value returned when item not exists
      *
-     * @return string completename of the element
+     * @return ($withcomment is true ? array{name: string, comment: string} : string)
      *
      * @see DbUtils::getTreeLeafValueName
      *
@@ -1399,7 +1413,6 @@ final class DbUtils
             Toolbox::deprecated('Usage of the `$withcomment` parameter is deprecated. Use `Dropdown::getDropdownComments()` instead.');
         }
 
-        /** @var \DBmysql $DB */
         global $DB;
 
         $name    = "";
@@ -1417,10 +1430,10 @@ final class DbUtils
                             'AND' => [
                                 'namet.itemtype'  => $this->getItemTypeForTable($table),
                                 'namet.language'  => $_SESSION['glpilanguage'],
-                                'namet.field'     => 'completename'
-                            ]
-                        ]
-                    ]
+                                'namet.field'     => 'completename',
+                            ],
+                        ],
+                    ],
                 ];
             }
 
@@ -1436,7 +1449,7 @@ final class DbUtils
                 $SELECTNAME,
             ],
             'FROM'   => $table,
-            'WHERE'  => ["$table.id" => $ID]
+            'WHERE'  => ["$table.id" => $ID],
         ] + $JOIN;
 
         if ($table == Location::getTable()) {
@@ -1447,7 +1460,7 @@ final class DbUtils
                     "$table.town",
                     "$table.country",
                     "$table.code",
-                    "$table.alias"
+                    "$table.alias",
                 ]
             );
         }
@@ -1490,19 +1503,19 @@ final class DbUtils
 
 
     /**
-     * show name category
-     * DO NOT DELETE THIS FUNCTION : USED IN THE UPDATE
+     * Get the tree value name (corresponds to the relative completename).
      *
      * @param string  $table     table name
-     * @param integer $ID        integer  value ID
+     * @param int     $ID        integer  value ID
      * @param string  $wholename current name to complete (use for recursivity) (default '')
-     * @param integer $level     current level of recursion (default 0)
+     * @param int     $level     current level of recursion (default 0)
      *
-     * @return string name
+     * @return array{0: string, 1:int}
+     *
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function getTreeValueName($table, $ID, $wholename = "", $level = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
@@ -1510,7 +1523,7 @@ final class DbUtils
         $iterator = $DB->request([
             'SELECT' => ['name', $parentIDfield],
             'FROM'   => $table,
-            'WHERE'  => ['id' => $ID]
+            'WHERE'  => ['id' => $ID],
         ]);
         $name = "";
 
@@ -1525,7 +1538,7 @@ final class DbUtils
             }
 
             $level++;
-            list($tmpname, $level)  = $this->getTreeValueName($table, $parentID, $name, $level);
+            [$tmpname, $level]  = $this->getTreeValueName($table, $parentID, $name, $level);
             $name                   = $tmpname . $name;
         }
         return [$name, $level];
@@ -1535,27 +1548,28 @@ final class DbUtils
      * Get the sons of an item in a tree dropdown
      *
      * @param string  $table table name
-     * @param integer $IDf   The ID of the father
+     * @param int     $IDf   The ID of the father
      *
-     * @return array of IDs of the sons
+     * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+     *
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function getTreeForItem($table, $IDf)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $parentIDfield = $this->getForeignKeyFieldForTable($table);
 
-       // IDs to be present in the final array
+        // IDs to be present in the final array
         $id_found = [];
-       // current ID found to be added
+        // current ID found to be added
         $found = [];
 
-       // First request init the  variables
+        // First request init the  variables
         $iterator = $DB->request([
             'FROM'   => $table,
             'WHERE'  => [$parentIDfield => $IDf],
-            'ORDER'  => 'name'
+            'ORDER'  => 'name',
         ]);
 
         foreach ($iterator as $row) {
@@ -1564,16 +1578,16 @@ final class DbUtils
             $found[$row['id']]              = $row['id'];
         }
 
-       // Get the leafs of previous founded item
+        // Get the leafs of previous founded item
         while (count($found) > 0) {
-           // Get next elements
+            // Get next elements
             $iterator = $DB->request([
                 'FROM'   => $table,
                 'WHERE'  => [$parentIDfield => $found],
-                'ORDER'  => 'name'
+                'ORDER'  => 'name',
             ]);
 
-           // CLear the found array
+            // CLear the found array
             unset($found);
             $found = [];
 
@@ -1597,10 +1611,12 @@ final class DbUtils
     /**
      * Construct a tree from a list structure
      *
-     * @param array   $list the list
-     * @param integer $root root of the tree
+     * @param array<int, array{name: string, parent: int}>  $list
+     * @param int                                           $root root of the tree
      *
-     * @return array list of items in the tree
+     * @return array<int, array{name: string, tree: array<int, mixed>}> Recursive tree
+     *
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function constructTreeFromList($list, $root)
     {
@@ -1619,10 +1635,12 @@ final class DbUtils
     /**
      * Construct a list from a tree structure
      *
-     * @param array   $tree   the tree
-     * @param integer $parent root of the tree (default =0)
+     * @param array<int, array{tree: array<int, mixed>}> $tree   recursive tree
+     * @param int                                        $parent root of the tree
      *
-     * @return array list of items in the tree
+     * @return array<int, int> list of items in the tree
+     *
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function constructListFromTree($tree, $parent = 0)
     {
@@ -1647,13 +1665,13 @@ final class DbUtils
     /**
      * Format a user name.
      *
-     * @param integer       $ID           ID of the user.
+     * @param int       $ID           ID of the user.
      * @param string|null   $login        login of the user
      * @param string|null   $realname     realname of the user
      * @param string|null   $firstname    firstname of the user
-     * @param integer       $link         include link
-     * @param integer       $cut          IGNORED PARAMETER
-     * @param boolean       $force_config force order and id_visible to use common config
+     * @param int       $link         include link
+     * @param int       $cut          IGNORED PARAMETER
+     * @param bool       $force_config force order and id_visible to use common config
      *
      * @return string
      *
@@ -1671,23 +1689,22 @@ final class DbUtils
             return $this->formatUserLink($ID, $login, $realname, $firstname);
         }
 
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $order = isset($CFG_GLPI["names_format"]) ? $CFG_GLPI["names_format"] : User::REALNAME_BEFORE;
+        $order = $CFG_GLPI["names_format"] ?? User::REALNAME_BEFORE;
         if (isset($_SESSION["glpinames_format"]) && !$force_config) {
             $order = $_SESSION["glpinames_format"];
         }
 
-        $id_visible = isset($CFG_GLPI["is_ids_visible"]) ? $CFG_GLPI["is_ids_visible"] : 0;
+        $id_visible = $CFG_GLPI["is_ids_visible"] ?? 0;
         if (isset($_SESSION["glpiis_ids_visible"]) && !$force_config) {
             $id_visible = $_SESSION["glpiis_ids_visible"];
         }
 
-        if (strlen($realname ?? '') > 0) {
+        if (((string) $realname) !== '') {
             $formatted = $realname;
 
-            if (strlen($firstname ?? '') > 0) {
+            if (((string) $firstname) !== '') {
                 if ($order == User::FIRSTNAME_BEFORE) {
                     $formatted = $firstname . " " . $formatted;
                 } else {
@@ -1718,7 +1735,7 @@ final class DbUtils
     /**
      * Format a user link.
      *
-     * @param integer       $id           ID of the user.
+     * @param int       $id           ID of the user.
      * @param string|null   $login        login of the user
      * @param string|null   $realname     realname of the user
      * @param string|null   $firstname    firstname of the user
@@ -1736,29 +1753,28 @@ final class DbUtils
         return sprintf(
             '<a title="%s" href="%s">%s</a>',
             htmlescape($username),
-            User::getFormURLWithID($id),
+            htmlescape(User::getFormURLWithID($id)),
             htmlescape($username)
         );
     }
 
 
     /**
-     * Get name of the user with ID=$ID (optional with link to user.form.php)
+     * Get name of the user with the given ID.
      *
-     * @param integer|string $ID   ID of the user.
-     * @param integer $link 1 = Show link to user.form.php 2 = return array with comments and link
-     *                      (default =0)
-     * @param $disable_anon   bool  disable anonymization of username.
+     * @param int       $ID
+     * @param int<0, 2> $link
+     *      0 = No link
+     *      1 = Show link to user.form.php
+     *      2 = return array with comments and link
+     * @param bool      $disable_anon   disable anonymization of username
      *
-     * @return string[]|string username string (realname if not empty and name if realname is empty).
+     * @return ($link is 2 ? array{name: string, link: string, comment: string} : string)
      *
      * @since 11.0 `$link` parameter is deprecated.
      */
     public function getUserName($ID, $link = 0, $disable_anon = false)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         $username   = "";
         $user       = new User();
         $valid_user = false;
@@ -1766,9 +1782,9 @@ final class DbUtils
 
         if ($ID === 'myself') {
             $username = __('Myself');
-        } else if ($ID === 'requester_manager') {
+        } elseif ($ID === 'requester_manager') {
             $username = __("Requester's manager");
-        } else if ($ID) {
+        } elseif ($ID) {
             $anon_name = !$disable_anon && $ID != ($_SESSION['glpiID'] ?? 0) && Session::getCurrentInterface() == 'helpdesk' ? User::getAnonymizedNameForUser($ID) : null;
             if ($anon_name !== null) {
                 $username = $anon_name;
@@ -1808,14 +1824,14 @@ final class DbUtils
     {
         $username = $this->getUserName($id);
 
-        if (!is_int($id) || $id <= 0 || !User::canView()) {
+        if ($id <= 0 || !User::canView()) {
             return htmlescape($username);
         }
 
         return sprintf(
             '<a title="%s" href="%s">%s</a>',
             htmlescape($username),
-            User::getFormURLWithID($id),
+            htmlescape(User::getFormURLWithID($id)),
             htmlescape($username)
         );
     }
@@ -1825,18 +1841,14 @@ final class DbUtils
      *
      * @param string  $objectName  autoname template
      * @param string  $field       field to autoname
-     * @param boolean $isTemplate  true if create an object from a template
+     * @param bool $isTemplate  true if create an object from a template
      * @param string  $itemtype    item type
-     * @param integer $entities_id limit generation to an entity (default -1)
+     * @param int $entities_id limit generation to an entity (default -1)
      *
      * @return string new auto string
      */
     public function autoName($objectName, $field, $isTemplate, $itemtype, $entities_id = -1)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$isTemplate) {
@@ -1852,31 +1864,31 @@ final class DbUtils
 
         $autoNum = Toolbox::substr($objectName, 1, Toolbox::strlen($objectName) - 2);
         $mask    = $matches[1];
-        $global  = ((strpos($autoNum, '\\g') !== false) && ($itemtype != 'Infocom')) ? 1 : 0;
+        $global  = ((str_contains($autoNum, '\\g')) && ($itemtype != 'Infocom')) ? 1 : 0;
 
-       //do not add extra escapements for now
-       //substring position would be wrong if name contains "_"
+        //do not add extra escapements for now
+        //substring position would be wrong if name contains "_"
         $autoNum = str_replace(
             [
                 '\\y',
                 '\\Y',
                 '\\m',
                 '\\d',
-                '\\g'
+                '\\g',
             ],
             [
                 date('y'),
                 date('Y'),
                 date('m'),
                 date('d'),
-                ''
+                '',
             ],
             $autoNum
         );
 
         $pos  = strpos($autoNum, $mask) + 1;
 
-       //got substring position, add extra escapements
+        //got substring position, add extra escapements
         $autoNum = str_replace(
             ['_', '%'],
             ['\\_', '\\%'],
@@ -1892,7 +1904,7 @@ final class DbUtils
                 'NetworkEquipment',
                 'Peripheral',
                 'Phone',
-                'Printer'
+                'Printer',
             ];
 
             $subqueries = [];
@@ -1904,8 +1916,8 @@ final class DbUtils
                     'WHERE'  => [
                         $field         => ['LIKE', $like],
                         'is_deleted'   => 0,
-                        'is_template'  => 0
-                    ]
+                        'is_template'  => 0,
+                    ],
                 ];
 
                 if (
@@ -1926,7 +1938,7 @@ final class DbUtils
                         alias: 'no'
                     ),
                 ],
-                'FROM'   => new QueryUnion($subqueries, false, 'codes')
+                'FROM'   => new QueryUnion($subqueries, false, 'codes'),
             ];
         } else {
             $table = $this->getTableForItemType($itemtype);
@@ -1940,8 +1952,8 @@ final class DbUtils
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
-                    $field   => ['LIKE', $like]
-                ]
+                    $field   => ['LIKE', $like],
+                ],
             ];
 
             if ($itemtype != 'Infocom') {
@@ -1960,7 +1972,7 @@ final class DbUtils
         $subquery = new QuerySubQuery($criteria, 'Num');
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'Num.no AS lastNo'],
-            'FROM'   => $subquery
+            'FROM'   => $subquery,
         ]);
 
         if (count($iterator)) {
@@ -1974,12 +1986,12 @@ final class DbUtils
             [
                 $mask,
                 '\\_',
-                '\\%'
+                '\\%',
             ],
             [
-                Toolbox::str_pad($newNo, $len, '0', STR_PAD_LEFT),
+                Toolbox::str_pad((string) $newNo, $len, '0', STR_PAD_LEFT),
                 '_',
-                '%'
+                '%',
             ],
             $autoNum
         );
@@ -1998,7 +2010,6 @@ final class DbUtils
      */
     public function getDateCriteria($field, $begin, $end)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $date_pattern = '/^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$/'; // `YYYY-mm-dd` optionaly followed by ` HH:ii:ss`
@@ -2052,17 +2063,16 @@ final class DbUtils
             return [];
         }
 
-        $tab = json_decode($data, true);
-
-       // Use old scheme to decode
-        if (!is_array($tab)) {
+        try {
+            $tab = json_decode($data, true);
+        } catch (JsonException $e) {
             $tab = [];
 
             foreach (explode(" ", $data) as $item) {
                 $a = explode("=>", $item);
 
                 if (
-                    (strlen($a[0]) > 0)
+                    ($a[0] !== '')
                     && isset($a[1])
                 ) {
                     $tab[urldecode($a[0])] = urldecode($a[1]);
@@ -2077,7 +2087,9 @@ final class DbUtils
      *
      * @param string $time datetime time
      *
-     * @return  array
+     * @return string
+     *
+     * @TODO This method is not used, deprecate it in GLPI 12.0.
      */
     public function getHourFromSql($time)
     {
@@ -2090,7 +2102,7 @@ final class DbUtils
      * Get the $RELATION array. It defines all relations between tables in the DB;
      * plugins may add their own stuff
      *
-     * @return array the $RELATION array
+     * @return array<string, array<string, string|list<string|array{0: string, 1: string}>>>
      */
     public function getDbRelations()
     {
@@ -2098,7 +2110,7 @@ final class DbUtils
 
         include(GLPI_ROOT . "/inc/relation.constant.php");
 
-       // Add plugins relations
+        // Add plugins relations
         $plug_rel = Plugin::getDatabaseRelations();
         if (count($plug_rel) > 0) {
             $RELATION = array_merge_recursive($RELATION, $plug_rel);
@@ -2156,9 +2168,10 @@ final class DbUtils
                 if (!is_a($target_itemtype, CommonDBTM::class, true)) {
                     trigger_error(
                         sprintf(
-                            'Invalid relations declared for "%s" table. Target table "%s" does not correspond to a known itemtype.',
+                            'Invalid relations declared for "%s" table. Target table "%s" does not correspond to a known itemtype (%s)',
                             $source_table,
-                            $target_table
+                            $target_table,
+                            $target_itemtype
                         ),
                         E_USER_WARNING
                     );
@@ -2283,11 +2296,28 @@ final class DbUtils
      *
      * @param string $fkname Foreign key
      *
-     * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
+     * @return class-string<CommonDBTM>|null
+     *      Itemtype class for the fkname parameter,
+     *      or null if no valid itemtype is attached to the foreign key field
      */
     public function getItemtypeForForeignKeyField($fkname)
     {
         $table = $this->getTableNameForForeignKeyField($fkname);
         return $this->getItemTypeForTable($table);
+    }
+
+    /**
+     * Return an item instance for the corresponding foreign key field.
+     */
+    public function getItemForForeignKeyField(string $fkname): ?CommonDBTM
+    {
+        $itemtype = $this->getItemtypeForForeignKeyField($fkname);
+
+        if ($itemtype === null) {
+            return null;
+        }
+
+        $item = $this->getItemForItemtype($itemtype);
+        return $item ?: null;
     }
 }

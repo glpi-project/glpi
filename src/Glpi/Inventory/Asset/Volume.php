@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,6 +38,7 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Disk;
+use stdClass;
 
 class Volume extends InventoryAsset
 {
@@ -54,7 +55,7 @@ class Volume extends InventoryAsset
             'encrypt_name'   => 'encryption_tool',
             'encrypt_algo'   => 'encryption_algorithm',
             'encrypt_status' => 'encryption_status',
-            'encrypt_type'   => 'encryption_type'
+            'encrypt_type'   => 'encryption_type',
         ];
 
         foreach ($this->data as $key => &$val) {
@@ -64,7 +65,7 @@ class Volume extends InventoryAsset
                 }
             }
 
-           //check if type should be imported
+            //check if type should be imported
             if (
                 $this->isNetworkDrive($val) && $this->conf->component_networkdrive != 1
                 || $this->isRemovableDrive($val) && $this->conf->component_removablemedia != 1
@@ -76,30 +77,30 @@ class Volume extends InventoryAsset
 
             if (property_exists($val, 'label') && !empty($val->label)) {
                 $val->name = $val->label;
-            } else if (
+            } elseif (
                 (!property_exists($val, 'volumn') || empty($val->volumn))
                   && property_exists($val, 'letter')
             ) {
                 $val->name = $val->letter;
-            } else if (property_exists($val, 'type')) {
+            } elseif (property_exists($val, 'type')) {
                 $val->name = $val->type;
-            } else if (property_exists($val, 'volumn')) {
+            } elseif (property_exists($val, 'volumn')) {
                 $val->name = $val->volumn;
             }
 
             if (!property_exists($val, 'mountpoint')) {
                 if (property_exists($val, 'letter')) {
                     $val->mountpoint = $val->letter;
-                } else if (property_exists($val, 'type')) {
+                } elseif (property_exists($val, 'type')) {
                     $val->mountpoint = $val->type;
                 }
             }
 
             if (property_exists($val, 'encryption_status')) {
-               //Encryption status
+                //Encryption status
                 if ($val->encryption_status == "Yes") {
                     $val->encryption_status = Item_Disk::ENCRYPTION_STATUS_YES;
-                } else if ($val->encryption_status == "Partially") {
+                } elseif ($val->encryption_status == "Partially") {
                     $val->encryption_status = Item_Disk::ENCRYPTION_STATUS_PARTIALLY;
                 } else {
                     $val->encryption_status = Item_Disk::ENCRYPTION_STATUS_NO;
@@ -115,11 +116,10 @@ class Volume extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -129,8 +129,8 @@ class Volume extends InventoryAsset
             'FROM'   => Item_Disk::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType()
-            ]
+                'itemtype' => $this->item->getType(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $dbid = $data['id'];
@@ -172,7 +172,7 @@ class Volume extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemdisk) != 0) {
-           // Delete Item_Disk in DB
+            // Delete Item_Disk in DB
             foreach ($db_itemdisk as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
@@ -184,7 +184,7 @@ class Volume extends InventoryAsset
             foreach ($value as $val) {
                 $input = $this->handleInput($val, $itemDisk) + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType()
+                    'itemtype'     => $this->item->getType(),
                 ];
 
                 $itemDisk->add($input);
@@ -195,24 +195,23 @@ class Volume extends InventoryAsset
     /**
      * Check if asset is a network drive, based on its filesystem
      *
-     * @param \stdClass $raw_data Raw data from inventory
+     * @param stdClass $raw_data Raw data from inventory
      *
      * @return bool
      */
-    public function isNetworkDrive(\stdClass $raw_data): bool
+    public function isNetworkDrive(stdClass $raw_data): bool
     {
         return strtolower($raw_data->type ?? '') == 'network drive'
          || in_array(strtolower($raw_data->filesystem ?? ''), ['nfs', 'smbfs', 'afpfs']);
     }
 
-    public function isRemovableDrive(\stdClass $raw_data): bool
+    public function isRemovableDrive(stdClass $raw_data): bool
     {
         return in_array(strtolower($raw_data->type ?? ''), ['removable disk', 'compact disk']);
     }
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $this->conf = $conf;
         return $conf->import_volume == 1 && in_array($this->item::class, $CFG_GLPI['disk_types']);
@@ -220,6 +219,6 @@ class Volume extends InventoryAsset
 
     public function getItemtype(): string
     {
-        return \Item_Disk::class;
+        return Item_Disk::class;
     }
 }

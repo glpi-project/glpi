@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,9 +46,9 @@ class ChangekeyCommand extends AbstractCommand implements ConfigurationCommandIn
     /**
      * Error code returned when unable to renew key.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_UNABLE_TO_RENEW_KEY = 1;
+    public const ERROR_UNABLE_TO_RENEW_KEY = 1;
 
     protected function configure()
     {

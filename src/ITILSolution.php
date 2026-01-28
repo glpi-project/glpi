@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,9 +41,9 @@ use Glpi\ContentTemplates\TemplateManager;
  **/
 class ITILSolution extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
-    private $item                       = null;
+    private ?CommonITILObject $item = null;
 
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
     public static $items_id = 'items_id'; // Field name
@@ -79,7 +79,6 @@ class ITILSolution extends CommonDBChild
 
     public static function canView(): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $itil_types = $CFG_GLPI['itil_types'];
         /** @var class-string<CommonITILObject> $type */
@@ -93,7 +92,7 @@ class ITILSolution extends CommonDBChild
 
     public static function canUpdate(): bool
     {
-       //always true, will rely on ITILSolution::canUpdateItem
+        //always true, will rely on ITILSolution::canUpdateItem
         return true;
     }
 
@@ -104,13 +103,18 @@ class ITILSolution extends CommonDBChild
 
     public static function canCreate(): bool
     {
-       //always true, will rely on ITILSolution::canCreateItem
+        //always true, will rely on ITILSolution::canCreateItem
         return true;
     }
 
     public function canCreateItem(): bool
     {
-        $item = new $this->fields['itemtype']();
+        $item = getItemForItemtype($this->fields['itemtype']);
+
+        if (!($item instanceof CommonITILObject)) {
+            return false;
+        }
+
         $item->getFromDB($this->fields['items_id']);
         return $item->canSolve();
     }
@@ -123,14 +127,17 @@ class ITILSolution extends CommonDBChild
     public function post_getFromDB()
     {
         // Bandaid to avoid loading parent item if not needed
-        // TODO: replace by proper lazy loading in GLPI 11.0
+        // TODO: replace by proper lazy loading
         if (
             $this->item == null // No item loaded
-            || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
+            || !$this->item instanceof $this->fields['itemtype'] // Another item is loaded
             || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
         ) {
-            $this->item = new $this->fields['itemtype']();
-            $this->item->getFromDB($this->fields['items_id']);
+            $item = getItemForItemtype($this->fields['itemtype']);
+            if ($item instanceof CommonITILObject) {
+                $this->item = $item;
+                $this->item->getFromDB($this->fields['items_id']);
+            }
         }
     }
 
@@ -141,7 +148,7 @@ class ITILSolution extends CommonDBChild
      * @param $options array
      *     - item: CommonITILObject instance
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
@@ -162,9 +169,9 @@ class ITILSolution extends CommonDBChild
      * Count solutions for specific item
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
-     * @return integer
+     * @return int
      */
     public static function countFor($itemtype, $items_id)
     {
@@ -173,34 +180,33 @@ class ITILSolution extends CommonDBChild
             [
                 'WHERE' => [
                     'itemtype'  => $itemtype,
-                    'items_id'  => $items_id
-                ]
+                    'items_id'  => $items_id,
+                ],
             ]
         );
     }
 
     public function prepareInputForAdd($input)
     {
-        if (!isset($input['users_id']) && !(Session::isCron() || strpos($_SERVER['REQUEST_URI'] ?? '', 'crontask.form.php') !== false)) {
+        if (!isset($input['users_id']) && !(Session::isCron() || str_contains($_SERVER['REQUEST_URI'] ?? '', 'crontask.form.php'))) {
             $input['users_id'] = Session::getLoginUserID();
         }
 
+        $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
         if (
-            $this->item == null
-            || (isset($input['itemtype']) && isset($input['items_id']))
+            !($parent_item instanceof CommonITILObject)
+            || !array_key_exists('items_id', $input)
+            || $parent_item->getFromDB((int) $input['items_id']) === false
         ) {
-            $this->item = new $input['itemtype']();
-            $this->item->getFromDB($input['items_id']);
+            return false;
         }
+
+        $this->item = $parent_item;
 
         // Handle template
         if (isset($input['_solutiontemplates_id'])) {
             $template = new SolutionTemplate();
-            $parent_item = new $input['itemtype']();
-            if (
-                !$template->getFromDB($input['_solutiontemplates_id'])
-                || !$parent_item->getFromDB($input['items_id'])
-            ) {
+            if (!$template->getFromDB($input['_solutiontemplates_id'])) {
                 return false;
             }
             $input = array_replace(
@@ -222,7 +228,6 @@ class ITILSolution extends CommonDBChild
             $template_fields = $template->fields;
             unset($template_fields['id']);
             if (isset($template_fields['content'])) {
-                $parent_item = new $input['itemtype']();
                 $parent_item->getFromDB($input['items_id']);
                 $template_fields['content'] = $template->getRenderedContent($parent_item);
             }
@@ -230,7 +235,7 @@ class ITILSolution extends CommonDBChild
         }
 
         if (!$this->item->isStatusComputationBlocked($input)) {
-        // check itil object is not already solved
+            // check itil object is not already solved
             if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
                 Session::addMessageAfterRedirect(
                     __s("The item is already solved, did anyone pushed a solution before you?"),
@@ -267,15 +272,15 @@ class ITILSolution extends CommonDBChild
             $input['status'] = $status;
         }
 
-       // Render twig content, needed for massives action where we the content
-       // can't be rendered directly in the form
+        // Render twig content, needed for massives action where we the content
+        // can't be rendered directly in the form
         if (($input['_render_twig'] ?? false) && isset($input['content'])) {
             $html = TemplateManager::renderContentForCommonITIL(
                 $this->item,
                 $input['content']
             );
 
-           // Invalid template
+            // Invalid template
             if ($html === null) {
                 return false;
             }
@@ -289,22 +294,21 @@ class ITILSolution extends CommonDBChild
     public function post_addItem()
     {
 
-       //adding a solution mean the ITIL object is now solved
-       //and maybe closed (according to entitiy configuration)
-        if ($this->item == null) {
-            $this->item = new $this->fields['itemtype']();
-            $this->item->getFromDB($this->fields['items_id']);
+        $item = getItemForItemtype($this->fields['itemtype']);
+        if (!$item instanceof CommonITILObject) {
+            return;
         }
 
-        $item = $this->item;
+        $item->getFromDB($this->fields['items_id']);
+        $this->item = $item;
 
         // Handle rich-text images and uploaded documents
         $this->input["_job"] = $this->item;
         $this->input = $this->addFiles($this->input, ['force_update' => true]);
 
         // Add solution to duplicates
-        if ($this->item->getType() == 'Ticket' && !isset($this->input['_linked_ticket'])) {
-            CommonITILObject_CommonITILObject::manageLinksOnChange('Ticket', $this->item->getID(), [
+        if ($this->item instanceof Ticket && !isset($this->input['_linked_ticket'])) {
+            CommonITILObject_CommonITILObject::manageLinksOnChange(Ticket::class, $this->item->getID(), [
                 '_solution' => $this,
             ]);
         }
@@ -312,8 +316,8 @@ class ITILSolution extends CommonDBChild
         if (!isset($this->input['_linked_ticket'])) {
             $status = $item::SOLVED;
 
-           //handle autoclose, for tickets only
-            if ($item->getType() == Ticket::getType()) {
+            //handle autoclose, for tickets only
+            if ($item instanceof Ticket) {
                 $autoclosedelay =  Entity::getUsedConfig(
                     'autoclose_delay',
                     $this->item->getEntityID(),
@@ -323,18 +327,18 @@ class ITILSolution extends CommonDBChild
 
                 // 0 = immediately or ticket status CLOSED force status
                 if ($autoclosedelay == 0 || $this->item->fields["status"] == $this->item::CLOSED) {
-                     $status = $item::CLOSED;
+                    $status = $item::CLOSED;
                 }
             }
 
             $this->item->update([
                 'id'     => $this->item->getID(),
-                'status' => $status
+                'status' => $status,
             ]);
         }
 
         if (
-            $this->input["itemtype"] == 'Ticket'
+            $this->input["itemtype"] == Ticket::class
             && $_SESSION['glpiset_solution_tech']
             && ($this->input['_disable_auto_assign'] ?? false) === false
         ) {
@@ -347,7 +351,7 @@ class ITILSolution extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
 
-        if (!isset($this->fields['itemtype'])) {
+        if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
             return false;
         }
         $input["_job"] = new $this->fields['itemtype']();
@@ -387,12 +391,12 @@ class ITILSolution extends CommonDBChild
                 $value = $values[$field];
                 $statuses = self::getStatuses();
 
-                return (isset($statuses[$value]) ? $statuses[$value] : $value);
+                return htmlescape($statuses[$value] ?? $value);
             case 'itemtype':
-                if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
-                    return $values['itemtype']::getTypeName(1);
+                if (in_array($values['itemtype'], [Ticket::class, Change::class, Problem::class])) {
+                    return htmlescape($values['itemtype']::getTypeName(1));
                 }
-                return $values['itemtype'];
+                return htmlescape($values['itemtype']);
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -416,9 +420,9 @@ class ITILSolution extends CommonDBChild
                 return Dropdown::showFromArray($name, self::getStatuses(), $options);
             case 'itemtype':
                 return Dropdown::showFromArray($field, [
-                    'Ticket' => Ticket::getTypeName(1),
-                    'Change' => Change::getTypeName(1),
-                    'Problem' => Problem::getTypeName(1),
+                    Ticket::class => Ticket::getTypeName(1),
+                    Change::class => Change::getTypeName(1),
+                    Problem::class => Problem::getTypeName(1),
                 ], $options);
         }
 
@@ -452,7 +456,7 @@ class ITILSolution extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -479,7 +483,7 @@ class ITILSolution extends CommonDBChild
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -511,7 +515,7 @@ class ITILSolution extends CommonDBChild
      * before loading the item, thus avoiding one useless DB query (or many more queries
      * when looping on children items)
      *
-     * TODO 11.0 move method and `item` property into parent class
+     * TODO move method and `item` property into parent class
      *
      * @param CommonITILObject $parent Parent item
      *

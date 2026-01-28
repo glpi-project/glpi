@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,8 @@
  */
 
 namespace Glpi\Api\HL\RSQL;
+
+use function Safe\preg_match;
 
 /**
  * Lexer to parse RSQL query (extension of FIQL) string into tokens.
@@ -63,6 +65,12 @@ final class Lexer
      */
     public const T_VALUE = 7;
 
+    /**
+     * @var int Token used when a value would be expected but not found.
+     * This could indicate an incomplete filter, or it could simply be a normal occurance if the preceding operator is a unary operator (=isempty= for example).
+     */
+    public const T_UNSPECIFIED_VALUE = 8;
+
     public const CHAR_AND = ';';
     public const CHAR_OR = ',';
     public const CHAR_GROUP_OPEN = '(';
@@ -70,9 +78,7 @@ final class Lexer
     public const CHAR_ESCAPE = '\\';
     public const CHARS_PROPERTY = '/[a-zA-Z0-9_.]/';
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Tokenize an RSQL query string into an array of tokens.
@@ -90,7 +96,8 @@ final class Lexer
         $in_filter = false;
         $in_value = false;
         $fn_validate_pos = static function () use ($pos, $length) {
-            if ($pos < 0 || $pos >= $length) {
+            // Note: phpstan doesn't like this, it should probably be a dedicated method.
+            if ($pos < 0 || $pos >= $length) { // @phpstan-ignore smaller.alwaysFalse
                 // This case will probably never happen. An issue should be caught before now with a more specific error message.
                 throw new RSQLException(
                     message: 'RSQL parser reached an invalid position while parsing the query string.',
@@ -108,37 +115,41 @@ final class Lexer
         // If the operator is =in=, =out= or some other operator which takes a list of values, the value will be a comma-separated list of values inside parentheses.
 
         while ($pos < $length) {
-            $char = $query[$pos];
-            $prev_char = $pos - 1 >= 0 ? $query[$pos - 1] : null;
+            $char = mb_substr($query, $pos, 1, 'UTF-8');
+            $prev_char = $pos - 1 >= 0 ? mb_substr($query, $pos - 1, 1, 'UTF-8') : null;
 
             if (!$in_value && $char === self::CHAR_GROUP_OPEN && $prev_char !== self::CHAR_ESCAPE) {
                 $tokens[] = [self::T_GROUP_OPEN, $char];
-            } else if (!$in_value && $char === self::CHAR_GROUP_CLOSE && $prev_char !== self::CHAR_ESCAPE) {
+            } elseif (!$in_value && $char === self::CHAR_GROUP_CLOSE && $prev_char !== self::CHAR_ESCAPE) {
                 $tokens[] = [self::T_GROUP_CLOSE, $char];
-            } else if (!$in_filter && $char === self::CHAR_AND) {
+            } elseif (!$in_filter && $char === self::CHAR_AND) {
                 $tokens[] = [self::T_AND, $char];
-            } else if (!$in_filter && $char === self::CHAR_OR) {
+            } elseif (!$in_filter && $char === self::CHAR_OR) {
                 $tokens[] = [self::T_OR, $char];
-            } else if (!$in_filter && preg_match(self::CHARS_PROPERTY, $char)) {
+            } elseif (!$in_filter && preg_match(self::CHARS_PROPERTY, $char)) {
                 $in_filter = true;
                 $buffer .= $char;
-                // Property should continue until a '=' is found.
-                while ($pos + 1 < $length && $query[$pos + 1] !== '=') {
-                    $buffer .= $query[++$pos];
+                $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
+                // Property should continue until a '=' or '!' (in the case of != operator) is found.
+                while ($pos + 1 < $length && $nextChar !== '=' && $nextChar !== '!') {
+                    $buffer .= mb_substr($query, ++$pos, 1, 'UTF-8');
+                    $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
                 }
                 $tokens[] = [self::T_PROPERTY, $buffer];
                 // Now the operator is started
-                $buffer = '=';
                 $pos++;
-                if (!isset($query[$pos]) || $query[$pos] !== '=') {
+                $char = mb_substr($query, $pos, 1, 'UTF-8');
+                if (empty($char) || ($char !== '=' && $char !== '!')) {
                     throw new RSQLException('', sprintf(__('RSQL query is missing an operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $fn_validate_pos();
+                $buffer = $char;
                 // Operator should continue until the next '=' is found.
-                while ($pos + 1 < $length && $query[$pos + 1] !== '=') {
-                    $buffer .= $query[++$pos];
+                while ($pos + 1 < $length && mb_substr($query, $pos + 1, 1, 'UTF-8') !== '=') {
+                    $buffer .= mb_substr($query, ++$pos, 1, 'UTF-8');
                 }
-                if (!isset($query[$pos + 1]) || $query[$pos + 1] !== '=') {
+                $nextChar = mb_substr($query, $pos + 1, 1, 'UTF-8');
+                if (empty($nextChar) || $nextChar !== '=') {
                     throw new RSQLException('', sprintf(__('RSQL query has an incomplete operator in filter for property "%1$s"'), $tokens[count($tokens) - 1][1]));
                 }
                 $tokens[] = [self::T_OPERATOR, $buffer . '='];
@@ -147,12 +158,13 @@ final class Lexer
                 $pos += 2;
                 $fn_validate_pos();
                 $in_value = true;
-                if (!isset($query[$pos])) {
-                    throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
+                $char = mb_substr($query, $pos, 1, 'UTF-8');
+                if ($char === '') {
+                    $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
+                    break;
                 }
                 // If the current char is ', ", or (, then the value continues until the matching closing quote or parenthesis is found.
                 // When matching, we ignore escaped quotes and parenthesis.
-                $char = $query[$pos];
                 $starting_char = $char;
                 $expected_ending_char = null;
                 $buffer = $char;
@@ -162,11 +174,11 @@ final class Lexer
                     // We have no starting quote or parenthesis, so the value continues until an unescaped comma, unescaped semicolon, unescaped close parenthesis, or end of string is found.
                 }
                 while ($pos + 1 < $length) {
-                    $char = $query[++$pos];
+                    $char = mb_substr($query, ++$pos, 1, 'UTF-8');
                     if ($char === self::CHAR_ESCAPE) {
                         // If the current char is an escape character, then the next character is part of the value.
-                        $buffer .= $query[++$pos];
-                    } else if ($expected_ending_char !== null && $char === $expected_ending_char) {
+                        $buffer .= $char;
+                    } elseif ($expected_ending_char !== null && $char === $expected_ending_char) {
                         // If the current char is the expected ending char, then the value is complete.
                         $buffer .= $char;
                         $tokens[] = [self::T_VALUE, $buffer];
@@ -174,7 +186,7 @@ final class Lexer
                         $in_filter = false;
                         $in_value = false;
                         break;
-                    } else if ($expected_ending_char === null && in_array($char, [self::CHAR_AND, self::CHAR_OR, self::CHAR_GROUP_CLOSE])) {
+                    } elseif ($expected_ending_char === null && in_array($char, [self::CHAR_AND, self::CHAR_OR, self::CHAR_GROUP_CLOSE])) {
                         // If the current char is a comma, semicolon, or close parenthesis, then the value is complete.
                         $tokens[] = [self::T_VALUE, $buffer];
                         $buffer = '';
@@ -189,8 +201,8 @@ final class Lexer
                 if ($buffer !== '') {
                     $tokens[] = [self::T_VALUE, $buffer];
                     $buffer = '';
-                } else if ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
-                    throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
+                } elseif ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
+                    $tokens[] = [self::T_UNSPECIFIED_VALUE, ''];
                 }
             }
             $pos++;
@@ -201,7 +213,7 @@ final class Lexer
         foreach ($tokens as $token) {
             if ($token[0] === self::T_GROUP_OPEN) {
                 $group_open_count++;
-            } else if ($token[0] === self::T_GROUP_CLOSE) {
+            } elseif ($token[0] === self::T_GROUP_CLOSE) {
                 $group_close_count++;
             }
         }

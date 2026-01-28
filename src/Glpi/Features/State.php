@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace Glpi\Features;
 
 use DropdownVisibility;
+use LogicException;
 
 trait State
 {
@@ -46,11 +47,10 @@ trait State
      */
     private function checkSetup(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!in_array(static::class, $CFG_GLPI['state_types'])) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     'Class %s must be present in $CFG_GLPI[\'state_types\']',
                     static::class
@@ -60,11 +60,7 @@ trait State
     }
 
     /**
-     * Get the visibility of the state field for the item
-     *
-     * @param int $id State ID
-     *
-     * @return bool
+     * @see StateInterface::isStateVisible()
      */
     public function isStateVisible(int $id): bool
     {
@@ -74,14 +70,12 @@ trait State
             'itemtype' => \State::getType(),
             'items_id' => $id,
             'visible_itemtype' => static::class,
-            'is_visible' => 1
+            'is_visible' => 1,
         ]);
     }
 
     /**
-     * Get the visibility criteria of the state field to use a filter condition
-     *
-     * @return array
+     * @see StateInterface::getStateVisibilityCriteria()
      */
     public function getStateVisibilityCriteria(): array
     {
@@ -93,17 +87,17 @@ trait State
                         DropdownVisibility::getTable() => 'items_id',
                         \State::getTable() => 'id', [
                             'AND' => [
-                                DropdownVisibility::getTable() . '.itemtype' => \State::getType()
-                            ]
-                        ]
-                    ]
-                ]
+                                DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
                 DropdownVisibility::getTable() . '.visible_itemtype' => static::class,
-                DropdownVisibility::getTable() . '.is_visible' => 1
-            ]
+                DropdownVisibility::getTable() . '.is_visible' => 1,
+            ],
         ];
     }
 }

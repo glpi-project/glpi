@@ -23,9 +23,17 @@ Clients must be registered with the GLPI server before they can be used to authe
 Clients are used to identify the application/user that is using the API and may be limited to specific grant types.
 
 To register a client, you can do so from Setup > OAuth Clients.
-When creating a new client, you will be prompted for just a name.
 When the client is created, there will be an automatically generated client ID and secret.
-There will also be a field to specify the allowed grant types.
+
+### Scopes
+
+- `email`: Access to the user's own default email address
+- `user`: Access to the user's information
+- `status`: Access to the status endpoints (Does not apply when accessed via the CLI commands)
+- `inventory`: Access to submit inventory from the GLPI Agent via Client Credentials grant
+- `graphql`: Access to the GraphQL endpoint
+- `api`: Access to the API (All other endpoints not handled by their own scope)
+
 
 ### Password Grant
 
@@ -36,7 +44,7 @@ To authenticate with the password grant, you will need to make a POST request to
 - `client_secret`: The client secret of the client you are using
 - `username`: The username of the user you are authenticating as
 - `password`: The password of the user you are authenticating as
-- `scope`: The scope of the request. This must be supplied but is not currently used. It can be an empty string.
+- `scope`: The scope of the request. The client must be allowed to use the requested scope.
 
 The endpoint will respond (if successful) with a JSON object containing the following fields:
 
@@ -52,7 +60,7 @@ To authenticate with the authorization code grant, you will need to make a GET r
 
 - `response_type`: `code`
 - `client_id`: The client ID of the client you are using
-- `scope`: The scope of the request. This must be supplied but is not currently used. It can be an empty string.
+- `scope`: The scope of the request. The client must be allowed to use the requested scope.
 
 The endpoint will respond with a redirect to the GLPI login page.
 If successful, the user will be redirected back to the client with a `code` parameter in the query string.
@@ -70,9 +78,14 @@ The endpoint will respond (if successful) with a JSON object containing the foll
 - `access_token`: The access token that can be used to authenticate future requests.
 - `refresh_token`: The refresh token that can be used to get a new access token when the current one expires.
 
+### Client Credentials Grant
+
+Authentication with the client credentials grant is only supported for the `inventory` scope.
+Access to other API resources requires an actual user to be authenticated which is not possible with the client credentials grant.
+
 ## RSQL Filtering
 
-The GLPI supports "REST Query Language" (RSQL) filtering for certain endpoints that return collections of items.
+The GLPI supports "REST Query Language" (RSQL) filtering in a `filter` parameter for certain endpoints that return collections of items.
 RSQL itself is a super-set of the "Feed Item Query Language" (FIQL).
 It allows for an intuitive and easy to use syntax for filtering collections of items.
 
@@ -118,7 +131,7 @@ The implementation of the GraphQL does not include any mutators. It is read-only
 
 The GraphQL API supports the same parameters as the REST API for filtering, sorting, and pagination.
 
-Example:
+Basic Example:
 ```graphql
 query {
     Ticket(limit: 1, filter: "name=ilike=test") {
@@ -127,6 +140,21 @@ query {
         status {
             id
             name
+        }
+    }
+}
+```
+
+Example crossing between schemas:
+```graphql
+query {
+    CartridgeItem {
+        id
+        name
+         printer_models {
+            name
+            # the product number is not usually returned by the REST API, but is available in GraphQL since you can access the full PrinterModel schema here.
+            product_number
         }
     }
 }

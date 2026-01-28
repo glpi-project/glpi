@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,11 +40,14 @@ use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\RequestOptions;
 
+use function Safe\json_decode;
+use function Safe\strtotime;
+
 class QueuedWebhook extends CommonDBChild
 {
     public static $rightname = 'config';
 
-    public static $itemtype = \Webhook::class;
+    public static $itemtype = Webhook::class;
     public static $items_id = 'webhooks_id';
 
     public static function getTypeName($nb = 0)
@@ -59,7 +62,7 @@ class QueuedWebhook extends CommonDBChild
 
     public static function canCreate(): bool
     {
-       // Everybody can create : human and cron
+        // Everybody can create : human and cron
         return Session::getLoginUserID(false);
     }
 
@@ -86,13 +89,19 @@ class QueuedWebhook extends CommonDBChild
         return $forbidden;
     }
 
+    /**
+     * @param CommonDBTM $checkitem
+     * @param bool $is_deleted
+     *
+     * @return array
+     */
     public function getSpecificMassiveActions($checkitem = null, $is_deleted = false)
     {
         $isadmin = static::canUpdate();
         $actions = parent::getSpecificMassiveActions($checkitem);
 
         if ($isadmin && !$is_deleted) {
-            $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
+            $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'send'] = _sx('button', 'Send');
         }
 
         return $actions;
@@ -124,7 +133,6 @@ class QueuedWebhook extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!isset($input['create_time']) || empty($input['create_time'])) {
@@ -153,13 +161,12 @@ class QueuedWebhook extends CommonDBChild
     /**
      * Send webhook in queue
      *
-     * @param integer $ID Id
+     * @param int $ID Id
      *
-     * @return boolean
+     * @return bool
      */
     public static function sendById(int $ID): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $queued_webhook = new self();
@@ -168,18 +175,21 @@ class QueuedWebhook extends CommonDBChild
         }
 
         $guzzle_options = [
-            'timeout' => 5
+            'timeout' => 5,
         ];
+        if (in_array(Webhook::class, $CFG_GLPI['proxy_exclusions'])) {
+            $options['proxy_excluded'] = true;
+        }
 
         $webhook = new Webhook();
         if (!$webhook->getFromDB($queued_webhook->fields['webhooks_id'])) {
             return false;
         }
 
-        if ($webhook->fields['use_cra_challenge']) {
+        if (GLPI_WEBHOOK_CRA_MANDATORY || $webhook->fields['use_cra_challenge']) {
             // Send CRA challenge
             $result = $webhook::validateCRAChallenge($queued_webhook->fields['url'], 'validate_cra_challenge', $webhook->fields['secret']);
-            if ($result === false || $result['status'] !== true) {
+            if ($result['status'] !== true) {
                 Toolbox::logInFile('webhook', "CRA challenge failed for webhook {$webhook->fields['name']} ({$webhook->getID()})");
                 return false;
             }
@@ -213,9 +223,7 @@ class QueuedWebhook extends CommonDBChild
         $client = Toolbox::getGuzzleClient($guzzle_options);
         $headers = json_decode($queued_webhook->fields['headers'], true);
         // Remove headers with empty values
-        $headers = array_filter($headers, static function ($value) {
-            return !empty($value);
-        });
+        $headers = array_filter($headers, static fn($value) => !empty($value));
         if ($bearer_token !== null) {
             $headers['Authorization'] = 'Bearer ' . $bearer_token;
         }
@@ -244,23 +252,21 @@ class QueuedWebhook extends CommonDBChild
         if ($response !== null) {
             $input['last_status_code'] = $response->getStatusCode();
             if (GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING && $queued_webhook->fields['save_response_body']) {
-                $input['response_body'] = (string)$response->getBody();
+                $input['response_body'] = (string) $response->getBody();
             } else {
                 // Save to property that won't be saved in DB, but can still be available to plugins
-                $input['_response_body'] = (string)$response->getBody();
+                $input['_response_body'] = (string) $response->getBody();
             }
 
             if ($webhook->fields['log_in_item_history']) {
                 /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = $queued_webhook->fields['itemtype'];
-                $item = new $itemtype();
+                $item = getItemForItemtype($itemtype);
                 $item->getFromDB($queued_webhook->fields['items_id']);
-                $tabs = $item->defineTabs();
-                $has_history_tab = array_key_exists('Log$1', $tabs);
 
-                if ($has_history_tab) {
+                if ($item->dohistory) {
                     Log::history($queued_webhook->fields['items_id'], $queued_webhook->fields['itemtype'], [
-                        30, $queued_webhook->fields['last_status_code'], $response->getStatusCode()
+                        30, $queued_webhook->fields['last_status_code'], $response->getStatusCode(),
                     ], $queued_webhook->fields['id'], Log::HISTORY_SEND_WEBHOOK);
                 }
             }
@@ -280,7 +286,7 @@ class QueuedWebhook extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -289,7 +295,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'itemlink'
+            'datatype'           => 'itemlink',
         ];
 
         $tab[] = [
@@ -298,7 +304,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'create_time',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -307,7 +313,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'send_time',
             'name'               => __('Expected send date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -316,7 +322,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'sent_time',
             'name'               => __('Send date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -325,7 +331,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'url',
             'name'               => __('URL'),
             'datatype'           => 'string',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -334,7 +340,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'headers',
             'name'               => __('Headers'),
             'datatype'           => 'specific',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -344,7 +350,7 @@ class QueuedWebhook extends CommonDBChild
             'name'               => _n('Payload', 'Payloads', 1),
             'datatype'           => 'text',
             'massiveaction'      => false,
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -353,7 +359,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'sent_try',
             'name'               => __('Number of tries of sent'),
             'datatype'           => 'integer',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -362,7 +368,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'itemtype',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -371,7 +377,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'items_id',
             'name'               => __('Associated item ID'),
             'massiveaction'      => false,
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -380,7 +386,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'name',
             'name'               => Webhook::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -390,7 +396,7 @@ class QueuedWebhook extends CommonDBChild
             'name'              => __('Last status code'),
             'massiveaction'     => false,
             'datatype'          => 'specific',
-            'additionalfields'  => ['id']
+            'additionalfields'  => ['id'],
         ];
 
         $tab[] = [
@@ -399,7 +405,7 @@ class QueuedWebhook extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -414,13 +420,19 @@ class QueuedWebhook extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @param int $value
+     * @param int|null $id
+     *
+     * @return string
+     */
     public static function getStatusCodeBadge($value, ?int $id = null): string
     {
         $display_value = (int) $value;
         $badge_class = 'badge bg-orange';
         if (empty($display_value)) {
             $display_value = __s('Not sent/no response');
-        } else if ($display_value < 300) {
+        } elseif ($display_value < 300) {
             $badge_class = 'badge bg-green';
         } else {
             $badge_class = 'badge bg-red';
@@ -432,7 +444,7 @@ class QueuedWebhook extends CommonDBChild
         }
         // Add a button to resend the webhook via ajax
         $btn_id = "resend-webhook-{$id}";
-        $badge .= "<button id='{$btn_id}' type='button' class='btn btn-outline-secondary btn-sm ms-1' data-id='{$id}'><i class='ti ti-send'></i>" . __('Send') . "</button>";
+        $badge .= "<button id='{$btn_id}' type='button' class='btn btn-outline-secondary btn-sm ms-1' data-id='{$id}'><i class='ti ti-send'></i>" . __s('Send') . "</button>";
         $badge .= Html::scriptBlock(<<<JS
             $("#{$btn_id}").click(function() {
                 var id = $(this).data('id');
@@ -475,7 +487,7 @@ JS);
             case 'last_status_code':
                 return self::getStatusCodeBadge($values[$field], $values['id'] ?? null);
             case 'http_method':
-                return Webhook::getHttpMethod()[$values[$field]] ?? $values[$field];
+                return htmlescape(Webhook::getHttpMethod()[$values[$field]] ?? $values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -490,8 +502,8 @@ JS);
             'headers' => json_decode($this->fields['headers'], true),
             'params' => [
                 'canedit' => true,
-                'candel' => $this->canDeleteItem()
-            ]
+                'candel' => $this->canDeleteItem(),
+            ],
         ]);
         return true;
     }
@@ -500,14 +512,13 @@ JS);
      * Get pending webhooks in queue
      *
      * @param string  $send_time   Maximum sent_time
-     * @param integer $limit       Query limit clause
+     * @param int $limit       Query limit clause
      * @param array   $extra_where Extra params to add to the where clause
      *
      * @return array Array of IDs of pending webhooks
      */
     public static function getPendings($send_time = null, $limit = 20, $extra_where = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($send_time === null) {
@@ -525,9 +536,9 @@ JS);
                 $webhook_table => [
                     'FKEY' => [
                         $webhook_table => 'id',
-                        $queued_table => 'webhooks_id'
-                    ]
-                ]
+                        $queued_table => 'webhooks_id',
+                    ],
+                ],
             ],
             'WHERE'  => [
                 'is_deleted'   => 0,
@@ -535,20 +546,20 @@ JS);
                     'OR' => [
                         "$queued_table.sent_try" => null,
                         new QueryExpression($DB::quoteName($queued_table . '.sent_try') . ' <= ' . $DB::quoteName($webhook_table . '.sent_try')),
-                    ]
+                    ],
                 ],
                 'send_time'    => ['<', $send_time],
                 [
                     'OR' => [
                         // We will retry sending webhooks that never got a response or got any error status code (4xx or 5xx)
                         ['last_status_code' => null],
-                        ['last_status_code' => ['>=', 400]]
-                    ]
-                ]
+                        ['last_status_code' => ['>=', 400]],
+                    ],
+                ],
             ] +  $extra_where,
             'ORDER'  => 'send_time ASC',
             'START'  => 0,
-            'LIMIT'  => $limit
+            'LIMIT'  => $limit,
         ]);
         if ($iterator->numRows() > 0) {
             foreach ($iterator as $row) {
@@ -564,7 +575,7 @@ JS);
      *
      * @param CronTask|null $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      **/
     public static function cronQueuedWebhook(?CronTask $task = null)
     {
@@ -590,11 +601,10 @@ JS);
      *
      * @param CronTask|null $task for log (default NULL)
      *
-     * @return integer either 0 or 1
+     * @return int either 0 or 1
      **/
     public static function cronQueuedWebhookClean(?CronTask $task = null)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $vol = 0;
@@ -612,17 +622,17 @@ JS);
                     'OR' => [
                         new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
                         new QueryExpression($DB::quoteName($queued_table . '.sent_try') . ' >= ' . $DB::quoteName($webhook_table . '.sent_try')),
-                    ]
+                    ],
                 ],
                 [
                     'LEFT JOIN' => [
                         $webhook_table => [
                             'ON' => [
                                 $queued_table => 'webhooks_id',
-                                $webhook_table => 'id'
-                            ]
-                        ]
-                    ]
+                                $webhook_table => 'id',
+                            ],
+                        ],
+                    ],
                 ]
             );
             $vol = $DB->affectedRows();

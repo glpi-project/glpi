@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,6 @@
 
 namespace Glpi\Asset;
 
-use Ajax;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
@@ -44,10 +43,10 @@ use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Html;
+use LogicException;
 use MassiveAction;
 use Override;
 use Session;
-use Toolbox;
 
 final class Asset_PeripheralAsset extends CommonDBRelation
 {
@@ -77,7 +76,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * @param CommonDBTM $main_item
      * @param CommonDBTM $peripheral_item
      *
-     * @return boolean
+     * @return bool
      */
     private static function isAlreadyConnected(CommonDBTM $main_item, CommonDBTM $peripheral_item): bool
     {
@@ -111,12 +110,12 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             || self::isAlreadyConnected($asset, $peripheral)
             || !(in_array($asset::class, self::getPeripheralHostItemtypes(), true))
         ) {
-           // no duplicates
+            // no duplicates
             return false;
         }
 
         if (!$peripheral->isGlobal()) {
-           // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
+            // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
             $updates = [];
 
             if (
@@ -260,7 +259,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
     ) {
-        $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
         $specificities = self::getRelationMassiveActionsSpecificities();
 
         if (in_array($itemtype, $specificities['itemtypes'], true)) {
@@ -272,7 +271,6 @@ final class Asset_PeripheralAsset extends CommonDBRelation
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();
@@ -294,13 +292,12 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * Print the form for computers or templates connections to printers, screens or peripherals
      *
      * @param CommonDBTM $asset        CommonDBTM object
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
     private static function showForAsset(CommonDBTM $asset, $withtemplate = 0): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ID      = $asset->fields['id'];
@@ -337,7 +334,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'myname'          => 'items_id_peripheral',
                 'onlyglobal'      => (int) $withtemplate === 1 ? 1 : 0,
                 'entity_restrict' => $entities,
-                'used'            => $used
+                'used'            => $used,
             ];
 
             $twig_params = [
@@ -345,7 +342,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'dropdown_params' => $dropdown_params,
                 'asset' => $asset,
                 'label' => __('Connect an item'),
-                'btn_label' => _sx('button', 'Connect'),
+                'btn_label' => _x('button', 'Connect'),
                 'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
             ];
             // language=Twig
@@ -355,7 +352,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                     <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
                         {{ fields.hiddenField('items_id_asset', asset.getID()) }}
                         {{ fields.hiddenField('itemtype_asset', asset.getType()) }}
-                        {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+                        {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         {{ fields.dropdownItemTypes('itemtype_peripheral', 0, label, {
                             types: config('directconnect_types'),
@@ -431,7 +428,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -441,20 +437,19 @@ TWIG, $twig_params);
                 'entity' => Entity::getTypeName(1),
                 'serial' => __('Serial number'),
                 'otherserial' => __('Inventory number'),
-                'type' => _n('Type', 'Types', 1)
+                'type' => _n('Type', 'Types', 1),
             ],
             'formatters' => [
                 'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container' => 'massAsset_PeripheralAsset' . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Disconnect')],
-            ]
+            ],
         ]);
     }
 
@@ -463,7 +458,7 @@ TWIG, $twig_params);
      * Print the form for a peripheral
      *
      * @param CommonDBTM $peripheral         CommonDBTM object
-     * @param integer    $withtemplate Template or basic item (default 0)
+     * @param int    $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
@@ -519,7 +514,7 @@ TWIG, $twig_params);
                 'label' => __('Connect to an item'),
                 'peripheral' => $peripheral,
                 'dropdown_params' => $dropdown_params,
-                'btn_label' => _sx('button', 'Connect'),
+                'btn_label' => _x('button', 'Connect'),
                 'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
             ];
             // language=Twig
@@ -530,7 +525,7 @@ TWIG, $twig_params);
                         {{ fields.dropdownItemsFromItemtypes('', label, dropdown_params) }}
                         {{ fields.hiddenField('items_id_peripheral', peripheral.getID()) }}
                         {{ fields.hiddenField('itemtype_peripheral', peripheral.getType()) }}
-                        {{ fields.hiddenField('_glpi_csrf_token', csrf_token()) }}
+                        {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
                             <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
@@ -574,7 +569,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -583,20 +577,19 @@ TWIG, $twig_params);
                 'is_dynamic' => __('Automatic inventory'),
                 'entity' => Entity::getTypeName(1),
                 'serial' => __('Serial number'),
-                'otherserial' => __('Inventory number')
+                'otherserial' => __('Inventory number'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container' => 'massAsset_PeripheralAsset' . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Disconnect')],
-            ]
+            ],
         ]);
     }
 
@@ -604,57 +597,61 @@ TWIG, $twig_params);
      * Unglobalize an item : duplicate item and connections
      *
      * @param CommonDBTM $item object to unglobalize
+     * @return bool true on success, false on failure
      **/
-    public static function unglobalizeItem(CommonDBTM $item): void
+    public static function unglobalizeItem(CommonDBTM $item): bool
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
+        global $DB, $CFG_GLPI;
 
         if (
             !\in_array($item::class, $CFG_GLPI['directconnect_types'], true)
             || !$item->isField('is_global')
         ) {
-            throw new \LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
+            throw new LogicException(\sprintf('Item of class "%s" does not support being unglobalized', $item::class));
+        }
+
+        if (!$item->getField('is_global')) {
+            return true;
         }
 
         // Update item to unit management :
-        if ($item->getField('is_global')) {
-            $input = [
-                'id'        => $item->fields['id'],
-                'is_global' => 0
-            ];
-            $item->update($input);
+        $input = [
+            'id'        => $item->fields['id'],
+            'is_global' => 0,
+        ];
+        if (!$item->update($input)) {
+            return false;
+        }
 
-            // Get connect_wire for this connection
-            $iterator = $DB->request([
-                'SELECT' => ['id'],
-                'FROM'   => self::getTable(),
-                'WHERE'  => [
-                    'items_id_peripheral' => $item->getID(),
-                    'itemtype_peripheral' => $item->getType()
-                ]
-            ]);
+        // Get connect_wire for this connection
+        $iterator = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => self::getTable(),
+            'WHERE'  => [
+                'items_id_peripheral' => $item->getID(),
+                'itemtype_peripheral' => $item->getType(),
+            ],
+        ]);
 
-            $first = true;
-            foreach ($iterator as $data) {
-                if ($first) {
-                    $first = false;
-                    unset($input['id']);
-                } else {
-                    $temp = clone $item;
-                    unset($temp->fields['id']);
-                    if ($newID = $temp->add($temp->fields)) {
-                        $conn = new self();
-                        $conn->update([
-                            'id'                  => $data['id'],
-                            'items_id_peripheral' => $newID,
-                        ]);
-                    }
+        $first = true;
+        foreach ($iterator as $data) {
+            if ($first) {
+                $first = false;
+                unset($input['id']);
+            } else {
+                $temp = clone $item;
+                unset($temp->fields['id']);
+                if ($newID = $temp->add($temp->fields)) {
+                    $conn = new self();
+                    $conn->update([
+                        'id'                  => $data['id'],
+                        'items_id_peripheral' => $newID,
+                    ]);
                 }
             }
         }
+
+        return true;
     }
 
     /**
@@ -663,11 +660,11 @@ TWIG, $twig_params);
      * @param string            $itemtype        type to connect
      * @param string            $fromtype        from where the connection is
      * @param string            $myname          select name
-     * @param integer|integer[] $entity_restrict Restrict to a defined entity (default = -1)
-     * @param boolean           $onlyglobal      display only global devices (used for templates) (default 0)
-     * @param integer[]         $used            Already used items ID: not to display in dropdown
+     * @param int|int[] $entity_restrict Restrict to a defined entity (default = -1)
+     * @param bool           $onlyglobal      display only global devices (used for templates) (default 0)
+     * @param int[]         $used            Already used items ID: not to display in dropdown
      *
-     * @return integer Random generated number used for select box ID (select box HTML is printed)
+     * @return int Random generated number used for select box ID (select box HTML is printed)
      */
     public static function dropdownConnect(
         $itemtype,
@@ -677,7 +674,6 @@ TWIG, $twig_params);
         $onlyglobal = false,
         $used = []
     ): int {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rand     = mt_rand();
@@ -704,9 +700,8 @@ TWIG, $twig_params);
         return $rand;
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // can exists for Template
@@ -739,7 +734,6 @@ TWIG, $twig_params);
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!$item instanceof CommonDBTM || !$item->can($item->getID(), READ)) {
@@ -749,7 +743,7 @@ TWIG, $twig_params);
         if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
             self::showForPeripheral($item, $withtemplate);
             return true;
-        } else if (self::canViewPeripherals($item)) {
+        } elseif (self::canViewPeripherals($item)) {
             self::showForAsset($item, $withtemplate);
             return true;
         }
@@ -757,9 +751,14 @@ TWIG, $twig_params);
         return false;
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param array      $entities
+     *
+     * @return bool
+     */
     public static function canUnrecursSpecif(CommonDBTM $item, $entities)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (in_array($item::class, self::getPeripheralHostItemtypes(), true)) {
@@ -776,9 +775,9 @@ TWIG, $twig_params);
                 'FROM' => self::getTable(),
                 'WHERE' => [
                     'itemtype_asset' => $item->getType(),
-                    'items_id_asset' => $item->getID()
+                    'items_id_asset' => $item->getID(),
                 ],
-                'GROUP' => 'itemtype_peripheral'
+                'GROUP' => 'itemtype_peripheral',
             ]);
 
             foreach ($iterator as $data) {
@@ -790,7 +789,7 @@ TWIG, $twig_params);
                         $data['itemtype_peripheral']::getTable(),
                         [
                             'id' => explode(',', $data['ids']),
-                            'NOT' => ['entities_id' => $entities]
+                            'NOT' => ['entities_id' => $entities],
                         ]
                     ) > 0
                 ) {
@@ -808,14 +807,14 @@ TWIG, $twig_params);
                         alias: 'ids'
                     ),
                     'itemtype_asset',
-                    'items_id_asset'
+                    'items_id_asset',
                 ],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype_peripheral' => $item->getType(),
-                    'items_id_peripheral' => $item->fields['id']
+                    'items_id_peripheral' => $item->fields['id'],
                 ],
-                'GROUP'  => 'itemtype_peripheral'
+                'GROUP'  => 'itemtype_peripheral',
             ]);
 
             foreach ($iterator as $data) {
@@ -850,9 +849,13 @@ TWIG, $twig_params);
         return _n('Connection', 'Connections', $nb);
     }
 
+    /**
+     * @param ?class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $tab = [];
@@ -870,7 +873,6 @@ TWIG, $twig_params);
     #[Override]
     public static function getRelationMassiveActionsPeerForSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $items = $ma->getItems();
@@ -918,11 +920,10 @@ TWIG, $twig_params);
     /**
      * Returns itemtypes of assets that can have peripherals.
      *
-     * @return class-string<\CommonDBTM>[]
+     * @return class-string<CommonDBTM>[]
      */
     public static function getPeripheralHostItemtypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI['peripheralhost_types'];
@@ -933,7 +934,6 @@ TWIG, $twig_params);
      */
     private static function countPeripherals(CommonDBTM $asset): int
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $count = 0;
@@ -968,7 +968,6 @@ TWIG, $twig_params);
     #[Override]
     public static function getItemField($itemtype): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (in_array($itemtype, self::getPeripheralHostItemtypes(), true)) {
@@ -990,7 +989,6 @@ TWIG, $twig_params);
      */
     private static function getPeripheralAssets(CommonDBTM $asset, string $itemtype): iterable
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $peripheral = getItemForItemtype($itemtype);
@@ -1005,18 +1003,18 @@ TWIG, $twig_params);
                         $peripheral::getTable() => 'id',
                         [
                             'AND' => [
-                                self::getTable() . '.itemtype_peripheral' => $itemtype
-                            ]
-                        ]
-                    ]
-                ]
+                                self::getTable() . '.itemtype_peripheral' => $itemtype,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 self::getTable() . '.is_deleted'     => 0,
                 self::getTable() . '.itemtype_asset' => $asset::class,
                 self::getTable() . '.items_id_asset' => $asset->getID(),
             ] + getEntitiesRestrictCriteria($peripheral::getTable()),
-            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField()
+            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);
     }
 
@@ -1029,7 +1027,6 @@ TWIG, $twig_params);
      */
     private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): iterable
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $item = getItemForItemtype($itemtype);
@@ -1044,18 +1041,18 @@ TWIG, $twig_params);
                         $item::getTable()  => 'id',
                         [
                             'AND' => [
-                                self::getTable() . '.itemtype_asset' => $itemtype
-                            ]
-                        ]
-                    ]
-                ]
+                                self::getTable() . '.itemtype_asset' => $itemtype,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 self::getTable() . '.is_deleted'          => 0,
                 self::getTable() . '.itemtype_peripheral' => $peripheral::class,
                 self::getTable() . '.items_id_peripheral' => $peripheral->getID(),
             ] + getEntitiesRestrictCriteria($item::getTable()),
-            'ORDER' => $item::getTable() . '.' . $item::getNameField()
+            'ORDER' => $item::getTable() . '.' . $item::getNameField(),
         ]);
     }
 }

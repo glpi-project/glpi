@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,15 @@
 
 namespace Glpi\UI;
 
+use RuntimeException;
+use Toolbox;
+
+use function Safe\file_get_contents;
+use function Safe\filemtime;
+use function Safe\glob;
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Class that manages the core and custom themes (palettes).
  */
@@ -61,7 +70,7 @@ class ThemeManager
      */
     public function getCoreThemes(): array
     {
-        if (empty($this->core_themes)) {
+        if ($this->core_themes === []) {
             $this->core_themes = [
                 new Theme('aerialgreen', 'Aerial Green', false, false),
                 new Theme('auror', 'Auror', false, false),
@@ -102,13 +111,13 @@ class ThemeManager
      */
     public function getCustomThemes(): array
     {
-        if (empty($this->custom_themes)) {
+        if ($this->custom_themes === []) {
             $custom_themes_dir = $this->getCustomThemesDirectory();
             $file_matches = [];
             // Cannot use GLOB_BRACE on some platforms (like the docker environment used for tests)
             $patterns = [
                 '*.css',
-                '*.scss'
+                '*.scss',
             ];
             /**
              * PHP glob function calls libc glob which won't be aware of streams like vfsStream
@@ -156,11 +165,11 @@ class ThemeManager
             foreach ($file_matches as $file_name => $file) {
                 if (!in_array($file_name, $core_keys, true)) {
                     if (str_contains($file, self::CORE_THEME_ROOT)) {
-                        \Toolbox::deprecated('Custom theme file "' . $file_name . '" should be moved to ' . $custom_themes_dir);
+                        Toolbox::deprecated('Custom theme file "' . $file_name . '" should be moved to ' . $custom_themes_dir);
                     }
                     // Guess dark mode based on if the file contains "$is-dark: true;"
                     $file_content = file_get_contents($file);
-                    $is_dark = preg_match('/^\s*\$is-dark:\s*true;\s*$/im', $file_content);
+                    $is_dark = preg_match('/^\s*\$is-dark:\s*true;\s*$/im', $file_content) === 1;
                     $theme_name = ucfirst(str_replace('_', ' ', $file_name));
                     $this->custom_themes[] = new Theme($file_name, $theme_name, $is_dark, true);
                 }
@@ -196,7 +205,7 @@ class ThemeManager
         }
         // If the theme is still null, trigger an error
         if ($theme === null) {
-            throw new \RuntimeException('Theme "' . $current . '" not found');
+            throw new RuntimeException('Theme "' . $current . '" not found');
         }
         return $theme;
     }
@@ -215,5 +224,26 @@ class ThemeManager
             }
         }
         return null;
+    }
+
+    /**
+     * Get all the custom themes CSS files paths.
+     *
+     * @return string[]
+     */
+    public function getCustomThemesPaths(): array
+    {
+        $paths = [];
+
+        foreach ($this->getAllThemes() as $theme) {
+            if (!$theme->isCustomTheme()) {
+                continue;
+            }
+            $theme_path = $theme->getKey() . '?is_custom_theme=1';
+            $theme_path .= "&lastupdate=" . filemtime($theme->getPath(false));
+            $paths[] = $theme_path;
+        }
+
+        return $paths;
     }
 }

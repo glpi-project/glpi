@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<psalm
+    runTaintAnalysis="true"
+>
+    <projectFiles>
+        <directory name="ajax" />
+        <directory name="front" />
+        <directory name="inc" />
+        <directory name="install" />
+        <directory name="src" />
+
+        <ignoreFiles>
+            <!-- Psalm gets stuck on TCPDF analysis, must be ignored for now -->
+            <file name="src/Glpi/Search/Output/Tcpdf.php" />
+        </ignoreFiles>
+    </projectFiles>
+
+    <issueHandlers>
+        <!--
+            Too many false positives.
+            - many are already secured by ForbidDynamicInstantiationRule, but Psalm does not seems to consider `is_a()` checks safe enough;
+            - many are related dynamic call to plugin functions/classes, we need a lot of refactor to indicate to Psalm these can be ignored;
+            - the rest is likely to not be exploitable, due to the really low probability to have a classname
+              that can be abused and that implements the specific static method called on a dynamic classname.
+        -->
+        <TaintedCallable errorLevel="suppress" />
+
+        <!--
+            It is nearly impossible to conditionally suppress false-positive errors on the current code.
+            There is a lot of refactoring to do to be able to separate LDAP DN/filter definition from user input
+            between legitimate cases (filter defined by an admin, import by DN, ...) and the unexpected cases.
+        -->
+        <TaintedLdap errorLevel="suppress" />
+    </issueHandlers>
+</psalm>

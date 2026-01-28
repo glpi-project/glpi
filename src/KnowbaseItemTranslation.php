@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,7 +44,7 @@ use Glpi\RichText\RichText;
  **/
 class KnowbaseItemTranslation extends CommonDBChild
 {
-    public static $itemtype = 'KnowbaseItem';
+    public static $itemtype = KnowbaseItem::class;
     public static $items_id = 'knowbaseitems_id';
     public $dohistory       = true;
     public static $logs_for_parent = false;
@@ -65,10 +65,10 @@ class KnowbaseItemTranslation extends CommonDBChild
     public function defineTabs($options = [])
     {
         $ong = [];
-        $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }
@@ -85,9 +85,9 @@ class KnowbaseItemTranslation extends CommonDBChild
         if (!$withtemplate) {
             switch ($item::class) {
                 case self::class:
-                    $ong[1] = self::getTypeName(1);
+                    $ong[1] = self::createTabEntry(self::getTypeName(1));
                     if ($item->canUpdateItem()) {
-                        $ong[3] = __('Edit');
+                        $ong[3] = self::createTabEntry(__('Edit'), icon: 'ti ti-edit');
                     }
                     return $ong;
             }
@@ -104,11 +104,6 @@ class KnowbaseItemTranslation extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param integer $tabnum (default 1)
-     * @param integer $withtemplate (default 0)
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item::class === self::class) {
@@ -120,7 +115,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                     $item->showForm($item->getID(), ['parent' => $item]);
                     break;
             }
-        } else if ($item instanceof KnowbaseItem) {
+        } elseif ($item instanceof KnowbaseItem) {
             self::showTranslations($item);
         }
         return true;
@@ -142,7 +137,7 @@ class KnowbaseItemTranslation extends CommonDBChild
         $twig_params = [
             'subject_label' => __('Subject'),
             'content_label' => __('Content'),
-            'item'          => $this
+            'item'          => $this,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -162,7 +157,7 @@ TWIG, $twig_params);
      *
      * @param KnowbaseItem $item
      *
-     * @return true;
+     * @return true
      **/
     public static function showTranslations(KnowbaseItem $item)
     {
@@ -171,7 +166,7 @@ TWIG, $twig_params);
         if ($canedit) {
             $twig_params = [
                 'item' => $item,
-                'btn_msg' => __('Add a new translation')
+                'btn_msg' => __('Add a new translation'),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -210,7 +205,7 @@ TWIG, $twig_params);
             }
             if (!empty($data['answer'])) {
                 $name .= Html::showToolTip(RichText::getEnhancedHtml($data['answer']), [
-                    'display' => false
+                    'display' => false,
                 ]);
             }
 
@@ -218,12 +213,11 @@ TWIG, $twig_params);
                 'itemtype' => self::class,
                 'id'       => $data['id'],
                 'language' => Dropdown::getLanguageName($data['language']),
-                'name'     => $name
+                'name'     => $name,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'nopager' => true,
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
@@ -236,11 +230,10 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
         return true;
@@ -249,12 +242,12 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID
+     * @param int $ID
      * @param array   $options
      */
     public function showForm($ID = -1, array $options = [])
     {
-        if ((!($ID > 0) && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {
+        if (($ID <= 0 && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;
@@ -262,7 +255,7 @@ TWIG, $twig_params);
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options['itemtype']         = get_class($options['parent']);
             $options['knowbaseitems_id'] = $options['parent']->getID();
             $this->check(-1, CREATE, $options);
@@ -271,7 +264,7 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('pages/tools/kb/translation.html.twig', [
             'item' => $this,
             'no_header' => true,
-            'used_languages' => $ID <= 0 ? self::getAlreadyTranslatedForItem($options['parent']) : []
+            'used_languages' => $ID <= 0 ? self::getAlreadyTranslatedForItem($options['parent']) : [],
         ]);
         return true;
     }
@@ -289,7 +282,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'knowbaseitems_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage']
+            'language'           => $_SESSION['glpilanguage'],
         ]);
 
         if (
@@ -297,9 +290,11 @@ TWIG, $twig_params);
             && in_array($field, ['name', 'answer'])
         ) {
             $first = array_shift($found);
-            return $first[$field];
+            if ($first[$field] !== null && $first[$field] !== "") {
+                return $first[$field];
+            }
         }
-        return $item->fields[$field];
+        return $item->fields[$field] ?? "";
     }
 
     /**
@@ -307,12 +302,12 @@ TWIG, $twig_params);
      *
      * @param KnowbaseItem $item
      *
-     * @return integer  the number of translations for this item
+     * @return int  the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             ['knowbaseitems_id' => $item->getID()]
         );
     }
@@ -326,7 +321,6 @@ TWIG, $twig_params);
      **/
     public static function getAlreadyTranslatedForItem(KnowbaseItem $item): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
@@ -334,7 +328,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => ['language'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['knowbaseitems_id' => $item->getID()]
+            'WHERE'  => ['knowbaseitems_id' => $item->getID()],
         ]);
 
         foreach ($iterator as $data) {
@@ -354,9 +348,9 @@ TWIG, $twig_params);
     /**
      * Reverts item translation contents to specified revision
      *
-     * @param integer $revid Revision ID
+     * @param int $revid Revision ID
      *
-     * @return boolean
+     * @return bool
      */
     public function revertTo($revid)
     {
@@ -366,7 +360,7 @@ TWIG, $twig_params);
         $values = [
             'id'     => $this->getID(),
             'name'   => $revision->fields['name'],
-            'answer' => $revision->fields['answer']
+            'answer' => $revision->fields['answer'],
         ];
 
         if ($this->update($values)) {
@@ -376,7 +370,7 @@ TWIG, $twig_params);
                 5,
                 "tools",
                 //TRANS: %1$s is the user login, %2$s the revision number
-                sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision)
+                sprintf(__('%1$s reverts item translation to revision %2$s'), $_SESSION["glpiname"], $revision->fields['revision'])
             );
             return true;
         }

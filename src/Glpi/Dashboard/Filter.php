@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,30 +35,30 @@
 
 namespace Glpi\Dashboard;
 
-use Glpi\Plugin\Hooks;
-use Session;
-use Plugin;
-use Toolbox;
+use CommonDBChild;
 use Glpi\Dashboard\Filters\{
     DatesFilter,
+    DatesModFilter,
+    GroupRequesterFilter,
+    GroupTechFilter,
     ItilCategoryFilter,
     LocationFilter,
     ManufacturerFilter,
     RequestTypeFilter,
     StateFilter,
     TicketTypeFilter,
-    GroupRequesterFilter,
-    GroupTechFilter,
-    UserTechFilter,
-    DatesModFilter
+    UserTechFilter
 };
+use Glpi\Plugin\Hooks;
+use Plugin;
+use Session;
 
 /**
  * Filter class
  **/
-class Filter extends \CommonDBChild
+class Filter extends CommonDBChild
 {
-    public static $itemtype = "Glpi\\Dashboard\\Dashboard";
+    public static $itemtype = Dashboard::class;
     public static $items_id = 'dashboards_dashboards_id';
 
     /**
@@ -68,6 +68,13 @@ class Filter extends \CommonDBChild
      */
     public static function getAppliableFilters(string $table): array
     {
+        global $GLPI_CACHE;
+
+        $cache_key = "dashboard_filters_appliable_$table" . Session::getLoginUserID();
+        if (($filters_ids = $GLPI_CACHE->get($cache_key)) !== null) {
+            return $filters_ids;
+        }
+
         $filters_ids = [];
 
         foreach (self::getRegisteredFilterClasses() as $filter_class) {
@@ -75,6 +82,11 @@ class Filter extends \CommonDBChild
                 $filters_ids[] = $filter_class::getId();
             }
         }
+
+        // Set a short cache to have an auto-invalidation;
+        // 5s should be enough to load a full dashboard
+        // and expiring before the user hit another request.
+        $GLPI_CACHE->set($cache_key, $filters_ids, 5);
 
         return $filters_ids;
     }
@@ -86,7 +98,6 @@ class Filter extends \CommonDBChild
      */
     public static function getRegisteredFilterClasses(): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $filters = [
@@ -132,21 +143,6 @@ class Filter extends \CommonDBChild
     }
 
     /**
-     * Return all available filters.
-     * Keys are filters ids, values are filters labels.
-     *
-     * @return array of filters
-     *
-     * @deprecated 11.0.0.
-     */
-    public static function getAll(): array
-    {
-        Toolbox::deprecated();
-
-        return self::getFilterChoices();
-    }
-
-    /**
      * Return filters for the provided dashboard
      *
      * @param int $dashboards_id
@@ -155,7 +151,6 @@ class Filter extends \CommonDBChild
      */
     public static function getForDashboard(int $dashboards_id = 0): string
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $dr_iterator = $DB->request([
@@ -163,12 +158,12 @@ class Filter extends \CommonDBChild
             'WHERE' => [
                 'dashboards_dashboards_id' => $dashboards_id,
                 'users_id'                 => Session::getLoginUserID(),
-            ]
+            ],
         ]);
 
         $settings = $dr_iterator->count() === 1 ? $dr_iterator->current()['filter'] : null;
 
-        return is_string($settings) ? $settings : '{}';
+        return \is_string($settings) && \json_validate($settings) ? $settings : '{}';
     }
 
     /**
@@ -181,7 +176,6 @@ class Filter extends \CommonDBChild
      */
     public static function addForDashboard(int $dashboards_id = 0, string $settings = '')
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->updateOrInsert(

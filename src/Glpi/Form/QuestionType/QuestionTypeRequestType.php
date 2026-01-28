@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\RequestTypeConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 use Ticket;
 
-final class QuestionTypeRequestType extends AbstractQuestionType
+final class QuestionTypeRequestType extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface
 {
     /**
      * Retrieve the default value for the request type question type
@@ -88,7 +92,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'value'              => $this->getDefaultValue($question),
-            'request_types'      => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes(),
         ]);
     }
 
@@ -105,7 +109,7 @@ TWIG;
             '',
             {
                 'no_label'           : true,
-                'display_emptychoice': false,
+                'display_emptychoice': true,
                 'aria_label'         : label,
                 'mb'                 : '',
             }
@@ -122,13 +126,13 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return Ticket::getTicketTypeName($answer);
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::REQUEST_TYPE;
     }
@@ -138,4 +142,45 @@ TWIG;
     {
         return true;
     }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        $value = strtolower($value);
+
+        return match ($value) {
+            'incident' => (string) Ticket::INCIDENT_TYPE,
+            'request' => (string) Ticket::DEMAND_TYPE,
+            default => null,
+        };
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new RequestTypeConditionHandler()]);
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?int
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
+    }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return self::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,14 +37,21 @@ namespace Glpi\Console\Diagnostic;
 
 use CommonDBTM;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use ITILFollowup;
+use ReflectionClass;
+use Safe\Exceptions\FilesystemException;
 use Search;
 use Session;
-use Ticket;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use Ticket;
+
+use function Safe\file_put_contents;
+use function Safe\preg_replace;
 
 /**
  * Prior from GLPI 10.0, some HTML contents were not properly encoded.
@@ -56,21 +63,21 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Error code returned when invalid items are found and are not fixed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_INVALID_ITEMS_FOUND = 1;
 
     /**
      * Error code returned when update of an item failed.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_UPDATE_FAILED = 2;
 
     /**
      * Error code returned when rollback file could not be created.
      *
-     * @var integer
+     * @var int
      */
     public const ERROR_ROLLBACK_FILE_FAILED = 3;
 
@@ -134,7 +141,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         $fix = $input->getOption('fix');
 
         if ($fix === null && !$this->input->getOption('no-interaction')) {
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $fix = $question_helper->ask(
                 $input,
                 $output,
@@ -174,7 +181,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function dumpObjects(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $dump_content = '';
@@ -182,7 +188,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         foreach ($this->invalid_items as $itemtype => $items) {
             foreach ($items as $item_id => $fields) {
                 // Get the item to save
-                $item = new $itemtype();
+                $item = \getItemForItemtype($itemtype);
                 $item->getFromDB($item_id);
 
                 // read the fields to save
@@ -202,15 +208,17 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         // Save the rollback SQL queries dump
         $dump_file_name = $this->input->getOption('dump');
-        if (@file_put_contents($dump_file_name, $dump_content) == strlen($dump_content)) {
+        try {
+            @file_put_contents($dump_file_name, $dump_content) == strlen($dump_content);
             $this->output->writeln(
                 '<comment>' . sprintf(__('File %s contains SQL queries that can be used to rollback command.'), $dump_file_name) . '</comment>',
                 OutputInterface::VERBOSITY_QUIET
             );
-        } else {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+        } catch (FilesystemException $e) {
+            throw new EarlyExitException(
                 '<comment>' . sprintf(__('Failed to write rollback SQL queries in "%s" file.'), $dump_file_name) . '</comment>',
-                self::ERROR_ROLLBACK_FILE_FAILED
+                self::ERROR_ROLLBACK_FILE_FAILED,
+                $e
             );
         }
     }
@@ -223,15 +231,12 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     private function fixItems(): void
     {
         foreach ($this->invalid_items as $itemtype => $items) {
-            /* @var \CommonDBTM $item */
-            $item = new $itemtype();
+            $item = \getItemForItemtype($itemtype);
 
             $this->outputMessage(
                 '<comment>' . sprintf(__('Fixing %s...'), $item::getTypeName(Session::getPluralNumber())) . '</comment>',
             );
-            $progress_message = function (array $fields, int $id) use ($item) {
-                return sprintf(__('Fixing %s with ID %s...'), $item::getTypeName(1), $id);
-            };
+            $progress_message = (fn(array $fields, int $id) => sprintf(__('Fixing %s with ID %s...'), $item::getTypeName(1), $id));
 
             foreach ($this->iterate($items, $progress_message) as $item_id => $fields) {
                 if (!$item->getFromDB($item_id)) {
@@ -256,7 +261,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function fixOneItem(CommonDBTM $item, array $fields): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $item::getType();
@@ -352,7 +356,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function findTextFields(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $table_iterator = $DB->listTables();
@@ -361,6 +364,13 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
             $itemtype = getItemTypeForTable($table);
 
             if (!is_a($itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
+
+            if ((new ReflectionClass($itemtype))->isAbstract()) {
+                // Cannot retrieve search options of an abstract class.
+                // Anyway, corresponding classes were introduced in GLPI 11.0 and corresponding tables
+                // are not even supposed to contain encoded data. They can be ignored safely.
                 continue;
             }
 
@@ -406,7 +416,6 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
      */
     private function scanField(string $itemtype, string $field): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $searches = [
@@ -415,7 +424,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
 
         if (in_array($itemtype, [Ticket::getType(), ITILFollowup::getType()]) && $field == 'content') {
             $searches[] = [
-                $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)']
+                $field => ['REGEXP', '(&#38;amp;lt;)(?<email>[^@]*?@[a-zA-Z0-9\-.]*?)(&#38;amp;gt;)'],
             ];
         }
 
@@ -435,7 +444,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     /**
      * Count items in list of invalid idems
      *
-     * @return integer
+     * @return int
      */
     private function countItems(array $items_array): int
     {

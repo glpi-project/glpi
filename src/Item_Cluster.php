@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_Cluster extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Cluster';
+    public static $itemtype_1 = Cluster::class;
     public static $items_id_1 = 'clusters_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
@@ -53,6 +53,9 @@ class Item_Cluster extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
             $nb = self::countForMainItem($item);
@@ -62,8 +65,10 @@ class Item_Cluster extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof Cluster) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -79,11 +84,10 @@ class Item_Cluster extends CommonDBRelation
     /**
      * Print enclosure items
      *
-     * @return void
+     * @return bool
      **/
-    public static function showItems(Cluster $cluster)
+    public static function showItems(Cluster $cluster): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $cluster->fields['id'];
@@ -101,15 +105,15 @@ class Item_Cluster extends CommonDBRelation
             'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'clusters_id' => $ID
-            ]
+                'clusters_id' => $ID,
+            ],
         ]);
 
         if ($cluster->canAddItem('itemtype')) {
             (new self())->showForm(-1, [
                 'clusters_id' => $ID,
                 'params' => [
-                    'formfooter' => false
+                    'formfooter' => false,
                 ],
                 'no_header'  => true,
             ]);
@@ -117,12 +121,12 @@ class Item_Cluster extends CommonDBRelation
 
         $entries = [];
         foreach ($items as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $entries[] = [
                 'itemtype' => static::class,
                 'id'       => $row['id'],
-                'item'     => $item->getLink()
+                'item'     => $item->getLink(),
             ];
         }
 
@@ -130,25 +134,25 @@ class Item_Cluster extends CommonDBRelation
             'is_tab' => true,
             'nofilter' => true,
             'columns' => [
-                'item' => _n('Item', 'Items', 1)
+                'item' => _n('Item', 'Items', 1),
             ],
             'formatters' => [
-                'item' => 'raw_html'
+                'item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
     public function showForm($ID, array $options = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         echo "<div class='center'>";
@@ -159,7 +163,7 @@ class Item_Cluster extends CommonDBRelation
         $used = [];
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'items_id'],
-            'FROM'   => static::getTable()
+            'FROM'   => static::getTable(),
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
@@ -207,7 +211,7 @@ TWIG, $twig_params);
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))

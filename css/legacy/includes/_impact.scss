@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -173,8 +173,6 @@ i.fa-impact-manipulation {
 .cy-context-menus-cxt-menu {
    border-radius     : 2px;
    border            : 1px solid lightgray;
-   -webkit-box-shadow: 4px 4px 6px 3px rgba(0,0,0,0.17);
-   -moz-box-shadow   : 4px 4px 6px 3px rgba(0,0,0,0.17);
    box-shadow        : 4px 4px 6px 3px rgba(0,0,0,0.17);
 }
 
@@ -184,7 +182,6 @@ i.fa-impact-manipulation {
 
 .impact-range {
    height            : 18px;
-   -webkit-appearance: none;
    appearance: none;
    margin            : 10px 0;
    border-width      : 0 !important;
@@ -214,7 +211,7 @@ i.fa-impact-manipulation {
    border-radius     : 2px;
    background        : #66757F;
    cursor            : pointer;
-   -webkit-appearance: none;
+   appearance        : none;
    margin-top        : -4px;
 }
 
@@ -240,48 +237,6 @@ i.fa-impact-manipulation {
    border-radius: 2px;
    background   : #66757F;
    cursor       : pointer;
-}
-
-.impact-range::-ms-track {
-   width       : 100%;
-   height      : 4px;
-   cursor      : pointer;
-   background  : transparent;
-   border-color: transparent;
-   color       : transparent;
-}
-
-.impact-range::-ms-fill-lower {
-   background   : #AEC8D8;
-   border       : 1px solid #8A8A8A;
-   border-radius: 50px;
-   box-shadow   : 0px 0px 0px #000000;
-}
-
-.impact-range::-ms-fill-upper {
-   background   : #AEC8D8;
-   border       : 1px solid #8A8A8A;
-   border-radius: 50px;
-   box-shadow   : 0px 0px 0px #000000;
-}
-
-.impact-range::-ms-thumb {
-   margin-top   : 1px;
-   box-shadow   : 1px 1px 1px #828282;
-   border       : 1px solid #8A8A8A;
-   height       : 10px;
-   width        : 14px;
-   border-radius: 2px;
-   background   : #66757F;
-   cursor       : pointer;
-}
-
-.impact-range:focus::-ms-fill-lower {
-   background: #AEC8D8;
-}
-
-.impact-range:focus::-ms-fill-upper {
-   background: #AEC8D8;
 }
 
 /*
@@ -391,16 +346,6 @@ i.fa-impact-manipulation {
       vertical-align: middle;
       cursor        : pointer;
 
-      i {
-         padding  : 10px 4px;
-         font-size: 1.5em;
-
-         &.ti {
-            font-size: 1.8em;
-            line-height: 1.5em;
-         }
-      }
-
       &:hover {
          background-color: var(--glpi-hover-bg);
       }
@@ -423,7 +368,7 @@ i.fa-impact-manipulation {
 
    &.impact-side-expanded {
       // width : 250px;
-      border-left: 3px solid #f1f1f1;
+      border-left: 3px solid var(--tblr-border-color);
 
       li {
          text-align: right;
@@ -536,8 +481,6 @@ i.fa-impact-manipulation {
    p {
       cursor: pointer;
       -webkit-user-select: none; /* Safari */
-      -moz-user-select: none; /* Firefox */
-      -ms-user-select: none; /* IE10+/Edge */
       user-select: none;
       white-space: nowrap;
    }
@@ -545,14 +488,24 @@ i.fa-impact-manipulation {
 
 .impact-side-filter-itemtypes-item {
    cursor: pointer;
+   max-width: 100%; /* Ensure the container respects the sidebar width */
 
    span {
-      display: inline;
       margin-left: 4px;
+      /* Required for ellipsis in flexbox */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;       /* Takes up remaining space */
+      min-width: 0;  /* Allows the item to shrink below its text content size */
    }
+
    h4 {
       margin-top: 0;
       margin-bottom: 0;
+      display: flex;
+      align-items: center;
+      width: 100%; /* Forces the flex container to fill the parent width */
    }
 }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\URL;
+use Safe\Exceptions\UrlException;
 use SimplePie\SimplePie;
+
+use function Safe\parse_url;
 
 /**
  * RSSFeed Class
@@ -45,7 +49,7 @@ use SimplePie\SimplePie;
  **/
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname    = 'rssfeed_public';
@@ -86,7 +90,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     public function canCreateItem(): bool
     {
         // Is my rssfeed
-        return (int)$this->fields['users_id'] === Session::getLoginUserID();
+        return (int) $this->fields['users_id'] === Session::getLoginUserID();
     }
 
     public function canUpdateItem(): bool
@@ -96,19 +100,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                   && $this->haveVisibilityAccess()));
     }
 
-    /**
-     * @since 0.85
-     * for personal rss feed
-     **/
     public static function canUpdate(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [UPDATE, self::PERSONAL]));
     }
 
-    /**
-     * @since 0.85
-     * for personal rss feed
-     **/
     public static function canPurge(): bool
     {
         return (Session::haveRightsOr(self::$rightname, [PURGE, self::PERSONAL]));
@@ -162,7 +158,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      *
      * @since 9.4
      *
-     * @param boolean $forceall force all joins (false by default)
+     * @param bool $forceall force all joins (false by default)
      *
      * @return array
      */
@@ -174,7 +170,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         if (!self::canView()) {
             return [
                 'LEFT JOIN' => $join,
-                'WHERE'     => $where
+                'WHERE'     => $where,
             ];
         }
 
@@ -183,15 +179,15 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $join['glpi_rssfeeds_users'] = [
             'ON' => [
                 'glpi_rssfeeds_users'   => 'rssfeeds_id',
-                'glpi_rssfeeds'         => 'id'
-            ]
+                'glpi_rssfeeds'         => 'id',
+            ],
         ];
 
         $where = [
             'OR' => [
                 self::getTable() . '.users_id'   => Session::getLoginUserID(),
-                'glpi_rssfeeds_users.users_id'   => Session::getLoginUserID()
-            ]
+                'glpi_rssfeeds_users.users_id'   => Session::getLoginUserID(),
+            ],
         ];
         $orwhere = [];
 
@@ -203,8 +199,8 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_groups_rssfeeds'] = [
                 'ON' => [
                     'glpi_groups_rssfeeds'  => 'rssfeeds_id',
-                    'glpi_rssfeeds'         => 'id'
-                ]
+                    'glpi_rssfeeds'         => 'id',
+                ],
             ];
         }
 
@@ -216,17 +212,17 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                                                       : [-1],
                 'OR' => [
                     'glpi_groups_rssfeeds.no_entity_restriction' => 1,
-                ] + $restrict
+                ] + $restrict,
             ];
         }
 
-       // Profiles
+        // Profiles
         if ($forceall || isset($_SESSION["glpiactiveprofile"]['id'])) {
             $join['glpi_profiles_rssfeeds'] = [
                 'ON' => [
                     'glpi_profiles_rssfeeds'   => 'rssfeeds_id',
-                    'glpi_rssfeeds'            => 'id'
-                ]
+                    'glpi_rssfeeds'            => 'id',
+                ],
             ];
         }
 
@@ -237,12 +233,12 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             }
             $ors = [
                 'glpi_profiles_rssfeeds.no_entity_restriction' => 1,
-                $restrict
+                $restrict,
             ];
 
             $orwhere[] = [
                 'glpi_profiles_rssfeeds.profiles_id' => $_SESSION["glpiactiveprofile"]['id'],
-                'OR' => $ors
+                'OR' => $ors,
             ];
         }
 
@@ -254,13 +250,13 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             $join['glpi_entities_rssfeeds'] = [
                 'ON' => [
                     'glpi_entities_rssfeeds'   => 'rssfeeds_id',
-                    'glpi_rssfeeds'            => 'id'
-                ]
+                    'glpi_rssfeeds'            => 'id',
+                ],
             ];
         }
 
         if (isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])) {
-           // Force complete SQL not summary when access to all entities
+            // Force complete SQL not summary when access to all entities
             $restrict = getEntitiesRestrictCriteria('glpi_entities_rssfeeds', '', '', true, true);
             if (count($restrict)) {
                 $orwhere[] = $restrict;
@@ -283,7 +279,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         }
         switch ($field) {
             case 'refresh_rate':
-                return Html::timestampToString($values[$field], false);
+                return htmlescape(Html::timestampToString($values[$field], false));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -308,7 +304,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -328,7 +324,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'name'               => __('Creator'),
             'datatype'           => 'dropdown',
             'massiveaction'      => false,
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -337,7 +333,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'url',
             'name'               => __('URL'),
             'datatype'           => 'string',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -346,7 +342,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'is_active',
             'name'               => __('Active'),
             'datatype'           => 'bool',
-            'massiveaction'      => true
+            'massiveaction'      => true,
         ];
 
         $tab[] = [
@@ -355,7 +351,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'have_error',
             'name'               => _n('Error', 'Errors', 1),
             'datatype'           => 'bool',
-            'massiveaction'      => true
+            'massiveaction'      => true,
         ];
 
         $tab[] = [
@@ -368,15 +364,15 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'max'                => 100,
             'step'               => 5,
             'toadd'              => [1],
-            'massiveaction'      => true
+            'massiveaction'      => true,
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -392,11 +388,11 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 5 * MINUTE_TIMESTAMP,
                 15 * MINUTE_TIMESTAMP,
                 30 * MINUTE_TIMESTAMP,
-                45 * MINUTE_TIMESTAMP
+                45 * MINUTE_TIMESTAMP,
             ],
             'display_emptychoice' => false,
             'massiveaction'      => true,
-            'searchtype'         => 'equals'
+            'searchtype'         => 'equals',
         ];
 
         $tab[] = [
@@ -405,7 +401,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -414,10 +410,10 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         return $tab;
@@ -450,27 +446,27 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        switch (get_class($item)) {
-            case RSSFeed::class:
-                switch ($tabnum) {
-                    case 1:
-                        $item->showFeedContent();
-                        return true;
-
-                    case 2:
-                        $item->showVisibility();
-                        return true;
-                }
+        if (!$item instanceof self) {
+            return false;
         }
-        return false;
+        switch ($tabnum) {
+            case 1:
+                return $item->showFeedContent();
+
+            case 2:
+                return $item->showVisibility();
+
+            default:
+                return false;
+        }
     }
 
     public function prepareInputForAdd($input)
@@ -488,7 +484,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 
         // We may want to disable the title/description values fetching when working with fake
         // feeds in our unit tests
-        $fetch_values = ($input['_do_not_fetch_values'] ?? false) === false;
+        $fetch_values = Environment::get() !== Environment::TESTING && ($input['_do_not_fetch_values'] ?? false) === false;
         if ($fetch_values) {
             if ($feed = self::getRSSFeed($input['url'])) {
                 $input['have_error'] = 0;
@@ -501,7 +497,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
                 $input['name']       = '';
             }
         }
-        $input["name"] = trim($input["name"]);
+        $input["name"] = trim($input["name"] ?? '');
 
         if (empty($input["name"])) {
             $input["name"] = __('Without title');
@@ -539,7 +535,9 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
      */
     private function checkUrlInput(string $url): bool
     {
-        if (parse_url($url) === false) {
+        try {
+            parse_url($url);
+        } catch (UrlException $e) {
             Session::addMessageAfterRedirect(__s('Feed URL is invalid.'), false, ERROR);
             return false;
         }
@@ -567,7 +565,7 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
     /**
      * Print the rssfeed form
      *
-     * @param integer $ID Id of the item to print
+     * @param int $ID Id of the item to print
      * @param array $options Array of possible options:
      *     - target filename : where to go when done.
      **/
@@ -601,8 +599,10 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Set error field
      *
-     * @param boolean $error   (false by default)
-     **/
+     * @param bool $error   (false by default)
+     *
+     * @return void
+     */
     public function setError($error = false)
     {
         if (!isset($this->fields['id']) && !isset($this->fields['have_error'])) {
@@ -613,14 +613,14 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         if ($error && !$this->fields['have_error']) {
             $this->update([
                 'id'         => $this->fields['id'],
-                'have_error' => 1
+                'have_error' => 1,
             ]);
         }
         // Unset error if set
         if (!$error && $this->fields['have_error']) {
             $this->update([
                 'id'         => $this->fields['id'],
-                'have_error' => 0
+                'have_error' => 0,
             ]);
         }
     }
@@ -628,13 +628,13 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Show the feed content
      **/
-    public function showFeedContent()
+    public function showFeedContent(): bool
     {
         if (!$this->canViewItem()) {
             return false;
         }
         $rss_feed = [
-            'items'  => []
+            'items'  => [],
         ];
         if ($feed = self::getRSSFeed($this->fields['url'], $this->fields['refresh_rate'])) {
             $this->setError(false);
@@ -648,15 +648,17 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 ];
             }
         } else {
-            $rss_feed['error'] = htmlescape(!Toolbox::isUrlSafe($this->fields['url'])
+            $rss_feed['error'] = !Toolbox::isUrlSafe($this->fields['url'])
                 ? sprintf(__('URL "%s" is not allowed by your administrator.'), $this->fields['url'])
-                : __('Error retrieving RSS feed'));
+                : __('Error retrieving RSS feed');
             $this->setError(true);
         }
 
         TemplateRenderer::getInstance()->display('components/rss_feed.html.twig', [
-            'rss_feed'  => $rss_feed
+            'rss_feed'  => $rss_feed,
         ]);
+
+        return true;
     }
 
     /**
@@ -669,8 +671,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
      **/
     public static function getRSSFeed($url, $cache_duration = DAY_TIMESTAMP)
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
-        global $GLPI_CACHE;
+        global $GLPI_CACHE, $CFG_GLPI;
 
         // Fetch feed data, unless it is already cached
         $cache_key = sha1($url);
@@ -682,7 +683,11 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
             $error_msg  = null;
             $curl_error = null;
-            $raw_data = Toolbox::callCurl($url, [], $error_msg, $curl_error, true);
+            $eopts = [];
+            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+                $eopts['proxy_excluded'] = true;
+            }
+            $raw_data = Toolbox::callCurl($url, $eopts, $error_msg, $curl_error, true);
             if (empty($raw_data)) {
                 return false;
             }
@@ -719,7 +724,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             'SELECT'   => "$table.*",
             'DISTINCT' => true,
             'FROM'     => $table,
-            'ORDER'    => "$table.name"
+            'ORDER'    => "$table.name",
         ];
 
         if ($personal) {
@@ -734,7 +739,6 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
 
     final public static function countPublicRssFedds(): int
     {
-        /** @var DBmysql $DB */
         global $DB;
 
         $criteria = self::getListCriteria(false);
@@ -753,17 +757,13 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
     /**
      * Show list for central view
      *
-     * @param boolean $personal display rssfeeds created by me?
-     * @param boolean $display  if false, return html
+     * @param bool $personal display rssfeeds created by me?
+     * @param bool $display  if false, return html
      *
      * @return false|void|string
      **/
     public static function showListForCentral(bool $personal = true, bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($personal) {
@@ -772,8 +772,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 return false;
             }
 
-            $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
-                    _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
+            $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>"
+                    . _sn('Personal RSS feed', 'Personal RSS feeds', Session::getPluralNumber()) . "</a>";
         } else {
             // Show public rssfeeds / not mines : need to have access to public rssfeeds
             if (!self::canView()) {
@@ -781,8 +781,8 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             }
 
             if (Session::getCurrentInterface() === 'central') {
-                $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>" .
-                       _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
+                $titre = "<a href='" . htmlescape(RSSFeed::getSearchURL()) . "'>"
+                       . _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()) . "</a>";
             } else {
                 $titre = _sn('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber());
             }
@@ -796,7 +796,7 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
         $rssfeed = new self();
         foreach ($iterator as $data) {
             if ($rssfeed->getFromDB($data['id'])) {
-               // Force fetching feeds
+                // Force fetching feeds
                 if ($feed = self::getRSSFeed($data['url'], $data['refresh_rate'])) {
                     // Store feeds in array of feeds
                     $items = array_merge($items, $feed->get_items(0, $data['max_items']));
@@ -817,25 +817,26 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
             || (!$personal && Session::haveRight('rssfeed_public', CREATE))
         ) {
             $output .= "<span class='float-end'>";
-            $output .= "<a href='" . RSSFeed::getFormURL() . "'>";
-            $output .= "<img src='" . $CFG_GLPI["root_doc"] . "/pics/plus.png' alt='" . __s('Add') . "' title=\"" .
-                __s('Add') . "\"></a></span>";
+            $output .= "<a href='" . htmlescape(RSSFeed::getFormURL()) . "'>";
+            $output .= "<img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/plus.png' alt='" . __s('Add') . "' title=\""
+                . __s('Add') . "\"></a></span>";
         }
 
         $output .= "</div></th></tr>";
         $output .= "</thead>";
 
         if ($nb) {
-            usort($items, [SimplePie::class, 'sort_items']);
+            /** @var array $items This manual typing is needed because of a 3rd party library that has incorrect phpdoc */
+            usort($items, fn($a, $b) => (int) SimplePie::sort_items($a, $b)); // Note: cast to int is needed because of incorrect phpdoc return type in SimplePie. The lib already fixed it 2 years ago but it has but not been released.
             foreach ($items as $item) {
                 $output .= "<tr class='tab_bg_1'><td>";
-                $output .= Html::convDateTime($item->get_date('Y-m-d H:i:s'));
+                $output .= htmlescape(Html::convDateTime($item->get_date('Y-m-d H:i:s')));
                 $output .= "</td><td>";
                 $feed_link = URL::sanitizeURL($item->feed->get_permalink());
                 if (empty($feed_link)) {
-                    $output .= $item->feed->get_title();
+                    $output .= htmlescape($item->feed->get_title());
                 } else {
-                    $output .= '<a target="_blank" href="' . htmlescape($feed_link) . '">' . $item->feed->get_title() . '</a>';
+                    $output .= '<a target="_blank" href="' . htmlescape($feed_link) . '">' . htmlescape($item->feed->get_title()) . '</a>';
                 }
 
                 $item_link = URL::sanitizeURL($item->get_permalink());
@@ -844,14 +845,14 @@ TWIG, ['msg' => __('Check permissions to the directory: %s', GLPI_RSS_DIR)]);
                 if (!empty($item_link)) {
                     $output .= '<a target="_blank" href="' . htmlescape($item_link) . '">';
                 }
-                $output .= $item->get_title();
+                $output .= htmlescape($item->get_title());
                 if (!empty($item_link)) {
                     $output .= "</a>";
                 }
                 $output .= "</div>";
                 $output .= Html::showToolTip(RichText::getEnhancedHtml($item->get_content()), [
                     'applyto' => "rssitem$rand",
-                    'display' => false
+                    'display' => false,
                 ]);
                 $output .= "</td></tr>";
             }

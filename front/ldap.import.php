@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkRight("user", User::IMPORTEXTAUTHUSERS);
 
 AuthLDAP::manageRequestValues();
@@ -51,7 +53,7 @@ if (($_REQUEST['action'] ?? 'show') === 'show') {
 
     if (
         isset($_REQUEST['authldaps_id'])
-        && ($_REQUEST['authldaps_id'] !== NOT_AVAILABLE)
+        && (int) $_REQUEST['authldaps_id'] !== 0
         && (isset($_REQUEST['search']) || isset($_REQUEST['start']) || isset($_REQUEST['glpilist_limit']))
     ) {
         echo "<br />";

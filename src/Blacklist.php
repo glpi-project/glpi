@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 use Glpi\Features\Clonable;
 
+use function Safe\preg_match;
+
 /**
  * Blacklist Class
  *
@@ -42,9 +44,10 @@ use Glpi\Features\Clonable;
  **/
 class Blacklist extends CommonDropdown
 {
+    /** @use Clonable<static> */
     use Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'config';
@@ -54,19 +57,19 @@ class Blacklist extends CommonDropdown
     /**
      * Loaded blacklists.
      * Used for caching purposes.
-     * @var array
      */
-    private $blacklists;
+    private ?array $blacklists = null;
 
-    const IP             = 1;
-    const MAC            = 2;
-    const SERIAL         = 3;
-    const UUID           = 4;
-    const EMAIL          = 5;
-    const MODEL          = 6;
-    const NAME           = 7;
-    const MANUFACTURER   = 8;
+    public const IP             = 1;
+    public const MAC            = 2;
+    public const SERIAL         = 3;
+    public const UUID           = 4;
+    public const EMAIL          = 5;
+    public const MODEL          = 6;
+    public const NAME           = 7;
+    public const MANUFACTURER   = 8;
 
+    /** @return int */
     public function maxActionsCount()
     {
         return 0;
@@ -77,10 +80,6 @@ class Blacklist extends CommonDropdown
         return static::canUpdate();
     }
 
-
-    /**
-     * @since 0.85
-     */
     public static function canPurge(): bool
     {
         return static::canUpdate();
@@ -93,13 +92,13 @@ class Blacklist extends CommonDropdown
         return [['name'  => 'value',
             'label' => __('Value'),
             'type'  => 'text',
-            'list'  => true
+            'list'  => true,
         ],
             ['name'  => 'type',
                 'label' => _n('Type', 'Types', 1),
                 'type'  => '',
-                'list'  => true
-            ]
+                'list'  => true,
+            ],
         ];
     }
 
@@ -110,11 +109,6 @@ class Blacklist extends CommonDropdown
     }
 
 
-    /**
-     * Get search function for the class
-     *
-     * @return array of search option
-     */
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -133,7 +127,7 @@ class Blacklist extends CommonDropdown
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
             'searchtype'         => ['equals', 'notequals'],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -174,7 +168,7 @@ class Blacklist extends CommonDropdown
         switch ($field) {
             case 'type':
                 $types = self::getTypes();
-                return $types[$values[$field]];
+                return htmlescape($types[$values[$field]]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -249,10 +243,10 @@ class Blacklist extends CommonDropdown
             self::SERIAL           => __('Serial number'),
             self::UUID             => __('UUID'),
             self::EMAIL            => _n('Email', 'Emails', 1),
-         //'Windows product key' => 'winProdKey',
+            //'Windows product key' => 'winProdKey',
             self::MODEL            => _n('Model', 'Models', 1),
             self::NAME             => __('Name'),
-            self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1)
+            self::MANUFACTURER     => _n('Manufacturer', 'Manufacturers', 1),
         ];
 
         return $options;
@@ -263,9 +257,8 @@ class Blacklist extends CommonDropdown
         return $this->blacklists ?? $this->loadBlacklists();
     }
 
-    private function loadBlacklists()
+    private function loadBlacklists(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request(['FROM' => self::getTable()]);
@@ -282,7 +275,7 @@ class Blacklist extends CommonDropdown
     /**
      * Get blacklisted items for a specific type
      *
-     * @param string $type type to get (see constants)
+     * @param int $type type to get (see constants)
      *
      * @return array Array of blacklisted items
      **/
@@ -393,12 +386,12 @@ class Blacklist extends CommonDropdown
             'empty',
             'Not Specified',
             'OEM_Serial',
-            'SystemSerialNumb'
+            'SystemSerialNumb',
         ];
         foreach ($serials as $serial) {
             $defaults[self::SERIAL][] = [
                 'name' => 'invalid serial',
-                'value' => $serial
+                'value' => $serial,
             ];
         }
 
@@ -407,12 +400,12 @@ class Blacklist extends CommonDropdown
             '03000200-0400-0500-0006-000700080009',
             '6AB5B300-538D-1014-9FB5-B0684D007B53',
             '01010101-0101-0101-0101-010101010101',
-            '2'
+            '2',
         ];
         foreach ($uuids as $uuid) {
             $defaults[self::UUID][] = [
                 'name' => 'invalid UUID',
-                'value' => $uuid
+                'value' => $uuid,
             ];
         }
 
@@ -435,12 +428,12 @@ class Blacklist extends CommonDropdown
             '/00:50:56:C0:[0-9a-f]+:[0-9a-f]+/i',//VMware MAC address
             'FE:FF:FF:FF:FF:FF',
             '00:00:00:00:00:00',
-            '00:0b:ca:fe:00:00'
+            '00:0b:ca:fe:00:00',
         ];
         foreach ($macs as $mac) {
             $defaults[self::MAC][] = [
                 'name' => 'invalid MAC',
-                'value' => $mac
+                'value' => $mac,
             ];
         }
 
@@ -451,12 +444,12 @@ class Blacklist extends CommonDropdown
             'System Product Name',
             'Product Name',
             'System Name',
-            'All Series'
+            'All Series',
         ];
         foreach ($models as $model) {
             $defaults[self::MODEL][] = [
                 'name' => $model,
-                'value' => $model
+                'value' => $model,
             ];
         }
 
@@ -465,22 +458,28 @@ class Blacklist extends CommonDropdown
         $defaults[self::IP] = [
             [
                 'name' => 'empty IP',
-                'value' => ''
+                'value' => '',
             ], [
                 'name' => 'zero IP',
-                'value' => '0.0.0.0'
+                'value' => '0.0.0.0',
             ], [
                 'name' => 'localhost',
-                'value' => '127.0.0.1'
+                'value' => '127.0.0.1',
             ], [
                 'name' => 'IPV6 localhost',
-                'value' => '::1'
-            ]
+                'value' => '::1',
+            ],
         ];
 
         return $defaults;
     }
 
+    /**
+     * @param int $type
+     * @param string $value
+     *
+     * @return string
+     */
     public function process(int $type, string $value)
     {
         $criteria = $this->getBlacklists()[$type] ?? [];
@@ -488,7 +487,7 @@ class Blacklist extends CommonDropdown
         foreach ($criteria as $criterion) {
             if (preg_match('|/.+/(a-zZ-a)?|', $criterion['value']) && preg_match($criterion['value'], $value)) {
                 return '';
-            } else if (strcasecmp($value, $criterion['value']) === 0) {
+            } elseif (strcasecmp($value, $criterion['value']) === 0) {
                 return '';
             }
         }
@@ -496,7 +495,12 @@ class Blacklist extends CommonDropdown
         return $value;
     }
 
-    public function processBlackList(&$value)
+    /**
+     * @param object $value
+     *
+     * @return void
+     */
+    public function processBlackList($value)
     {
 
         if (
@@ -545,7 +549,7 @@ class Blacklist extends CommonDropdown
                         unset($ips[$k]);
                     }
                 }
-            } else if ('' == $this->process(self::IP, $ips)) {
+            } elseif ('' == $this->process(self::IP, $ips)) {
                 unset($value->$property);
             }
         }
@@ -563,7 +567,7 @@ class Blacklist extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-ban";
+        return "ti ti-ban";
     }
 
     public function getCloneRelations(): array

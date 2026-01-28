@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,13 +35,16 @@
 
 namespace Glpi\Api\Deprecated;
 
+use Item_Plug;
+use PDU;
+
 class Pdu_Plug implements DeprecatedInterface
 {
     use CommonDeprecatedTrait;
 
     public function getType(): string
     {
-        return \Item_Plug::class;
+        return Item_Plug::class;
     }
 
     public function mapCurrentToDeprecatedHateoas(array $hateoas): array
@@ -52,7 +55,7 @@ class Pdu_Plug implements DeprecatedInterface
     public function mapDeprecatedToCurrentFields(object $fields): object
     {
         $this->renameField($fields, 'pdus_id', 'items_id');
-        $this->addField($fields, 'itemtype', \PDU::class);
+        $this->addField($fields, 'itemtype', PDU::class);
 
         return $fields;
     }

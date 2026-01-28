@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,9 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 abstract class CommonITILSatisfaction extends CommonDBTM
 {
     public $dohistory         = true;
@@ -65,14 +68,15 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return 'ti ti-star';
     }
 
-    /**
-     * Get the itemtype this satisfaction is for
-     * @return string
-     */
-    public static function getItemtype(): string
+    public static function getItemInstance(): CommonITILObject
     {
-        // Return itemtype extracted from current class name (Remove 'Satisfaction' suffix)
-        return preg_replace('/Satisfaction$/', '', static::class);
+        $class = preg_replace('/Satisfaction$/', '', static::class);
+
+        if (!is_a($class, CommonITILObject::class, true)) {
+            throw new LogicException();
+        }
+
+        return new $class();
     }
 
     /**
@@ -80,34 +84,30 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      **/
     public static function getIndexName()
     {
-        return static::getItemtype()::getForeignKeyField();
+        return static::getItemInstance()::getForeignKeyField();
     }
 
     public function getLogTypeID()
     {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        return [$itemtype, $this->fields[$itemtype::getForeignKeyField()]];
+        $item = static::getItemInstance();
+        return [$item::class, $this->fields[$item::getForeignKeyField()]];
     }
 
     public static function canUpdate(): bool
     {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        return (Session::haveRight($itemtype::$rightname, READ));
+        $item = static::getItemInstance();
+        return (Session::haveRight($item::$rightname, READ));
     }
 
     /**
      * Is the current user have right to update the current satisfaction
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateItem(): bool
     {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        $item = new $itemtype();
-        if (!$item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+        $item = static::getItemInstance();
+        if (!$item->getFromDB($this->fields[$item::getForeignKeyField()])) {
             return false;
         }
 
@@ -121,7 +121,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
         if (
             $item->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-            || ($item->fields["users_id_recipient"] === Session::getLoginUserID() && Session::haveRight($itemtype::$rightname, $itemtype::SURVEY))
+            || ($item->fields["users_id_recipient"] === Session::getLoginUserID() && Session::haveRight($item::$rightname, $item::SURVEY))
             || (isset($_SESSION["glpigroups"])
                 && $item->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"]))
         ) {
@@ -131,11 +131,28 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     }
 
     /**
+     *
+     * @param CommonITILObject $item The item this satisfaction is for
+     *
+     * @return void
+     *
+     * @deprecated 12.0.0
+     */
+    public function showSatisactionForm($item)
+    {
+        Toolbox::deprecated();
+        $this->showSatisfactionForm($item);
+    }
+
+    /**
      * form for satisfaction
      *
      * @param CommonITILObject $item The item this satisfaction is for
+     * @param bool $add_form_header
+     *
+     * @return void
      **/
-    public function showSatisactionForm($item)
+    public function showSatisfactionForm($item, bool $add_form_header = true)
     {
         $options             = [];
         $options['colspan']  = 1;
@@ -145,19 +162,21 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if ((int) $this->fields["type"] === self::TYPE_EXTERNAL) {
             $url = Entity::generateLinkSatisfaction($item);
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
-                'url' => $url
+                'url' => $url,
             ]);
         } else { // for internal inquest => form
-            $config_suffix = $item->getType() === 'Ticket' ? '' : ('_' . strtolower($item->getType()));
+            $config_suffix = $item instanceof Ticket ? '' : ('_' . strtolower($item->getType()));
 
-            $this->showFormHeader($options);
+            if ($add_form_header) {
+                $this->showFormHeader($options);
+            }
             // Set default satisfaction to 3 if not set
             if (is_null($this->fields["satisfaction"])) {
                 $default_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_default_rate' . $config_suffix);
                 $this->fields["satisfaction"] = $default_rate;
             }
             $max_rate = Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_max_rate' . $config_suffix);
-            $duration = (int) Entity::getUsedConfig('inquest_duration' . $config_suffix, $item->fields['entities_id']);
+            $duration = (int) Entity::getUsedConfig('inquest_config' . $config_suffix, $item->fields['entities_id'], 'inquest_duration' . $config_suffix);
             $expired = $duration !== 0 && (time() - strtotime($this->fields['date_begin'])) > $duration * DAY_TIMESTAMP;
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
                 'item'   => $this,
@@ -178,10 +197,10 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if (array_key_exists('satisfaction', $input) || array_key_exists('comment', $input)) {
             $satisfaction = array_key_exists('satisfaction', $input) ? $input['satisfaction'] : $this->fields['satisfaction'];
             $comment      = array_key_exists('comment', $input) ? $input['comment'] : $this->fields['comment'];
-            $itemtype     = $this->getItemtype();
-            $entities_id  = $this->getItemEntity($itemtype, $this->fields[getForeignKeyFieldForItemType($this->getItemtype())]);
+            $itemtype     = static::getItemInstance()::class;
+            $entities_id  = $this->getItemEntity($itemtype, $this->fields[$itemtype::getForeignKeyField()]);
 
-            $config_suffix = $itemtype === 'Ticket' ? '' : ('_' . strtolower($itemtype));
+            $config_suffix = $itemtype === Ticket::class ? '' : ('_' . strtolower($itemtype));
             $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config' . $config_suffix, $entities_id, 'inquest_mandatory_comment' . $config_suffix);
             if ($inquest_mandatory_comment && ($satisfaction <= $inquest_mandatory_comment) && empty($comment)) {
                 Session::addMessageAfterRedirect(
@@ -194,8 +213,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
 
         if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
-            $item = static::getItemtype();
-            $item = new $item();
+            $item = static::getItemInstance();
             $fkey = static::getIndexName();
             if ($item->getFromDB($input[$fkey] ?? $this->fields[$fkey])) {
                 $max_rate = Entity::getUsedConfig(
@@ -212,35 +230,34 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
     public function post_addItem()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-            /** @var CommonDBTM $itemtype */
-            $itemtype = static::getItemtype();
-            $item = new $itemtype();
-            if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            $item = static::getItemInstance();
+            if ($item->getFromDB($this->fields[$item::getForeignKeyField()])) {
                 NotificationEvent::raiseEvent("satisfaction", $item, [], $this);
             }
         }
     }
 
+    /**
+     * @param bool $history
+     *
+     * @return void
+     */
     public function post_UpdateItem($history = true)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
             // Send notification only if fields related to reply are updated.
             $answer_updates = array_filter(
                 $this->updates,
-                fn ($field) => in_array($field, ['satisfaction', 'comment'])
+                fn($field) => in_array($field, ['satisfaction', 'comment'])
             );
 
-            /** @var CommonDBTM $itemtype */
-            $itemtype = static::getItemtype();
-            $item = new $itemtype();
-            if (count($answer_updates) > 1 && $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            $item = static::getItemInstance();
+            if (count($answer_updates) > 1 && $item->getFromDB($this->fields[$item::getForeignKeyField()])) {
                 NotificationEvent::raiseEvent("replysatisfaction", $item, [], $this);
             }
         }
@@ -249,15 +266,18 @@ abstract class CommonITILSatisfaction extends CommonDBTM
     /**
      * display satisfaction value
      *
-     * @param int $value Between 0 and 10
-     **/
+     * @param int|float $value Between 0 and 10
+     * @param int $entities_id
+     *
+     * @return string
+     */
     public static function displaySatisfaction($value, $entities_id)
     {
-        if (is_null($value)) {
+        if (!is_numeric($value)) {
             return "";
         }
 
-        $max_rate = Entity::getUsedConfig(
+        $max_rate = (int) Entity::getUsedConfig(
             'inquest_config',
             $entities_id,
             'inquest_max_rate' . static::getConfigSufix()
@@ -291,7 +311,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      * Get name of inquest type
      *
      * @param int $value Survey type ID
-     **/
+     *
+     * @return string
+     */
     public static function getTypeInquestName($value)
     {
 
@@ -304,7 +326,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
             default:
                 // Get value if not defined
-                return $value;
+                return (string) $value;
         }
     }
 
@@ -316,7 +338,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
         switch ($field) {
             case 'type':
-                return self::getTypeInquestName($values[$field]);
+                return htmlescape(self::getTypeInquestName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -334,7 +356,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 $options['value'] = $values[$field];
                 $typeinquest = [
                     self::TYPE_INTERNAL => __('Internal survey'),
-                    self::TYPE_EXTERNAL => __('External survey')
+                    self::TYPE_EXTERNAL => __('External survey'),
                 ];
                 return Dropdown::showFromArray($name, $typeinquest, $options);
         }
@@ -349,22 +371,24 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             return '';
         }
 
-        /** @var CommonDBTM $itemtype */
-        $itemtype = static::getItemtype();
-        return $itemtype::getFormURLWithID($satisfaction->fields[$itemtype::getForeignKeyField()]) . '&forcetab=' . $itemtype::getType() . '$3';
+        $item = static::getItemInstance();
+        return $item::getFormURLWithID($satisfaction->fields[$item::getForeignKeyField()]) . '&forcetab=' . $item::class . '$3';
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $base_id = static::getSearchOptionIDOffset();
         $table = static::getTable();
+        $parent_table = static::getItemInstance()::getTable();
 
         $tab[] = [
             'id'                 => 'satisfaction',
-            'name'               => __('Satisfaction survey')
+            'name'               => __('Satisfaction survey'),
         ];
 
         $tab[] = [
@@ -376,9 +400,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'searchtype'         => ['equals', 'notequals'],
             'searchequalsonfield' => true,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -389,8 +413,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'datatype'           => 'datetime',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -401,8 +425,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'datatype'           => 'datetime',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -413,7 +437,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'additionalfields' => ['TABLE.entities_id'],
         ];
@@ -422,12 +446,12 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'id'                 => 63 + $base_id,
             'table'              => $table,
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $sql = "WITH RECURSIVE entity_tree AS (
@@ -470,19 +494,19 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'maybefuture'        => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'usehaving'          => true,
             'nometa'             => true,
             'computation'        => QueryFunction::if(
-                condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = glpi_entities.id AND durations.inquest_duration > 0)"),
+                condition: new QueryExpression("EXISTS (SELECT 1 FROM $subquery WHERE durations.entity_id = $parent_table.entities_id AND durations.inquest_duration > 0)"),
                 true_expression: QueryFunction::dateAdd(
                     date: "$table.date_begin",
-                    interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = glpi_entities.id)"),
+                    interval: new QueryExpression("(SELECT durations.inquest_duration FROM $subquery WHERE durations.entity_id = $parent_table.entities_id)"),
                     interval_unit: 'DAY',
                 ),
                 false_expression: new QueryExpression($DB::quoteValue(''))
-            )
+            ),
         ];
 
         return $tab;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,14 +40,14 @@
  */
 class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 {
-   // From CommonDBRelation
-    public static $itemtype_1          = 'KnowbaseItem';
+    // From CommonDBRelation
+    public static $itemtype_1 = KnowbaseItem::class;
     public static $items_id_1          = 'knowbaseitems_id';
-    public static $itemtype_2          = 'KnowbaseItemCategory';
+    public static $itemtype_2 = KnowbaseItemCategory::class;
     public static $items_id_2          = 'knowbaseitemcategories_id';
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'knowbase';
@@ -57,9 +57,16 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         return Session::haveRight(static::$rightname, UPDATE);
     }
 
+    /**
+     * @param CommonDBTM $item
+     * @param int $start
+     * @param int $limit
+     * @param bool $used
+     *
+     * @return array
+     */
     public static function getItems(CommonDBTM $item, $start = 0, $limit = 0, $used = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $kbi_cat_table = self::getTable();
@@ -71,14 +78,14 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
                 'glpi_knowbaseitems' => [
                     'ON'  => [
                         $kbi_cat_table        => 'knowbaseitems_id',
-                        'glpi_knowbaseitems' => 'id'
-                    ]
-                ]
+                        'glpi_knowbaseitems' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [],
             'GROUPBY'   => [
-                $kbi_cat_table . '.id'
-            ]
+                $kbi_cat_table . '.id',
+            ],
         ];
         $where = [];
 
@@ -99,8 +106,8 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         }
 
         if ($limit) {
-            $criteria['START'] = (int)$start;
-            $criteria['LIMIT'] = (int)$limit;
+            $criteria['START'] = (int) $start;
+            $criteria['LIMIT'] = (int) $limit;
         }
 
         $linked_items = [];
@@ -133,11 +140,11 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         $kb_item = new KnowbaseItem();
         $kb_item->getEmpty();
         if ($kb_item->canViewItem()) {
-            $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
+            $action_prefix = self::class . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
-            = "<i class='ma-icon fas fa-book'></i>" .
-              _sx('button', 'Link knowledgebase article');
+            = "<i class='ma-icon ti ti-book'></i>"
+              . _sx('button', 'Link knowledgebase article');
         }
 
         parent::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);

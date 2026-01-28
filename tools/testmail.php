@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
+
 if (PHP_SAPI != 'cli') {
     echo "This script must be run from command line";
     exit();
@@ -40,14 +42,14 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new Kernel();
 $kernel->boot();
 
 if (isset($_SERVER['argc'])) {
     for ($i = 1; $i < $_SERVER['argc']; $i++) {
         $it           = explode("=", $_SERVER['argv'][$i], 2);
         $it[0]        = preg_replace('/^--/', '', $it[0]);
-        $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
+        $_GET[$it[0]] = ($it[1] ?? true);
     }
 }
 $NEEDED_ITEMS = ["mailgate", "mailing"];
@@ -67,7 +69,7 @@ if (isset($_GET['to'])) {
 if (isset($_GET['enc'])) {
     $enc = $_GET['enc'];
 } else {
-   // "7bit", "binary", "base64", and "quoted-printable".
+    // "7bit", "binary", "base64", and "quoted-printable".
     $enc = '';
 }
 
@@ -92,16 +94,16 @@ if ($enc) {
 }
 
 $mmail->Subject = "GLPI test mail" . ($enc ? " ($enc)" : '');
-$mmail->Body = "<html><body><h3>GLPI test mail</h3><p>Encoding = <span class='b'>$enc</span></p>" .
-             "<p>Date = <span class='b'>$dat</span></p><p>Secret = <span class='b'>$secret</span>" .
-             "</p></body></html>";
+$mmail->Body = "<html><body><h3>GLPI test mail</h3><p>Encoding = <span class='b'>$enc</span></p>"
+             . "<p>Date = <span class='b'>$dat</span></p><p>Secret = <span class='b'>$secret</span>"
+             . "</p></body></html>";
 $mmail->AltBody = "GLPI test mail\nEncoding : $enc\nDate : $dat\nSecret=$secret";
 
 $mmail->AddAddress($dest, "");
 
 $logo = file_get_contents("../pics/logos/logo-GLPI-100-black.png");
-$mmail->AddStringAttachment($logo, 'glpi.png', ($enc ? $enc : 'base64'), 'image/png');
+$mmail->AddStringAttachment($logo, 'glpi.png', ($enc ?: 'base64'), 'image/png');
 
-$mmail->AddStringAttachment($secret, 'secret.txt', ($enc ? $enc : 'base64'), 'text/plain');
+$mmail->AddStringAttachment($secret, 'secret.txt', ($enc ?: 'base64'), 'text/plain');
 
 echo "Send : " . ($mmail->Send() ? "OK\n" : "Failed (" . $mmail->ErrorInfo . ")\n");

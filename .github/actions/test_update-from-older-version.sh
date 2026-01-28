@@ -9,6 +9,9 @@ bin/console database:configure \
   --ansi --no-interaction \
   --reconfigure --db-name=glpitest085 --db-host=db --db-user=root --db-password=""
 
+# Force delete old oauth keys to test they are regenerated
+rm -f ./tests/config/oauth.pem ./tests/config/oauth.pub
+
 # Execute myisam_to_innodb migration
 ## First run should do the migration (with no warnings).
 bin/console migration:myisam_to_innodb --ansi --no-interaction | tee $LOG_FILE
@@ -107,4 +110,13 @@ bin/console database:configure \
   --no-interaction --ansi \
   --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration
-tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest085 --ansi --no-interaction
+
+# Check the OAuth keys are generated
+if [ ! -f ./tests/config/oauth.pem ] || [ ! -f ./tests/config/oauth.pub ]; then
+  echo "OAuth keys are missing" && exit 1;
+fi
+
+tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest085 --ansi --no-interaction | tee $LOG_FILE
+if [[ -n $(grep "Warning" $LOG_FILE) ]];
+  then echo "tests/bin/test-updated-data FAILED" && exit 1;
+fi

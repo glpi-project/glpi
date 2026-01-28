@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\AssignableItem;
 use Glpi\Inventory\Inventory;
 use Glpi\Search\SearchOption;
 
@@ -45,7 +46,7 @@ class Lockedfield extends CommonDBTM
     /** @var CommonDBTM */
     private $item;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = false;
 
     public static $rightname                   = 'locked_field';
@@ -82,6 +83,9 @@ class Lockedfield extends CommonDBTM
 
     public function canCreateItem(): bool
     {
+        if (empty($this->fields['itemtype'])) {
+            return true;
+        }
         return $this->canAccessItemEntity($this->fields['itemtype'], $this->fields['items_id']);
     }
 
@@ -105,6 +109,12 @@ class Lockedfield extends CommonDBTM
         return false;
     }
 
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
+    {
+        // Always return to the locked fields list page
+        return 'list';
+    }
+
     /**
      * Check if user can access main item entity
      *
@@ -115,7 +125,9 @@ class Lockedfield extends CommonDBTM
      */
     private function canAccessItemEntity(string $itemtype, int $items_id): bool
     {
-        $item = new $itemtype();
+        if (!($item = getItemForItemtype($itemtype))) {
+            return false;
+        }
         if (
             $item->getFromDB($items_id) //not a global lock
             && $item->isEntityAssign()
@@ -150,7 +162,7 @@ class Lockedfield extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -168,7 +180,7 @@ class Lockedfield extends CommonDBTM
             'field' => 'is_global',
             'name' => __('Global'),
             'datatype' => 'bool',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $tab[] = [
@@ -182,7 +194,7 @@ class Lockedfield extends CommonDBTM
             'nosearch'           => true,
             'additionalfields'   => ['itemtype'],
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'forcegroupby'       => true,
         ];
@@ -200,7 +212,7 @@ class Lockedfield extends CommonDBTM
      *
      * @param CommonDBTM $item Item instance
      *
-     * @retrun boolean
+     * @return bool
      */
     public function isHandled(CommonGLPI $item)
     {
@@ -208,14 +220,26 @@ class Lockedfield extends CommonDBTM
             return false;
         }
         $this->item = $item;
-        return (bool)$item->isDynamic();
+        return (bool) $item->isDynamic();
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return array
+     */
     public function getLockedNames($itemtype, $items_id)
     {
         return $this->getLocks($itemtype, $items_id, true);
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     *
+     * @return array
+     */
     public function getLockedValues($itemtype, $items_id)
     {
         return $this->getLocks($itemtype, $items_id, false);
@@ -226,13 +250,12 @@ class Lockedfield extends CommonDBTM
      * Get locked fields
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
      * return array
      */
     final public function getFullLockedFields($itemtype, $items_id): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -242,10 +265,10 @@ class Lockedfield extends CommonDBTM
                 [
                     'OR' => [
                         'items_id'  => $items_id,
-                        'is_global' => 1
-                    ]
-                ]
-            ]
+                        'is_global' => 1,
+                    ],
+                ],
+            ],
         ]);
 
         $locks = [];
@@ -259,13 +282,13 @@ class Lockedfield extends CommonDBTM
      * Get locked fields
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
+     * @param bool $fields_only
      *
-     * return array
+     * @return array
      */
     public function getLocks($itemtype, $items_id, bool $fields_only = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -275,10 +298,10 @@ class Lockedfield extends CommonDBTM
                 [
                     'OR' => [
                         'items_id'  => $items_id,
-                        'is_global' => 1
-                    ]
-                ]
-            ]
+                        'is_global' => 1,
+                    ],
+                ],
+            ],
         ]);
 
         $locks = [];
@@ -295,17 +318,16 @@ class Lockedfield extends CommonDBTM
     /**
      * Item has been deleted, remove all locks
      *
-     * @return boolean
+     * @return bool
      */
     public function itemDeleted()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         return $DB->delete(
             $this->getTable(),
             [
                 'itemtype'  => $this->item->getType(),
-                'items_id'  => $this->item->fields['id']
+                'items_id'  => $this->item->fields['id'],
             ]
         );
     }
@@ -313,21 +335,25 @@ class Lockedfield extends CommonDBTM
     /**
      * Store value from inventory on locked fields
      *
-     * @return boolean
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param string $field
+     * @param mixed $value
+     *
+     * @return bool
      */
     public function setLastValue($itemtype, $items_id, $field, $value)
     {
-        /** @var \DBmysql $DB */
         global $DB;
         return $DB->update(
             $this->getTable(),
             [
-                'value'  => $value
+                'value'  => $value,
             ],
             [
                 'itemtype'  => $itemtype,
                 'items_id'  => $items_id,
-                'field'     => $field
+                'field'     => $field,
             ]
         );
     }
@@ -343,7 +369,7 @@ class Lockedfield extends CommonDBTM
                 if (isset($values['items_id']) && !$values['items_id']) {
                     return '-';
                 }
-                if (isset($values['itemtype'])) {
+                if (isset($values['itemtype']) && is_a($values['itemtype'], CommonDBTM::class, true)) {
                     $itemtype = $values['itemtype'];
                     $item = new $itemtype();
                     $item->getFromDB($values['items_id']);
@@ -369,10 +395,15 @@ class Lockedfield extends CommonDBTM
         return $this->prepareInput($input);
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     protected function prepareInput($input)
     {
         if (isset($input['item'])) {
-            list($itemtype, $field) = explode(' - ', $input['item']);
+            [$itemtype, $field] = explode(' - ', $input['item']);
             $input['itemtype'] = $itemtype;
             $input['items_id'] = 0;
             $input['field'] = $field;
@@ -393,6 +424,12 @@ class Lockedfield extends CommonDBTM
         return true;
     }
 
+    public function getFormFields(): array
+    {
+        $fields = parent::getFormFields();
+        return array_filter($fields, static fn($field) => $field !== 'is_global');
+    }
+
 
     /**
      * List of itemtypes/fields that can be locked globally
@@ -401,16 +438,12 @@ class Lockedfield extends CommonDBTM
      */
     public function getFieldsToLock(?string $specific_itemtype = null): array
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'field'],
             'FROM'   => $this->getTable(),
-            'WHERE'  => ['is_global' => 1]
+            'WHERE'  => ['is_global' => 1],
         ]);
 
         $lockeds = [];
@@ -434,7 +467,7 @@ class Lockedfield extends CommonDBTM
             'networks_id',
             'manufacturers_id',
             'uuid',
-            'comment'
+            'comment',
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
@@ -449,7 +482,9 @@ class Lockedfield extends CommonDBTM
             $fields[] = strtolower($itemtype) . 'types_id'; //type relation field
 
             foreach ($fields as $field) {
-                if ($DB->fieldExists($itemtype::getTable(), $field) && !isset($lockeds[$itemtype][$field])) {
+                $field_lockable = $DB->fieldExists($itemtype::getTable(), $field)
+                    || (in_array($field, ['groups_id', 'groups_id_tech'], true) && Toolbox::hasTrait($itemtype, AssignableItem::class));
+                if ($field_lockable && !isset($lockeds[$itemtype][$field])) {
                     $name = sprintf(
                         '%1$s - %2$s',
                         $itemtype,
@@ -461,7 +496,7 @@ class Lockedfield extends CommonDBTM
                         if (isset($search_option['linkfield']) && $search_option['linkfield'] == $field) {
                             $field_name = $search_option['name'];
                             break;
-                        } else if (isset($search_option['field']) && $search_option['field'] == $field) {
+                        } elseif (isset($search_option['field']) && $search_option['field'] == $field) {
                             $field_name = $search_option['name'];
                             break;
                         }
@@ -470,7 +505,7 @@ class Lockedfield extends CommonDBTM
                     if ($field_name === $field) {
                         //name not found :(
                         $table = getTableNameForForeignKeyField($field);
-                        if ($table !== '' && $table !== 'UNKNOWN') {
+                        if ($table !== '') {
                             $type = getItemTypeForTable($table);
                             $field_name = $type::getTypeName(1);
                         }

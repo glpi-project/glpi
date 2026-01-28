@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,8 +42,8 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Contract_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
-    public static $itemtype_1 = 'Contract';
+    // From CommonDBRelation
+    public static $itemtype_1 = Contract::class;
     public static $items_id_1 = 'contracts_id';
 
     public static $itemtype_2 = 'itemtype';
@@ -100,11 +100,11 @@ class Contract_Item extends CommonDBRelation
                     $name = Dropdown::getDropdownName($table, $value);
                     if (isset($options['comments']) && $options['comments']) {
                         $comments = Dropdown::getDropdownComments($table, $value);
-                         return sprintf(
-                             __('%1$s %2$s'),
-                             htmlescape($name),
-                             Html::showToolTip($comments, ['display' => false])
-                         );
+                        return sprintf(
+                            __s('%1$s %2$s'),
+                            htmlescape($name),
+                            Html::showToolTip($comments, ['display' => false])
+                        );
                     }
                     return htmlescape($name);
                 }
@@ -141,7 +141,7 @@ class Contract_Item extends CommonDBRelation
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -151,7 +151,7 @@ class Contract_Item extends CommonDBRelation
             'name'               => __('Associated item ID'),
             'massiveaction'      => false,
             'datatype'           => 'specific',
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
@@ -161,7 +161,7 @@ class Contract_Item extends CommonDBRelation
             'name'               => _n('Type', 'Types', 1),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'itemtype_list'      => 'contract_types'
+            'itemtype_list'      => 'contract_types',
         ];
 
         return $tab;
@@ -170,8 +170,8 @@ class Contract_Item extends CommonDBRelation
     /**
      * @since 0.84
      *
-     * @param integer $contract_id   contract ID
-     * @param integer $entities_id   entity ID
+     * @param int $contract_id   contract ID
+     * @param int $entities_id   entity ID
      *
      * @return array of items linked to contracts
      **/
@@ -198,10 +198,13 @@ class Contract_Item extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Can exists on template
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
+        // Can exists on template
         if (Contract::canView()) {
             $nb = 0;
             switch ($item::class) {
@@ -223,8 +226,11 @@ class Contract_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
         switch ($item::class) {
             case Contract::class:
@@ -245,7 +251,7 @@ class Contract_Item extends CommonDBRelation
      * @since 0.84
      *
      * @param CommonDBTM $item         CommonDBTM object wanted
-     * @param integer    $withtemplate
+     * @param int    $withtemplate
      *
      * @return void
      **/
@@ -280,21 +286,25 @@ class Contract_Item extends CommonDBRelation
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
+                {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
                 <div class="mb-3">
                     <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
                         <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
                         <input type="hidden" name="items_id" value="{{ item.getID() }}">
                         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
                         <div class="d-flex">
+                            <div class="col-auto">
                             {{ fields.dropdownField('Contract', 'contracts_id', 0, null, {
+                                add_field_class: 'd-inline',
+                                no_label: true,
                                 entity: item.fields['entities_id'],
                                 used: used,
-                                expired: false,
+                                expired: false
                             }) }}
-                            {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
-                            {% endset %}
-                            {{ fields.htmlField('', btn, null) }}
+                            </div>
+                            <div class="col-auto">
+                            {{ inputs.submit('add', _x('button', 'Add'), 1, {'class': 'btn btn-primary ms-1', 'icon': 'ti ti-link'}) }}
+                           </div>
                         </div>
                     </form>
                 </div>
@@ -309,7 +319,7 @@ TWIG, $twig_params);
                 'itemtype' => self::class,
                 'id'       => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'num'      => $data['num']
+                'num'      => $data['num'],
             ];
             $con         = new Contract();
             $con->getFromResultSet($data);
@@ -352,7 +362,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -370,12 +379,11 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -385,16 +393,12 @@ TWIG, $twig_params);
      * @since 0.84
      *
      * @param Contract $contract     Contract object
-     * @param integer  $withtemplate (default 0)
+     * @param int  $withtemplate (default 0)
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array    $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         $instID = $contract->fields['id'];
@@ -412,9 +416,12 @@ TWIG, $twig_params);
         $used    = [];
         foreach ($types_iterator as $type_row) {
             $itemtype = $type_row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
                 continue;
             }
+
+            $item = new $itemtype();
+
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $itemtype_2 = null;
@@ -424,16 +431,16 @@ TWIG, $twig_params);
                     'SELECT' => [
                         $itemtable . '.*',
                         self::getTable() . '.id AS linkid',
-                        'glpi_entities.id AS entity'
+                        'glpi_entities.id AS entity',
                     ],
                     'FROM'   => 'glpi_contracts_items',
                     'WHERE'  => [
                         'glpi_contracts_items.itemtype'     => $itemtype,
-                        'glpi_contracts_items.contracts_id' => $instID
-                    ]
+                        'glpi_contracts_items.contracts_id' => $instID,
+                    ],
                 ];
 
-                if ($item instanceof Item_Devices) {
+                if (is_a($itemtype, Item_Devices::class, true)) {
                     $itemtype_2 = $itemtype::$itemtype_2;
                     $itemtable_2 = $itemtype_2::getTable();
                     $namefield = 'name_device';
@@ -446,27 +453,27 @@ TWIG, $twig_params);
                 $params['LEFT JOIN'][$itemtable] = [
                     'FKEY' => [
                         $itemtable        => 'id',
-                        self::getTable()  => 'items_id'
-                    ]
+                        self::getTable()  => 'items_id',
+                    ],
                 ];
                 if ($itemtype !== Entity::class) {
                     $params['LEFT JOIN']['glpi_entities'] = [
                         'FKEY' => [
                             $itemtable        => 'entities_id',
-                            'glpi_entities'   => 'id'
-                        ]
+                            'glpi_entities'   => 'id',
+                        ],
                     ];
                 }
 
-                if ($item instanceof Item_Devices) {
+                if (is_a($itemtype, Item_Devices::class, true)) {
                     $id_2 = $itemtype_2::getIndexName();
                     $fid_2 = $itemtype::$items_id_2;
 
                     $params['LEFT JOIN'][$itemtable_2] = [
                         'FKEY' => [
                             $itemtable     => $fid_2,
-                            $itemtable_2   => $id_2
-                        ]
+                            $itemtable_2   => $id_2,
+                        ],
                     ];
                 }
 
@@ -500,14 +507,14 @@ TWIG, $twig_params);
                 $users_table => [
                     'FKEY' => [
                         $contract_users_table => 'users_id',
-                        $users_table          => 'id'
-                    ]
+                        $users_table          => 'id',
+                    ],
                 ],
             ],
             'WHERE'  => [
-                "$contract_users_table.contracts_id" => $instID
+                "$contract_users_table.contracts_id" => $instID,
             ],
-            'ORDER' => "$users_table.name"
+            'ORDER' => "$users_table.name",
         ];
 
         $user_iterator = $DB->request($user_params);
@@ -570,7 +577,7 @@ TWIG, $twig_params);
                     'row_class' => isset($objdata['is_deleted']) && $objdata['is_deleted'] ? 'table-danger' : '',
                     'type'     => $itemtype::getTypeName(1),
                 ];
-                $item = new $itemtype();
+                $item = getItemForItemtype($itemtype);
                 $item->getFromResultSet($objdata);
                 $entry['name'] = $item->getLink();
 
@@ -605,7 +612,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -617,22 +623,20 @@ TWIG, $twig_params);
                 'status' => __('Status'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
     public static function getRelationMassiveActionsSpecificities()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $specificities              = parent::getRelationMassiveActionsSpecificities();

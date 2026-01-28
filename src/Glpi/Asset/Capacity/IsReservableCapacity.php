@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Override;
 use Reservation;
 use ReservationItem;
@@ -45,7 +45,7 @@ class IsReservableCapacity extends AbstractCapacity
 {
     public function getLabel(): string
     {
-        return \Reservation::getTypeName(Session::getPluralNumber());
+        return Reservation::getTypeName(Session::getPluralNumber());
     }
 
     public function getIcon(): string
@@ -74,14 +74,20 @@ class IsReservableCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
+        global $CFG_GLPI;
         $this->registerToTypeConfig('reservation_types', $classname);
+        // Manually set sector-based JS registration
+        $CFG_GLPI['javascript']['assets'][strtolower($classname)] = array_merge(
+            $CFG_GLPI['javascript']['assets'][strtolower($classname)] ?? [],
+            ['fullcalendar', 'reservations']
+        );
 
         CommonGLPI::registerStandardTab($classname, Reservation::class, 85);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from reservable types
         $this->unregisterFromTypeConfig('reservation_types', $classname);

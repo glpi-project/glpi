@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@
 /// @since 0.84
 class Profile_RSSFeed extends CommonDBRelation
 {
-   // From CommonDBRelation
-    public static $itemtype_1          = 'RSSFeed';
+    // From CommonDBRelation
+    public static $itemtype_1          = RSSFeed::class;
     public static $items_id_1          = 'rssfeeds_id';
-    public static $itemtype_2          = 'Profile';
+    public static $itemtype_2 = Profile::class;
     public static $items_id_2          = 'profiles_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
@@ -50,19 +50,18 @@ class Profile_RSSFeed extends CommonDBRelation
     /**
      * Get profiles for a rssfeed
      *
-     * @param $rssfeeds_id ID of the rssfeed
+     * @param int $rssfeeds_id ID of the rssfeed
      *
-     * @return array of profiles linked to a rssfeed
-     **/
+     * @return array
+     */
     public static function getProfiles($rssfeeds_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $prof  = [];
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['rssfeeds_id' => $rssfeeds_id]
+            'WHERE'  => ['rssfeeds_id' => $rssfeeds_id],
         ]);
 
         foreach ($iterator as $data) {

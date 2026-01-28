@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,25 +34,21 @@
  */
 
 /**
- * @since 9.1
- */
-
-
-/**
- * Summary of NotificationTargetObjectLock
- *
  * Notifications for ObjectLock
+ *
+ * @extends NotificationTarget<ObjectLock>
  *
  * @since 9.1
  **/
 class NotificationTargetObjectLock extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['unlock'               => __('Unlock Item Request')];
     }
 
-
+    #[Override]
     public function getTags()
     {
 
@@ -66,46 +62,37 @@ class NotificationTargetObjectLock extends NotificationTarget
             'objectlock.lockedby.firstname'   => __('Firstname of locking user'),
             'objectlock.requester.lastname'   => __('Requester Lastname'),
             'objectlock.requester.firstname'  => __('Requester Firstname'),
-            'objectlock.url'                  => __('Item URL')
+            'objectlock.url'                  => __('Item URL'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
         asort($this->tag_descriptions);
     }
 
-
-    /**
-     * @see NotificationTarget::addNotificationTargets()
-     **/
+    #[Override]
     public function addNotificationTargets($entity)
     {
         $this->addTarget(Notification::USER, __('Locking User'));
     }
 
-
-    /**
-     * @see NotificationTarget::addSpecificTargets()
-     **/
     public function addSpecificTargets($data, $options)
     {
 
         $user = new User();
         if ($user->getFromDB($this->obj->fields['users_id'])) {
             $this->addToRecipientsList(['language' => $user->getField('language'),
-                'users_id' => $user->getID()
+                'users_id' => $user->getID(),
             ]);
         }
     }
 
-
     public function addDataForTemplate($event, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $events = $this->getEvents();
@@ -132,9 +119,9 @@ class NotificationTargetObjectLock extends NotificationTarget
                                               = $_SESSION['glpirealname'];
         $this->data['##objectlock.requester.firstname##']
                                               = $_SESSION['glpifirstname'];
-        $this->data['##objectlock.url##']      = $CFG_GLPI['url_base'] . "/?redirect=" .
-                                                   $options['item']->fields['itemtype'] . "_" .
-                                                   $options['item']->fields['items_id'];
+        $this->data['##objectlock.url##']      = $CFG_GLPI['url_base'] . "/?redirect="
+                                                   . $options['item']->fields['itemtype'] . "_"
+                                                   . $options['item']->fields['items_id'];
 
         $this->getTags();
         foreach ($this->tag_descriptions[NotificationTarget::TAG_LANGUAGE] as $tag => $values) {
@@ -144,7 +131,7 @@ class NotificationTargetObjectLock extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getSender(): array
     {
 
@@ -155,7 +142,7 @@ class NotificationTargetObjectLock extends NotificationTarget
             && ($_SESSION['glpilock_directunlock_notification'] > 0)
             && $mails->getFromDBByCrit([
                 'users_id'    => $_SESSION['glpiID'],
-                'is_default'  => 1
+                'is_default'  => 1,
             ])
         ) {
             $ret = ['email' => $mails->fields['email'],
@@ -164,7 +151,7 @@ class NotificationTargetObjectLock extends NotificationTarget
                     $_SESSION["glpiname"],
                     $_SESSION["glpirealname"],
                     $_SESSION["glpifirstname"]
-                )
+                ),
             ];
         } else {
             $ret = parent::getSender();
@@ -173,10 +160,9 @@ class NotificationTargetObjectLock extends NotificationTarget
         return $ret;
     }
 
-
-    public function getReplyTo($options = []): array
+    #[Override]
+    public function getReplyTo(): array
     {
-
         return $this->getSender();
     }
 }

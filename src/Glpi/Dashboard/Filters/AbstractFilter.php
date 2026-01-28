@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,8 @@ namespace Glpi\Dashboard\Filters;
 use Html;
 use Search;
 
+use function Safe\strtotime;
+
 abstract class AbstractFilter
 {
     /**
@@ -56,11 +58,11 @@ abstract class AbstractFilter
      */
     abstract public static function getHtml($value): string;
 
-     /**
-     * Get the filter id
-     *
-     * @return string
-     */
+    /**
+    * Get the filter id
+    *
+    * @return string
+    */
     abstract public static function getId(): string;
 
     /**
@@ -132,7 +134,7 @@ abstract class AbstractFilter
         $rand  = mt_rand();
         $class = $filled ? "filled" : "";
 
-        $js = <<<JAVASCRIPT
+        $js = "
             $(function () {
                 $('#filter-{$rand} input')
                     .on('input', function() {
@@ -148,24 +150,24 @@ abstract class AbstractFilter
 
                 $('#filter-{$rand}')
                     .hover(function() {
-                        $('.dashboard .card.filter-{$id}').addClass('filter-impacted');
+                        $('.dashboard .card.filter-" . \jsescape($id) . "').addClass('filter-impacted');
                     }, function() {
-                        $('.dashboard .card.filter-{$id}').removeClass('filter-impacted');
+                        $('.dashboard .card.filter-" . \jsescape($id) . "').removeClass('filter-impacted');
                     });
                 });
-JAVASCRIPT;
+        ";
         $js = Html::scriptBlock($js);
 
-        $html  = <<<HTML
-            <fieldset id='filter-{$rand}' class='filter $class' data-filter-id='{$id}'>
-                $field
-                <legend>$label</legend>
+        $html  = '
+            <fieldset id="filter-' . $rand . '" class="filter ' . \htmlescape($class) . '" data-filter-id="' . \htmlescape($id) . '">
+                ' . $field . '
+                <legend>' . \htmlescape($label) . '</legend>
                 <button class="btn btn-sm btn-icon btn-ghost-secondary delete-filter">
-                    <i class='ti ti-trash'></i>
+                    <i class="ti ti-trash"></i>
                 </button>
-                {$js}
+                ' . $js . '
             </fieldset>
-HTML;
+        ';
 
         return $html;
     }
@@ -189,19 +191,19 @@ HTML;
             'placeholder'         => $label,
             'on_change'           => "on_change_{$rand}()",
             'allowClear'          => true,
-            'width'               => ''
+            'width'               => '',
         ] + $add_params);
 
-        $js = <<<JAVASCRIPT
+        $js = "
             var on_change_{$rand} = function() {
-                var dom_elem    = $('#dropdown_{$fieldname}{$rand}');
+                var dom_elem    = $('#dropdown_" . \jsescape($fieldname . $rand) . "');
                 var selected    = dom_elem.find(':selected').val();
 
-                GLPI.Dashboard.getActiveDashboard().saveFilter('{$fieldname}', selected);
+                GLPI.Dashboard.getActiveDashboard().saveFilter('" . \jsescape($fieldname) . "', selected);
 
-                $(dom_elem).closest("fieldset").toggleClass("filled", selected !== null)
+                $(dom_elem).closest('fieldset').toggleClass('filled', selected !== null);
             };
-JAVASCRIPT;
+        ";
         $field .= Html::scriptBlock($js);
 
         return self::field($fieldname, $field, $label, $value !== null);
@@ -226,7 +228,7 @@ JAVASCRIPT;
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'morethan',
-                'value'      => date('Y-m-d 00:00:00', $begin)
+                'value'      => date('Y-m-d 00:00:00', $begin),
             ];
         } else {
             $end   = strtotime($dates[1]);
@@ -234,7 +236,7 @@ JAVASCRIPT;
                 'link'       => 'AND',
                 'field'      => $searchoption_id,
                 'searchtype' => 'lessthan',
-                'value'      => date('Y-m-d 00:00:00', $end)
+                'value'      => date('Y-m-d 00:00:00', $end),
             ];
         }
     }

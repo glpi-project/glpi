@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,13 +37,7 @@
  * @since 0.85
  */
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
-
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -109,25 +103,27 @@ if (isset($_POST["validatortype"])) {
                 ];
             }
             User::dropdown([
-                'name'   => $items_id_name,
-                'entity' => $_POST['entity'],
-                'value'  => $_POST['items_id_target'],
-                'right'  => $_POST['right'],
-                'width'  => '100%',
-                'toadd'  => $added_supervisors,
-                'rand'   => $_POST['rand'],
+                'name'       => $items_id_name,
+                'entity'     => $_POST['entity'],
+                'value'      => $_POST['items_id_target'],
+                'right'      => $_POST['right'],
+                'width'      => '100%',
+                'toadd'      => $added_supervisors,
+                'rand'       => $_POST['rand'],
+                'aria_label' => __('Select a user'),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
             break;
 
         case 'group':
             Group::dropdown([
-                'name'   => $items_id_name,
-                'entity' => $_POST['entity'],
-                'value'  => !is_array($_POST['items_id_target']) ? $_POST['items_id_target'] : '',
-                'right'  => $_POST['right'],
-                'width'  => '100%',
-                'rand'   => $_POST['rand'],
+                'name'       => $items_id_name,
+                'entity'     => $_POST['entity'],
+                'value'      => !is_array($_POST['items_id_target']) ? $_POST['items_id_target'] : '',
+                'right'      => $_POST['right'],
+                'width'      => '100%',
+                'rand'       => $_POST['rand'],
+                'aria_label' => __('Select a group'),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'Group']);
             break;
@@ -136,11 +132,12 @@ if (isset($_POST["validatortype"])) {
             $value = $_POST['groups_id'] ?? 0;
 
             $rand = Group::dropdown([
-                'name'   => $groups_id_name,
-                'value'  => $value,
-                'entity' => $_POST["entity"],
-                'width'  => '100%',
-                'rand'   => $_POST['rand'],
+                'name'       => $groups_id_name,
+                'value'      => $value,
+                'entity'     => $_POST["entity"],
+                'width'      => '100%',
+                'rand'       => $_POST['rand'],
+                'aria_label' => __('Select a group'),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
 
@@ -153,10 +150,6 @@ if (isset($_POST["validatortype"])) {
                 'items_id'      => $_POST['items_id_target'],
                 'rand'          => $_POST['rand'],
             ];
-            if (array_key_exists('name', $_POST)) {
-                // TODO Drop in GLPI 11.0
-                $param['name'] = !empty($_POST['name']) ? $_POST['name'] : '';
-            }
             if (array_key_exists('validation_class', $_POST)) {
                 $param['validation_class'] = $_POST['validation_class'];
             }
@@ -181,7 +174,7 @@ if (isset($_POST["validatortype"])) {
             $opt             = [
                 'groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
-                'entity'    => $_POST["entity"]
+                'entity'    => $_POST["entity"],
             ];
             $data_users      = $validation_class::getGroupUserHaveRights($opt);
             $users           = [];
@@ -198,14 +191,15 @@ if (isset($_POST["validatortype"])) {
                     $data['firstname']
                 );
                 if (in_array($data['id'], $values)) {
-                     $param['values'][] = $data['id'];
+                    $param['values'][] = $data['id'];
                 }
             }
 
-            $param['multiple'] = true;
-            $param['display']  = true;
-            $param['size']     = count($users);
-            $param['rand']     = $_POST['rand'];
+            $param['multiple']   = true;
+            $param['display']    = true;
+            $param['size']       = count($users);
+            $param['rand']       = $_POST['rand'];
+            $param['aria_label'] = __('Select users');
 
             $rand  = Dropdown::showFromArray(
                 $items_id_name,

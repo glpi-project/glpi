@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -89,7 +88,8 @@
 
    {{ include('pages/setup/mailcollector/server_config_fields.html.twig', {
       'connect_opts': connect_opts,
-      'connect_string': host
+      'connect_string': host,
+      'protocol_choices': protocol_choices,
    }) }}
 
    {{ fields.smallTitle(__('Authentication')) }}
@@ -213,6 +213,15 @@
                   // Force empty value for server_mailbox
                   data += '&server_mailbox=';
 
+                  // In some case (like oauth imap) provide password is not possible
+                  // So, ask for password only if there is one stored in database
+                  var passwdField = $(this).closest('form').find('input[name="passwd"]');
+                  var hasStoredPassword = {{ (item.fields['passwd'] is defined and item.fields['passwd']) ? 'true' : 'false' }};
+                  if (hasStoredPassword && passwdField.val() == '') {
+                     var passwd = prompt(__('Please enter password to list folders'));
+                     data += '&passwd=' + encodeURIComponent(passwd);
+                  }
+
                   glpi_ajax_dialog({
                       title: __('Select a folder'),
                       url: '{{ path('/ajax/mailcollector.php') }}',
@@ -226,12 +235,12 @@
 
                   const li       = $(this);
                   const input_id = li.data('input-id');
-                  const folder   = li.children('.folder-name').html();
+                  const folder   = li.children('.folder-name').data('globalname');
 
                   let _label = '';
                   const _parents = li.parents('li').children('.folder-name');
                   for (i = _parents.length -1 ; i >= 0; i--) {
-                      _label += $(_parents[i]).html() + '/';
+                      _label += $(_parents[i]).data('globalname') + '/';
                   }
                   _label += folder;
 

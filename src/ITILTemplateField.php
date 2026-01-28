@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -45,14 +45,28 @@ use Glpi\Search\SearchOption;
  **/
 abstract class ITILTemplateField extends CommonDBChild
 {
+    /**
+     * @var class-string<ITILTemplate>
+     */
     public static $itemtype; //to be filled in subclass
+
     public static $items_id; //to be filled in subclass
+
+    /**
+     * @var class-string<CommonITILObject>
+     */
     public static $itiltype; //to be filled in subclass
 
-    private $all_fields;
+    private array $all_fields;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
+
+    public static function getMultiplePredefinedValues(): array
+    {
+        // List of fields that are allowed to be defined multiples times.
+        return [];
+    }
 
 
     public function getForbiddenStandardMassiveAction()
@@ -82,21 +96,18 @@ abstract class ITILTemplateField extends CommonDBChild
 
     protected function computeFriendlyName()
     {
-        $tt_class = static::$itemtype;
-        $tt     = new $tt_class();
+        $tt     = getItemForItemtype(static::$itemtype);
         $fields = $tt->getAllowedFieldsNames(true);
-
-        if (isset($fields[$this->fields["num"]])) {
-            return $fields[$this->fields["num"]];
-        }
-        return '';
+        return $fields[$this->fields["num"]] ?? '';
     }
 
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        static::showForITILTemplate($item, $withtemplate);
-        return true;
+        if ($item instanceof ITILTemplate) {
+            return static::showForITILTemplate($item, $withtemplate);
+        }
+        return false;
     }
 
 
@@ -116,16 +127,13 @@ abstract class ITILTemplateField extends CommonDBChild
      * @since 0.83
      *
      * @param ITILTemplate $tt           ITIL Template
-     * @param integer      $withtemplate Template or basic item (default 0)
+     * @param int      $withtemplate Template or basic item (default 0)
+     * @param bool         $withtypeandcategory
      *
-     * @return void
-     **/
-    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0)
+     * @return bool
+     */
+    public static function showForITILTemplate(ITILTemplate $tt, $withtemplate = 0, $withtypeandcategory = true): bool
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         $ID = $tt->fields['id'];
@@ -134,22 +142,21 @@ abstract class ITILTemplateField extends CommonDBChild
             return false;
         }
         $canedit = $tt->canEdit($ID);
-        $fields  = $tt->getAllowedFieldsNames(false);
+        $fields  = $tt->getAllowedFieldsNames($withtypeandcategory);
         $fields  = array_diff_key($fields, static::getExcludedFields());
         $display_options = [
             'relative_dates' => true,
             'comments'       => true,
-            'html'           => true
+            'html'           => true,
         ];
-        $itil_class    = static::$itiltype;
-        $searchOption  = SearchOption::getOptionsForItemtype($itil_class);
-        $itil_object   = new $itil_class();
+        $itil_object   = getItemForItemtype(static::$itiltype);
+        $searchOption  = SearchOption::getOptionsForItemtype($itil_object::class);
         $rand = mt_rand();
 
         $crtiteria = [
             'SELECT' => ['id', 'num'],
             'FROM'   => static::getTable(),
-            'WHERE'  => [static::$items_id => $ID]
+            'WHERE'  => [static::$items_id => $ID],
         ];
         if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
             $crtiteria['SELECT'][] = 'value';
@@ -183,6 +190,15 @@ abstract class ITILTemplateField extends CommonDBChild
             $used[$data['num']]        = $data['num'];
         }
 
+        // Remove fields that are allowed to have multiple values from the 'used'
+        // list.
+        $multiple = static::getMultiplePredefinedValues();
+        foreach ($multiple as $val) {
+            if (isset($used[$val])) {
+                unset($used[$val]);
+            }
+        }
+
         $fields_dropdown_values = [];
         foreach ($fields as $k => $field) {
             $fields_dropdown_values[$k] = $field;
@@ -190,7 +206,7 @@ abstract class ITILTemplateField extends CommonDBChild
 
         if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
             $fields_dropdown_values = array_replace([
-                -1 => Dropdown::EMPTY_VALUE
+                -1 => Dropdown::EMPTY_VALUE,
             ], $fields_dropdown_values);
         }
 
@@ -208,8 +224,8 @@ abstract class ITILTemplateField extends CommonDBChild
                         'with_days'          => 0,
                         'with_specific_date' => 0,
                         'itemlink_as_string' => 1,
-                        'entity'             => $tt->getEntityID()
-                    ]
+                        'entity'             => $tt->getEntityID(),
+                    ],
                 ];
                 $extra_form_html = Ajax::updateItemOnSelectEvent(
                     "dropdown_num{$rand}",
@@ -230,12 +246,18 @@ abstract class ITILTemplateField extends CommonDBChild
                 'fields' => $fields_dropdown_values,
                 'extra_form_html' => $extra_form_html,
                 'rand' => $rand,
-                'show_submit' => !is_subclass_of(static::class, ITILTemplatePredefinedField::class)
+                'show_submit' => !is_subclass_of(static::class, ITILTemplatePredefinedField::class),
+                'task_order_label' => is_subclass_of(static::class, ITILTemplatePredefinedField::class)
+                    ? __('Predefined task templates will be added according to their creation order')
+                    : null,
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
                 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
                 <div>
+                    {% if task_order_label is not null %}
+                        <div class="alert alert-info">{{ task_order_label }}</div>
+                    {% endif %}
                     <form name="itiltemplatehidden_form{{ rand }}" method="post" action="{{ form_url }}" data-submit-once>
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden(items_id_field, id) }}
@@ -243,6 +265,7 @@ abstract class ITILTemplateField extends CommonDBChild
                             {{ fields.dropdownArrayField('num', 0, fields, null, {
                                 no_label: true,
                                 used: used,
+                                required: true,
                                 add_field_attribs: {
                                     'aria-label': itemtype_name
                                 },
@@ -269,14 +292,16 @@ TWIG, $twig_params);
             'nofilter' => true,
             'columns' => $columns,
             'entries' => $entries,
+            'formatters' => ['value' => 'raw_html'],
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 
 
@@ -286,11 +311,11 @@ TWIG, $twig_params);
      * @param ITILTemplate $tt   ITIL Template
      * @param string       $name Field name to look for
      *
-     * @return integer|false
+     * @return int|false
      */
     public function getFieldNum(ITILTemplate $tt, $name)
     {
-        if ($this->all_fields === null) {
+        if (!isset($this->all_fields)) {
             $this->getAllFields($tt);
         }
         return array_search($name, $this->all_fields);

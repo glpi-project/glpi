@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -912,6 +912,9 @@ var GLPIImpact = {
                 if (!node.isParent() && positions[node.data('id')] !== undefined) {
                     x = parseFloat(positions[node.data('id')].x);
                     y = parseFloat(positions[node.data('id')].y);
+                } else if (!node.isParent()) {
+                    // Add node to no_positions list if it doesn't have a saved position
+                    GLPIImpact.no_positions.push(node);
                 }
 
                 return {
@@ -1371,21 +1374,21 @@ var GLPIImpact = {
         return [
             {
                 id             : 'goTo',
-                content        : '<i class="fas fa-link me-2"></i>' + __("Go to"),
+                content        : '<i class="ti ti-external-link me-2"></i>' + __("Go to"),
                 tooltipText    : _.unescape(__("Open this element in a new tab")),
                 selector       : 'node[link]',
                 onClickFunction: this.menuOnGoTo
             },
             {
                 id             : 'showOngoing',
-                content        : '<i class="fas fa-list me-2"></i>' + __("Show ongoing tickets"),
+                content        : '<i class="ti ti-alert-circle me-2"></i>' + __("Show ongoing tickets"),
                 tooltipText    : _.unescape(__("Show ongoing tickets for this item")),
                 selector       : 'node[hasITILObjects=1]',
                 onClickFunction: this.menuOnShowOngoing
             },
             {
                 id             : 'editEdge',
-                content        : '<i class="fas fa-edit me-2"></i>' + __("Edge properties..."),
+                content        : '<i class="ti ti-edit me-2"></i>' + __("Edge properties..."),
                 tooltipText    : _.unescape(__("Set name for this edge")),
                 selector       : 'edge',
                 onClickFunction: this.menuOnEditEdge,
@@ -1393,7 +1396,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'editCompound',
-                content        : '<i class="fas fa-edit me-2"></i>' + __("Group properties..."),
+                content        : '<i class="ti ti-edit me-2"></i>' + __("Group properties..."),
                 tooltipText    : _.unescape(__("Set name and/or color for this group")),
                 selector       : 'node:parent',
                 onClickFunction: this.menuOnEditCompound,
@@ -1401,7 +1404,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'removeFromCompound',
-                content        : '<i class="fas fa-external-link-alt me-2"></i>' + __("Remove from group"),
+                content        : '<i class="ti ti-home-move me-2"></i>' + __("Remove from group"),
                 tooltipText    : _.unescape(__("Remove this asset from the group")),
                 selector       : 'node:child',
                 onClickFunction: this.menuOnRemoveFromCompound,
@@ -1409,7 +1412,7 @@ var GLPIImpact = {
             },
             {
                 id             : 'delete',
-                content        : '<i class="fas fa-trash me-2"></i>' + __("Delete"),
+                content        : '<i class="ti ti-trash me-2"></i>' + __("Delete"),
                 tooltipText    : _.unescape(__("Delete element")),
                 selector       : 'node, edge',
                 onClickFunction: this.menuOnDelete,
@@ -1427,7 +1430,7 @@ var GLPIImpact = {
         var nodeID = GLPIImpact.makeID(GLPIImpact.NODE, node.itemtype, node.items_id);
 
         // Check if the node is already on the graph
-        if (GLPIImpact.cy.filter('node[id="' + nodeID + '"]').length > 0) {
+        if (GLPIImpact.cy.filter('node[id="' + CSS.escape(nodeID) + '"]').length > 0) {
             alert(__('This asset already exists.'));
             return;
         }
@@ -2018,7 +2021,7 @@ var GLPIImpact = {
             GLPIImpact.maxDepth = GLPIImpact.NO_DEPTH_LIMIT;
         }
 
-        $(GLPIImpact.selectors.maxDepthView).html(max);
+        $(GLPIImpact.selectors.maxDepthView).text(max);
         GLPIImpact.updateStyle();
         GLPIImpact.cy.trigger("change");
     },
@@ -2076,7 +2079,7 @@ var GLPIImpact = {
         for (i=0; i<graph.length; i++) {
             var id = graph[i].data.id;
             // Check that the element is not already on the graph,
-            if (this.cy.filter('[id="' + id + '"]').length > 0) {
+            if (this.cy.filter('[id="' + CSS.escape(id) + '"]').length > 0) {
                 continue;
             }
             // Store node to add them at once with a layout
@@ -2087,7 +2090,7 @@ var GLPIImpact = {
                 var node_info = graph[i].data.id.split(GLPIImpact.NODE_ID_SEPERATOR);
                 var itemtype = node_info[0];
                 var items_id = node_info[1];
-                $("p[data-id=" + items_id + "][data-type='" + itemtype + "']").remove();
+                $("p[data-id=" + CSS.escape(items_id) + "][data-type='" + CSS.escape(itemtype) + "']").remove();
             }
         }
 
@@ -2109,10 +2112,12 @@ var GLPIImpact = {
         var eles = this.cy.add(toAdd);
 
         var options;
+        var savedPositions = null;
         if (params.positions === undefined) {
             options = this.getDagreLayout();
         } else {
-            options = this.getPresetLayout(JSON.parse(params.positions));
+            savedPositions = JSON.parse(params.positions);
+            options = this.getPresetLayout(savedPositions);
         }
 
         // Place the layout anywhere to compute it's bounding box
@@ -2120,29 +2125,75 @@ var GLPIImpact = {
         layout.run();
         this.generateMissingPositions();
 
-        // First, position the graph on the clicked areaa
-        var newGraphBoundingBox = eles.boundingBox();
-        var center = {
-            x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
-            y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
-        };
+        // Check if any of the new nodes have saved positions
+        var hasNodesWithSavedPositions = false;
+        if (savedPositions) {
+            eles.nodes().forEach(function(node) {
+                if (!node.isParent() && savedPositions[node.data('id')] !== undefined) {
+                    hasNodesWithSavedPositions = true;
+                }
+            });
+        }
 
-        var centerToClickVector = [
-            startNode.x - center.x,
-            startNode.y - center.y,
-        ];
+        // Only apply positioning logic if we don't have saved positions for the new nodes
+        if (!hasNodesWithSavedPositions) {
+            // First, position the graph on the clicked area
+            var newGraphBoundingBox = eles.boundingBox();
+            var center = {
+                x: (newGraphBoundingBox.x1 + newGraphBoundingBox.x2) / 2,
+                y: (newGraphBoundingBox.y1 + newGraphBoundingBox.y2) / 2,
+            };
 
-        // Apply vector to each node
-        eles.nodes().forEach(function(node) {
-            if (!node.isParent()) {
-                node.position({
-                    x: node.position().x + centerToClickVector[0],
-                    y: node.position().y + centerToClickVector[1],
-                });
-            }
-        });
+            var centerToClickVector = [
+                startNode.x - center.x,
+                startNode.y - center.y,
+            ];
 
-        newGraphBoundingBox = eles.boundingBox();
+            // Apply vector to each node
+            eles.nodes().forEach(function(node) {
+                if (!node.isParent()) {
+                    node.position({
+                        x: node.position().x + centerToClickVector[0],
+                        y: node.position().y + centerToClickVector[1],
+                    });
+                }
+            });
+
+            newGraphBoundingBox = eles.boundingBox();
+        } else {
+            // If we have saved positions, just finish and don't apply collision detection
+            this.cy.animate({
+                center: {
+                    eles : GLPIImpact.cy.filter(""),
+                },
+            });
+
+            this.cy.getElementById(startNode.id).data("highlight", 1);
+
+            // Set undo/redo data
+            var undoData = {
+                edges: eles.edges().map(function(edge){ return edge.data(); }),
+                compounds: [],
+                nodes: [],
+            };
+            eles.nodes().forEach(function(node) {
+                if (node.isParent()) {
+                    undoData.compounds.push({
+                        compoundData    : _.clone(node.data()),
+                        compoundChildren: node.children().map(function(n) {
+                            return n.data('id');
+                        }),
+                    });
+                } else {
+                    undoData.nodes.push({
+                        nodeData    : _.clone(node.data()),
+                        nodePosition: _.clone(node.position()),
+                    });
+                }
+            });
+            this.addToUndo(this.ACTION_ADD_GRAPH, undoData);
+            return;
+        }
 
         // If the two bouding box overlap
         if (!(mainBoundingBox.x1 > newGraphBoundingBox.x2
@@ -2560,10 +2611,10 @@ var GLPIImpact = {
     * @returns {string}
     */
     buildOngoingDialogContent: function(ITILObjects) {
-        return this.listElements(__("Requests"), ITILObjects.requests, "ticket")
-         + this.listElements(__("Incidents"), ITILObjects.incidents, "ticket")
-         + this.listElements(__("Changes"), ITILObjects.changes , "change")
-         + this.listElements(__("Problems"), ITILObjects.problems, "problem");
+        return this.listElements(_.unescape(__("Requests")), ITILObjects.requests, "ticket")
+         + this.listElements(_.unescape(__("Incidents")), ITILObjects.incidents, "ticket")
+         + this.listElements(_.unescape(__("Changes")), ITILObjects.changes , "change")
+         + this.listElements(_.unescape(__("Problems")), ITILObjects.problems, "problem");
     },
 
     /**
@@ -2579,12 +2630,12 @@ var GLPIImpact = {
         var html = "";
 
         if (elements.length > 0) {
-            html += "<h3>" + title + "</h3>";
+            html += "<h3>" + _.escape(title) + "</h3>";
             html += "<ul>";
 
             elements.forEach(function(element) {
                 var link = CFG_GLPI.root_doc + "/front/" + url + ".form.php?id=" + element.id;
-                html += '<li><a target="_blank" href="' + link + '">' + element.name
+                html += '<li><a target="_blank" href="' + _.escape(link) + '">' + _.escape(element.name)
                + '</a></li>';
             });
             html += "</ul>";
@@ -2593,7 +2644,7 @@ var GLPIImpact = {
     },
 
     /**
-    * Add a new compound from the selected nodes
+    * Add a compound from the selected nodes
     */
     addCompoundFromSelection: _.debounce(function(){
         // Check that there is enough selected nodes
@@ -2787,16 +2838,26 @@ var GLPIImpact = {
                 hit = true;
 
                 if (trigger) {
-                    var target = badgeHitboxDetails.target;
+                    let target = badgeHitboxDetails.target;
 
-                    // Add items_id criteria
-                    target += "&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=" + badgeHitboxDetails.id;
-                    // Add itemtype criteria
-                    target += "&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=" + badgeHitboxDetails.itemtype;
+                    let next_criteria = 0;
+                    if (badgeHitboxDetails.id_option) {
+                        // Add items_id/itemtype metacriteria since we know the ID field for the asset type
+                        target += `&criteria[0][link]=AND&criteria[0][field]=${badgeHitboxDetails.id_option}&criteria[0][itemtype]=${badgeHitboxDetails.itemtype}&criteria[0][meta]=1&criteria[0][searchtype]=contains&criteria[0][value]=${badgeHitboxDetails.id}`;
+                        next_criteria = 1;
+                    } else {
+                        // Asset type doesn't have an ID metacriteria that we know of so fallback to the options directly on the ITIL item
+                        // Add items_id criteria
+                        target += `&criteria[0][link]=AND&criteria[0][field]=13&criteria[0][searchtype]=contains&criteria[0][value]=${badgeHitboxDetails.id}`;
+                        // Add itemtype criteria
+                        target += `&criteria[1][link]=AND&criteria[1][field]=131&criteria[1][searchtype]=equals&criteria[1][value]=${badgeHitboxDetails.itemtype}`;
+                        next_criteria = 2;
+                    }
+
                     // Add type criteria (incident)
-                    target += "&criteria[2][link]=AND&criteria[2][field]=14&criteria[2][searchtype]=equals&criteria[2][value]=1";
+                    target += `&criteria[${next_criteria}][link]=AND&criteria[${next_criteria}][field]=14&criteria[${next_criteria}][searchtype]=equals&criteria[${next_criteria}][value]=1`;
                     // Add status criteria (not solved)
-                    target += "&criteria[3][link]=AND&criteria[3][field]=12&criteria[3][searchtype]=equals&criteria[3][value]=notold";
+                    target += `&criteria[${next_criteria + 1}][link]=AND&criteria[${next_criteria + 1}][field]=12&criteria[${next_criteria + 1}][searchtype]=equals&criteria[${next_criteria + 1}][value]=notold`;
 
                     if (blank) {
                         window.open(target);
@@ -3508,8 +3569,8 @@ var GLPIImpact = {
                 event.target.select();
 
                 if (event.target.isNode()){
-                    var sourceFilter = "edge[source='" + id + "']";
-                    var targetFilter = "edge[target='" + id + "']";
+                    var sourceFilter = "edge[source='" + CSS.escape(id) + "']";
+                    var targetFilter = "edge[target='" + CSS.escape(id) + "']";
                     event.cy.filter(sourceFilter + ", " + targetFilter)
                         .data('todelete', 1)
                         .select();
@@ -3673,12 +3734,12 @@ var GLPIImpact = {
                         cssClass = "impact-res-disabled";
                     }
 
-                    var str = '<p class="' + cssClass + '" data-id="' + value['id'] + '" data-type="' + itemtype + '">';
+                    var str = '<p class="' + cssClass + '" data-id="' + _.escape(value['id']) + '" data-type="' + _.escape(itemtype) + '">';
                     str += `<img src='${_.escape(value['image'])}'></img>`;
-                    str += value["name"];
+                    str += _.escape(value["name"]);
 
                     if (isHidden) {
-                        str += '<i class="fas fa-eye-slash impact-res-hidden"></i>';
+                        str += '<i class="ti ti-eye-off impact-res-hidden"></i>';
                     }
 
                     str += "</p>";
@@ -3821,17 +3882,17 @@ var GLPIImpact = {
             });
         });
 
-        // Add a new node on the graph
+        // Add a node on the graph
         $(GLPIImpact.selectors.addNode).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_NODE);
         });
 
-        // Add a new edge on the graph
+        // Add a edge on the graph
         $(GLPIImpact.selectors.addEdge).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_EDGE);
         });
 
-        // Add a new compound on the graph
+        // Add a compound on the graph
         $(GLPIImpact.selectors.addCompound).click(function() {
             GLPIImpact.setEditionMode(GLPIImpact.EDITION_ADD_COMPOUND);
         });
@@ -3924,7 +3985,7 @@ var GLPIImpact = {
             $(GLPIImpact.selectors.sideSearch).show();
             $(GLPIImpact.selectors.sideSearch + " img").attr('title', $(img).attr('title'));
             $(GLPIImpact.selectors.sideSearch + " img").attr('src', $(img).attr('src'));
-            $(GLPIImpact.selectors.sideSearch + " > h4 > span").html($(img).attr('title'));
+            $(GLPIImpact.selectors.sideSearch + " > h4 > span").html(_.escape($(img).attr('title')));
             $(GLPIImpact.selectors.sideSearchSelectItemtype).hide();
 
             // Empty search
@@ -4119,6 +4180,7 @@ var GLPIImpact = {
                     target  : node.data('badge').target,
                     itemtype: node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[0],
                     id      : node.data('id').split(GLPIImpact.NODE_ID_SEPERATOR)[1],
+                    id_option: node.data('id_option'),
                 });
 
                 // Draw the badge
@@ -4142,5 +4204,7 @@ var GLPIImpact = {
         });
     }
 };
+// Explicitly bind to the `window` object for Jest tests
+window.GLPIImpact = GLPIImpact;
 
-var searchAssetsDebounced = _.debounce(GLPIImpact.searchAssets, 400, false);
+var searchAssetsDebounced = _.debounce(window.GLPIImpact.searchAssets, 400, false);

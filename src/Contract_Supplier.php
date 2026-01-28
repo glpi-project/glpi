@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,16 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\preg_match;
+
 // Relation between Contracts and Suppliers
 class Contract_Supplier extends CommonDBRelation
 {
-   // From CommonDBRelation
-    public static $itemtype_1 = 'Contract';
+    // From CommonDBRelation
+    public static $itemtype_1 = Contract::class;
     public static $items_id_1 = 'contracts_id';
 
-    public static $itemtype_2 = 'Supplier';
+    public static $itemtype_2 = Supplier::class;
     public static $items_id_2 = 'suppliers_id';
 
     public function getForbiddenStandardMassiveAction()
@@ -54,6 +56,10 @@ class Contract_Supplier extends CommonDBRelation
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
         if (!$withtemplate) {
             $nb = 0;
             switch ($item::class) {
@@ -73,7 +79,7 @@ class Contract_Supplier extends CommonDBRelation
                 case Contract::class:
                     if (Session::haveRight("contact_enterprise", READ)) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb = self::countForItem($item);
+                            $nb = self::countForItem($item);
                         }
                         return self::createTabEntry(Supplier::getTypeName(Session::getPluralNumber()), $nb, $item::class);
                     }
@@ -85,6 +91,10 @@ class Contract_Supplier extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         switch ($item::class) {
             case Supplier::class:
                 self::showForSupplier($item);
@@ -148,7 +158,7 @@ class Contract_Supplier extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -193,7 +203,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -210,12 +219,11 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -242,7 +250,6 @@ TWIG, $twig_params);
         $rand    = mt_rand();
 
         $iterator = self::getListForItem($contract);
-        $number = count($iterator);
 
         $suppliers = [];
         $used      = [];
@@ -271,7 +278,7 @@ TWIG, $twig_params);
                                 entity_sons: contract.fields['is_recursive']
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name='add' class="btn btn-primary">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -297,7 +304,7 @@ TWIG, $twig_params);
                 if (!preg_match("?https*://?", $website)) {
                     $website = "http://" . $website;
                 }
-                $website = "<a target=_blank href='$website'>" . $data['website'] . "</a>";
+                $website = "<a target=_blank href='" . htmlescape($website) . "'>" . htmlescape($data['website']) . "</a>";
             }
 
             if (!isset($entity_cache[$data['entity']])) {
@@ -315,7 +322,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -327,15 +333,15 @@ TWIG, $twig_params);
             ],
             'formatters' => [
                 'name' => 'raw_html',
+                'website' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,30 +51,30 @@ class DeviceGraphicCard extends CommonDevice
                 [
                     'name'  => 'chipset',
                     'label' => __('Chipset'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 [
                     'name'  => 'memory_default',
                     'label' => __('Memory by default'),
                     'type'  => 'integer',
                     'min'  => 0,
-                    'unit'  => __('Mio')
+                    'unit'  => __('Mio'),
                 ],
                 [
                     'name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
-                    'type'  => 'registeredIDChooser'
+                    'type'  => 'registeredIDChooser',
                 ],
                 [
                     'name'  => 'devicegraphiccardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -104,7 +104,7 @@ class DeviceGraphicCard extends CommonDevice
             'table'              => 'glpi_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -112,7 +112,7 @@ class DeviceGraphicCard extends CommonDevice
             'table'              => 'glpi_devicegraphiccardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -159,9 +159,9 @@ class DeviceGraphicCard extends CommonDevice
 
         switch ($itemtype) {
             case Computer::class:
-                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-                InterfaceType::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-                $base->addHeader('devicegraphiccard_chipset', __('Chipset'), $super, $father);
+                Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+                InterfaceType::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+                $base->addHeader('devicegraphiccard_chipset', __s('Chipset'), $super, $father);
                 break;
         }
     }
@@ -187,7 +187,7 @@ class DeviceGraphicCard extends CommonDevice
                 if (!empty($this->fields["chipset"])) {
                     $cell = $row->addCell(
                         $row->getHeaderByName('devicegraphiccard_chipset'),
-                        $this->fields["chipset"],
+                        htmlescape($this->fields["chipset"]),
                         $father
                     );
                 }
@@ -204,6 +204,11 @@ class DeviceGraphicCard extends CommonDevice
         ];
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
@@ -219,9 +224,33 @@ class DeviceGraphicCard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicegraphiccards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '1322',
+            'table'              => 'glpi_items_devicegraphiccards',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1323',
+            'table'              => 'glpi_items_devicegraphiccards',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;

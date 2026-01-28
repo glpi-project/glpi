@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -37,6 +37,8 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Inventory\Request;
 
+use function Safe\json_decode;
+
 /**
  * Logs rules used during inventory
  */
@@ -49,14 +51,6 @@ class RuleMatchedLog extends CommonDBTM
      */
     public static $rightname = 'inventory';
 
-
-    /**
-     * Get name of this type by language of the user connected
-     *
-     * @param integer $nb number of elements
-     *
-     * @return string name of this type
-     */
     public static function getTypeName($nb = 0)
     {
         return __('Matched rules');
@@ -72,7 +66,7 @@ class RuleMatchedLog extends CommonDBTM
      *
      * @param CommonDBTM $item
      *
-     * @return integer
+     * @return int
      */
     public static function countForItem(CommonDBTM $item)
     {
@@ -91,7 +85,7 @@ class RuleMatchedLog extends CommonDBTM
 
         if ($item::class === Agent::class) {
             $array_ret[0] = self::createTabEntry(__('Import information'), 0, $item::class);
-        } else {
+        } elseif ($item instanceof CommonDBTM) {
             $continue = true;
 
             switch ($item::class) {
@@ -117,10 +111,12 @@ class RuleMatchedLog extends CommonDBTM
             }
             if (!$continue) {
                 return [];
-            } else if (empty($array_ret)) {
+            } elseif (empty($array_ret)) {
                 $cnt = self::countForItem($item);
                 $array_ret[1] = self::createTabEntry(__('Import information'), $cnt, $item::class);
             }
+        } else {
+            throw new LogicException("Item must be CommonDBTM");
         }
         return $array_ret;
     }
@@ -138,12 +134,13 @@ class RuleMatchedLog extends CommonDBTM
      * Clean old data
      *
      * @global object $DB
-     * @param integer $items_id
+     * @param int $items_id
      * @param string $itemtype
+     *
+     * @return void
      */
     public function cleanOlddata($items_id, $itemtype)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -151,11 +148,11 @@ class RuleMatchedLog extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'items_id'   => $items_id,
-                'itemtype'  => $itemtype
+                'itemtype'  => $itemtype,
             ],
             'ORDER'  => 'date DESC',
             'START'  => 30,
-            'LIMIT'  => '50000'
+            'LIMIT'  => '50000',
         ]);
         foreach ($iterator as $data) {
             $this->delete(['id' => $data['id']]);
@@ -171,10 +168,6 @@ class RuleMatchedLog extends CommonDBTM
      */
     private static function showForItem(CommonDBTM $item): void
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array $CFG_GLPI
-         */
         global $DB, $CFG_GLPI;
 
         $criteria = [
@@ -183,7 +176,7 @@ class RuleMatchedLog extends CommonDBTM
         if ($item instanceof Agent) {
             $criteria['WHERE'] = [
                 'agents_id' => $item->getID(),
-                'itemtype'  => $CFG_GLPI['inventory_types']
+                'itemtype'  => $CFG_GLPI['inventory_types'],
             ];
         } else {
             $criteria['WHERE'] = [
@@ -192,15 +185,15 @@ class RuleMatchedLog extends CommonDBTM
             ];
         }
 
-        $start = (int)($_GET['start'] ?? 0);
+        $start = (int) ($_GET['start'] ?? 0);
         $count = $DB->request($criteria + ['COUNT' => 'cpt'])->current()['cpt'];
-        $limit = (int)$_SESSION['glpilist_limit'];
+        $limit = (int) $_SESSION['glpilist_limit'];
 
         $iterator = $DB->request(
             $criteria + [
                 'ORDER'  => 'date DESC',
                 'START'  => $start,
-                'LIMIT'  => $limit
+                'LIMIT'  => $limit,
             ]
         );
 

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,8 +38,8 @@
     has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ'))
 ) %}
 {% set can_update_kb = can_update_kb|default(has_profile_right('knowbase', constant('UPDATE'))) %}
-{% set nokb = nokb|default(params['nokb'] is defined or params['nokb'] == true) %}
-{% set rand = rand|default(random()) %}
+{% set nokb = nokb|default(params['nokb'] is defined or (params['nokb'] ?? false) == true) %}
+{% set rand = rand|default(random())|safe_dom_id %}
 {% set formoptions = formoptions|default(params['formoptions'] ?? '') %}
 
 {# In some cases, we may already have an HTML form (massive actions) #}
@@ -63,7 +62,7 @@
     <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
     <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-    {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
     <div class="row mx-n3 mx-xxl-auto">
         <div class="col-12 col-xl-7 col-xxl-8">
@@ -76,7 +75,7 @@
                     'no_label': true,
                     'enable_richtext': true,
                     'enable_fileupload': true,
-                    'enable_mentions': true,
+                    'mention_options': mention_options,
                     'entities_id': item.fields['entities_id'],
                     'rand': rand,
                     'editor_height': 300,
@@ -204,16 +203,27 @@
                 {% set task_actiontime_lbl %}
                     <i class="ti ti-stopwatch me-1" title="{{ __('Duration') }}"></i>
                 {% endset %}
-                {{ fields.dropdownTimestampField('actiontime', subitem.fields['actiontime'], task_actiontime_lbl, {
-                    'full_width': true,
-                    'icon_label': true,
-                    'rand': rand,
-                    'min': 0,
-                    'max': 8 * constant('HOUR_TIMESTAMP'),
-                    'addfirstminutes': true,
-                    'inhours': true,
-                    'toadd': range(9, 100)|map(i => i * constant('HOUR_TIMESTAMP')),
-                }) }}
+
+                {% if subitem.fields['actiontime'] <= 360000 %}
+                    {% set duration_dropdown = call('Dropdown::getDurationDropdown') %}
+                    {{ fields.dropdownArrayField('actiontime', subitem.fields['actiontime'], duration_dropdown, task_actiontime_lbl, {
+                        'full_width': true,
+                        'icon_label': true,
+                        'rand': rand,
+                        'display_emptychoice': true,
+                    }) }}
+                {% else %}
+                    {{ fields.htmlField(
+                       '',
+                       subitem.fields['actiontime']|formatted_duration,
+                       task_actiontime_lbl,
+                       {
+                          label_class: "col-2",
+                          input_class: "col-10",
+                          field_class: "col-12",
+                       }
+                    ) }}
+                {% endif %}
 
                 {# User #}
                 {% set task_user_lbl %}
@@ -254,19 +264,20 @@
                 <script type="text/javascript">
                     function showPlanUpdate{{ rand }}(e) {
                         $('#plan{{ rand }}').hide();
-                        $('#viewplan{{ rand }}').load('{{ path('/ajax/planning.php') }}', {
+                        $('#dropdown_state{{ rand }}').trigger('setValue', {{ session('glpiplanned_task_state')|json_encode|raw }});
+                        $('#viewplan{{ rand }}').load(`${CFG_GLPI.root_doc}/ajax/planning.php`, {
                             action: "add_event_classic_form",
                             form: "followups", // Was followups for tasks before. Can't find where this is used.
-                            entity: {{ item.fields.entities_id }},
+                            entity: {{ item.fields.entities_id|json_encode|raw }},
                             rand_user: {{ random() }},
                             rand_group: {{ random() }},
-                            itemtype: "{{ subitem.type }}",
-                            items_id: {{ subitem.fields.id|default(-1) }},
-                            parent_itemtype: "{{ item.getType() }}",
-                            parent_items_id: {{ item.fields.id is empty ? 0 : item.fields.id }},
-                            parent_fk_field: "{{ item.getForeignKeyField() }}",
-                            begin: "{{ subitem.fields['begin'] }}",
-                            end: "{{ subitem.fields['end'] }}",
+                            itemtype: "{{ subitem.type|e('js') }}",
+                            items_id: {{ subitem.fields.id|default(-1)|json_encode|raw }},
+                            parent_itemtype: "{{ item.getType()|e('js') }}",
+                            parent_items_id: {{ (item.fields.id is empty ? 0 : item.fields.id)|json_encode|raw }},
+                            parent_fk_field: "{{ item.getForeignKeyField()|e('js') }}",
+                            begin: "{{ subitem.fields['begin']|e('js') }}",
+                            end: "{{ subitem.fields['end']|e('js') }}",
                         });
                     }
                 </script>
@@ -276,11 +287,11 @@
                         showPlanUpdate{{ rand }}();
                     </script>
                     <button id="unplan{{ rand }}" class="btn btn-outline-warning" type="submit" name="unplan"
-                            onclick="return confirm('{{ __('Confirm the deletion of planning?') }}');">
+                            onclick="return confirm('{{ __('Confirm the deletion of planning?')|e('js') }}');">
                         <i class="fas ti ti-calendar-off"></i>
                         <span>{{ __('Unplan') }}</span>
                     </button>
-                {% else %}
+                {% elseif item.isAllowedStatus(item.fields['status'], constant('CommonITILObject::PLANNED')) or constant('CommonITILObject::PLANNED') not in item.getAllStatusArray() %}
                     <button id="plan{{ rand }}" class="btn btn-outline-secondary text-truncate" onclick="showPlanUpdate{{ rand }}()" type="button">
                         <i class="ti ti-calendar"></i>
                         <span>{{ __('Plan this task') }}</span>
@@ -295,7 +306,7 @@
     {% if disable_pending_reasons is not defined or disable_pending_reasons == false %}
         {% set pending_reasons %}
             {% set show_pending_reasons_actions = item.fields['status'] == constant('CommonITILObject::WAITING') and not has_pending_reason %}
-            {% if call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
+            {% if get_current_interface() == 'central' and call('PendingReason_Item::canDisplayPendingReasonForItem', [subitem]) %}
                 <span
                     class="input-group-text bg-yellow-lt py-0 pe-0 {{ show_pending_reasons_actions ? 'flex-fill' : '' }}"
                     id="pending-reasons-control-{{ rand }}"
@@ -338,7 +349,7 @@
         {% endset %}
     {% endif %}
 
-    {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+    {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
     {# Fixed min-height ensure no height increase when toggling the pending reason button, as select 2 dropdown are a bit higher than the default footer height #}
     <div class="d-flex card-footer mx-n3 mb-n3 flex-wrap" style="row-gap: 10px; min-height: 79px">
         {% if subitem.fields['id'] <= 0 %}
@@ -361,7 +372,7 @@
 
             {% if subitem.can(subitem.fields['id'], constant('PURGE')) %}
                 <button class="btn btn-outline-danger me-2" type="submit" name="purge"
-                        onclick="return confirm('{{ __('Confirm the final deletion?') }}');">
+                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');">
                 <i class="ti ti-trash"></i>
                 <span>{{ _x('button', 'Delete permanently') }}</span>
                 </button>

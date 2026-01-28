@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,10 +33,9 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 // Fix user_dn_hash related to `user_dn` containing a special char
 $users_iterator = $DB->request(
     [
@@ -46,7 +44,7 @@ $users_iterator = $DB->request(
         'WHERE'  => [
             // `user_dn` will contains a `&` char if any of its char was sanitized
             'user_dn' => ['LIKE', '%&%'],
-        ]
+        ],
     ]
 );
 foreach ($users_iterator as $user_data) {

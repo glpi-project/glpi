@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Api\HL;
 
+use Auth;
+use Config;
 use DropdownTranslation;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AdministrationController;
@@ -42,6 +44,7 @@ use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Controller\ComponentController;
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Controller\CRUDControllerTrait;
+use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
@@ -49,12 +52,15 @@ use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
+use Glpi\Api\HL\Controller\SetupController;
+use Glpi\Api\HL\Controller\ToolController;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Api\HL\Middleware\AuthMiddlewareInterface;
 use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Middleware\CRUDRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugRequestMiddleware;
 use Glpi\Api\HL\Middleware\DebugResponseMiddleware;
+use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Middleware\IPRestrictionRequestMiddleware;
 use Glpi\Api\HL\Middleware\MiddlewareInput;
 use Glpi\Api\HL\Middleware\OAuthRequestMiddleware;
@@ -66,16 +72,25 @@ use Glpi\Api\HL\Middleware\SecurityResponseMiddleware;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\Plugin\Hooks;
 use Glpi\OAuth\Server;
+use Glpi\Plugin\Hooks;
 use GuzzleHttp\Psr7\Utils;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use ReflectionClass;
+use RuntimeException;
 use Session;
+use Throwable;
+use Toolbox;
+use User;
+
+use function Safe\ob_end_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
 
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.0.0';
+    public const API_VERSION = '2.1.0';
 
     /**
      * @var AbstractController[]
@@ -83,17 +98,17 @@ class Router
     protected array $controllers = [];
 
     /**
-     * @var array{middleware: AuthMiddlewareInterface, priority: integer, condition: callable}[]
+     * @var array{middleware: AuthMiddlewareInterface, priority: int, condition: callable}[]
      */
     protected array $auth_middlewares = [];
 
     /**
-     * @var array{middleware: RequestMiddlewareInterface, priority: integer, condition: callable}[]
+     * @var array{middleware: RequestMiddlewareInterface, priority: int, condition: callable}[]
      */
     protected array $request_middlewares = [];
 
     /**
-     * @var array{middleware: ResponseMiddlewareInterface, priority: integer, condition: callable}[]
+     * @var array{middleware: ResponseMiddlewareInterface, priority: int, condition: callable}[]
      */
     protected array $response_middlewares = [];
 
@@ -102,14 +117,14 @@ class Router
      * @var ?Request
      * @internal Only intended to be used by tests
      */
-    private ?Request $original_request;
+    private ?Request $original_request = null;
 
     /**
      * The final state of the request after it was modified by the request middlewares.
      * @var ?Request
      * @internal Only intended to be used by tests
      */
-    private ?Request $final_request;
+    private ?Request $final_request = null;
 
     /**
      * The last route that was matched and invoked.
@@ -119,9 +134,11 @@ class Router
     private ?RoutePath $last_invoked_route = null;
 
     /**
-     * @var array{client_id: string, user_id: int, scopes: array}|null The current client information if the user is authenticated.
+     * @var array{client_id: string, user_id: string, scopes: array}|null The current client information if the user is authenticated.
      */
     private ?array $current_client = null;
+
+    private static ?self $instance = null;
 
     /**
      * Get information about all API versions available.
@@ -129,7 +146,6 @@ class Router
      */
     public static function getAPIVersions(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $low_level_api_description = <<<EOT
@@ -137,10 +153,6 @@ The low-level API which is closely tied to the GLPI source code.
 While not as user friendly as the high-level API, it is more powerful and allows to do some things that are not possible with the high-level API.
 It has no promise of stability between versions so it may change without warning.
 EOT;
-        $current_version = self::API_VERSION;
-        // Get short version which is the major part of the semver string
-        $current_version_major = explode('.', $current_version)[0];
-
         return [
             [
                 'api_version' => '1',
@@ -149,9 +161,14 @@ EOT;
                 'endpoint'   => $CFG_GLPI['url_base'] . '/api.php/v1',
             ],
             [
-                'api_version' => $current_version_major,
-                'version' => self::API_VERSION,
-                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2',
+                'api_version' => '2',
+                'version' => '2.0.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.0',
+            ],
+            [
+                'api_version' => '2',
+                'version' => '2.1.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
             ],
         ];
     }
@@ -166,21 +183,34 @@ EOT;
      * @param string $version
      * @return string
      */
-    public static function normalizeAPIVersion(string $version): string
+    final public static function normalizeAPIVersion(string $version): string
     {
         $versions = array_column(static::getAPIVersions(), 'version');
-        $best_match = self::API_VERSION;
-        if (in_array($version, $versions, true)) {
-            // Exact match
-            return $version;
+        $best_match = null;
+        if (empty($version)) {
+            $version = static::API_VERSION;
         }
 
         foreach ($versions as $available_version) {
-            if (str_starts_with($available_version, $version . '.') && version_compare($available_version, $best_match, '>')) {
-                $best_match = $available_version;
+            if (str_starts_with($available_version, $version)) {
+                if ($best_match === null || version_compare($available_version, $best_match, '>')) {
+                    $best_match = $available_version;
+                }
             }
         }
+        if ($best_match === null) {
+            $best_match = static::API_VERSION;
+        }
         return $best_match;
+    }
+
+    /**
+     * Unsets the instance so it can be recreated the next time {@link getInstance()} is called.
+     * @return void
+     */
+    public static function resetInstance(): void
+    {
+        self::$instance = null;
     }
 
     /**
@@ -190,23 +220,24 @@ EOT;
      */
     public static function getInstance(): Router
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
-        static $instance;
-        if (!$instance) {
-            $instance = new self();
-            $instance->registerController(new CoreController());
-            $instance->registerController(new AssetController());
-            $instance->registerController(new ComponentController());
-            $instance->registerController(new ITILController());
-            $instance->registerController(new AdministrationController());
-            $instance->registerController(new ManagementController());
-            $instance->registerController(new ProjectController());
-            $instance->registerController(new DropdownController());
-            $instance->registerController(new GraphQLController());
-            $instance->registerController(new ReportController());
-            $instance->registerController(new RuleController());
+        if (self::$instance === null) {
+            self::$instance = new self();
+            self::$instance->registerController(new CoreController());
+            self::$instance->registerController(new AssetController());
+            self::$instance->registerController(new CustomAssetController());
+            self::$instance->registerController(new ComponentController());
+            self::$instance->registerController(new ITILController());
+            self::$instance->registerController(new AdministrationController());
+            self::$instance->registerController(new ManagementController());
+            self::$instance->registerController(new ProjectController());
+            self::$instance->registerController(new DropdownController());
+            self::$instance->registerController(new GraphQLController());
+            self::$instance->registerController(new ReportController());
+            self::$instance->registerController(new RuleController());
+            self::$instance->registerController(new ToolController());
+            self::$instance->registerController(new SetupController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
@@ -216,27 +247,25 @@ EOT;
                     }
                     foreach ($controllers as $controller) {
                         if (is_subclass_of($controller, AbstractController::class, true)) {
-                            $instance->registerController(new $controller());
+                            self::$instance->registerController(new $controller());
                         }
                     }
                 }
             }
 
             // Cookie middleware shouldn't run by default. Must be explicitly enabled by adding it in a Route attribute.
-            $instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
+            self::$instance->registerAuthMiddleware(new CookieAuthMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
-            $instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
-            $instance->registerRequestMiddleware(new OAuthRequestMiddleware());
-            $instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static function (RoutePath $route_path) {
-                return \Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class);
-            });
-            $instance->registerRequestMiddleware(new DebugRequestMiddleware());
-            $instance->registerRequestMiddleware(new RSQLRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new IPRestrictionRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new OAuthRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new CRUDRequestMiddleware(), 0, static fn(RoutePath $route_path) => Toolbox::hasTrait($route_path->getControllerInstance(), CRUDControllerTrait::class));
+            self::$instance->registerRequestMiddleware(new DebugRequestMiddleware());
+            self::$instance->registerRequestMiddleware(new RSQLRequestMiddleware());
 
             // Always run the security middleware (no condition set)
-            $instance->registerResponseMiddleware(new SecurityResponseMiddleware());
-            $instance->registerResponseMiddleware(new DebugResponseMiddleware(), PHP_INT_MAX);
-            $instance->registerResponseMiddleware(new ResultFormatterMiddleware(), 0, static fn(RoutePath $route_path) => false);
+            self::$instance->registerResponseMiddleware(new SecurityResponseMiddleware());
+            self::$instance->registerResponseMiddleware(new DebugResponseMiddleware(), PHP_INT_MAX);
+            self::$instance->registerResponseMiddleware(new ResultFormatterMiddleware(), 0, static fn(RoutePath $route_path) => false);
 
             // Register middleware from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_MIDDLEWARE])) {
@@ -246,23 +275,23 @@ EOT;
                     }
                     foreach ($middlewares as $middleware_info) {
                         if (
-                            !isset($middleware_info['middleware']) ||
-                            !is_subclass_of($middleware_info['middleware'], AbstractMiddleware::class, true)
+                            !isset($middleware_info['middleware'])
+                            || !is_subclass_of($middleware_info['middleware'], AbstractMiddleware::class, true)
                         ) {
                             continue;
                         }
                         $middleware = new $middleware_info['middleware']();
-                        if (class_implements($middleware, RequestMiddlewareInterface::class)) {
-                            $instance->registerRequestMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
+                        if ($middleware instanceof RequestMiddlewareInterface) {
+                            self::$instance->registerRequestMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
                         }
-                        if (class_implements($middleware, ResponseMiddlewareInterface::class)) {
-                            $instance->registerResponseMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
+                        if ($middleware instanceof ResponseMiddlewareInterface) {
+                            self::$instance->registerResponseMiddleware(new $middleware(), $middleware_info['priority'] ?? 0, $middleware_info['condition'] ?? null);
                         }
                     }
                 }
             }
         }
-        return $instance;
+        return self::$instance;
     }
 
     /**
@@ -308,7 +337,7 @@ EOT;
      * @param AuthMiddlewareInterface $middleware
      * @param int $priority
      * @param callable|null $condition
-     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @phpstan-param null|callable(RoutePath): bool $condition
      * @return void
      */
     public function registerAuthMiddleware(AuthMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
@@ -319,9 +348,7 @@ EOT;
             'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->auth_middlewares, static function ($a, $b) {
-            return $a['priority'] <=> $b['priority'];
-        });
+        usort($this->auth_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -330,7 +357,7 @@ EOT;
      * @param RequestMiddlewareInterface $middleware
      * @param int $priority
      * @param callable|null $condition
-     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @phpstan-param null|callable(RoutePath): bool $condition
      * @return void
      */
     public function registerRequestMiddleware(RequestMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
@@ -341,9 +368,7 @@ EOT;
             'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->request_middlewares, static function ($a, $b) {
-            return $a['priority'] <=> $b['priority'];
-        });
+        usort($this->request_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -352,7 +377,7 @@ EOT;
      * @param ResponseMiddlewareInterface $middleware
      * @param int $priority
      * @param callable|null $condition
-     * @phpstan-param null|callable(AbstractController): bool $condition
+     * @phpstan-param null|callable(RoutePath): bool $condition
      * @return void
      */
     public function registerResponseMiddleware(ResponseMiddlewareInterface $middleware, int $priority = 0, ?callable $condition = null): void
@@ -363,9 +388,7 @@ EOT;
             'condition' => $condition ?? static fn(RoutePath $route_path) => true,
         ];
         // Sort by priority (Higher priority last due to how the processing is done)
-        usort($this->response_middlewares, static function ($a, $b) {
-            return $a['priority'] <=> $b['priority'];
-        });
+        usort($this->response_middlewares, static fn($a, $b) => $a['priority'] <=> $b['priority']);
     }
 
     /**
@@ -374,7 +397,6 @@ EOT;
      */
     private function cacheRoutes(array $routes): void
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $hints = [];
@@ -389,14 +411,13 @@ EOT;
      */
     private function getRoutesFromCache(): array
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $routes = [];
         $hints = $GLPI_CACHE->get('hlapi_routes') ?? [];
         if (empty($hints)) {
             foreach ($this->controllers as $controller) {
-                $rc = new \ReflectionClass($controller);
+                $rc = new ReflectionClass($controller);
                 $methods = $rc->getMethods();
 
                 foreach ($methods as $method) {
@@ -462,9 +483,7 @@ EOT;
             ];
         }
         // Sort by href
-        usort($paths, static function ($a, $b) {
-            return strcmp($a['href'], $b['href']);
-        });
+        usort($paths, static fn($a, $b) => strcmp($a['href'], $b['href']));
         return $paths;
     }
 
@@ -476,10 +495,10 @@ EOT;
     {
         $routes = $this->getRoutesFromCache();
 
-        $api_version = $request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION;
+        $api_version = self::normalizeAPIVersion($request->getHeaderLine('GLPI-API-Version') ?: static::API_VERSION);
         // Filter routes by the requested API version and method
         $routes = array_filter($routes, static function ($route) use ($request, $api_version) {
-            if ($route->matchesAPIVersion($api_version) && in_array($request->getMethod(), $route->getRouteMethods(), true)) {
+            if (in_array($request->getMethod(), $route->getRouteMethods(), true) && $route->matchesAPIVersion($api_version)) {
                 // Verify the request uri path matches the compiled path
                 return (bool) preg_match('#^' . $route->getCompiledPath() . '$#i', $request->getUri()->getPath());
             }
@@ -508,9 +527,7 @@ EOT;
         }
 
         // Sort routes by priority (descending)
-        usort($routes, static function (RoutePath $a, RoutePath $b) {
-            return ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1;
-        });
+        usort($routes, static fn(RoutePath $a, RoutePath $b) => ($a->getRoutePriority() < $b->getRoutePriority()) ? -1 : 1);
 
         return array_reverse($routes);
     }
@@ -530,52 +547,54 @@ EOT;
 
     private function doAuthMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-        };
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
         foreach ($this->auth_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input);
+        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
     }
 
     private function doRequestMiddleware(MiddlewareInput $input): ?Response
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-            return null;
-        };
+        $action = (static fn(MiddlewareInput $input, ?callable $next = null) => null);
         foreach ($this->request_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        return $action($input);
+
+        /** @var ?Response $result  */
+        $result = $action($input);
+
+        return $result;
     }
 
     private function doResponseMiddleware(MiddlewareInput $input): void
     {
-        $action = static function (MiddlewareInput $input, ?callable $next = null) {
-        };
+        $action = static function (MiddlewareInput $input, ?callable $next = null) {};
         foreach ($this->response_middlewares as $middleware) {
             $explicit_include = in_array(get_class($middleware['middleware']), $input->route_path->getMiddlewares());
             $conditions_met = $explicit_include || $middleware['condition']($input->route_path);
             if (!$conditions_met) {
                 continue;
             }
-            $action = static fn ($input) => $middleware['middleware']($input, $action);
+            $action = static fn($input) => $middleware['middleware']($input, $action);
         }
-        $action($input);
+        $action($input); // @phpstan-ignore expr.resultUnused (phpstan doens't understand this, TODO rewrite with listeners instead of callbacks)
     }
 
     public function handleRequest(Request $request): Response
     {
+        global $CFG_GLPI;
+
         // Start an output buffer to capture any potential debug errors
         $current_output_buffer_level = ob_get_level();
         ob_start();
@@ -603,9 +622,9 @@ EOT;
                         $request->setParameter((string) $key, $value);
                     }
                 } else {
-                    throw new \RuntimeException();
+                    throw new RuntimeException();
                 }
-            } catch (\Throwable) {
+            } catch (Throwable) {
                 $response = new JSONResponse(
                     AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, _x('api', 'Invalid JSON body')),
                     400
@@ -613,36 +632,49 @@ EOT;
             }
         }
 
-        try {
-            $this->handleAuth($request);
-        } catch (OAuthServerException $e) {
-            return new JSONResponse(
-                content: AbstractController::getErrorResponseBody(
-                    status: AbstractController::ERROR_INVALID_PARAMETER,
-                    title: 'Invalid OAuth token',
-                    detail: $e->getHint()
-                ),
-                status: 400
-            );
+        if (Config::isHlApiEnabled()) {
+            // OAuth will only be used if the API is enabled
+            try {
+                $this->handleAuth($request);
+            } catch (OAuthServerException $e) {
+                return new JSONResponse(
+                    content: AbstractController::getErrorResponseBody(
+                        status: AbstractController::ERROR_INVALID_PARAMETER,
+                        title: 'Invalid OAuth token',
+                        detail: $e->getHint()
+                    ),
+                    status: 400
+                );
+            }
         }
 
         $this->original_request = clone $request;
         $matched_route = $this->match($request);
+        $routes_allowed_when_disabled = ['/token', '/status/all'];
 
         if ($matched_route === null) {
             $response = new Response(404);
         } else {
             $requires_auth = $matched_route->getRouteSecurityLevel() !== Route::SECURITY_NONE;
-            $unauthenticated_response = new JSONResponse([
-                'title' => _x('api', 'You are not authenticated'),
-                'detail' => _x('api', 'The Authorization header is missing or invalid'),
-                'status' => 'ERROR_UNAUTHENTICATED',
-            ], 401);
+            if (Config::isHlApiEnabled()) {
+                $unauthenticated_response = new JSONResponse([
+                    'title' => _x('api', 'You are not authenticated'),
+                    'detail' => _x('api', 'The Authorization header is missing or invalid'),
+                    'status' => 'ERROR_UNAUTHENTICATED',
+                ], 401);
+            } else {
+                // Remove all authentication middlewares except InternalAuthMiddleware if it is present
+                // If HL API is disabled, only internal requests should be allowed as they are used for features like Webhooks rather than user-initiated requests
+                $this->auth_middlewares = array_filter($this->auth_middlewares, static fn($middleware) => get_class($middleware['middleware']) === InternalAuthMiddleware::class);
+                // The internal auth is required to succeed here even for public endpoints because the HL API is disabled
+                $requires_auth = !in_array(strtolower($matched_route->getCompiledPath()), $routes_allowed_when_disabled, true);
+                $unauthenticated_response = AbstractController::getAccessDeniedErrorResponse('The High-Level API is disabled');
+            }
             $middleware_input = new MiddlewareInput($request, $matched_route, $unauthenticated_response);
             // Do auth middlewares now even if auth isn't required so session data *could* be used like the theme for doc endpoints.
             $this->doAuthMiddleware($middleware_input);
             $auth_from_middleware = $middleware_input->response === null;
-            $this->current_client = $this->current_client ?? $middleware_input->client;
+            $this->current_client ??= $middleware_input->client;
 
             if ($requires_auth && !$auth_from_middleware) {
                 if (!($request->hasHeader('Authorization') && Session::getLoginUserID() !== false)) {
@@ -669,7 +701,7 @@ EOT;
                     }
                     if (count($missing_params)) {
                         $errors = [
-                            'missing' => $missing_params
+                            'missing' => $missing_params,
                         ];
                         $response = AbstractController::getInvalidParametersErrorResponse($errors);
                     }
@@ -712,14 +744,14 @@ EOT;
             if ($request->hasHeader('GLPI-Profile')) {
                 $requested_profile = $request->getHeaderLine('GLPI-Profile');
                 if (is_numeric($requested_profile)) {
-                    Session::changeProfile((int)$requested_profile);
+                    Session::changeProfile((int) $requested_profile);
                 }
             }
             if ($request->hasHeader('GLPI-Entity')) {
                 $requested_entity = $request->getHeaderLine('GLPI-Entity');
                 if (is_numeric($requested_entity)) {
                     $is_recursive = $request->hasHeader('GLPI-Entity-Recursive') && strtolower($request->getHeaderLine('GLPI-Entity-Recursive')) === 'true';
-                    Session::changeActiveEntities((int)$requested_entity, $is_recursive);
+                    Session::changeActiveEntities((int) $requested_entity, $is_recursive);
                 }
             }
         }
@@ -731,9 +763,9 @@ EOT;
     public function startTemporarySession(Request $request): void
     {
         $this->current_client = Server::validateAccessToken($request);
-        $auth = new \Auth();
+        $auth = new Auth();
         $auth->auth_succeded = true;
-        $auth->user = new \User();
+        $auth->user = new User();
         $auth->user->getFromDB($this->current_client['user_id']);
         Session::init($auth);
         if ($request->getHeaderLine('Accept-Language')) {
@@ -741,28 +773,6 @@ EOT;
             $_SERVER['HTTP_ACCEPT_LANGUAGE'] = $request->getHeaderLine('Accept-Language');
             $_SESSION['glpilanguage'] = Session::getPreferredLanguage();
             $_SESSION['glpi_dropdowntranslations'] = DropdownTranslation::getAvailableTranslations($_SESSION["glpilanguage"]);
-        }
-    }
-
-    /**
-     * Resume a session from a session token.
-     * @param string $session_token
-     * @return void
-     */
-    private function resumeSession(string $session_token): void
-    {
-        $current = session_id();
-        $session = trim($session_token);
-
-        if (file_exists(GLPI_ROOT . '/inc/downstream.php')) {
-            include_once(GLPI_ROOT . '/inc/downstream.php');
-        }
-
-        if ($session != $current && !empty($current)) {
-            session_destroy();
-        }
-        if ($session != $current && !empty($session)) {
-            session_id($session);
         }
     }
 

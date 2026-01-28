@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -32,6 +32,6 @@
 
 {{ call('Html::zeroSecurityIframedHeader', [grid.getDashboard().title, 'central', 'central']) }}
 
-{% do grid.embed(params) %}
+{% do grid.show(true, token) %}
 
 {{ call('Html::popFooter') }}

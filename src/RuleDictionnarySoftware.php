@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -93,7 +93,7 @@ class RuleDictionnarySoftware extends Rule
 
         $actions['version']['name']               = _n('Version', 'Versions', 1);
         $actions['version']['force_actions']      = ['assign','regex_result',
-            'append_regex_result'
+            'append_regex_result',
         ];
 
         $actions['manufacturer']['name']          = __('Publisher');
@@ -127,16 +127,16 @@ class RuleDictionnarySoftware extends Rule
     public function showSpecificCriteriasForPreview($fields)
     {
         if (isset($this->fields['id'])) {
-            $this->getRuleWithCriteriasAndActions($this->fields['id'], 0, 1);
+            $this->getRuleWithCriteriasAndActions($this->fields['id'], false, true);
         }
 
         $twig_params = [
             'actions' => $this->actions,
-            'fields' => $fields,
+            'values' => $fields,
             'action_names' => [],
-            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+            'type_match' => ($this->fields['match'] ?? Rule::AND_MATCHING) ? __('AND') : __('OR'),
         ];
-        $actions = $this->getActions();
+        $actions = $this->getAllActions();
         foreach ($actions as $key => $action) {
             $twig_params['action_names'][$key] = $action['name'];
         }
@@ -151,7 +151,7 @@ class RuleDictionnarySoftware extends Rule
                         field_class: 'col-2',
                         input_class: 'col-12'
                     }) }}
-                    {{ fields.textField('version', fields[action.fields['field']]|default(''), action_names[action.fields['field']], {
+                    {{ fields.textField('version', values[action.fields['field']]|default(''), action_names[action.fields['field']], {
                         field_class: 'col-10',
                         label_class: 'col-5',
                         input_class: 'col-7'

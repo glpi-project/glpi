@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,28 +33,27 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
-if (!$DB->fieldExists(\Domain_Item::getTable(), 'is_dynamic')) {
+if (!$DB->fieldExists(Domain_Item::getTable(), 'is_dynamic')) {
     $migration->addField(
-        \Domain_Item::getTable(),
+        Domain_Item::getTable(),
         'is_dynamic',
         'bool'
     );
     $migration->addKey(
-        \Domain_Item::getTable(),
+        Domain_Item::getTable(),
         'is_dynamic'
     );
 
     $migration->addField(
-        \Domain_Item::getTable(),
+        Domain_Item::getTable(),
         'is_deleted',
         'bool'
     );
     $migration->addKey(
-        \Domain_Item::getTable(),
+        Domain_Item::getTable(),
         'is_deleted'
     );
 }

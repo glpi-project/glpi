@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,14 +33,13 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  */
-
 // CAS version config was missing on fresh installations since GLPI 9.4.0
 $migration->addConfig(['cas_version' => 'CAS_VERSION_2_0']);
 
 $should_inventory_be_enabled = 0; //default value
-if (countElementsInTable(\Agent::getTable()) > 0) {
+if (countElementsInTable(Agent::getTable()) > 0) {
     $should_inventory_be_enabled = 1;
 }
 $migration->addConfig(['enabled_inventory' => $should_inventory_be_enabled], 'inventory');

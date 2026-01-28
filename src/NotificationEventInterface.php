@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,20 +38,20 @@ interface NotificationEventInterface
     /**
      * Raise a notification event
      *
-     * @param string               $event              Event
-     * @param CommonGLPI           $item               Notification data
-     * @param array                $options            Options
-     * @param string               $label              Label
-     * @param array                $data               Notification data
-     * @param NotificationTarget   $notificationtarget Target
-     * @param NotificationTemplate $template           Template
-     * @param boolean              $notify_me          Whether to notify current user
-     * @param mixed                $emitter            If this action is executed by the cron, we can
-     *                                                 supply the id of the user (or the email if this
-     *                                                 is an anonymous user with no account) who
-     *                                                 triggered the event so it can be used instead of
-     *                                                 getLoginUserID
-     * @param CommonDBTM|null      $trigger            Item that raises the notification (in case notification was raised by a child item).
+     * @param string                                    $event              Event
+     * @param CommonGLPI                                $item               Notification data
+     * @param array                                     $options            Options
+     * @param string                                    $label              Label
+     * @param array                                     $data               Notification data
+     * @param NotificationTarget<covariant CommonGLPI>  $notificationtarget Target
+     * @param NotificationTemplate                      $template           Template
+     * @param bool                                   $notify_me          Whether to notify current user
+     * @param mixed                                     $emitter            If this action is executed by the cron, we can
+     *                                                                      supply the id of the user (or the email if this
+     *                                                                      is an anonymous user with no account) who
+     *                                                                      triggered the event so it can be used instead of
+     *                                                                      getLoginUserID
+     * @param CommonDBTM|null                           $trigger            Item that raises the notification (in case notification was raised by a child item).
      *
      * @return void
      *
@@ -90,7 +90,7 @@ interface NotificationEventInterface
     /**
      * Whether notifications can be handled by a crontab
      *
-     * @return boolean
+     * @return bool
      */
     public static function canCron();
 
@@ -104,7 +104,7 @@ interface NotificationEventInterface
     /**
      * Get entity admin data
      *
-     * @param integer $entity Entity ID
+     * @param int $entity Entity ID
      *
      * @return array
      */
@@ -115,7 +115,7 @@ interface NotificationEventInterface
      *
      * @param array $data Data to send
      *
-     * @return false|integer False if something went wrong, number of send notifications otherwise
+     * @return false|int False if something went wrong, number of send notifications otherwise
      */
     public static function send(array $data);
 }

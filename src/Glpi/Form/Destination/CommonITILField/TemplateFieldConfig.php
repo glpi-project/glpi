@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,15 +37,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Glpi\Form\Export\Specification\DestinationContentSpecification;
 use Override;
 
 final class TemplateFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
@@ -55,24 +50,7 @@ final class TemplateFieldConfig implements
     public function __construct(
         private TemplateFieldStrategy $strategy,
         private ?int $specific_template_id = null,
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        if (!($content_spec instanceof DestinationContentSpecification)) {
-            throw new \InvalidArgumentException(
-                "Content specification must be an instance of " . DestinationContentSpecification::class
-            );
-        }
-
-        $destination_itemtype = $content_spec->itemtype;
-        $destination_target = new ($destination_itemtype::getTargetItemtype())();
-        return [
-            new ForeignKeyHandler(self::TEMPLATE_ID, $destination_target->getTemplateClass())
-        ];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

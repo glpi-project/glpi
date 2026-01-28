@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -131,4 +131,4 @@ $input-focus-border-color: color-mix(in srgb, var(--tblr-primary), white 50%);
 $input-focus-box-shadow: 0 0 1 .25rem color-mix(in srgb, var(--tblr-primary), transparent 75%);
 
 // RFS. Done as import because of complexity.
-@import "../lib/bootstrap/rfs";
+@import "../lib/rfs/scss";

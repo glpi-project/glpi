@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryExpression;
 
 /**
  * NetworkName Class
@@ -49,7 +49,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class NetworkName extends FQDNLabel
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype              = 'itemtype';
     public static $items_id              = 'items_id';
     public $dohistory                    = true;
@@ -84,23 +84,13 @@ class NetworkName extends FQDNLabel
     {
         $ong  = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('NetworkAlias', $ong, $options);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(NetworkAlias::class, $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
 
-    /**
-     * Print the network name form
-     *
-     * @param integer $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - withtemplate template or basic computer
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -130,6 +120,8 @@ class NetworkName extends FQDNLabel
             'item'                          => $this,
             'params'                        => $options,
         ]);
+
+        return true;
     }
 
     public function rawSearchOptions()
@@ -141,7 +133,7 @@ class NetworkName extends FQDNLabel
             'table'              => 'glpi_fqdns',
             'field'              => 'fqdn',
             'name'               => FQDN::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -150,11 +142,11 @@ class NetworkName extends FQDNLabel
             'field'              => 'name',
             'name'               => IPAddress::getTypeName(1),
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -163,7 +155,7 @@ class NetworkName extends FQDNLabel
             'field'              => 'itemtype',
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -172,7 +164,7 @@ class NetworkName extends FQDNLabel
             'field'              => 'items_id',
             'name'               => __('ID'),
             'datatype'           => 'integer',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -181,6 +173,8 @@ class NetworkName extends FQDNLabel
     /**
      * @param array $tab the array to fill
      * @param array $joinparams
+     *
+     * @return void
      **/
     public static function rawSearchOptionsToAdd(array &$tab, array $joinparams)
     {
@@ -195,9 +189,9 @@ class NetworkName extends FQDNLabel
             'joinparams'          => [
                 'jointype'  => 'mainitemtype_mainitem',
                 'condition' => ['NEWTABLE.is_deleted' => 0,
-                    'NOT' => ['NEWTABLE.name' => '']
-                ]
-            ]
+                    'NOT' => ['NEWTABLE.name' => ''],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -207,7 +201,7 @@ class NetworkName extends FQDNLabel
             'name'                => self::getTypeName(Session::getPluralNumber()),
             'forcegroupby'        => true,
             'massiveaction'       => false,
-            'joinparams'          => $joinparams
+            'joinparams'          => $joinparams,
         ];
 
         $tab[] = [
@@ -221,9 +215,9 @@ class NetworkName extends FQDNLabel
                 'jointype'   => 'child',
                 'beforejoin' => [
                     'table'      => 'glpi_networknames',
-                    'joinparams' => $joinparams
-                ]
-            ]
+                    'joinparams' => $joinparams,
+                ],
+            ],
         ];
     }
 
@@ -231,6 +225,8 @@ class NetworkName extends FQDNLabel
      * Update IPAddress database
      *
      * Update IPAddress database to remove old IPs and add new ones.
+     *
+     * @return void
      **/
     public function post_workOnItem()
     {
@@ -239,8 +235,8 @@ class NetworkName extends FQDNLabel
             && (is_array($this->input['_ipaddresses']))
         ) {
             $input = [
-                'itemtype' => 'NetworkName',
-                'items_id' => $this->getID()
+                'itemtype' => NetworkName::class,
+                'items_id' => $this->getID(),
             ];
             foreach ($this->input['_ipaddresses'] as $id => $ip) {
                 $ipaddress     = new IPAddress();
@@ -270,7 +266,6 @@ class NetworkName extends FQDNLabel
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $this->post_workOnItem();
@@ -286,15 +281,15 @@ class NetworkName extends FQDNLabel
                     $DB->request([
                         'FROM' => 'glpi_ipaddresses',
                         'WHERE' => [
-                            'itemtype' => 'NetworkName',
-                            'items_id' => $this->getID()
-                        ]
+                            'itemtype' => NetworkName::class,
+                            'items_id' => $this->getID(),
+                        ],
                     ]) as $data
                 ) {
                     $ip->update([
                         'id'       => $data['id'],
-                        'itemtype' => 'NetworkName',
-                        'items_id' => $this->getID()
+                        'itemtype' => NetworkName::class,
+                        'items_id' => $this->getID(),
                     ]);
                 }
             }
@@ -317,12 +312,13 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $items_id  the id of the item
+     * @param int $items_id  the id of the item
      * @param string  $itemtype  the type of the item
+     *
+     * @return void
      **/
     public static function unaffectAddressesOfItem($items_id, $itemtype)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -330,8 +326,8 @@ class NetworkName extends FQDNLabel
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
-            ]
+                'items_id'  => $items_id,
+            ],
         ]);
 
         foreach ($iterator as $networkNameID) {
@@ -344,7 +340,9 @@ class NetworkName extends FQDNLabel
      *
      * The address can be unaffected, and remain "free"
      *
-     * @param integer $networkNameID the id of the NetworkName
+     * @param int $networkNameID the id of the NetworkName
+     *
+     * @return bool
      **/
     public static function unaffectAddressByID($networkNameID)
     {
@@ -352,8 +350,8 @@ class NetworkName extends FQDNLabel
     }
 
     /**
-     * @param integer $networkNameID
-     * @param integer $items_id
+     * @param int $networkNameID
+     * @param int $items_id
      * @param string $itemtype
      * @return bool
      */
@@ -363,19 +361,18 @@ class NetworkName extends FQDNLabel
         return $networkName->update([
             'id'       => $networkNameID,
             'items_id' => $items_id,
-            'itemtype' => $itemtype
+            'itemtype' => $itemtype,
         ]);
     }
 
     /**
-     * @param integer $networkPortID
+     * @param int $networkPortID
      * @used-by templates/pages/assets/networkport/form.html.twig
-     **/
+     *
+     * @return void
+     */
     public static function showFormForNetworkPort($networkPortID)
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $name = new self();
@@ -386,10 +383,10 @@ class NetworkName extends FQDNLabel
                 'SELECT' => 'id',
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'itemtype'     => 'NetworkPort',
+                    'itemtype'     => NetworkPort::class,
                     'items_id'     => $networkPortID,
-                    'is_deleted'   => 0
-                ]
+                    'is_deleted'   => 0,
+                ],
             ]);
             $numrows = count($iterator);
 
@@ -402,7 +399,7 @@ class NetworkName extends FQDNLabel
                     {% endset %}
                     {{ field.htmlField('', alert, 'NetworkName'|itemtype_name) }}
 TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Name' to manage them.")]);
-            } else if ($numrows === 1) {
+            } elseif ($numrows === 1) {
                 $result = $iterator->current();
                 $name->getFromDB($result['id']);
             }
@@ -421,7 +418,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
     }
 
     /**
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param HTMLTableBase $base
      * @param HTMLTableSuperHeader|null $super
      * @param HTMLTableHeader|null $father
@@ -429,6 +426,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * @throws Exception
      * @since 0.84
      *
+     * @return void
      */
     public static function getHTMLTableHeader(
         $itemtype,
@@ -438,14 +436,14 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         array $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
         if (
             isset($options['massiveactionnetworkname'])
             && $options['massiveactionnetworkname']
         ) {
             $delete_all_column = $base->addHeader(
                 'delete',
-                Html::getCheckAllAsCheckbox('mass' . __CLASS__ . $options['rand']),
+                Html::getCheckAllAsCheckbox('mass' . self::class . $options['rand']),
                 $super,
                 $father
             );
@@ -471,8 +469,8 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
             }
         }
 
-        NetworkAlias::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-        IPAddress::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
+        NetworkAlias::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+        IPAddress::getHTMLTableHeader(self::class, $base, $super, $father, $options);
     }
 
     /**
@@ -482,6 +480,8 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * @param array $options
      * @throws Exception
      * @since 0.84
+     *
+     * @return void
      */
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
@@ -489,25 +489,28 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if ($item === null) {
             if ($father === null) {
                 return;
             }
             $item = $father->getItem();
+            if ($item === false) {
+                return;
+            }
+
         }
 
         $table = static::getTable();
         $criteria = [
             'SELECT' => [
-                "$table.id"
+                "$table.id",
             ],
             'FROM'   => $table,
-            'WHERE'  => []
+            'WHERE'  => [],
         ];
 
         switch ($item::class) {
@@ -526,17 +529,17 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                                     $table               => 'id', [
                                         'AND' => [
                                             'glpi_ipaddresses.itemtype'   => self::class,
-                                            'glpi_ipaddresses.is_deleted' => 0
-                                        ]
-                                    ]
-                                ]
+                                            'glpi_ipaddresses.is_deleted' => 0,
+                                        ],
+                                    ],
+                                ],
                             ];
                             $criteria['ORDERBY'] = [
                                 new QueryExpression("ISNULL (" . $DB::quoteName('glpi_ipaddresses.id') . ")"),
                                 'glpi_ipaddresses.binary_3',
                                 'glpi_ipaddresses.binary_2',
                                 'glpi_ipaddresses.binary_1',
-                                'glpi_ipaddresses.binary_0'
+                                'glpi_ipaddresses.binary_0',
                             ];
                             break;
 
@@ -545,13 +548,13 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                                 'glpi_networkaliases'   => [
                                     'ON'  => [
                                         'glpi_networkaliases'   => 'networknames_id',
-                                        $table                  => 'id'
-                                    ]
-                                ]
+                                        $table                  => 'id',
+                                    ],
+                                ],
                             ];
                             $criteria['ORDERBY'] = [
                                 new QueryExpression("ISNULL (" . $DB::quoteName('glpi_networkaliases.name') . ")"),
-                                'glpi_networkaliases.name'
+                                'glpi_networkaliases.name',
                             ];
                             break;
                     }
@@ -559,7 +562,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
 
                 $criteria['WHERE'] = [
                     "$table.fqdns_id"    => $item->fields['id'],
-                    "$table.is_deleted"  => 0
+                    "$table.is_deleted"  => 0,
                 ];
                 break;
 
@@ -567,7 +570,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                 $criteria['WHERE'] = [
                     'itemtype'     => NetworkPort::class,
                     'items_id'     => $item->getID(),
-                    'is_deleted'   => 0
+                    'is_deleted'   => 0,
                 ];
                 break;
 
@@ -579,15 +582,15 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                             $table               => 'items_id', [
                                 'AND' => [
                                     "$table.itemtype"    => 'NetworkPort',
-                                    "$table.is_deleted"  => 0
-                                ]
-                            ]
-                        ]
-                    ]
+                                    "$table.is_deleted"  => 0,
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
                 $criteria['WHERE'] = [
                     'glpi_networkports.itemtype'  => NetworkEquipment::class,
-                    'glpi_networkports.items_id'  => $item->getID()
+                    'glpi_networkports.items_id'  => $item->getID(),
                 ];
                 break;
         }
@@ -612,7 +615,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                     && $options['massiveactionnetworkname']
                 ) {
                     $header      = $row->getGroup()->getHeaderByName('Internet', 'delete');
-                    $cell_value  = Html::getMassiveActionCheckBox(__CLASS__, $line["id"]);
+                    $cell_value  = Html::getMassiveActionCheckBox(self::class, $line["id"]);
                     $row->addCell($header, $cell_value, $father);
                 }
 
@@ -622,7 +625,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                 }
                 $content  = htmlescape($internetName);
                 if (Session::haveRight('internet', READ)) {
-                    $content  = '<a href="' . $address->getLinkURL() . '">'
+                    $content  = '<a href="' . htmlescape($address->getLinkURL()) . '">'
                         . htmlescape($internetName)
                         . '</a>';
                 }
@@ -637,7 +640,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
                         );
                         $dynamic_cell = $row->addCell(
                             $dyn_header,
-                            Dropdown::getYesNo($address->fields['is_dynamic']),
+                            htmlescape(Dropdown::getYesNo($address->fields['is_dynamic'])),
                             $name_cell
                         );
                         $father_for_children = $dynamic_cell;
@@ -662,7 +665,7 @@ TWIG, ['alert' => __("Several network names available! Go to the tab 'Network Na
      * form through NetworkPort::ShowForItem).
      *
      * @param CommonDBTM $item
-     * @param integer $withtemplate
+     * @param int $withtemplate
      * @return false|void
      * @throws Exception
      */
@@ -736,13 +739,13 @@ TWIG, $twig_params);
                 $table_options['column_links'] = [
                     'NetworkName' => 'javascript:reloadTab("order=name");',
                     'NetworkAlias' => 'javascript:reloadTab("order=alias");',
-                    'IPAddress' => 'javascript:reloadTab("order=ip");'
+                    'IPAddress' => 'javascript:reloadTab("order=ip");',
                 ];
             }
 
             $table_options['SQL_options']  = [
                 'LIMIT'  => $_SESSION['glpilist_limit'],
-                'START'  => $start
+                'START'  => $start,
             ];
 
             $canedit = false;
@@ -760,7 +763,7 @@ TWIG, $twig_params);
         );
         $t_group                                   = $table->createGroup('Main', '');
 
-        self::getHTMLTableHeader(__CLASS__, $t_group, $column, null, $table_options);
+        self::getHTMLTableHeader(self::class, $t_group, $column, null, $table_options);
 
         $t_row   = $t_group->createRow();
 
@@ -770,35 +773,35 @@ TWIG, $twig_params);
             $number = min($_SESSION['glpilist_limit'], $table->getNumberOfRows());
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
             Session::initNavigateListItems(
-                __CLASS__,
+                self::class,
                 //TRANS : %1$s is the itemtype name,
-                                 //        %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            $item::getTypeName(1),
-                                            $item->getName()
-                                        )
+                //        %2$s is the name of the item (used for headings of a list)
+                sprintf(
+                    __('%1$s = %2$s'),
+                    $item::getTypeName(1),
+                    $item->getName()
+                )
             );
             if ($canedit && $number) {
-                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
-                 $massiveactionparams = [
-                     'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
-                     'container'        => 'mass' . __CLASS__ . $rand
-                 ];
-                 Html::showMassiveActions($massiveactionparams);
+                Html::openMassiveActionsForm('mass' . self::class . $rand);
+                $massiveactionparams = [
+                    'num_displayed'    => min($_SESSION['glpilist_limit'], $number),
+                    'container'        => 'mass' . self::class . $rand,
+                ];
+                Html::showMassiveActions($massiveactionparams);
             }
 
             $table->display([
                 'display_title_for_each_group'          => false,
                 'display_thead'                         => false,
                 'display_tfoot'                         => false,
-                'display_header_on_foot_for_each_group' => true
+                'display_header_on_foot_for_each_group' => true,
             ]);
 
             if ($canedit && $number) {
-                 $massiveactionparams['ontop'] = false;
-                 Html::showMassiveActions($massiveactionparams);
-                 Html::closeForm();
+                $massiveactionparams['ontop'] = false;
+                Html::showMassiveActions($massiveactionparams);
+                Html::closeForm();
             }
 
             Html::printAjaxPager(self::getTypeName(Session::getPluralNumber()), $start, self::countForItem($item));
@@ -826,7 +829,6 @@ TWIG, $twig_params);
      */
     public static function countForItem(CommonDBTM $item): int
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         switch ($item::class) {
@@ -834,7 +836,7 @@ TWIG, $twig_params);
                 return countElementsInTable(
                     'glpi_networknames',
                     ['fqdns_id'   => $item->fields["id"],
-                        'is_deleted' => 0
+                        'is_deleted' => 0,
                     ]
                 );
 
@@ -843,35 +845,35 @@ TWIG, $twig_params);
                     'glpi_networknames',
                     ['itemtype'   => $item->getType(),
                         'items_id'   => $item->getID(),
-                        'is_deleted' => 0
+                        'is_deleted' => 0,
                     ]
                 );
 
             case NetworkEquipment::class:
-                 $result = $DB->request([
-                     'SELECT'          => ['COUNT DISTINCT' => 'glpi_networknames.id AS cpt'],
-                     'FROM'            => 'glpi_networknames',
-                     'INNER JOIN'       => [
-                         'glpi_networkports'  => [
-                             'ON' => [
-                                 'glpi_networknames'  => 'items_id',
-                                 'glpi_networkports'  => 'id', [
-                                     'AND' => [
-                                         'glpi_networknames.itemtype' => 'NetworkPort'
-                                     ]
-                                 ]
-                             ]
-                         ]
-                     ],
-                     'WHERE'           => [
-                         'glpi_networkports.itemtype'     => $item->getType(),
-                         'glpi_networkports.items_id'     => $item->getID(),
-                         'glpi_networkports.is_deleted'   => 0,
-                         'glpi_networknames.is_deleted'   => 0
-                     ]
-                 ])->current();
+                $result = $DB->request([
+                    'SELECT'          => ['COUNT DISTINCT' => 'glpi_networknames.id AS cpt'],
+                    'FROM'            => 'glpi_networknames',
+                    'INNER JOIN'       => [
+                        'glpi_networkports'  => [
+                            'ON' => [
+                                'glpi_networknames'  => 'items_id',
+                                'glpi_networkports'  => 'id', [
+                                    'AND' => [
+                                        'glpi_networknames.itemtype' => 'NetworkPort',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                    'WHERE'           => [
+                        'glpi_networkports.itemtype'     => $item->getType(),
+                        'glpi_networkports.items_id'     => $item->getID(),
+                        'glpi_networkports.is_deleted'   => 0,
+                        'glpi_networknames.is_deleted'   => 0,
+                    ],
+                ])->current();
 
-                return (int)$result['cpt'];
+                return (int) $result['cpt'];
         }
         return 0;
     }

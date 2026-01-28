@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,21 +37,23 @@ namespace Glpi\Console\Config;
 
 use Config;
 use Glpi\Console\AbstractCommand;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Toolbox;
+
+use function Safe\preg_match;
 
 class SetCommand extends AbstractCommand
 {
-   /**
-    * Error thrown when context is invalid.
-    *
-    * @var integer
-    */
-    const ERROR_INVALID_CONTEXT = 1;
+    /**
+     * Error thrown when context is invalid.
+     *
+     * @var int
+     */
+    public const ERROR_INVALID_CONTEXT = 1;
 
     protected function configure()
     {
@@ -67,8 +69,7 @@ class SetCommand extends AbstractCommand
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         if (null === $input->getArgument('value')) {
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $question = new Question(__('Configuration value:'), '');
             $question->setHidden(true); // Hide prompt as configuration value may be sensitive
             $value = $question_helper->ask($input, $output, $question);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,20 @@
 
 namespace Glpi\OAuth;
 
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
-use Ramsey\Uuid\Uuid;
+use Safe\DateTime;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
+    /**
+     * @param ClientEntityInterface $clientEntity
+     * @param array $scopes
+     * @param ?string $userIdentifier
+     *
+     * @return AccessTokenEntityInterface
+     */
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
     {
         $token = new AccessToken();
@@ -59,8 +64,12 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
 
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
+
+        // clean expired tokens
+        $DB->delete('glpi_oauth_access_tokens', [
+            'date_expiration' => ['<', date('Y-m-d H:i:s')],
+        ]);
 
         $DB->insert('glpi_oauth_access_tokens', [
             'identifier' => $accessTokenEntity->getIdentifier(),
@@ -71,17 +80,25 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         ]);
     }
 
+    /**
+     * @param string $tokenId
+     *
+     * @return void
+     */
     public function revokeAccessToken($tokenId): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_oauth_access_tokens', ['identifier' => $tokenId]);
     }
 
+    /**
+     * @param string $tokenId
+     *
+     * @return bool
+     */
     public function isAccessTokenRevoked($tokenId): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -89,13 +106,13 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
             'FROM' => 'glpi_oauth_access_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,
-            ]
+            ],
         ]);
         if (count($iterator) === 0) {
             return true;
         }
         // Check if the token is expired
         $expiration = $iterator->current()['date_expiration'];
-        return (new \DateTime($expiration)) < new \DateTime();
+        return (new DateTime($expiration)) < new DateTime();
     }
 }

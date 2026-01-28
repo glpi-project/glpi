@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -48,24 +48,26 @@ use HTMLTableRow;
 use Location;
 use Log;
 use NetworkPort;
+use Notepad;
 use Session;
 
 /// Socket class
 class Socket extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public static $rightname          = 'cable_management';
+    /** @var bool */
     public $can_be_translated  = false;
 
-    const REAR    = 1;
-    const FRONT   = 2;
-    const BOTH    = 3;
+    public const REAR    = 1;
+    public const FRONT   = 2;
+    public const BOTH    = 3;
 
     public static function getIcon()
     {
@@ -87,12 +89,17 @@ class Socket extends CommonDBChild
         return false;
     }
 
+    public function maybeRecursive()
+    {
+        return false;
+    }
+
     public function defineTabs($options = [])
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -100,20 +107,20 @@ class Socket extends CommonDBChild
     /**
      * Print the version form
      *
-     * @param integer $ID ID of the item
+     * @param int $ID ID of the item
      * @param array $options
      *     - target for the Form
      *     - itemtype type of the item for add process
      *     - items_id ID of the item for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
         $itemtype = null;
         if (!empty($options['_add_fromitem'])) {
             $itemtype = $options['_add_fromitem']['_from_itemtype'];
-        } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
+        } elseif (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         }
 
@@ -136,7 +143,7 @@ class Socket extends CommonDBChild
             'parent' => [
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,
-            ]
+            ],
         ]);
         return true;
     }
@@ -159,17 +166,22 @@ class Socket extends CommonDBChild
         return $input;
     }
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function retrievedataFromNetworkPort($input)
     {
         // get position from networkport if needed
-        if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0 ) && $input["position"] == 'auto') {
+        if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0) && $input["position"] == 'auto') {
             $networkport = new NetworkPort();
             $networkport->getFromDB($input["networkports_id"]);
             $input['position'] = $networkport->fields['logical_number'];
         }
 
         // get name from networkport if needed
-        if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0 ) && empty($input["name"])) {
+        if ((isset($input["networkports_id"]) && $input["networkports_id"] > 0) && empty($input["name"])) {
             $networkport = new NetworkPort();
             $networkport->getFromDB($input["networkports_id"]);
             $input['name'] = $networkport->fields['name'];
@@ -184,7 +196,6 @@ class Socket extends CommonDBChild
      **/
     public static function getSocketLinkTypes()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $values = [];
         foreach ($CFG_GLPI["socket_types"] as $itemtype) {
@@ -201,7 +212,6 @@ class Socket extends CommonDBChild
      **/
     public static function getSocketAlreadyLinked(string $itemtype, int $items_id): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $already_use = [];
         $sub_query = [];
@@ -213,16 +223,16 @@ class Socket extends CommonDBChild
                 Cable::getTable() . ' AS cables' => [
                     'ON'  => [
                         'cables'  => 'sockets_id_endpoint_a',
-                        'sockets'  => 'id'
-                    ]
+                        'sockets'  => 'id',
+                    ],
                 ],
             ],
             'WHERE'  => [
                 'NOT' => [
-                    'cables.sockets_id_endpoint_a' => 'NULL'
+                    'cables.sockets_id_endpoint_a' => 'NULL',
                 ],
                 'sockets.itemtype' => $itemtype,
-                'sockets.items_id' => $items_id
+                'sockets.items_id' => $items_id,
             ],
         ]);
 
@@ -233,21 +243,21 @@ class Socket extends CommonDBChild
                 Cable::getTable() . ' AS cables' => [
                     'ON'  => [
                         'cables'  => 'sockets_id_endpoint_b',
-                        'sockets'  => 'id'
-                    ]
+                        'sockets'  => 'id',
+                    ],
                 ],
             ],
             'WHERE'  => [
                 'NOT' => [
-                    'cables.sockets_id_endpoint_b' => 'NULL'
+                    'cables.sockets_id_endpoint_b' => 'NULL',
                 ],
                 'sockets.itemtype' => $itemtype,
-                'sockets.items_id' => $items_id
+                'sockets.items_id' => $items_id,
             ],
         ]);
 
         $sockets_iterator = $DB->request([
-            'FROM' => new QueryUnion($sub_query)
+            'FROM' => new QueryUnion($sub_query),
         ]);
 
         foreach ($sockets_iterator as $row) {
@@ -311,8 +321,10 @@ class Socket extends CommonDBChild
      *
      * @since 0.84
      *
-     * @param integer $value     status ID
-     **/
+     * @param int $value status ID
+     *
+     * @return int
+     */
     public static function getWiringSideName($value)
     {
         $tab  = static::getSides();
@@ -339,7 +351,7 @@ class Socket extends CommonDBChild
             'table'              => Socket::getTable(),
             'field'              => 'position',
             'name'               => __('Position'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -347,7 +359,7 @@ class Socket extends CommonDBChild
             'table'              => SocketModel::getTable(),
             'field'              => 'name',
             'name'               => SocketModel::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -359,10 +371,10 @@ class Socket extends CommonDBChild
             'itemtype_list'      => 'socket_types',
             'additionalfields'   => ['itemtype'],
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -373,7 +385,7 @@ class Socket extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'specific',
             'searchtype'         => 'equals',
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
@@ -382,7 +394,7 @@ class Socket extends CommonDBChild
             'field'              => 'wiring_side',
             'name'               => __('Wiring side'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -397,6 +409,9 @@ class Socket extends CommonDBChild
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -410,7 +425,7 @@ class Socket extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'datatype'           => 'itemlink'
+            'datatype'           => 'itemlink',
         ];
 
         $tab[] = [
@@ -426,10 +441,10 @@ class Socket extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -441,7 +456,7 @@ class Socket extends CommonDBChild
             'joinparams'         => [
                 'jointype'           => 'itemtype_item',
             ],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -479,13 +494,6 @@ class Socket extends CommonDBChild
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $values
-     * @param array $options
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -495,16 +503,16 @@ class Socket extends CommonDBChild
 
         switch ($field) {
             case 'items_id':
-                if (isset($values['itemtype'])) {
+                if (isset($values['itemtype']) && is_a($values['itemtype'], CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $values['itemtype']();
                         $item->getFromDB($values[$field]);
-                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        return "<a href='" . \htmlescape($item->getLinkURL()) . "'>" . \htmlescape($item->fields['name']) . "</a>";
                     }
                 }
                 return ' ';
             case 'wiring_side':
-                return self::getWiringSideName($values[$field]);
+                return \htmlescape(self::getWiringSideName($values[$field]));
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -514,11 +522,10 @@ class Socket extends CommonDBChild
      *
      * @param array $input Array of values to import (name, locations_id)
      *
-     * @return integer the ID of the new (or -1 if not found)
+     * @return int the ID of the new (or -1 if not found)
      **/
     public function findID(array &$input)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!empty($input["name"])) {
@@ -527,14 +534,14 @@ class Socket extends CommonDBChild
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'name'         => $input['name'],
-                    'locations_id' => $input["locations_id"] ?? 0
-                ]
+                    'locations_id' => $input["locations_id"] ?? 0,
+                ],
             ]);
 
-           // Check twin :
+            // Check twin :
             if (count($iterator)) {
-                 $result = $iterator->current();
-                 return $result['id'];
+                $result = $iterator->current();
+                return $result['id'];
             }
         }
         return -1;
@@ -558,9 +565,11 @@ class Socket extends CommonDBChild
         $this->cleanIfStealNetworkPort();
     }
 
+    /**
+     * @return void
+     */
     public function cleanIfStealNetworkPort()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         // find other socket with same networkport and reset it
         if ($this->fields['networkports_id'] > 0) {
@@ -569,13 +578,13 @@ class Socket extends CommonDBChild
                 'FROM'  => getTableForItemType(self::getType()),
                 'WHERE' => [
                     'networkports_id' => $this->fields['networkports_id'],
-                    ['NOT' => ['id' => $this->fields['id']]]
-                ]
+                    ['NOT' => ['id' => $this->fields['id']]],
+                ],
             ]);
 
             foreach (self::getFromIter($iter) as $socket) {
-                 $socket->fields['networkports_id'] = 0;
-                 $socket->update($socket->fields);
+                $socket->fields['networkports_id'] = 0;
+                $socket->update($socket->fields);
             }
         }
     }
@@ -593,7 +602,6 @@ class Socket extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         if (!$withtemplate) {
             $nb = 0;
@@ -610,12 +618,12 @@ class Socket extends CommonDBChild
                     /** @var CommonDBTM $item */
                     if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nb =  countElementsInTable(
-                                  $this->getTable(),
-                                  ['itemtype' => $item->getType(),
-                                      'items_id' => $item->getID()
-                                  ]
-                              );
+                            $nb =  countElementsInTable(
+                                $this->getTable(),
+                                ['itemtype' => $item->getType(),
+                                    'items_id' => $item->getID(),
+                                ]
+                            );
                         }
                         return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
                     }
@@ -626,14 +634,14 @@ class Socket extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        if ($item->getType() == 'Location') {
-            self::showForLocation($item);
-        } else if (in_array($item->getType(), $CFG_GLPI['socket_types'])) {
-            self::showListForItem($item);
+        if ($item instanceof Location) {
+            return self::showForLocation($item);
+        } elseif (in_array($item::class, $CFG_GLPI['socket_types'])) {
+            /** @var CommonDBTM $item */
+            return self::showListForItem($item);
         }
-        return true;
+        return false;
     }
 
     /**
@@ -641,12 +649,11 @@ class Socket extends CommonDBChild
      *
      * @param CommonDBTM $item
      *
-     * @return void
+     * @return bool
      **/
-    public static function showListForItem($item)
+    public static function showListForItem($item): bool
     {
 
-        /** @var \DBmysql $DB */
         global $DB;
 
         $canedit = self::canUpdate();
@@ -660,14 +667,14 @@ class Socket extends CommonDBChild
         }
         $rand = mt_rand();
 
-       // Link to open a new socket
+        // Link to open a new socket
         if ($item->getID() && self::canCreate()) {
             $twig_params = [
                 'socket_itemtypes' => self::getSocketLinkTypes(),
                 '_add_fromitem'    => [
                     '_from_itemtype' => $item::class,
-                    '_from_items_id' => $item->getID()
-                ]
+                    '_from_items_id' => $item->getID(),
+                ],
             ];
             TemplateRenderer::getInstance()->display('pages/assets/socket_short_form.html.twig', $twig_params);
         }
@@ -678,7 +685,7 @@ class Socket extends CommonDBChild
             'WHERE'  => [
                 'itemtype'   => $item->getType(),
                 'items_id'   => $item->getID(),
-            ]
+            ],
         ]);
 
         $entries = [];
@@ -706,8 +713,8 @@ class Socket extends CommonDBChild
             $has_cable = $cable->getFromDBByCrit([
                 'OR' => [
                     'sockets_id_endpoint_a' => $socket->fields["id"],
-                    'sockets_id_endpoint_b' => $socket->fields["id"]
-                ]
+                    'sockets_id_endpoint_b' => $socket->fields["id"],
+                ],
             ]);
 
             $cable_name = $has_cable
@@ -778,17 +785,18 @@ class Socket extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'container' => 'mass' . str_replace('\\', '', self::class) . $rand,
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),
-                    'purge'  => _x('button', 'Delete permanently')
-                ]
+                    'purge'  => _x('button', 'Delete permanently'),
+                ],
             ],
         ]);
+
+        return true;
     }
 
     /**
@@ -796,18 +804,17 @@ class Socket extends CommonDBChild
      *
      * @param Location $item
      *
-     * @return void
+     * @return bool
      **/
-    public static function showForLocation($item)
+    public static function showForLocation(Location $item): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID       = $item->getField('id');
         $item->check($ID, READ);
         $canedit  = $item->canEdit($ID);
 
-        $start       = (int)($_GET["start"] ?? 0);
+        $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? '';
         $order       = strtoupper($_GET["order"] ?? '');
         if ($sort === '') {
@@ -818,7 +825,6 @@ class Socket extends CommonDBChild
         }
         $rand = mt_rand();
         $number = countElementsInTable('glpi_sockets', ['locations_id' => $ID]);
-        $socket_form_url = self::getFormURL();
 
         if ($canedit) {
             $socket_itemtypes = array_keys(self::getSocketLinkTypes());
@@ -826,8 +832,8 @@ class Socket extends CommonDBChild
                 'socket_itemtypes' => $socket_itemtypes,
                 '_add_fromitem'    => [
                     '_from_itemtype' => Location::class,
-                    '_from_items_id' => $ID
-                ]
+                    '_from_items_id' => $ID,
+                ],
             ];
             TemplateRenderer::getInstance()->display('pages/assets/socket_short_form.html.twig', $twig_params);
         }
@@ -837,13 +843,12 @@ class Socket extends CommonDBChild
         $it = $DB->request([
             'FROM' => self::getTable(),
             'WHERE' => [
-                'locations_id' => $ID
+                'locations_id' => $ID,
             ],
             'ORDER' => "$sort $order",
             'START' => $start,
-            'LIMIT' => $_SESSION['glpilist_limit']
+            'LIMIT' => $_SESSION['glpilist_limit'],
         ]);
-        $socket_form_url = htmlescape(self::getFormURL());
 
         foreach ($it as $data) {
             $name = sprintf(
@@ -855,7 +860,7 @@ class Socket extends CommonDBChild
             $socketmodel = new SocketModel();
             $socketmodel->getFromDB($data['socketmodels_id']);
             $link = '';
-            if (isset($data['itemtype']) && class_exists($data['itemtype'])) {
+            if (isset($data['itemtype']) && class_exists($data['itemtype']) && is_a($data['itemtype'], CommonDBTM::class, true)) {
                 $itemtype = $data['itemtype'];
                 $asset = new $itemtype();
                 if ($asset->getFromDB($data['items_id'])) {
@@ -889,7 +894,7 @@ class Socket extends CommonDBChild
                 'asset' => _n('Asset', 'Assets', 1),
                 'networkports_id' => NetworkPort::getTypeName(1),
                 'wiring_side' => __('Wiring side'),
-                'comment' => __('Comments'),
+                'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ],
             'formatters' => [
                 'name' => 'raw_html',
@@ -899,25 +904,26 @@ class Socket extends CommonDBChild
             ],
             'entries' => $entries,
             'total_number' => $number,
-            'filtered_number' => $number,
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container' => 'mass' . str_replace('\\', '', __CLASS__) . $rand,
+                'container' => 'mass' . str_replace('\\', '', self::class) . $rand,
                 'specific_actions' => [
-                    'purge' => _x('button', 'Delete permanently')
-                ]
+                    'purge' => _x('button', 'Delete permanently'),
+                ],
             ],
         ]);
+
+        return true;
     }
 
     /**
-     * @since 0.84
+     * @param ?HTMLTableRow $row
+     * @param ?CommonDBTM $item
+     * @param ?HTMLTableCell $father
+     * @param array $options
      *
-     * @param $row             HTMLTableRow object (default NULL)
-     * @param $item            CommonDBTM object (default NULL)
-     * @param $father          HTMLTableCell object (default NULL)
-     * @param $options   array
+     * @return void
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
@@ -926,7 +932,7 @@ class Socket extends CommonDBChild
         $options = []
     ) {
 
-        $column_name = __CLASS__;
+        $column_name = self::class;
 
         if (isset($options['dont_display'][$column_name])) {
             return;
@@ -934,7 +940,7 @@ class Socket extends CommonDBChild
 
         $row->addCell(
             $row->getHeaderByName($column_name),
-            Dropdown::getDropdownName("glpi_sockets", $item->fields["sockets_id"]),
+            htmlescape(Dropdown::getDropdownName("glpi_sockets", $item->fields["sockets_id"])),
             $father
         );
     }

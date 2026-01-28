@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 // Cannot use `Session::checkLoginUser()` as it block users that have their password expired to be able to change it.
@@ -93,7 +96,7 @@ if ($success) {
         'btn_label' => __('Log in'),
     ];
     // language=Twig
-    echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+    echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
         <div class="d-flex justify-content-center">
             <div class="alert alert-success">
                 <div class="alert-title">{{ title }}</div>

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,7 @@
 
 /* eslint no-var: 0 */
 /* global bootstrap */
+/* global _ */
 
 /**
  * Create a dialog window
@@ -81,14 +82,14 @@ var glpi_html_dialog = function({
             var bclass = ("class" in button) ? button.class : 'btn-secondary';
 
             buttons_html+= `
-            <button type="button" id="${bid}"
-                    class="btn ${bclass}" data-bs-dismiss="modal">
+            <button type="button" id="${_.escape(bid)}"
+                    class="btn ${_.escape(bclass)}" data-bs-dismiss="modal">
                ${label}
             </button>`;
 
             // add click event on button
             if ('click' in button) {
-                $(document).on('click', `#${bid}`, (event) => {
+                $(document).on('click', `#${CSS.escape(bid)}`, (event) => {
                     button.click(event);
                 });
             }
@@ -105,11 +106,11 @@ var glpi_html_dialog = function({
 
     const data_bs_focus = !bs_focus ? 'data-bs-focus="false"' : '';
 
-    var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog" ${data_bs_focus} aria-labelledby="${id}_title">
-         <div class="modal-dialog ${dialogclass}">
+    var modal = `<div class="modal fade ${_.escape(modalclass)}" id="${_.escape(id)}" role="dialog" ${data_bs_focus} aria-labelledby="${_.escape(id)}_title">
+         <div class="modal-dialog ${_.escape(dialogclass)}">
             <div class="modal-content">
                <div class="modal-header">
-                  <h2 id="${id}_title" class="fs-4 modal-title" tabindex="-1">${title}</h2>
+                  <h2 id="${_.escape(id)}_title" class="fs-4 modal-title" tabindex="-1">${title}</h2>
                   <button type="button" class="btn-close" data-bs-dismiss="modal"
                            aria-label="${__("Close")}"></button>
                </div>
@@ -136,7 +137,7 @@ var glpi_html_dialog = function({
     // create global events
     myModalEl.addEventListener('shown.bs.modal', (event) => {
         // focus first element in modal
-        $(`#${id}`).find("input, textarea, select").first().trigger("focus");
+        $(`#${CSS.escape(id)}`).find("input, textarea, select").first().trigger("focus");
 
         // call show event
         show(event);
@@ -150,7 +151,7 @@ var glpi_html_dialog = function({
         }
 
         // remove html on modal close
-        $(`#${id}`).remove();
+        $(`#${CSS.escape(id)}`).remove();
     });
 
     return id;
@@ -355,9 +356,9 @@ const glpi_toast = (title, message, css_class, options = {}) => {
     if (!valid_locations.includes(location)) {
         location = 'bottom-right';
     }
-    const html = `<div class='toast-container ${location} p-3 messages_after_redirect'>
-      <div id='toast_js_${toast_id}' class='toast ${animation_classes}' role='alert' aria-live='assertive' aria-atomic='true'>
-         <div class='toast-header ${css_class}'>
+    const html = `<div class='toast-container ${_.escape(location)} p-3 messages_after_redirect'>
+      <div id='toast_js_${toast_id}' class='toast ${_.escape(animation_classes)}' role='alert' aria-live='assertive' aria-atomic='true'>
+         <div class='toast-header ${_.escape(css_class)}'>
             <strong class='me-auto'>${title}</strong>
             <button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='${__('Close')}'></button>
          </div>
@@ -368,7 +369,7 @@ const glpi_toast = (title, message, css_class, options = {}) => {
    </div>`;
     $('body').append(html);
 
-    const toast = new bootstrap.Toast(document.querySelector(`#toast_js_${toast_id}`), {
+    const toast = new bootstrap.Toast(document.querySelector(`#toast_js_${CSS.escape(toast_id)}`), {
         delay: options.delay,
     });
     toast.show();
@@ -393,7 +394,7 @@ const glpi_toast_success = (message, caption = undefined, options = {}) => {
  * @param {ToastOptions} options Toast options
  */
 const glpi_toast_info = function(message, caption = undefined, options = {}) {
-    glpi_toast(caption || _n("Information", "Informations", 1), message, 'bg-info text-white border-0', options);
+    glpi_toast(caption || _n("Information", "Information", 1), message, 'bg-info text-white border-0', options);
 };
 
 /**

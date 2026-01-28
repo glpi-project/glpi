@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
+
 if (PHP_SAPI != 'cli') {
     echo "This script must be run from command line";
     exit();
@@ -40,7 +42,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new Kernel();
 $kernel->boot();
 
 define('PER_LEVEL', 8);
@@ -69,13 +71,13 @@ if ($nb < 100000) {
                 //echo "$idc\r";
                 for ($d = 0; $d < PER_LEVEL; $d++) {
                     $idd = $ent->add(['entities_id' => $idc, 'name' => "sss-ent $d"]);
-                   //echo "$idd\r";
+                    //echo "$idd\r";
                     for ($e = 0; $e < PER_LEVEL; $e++) {
                         $ide = $ent->add(['entities_id' => $idd, 'name' => "sss-ent $e"]);
                         //echo "$ide\r";
                         for ($f = 0; $f < PER_LEVEL; $f++) {
                             $idf = $ent->add(['entities_id' => $ide, 'name' => "sss-ent $f"]);
-                          //echo "$idf\r";
+                            //echo "$idf\r";
                         }
                     }
                 }
@@ -105,7 +107,7 @@ for ($i = 0; $i < COUNT; $i++) {
         echo "$i\r";
     }
     $t[$i] = $id = mt_rand(0, $nb);
-   //$x = getSonsOf('glpi_entities', $id);
+    //$x = getSonsOf('glpi_entities', $id);
     $x = getAncestorsOf('glpi_entities', $id);
 }
 $tps = microtime(true) - $tps;
@@ -118,7 +120,7 @@ for ($i = 0; $i < COUNT; $i++) {
         echo "$i\r";
     }
     $id = $t[$i];
-   //$x = getSonsOf('glpi_entities', $id);
+    //$x = getSonsOf('glpi_entities', $id);
     $x = getAncestorsOf('glpi_entities', $id);
 }
 $tps = microtime(true) - $tps;

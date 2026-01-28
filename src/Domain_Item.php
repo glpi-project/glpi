@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,11 +34,12 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 
 class Domain_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = "Domain";
+    public static $itemtype_1 = Domain::class;
     public static $items_id_1 = 'domains_id';
 
     public static $itemtype_2 = 'itemtype';
@@ -49,19 +50,28 @@ class Domain_Item extends CommonDBRelation
         return _n('Domain item', 'Domain items', $nb);
     }
 
+    /**
+     * @param CommonDBTM $item
+     *
+     * @return void
+     */
     public static function cleanForItem(CommonDBTM $item)
     {
         $temp = new self();
         $temp->deleteByCriteria(
             ['itemtype' => $item->getType(),
-                'items_id' => $item->getField('id')
+                'items_id' => $item->getField('id'),
             ]
         );
     }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        if ($item::class === Domain::class && count(Domain::getTypes(false))) {
+        if (!$item instanceof CommonDBTM) {
+            return '';
+        }
+
+        if ($item instanceof Domain && count(Domain::getTypes(false))) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForDomain($item);
@@ -70,7 +80,7 @@ class Domain_Item extends CommonDBRelation
         }
 
         if (
-            $item::class === DomainRelation::class || (in_array($item::class, Domain::getTypes(true), true)
+            $item instanceof DomainRelation || (in_array($item::class, Domain::getTypes(true), true)
                 && Session::haveRight('domain', READ))
         ) {
             $nb = 0;
@@ -84,10 +94,14 @@ class Domain_Item extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        if ($item::class === Domain::class) {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
+        if ($item instanceof Domain) {
             self::showForDomain($item);
-        } else if (
-            $item::class === DomainRelation::class
+        } elseif (
+            $item instanceof DomainRelation
             || in_array($item::class, Domain::getTypes(true), true)
         ) {
             self::showForItem($item);
@@ -95,6 +109,11 @@ class Domain_Item extends CommonDBRelation
         return true;
     }
 
+    /**
+     * @param Domain $item
+     *
+     * @return int
+     */
     public static function countForDomain(Domain $item)
     {
         $types = $item->getTypes();
@@ -105,7 +124,7 @@ class Domain_Item extends CommonDBRelation
             'glpi_domains_items',
             [
                 "domains_id"   => $item->getID(),
-                "itemtype"     => $types
+                "itemtype"     => $types,
             ]
         );
     }
@@ -117,7 +136,7 @@ class Domain_Item extends CommonDBRelation
         } else {
             $criteria = [
                 'itemtype'  => $item::class,
-                'items_id'  => $item->fields['id']
+                'items_id'  => $item->fields['id'],
             ];
         }
 
@@ -127,37 +146,57 @@ class Domain_Item extends CommonDBRelation
         );
     }
 
+    /**
+     * @param int $domains_id
+     * @param int $items_id
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return bool
+     */
     public function getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)
     {
         $criteria = ['domains_id' => $domains_id];
-        $item = new $itemtype();
-        if ($item instanceof DomainRelation) {
+
+        if (is_a($itemtype, DomainRelation::class, true)) {
             $criteria += ['domainrelations_id' => $items_id];
         } else {
             $criteria += [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ];
         }
 
         return $this->getFromDBByCrit($criteria);
     }
 
+    /**
+     * @param array $values
+     *
+     * @return false|int
+     */
     public function addItem($values)
     {
-        $this->add([
+        return $this->add([
             'domains_id'         => $values['domains_id'],
             'items_id'           => $values['items_id'],
             'itemtype'           => $values['itemtype'],
-            'domainrelations_id' => $values['domainrelations_id']
+            'domainrelations_id' => $values['domainrelations_id'],
         ]);
     }
 
+    /**
+     * @param int $domains_id
+     * @param int $items_id
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return bool
+     */
     public function deleteItemByDomainsAndItem($domains_id, $items_id, $itemtype)
     {
         if ($this->getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)) {
-            $this->delete(['id' => $this->fields["id"]]);
+            return $this->delete(['id' => $this->fields["id"]]);
         }
+        return false;
     }
 
     /**
@@ -165,11 +204,10 @@ class Domain_Item extends CommonDBRelation
      *
      * @param Domain $domain Domain object
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForDomain(Domain $domain)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $instID = $domain->fields['id'];
@@ -185,7 +223,7 @@ class Domain_Item extends CommonDBRelation
             'FROM'      => self::getTable(),
             'WHERE'     => ['domains_id' => $instID],
             'ORDER'     => 'itemtype',
-            'LIMIT'     => count(Domain::getTypes(true))
+            'LIMIT'     => count(Domain::getTypes(true)),
         ]);
 
         if ($canedit) {
@@ -247,29 +285,29 @@ TWIG, $twig_params);
                     "$itemTable.*",
                     'glpi_domains_items.id AS items_id',
                     'glpi_domains_items.domainrelations_id',
-                    'glpi_entities.id AS entity'
+                    'glpi_entities.id AS entity',
                 ],
                 'FROM'   => self::getTable(),
                 'INNER JOIN'   => [
                     $itemTable  => [
                         'ON'  => [
                             $itemTable  => 'id',
-                            self::getTable()  => 'items_id'
-                        ]
-                    ]
+                            self::getTable()  => 'items_id',
+                        ],
+                    ],
                 ],
                 'LEFT JOIN'    => [
                     'glpi_entities'   => [
                         'ON'  => [
                             'glpi_entities'   => 'id',
-                            $itemTable        => 'entities_id'
-                        ]
-                    ]
+                            $itemTable        => 'entities_id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     self::getTable() . '.itemtype'   => $itemtype,
-                    self::getTable() . '.domains_id' => $instID
-                ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive())
+                    self::getTable() . '.domains_id' => $instID,
+                ] + getEntitiesRestrictCriteria($itemTable, '', '', $item->maybeRecursive()),
             ];
 
             if ($item->maybeTemplate()) {
@@ -326,34 +364,115 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => $columns,
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+    }
+
+    /**
+     * Get links between the given item and domains.
+     *
+     * @param CommonDBTM $item
+     * @return DBmysqlIterator
+     */
+    public static function getForItem(CommonDBTM $item): DBmysqlIterator
+    {
+        global $DB;
+
+        $criteria = [
+            'SELECT'    => [
+                'glpi_domains_items.id AS assocID',
+                'glpi_domains_items.domainrelations_id',
+                'glpi_domains_items.is_deleted',
+                'glpi_domains_items.is_dynamic',
+                'glpi_entities.id AS entity',
+                'glpi_domains.name AS assocName',
+                'glpi_domains.*',
+                QueryFunction::groupConcat(
+                    expression: Group_Item::getTable() . '.groups_id',
+                    separator: ',',
+                    alias: 'groups_id_tech',
+                ),
+            ],
+            'FROM'      => self::getTable(),
+            'LEFT JOIN' => [
+                Domain::getTable()   => [
+                    'ON'  => [
+                        Domain::getTable()   => 'id',
+                        self::getTable()     => 'domains_id',
+                    ],
+                ],
+                Entity::getTable()   => [
+                    'ON'  => [
+                        Domain::getTable()   => 'entities_id',
+                        Entity::getTable()   => 'id',
+                    ],
+                ],
+                Group_Item::getTable() => [
+                    'ON'  => [
+                        Group_Item::getTable() => 'items_id',
+                        Domain::getTable()       => 'id', [
+                            'AND' => [
+                                Group_Item::getTable() . '.itemtype' => Domain::class,
+                                Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_TECH,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'WHERE'     => [],//to be filled
+            'ORDER'     => 'assocName',
+            'GROUPBY' => [
+                'glpi_domains_items.id',
+            ],
+        ];
+
+        if ($item instanceof DomainRelation) {
+            $criteria['WHERE'] = ['glpi_domains_items.domainrelations_id' => $item->getID()];
+        } else {
+            $criteria['WHERE'] = [
+                'glpi_domains_items.itemtype' => $item::class,
+                'glpi_domains_items.items_id' => $item->getID(),
+            ];
+        }
+        $criteria['WHERE'] += getEntitiesRestrictCriteria(Domain::getTable(), '', '', true);
+
+        $criteria['WHERE']
+            //deleted and dynamic domain_item are displayed from lock tab
+            //non dynamic domain_item are always displayed
+            += [
+                'OR'  => [
+                    'AND' => [
+                        "glpi_domains_items.is_deleted" => 0,
+                        "glpi_domains_items.is_dynamic" => 1,
+                    ],
+                    "glpi_domains_items.is_dynamic" => 0,
+                ],
+            ];
+
+        return $DB->request($criteria);
     }
 
     /**
      * Show domains associated to an item
      *
      * @param CommonDBTM $item      Object for which associated domains must be displayed
-     * @param integer $withtemplate
+     * @param int $withtemplate
      *
      * @return void|false
      */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $item->getField('id');
@@ -374,60 +493,7 @@ TWIG, $twig_params);
         $rand         = mt_rand();
         $is_recursive = $item->isRecursive();
 
-        $criteria = [
-            'SELECT'    => [
-                'glpi_domains_items.id AS assocID',
-                'glpi_domains_items.domainrelations_id',
-                'glpi_domains_items.is_deleted',
-                'glpi_domains_items.is_dynamic',
-                'glpi_entities.id AS entity',
-                'glpi_domains.name AS assocName',
-                'glpi_domains.*'
-
-            ],
-            'FROM'      => self::getTable(),
-            'LEFT JOIN' => [
-                Domain::getTable()   => [
-                    'ON'  => [
-                        Domain::getTable()   => 'id',
-                        self::getTable()     => 'domains_id'
-                    ]
-                ],
-                Entity::getTable()   => [
-                    'ON'  => [
-                        Domain::getTable()   => 'entities_id',
-                        Entity::getTable()   => 'id'
-                    ]
-                ]
-            ],
-            'WHERE'     => [],//to be filled
-            'ORDER'     => 'assocName'
-        ];
-
-        if ($item instanceof DomainRelation) {
-            $criteria['WHERE'] = ['glpi_domains_items.domainrelations_id' => $ID];
-        } else {
-            $criteria['WHERE'] = [
-                'glpi_domains_items.itemtype' => $item->getType(),
-                'glpi_domains_items.items_id' => $ID
-            ];
-        }
-        $criteria['WHERE'] += getEntitiesRestrictCriteria(Domain::getTable(), '', '', true);
-
-        $criteria['WHERE'] +=
-        //deleted and dynamic domain_item are displayed from lock tab
-        //non dynamic domain_item are always displayed
-        [
-            'OR'  => [
-                'AND' => [
-                    "glpi_domains_items.is_deleted" => 0,
-                    "glpi_domains_items.is_dynamic" => 1
-                ],
-                "glpi_domains_items.is_dynamic" => 0
-            ]
-        ];
-
-        $iterator = $DB->request($criteria);
+        $iterator = static::getForItem($item);
 
         $domains = [];
         $domain  = new Domain();
@@ -441,7 +507,6 @@ TWIG, $twig_params);
             !($item instanceof DomainRelation)
             && $canedit
             && $withtemplate < 2
-            && Session::haveRight('domain', READ)
         ) {
             // Restrict entity for knowbase
             $entities = "";
@@ -463,7 +528,7 @@ TWIG, $twig_params);
             $domain_iterator = $DB->request([
                 'COUNT'  => 'cpt',
                 'FROM'   => Domain::getTable(),
-                'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true)
+                'WHERE'  => ['is_deleted' => 0] + getEntitiesRestrictCriteria(Domain::getTable(), '', $entities, true),
             ]);
             $result = $domain_iterator->current();
             $nb     = $result['cpt'];
@@ -475,7 +540,8 @@ TWIG, $twig_params);
                 'entities' => $entities,
                 'is_recursive' => $is_recursive,
                 'item'   => $item,
-                'btn_msg' => __('Associate a domain')
+                'btn_msg' => __('Associate a domain'),
+                'helper' => sprintf(__('%s that are already associated are not displayed'), Domain::getTypeName(Session::getPluralNumber())),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -487,7 +553,7 @@ TWIG, $twig_params);
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('entities_id', entity) }}
-                        {{ inputs.hidden('is_recursive', is_recursive) }}
+                        {{ inputs.hidden('is_recursive', is_recursive ? '1' : '0') }}
                         {{ inputs.hidden('itemtype', item.getType()) }}
                         {{ inputs.hidden('items_id', item.getID()) }}
                         {% if item.getType() == 'Ticket' %}
@@ -501,7 +567,7 @@ TWIG, $twig_params);
                                 display: false
                             }]) %}
                             {{ fields.htmlField('', domain_dropdown, 'Domain'|itemtype_name, {
-                                helper: __('%s that are already associated are not displayed')|format('Domain'|itemtype_name(get_plural_number()))
+                                helper: helper
                             }) }}
                             {{ fields.dropdownField('DomainRelation', 'domainrelations_id', constant('DomainRelation::BELONGS'), 'DomainRelation'|itemtype_name, {
                                 display_emptychoice: false
@@ -525,7 +591,7 @@ TWIG, $twig_params);
         $entries = [];
         foreach ($domains as $data) {
             $domainID = $data["id"];
-            $link     = NOT_AVAILABLE;
+            $link     = htmlescape(NOT_AVAILABLE);
 
             if ($domain->getFromDB($domainID)) {
                 $link = $domain->getLink();
@@ -534,8 +600,14 @@ TWIG, $twig_params);
             if (Session::isMultiEntitiesMode() && !isset($entity_names[$data['entity']])) {
                 $entity_names[$data['entity']] = Dropdown::getDropdownName(table: "glpi_entities", id: $data['entity'], default: '');
             }
-            if (!isset($group_names[$data['groups_id_tech']])) {
-                $group_names[$data['groups_id_tech']] = Dropdown::getDropdownName(table: "glpi_groups", id: $data['groups_id_tech'], default: '');
+
+            $groups = explode(',', $data['groups_id_tech'] ?? '');
+            $entry_groups = [];
+            foreach ($groups as $group) {
+                if (!isset($group_names[$group])) {
+                    $group_names[$group] = Dropdown::getDropdownName(table: "glpi_groups", id: (int) $group, default: '');
+                }
+                $entry_groups[] = $group_names[$group];
             }
             if (!isset($user_names[$data['users_id_tech']])) {
                 $user_names[$data['users_id_tech']] = getUserName($data['users_id_tech']);
@@ -553,7 +625,7 @@ TWIG, $twig_params);
                 && $data["date_expiration"] <= date('Y-m-d')
             ) {
                 $expiration = "<span class='table-deleted'>{$expiration}</span>";
-            } else if (empty($data["date_expiration"])) {
+            } elseif (empty($data["date_expiration"])) {
                 $expiration = __s('Does not expire');
             }
 
@@ -563,13 +635,13 @@ TWIG, $twig_params);
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name'     => $link,
                 'entities_id' => $entity_names[$data['entity']] ?? '',
-                'groups_id_tech' => $group_names[$data['groups_id_tech']] ?? '',
+                'groups_id_tech' => implode("\n", $entry_groups),
                 'users_id_tech' => $user_names[$data['users_id_tech']] ?? '',
                 'domaintypes_id' => $type_names[$data['domaintypes_id']] ?? '',
                 'domainrelations_id' => $relation_names[$data['domainrelations_id']] ?? '',
                 'date_creation' => $data["date_creation"],
                 'date_expiration' => $expiration,
-                'is_dynamic' => Dropdown::getYesNo($data['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($data['is_dynamic']),
             ];
         }
 
@@ -595,7 +667,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => $columns,
             'formatters' => [
@@ -605,11 +676,10 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && ($withtemplate < 2),
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }

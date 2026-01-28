@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,11 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_encode;
+
 class Item_Rack extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Rack';
+    public static $itemtype_1 = Rack::class;
     public static $items_id_1 = 'racks_id';
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
@@ -72,8 +74,11 @@ class Item_Rack extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof Rack) {
+            return false;
+        }
+
+        return self::showItems($item);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -99,7 +104,7 @@ class Item_Rack extends CommonDBRelation
                     if ($item->can($id, UPDATE, $input)) {
                         $relation_criteria = [
                             'itemtype' => $item->getType(),
-                            'items_id' => $item->getID()
+                            'items_id' => $item->getID(),
                         ];
                         if (countElementsInTable(Item_Rack::getTable(), $relation_criteria) > 0) {
                             if ($item_rack->deleteByCriteria($relation_criteria)) {
@@ -108,6 +113,9 @@ class Item_Rack extends CommonDBRelation
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
+                        } else {
+                            // Item is not linked to a rack, not an error
+                            $ma->itemDone($item->getType(), $id, MassiveAction::NO_ACTION);
                         }
                     } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
@@ -124,11 +132,11 @@ class Item_Rack extends CommonDBRelation
         $rand = mt_rand();
         $canedit = $rack->canEdit($rack->getID());
 
-        echo "<h2>" . __("Racked items") . "</h2>";
+        echo "<h2>" . __s("Racked items") . "</h2>";
 
         $entries = [];
         foreach ($items as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $entries[] = [
                 'itemtype' => self::class,
@@ -150,15 +158,14 @@ class Item_Rack extends CommonDBRelation
                 'side' => __('Side'),
             ],
             'formatters' => [
-                'item' => 'raw_html'
+                'item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
 
@@ -172,7 +179,7 @@ class Item_Rack extends CommonDBRelation
 
         $data = [];
         //all rows; empty
-        for ($i = (int)$rack->fields['number_units']; $i > 0; --$i) {
+        for ($i = (int) $rack->fields['number_units']; $i > 0; --$i) {
             $data[Rack::FRONT][$i] = false;
             $data[Rack::REAR][$i] = false;
         }
@@ -182,7 +189,7 @@ class Item_Rack extends CommonDBRelation
         foreach ($items as $row) {
             $rel  = new self();
             $rel->getFromDB($row['id']);
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             if (!$item->getFromDB($row['items_id'])) {
                 continue;
             }
@@ -206,9 +213,8 @@ class Item_Rack extends CommonDBRelation
                 'reserved'  => (bool) $row['is_reserved'],
             ];
 
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = $model_class::getForeignKeyField();
-            $model = new $model_class();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
             if ($model->getFromDB($item->fields[$modelsfield])) {
                 if ($model->fields['required_units'] > 1) {
                     $gs_item['height'] = $model->fields['required_units'];
@@ -241,7 +247,7 @@ class Item_Rack extends CommonDBRelation
                     'row'     => $row,
                     'item'    => $item,
                     'model'   => $model,
-                    'gs_item' => $gs_item
+                    'gs_item' => $gs_item,
                 ];
 
                 //add to other side if needed
@@ -258,7 +264,7 @@ class Item_Rack extends CommonDBRelation
                     $data[$flip_orientation][$row['position']] = [
                         'row'     => $row,
                         'item'    => $item,
-                        'gs_item' => $gs_item
+                        'gs_item' => $gs_item,
                     ];
                 }
             } else {
@@ -273,7 +279,7 @@ class Item_Rack extends CommonDBRelation
 
         if (count($outbound)) {
             echo "<table class='outbound'><thead><th>";
-            echo __('Following elements are out of rack bounds');
+            echo __s('Following elements are out of rack bounds');
             echo "</th></thead><tbody>";
             foreach ($outbound as $out) {
                 echo "<tr><td>" . self::getCell($out, !$canedit) . "</td></tr>";
@@ -325,7 +331,7 @@ class Item_Rack extends CommonDBRelation
         echo '</div>
          </div>
          <div class="racks_col">
-            <h2>' . __('Rear') . '</h2>';
+            <h2>' . __s('Rear') . '</h2>';
         echo '<div class="rack_side rack_rear">';
         PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_TOP);
         PDU_Rack::showVizForRack($rack, PDU_Rack::SIDE_LEFT);
@@ -364,14 +370,10 @@ class Item_Rack extends CommonDBRelation
     /**
      * Print racks items
      * @param  Rack   $rack the current rack instance
-     * @return void
+     * @return bool
      */
-    public static function showItems(Rack $rack)
+    public static function showItems(Rack $rack): bool
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID = $rack->getID();
@@ -387,9 +389,9 @@ class Item_Rack extends CommonDBRelation
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'racks_id' => $rack->getID()
+                'racks_id' => $rack->getID(),
             ],
-            'ORDER' => 'position DESC'
+            'ORDER' => 'position DESC',
         ]);
         $link = new self();
 
@@ -418,23 +420,25 @@ class Item_Rack extends CommonDBRelation
         self::showItemsGraph($rack, $items);
         echo "</div>"; // #viewgraph
 
-        $rack_add_tip = __s('Insert an item here');
+        $rack_add_tip = __('Insert an item here');
         $ajax_url     = $CFG_GLPI['root_doc'] . "/ajax/rack.php";
 
-        $js = <<<JAVASCRIPT
-      // init variables to pass to js/rack.js
-      var grid_link_url      = "{$link->getFormURL()}";
-      var grid_item_ajax_url = "{$ajax_url}";
-      var grid_rack_id       = $ID;
-      var grid_rack_units    = {$rack->fields['number_units']};
-      var grid_rack_add_tip  = "{$rack_add_tip}";
+        $js = '
+            // init variables to pass to js/rack.js
+            var grid_link_url      = "' . jsescape($link->getFormURL()) . '";
+            var grid_item_ajax_url = "' . $ajax_url . '";
+            var grid_rack_id       = ' . $ID . ';
+            var grid_rack_units    = ' . ((int) $rack->fields['number_units']) . ';
+            var grid_rack_add_tip  = "' . jsescape($rack_add_tip) . '";
 
-      $(function() {
-         // initialize grid with function defined in js/rack.js
-         initRack();
-      });
-JAVASCRIPT;
+            $(function() {
+                // initialize grid with function defined in js/rack.js
+                initRack();
+            });
+        ';
         echo Html::scriptBlock($js);
+
+        return true;
     }
 
     /**
@@ -444,14 +448,13 @@ JAVASCRIPT;
      */
     public static function showStats(Rack $rack)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $items = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'racks_id' => $rack->getID()
-            ]
+                'racks_id' => $rack->getID(),
+            ],
         ]);
 
         $weight = 0;
@@ -465,12 +468,11 @@ JAVASCRIPT;
         foreach ($items as $row) {
             $rel->getFromDB($row['id']);
 
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
 
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = $model_class::getForeignKeyField();
-            $model = new $model_class();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
 
             if ($model->getFromDB($item->fields[$modelsfield])) {
                 $required_units = $model->fields['required_units'];
@@ -509,43 +511,31 @@ JAVASCRIPT;
 
         echo "<div class='rack_side_block_content'>";
         echo "<h3>" . __s("Space") . "</h3>";
-        Html::progressBar('rack_space', [
-            'create' => true,
-            'percent' => $space_prct,
-            'message' => htmlescape($space_prct . "%"),
-        ]);
+        echo Html::getProgressBar($space_prct);
 
         echo "<h3>" . __s("Weight") . "</h3>";
-        Html::progressBar('rack_weight', [
-            'create' => true,
-            'percent' => $weight_prct,
-            'message' => htmlescape($weight . " / " . $rack->fields['max_weight'])
-        ]);
+        echo Html::getProgressBar(
+            $weight_prct,
+            $weight . " / " . $rack->fields['max_weight']
+        );
 
         echo "<h3>" . __s("Power") . "</h3>";
-        Html::progressBar('rack_power', [
-            'create' => true,
-            'percent' => $power_prct,
-            'message' => htmlescape($power . " / " . $rack->fields['max_power'])
-        ]);
+        echo Html::getProgressBar(
+            $power_prct,
+            $power . " / " . $rack->fields['max_power']
+        );
         echo "</div>";
         echo "</div>";
     }
 
     public function showForm($ID, array $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
-
-        $colspan = 4;
 
         echo "<div class='center'>";
 
         $this->initForm($ID, $options);
-        $this->showFormHeader();
+        $this->showFormHeader($options);
 
         $rack = new Rack();
         $rack->getFromDB($this->fields['racks_id']);
@@ -562,10 +552,10 @@ JAVASCRIPT;
                 'itemtype',
                 [
                     'id'    => "itemtype_$rand",
-                    'value' => 'PDU'
+                    'value' => 'PDU',
                 ]
             );
-            echo PDU::getTypeName(1);
+            echo htmlescape(PDU::getTypeName(1));
         } else {
             $types = array_combine($CFG_GLPI['rackable_types'], $CFG_GLPI['rackable_types']);
             foreach ($types as $type => &$text) {
@@ -578,16 +568,16 @@ JAVASCRIPT;
                 [
                     'display_emptychoice'   => true,
                     'value'                 => $this->fields["itemtype"],
-                    'rand'                  => $rand
+                    'rand'                  => $rand,
                 ]
             );
         }
 
-       //get all used items
+        //get all used items
         $used = $used_reserved = [];
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'items_id', 'is_reserved'],
-            'FROM' => static::getTable()
+            'FROM' => static::getTable(),
         ]);
         foreach ($iterator as $row) {
             if ($row['is_reserved']) {
@@ -600,10 +590,10 @@ JAVASCRIPT;
             $used['PDU'][] = $used_pdu['pdus_id'];
         }
 
-       //items part of an enclosure should not be listed
+        //items part of an enclosure should not be listed
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'items_id'],
-            'FROM'   => Item_Enclosure::getTable()
+            'FROM'   => Item_Enclosure::getTable(),
         ]);
         foreach ($iterator as $row) {
             $used[$row['itemtype']][] = $row['items_id'];
@@ -612,25 +602,25 @@ JAVASCRIPT;
             'used',
             [
                 'id'    => "used_$rand",
-                'value' => json_encode($used)
+                'value' => json_encode($used),
             ]
         );
 
-       //TODO: update possible positions according to selected item number of units
-       //TODO: update positions on rack selection
-       //TODO: update hpos from item model info is_half_rack
-       //TODO: update orientation according to item model depth
+        //TODO: update possible positions according to selected item number of units
+        //TODO: update positions on rack selection
+        //TODO: update hpos from item model info is_half_rack
+        //TODO: update orientation according to item model depth
 
         echo "</td>";
         echo "<td><label for='dropdown_items_id$rand'>" . _sn('Item', 'Items', 1) . "</label></td>";
         echo "<td id='items_id'>";
         if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
-            $itemtype = new $itemtype();
+            $itemtype = getItemForItemtype($itemtype);
             $itemtype::dropdown([
                 'name'   => "items_id",
                 'value'  => $this->fields['items_id'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
         } else {
             Dropdown::showFromArray(
@@ -638,7 +628,7 @@ JAVASCRIPT;
                 [],
                 [
                     'display_emptychoice'   => true,
-                    'rand'                  => $rand
+                    'rand'                  => $rand,
                 ]
             );
         }
@@ -661,7 +651,7 @@ JAVASCRIPT;
                 'max'    => $rack->fields['number_units'],
                 'step'   => 1,
                 'used'   => $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -674,11 +664,11 @@ JAVASCRIPT;
             'orientation',
             [
                 Rack::FRONT => __('Front'),
-                Rack::REAR  => __('Rear')
+                Rack::REAR  => __('Rear'),
             ],
             [
                 'value' => $this->fields["orientation"],
-                'rand' => $rand
+                'rand' => $rand,
             ]
         );
         echo "</td>";
@@ -688,7 +678,7 @@ JAVASCRIPT;
             'bgcolor',
             [
                 'value'  => $this->fields['bgcolor'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -702,11 +692,11 @@ JAVASCRIPT;
             [
                 Rack::POS_NONE    => __('None'),
                 Rack::POS_LEFT    => __('Left'),
-                Rack::POS_RIGHT   => __('Right')
+                Rack::POS_RIGHT   => __('Right'),
             ],
             [
                 'value'  => $this->fields['hpos'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -731,7 +721,7 @@ JAVASCRIPT;
             -1,
             [
                 'rand'      => $rand,
-                'on_change' => 'toggleUsed(this.value)'
+                'on_change' => 'toggleUsed(this.value)',
             ]
         );
 
@@ -771,6 +761,7 @@ JAVASCRIPT;
      * Get cell content
      *
      * @param mixed $cell Rack cell (array or false)
+     * @param bool $readonly
      *
      * @return string
      */
@@ -830,40 +821,40 @@ JAVASCRIPT;
 
             $tip = "<span class='tipcontent'>";
             $tip .= "<span>
-                  <label>" .
-                  ($rear
-                     ? __("asset rear side")
-                     : __("asset front side")) . "
+                  <label>"
+                  . ($rear
+                     ? __s("asset rear side")
+                     : __s("asset front side")) . "
                   </label>
                </span>";
             if (!empty($typename)) {
-                 $tip .= "<span>
-                     <label>" . _n('Type', 'Types', 1) . ":</label>
-                     $typename
+                $tip .= "<span>
+                     <label>" . _sn('Type', 'Types', 1) . ":</label>
+                     " . htmlescape($typename) . "
                   </span>";
             }
             if (!empty($name)) {
                 $tip .= "<span>
-                     <label>" . __('name') . ":</label>
-                     $name
+                     <label>" . __s('name') . ":</label>
+                     " . htmlescape($name) . "
                   </span>";
             }
             if (!empty($serial)) {
                 $tip .= "<span>
-                     <label>" . __('serial') . ":</label>
-                     $serial
+                     <label>" . __s('serial') . ":</label>
+                     " . htmlescape($serial) . "
                   </span>";
             }
             if (!empty($otherserial)) {
                 $tip .= "<span>
-                     <label>" . __('Inventory number') . ":</label>
-                     $otherserial
+                     <label>" . __s('Inventory number') . ":</label>
+                     " . htmlescape($otherserial) . "
                   </span>";
             }
             if (!empty($model)) {
                 $tip .= "<span>
-                     <label>" . __('model') . ":</label>
-                     $model
+                     <label>" . __s('model') . ":</label>
+                     " . htmlescape($model) . "
                   </span>";
             }
 
@@ -872,19 +863,19 @@ JAVASCRIPT;
             $readonly_attr = $readonly ? 'gs-no-move="true"' : '';
             return "
          <div class='grid-stack-item {$back_class} {$half_class} {$reserved_cl} {$img_class}'
-               gs-w='{$gs_item['width']}' gs-h='{$gs_item['height']}'
-               gs-x='{$gs_item['x']}'     gs-y='{$gs_item['y']}'
-               gs-id='{$gs_item['id']}'   gs-locked='true' {$readonly_attr}
-               style='background-color: $bg_color; color: $fg_color;'>
-            <div class='grid-stack-item-content' style='$fg_color_s $img_s'>
-               $icon" .
-               (!empty($gs_item['url'])
-                  ? "<a href='{$gs_item['url']}' class='itemrack_name' style='$fg_color_s'>{$gs_item['name']}</a>"
-                  : "<span class='itemrack_name'>" . $gs_item['name'] . "</span>") . "
-               <a href='{$gs_item['rel_url']}' class='edit_rack_item'>
+               gs-w='" . htmlescape($gs_item['width']) . "' gs-h='" . htmlescape($gs_item['height']) . "'
+               gs-x='" . htmlescape($gs_item['x']) . "'     gs-y='" . htmlescape($gs_item['y']) . "'
+               gs-id='" . htmlescape($gs_item['id']) . "'   gs-locked='true' {$readonly_attr}
+               style='background-color: " . htmlescape($bg_color) . "; color: " . htmlescape($fg_color) . ";'>
+            <div class='grid-stack-item-content' style='" . htmlescape($fg_color_s) . " " . htmlescape($img_s) . "'>
+               $icon"
+               . (!empty($gs_item['url'])
+                  ? "<a href='" . htmlescape($gs_item['url']) . "' class='itemrack_name' style='" . htmlescape($fg_color_s) . "'>" . htmlescape($gs_item['name']) . "</a>"
+                  : "<span class='itemrack_name'>" . htmlescape($gs_item['name']) . "</span>") . "
+               <a href='" . htmlescape($gs_item['rel_url']) . "' class='edit_rack_item'>
                   <i class='fa fa-pencil-alt rel-link'
-                     style='$fg_color_s'
-                     title='" . __("Edit rack relation") . "'></i>
+                     style='" . htmlescape($fg_color_s) . "'
+                     title='" . __s("Edit rack relation") . "'></i>
                </a>
                $tip
             </div>
@@ -917,10 +908,10 @@ JAVASCRIPT;
         }
 
         if (!empty($icon)) {
-            $icon = "<i class='item_rack_icon $icon'></i>";
+            $icon = "<i class='item_rack_icon " . htmlescape($icon) . "'></i>";
         }
 
-        return $icon;
+        return "";
     }
 
     public function prepareInputForAdd($input)
@@ -951,7 +942,7 @@ JAVASCRIPT;
         $hpos        = !$this->isNewItem() ? $this->fields['hpos'] : null;
         $orientation = !$this->isNewItem() ? $this->fields['orientation'] : null;
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
@@ -997,22 +988,21 @@ JAVASCRIPT;
         }
 
         if (!count($error_detected)) {
-           //check if required U are available at position
+            //check if required U are available at position
             $rack = new Rack();
             $rack->getFromDB($racks_id);
 
             if ($this->isNewItem()) {
                 $filled = $rack->getFilled();
             } else {
-               // If object is existing, exclude current state from used positions
+                // If object is existing, exclude current state from used positions
                 $filled = $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']);
             }
 
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item->getFromDB($items_id);
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = $model_class::getForeignKeyField();
-            $model = new $model_class();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
 
             $required_units = 1;
             $width          = 1;
@@ -1040,11 +1030,11 @@ JAVASCRIPT;
              * @var int $required_units
              */
             if (
-                $position > $rack->fields['number_units'] ||
-                $position + $required_units  > $rack->fields['number_units'] + 1
+                $position > $rack->fields['number_units']
+                || $position + $required_units  > $rack->fields['number_units'] + 1
             ) {
                 $error_detected[] = __('Item is out of rack bounds');
-            } else if (!count($error_detected)) {
+            } elseif (!count($error_detected)) {
                 $i = 0;
                 while ($i < $required_units) {
                     $current_position = $position + $i;

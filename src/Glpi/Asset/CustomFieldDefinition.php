@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,7 +40,13 @@ use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\TypeInterface;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use InvalidArgumentException;
+use RuntimeException;
 use Session;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
 
 final class CustomFieldDefinition extends CommonDBChild
 {
@@ -52,6 +58,11 @@ final class CustomFieldDefinition extends CommonDBChild
     public static function getTypeName($nb = 0)
     {
         return _n('Custom field', 'Custom fields', $nb);
+    }
+
+    public static function getNameField()
+    {
+        return 'label';
     }
 
     public static function getIcon()
@@ -76,7 +87,6 @@ final class CustomFieldDefinition extends CommonDBChild
 
     public function cleanDBonPurge()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $it = $DB->request([
@@ -111,8 +121,8 @@ final class CustomFieldDefinition extends CommonDBChild
         $DB->update('glpi_assets_assets', [
             'custom_fields' => QueryFunction::jsonRemove([
                 'custom_fields',
-                new QueryExpression($DB::quoteValue('$."' . $this->fields['id'] . '"'))
-            ])
+                new QueryExpression($DB::quoteValue('$."' . $this->fields['id'] . '"')),
+            ]),
         ], [
             'assets_assetdefinitions_id' => $this->fields['assets_assetdefinitions_id'],
         ]);
@@ -129,7 +139,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         $adm = AssetDefinitionManager::getInstance();
         $field_types = $adm->getCustomFieldTypes();
-        $field_types = array_combine($field_types, array_map(static fn ($t) => $t::getName(), $field_types));
+        $field_types = array_combine($field_types, array_map(static fn($t) => $t::getName(), $field_types));
         TemplateRenderer::getInstance()->display('pages/assets/customfield.html.twig', [
             'no_header' => true,
             'item' => $this,
@@ -137,8 +147,8 @@ final class CustomFieldDefinition extends CommonDBChild
             'allowed_dropdown_itemtypes' => $adm->getAllowedDropdownItemtypes(),
             'field_types' => $field_types,
             'params' => [
-                'formfooter' => false
-            ]
+                'formfooter' => false,
+            ],
         ]);
         return true;
     }
@@ -154,10 +164,9 @@ final class CustomFieldDefinition extends CommonDBChild
 
     private function validateSystemName(array &$input): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        if (!is_string($input['system_name']) || preg_match('/^[a-z_]+$/', $input['system_name']) !== 1) {
+        if (!is_string($input['system_name']) || preg_match('/^[a-z0-9_]+$/', $input['system_name']) !== 1) {
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(
                     __('The following field has an incorrect value: "%s".'),
@@ -193,7 +202,7 @@ final class CustomFieldDefinition extends CommonDBChild
         if (isset($input['default_value'])) {
             try {
                 $input['default_value'] = json_encode($field_for_validation->getFieldType()->formatValueForDB($input['default_value']));
-            } catch (\InvalidArgumentException) {
+            } catch (InvalidArgumentException) {
                 $input['default_value'] = null;
             }
         }
@@ -228,6 +237,11 @@ final class CustomFieldDefinition extends CommonDBChild
         if (!$this->validateSystemName($input)) {
             return false;
         }
+
+        if (empty($input['label'])) {
+            $input['label'] = $input['system_name'];
+        }
+
         $input = $this->prepareInputForAddAndUpdate($input);
         if ($input === false) {
             return false;
@@ -241,7 +255,30 @@ final class CustomFieldDefinition extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
         // Cannot change type or system_name of existing field
-        unset($input['type'], $input['system_name']);
+        if (
+            array_key_exists('system_name', $input)
+            && $input['system_name'] !== $this->fields['system_name']
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The system name cannot be changed.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (
+            array_key_exists('type', $input)
+            && $input['type'] !== $this->fields['type']
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('The field type cannot be changed.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         $input = $this->prepareInputForAddAndUpdate($input);
         if ($input === false) {
             return false;
@@ -261,6 +298,36 @@ final class CustomFieldDefinition extends CommonDBChild
         parent::post_getFromDB();
     }
 
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        $this->refreshAssetDefinition();
+    }
+
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        $this->refreshAssetDefinition();
+    }
+
+    public function post_purgeItem()
+    {
+        parent::post_purgeItem();
+
+        $this->refreshAssetDefinition();
+    }
+
+    /**
+     * Refresh the asset definition to get force its custom fields definitions to be updated.
+     */
+    private function refreshAssetDefinition(): void
+    {
+        $definition = AssetDefinition::getById($this->fields['assets_assetdefinitions_id']);
+        AssetDefinitionManager::getInstance()->registerDefinition($definition);
+    }
+
     public function computeFriendlyName(): string
     {
         return $this->getDecodedTranslationsField()[Session::getLanguage()] ?? $this->fields['label'];
@@ -277,7 +344,7 @@ final class CustomFieldDefinition extends CommonDBChild
         if (in_array($this->fields['type'], $field_types, true)) {
             return new $this->fields['type']($this);
         }
-        throw new \RuntimeException('Invalid field type: ' . $this->fields['type']);
+        throw new RuntimeException('Invalid field type: ' . $this->fields['type']);
     }
 
     /**
@@ -307,7 +374,6 @@ final class CustomFieldDefinition extends CommonDBChild
      */
     protected function validateTranslationsArray(mixed $translations): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!is_array($translations)) {

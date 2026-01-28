@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,7 +38,7 @@
  **/
 class Item_DeviceBattery extends Item_Devices
 {
-    public static $itemtype_2 = 'DeviceBattery';
+    public static $itemtype_2 = DeviceBattery::class;
     public static $items_id_2 = 'devicebatteries_id';
 
     protected static $notable = false;
@@ -65,7 +65,7 @@ class Item_DeviceBattery extends Item_Devices
                 'id'         => 21,
                 'datatype'   => 'progressbar',
                 'max'       => 'capacity',    // Field used to represent 100% capacity value
-            ]
+            ],
         ];
     }
 

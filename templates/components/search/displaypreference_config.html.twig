@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -61,7 +60,7 @@
             <div class="pt-3">
                 {% if available_to_add|length > 0 %}
                     {% set add_opt_btn %}
-                        <button type="button" name="add_opt" class="btn btn-primary ms-1 d-inline-block">
+                        <button type="button" name="add_opt" class="btn btn-primary w-100 w-sm-auto ms-sm-1 mt-2 mt-sm-0">
                             <i class="ti ti-plus"></i>
                             <span>{{ _x('button', 'Add') }}</span>
                         </button>
@@ -69,23 +68,29 @@
                     {% set result_template_js %}
                         {# Select2 js function for templateResult that hides options already added to the table where the value matches the data-opt-id attr on the rows #}
                         (opt) => {
-                        if ($(`tr[data-opt-id="${opt.id}"]`).length > 0) {
-                        return null;
-                        }
-                        return opt.text;
+                            if ($(`li[data-opt-id="${opt.id}"]`).length > 0) {
+                                return null;
+                            }
+                            {# select2 will escape the text #}
+                            return opt.text;
                         }
                     {% endset %}
 
                     <div class="d-flex justify-content-between mb-2">
-                        {{ fields.dropdownArrayField('num', null, available_to_add, '', {
-                            field_class: 'col-12 col-sm-6 d-flex',
-                            no_label: true,
-                            add_field_html: add_opt_btn,
-                            templateResult: result_template_js,
-                            mb: '',
-                            aria_label: __('Select an option to add'),
-                        }) }}
-
+                        <div class="row g-0 flex-fill mw-100">
+                            <div class="col-12 col-sm">
+                                {{ fields.dropdownArrayField('num', null, available_to_add, '', {
+                                    field_class: 'd-flex',
+                                    no_label: true,
+                                    templateResult: result_template_js,
+                                    mb: '',
+                                    aria_label: __('Select an option to add'),
+                                }) }}
+                            </div>
+                            <div class="col-12 col-sm-auto d-flex align-items-start px-0">
+                                {{ add_opt_btn }}
+                            </div>
+                        </div>
                         {% if not is_global %}
                             <button type="button" class="btn btn-ghost-danger me-1" name="disable" value="1">{{ __('Delete personal view') }}</button>
                         {% endif %}
@@ -93,13 +98,13 @@
                 {% endif %}
             </div>
             <ul class="list-group">
-                {% for opt in entries|filter(v => v['fixed'] == true) %}
+                {% for opt in entries|filter(v => (v['fixed'] ?? false) == true) %}
                     <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item py-2 disabled px-2">
                         <i class="ti ti-grip-vertical bs-invisible"></i>
                         <span>{{ opt['name'] }}</span>
                     </li>
                 {% endfor %}
-                {% for opt in entries|filter(v => v['fixed'] != true) %}
+                {% for opt in entries|filter(v => (v['fixed'] ?? false) != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
                     <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
                         <i class="ti ti-grip-vertical"></i>

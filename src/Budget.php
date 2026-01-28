@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,16 +36,19 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
+use Glpi\Features\Clonable;
 
 /**
  * Budget class
  */
 class Budget extends CommonDropdown
 {
-    use Glpi\Features\Clonable;
+    /** @use Clonable<static> */
+    use Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory           = true;
 
     public static $rightname           = 'budget';
@@ -82,12 +85,12 @@ class Budget extends CommonDropdown
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -97,13 +100,13 @@ class Budget extends CommonDropdown
 
         if (!$withtemplate) {
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     $count = 0;
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $count = self::countForBudget($item);
                     }
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $count, $item::getType(), 'ti ti-package')
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
                     ];
             }
         }
@@ -116,12 +119,10 @@ class Budget extends CommonDropdown
         if ($item instanceof self) {
             switch ($tabnum) {
                 case 1:
-                    $item->showValuesByEntity();
-                    break;
+                    return $item->showValuesByEntity();
 
                 case 2:
-                    $item->showItems();
-                    break;
+                    return $item->showItems();
             }
         }
         return true;
@@ -130,12 +131,12 @@ class Budget extends CommonDropdown
     /**
      * Print the contact form
      *
-     * @param integer $ID      Integer ID of the item
+     * @param int $ID      Integer ID of the item
      * @param array  $options  Array of possible options:
      *     - target for the Form
      *     - withtemplate : template or basic item
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public function showForm($ID, array $options = [])
     {
@@ -143,8 +144,8 @@ class Budget extends CommonDropdown
             'item' => $this,
             'no_header' => true,
             'params' => [
-                'canedit' => $this->canUpdateItem()
-            ]
+                'canedit' => $this->canUpdateItem(),
+            ],
         ]);
         return true;
     }
@@ -167,7 +168,7 @@ class Budget extends CommonDropdown
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -185,7 +186,7 @@ class Budget extends CommonDropdown
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -194,7 +195,7 @@ class Budget extends CommonDropdown
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -203,7 +204,7 @@ class Budget extends CommonDropdown
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -211,7 +212,7 @@ class Budget extends CommonDropdown
             'table'              => 'glpi_budgettypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -219,7 +220,7 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'begin_date',
             'name'               => __('Start date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -227,7 +228,7 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -235,15 +236,15 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'value',
             'name'               => _x('price', 'Value'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -263,7 +264,7 @@ class Budget extends CommonDropdown
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -271,10 +272,10 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
@@ -319,7 +320,6 @@ class Budget extends CommonDropdown
      */
     private function getItemListCriteria(bool $entity_restrict = true): QueryUnion
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -331,28 +331,35 @@ class Budget extends CommonDropdown
             'FROM'            => 'glpi_infocoms',
             'WHERE'           => [
                 'budgets_id'   => $budgets_id,
-                'NOT'          => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+                'NOT'          => ['itemtype' => [ConsumableItem::class, CartridgeItem::class, Software::class]],
             ],
-            'ORDER'           => 'itemtype'
+            'ORDER'           => 'itemtype',
         ]);
         $itemtypes = [
             // These types shouldn't be in the glpi_infocoms table, but have their costs elsewhere
-            'Contract', 'Ticket', 'Problem', 'Change', 'Project'
+            Contract::class, Ticket::class, Problem::class, Change::class, Project::class,
         ];
         foreach ($iterator as $row) {
             $itemtypes[] = $row['itemtype'];
         }
-        $itemtypes = array_filter($itemtypes, static fn($itemtype) => is_a($itemtype, CommonDBTM::class, true) && $itemtype::canView());
         $infocom_itemtypes = [];
         $other_cost_tables = [
-            'Contract' => ContractCost::getTable(),
-            'Ticket' => TicketCost::getTable(),
-            'Problem' => ProblemCost::getTable(),
-            'Change' => ChangeCost::getTable(),
-            'Project' => ProjectCost::getTable(),
+            Contract::class => ContractCost::getTable(),
+            Ticket::class => TicketCost::getTable(),
+            Problem::class => ProblemCost::getTable(),
+            Change::class => ChangeCost::getTable(),
+            Project::class => ProjectCost::getTable(),
         ];
         foreach ($itemtypes as $itemtype) {
-            if (!in_array($itemtype, ['Contract', 'Ticket', 'Problem', 'Change', 'Project'], true)) {
+            if (in_array($itemtype, $infocom_itemtypes)) {
+                continue; // prevent duplicates
+            }
+
+            if (!is_a($itemtype, CommonDBTM::class, true) || !$itemtype::canView()) {
+                continue;
+            }
+
+            if (!in_array($itemtype, [Contract::class, Ticket::class, Problem::class, Change::class, Project::class], true)) {
                 $infocom_itemtypes[] = $itemtype;
             }
         }
@@ -365,24 +372,24 @@ class Budget extends CommonDropdown
                 'SELECT'       => [
                     new QueryExpression($DB::quoteValue($itemtype), '_itemtype'),
                     $item_table => ['id', 'entities_id'],
-                    'glpi_infocoms.value',
+
                 ],
                 'FROM'         => 'glpi_infocoms',
                 'INNER JOIN'   => [
                     $item_table => [
                         'ON' => [
                             $item_table => 'id',
-                            'glpi_infocoms'   => 'items_id'
-                        ]
-                    ]
+                            'glpi_infocoms'   => 'items_id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_infocoms.itemtype'            => $itemtype,
-                    'glpi_infocoms.budgets_id'          => $budgets_id
+                    'glpi_infocoms.budgets_id'          => $budgets_id,
                 ],
                 'ORDERBY'      => [
-                    $item_table . '.entities_id'
-                ]
+                    $item_table . '.entities_id',
+                ],
             ];
             if ($entity_restrict) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
@@ -394,11 +401,17 @@ class Budget extends CommonDropdown
             $criteria['SELECT'][$item_table][] = $item->maybeDeleted() ? 'is_deleted' : new QueryExpression('0', 'is_deleted');
             $criteria['SELECT'][$item_table][] = $item->isField('serial') ? 'serial' : new QueryExpression('NULL', 'serial');
             $criteria['SELECT'][$item_table][] = $item->isField('otherserial') ? 'otherserial' : new QueryExpression('NULL', 'otherserial');
+            if ($item instanceof Item_Devices) {
+                $criteria['SELECT'][$item_table][] = $item::$items_id_2 . ' AS devices_id';
+            } else {
+                $criteria['SELECT'][] = new QueryExpression('NULL', 'devices_id');
+            }
+            $criteria['SELECT'][] = 'glpi_infocoms.value';
             if ($item->maybeTemplate()) {
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
 
-            $queries[] = new \Glpi\DBAL\QuerySubQuery($criteria);
+            $queries[] = new QuerySubQuery($criteria);
         }
 
         foreach ($other_cost_tables as $itemtype => $cost_table) {
@@ -410,39 +423,36 @@ class Budget extends CommonDropdown
                     $item_table => ['id', 'entities_id'],
                     new QueryExpression('NULL', 'serial'),
                     new QueryExpression('NULL', 'otherserial'),
+                    new QueryExpression('NULL', 'devices_id'),
                 ],
                 'FROM' => $cost_table,
                 'INNER JOIN' => [
                     $item_table => [
                         'ON' => [
                             $item_table => 'id',
-                            $cost_table => $itemtype::getForeignKeyField()
-                        ]
-                    ]
+                            $cost_table => $itemtype::getForeignKeyField(),
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     $cost_table . '.budgets_id' => $budgets_id,
                 ],
                 'GROUPBY'      => [
                     $item_table . '.id',
-                    $item_table . '.entities_id'
+                    $item_table . '.entities_id',
                 ],
                 'ORDERBY'      => [
                     $item_table . '.entities_id',
-                    $item_table . '.name'
-                ]
+                    $item_table . '.name',
+                ],
             ];
             if ($entity_restrict) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
             }
-            if ($item instanceof Item_Devices) {
-                $criteria['ORDERBY'][] = $item_table . '.itemtype';
-            } else {
-                $criteria['ORDERBY'][] = $item_table . '.name';
-            }
+            $criteria['ORDERBY'][] = $item_table . '.name';
 
             $criteria['SELECT'][] = match ($itemtype) {
-                'Ticket', 'Problem', 'Change' => QueryFunction::sum(
+                Ticket::class, Problem::class, Change::class => QueryFunction::sum(
                     expression: new QueryExpression($DB::quoteName("$cost_table.actiontime") . " * " . $DB::quoteName("$cost_table.cost_time") . "/" . HOUR_TIMESTAMP . "
                                       + " . $DB::quoteName("$cost_table.cost_fixed") . "
                                       + " . $DB::quoteName("$cost_table.cost_material")),
@@ -456,7 +466,7 @@ class Budget extends CommonDropdown
                 $criteria['WHERE'][$item_table . '.is_template'] = 0;
             }
 
-            $queries[] = new \Glpi\DBAL\QuerySubQuery($criteria);
+            $queries[] = new QuerySubQuery($criteria);
         }
 
         return new QueryUnion($queries);
@@ -465,11 +475,10 @@ class Budget extends CommonDropdown
     /**
      * Print the HTML array of Items on a budget
      *
-     * @return void
+     * @return bool
      **/
-    public function showItems()
+    public function showItems(): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -508,14 +517,14 @@ class Budget extends CommonDropdown
             ];
 
             if (!array_key_exists($itemtype, $items)) {
-                $items[$itemtype] = new $itemtype();
+                $items[$itemtype] = getItemForItemtype($itemtype);
             }
 
-            $name = NOT_AVAILABLE;
+            $name = htmlescape(NOT_AVAILABLE);
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
-                    $tmpitem = new $items[$itemtype]::$itemtype_2();
-                    if ($tmpitem->getFromDB($data[$items[$itemtype]::$items_id_2])) {
+                    $tmpitem = getItemForItemtype($items[$itemtype]::$itemtype_2);
+                    if ($tmpitem->getFromDB($data['devices_id'])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }
                 } else {
@@ -556,19 +565,19 @@ class Budget extends CommonDropdown
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
+
+        return true;
     }
 
     /**
      * Print the HTML array of value consumed for a budget
      *
-     * @return void
+     * @return bool
      **/
-    public function showValuesByEntity()
+    public function showValuesByEntity(): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $budgets_id = $this->fields['id'];
@@ -578,7 +587,7 @@ class Budget extends CommonDropdown
         }
 
         $iterator = $DB->request([
-            'FROM' => $this->getItemListCriteria(false)
+            'FROM' => $this->getItemListCriteria(false),
         ]);
 
         $itemtypes = [];
@@ -587,7 +596,7 @@ class Budget extends CommonDropdown
                 'name' => __('Other entities'),
                 'itemtypes' => [],
                 'total' => 0,
-            ]
+            ],
         ];
         $entries = [];
         $itemtype_totals = [];
@@ -667,7 +676,6 @@ class Budget extends CommonDropdown
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'super_header' => __('Total spent on the budget'),
             'columns' => $columns,
             'formatters' => $formatters,
@@ -679,9 +687,10 @@ class Budget extends CommonDropdown
             ],
             'footer_class' => 'fw-bold',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
+
+        return true;
     }
 
     public static function getIcon()

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,17 +35,27 @@
 
 namespace Glpi\Form\Export\Specification;
 
+use Glpi\Form\Export\Serializer\DynamicExportData;
+
 final class FormContentSpecification
 {
     public int $id;
+    public string $uuid;
     public string $name;
-    public ?string $header;
-    public ?string $description;
-    public string $illustration;
+    public ?string $header = null;
+    public ?string $description = null;
     public string $category_name;
     public string $entity_name;
     public bool $is_recursive;
     public bool $is_active;
+    public string $render_layout;
+    public string $submit_button_visibility_strategy;
+
+    /** @var string|CustomIllustrationContentSpecification $illustration**/
+    public string|CustomIllustrationContentSpecification $illustration;
+
+    /** @var ConditionDataSpecification[] $conditions */
+    public array $submit_button_conditions;
 
     /** @var SectionContentSpecification[] $sections */
     public array $sections = [];
@@ -62,22 +72,61 @@ final class FormContentSpecification
     /** @var DestinationContentSpecification[] $destinations */
     public array $destinations = [];
 
+    /** @var TranslationContentSpecification[] $translations */
+    public array $translations = [];
+
     /** @var DataRequirementSpecification[] $data_requirements */
     public array $data_requirements = [];
+
+    /** @var CustomTypeRequirementSpecification[] $data_requirements */
+    public array $custom_types_requirements = [];
+
+    /** @var PluginRequirementSpecification[] $plugin_requirements */
+    public array $plugin_requirements = [];
 
     /** @return DataRequirementSpecification[] */
     public function getDataRequirements(): array
     {
         return $this->data_requirements;
     }
-
     public function addDataRequirement(
-        string $class,
-        string $name,
+        DataRequirementSpecification $requirement
     ): void {
-        $requirement = new DataRequirementSpecification();
-        $requirement->itemtype = $class;
-        $requirement->name = $name;
         $this->data_requirements[] = $requirement;
+    }
+
+    public function addRequirementsFromDynamicData(DynamicExportData $data): void
+    {
+        array_push($this->data_requirements, ...$data->getRequirements());
+    }
+
+    public function getCustomTypesRequirements(): array
+    {
+        return $this->custom_types_requirements;
+    }
+    public function addCustomTypeRequirement(
+        CustomTypeRequirementSpecification $requirement
+    ): void {
+        $this->custom_types_requirements[] = $requirement;
+    }
+
+    public function getPluginsRequirements(): array
+    {
+        return $this->plugin_requirements;
+    }
+    public function addPluginRequirement(
+        PluginRequirementSpecification $requirement
+    ): void {
+        $requirements = array_map(
+            fn(PluginRequirementSpecification $r): string => $r->key,
+            $this->plugin_requirements,
+        );
+
+        // Do nothing if requirement already exist
+        if (in_array($requirement->key, $requirements)) {
+            return;
+        }
+
+        $this->plugin_requirements[] = $requirement;
     }
 }

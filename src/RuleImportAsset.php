@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,34 +36,38 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Inventory\Conf;
+use Glpi\Inventory\MainAsset\GenericNetworkAsset;
+use Glpi\Inventory\MainAsset\GenericPrinterAsset;
+use Glpi\Inventory\MainAsset\MainAsset;
+use Glpi\Plugin\Hooks;
 
 class RuleImportAsset extends Rule
 {
-    const RULE_ACTION_LINK_OR_IMPORT    = 0;
-    const RULE_ACTION_LINK_OR_NO_IMPORT = 1;
-    const RULE_ACTION_DENIED            = 2;
+    public const RULE_ACTION_LINK_OR_IMPORT    = 0;
+    public const RULE_ACTION_LINK_OR_NO_IMPORT = 1;
+    public const RULE_ACTION_DENIED            = 2;
 
-    const PATTERN_ENTITY_RESTRICT       = 202;
-    const PATTERN_NETWORK_PORT_RESTRICT = 203;
-    const PATTERN_ONLY_CRITERIA_RULE    = 204;
+    public const PATTERN_ENTITY_RESTRICT       = 202;
+    public const PATTERN_NETWORK_PORT_RESTRICT = 203;
+    public const PATTERN_ONLY_CRITERIA_RULE    = 204;
 
-    const LINK_RESULT_DENIED            = 0;
-    const LINK_RESULT_CREATE            = 1;
-    const LINK_RESULT_LINK              = 2;
+    public const LINK_RESULT_DENIED            = 0;
+    public const LINK_RESULT_CREATE            = 1;
+    public const LINK_RESULT_LINK              = 2;
 
     public $restrict_matching = Rule::AND_MATCHING;
 
     public static $rightname         = 'rule_import';
 
-    /** @var bool */
-    private $restrict_entity = false;
-    /** @var integer */
+    /** @var int */
     private $found_criteria = 0;
     /** @var array */
     private $complex_criteria = [];
-    /** @var boolean */
+    /** @var bool */
     private $only_these_criteria = false;
-    /** @var boolean */
+    /** @var bool */
     private $link_criteria_port = false;
 
     public function getTitle()
@@ -96,7 +100,7 @@ class RuleImportAsset extends Rule
                     Rule::PATTERN_BEGIN,
                     Rule::PATTERN_END,
                     Rule::REGEX_MATCH,
-                    Rule::REGEX_NOT_MATCH
+                    Rule::REGEX_NOT_MATCH,
                 ],
             ],
             'virtualmachinetypes_id' => [
@@ -112,7 +116,7 @@ class RuleImportAsset extends Rule
                     Rule::PATTERN_BEGIN,
                     Rule::PATTERN_END,
                     Rule::REGEX_MATCH,
-                    Rule::REGEX_NOT_MATCH
+                    Rule::REGEX_NOT_MATCH,
                 ],
             ],
             'states_id'  => [
@@ -121,15 +125,15 @@ class RuleImportAsset extends Rule
                 'name'      => __('Having the status'),
                 'linkfield' => 'state',
                 'type'      => 'dropdown',
-            //Means that this criterion can only be used in a global search query
+                //Means that this criterion can only be used in a global search query
                 'is_global' => true,
-                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
+                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT],
             ],
             'model' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), _n('Model', 'Models', 1)),
             ],
             'manufacturer' => [ // Manufacturer as Text to allow text criteria (contains, regex, ...)
-                'name'            => Manufacturer::getTypeName(1)
+                'name'            => Manufacturer::getTypeName(1),
             ],
             'mac' => [
                 'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('MAC')),
@@ -138,7 +142,7 @@ class RuleImportAsset extends Rule
                 'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('IP')),
             ],
             'ifdescr' => [
-                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('Port description'))
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), __('Port description')),
             ],
             'ifnumber' => [
                 'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), NetworkPort::getTypename(1), _n('Port number', 'Ports number', 1)),
@@ -165,7 +169,7 @@ class RuleImportAsset extends Rule
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1)),
             ],
             'oscomment' => [
-                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1), __('Comments'))
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
             ],
             'itemtype' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),
@@ -190,7 +194,7 @@ class RuleImportAsset extends Rule
             'linked_item' => [
                 'name'            => _n('Linked asset', 'Linked assets', 1),
                 'type'            => 'yesno',
-                'allow_condition' => [Rule::PATTERN_FIND]
+                'allow_condition' => [Rule::PATTERN_FIND],
             ],
 
             'entityrestrict' => [
@@ -200,18 +204,18 @@ class RuleImportAsset extends Rule
             'link_criteria_port' => [
                 'name'            => sprintf('%s > %s', __('General'), __('Restrict criteria to same network port')),
                 'allow_condition' => [self::PATTERN_NETWORK_PORT_RESTRICT],
-                'is_global'       => true
+                'is_global'       => true,
             ],
             'only_these_criteria' => [
                 'name'            => sprintf('%s > %s', __('General'), __('Only criteria of this rule in data')),
                 'allow_condition' => [self::PATTERN_ONLY_CRITERIA_RULE],
-                'is_global'       => true
+                'is_global'       => true,
             ],
             'partial' => [
                 'name'   => __('Is partial'),
                 'type'   => 'yesno',
-                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT]
-            ]
+                'allow_condition' => [Rule::PATTERN_IS, Rule::PATTERN_IS_NOT],
+            ],
         ];
 
         return $criteria;
@@ -222,22 +226,25 @@ class RuleImportAsset extends Rule
         $actions = [
             '_inventory'   => [
                 'name'   => __('Inventory link'),
-                'type'   => 'inventory_type'
+                'type'   => 'inventory_type',
             ],
             '_ignore_import'  => [
                 'name'   => __('Refuse import'),
-                'type'   => 'yesonly'
-            ]
+                'type'   => 'yesonly',
+            ],
         ];
         return $actions;
     }
 
+    /**
+     * @return array
+     */
     public static function getRuleActionValues()
     {
         return [
             self::RULE_ACTION_LINK_OR_IMPORT    => __('Link if possible'),
             self::RULE_ACTION_LINK_OR_NO_IMPORT => __('Link if possible, otherwise imports declined'),
-            self::RULE_ACTION_DENIED            => __('Import denied (no log)')
+            self::RULE_ACTION_DENIED            => __('Import denied (no log)'),
         ];
     }
 
@@ -247,6 +254,13 @@ class RuleImportAsset extends Rule
         return $values[$value] ?? '';
     }
 
+    /**
+     * @param array $criteria
+     * @param string $name
+     * @param string $value
+     *
+     * @return false
+     */
     public function manageSpecificCriteriaValues($criteria, $name, $value)
     {
         switch ($criteria['type']) {
@@ -254,7 +268,7 @@ class RuleImportAsset extends Rule
                 $link_array = [
                     "0" => __('No'),
                     "1" => __('Yes if equal'),
-                    "2" => __('Yes if empty')
+                    "2" => __('Yes if empty'),
                 ];
 
                 Dropdown::showFromArray($name, $link_array, ['value' => $value]);
@@ -268,6 +282,7 @@ class RuleImportAsset extends Rule
      * @param string $criterion
      * @return array
      */
+    #[Override]
     public static function addMoreCriteria($criterion = '')
     {
         return match ($criterion) {
@@ -276,7 +291,7 @@ class RuleImportAsset extends Rule
             'only_these_criteria' => [self::PATTERN_ONLY_CRITERIA_RULE => __('Yes')],
             default => [
                 self::PATTERN_FIND => __('is already present'),
-                self::PATTERN_IS_EMPTY => __('is empty')
+                self::PATTERN_IS_EMPTY => __('is empty'),
             ],
         };
     }
@@ -340,6 +355,11 @@ class RuleImportAsset extends Rule
         return false;
     }
 
+    /**
+     * @param string $ID
+     *
+     * @return array
+     */
     public function getCriteriaByID($ID)
     {
         $criteria = [];
@@ -356,7 +376,7 @@ class RuleImportAsset extends Rule
      *
      * @param array $input Input
      *
-     * @return boolean
+     * @return bool
      */
     public function preComputeCriteria(array $input): bool
     {
@@ -370,9 +390,9 @@ class RuleImportAsset extends Rule
                         $definition_criteria = $this->getCriteria($crit->fields['criteria']);
                         if ($crit->fields["criteria"] == 'link_criteria_port') {
                             $this->link_criteria_port = true;
-                        } else if ($crit->fields["criteria"] == 'only_these_criteria') {
+                        } elseif ($crit->fields["criteria"] == 'only_these_criteria') {
                             $this->only_these_criteria = true;
-                        } else if (
+                        } elseif (
                             isset($definition_criteria['is_global'])
                              && $definition_criteria['is_global']
                         ) {
@@ -380,10 +400,10 @@ class RuleImportAsset extends Rule
                             trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                             return false;
                         }
-                    } else if (in_array($crit->fields["condition"], [Rule::PATTERN_FIND, Rule::PATTERN_IS_EMPTY])) {
+                    } elseif (in_array($crit->fields["condition"], [Rule::PATTERN_FIND, Rule::PATTERN_IS_EMPTY])) {
                         $this->complex_criteria[] = $crit;
                         ++$this->found_criteria;
-                    } else if ($crit->fields["condition"] == Rule::PATTERN_EXISTS) {
+                    } elseif ($crit->fields["condition"] == Rule::PATTERN_EXISTS) {
                         if (
                             !isset($input[$crit->fields['criteria']])
                             || empty($input[$crit->fields['criteria']])
@@ -391,10 +411,8 @@ class RuleImportAsset extends Rule
                             trigger_error('A value seems missing, criterion was: ' . $criterion, E_USER_WARNING);
                             return false;
                         }
-                    } else if ($crit->fields["criteria"] == 'itemtype') {
+                    } elseif ($crit->fields["criteria"] == 'itemtype') {
                         $this->complex_criteria[] = $crit;
-                    } else if ($crit->fields["criteria"] == 'entityrestrict') {
-                        $this->restrict_entity = true;
                     }
                 }
             }
@@ -408,7 +426,7 @@ class RuleImportAsset extends Rule
             $this->complex_criteria[] = $crit;
         }
 
-       // check only_these_criteria
+        // check only_these_criteria
         if ($this->only_these_criteria) {
             $complex_strings = [];
             foreach ($global_criteria as $criterion) {
@@ -433,15 +451,9 @@ class RuleImportAsset extends Rule
 
     public function findWithGlobalCriteria($input)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         * @var array $PLUGIN_HOOKS
-         */
         global $CFG_GLPI, $DB, $PLUGIN_HOOKS;
 
         $this->complex_criteria = [];
-        $this->restrict_entity = false;
         $this->only_these_criteria = false;
         $this->link_criteria_port = false;
 
@@ -461,29 +473,37 @@ class RuleImportAsset extends Rule
             isset($input['itemtype'])
             && (is_array($input['itemtype']))
         ) {
-            $itemtypeselected = array_merge($itemtypeselected, $input['itemtype']);
-        } else if (
+            foreach ($input['itemtype'] as $k => $v) {
+                if (!is_a($v, CommonDBTM::class, true)) {
+                    unset($input['itemtype'][$k]);
+                    continue;
+                }
+                $itemtypeselected[] = $v;
+            }
+        } elseif (
             isset($input['itemtype'])
             && (!empty($input['itemtype']))
+            && is_a($input['itemtype'], CommonDBTM::class, true)
         ) {
             $itemtypeselected[] = $input['itemtype'];
         } else {
             foreach ($CFG_GLPI["asset_types"] as $itemtype) {
                 if (
                     class_exists($itemtype)
+                    && is_a($itemtype, CommonDBTM::class, true)
                     && $itemtype !== SoftwareLicense::class
                     && $itemtype !== Certificate::class
                 ) {
                     $itemtypeselected[] = $itemtype;
                 }
             }
-            $itemtypeselected[] = "Unmanaged";
-            $itemtypeselected[] = "Peripheral";//used for networkinventory
+            $itemtypeselected[] = Unmanaged::class;
+            $itemtypeselected[] = Peripheral::class;//used for networkinventory
         }
 
         $found = false;
         foreach ($itemtypeselected as $itemtype) {
-            $item = new $itemtype();
+            $item = new $itemtype(); //$itemtypeselected entries are filtered to contain only CommonDBTM classes - should be safe.
             $itemtable = $item->getTable();
 
             // Build the request to check if the asset exists in GLPI
@@ -498,6 +518,11 @@ class RuleImportAsset extends Rule
                 'WHERE'  => $item->getSystemSQLCriteria(), //to fill
             ];
 
+            // do not reconcile if it's a template
+            if ($item->maybeTemplate()) {
+                $it_criteria['WHERE'][] = ['is_template' =>  0];
+            }
+
             if ($this->link_criteria_port) {
                 $this->handleLinkCriteriaPort($item, $it_criteria);
             } else {
@@ -507,8 +532,8 @@ class RuleImportAsset extends Rule
 
             $this->handleFieldsCriteria($item, $it_criteria, $input);
 
-            if (isset($PLUGIN_HOOKS['use_rules'])) {
-                foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
+                foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
@@ -522,7 +547,7 @@ class RuleImportAsset extends Rule
                         ];
                         $sql_results = Plugin::doOneHook(
                             $plugin,
-                            "ruleImportAsset_getSqlRestriction",
+                            Hooks::AUTO_RULEIMPORTASSET_GET_SQL_RESTRICTION,
                             $params
                         );
 
@@ -587,7 +612,7 @@ class RuleImportAsset extends Rule
             if ($criteria->fields['criteria'] == 'ip') {
                 $is_ip = true;
                 break;
-            } else if ($this->isNetPort($criteria->fields['criteria'])) {
+            } elseif ($this->isNetPort($criteria->fields['criteria'])) {
                 $is_networkport = true;
             }
         }
@@ -597,34 +622,34 @@ class RuleImportAsset extends Rule
                 'ON'  => [
                     $itemtable           => 'id',
                     'glpi_networkports'  => 'items_id', [
-                        'AND' => ['glpi_networkports.itemtype' => $itemtype]
-                    ]
-                ]
+                        'AND' => ['glpi_networkports.itemtype' => $itemtype],
+                    ],
+                ],
             ];
             $it_criteria['LEFT JOIN']['glpi_networknames'] = [
                 'ON'  => [
                     'glpi_networkports'  => 'id',
                     'glpi_networknames'  => 'items_id', [
-                        'AND' => ['glpi_networknames.itemtype' => 'NetworkPort']
-                    ]
-                ]
+                        'AND' => ['glpi_networknames.itemtype' => 'NetworkPort'],
+                    ],
+                ],
             ];
             $it_criteria['LEFT JOIN']['glpi_ipaddresses'] = [
                 'ON'  => [
                     'glpi_networknames'  => 'id',
                     'glpi_ipaddresses'   => 'items_id', [
-                        'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName']
-                    ]
-                ]
+                        'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName'],
+                    ],
+                ],
             ];
-        } else if ($is_networkport) {
+        } elseif ($is_networkport) {
             $it_criteria['LEFT JOIN']['glpi_networkports'] = [
                 'ON'  => [
                     $itemtable           => 'id',
                     'glpi_networkports'  => 'items_id', [
-                        'AND' => ['glpi_networkports.itemtype' => $itemtype]
-                    ]
-                ]
+                        'AND' => ['glpi_networkports.itemtype' => $itemtype],
+                    ],
+                ],
             ];
         }
     }
@@ -649,35 +674,35 @@ class RuleImportAsset extends Rule
                     'ON'  => [
                         $itemtable  => 'id',
                         $astable    => 'items_id', [
-                            'AND' => [$astable . '.itemtype' => $itemtype]
-                        ]
-                    ]
+                            'AND' => [$astable . '.itemtype' => $itemtype],
+                        ],
+                    ],
                 ];
                 $it_criteria['LEFT JOIN']['glpi_networknames'] = [
                     'ON'  => [
                         $astable  => 'id',
                         'glpi_networknames'  => 'items_id', [
-                            'AND' => ['glpi_networknames.itemtype' => 'NetworkPort']
-                        ]
-                    ]
+                            'AND' => ['glpi_networknames.itemtype' => 'NetworkPort'],
+                        ],
+                    ],
                 ];
                 $it_criteria['LEFT JOIN']['glpi_ipaddresses'] = [
                     'ON'  => [
                         'glpi_networknames'  => 'id',
                         'glpi_ipaddresses'   => 'items_id', [
-                            'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName']
-                        ]
-                    ]
+                            'AND' => ['glpi_ipaddresses.itemtype' => 'NetworkName'],
+                        ],
+                    ],
                 ];
-            } else if ($this->isNetPort($criterion->fields['criteria'])) {
+            } elseif ($this->isNetPort($criterion->fields['criteria'])) {
                 $astable = 'networkports_' . $criterion->fields['criteria'];
                 $it_criteria['LEFT JOIN']['glpi_networkports AS ' . $astable] = [
                     'ON'  => [
                         $itemtable  => 'id',
                         $astable    => 'items_id', [
-                            'AND' => [$astable . '.itemtype' => $itemtype]
-                        ]
-                    ]
+                            'AND' => [$astable . '.itemtype' => $itemtype],
+                        ],
+                    ],
                 ];
             }
         }
@@ -703,7 +728,7 @@ class RuleImportAsset extends Rule
                     if ($criterion->fields['condition'] == Rule::PATTERN_IS_EMPTY) {
                         $it_criteria['WHERE']['OR'] = [
                             ["$itemtable.name" => ''],
-                            ["$itemtable.name"   => null]
+                            ["$itemtable.name"   => null],
                         ];
                     } else {
                         $it_criteria['WHERE'][] = ["$itemtable.name" => $input['name']];
@@ -723,7 +748,7 @@ class RuleImportAsset extends Rule
                         $input['mac'] = [$input['mac']];
                     }
                     $it_criteria['WHERE'][] = [
-                        $ntable . '.mac' => $input['mac']
+                        $ntable . '.mac' => $input['mac'],
                     ];
                     break;
 
@@ -736,7 +761,7 @@ class RuleImportAsset extends Rule
                     if (!$this->link_criteria_port) {
                         $ntable = "networkports_" . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
-                    } else if (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
+                    } elseif (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
                         $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
                     }
 
@@ -748,7 +773,7 @@ class RuleImportAsset extends Rule
                     if (!$this->link_criteria_port) {
                         $ntable = "networkports_" . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
-                    } else if (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
+                    } elseif (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
                         $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
                     }
 
@@ -760,7 +785,7 @@ class RuleImportAsset extends Rule
                     if (!$this->link_criteria_port) {
                         $ntable = "networkports_" . $criterion->fields['criteria'];
                         $it_criteria['SELECT'][] = $ntable . ".id AS portid_" . $criterion->fields['criteria'];
-                    } else if (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
+                    } elseif (!in_array('glpi_networkports.id AS portid', $it_criteria['SELECT'])) {
                         $it_criteria['SELECT'][] = 'glpi_networkports.id AS portid';
                     }
                     $it_criteria['WHERE'][] = [$ntable . '.logical_number' => $input['ifnumber']];
@@ -771,19 +796,19 @@ class RuleImportAsset extends Rule
                         $it_criteria['LEFT JOIN']['glpi_agents'] = [
                             'ON'  => [
                                 'glpi_agents'  => 'items_id',
-                                $itemtable     => 'id'
-                            ]
+                                $itemtable     => 'id',
+                            ],
                         ];
                         $it_criteria['WHERE'][] = [
                             'glpi_agents.deviceid' => $input['deviceid'],
-                            'glpi_agents.tag' => $input['tag']
+                            'glpi_agents.tag' => $input['tag'],
                         ];
                     }
                     break;
 
                 case 'serial':
                     $serial = $input['serial'];
-                    $conf = new Glpi\Inventory\Conf();
+                    $conf = new Conf();
 
                     if (
                         isset($input['itemtype'])
@@ -802,8 +827,8 @@ class RuleImportAsset extends Rule
                         $it_criteria['WHERE'][] = [
                             'OR' => [
                                 ["$itemtable.otherserial" => ''],
-                                ["$itemtable.otherserial" => null]
-                            ]
+                                ["$itemtable.otherserial" => null],
+                            ],
                         ];
                     } else {
                         $it_criteria['WHERE'][] = ["$itemtable.otherserial" => $input['otherserial']];
@@ -850,11 +875,15 @@ class RuleImportAsset extends Rule
                         $it_criteria['WHERE'][] = [
                             'OR' => [
                                 ["$itemtable.uuid" => ''],
-                                ["$itemtable.uuid" => null]
-                            ]
+                                ["$itemtable.uuid" => null],
+                            ],
                         ];
                     } else {
-                        $it_criteria['WHERE'][] = ["$itemtable.uuid" => $input['uuid']];
+                        $it_criteria['WHERE'][] = [
+                            "RAW" => [
+                                "LOWER($itemtable.uuid)" => ItemVirtualMachine::getUUIDRestrictCriteria($input['uuid']),
+                            ],
+                        ];
                     }
                     break;
 
@@ -862,11 +891,11 @@ class RuleImportAsset extends Rule
                     $it_criteria['LEFT JOIN']['glpi_agents'] = [
                         'ON'  => [
                             'glpi_agents'  => 'items_id',
-                            $itemtable     => 'id'
-                        ]
+                            $itemtable     => 'id',
+                        ],
                     ];
                     $it_criteria['WHERE'][] = [
-                        'glpi_agents.device_id' => $input['device_id']
+                        'glpi_agents.device_id' => $input['device_id'],
                     ];
                     break;
 
@@ -874,18 +903,18 @@ class RuleImportAsset extends Rule
                     $it_criteria['LEFT JOIN']['glpi_domains'] = [
                         'ON'  => [
                             'glpi_domains' => 'id',
-                            $itemtable     => 'domains_id'
-                        ]
+                            $itemtable     => 'domains_id',
+                        ],
                     ];
                     $it_criteria['WHERE'][] = [
-                        'glpi_domains.name'  => $input['domains_id']
+                        'glpi_domains.name'  => $input['domains_id'],
                     ];
                     break;
 
                 case 'linked_item':
                     $it_criteria['WHERE'][] = [
                         'itemtype' => $input['linked_item']['itemtype'],
-                        'items_id' => $input['linked_item']['items_id']
+                        'items_id' => $input['linked_item']['items_id'],
                     ];
                     break;
             }
@@ -896,12 +925,11 @@ class RuleImportAsset extends Rule
     {
         $class = $params['class'] ?? null;
         $rules_id = $this->fields['id'];
-        $output['rules_id'] = $rules_id;
 
         $rulesmatched = new RuleMatchedLog();
         $inputrulelog = [
             'date'      => date('Y-m-d H:i:s'),
-            'rules_id'  => $rules_id
+            'rules_id'  => $rules_id,
         ];
 
         if ($class && method_exists($class, 'getAgent') && $class->getAgent()) {
@@ -931,7 +959,7 @@ class RuleImportAsset extends Rule
                                 $itemtype = $criterion->fields['pattern'];
                                 if ($class && method_exists($class, 'rulepassed')) {
                                     if (!isset($params['return'])) {
-                                          $class->rulepassed("0", $itemtype, $rules_id);
+                                        $class->rulepassed("0", $itemtype, $rules_id);
                                     }
                                     $output['found_inventories'] = [0, $itemtype, $rules_id];
                                 } else {
@@ -943,7 +971,7 @@ class RuleImportAsset extends Rule
                     }
 
                     $back_class = Unmanaged::class;
-                    if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
+                    if (is_a($class, MainAsset::class)) {
                         $back_class = $class->getItemtype();
                     }
                     if ($class && !isset($params['return'])) {
@@ -959,15 +987,15 @@ class RuleImportAsset extends Rule
                 ) {
                     if (isset($this->criterias_results['found_inventories'])) {
                         foreach ($this->criterias_results['found_inventories'] as $itemtype => $inventory) {
-                             $items_id = current($inventory);
-                             $output['found_inventories'] = [$items_id, $itemtype, $rules_id];
+                            $items_id = current($inventory);
+                            $output['found_inventories'] = [$items_id, $itemtype, $rules_id];
                             if (!isset($params['return'])) {
                                 if ($class) {
                                     $class->rulepassed($items_id, $itemtype, $rules_id, $this->criterias_results['found_port']);
                                 } else {
-                                    $inputrulelog = $inputrulelog + [
+                                    $inputrulelog += [
                                         'items_id'  => $items_id,
-                                        'itemtype'  => $itemtype
+                                        'itemtype'  => $itemtype,
                                     ];
                                     $rulesmatched->add($inputrulelog);
                                     $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -975,14 +1003,14 @@ class RuleImportAsset extends Rule
                             }
                             return $output;
                         }
-                    } else if ($action->fields["value"] != self::RULE_ACTION_LINK_OR_NO_IMPORT) {
-                       // Import into new equipment
+                    } elseif ($action->fields["value"] != self::RULE_ACTION_LINK_OR_NO_IMPORT) {
+                        // Import into new equipment
                         if (count($this->criterias)) {
                             foreach ($this->criterias as $criterion) {
                                 if ($criterion->fields['criteria'] == 'itemtype' && !is_numeric($criterion->fields['pattern'])) {
                                     $itemtype = $criterion->fields['pattern'];
                                     if ($class && !isset($params['return'])) {
-                                         $class->rulepassed("0", $itemtype, $rules_id);
+                                        $class->rulepassed("0", $itemtype, $rules_id);
                                     }
                                     $output['found_inventories'] = [0, $itemtype, $rules_id];
                                     return $output;
@@ -991,12 +1019,12 @@ class RuleImportAsset extends Rule
                         }
 
                         $back_class = Unmanaged::class;
-                        if (is_a($class, \Glpi\Inventory\MainAsset\MainAsset::class)) {
+                        if (is_a($class, MainAsset::class)) {
                             $back_class = $class->getItemtype();
                         }
 
                         if ($back_class === Unmanaged::class) {
-                            $conf = new \Glpi\Inventory\Conf();
+                            $conf = new Conf();
                             if ($conf->import_unmanaged == 0) {
                                 return $output;
                             }
@@ -1007,6 +1035,9 @@ class RuleImportAsset extends Rule
                         }
                         $output['found_inventories'] = [0, $back_class, $rules_id];
                         return $output;
+                    } elseif ($action->fields["value"] == self::RULE_ACTION_LINK_OR_NO_IMPORT) {
+                        // no import
+                        $output['action'] = self::LINK_RESULT_DENIED;
                     }
                 }
             }
@@ -1018,8 +1049,10 @@ class RuleImportAsset extends Rule
     {
         $twig_params = [
             'entity_as_criterion' => false,
+            'values'              => $fields,
             'fields'              => $fields,
-            'type_match'          => $this->fields['match'] === Rule::AND_MATCHING ? __('AND') : __('OR'),
+            'nb_fields'           => count($this->criterias) - count($fields),
+            'type_match'          => ($this->fields['match'] ?? Rule::AND_MATCHING) === Rule::AND_MATCHING ? __('AND') : __('OR'),
         ];
         foreach ($this->criterias as $criterion) {
             if ($criterion->fields['criteria'] === 'entities_id') {
@@ -1031,6 +1064,11 @@ class RuleImportAsset extends Rule
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             {% import 'components/form/fields_macros.html.twig' as fields %}
+
+            {% if nb_fields % 2 == 0 %}
+                {{ fields.nullField() }}
+            {% endif %}
+
             {% if not entity_as_criterion %}
                 {{ fields.htmlField('', type_match|e, '', {
                     no_label: true,
@@ -1043,12 +1081,12 @@ class RuleImportAsset extends Rule
                     input_class: 'col-7'
                 }) }}
             {% endif %}
-            {{ fields.htmlField('', loop.first ? '' : type_match|e, '', {
+            {{ fields.htmlField('', type_match|e, '', {
                 no_label: true,
                 field_class: 'col-2',
                 input_class: 'col-12'
             }) }}
-            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', fields['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
+            {{ fields.dropdownField('RefusedEquipment', 'refusedequipments_id', values['refusedequipments_id']|default(null), 'RefusedEquipment'|itemtype_name, {
                 field_class: 'col-10',
                 label_class: 'col-5',
                 input_class: 'col-7'
@@ -1064,12 +1102,11 @@ TWIG, $twig_params);
      */
     public static function getItemTypesForRules()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = [];
         foreach ($CFG_GLPI["ruleimportasset_types"] as $itemtype) {
-            if (class_exists($itemtype)) {
+            if (is_a($itemtype, CommonDBTM::class, true)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();
             }
@@ -1082,9 +1119,14 @@ TWIG, $twig_params);
     public function addSpecificParamsForPreview($params)
     {
         $class = new class {
-            public function rulepassed($items_id, $itemtype, $rules_id)
-            {
-            }
+            /**
+             * @param int $items_id
+             * @param class-string<CommonDBTM> $itemtype
+             * @param int $rules_id
+             *
+             * @return void
+             */
+            public function rulepassed($items_id, $itemtype, $rules_id) {}
         };
         return $params + ['class' => $class];
     }
@@ -1100,7 +1142,7 @@ TWIG, $twig_params);
             'mac',
             'ip',
             'ifnumber',
-            'ifdescr'
+            'ifdescr',
         ];
     }
 
@@ -1111,7 +1153,6 @@ TWIG, $twig_params);
      */
     public function getGlobalCriteria(): array
     {
-        /** @var array $PLUGIN_HOOKS */
         global $PLUGIN_HOOKS;
 
         $criteria = array_merge([
@@ -1127,7 +1168,7 @@ TWIG, $twig_params);
             'linked_item',
             'entity_restrict',
             'link_criteria_port',
-            'only_these_criteria'
+            'only_these_criteria',
         ], $this->getNetportCriteria());
 
         // Add plugin global criteria
@@ -1139,7 +1180,7 @@ TWIG, $twig_params);
                 if (is_array($val) && in_array(static::class, $val, true)) {
                     $criteria = Plugin::doOneHook(
                         $plugin,
-                        "ruleImportAsset_addGlobalCriteria",
+                        Hooks::AUTO_RULEIMPORTASSET_ADD_GLOBAL_CRITERIA,
                         $criteria
                     );
                 }
@@ -1154,7 +1195,7 @@ TWIG, $twig_params);
      *
      * @param string $criterion Criterion to check
      *
-     * @return boolean
+     * @return bool
      */
     public function isNetPort($criterion): bool
     {
@@ -1184,7 +1225,7 @@ TWIG, $twig_params);
                     [
                         'sub_type' => static::class,
                         'display' => false,
-                        'name' => $name
+                        'name' => $name,
                     ] + $options
                 );
         }
@@ -1206,8 +1247,20 @@ TWIG, $twig_params);
         //add extra rules for active generic assets
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions(true);
         foreach ($definitions as $definition) {
-            if ($definition->hasCapacityEnabled(new \Glpi\Asset\Capacity\IsInventoriableCapacity())) {
-                $this->addGenericAssetRules($rules, $definition->getAssetClassName());
+            if ($definition->hasCapacityEnabled(new IsInventoriableCapacity())) {
+                $asset_classname = $definition->getAssetClassName();
+                $main_asset = $definition->getCapacityConfiguration(IsInventoriableCapacity::class)->getValue('inventory_mainasset');
+
+                $origin_rule_itemtype = Computer::class;
+                switch ($main_asset) {
+                    case GenericNetworkAsset::class:
+                        $origin_rule_itemtype = NetworkEquipment::class;
+                        break;
+                    case GenericPrinterAsset::class:
+                        $origin_rule_itemtype = Printer::class;
+                        break;
+                }
+                $this->addGenericAssetRules($rules, $asset_classname, $origin_rule_itemtype);
             }
         }
 
@@ -1217,7 +1270,7 @@ TWIG, $twig_params);
     public function addGenericAssetRules(
         SimpleXMLElement $rules,
         string $itemtype_to,
-        string $itemtype_from = \Computer::class
+        string $itemtype_from
     ): void {
         $extra_rules = $rules->xpath(
             sprintf(
@@ -1251,5 +1304,11 @@ TWIG, $twig_params);
             $drule = dom_import_simplexml($crule);
             $drules->appendChild($drule->cloneNode(true));
         }
+    }
+
+
+    public static function getIcon()
+    {
+        return "ti ti-database-search";
     }
 }

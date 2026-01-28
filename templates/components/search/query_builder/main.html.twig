@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
 {% set is_ajax = _request['searchform_id'] is defined and _request['searchform_id'] is not null %}
 {% set rand = random() %}
 {% set mainform = mainform is not defined ? true : mainform %}
@@ -48,7 +49,13 @@
 {% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
 
 {% if mainform and showaction %}
-   <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
+   <form
+      name="searchform{{ normalized_itemtype }}"
+      class="search-form-container"
+      method="get"
+      action="{{ p['target'] }}"
+      data-glpi-search-form
+   >
 
    {% for param_name, param_value in additional_params %}
        <input type="hidden" name="{{ param_name }}" value="{{ param_value }}" />
@@ -111,10 +118,11 @@
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
-            <span class="ms-auto btn-group">
+            {% set action_count = showaction + p['showbookmark'] + p['showreset'] %}
+            <span class="ms-3 {{ action_count > 1 ? 'btn-group' : '' }}">
                 {% if (showaction) %}
                 {# Display submit button #}
-                <button class="btn btn-sm btn-primary" type="button" name="{{ p['actionname'] }}">
+                <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="button" name="{{ p['actionname'] }}">
                     <i class="ti ti-search"></i>
                     <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
                 </button>
@@ -127,7 +135,7 @@
                 }) }}
                 {% endif %}
                 {% if p['showreset'] %}
-                <a class="btn btn-sm btn-icon px-2 search-reset"
+                <a class="btn btn-sm btn-outline-secondary btn-icon px-2 search-reset"
                    data-bs-toggle="tooltip" data-bs-placement="bottom"
                    href="{{ p['target'] ~ ('?' in p['target'] ? '&' : '?') ~ "reset=reset" }}" title="{{ __('Blank') }}">
                     <i class="ti ti-square-x"></i>
@@ -215,11 +223,18 @@
       {% if mainform %}
          <input type="hidden" name="itemtype" value="{{ itemtype }}">
          <input type="hidden" name="start" value="0">
+          {% set item = itemtype != 'AllAssets' ? call('getItemForItemtype', [itemtype]) : null %}
+          {% if item is not null and item.maybeDeleted() %}
+              <input type="hidden" id="is_deleted" name="is_deleted" value="{{ p['is_deleted'] }}">
+          {% endif %}
+          <input type="hidden" id="as_map" name="as_map" value="{{ p['as_map'] }}">
+          <input type="hidden" id="browse" name="browse" value="{{ p['browse'] }}">
+          <input type="hidden" id="unpublished" name="unpublished" value="{{ p['unpublished'] }}">
       {% endif %}
    </div>
 </div>
 
 {% if mainform and showaction %}
-   <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+   {{ fields.csrfField() }}
    </form>
 {% endif %}

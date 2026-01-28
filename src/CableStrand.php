@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,9 @@
 
 use Glpi\Socket;
 
-/// Class CableStrand
+/**
+ *  Class CableStrand
+ **/
 class CableStrand extends CommonDropdown
 {
     public static function getTypeName($nb = 0)
@@ -53,7 +55,7 @@ class CableStrand extends CommonDropdown
     {
 
         $ong = parent::defineTabs($options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
 
         return $ong;
     }
@@ -70,7 +72,7 @@ class CableStrand extends CommonDropdown
         if (!$withtemplate) {
             $nb = 0;
             switch ($item->getType()) {
-                case __CLASS__:
+                case self::class:
                     /** @var CableStrand $item */
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
@@ -86,26 +88,19 @@ class CableStrand extends CommonDropdown
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-
-        if ($item->getType() == __CLASS__) {
-            /** @var CableStrand $item */
-            switch ($tabnum) {
-                case 1:
-                    $item->showItems();
-                    break;
-            }
+        if ($item instanceof self) {
+            return $item->showItems();
         }
-        return true;
+        return false;
     }
 
     /**
      * Print the HTML array of items related to cable strand.
      *
-     * @return void
+     * @return bool
      */
-    public function showItems()
+    public function showItems(): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $cablestrands_id = $this->fields['id'];
@@ -118,12 +113,12 @@ class CableStrand extends CommonDropdown
 
         $criteria = [
             'SELECT' => [
-                'id'
+                'id',
             ],
             'FROM'   => $cable->getTable(),
             'WHERE'  => [
                 'cablestrands_id' => $cablestrands_id,
-            ]
+            ],
         ];
         if ($cable->maybeDeleted()) {
             $criteria['WHERE']['is_deleted'] = 0;
@@ -135,7 +130,7 @@ class CableStrand extends CommonDropdown
 
         $iterator = $DB->request($criteria);
 
-       // Execute a second request to get the total number of rows
+        // Execute a second request to get the total number of rows
         unset($criteria['SELECT']);
         unset($criteria['START']);
         unset($criteria['LIMIT']);
@@ -164,8 +159,8 @@ class CableStrand extends CommonDropdown
                     continue;
                 }
 
-                echo "<tr class='tab_bg_1'><td>" . $cable->getTypeName() . "</td>";
-                echo "<td>" . Dropdown::getDropdownName("glpi_entities", $cable->getEntityID()) . "</td>";
+                echo "<tr class='tab_bg_1'><td>" . htmlescape($cable->getTypeName()) . "</td>";
+                echo "<td>" . htmlescape(Dropdown::getDropdownName("glpi_entities", $cable->getEntityID())) . "</td>";
                 echo "<td>" . $cable->getLink() . "</td>";
                 echo "<td>" . (isset($cable->fields["otherserial"]) ? htmlescape($cable->fields["otherserial"]) : "-") . "</td>";
                 echo "<td>";
@@ -211,9 +206,11 @@ class CableStrand extends CommonDropdown
                 echo"</tr>";
             }
         } else {
-            echo "<p class='center b'>" . __s('No item found') . "</p>";
+            echo "<p class='center b'>" . __s('No results found') . "</p>";
         }
         echo "</table></div>";
+
+        return true;
     }
 
     public static function getIcon()

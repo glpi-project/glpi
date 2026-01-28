@@ -1,0 +1,13 @@
+dn: dc=glpi,dc=org
+dc: glpi
+description: Tree root
+objectClass: dcObject
+objectClass: organization
+o: glpi.org
+
+dn: cn=admin,dc=glpi,dc=org
+userPassword:: e1NIQX01ZW42RzZNZXpScm9UM1hLcWtkUE9tWS9CZlE9
+description: LDAP administrator
+objectClass: simpleSecurityObject
+objectClass: organizationalRole
+cn: admin

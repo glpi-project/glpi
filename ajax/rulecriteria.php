@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -44,7 +43,7 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
     $criterias = $rule->getAllCriteria();
 
     if (count($criterias)) {
-       // First include -> first of the predefined array
+        // First include -> first of the predefined array
         if (!isset($_POST["criteria"])) {
             $_POST["criteria"] = key($criterias);
         }
@@ -52,17 +51,17 @@ if (isset($_POST["sub_type"]) && ($rule = getItemForItemtype($_POST["sub_type"])
         $allow_condition = $criterias[$_POST["criteria"]]['allow_condition'] ?? [];
 
         $condparam = ['criterion'        => $_POST["criteria"],
-            'allow_conditions' => $allow_condition
+            'allow_conditions' => $allow_condition,
         ];
         if (isset($_POST['condition'])) {
             $condparam['value'] = $_POST['condition'];
         }
-        $randcrit = RuleCriteria::dropdownConditions($_POST["sub_type"], $condparam);
+        $randcrit = (int) RuleCriteria::dropdownConditions($_POST["sub_type"], $condparam);
         echo "<span id='condition_span$randcrit' class='d-inline-block'></span>";
 
         $paramscriteria = ['condition' => '__VALUE__',
             'criteria'  => $_POST["criteria"],
-            'sub_type'  => $_POST["sub_type"]
+            'sub_type'  => $_POST["sub_type"],
         ];
 
         Ajax::updateItemOnSelectEvent(

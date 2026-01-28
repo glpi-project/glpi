@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,7 +43,7 @@ use Glpi\RichText\RichText;
  **/
 class ReminderTranslation extends CommonDBChild
 {
-    public static $itemtype = 'Reminder';
+    public static $itemtype = Reminder::class;
     public static $items_id = 'reminders_id';
     public $dohistory       = true;
     public static $logs_for_parent = false;
@@ -68,13 +68,6 @@ class ReminderTranslation extends CommonDBChild
         return $forbidden;
     }
 
-    /**
-     * @param CommonGLPI $item
-     * @param int         $withtemplate
-     *
-     * @return array|string
-     * @see CommonGLPI::getTabNameForItem()
-     */
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (
@@ -91,14 +84,6 @@ class ReminderTranslation extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item object
-     * @param $tabnum (default 1)
-     * @param $withtemplate (default 0)
-     **
-     *
-     * @return bool
-     */
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof Reminder) {
@@ -133,11 +118,11 @@ class ReminderTranslation extends CommonDBChild
                 <script>
                     function showTranslation{{ item.getID() ~ rand }}(translations_id) {
                         $.ajax({
-                            url: '{{ config('root_doc') }}/ajax/viewsubitem.php',
+                            url: CFG_GLPI.root_doc + '/ajax/viewsubitem.php',
                             method: 'POST',
                             data: {
                                 type: 'ReminderTranslation',
-                                parenttype: '{{ item.getType }}',
+                                parenttype: '{{ item.getType()|e('js') }}',
                                 reminders_id: {{ item.getID() }},
                                 id: translations_id
                             },
@@ -188,22 +173,20 @@ TWIG, $twig_params);
             'datatable_id' => 'translationlist' . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'columns' => [
                 'language' => __('Language'),
                 'subject' => __('Subject'),
             ],
             'formatters' => [
-                'subject' => 'raw_html'
+                'subject' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
 
@@ -213,7 +196,7 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID
+     * @param int $ID
      * @param array   $options
      */
     public function showForm($ID = -1, array $options = [])
@@ -221,7 +204,7 @@ TWIG, $twig_params);
         if ($this->getID() > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $item                = $options['parent'];
             $options['itemtype'] = get_class($item);
             $options['reminders_id'] = $item->getID();
@@ -233,7 +216,7 @@ TWIG, $twig_params);
             'item' => $this,
             'used_langs' => isset($item) ? self::getAlreadyTranslatedForItem($item) : [],
             'params' => $options,
-            'no_header' => true
+            'no_header' => true,
         ]);
         return true;
     }
@@ -251,7 +234,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'reminders_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage']
+            'language'           => $_SESSION['glpilanguage'],
         ]);
 
         if (
@@ -259,9 +242,11 @@ TWIG, $twig_params);
             && in_array($field, ['name', 'text'])
         ) {
             $first = array_shift($found);
-            return $first[$field];
+            if ($first[$field] !== null && $first[$field] !== "") {
+                return $first[$field];
+            }
         }
-        return $item->fields[$field];
+        return $item->fields[$field] ?? "";
     }
 
     /**
@@ -269,12 +254,12 @@ TWIG, $twig_params);
      *
      * @param Reminder $item
      *
-     * @return integer  the number of translations for this item
+     * @return int  the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             ['reminders_id' => $item->getID()]
         );
     }
@@ -288,14 +273,13 @@ TWIG, $twig_params);
      **/
     public static function getAlreadyTranslatedForItem($item)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['reminders_id' => $item->getID()]
+            'WHERE'  => ['reminders_id' => $item->getID()],
         ]);
 
         foreach ($iterator as $data) {

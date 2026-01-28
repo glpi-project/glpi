@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,10 +35,14 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class DomainRecordType extends CommonDropdown
 {
     public static $rightname = 'dropdown';
 
+    /** @var array */
     public static $knowtypes = [
         [
             'id'        => 1,
@@ -64,7 +68,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -81,7 +85,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'server',
                     'label'       => 'Server',
                     'placeholder' => 'mail.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -103,13 +107,13 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'primary_name_server',
                     'label'       => 'Primary name server',
                     'placeholder' => 'ns1.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
                 [
                     'key'         => 'primary_contact',
                     'label'       => 'Primary contact',
                     'placeholder' => 'admin.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
                 [
                     'key'         => 'serial',
@@ -161,7 +165,7 @@ class DomainRecordType extends CommonDropdown
                     'key'         => 'target',
                     'label'       => 'Target',
                     'placeholder' => 'sip.example.com.',
-                    'is_fqdn'     => true
+                    'is_fqdn'     => true,
                 ],
             ],
         ], [
@@ -198,7 +202,7 @@ class DomainRecordType extends CommonDropdown
                     'quote_value' => true,
                 ],
             ],
-        ]
+        ],
     ];
 
 
@@ -209,7 +213,7 @@ class DomainRecordType extends CommonDropdown
                 'name'  => 'fields',
                 'label' => __('Fields'),
                 'type'  => 'fields',
-            ]
+            ],
         ];
     }
 
@@ -222,7 +226,7 @@ class DomainRecordType extends CommonDropdown
         switch ($field_type) {
             case 'fields':
                 $printable = json_encode(json_decode($field_value), JSON_PRETTY_PRINT);
-                echo '<textarea name="' . $field_name . '" cols="75" rows="25">' . htmlescape($printable) . '</textarea >';
+                echo '<textarea name="' . htmlescape($field_name) . '" cols="75" rows="25">' . htmlescape($printable) . '</textarea >';
                 break;
         }
     }
@@ -256,7 +260,6 @@ class DomainRecordType extends CommonDropdown
 
     public function post_updateItem($history = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (in_array('fields', $this->updates, true)) {
@@ -336,7 +339,7 @@ class DomainRecordType extends CommonDropdown
     public static function decodeFields(string $json_encoded_fields): ?array
     {
         $fields = null;
-        if (\Toolbox::isJSON($json_encoded_fields)) {
+        if (Toolbox::isJSON($json_encoded_fields)) {
             $fields = json_decode($json_encoded_fields, true);
         }
 
@@ -352,6 +355,9 @@ class DomainRecordType extends CommonDropdown
         return _n('Record type', 'Records types', $nb);
     }
 
+    /**
+     * @return array
+     */
     public static function getDefaults()
     {
         return array_map(
@@ -369,6 +375,8 @@ class DomainRecordType extends CommonDropdown
      *
      * @param string $str_input_id    Id of input used to get/store record data as string.
      * @param string $obj_input_id    Id of input used to get/store record data as object.
+     *
+     * @return void
      */
     public function showDataAjaxForm(string $str_input_id, string $obj_input_id)
     {

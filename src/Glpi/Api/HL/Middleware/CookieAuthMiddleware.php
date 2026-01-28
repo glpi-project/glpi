@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,22 +37,33 @@ namespace Glpi\Api\HL\Middleware;
 
 use Session;
 
+use function Safe\ini_get;
+use function Safe\ini_set;
+
 class CookieAuthMiddleware extends AbstractMiddleware implements AuthMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        $auth = new \Auth();
-        if ($auth->getAlternateAuthSystemsUserLogin(\Auth::COOKIE)) {
-            // User could be authenticated by a cookie
-            // Need to use cookies for session and start it manually
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            // session already started
+            $next($input);
+            return;
+        }
+        // User could be authenticated by a cookie
+        // Need to use cookies for session and start it manually
+        $use_cookies = filter_var(ini_get('session.use_cookies'), FILTER_VALIDATE_BOOLEAN);
+        if ($use_cookies !== true) {
             ini_set('session.use_cookies', '1');
-            Session::start();
+        }
+        Session::start();
+
+        if (($user_id = Session::getLoginUserID()) !== false) {
             // unset the response to indicate a successful auth
             $input->response = null;
             $input->client = [
                 'client_id' => 'internal', // Internal just means the user was authenticated internally either by cookie or an already existing session.
-                'users_id'  => Session::getLoginUserID(),
-                'scopes' => []
+                'users_id'  => $user_id,
+                'scopes' => [],
             ];
         } else {
             $next($input);

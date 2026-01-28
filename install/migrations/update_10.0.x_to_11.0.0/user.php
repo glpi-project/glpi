@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,10 +33,9 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  */
-
 if (!$DB->fieldExists('glpi_users', 'is_notif_enable_default')) {
     $migration->addField('glpi_users', 'is_notif_enable_default', "tinyint DEFAULT NULL");
 }
@@ -51,7 +49,10 @@ $migration->dropField('glpi_users', 'fold_search');
 
 $migration->addConfig(['show_search_form' => 0]);
 $migration->addConfig(['search_pagination_on_top' => 0]);
-Config::deleteConfigurationValues('core', ['fold_search']);
+$migration->removeConfig(['fold_search']);
 
 // Drop useless field
 $migration->dropField('glpi_users', 'display_options');
+
+// Drop "picture" search option
+$migration->removeSearchOption('User', 150);

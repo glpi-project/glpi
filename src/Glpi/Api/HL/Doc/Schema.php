@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,18 @@
 
 namespace Glpi\Api\HL\Doc;
 
+use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
 
+use function Safe\preg_match;
+use function Safe\strtotime;
+
 /**
- * @implements \ArrayAccess<string, null|string|array<string, Schema>>
+ * @implements ArrayAccess<string, null|string|array<string, Schema>>
  */
-class Schema implements \ArrayAccess
+class Schema implements ArrayAccess
 {
     public const TYPE_STRING = 'string';
     public const TYPE_INTEGER = 'integer';
@@ -63,7 +67,11 @@ class Schema implements \ArrayAccess
     public const FORMAT_NUMBER_FLOAT = 'float';
     public const FORMAT_BOOLEAN_BOOLEAN = 'boolean';
 
+    // Not defined directly in OpenAPI schema but exist within the format registry (https://spec.openapis.org/registry/format/)
+    public const FORMAT_STRING_HTML = 'html';
+
     public const PATTERN_UUIDV4 = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
+    public const PATTERN_COLOR_HEX = '/^#([A-Fa-f0-9]{6})$/';
 
     public function __construct(
         private string $type,
@@ -75,7 +83,8 @@ class Schema implements \ArrayAccess
         /** @var array|null $enum */
         private ?array $enum = null,
         private ?string $pattern = null,
-        private mixed $default = null
+        private mixed $default = null,
+        private array $extra_data = []
     ) {
         if ($this->format === null) {
             $this->format = self::getDefaultFormatForType($this->type);
@@ -161,17 +170,18 @@ class Schema implements \ArrayAccess
         }
         if ($this->getType() === self::TYPE_OBJECT) {
             $r['properties'] = $this->getProperties();
-        } else if ($this->getType() === self::TYPE_ARRAY) {
+        } elseif ($this->getType() === self::TYPE_ARRAY) {
             $items = $this->getItems();
             if ($items !== null) {
                 $r['items'] = $items->toArray();
             }
-        } else if ($this->enum !== null) {
+        } elseif ($this->enum !== null) {
             $r['enum'] = $this->enum;
         }
         if ($this->default !== null) {
             $r['default'] = $this->default;
         }
+        //TODO Check if we can append extra_data here
         return $r;
     }
 
@@ -240,7 +250,7 @@ class Schema implements \ArrayAccess
             }
             if (isset($join['ref-join']['fkey'])) {
                 $join['ref-join']['join_parent'] = $prefix;
-            } else if (isset($join['fkey'])) {
+            } elseif (isset($join['fkey'])) {
                 $join['join_parent'] = $prefix;
             }
             return $join;
@@ -250,11 +260,11 @@ class Schema implements \ArrayAccess
                 $new_join = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $new_join);
-            } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
+            } elseif ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
                 $new_join = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
-            } else if ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
+            } elseif ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
                 if (isset($prop['x-join'])) {
                     $parent_join = $prop['x-join'];
                 }
@@ -310,7 +320,7 @@ class Schema implements \ArrayAccess
                     ...$prop,
                     ...[
                         'x-full-schema' => $parent_obj['x-full-schema'] ?? null,
-                    ]
+                    ],
                 ];
             }
         }
@@ -328,8 +338,10 @@ class Schema implements \ArrayAccess
         $schema_versions = [
             'introduced' => $schema['x-version-introduced'],
             'deprecated' => $schema['x-version-deprecated'] ?? null,
-            'removed' => $schema['x-version-removed'] ?? null
+            'removed' => $schema['x-version-removed'] ?? null,
         ];
+
+        $api_version = Router::normalizeAPIVersion($api_version);
 
         // Check if the schema itself is applicable to the requested version
         // If the requested version is before the introduction of the schema, or after the removal of the schema, it is not applicable
@@ -365,7 +377,7 @@ class Schema implements \ArrayAccess
             $prop_versions = [
                 'introduced' => $prop['x-version-introduced'] ?? $schema_versions['introduced'],
                 'deprecated' => $prop['x-version-deprecated'] ?? $schema_versions['deprecated'],
-                'removed' => $prop['x-version-removed'] ?? $schema_versions['removed']
+                'removed' => $prop['x-version-removed'] ?? $schema_versions['removed'],
             ];
             // Check if the property is applicable to the requested version
             // If the requested version is before the introduction of the property, or after the removal of the property, it is not applicable
@@ -381,7 +393,7 @@ class Schema implements \ArrayAccess
                 if (!empty($prop['properties'])) {
                     $filtered_prop['properties'] = self::filterPropertiesByAPIVersion($prop['properties'], $prop_versions, $api_version);
                 }
-            } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items'])) {
+            } elseif ($prop['type'] === self::TYPE_ARRAY && isset($prop['items'])) {
                 if (!empty($prop['items']['properties'])) {
                     $filtered_prop['items']['properties'] = self::filterPropertiesByAPIVersion($prop['items']['properties'], $prop_versions, $api_version);
                 }
@@ -417,14 +429,14 @@ class Schema implements \ArrayAccess
         }
 
         // Check format
-        /** @var self::FORMAT_* $format_match */
-        $format_match = match ($format) {
+        /** @var self::FORMAT_* $format */
+        return match ($format) {
             self::FORMAT_BOOLEAN_BOOLEAN => is_bool($value),
             self::FORMAT_INTEGER_INT32 => ((abs($value) & 0x7FFFFFFF) === abs($value)),
             self::FORMAT_INTEGER_INT64 => ((abs($value) & 0x7FFFFFFFFFFFFFFF) === abs($value)),
             // Double: float and has 2 or less decimal places
             // We also accept integers as doubles (no decimal places specified)
-            self::FORMAT_NUMBER_DOUBLE => is_int($value) || (is_float($value) && (strlen(substr(strrchr((string)$value, "."), 1)) <= 2)),
+            self::FORMAT_NUMBER_DOUBLE => is_int($value) || (is_float($value) && (strlen(substr(strrchr((string) $value, "."), 1)) <= 2)),
             self::FORMAT_NUMBER_FLOAT => is_int($value) || is_float($value),
             // Binary: binary data like used for Files
             self::FORMAT_STRING_BINARY, self::FORMAT_STRING_PASSWORD, self::FORMAT_STRING_STRING => is_string($value),
@@ -436,10 +448,9 @@ class Schema implements \ArrayAccess
             self::FORMAT_STRING_DATE_TIME => is_string($value) && preg_match('/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d+)?(Z|(\+|-)\d{2}:\d{2})$/', $value),
             default => true
         };
-        return $format_match;
     }
 
-    public function isValid(array $content, string|null $operation = null): bool
+    public function isValid(array $content, ?string $operation = null): bool
     {
         $flattened_schema = self::flattenProperties($this->toArray()['properties'], '', false);
 
@@ -448,9 +459,9 @@ class Schema implements \ArrayAccess
             // Get value from original content by the array path $sk
             $cv = ArrayPathAccessor::getElementByArrayPath($content, $sk);
             if ($cv === null) {
-                if ($operation === 'read' && ($sv['x-writeonly'] ?? false)) {
+                if ($operation === 'read' && ($sv['writeOnly'] ?? false)) {
                     $ignored = true;
-                } else if ($operation === 'write' && ($sv['x-readonly'] ?? false)) {
+                } elseif ($operation === 'write' && ($sv['readOnly'] ?? false)) {
                     $ignored = true;
                 }
             }
@@ -467,11 +478,9 @@ class Schema implements \ArrayAccess
         return true;
     }
 
-    public function castProperties(array $content): array
+    public static function castProperties(array &$content, array $flattened_properties): void
     {
-        $flattened_schema = self::flattenProperties($this->toArray()['properties'], '', false);
-
-        foreach ($flattened_schema as $sk => $sv) {
+        foreach ($flattened_properties as $sk => $sv) {
             // Get value from original content by the array path $sk
             $path_arr = explode('.', $sk);
             $current = &$content;
@@ -481,6 +490,7 @@ class Schema implements \ArrayAccess
                     $current = &$current[$path];
                 } else {
                     $no_match = true;
+                    break;
                 }
             }
             if ($no_match) {
@@ -502,13 +512,12 @@ class Schema implements \ArrayAccess
                 $cv = date(DATE_RFC3339, strtotime($cv));
             }
         }
-        return $content;
     }
 
     /**
      * Combine multiple schemas into a single 'union' schema that allows searching across all of them
-     * @param non-empty-array<string, array> $schemas
-     * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
+     * @param non-empty-array<string, array{x-itemtype: string, properties: mixed}> $schemas
+     * @return array{x-subtypes: list<array{schema_name: string, itemtype: string}>, type: self::TYPE_OBJECT, properties: array}
      * @see getUnionSchemaForItemtypes
      */
     public static function getUnionSchema(array $schemas): array
@@ -518,20 +527,20 @@ class Schema implements \ArrayAccess
         foreach ($schemas as $n => $s) {
             $subtype_info[] = [
                 'schema_name' => $n,
-                'itemtype' => $s['x-itemtype']
+                'itemtype' => $s['x-itemtype'],
             ];
         }
         return [
             'x-subtypes' => $subtype_info,
             'type' => self::TYPE_OBJECT,
-            'properties' => $shared_properties
+            'properties' => $shared_properties,
         ];
     }
 
     /**
      * Combine schemas related to multiple GLPI itemtypes into a single 'union' schema that allows searching across all of them
      * @param non-empty-array<string, class-string<CommonGLPI>> $itemtypes
-     * @return array{x-subtypes: array{schema_name: string, itemtype: string}, type: self::TYPE_OBJECT, properties: array}
+     * @return array{x-subtypes: list<array{schema_name: string, itemtype: string}>, type: self::TYPE_OBJECT, properties: array}
      * @see getUnionSchema
      */
     public static function getUnionSchemaForItemtypes(array $itemtypes, string $api_version): array

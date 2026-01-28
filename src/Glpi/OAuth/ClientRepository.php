@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,23 +35,29 @@
 
 namespace Glpi\OAuth;
 
-use GLPIKey;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
+use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use OAuthClient;
 
+use function Safe\json_decode;
+
 class ClientRepository implements ClientRepositoryInterface
 {
+    /**
+     * @param string $clientIdentifier
+     *
+     * @return ?ClientEntityInterface
+     */
     public function getClientEntity($clientIdentifier): ?ClientEntityInterface
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $clientIdentifier
-            ]
+                'identifier' => $clientIdentifier,
+            ],
         ]);
 
         if (count($iterator) === 1) {
@@ -65,11 +71,19 @@ class ClientRepository implements ClientRepositoryInterface
         return null;
     }
 
+    /**
+     * @param string $clientIdentifier
+     * @param string $clientSecret
+     * @param string $grantType
+     *
+     * @return bool
+     * @throws OAuthServerException If the requested grant type is not allowed for the client
+     */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
         $client = new OAuthClient();
         $client->getFromDBByCrit([
-            'identifier' => $clientIdentifier
+            'identifier' => $clientIdentifier,
         ]);
 
         if ($client->fields['secret'] !== $clientSecret) {
@@ -78,6 +92,9 @@ class ClientRepository implements ClientRepositoryInterface
 
         $global_grants = ['refresh_token'];
         $allowed_grants = array_merge($client->fields['grants'], $global_grants);
-        return in_array($grantType, $allowed_grants, true);
+        if (!in_array($grantType, $allowed_grants, true)) {
+            throw OAuthServerException::unauthorizedClient();
+        }
+        return true;
     }
 }

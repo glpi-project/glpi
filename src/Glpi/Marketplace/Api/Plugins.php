@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,45 +36,58 @@
 namespace Glpi\Marketplace\Api;
 
 use GLPINetwork;
-use GuzzleHttp\Client as Guzzle_Client;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\ResponseInterface;
 use Session;
 use Toolbox;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\session_write_close;
+
 class Plugins
 {
+    /** @var ?Client */
     protected $httpClient  = null;
+    /** @var ?array  */
     protected $last_error  = null;
 
     public const COL_PAGE    = 200;
-    protected const TIMEOUT     = 5;
 
     /**
-     * Max request attemps on READ operations.
+     * Max request attempts on READ operations.
      *
-     * @var integer
+     * @var int
      */
     protected const MAX_REQUEST_ATTEMPTS = 3;
 
     /**
      * Flag that indicates that plugin list is truncated (due to an errored response from marketplace API).
      *
-     * @var boolean
+     * @var bool
      */
     protected $is_list_truncated = false;
 
+    /** @var ?array */
     public static $plugins = null;
 
     public function __construct()
     {
-        // init guzzle client with base options
-        $this->httpClient = Toolbox::getGuzzleClient([
+        global $CFG_GLPI;
+
+        $eopts = [
             'base_uri'        => GLPI_MARKETPLACE_PLUGINS_API_URI,
-            'connect_timeout' => self::TIMEOUT,
-        ]);
+        ];
+        if (in_array(GLPINetwork::class, $CFG_GLPI['proxy_exclusions'])) {
+            $eopts['proxy_excluded'] = true;
+        }
+
+        // init guzzle client with base options
+        $this->httpClient = Toolbox::getGuzzleClient($eopts);
     }
 
 
@@ -86,7 +99,7 @@ class Plugins
      * @param array $options array of options for guzzle lib
      * @param string $method GET/POST, etc
      *
-     * @return \Psr\Http\Message\ResponseInterface|false
+     * @return ResponseInterface|false
      */
     private function request(
         string $endpoint = '',
@@ -111,7 +124,7 @@ class Plugins
         try {
             $response = $this->httpClient->request($method, $endpoint, $options);
             $this->last_error = null; // Reset error buffer
-        } catch (RequestException | ConnectException $e) {
+        } catch (RequestException|ConnectException $e) {
             $this->last_error = [
                 'title'     => "Plugins API error",
                 'exception' => $e->getMessage(),
@@ -157,9 +170,9 @@ class Plugins
             $response = $this->request($endpoint, $request_options, $method);
 
             if ($response === false || !is_array($current = json_decode($response->getBody(), true))) {
-                 // retry on error or unexpected response
-                 $attempt_no++;
-                 continue;
+                // retry on error or unexpected response
+                $attempt_no++;
+                continue;
             }
 
             if (count($current) === 0) {
@@ -176,7 +189,7 @@ class Plugins
 
 
     /**
-     * Return the full list of avaibles plugins on services API
+     * Return the full list of available plugins on services API
      *
      * @param bool   $force_refresh if false, we will return results stored in local cache
      * @param string $tag_filter filter the plugin list by given tag
@@ -191,7 +204,6 @@ class Plugins
         string $string_filter = "",
         string $sort = 'sort-alpha-asc'
     ) {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey('marketplace_all_plugins');
@@ -212,9 +224,7 @@ class Plugins
                 foreach ($plugins_colct as &$plugin) {
                     usort(
                         $plugin['versions'],
-                        function ($a, $b) {
-                            return version_compare($a['num'], $b['num']);
-                        }
+                        fn($a, $b) => version_compare($a['num'], $b['num'])
                     );
                 }
 
@@ -229,9 +239,7 @@ class Plugins
             // without having to purge the cache manually.
             foreach ($plugins_colct as &$plugin) {
                 if (!GLPI_MARKETPLACE_PRERELEASES) {
-                    $plugin['versions'] = array_filter($plugin['versions'], function ($version) {
-                        return !isset($version['stability']) || $version['stability'] === "stable";
-                    });
+                    $plugin['versions'] = array_filter($plugin['versions'], fn($version) => !isset($version['stability']) || $version['stability'] === "stable");
                 }
 
                 if (count($plugin['versions']) === 0) {
@@ -249,7 +257,7 @@ class Plugins
             $plugins_colct = self::$plugins;
         }
 
-        if (strlen($tag_filter) > 0) {
+        if ($tag_filter !== '') {
             $tagged_plugins = array_column($this->getPluginsForTag($tag_filter), 'key');
             if ($this->last_error !== null) {
                 $this->is_list_truncated = true;
@@ -257,10 +265,8 @@ class Plugins
             $plugins_colct  = array_intersect_key($plugins_colct, array_flip($tagged_plugins));
         }
 
-        if (strlen($string_filter) > 0) {
-            $plugins_colct = array_filter($plugins_colct, function ($plugin) use ($string_filter) {
-                return strpos(strtolower(json_encode($plugin)), strtolower($string_filter)) !== false;
-            });
+        if ($string_filter !== '') {
+            $plugins_colct = array_filter($plugins_colct, fn($plugin) => str_contains(strtolower(json_encode($plugin)), strtolower($string_filter)));
         }
 
         // manage sorting of collection
@@ -292,7 +298,7 @@ class Plugins
      * @param string $tag_filter filter the plugin list by given tag
      * @param string $string_filter filter the plugin list by given string
      * @param int    $page which page to query
-     * @param int    $nb_per_page how manyu per page we want
+     * @param int    $nb_per_page how many per page we want
      * @param string $sort sort-alpha-asc|sort-alpha-desc|sort-dl|sort-update|sort-added|sort-note
      * @param int    $total Total count of plugin found with given filters
      *
@@ -374,13 +380,12 @@ class Plugins
      */
     public function getTopTags(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $response  = $this->request('tags/top', [
             'headers' => [
-                'X-Lang' => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][2]
-            ]
+                'X-Lang' => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][2],
+            ],
         ]);
 
         if ($response === false) {
@@ -394,7 +399,7 @@ class Plugins
 
 
     /**
-     * get a plugins collection for the givent tag
+     * get a plugins collection for the given tag
      *
      * @param string $tag to filter plugins
      * @param bool $force_refresh if false, we will return results stored in local cache
@@ -403,7 +408,6 @@ class Plugins
      */
     public function getPluginsForTag(string $tag = "", bool $force_refresh = false): array
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $cache_key = self::getCacheKey("marketplace_tag_$tag");
@@ -427,7 +431,7 @@ class Plugins
      * Download plugin archive and follow progress with a session var `marketplace_dl_progress`
      *
      * @param string $url where is the plugin
-     * @param string $dest  where we store it it
+     * @param string $dest  where we store it
      * @param string $plugin_key plugin system name
      *
      * @return bool
@@ -441,8 +445,10 @@ class Plugins
             $_SESSION['marketplace_dl_progress'][$plugin_key] = 0;
         }
 
-        // close session to permits polling of progress by frontend
-        session_write_close();
+        if (PHP_SAPI !== 'cli') {
+            // close session to permits polling of progress by frontend
+            session_write_close();
+        }
 
         $options = [
             'headers'  => [
@@ -453,33 +459,39 @@ class Plugins
         if ($track_progress) {
             // track download progress
             $options['progress'] = function ($downloadTotal, $downloadedBytes) use ($plugin_key) {
-                // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
-                // Each time Session::start() is called, PHP add a 'Set-Cookie' header,
-                // so if a plugin takes more than a few seconds to be downloaded, PHP will set too many
-                // 'Set-Cookie' headers and response will not be accepted by browser.
-                // We can remove the 'Set-Cookie' here as it will be put back on next instruction (Session::start()).
-                header_remove('Set-Cookie');
+                if (PHP_SAPI !== 'cli') {
+                    // Prevent "net::ERR_RESPONSE_HEADERS_TOO_BIG" error
+                    // Each time Session::start() is called, PHP add a 'Set-Cookie' header,
+                    // so if a plugin takes more than a few seconds to be downloaded, PHP will set too many
+                    // 'Set-Cookie' headers and response will not be accepted by browser.
+                    // We can remove the 'Set-Cookie' here as it will be put back on next instruction (Session::start()).
+                    header_remove('Set-Cookie');
 
-                // restart session to store percentage of download for this plugin
-                Session::start();
+                    // restart session to store percentage of download for this plugin
+                    Session::start();
+                }
 
                 // calculate percent based on the size and store it in session
                 $percent = 0;
                 if ($downloadTotal > 0) {
-                      $percent = round($downloadedBytes * 100 / $downloadTotal);
+                    $percent = round($downloadedBytes * 100 / $downloadTotal);
                 }
                 $_SESSION['marketplace_dl_progress'][$plugin_key] = $percent;
 
-                // reclose session to avoid blocking ajax requests
-                session_write_close();
+                if (PHP_SAPI !== 'cli') {
+                    // reclose session to avoid blocking ajax requests
+                    session_write_close();
+                }
             };
         }
 
         $response = $this->request($url, $options);
 
-        // restart session to permits write of vars
-        // (later, we also may have some addMessageAfterRedirect to provider errors to user)
-        Session::start();
+        if (PHP_SAPI !== 'cli') {
+            // restart session to permits write of vars
+            // (later, we also may have some addMessageAfterRedirect to provider errors to user)
+            Session::start();
+        }
 
         if ($track_progress) {
             // force finish of download (to avoid keeping js loop in case of errors)

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,9 @@
 
 use Glpi\Inventory\FilesToJSON;
 
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+
 /// Class NetworkPortType
 class NetworkPortType extends CommonDropdown
 {
@@ -52,17 +55,17 @@ class NetworkPortType extends CommonDropdown
                 'name'   => 'value_decimal',
                 'label'  => __('Decimal'),
                 'type'   => 'integer',
-                'max'    => 1000
+                'max'    => 1000,
             ], [
                 'name'  => 'is_importable',
                 'label' => __('Import'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ], [
                 'name'  => 'instantiation_type',
                 'label' => __('Instanciation type'),
                 'type'           => 'itemtypename',
                 'itemtype_list'      => 'networkport_instantiations',
-            ]
+            ],
         ];
     }
 
@@ -75,7 +78,7 @@ class NetworkPortType extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'value_decimal',
             'name'               => __('Decimal'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -83,7 +86,7 @@ class NetworkPortType extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'is_importable',
             'name'               => __('Import'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -106,7 +109,7 @@ class NetworkPortType extends CommonDropdown
         $default_instanciations = [
             'Ethernet'     => [6, 7, 62, 117, 169],
             'Wifi'         => [71, 188],
-            'Fiberchannel' => [56]
+            'Fiberchannel' => [56],
         ];
 
         $template = [
@@ -118,7 +121,7 @@ class NetworkPortType extends CommonDropdown
             'is_importable'      => 0,
             'instantiation_type' => null,
             'date_creation'      => $_SESSION['glpi_currenttime'],
-            'date_mod'           => $_SESSION['glpi_currenttime']
+            'date_mod'           => $_SESSION['glpi_currenttime'],
         ];
 
         $defaults = [];
@@ -134,11 +137,11 @@ class NetworkPortType extends CommonDropdown
             }
 
             $row = array_merge($template, [
-                'value_decimal'      => (int)$iftype['decimal'],
+                'value_decimal'      => (int) $iftype['decimal'],
                 'name'               => $iftype['name'],
                 'comment'            => trim($iftype['description'] . ' ' . $iftype['references']),
                 'is_importable'      => $importable,
-                'instantiation_type' => $instanciation
+                'instantiation_type' => $instanciation,
             ]);
             $defaults[] = $row;
         }
@@ -154,10 +157,6 @@ class NetworkPortType extends CommonDropdown
      */
     public static function getInstantiationType($type)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         if (empty($type)) {
@@ -168,8 +167,8 @@ class NetworkPortType extends CommonDropdown
             $iterator = $DB->request([
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
-                    'is_importable'   => true
-                ]
+                    'is_importable'   => true,
+                ],
             ]);
 
             $import_types = [];
@@ -209,9 +208,11 @@ class NetworkPortType extends CommonDropdown
         parent::post_deleteFromDB();
     }
 
+    /**
+     * @return void
+     */
     protected function invalidateCache()
     {
-        /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
         $GLPI_CACHE->delete('glpi_inventory_ports_types');
     }

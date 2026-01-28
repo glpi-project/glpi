@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,6 +39,9 @@ use Config;
 use Rule;
 use RuleCollection;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class RulesManager
 {
     /**
@@ -46,7 +49,6 @@ final class RulesManager
      */
     public static function initializeRules(): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $rulecollections_types = $CFG_GLPI['rulecollections_types'];

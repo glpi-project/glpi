@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,29 +33,31 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
 
-$iapp = new \Appliance_Item();
+$iapp = new Appliance_Item();
 $app = new Appliance();
 
 if (isset($_POST['update'])) {
     $iapp->check($_POST['id'], UPDATE);
-   //update existing relation
+    //update existing relation
     if ($iapp->update($_POST)) {
         $url = $app->getFormURLWithID($_POST['appliances_id']);
     } else {
         $url = $iapp->getFormURLWithID($_POST['id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['add'])) {
+} elseif (isset($_POST['add'])) {
     $iapp->check(-1, CREATE, $_POST);
     $iapp->add($_POST);
     Html::back();
-} else if (isset($_POST['purge'])) {
+} elseif (isset($_POST['purge'])) {
     $iapp->check($_POST['id'], PURGE);
-    $iapp->delete($_POST, 1);
+    $iapp->delete($_POST, true);
     $url = $app->getFormURLWithID($_POST['appliances_id']);
     Html::redirect($url);
 }

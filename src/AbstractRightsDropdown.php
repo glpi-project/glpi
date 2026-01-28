@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -130,22 +130,22 @@ abstract class AbstractRightsDropdown
     {
         $possible_rights = [];
 
-       // Add profiles if enabled
+        // Add profiles if enabled
         if (self::isTypeEnabled(Profile::getType())) {
             $possible_rights[Profile::getType()] = self::getProfiles($text);
         }
 
-       // Add entities if enabled
+        // Add entities if enabled
         if (self::isTypeEnabled(Entity::getType())) {
             $possible_rights[Entity::getType()] = self::getEntities($text);
         }
 
-       // Add users if enabled
+        // Add users if enabled
         if (self::isTypeEnabled(User::getType(), $options)) {
             $possible_rights[User::getType()] = self::getUsers($text, $options);
         }
 
-       // Add groups if enabled
+        // Add groups if enabled
         if (self::isTypeEnabled(Group::getType(), $options)) {
             $possible_rights[Group::getType()] = self::getGroups($text, $options);
         }
@@ -157,7 +157,7 @@ abstract class AbstractRightsDropdown
 
         // Add suppliers if enabled
         if (self::isTypeEnabled(Supplier::getType())) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text);
+            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
         }
 
         $results = [];
@@ -178,7 +178,7 @@ abstract class AbstractRightsDropdown
 
         $ret = [
             'results' => $results,
-            'count' =>  count($results)
+            'count' =>  count($results),
         ];
 
         return $ret;
@@ -195,17 +195,16 @@ abstract class AbstractRightsDropdown
     {
         return array_map(function ($value) {
             $data = explode("-", $value);
-            $itemtype = getItemtypeForForeignKeyField($data[0]);
             $items_id = $data[1];
-            $item = new $itemtype();
+            $item = getItemForForeignKeyField($data[0]);
 
             if ($items_id == self::ALL_USERS) {
-                return $itemtype::getTypeName(1) . " - " . __("All users");
+                return $item::getTypeName(1) . " - " . __("All users");
             }
 
-            return $itemtype::getTypeName(1) . " - " . Dropdown::getDropdownName(
+            return $item::getTypeName(1) . " - " . Dropdown::getDropdownName(
                 $item->getTable(),
-                $items_id
+                (int) $items_id
             );
         }, $values);
     }
@@ -221,7 +220,7 @@ abstract class AbstractRightsDropdown
     {
         $profile_item = new Profile();
         $profiles = $profile_item->find([
-            'name' => ["LIKE", "%$text%"]
+            'name' => ["LIKE", "%$text%"],
         ], [], self::LIMIT);
         $profiles_items = [];
         foreach ($profiles as $profile) {
@@ -244,7 +243,7 @@ abstract class AbstractRightsDropdown
         $entity_item = new Entity();
         $entities = $entity_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Entity::getTable()),
             [],
             self::LIMIT
@@ -268,7 +267,11 @@ abstract class AbstractRightsDropdown
      */
     protected static function getUsers(string $text, array $options): array
     {
-        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, 0, self::LIMIT);
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
+        $users = User::getSqlSearchResult(false, "all", -1, 0, [], $text, $start, $page_size);
         $users_items = [];
 
         if (static::addAllUsersOption()) {
@@ -294,19 +297,26 @@ abstract class AbstractRightsDropdown
      */
     protected static function getGroups(string $text, array $options): array
     {
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
         $additional_conditions = [];
         if (isset($options['group_conditions'])) {
             $additional_conditions = $options['group_conditions'];
         }
 
-        $group_item = new Group();
-        $groups = $group_item->find(
-            [
-                'name' => ["LIKE", "%$text%"]
+        $groups = $DB->request([
+            'FROM' => Group::getTable(),
+            'WHERE' => [
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Group::getTable()) + $additional_conditions,
-            [],
-            self::LIMIT
-        );
+            'START' => $start,
+            'LIMIT' => $page_size,
+        ]);
         $groups_items = [];
         foreach ($groups as $group) {
             $new_key = 'groups_id-' . $group['id'];
@@ -328,7 +338,7 @@ abstract class AbstractRightsDropdown
         $contact_item = new Contact();
         $contacts = $contact_item->find(
             [
-                'name' => ["LIKE", "%$text%"]
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Contact::getTable()),
             [],
             self::LIMIT
@@ -349,16 +359,24 @@ abstract class AbstractRightsDropdown
      *
      * @return array
      */
-    protected static function getSuppliers(string $text): array
+    protected static function getSuppliers(string $text, array $options = []): array
     {
-        $supplier_item = new Supplier();
-        $suppliers = $supplier_item->find(
-            [
-                'name' => ["LIKE", "%$text%"]
+        /** @var DBmysql $DB */
+        global $DB;
+
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
+        $suppliers = $DB->request([
+            'FROM' => Supplier::getTable(),
+            'WHERE' => [
+                'name' => ["LIKE", "%$text%"],
             ] + getEntitiesRestrictCriteria(Supplier::getTable()),
-            [],
-            self::LIMIT
-        );
+            'START' => $start,
+            'LIMIT' => $page_size,
+        ]);
+
         $suppliers_item = [];
         foreach ($suppliers as $supplier) {
             $new_key = 'suppliers_id-' . $supplier['id'];

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,23 +50,23 @@ class DeviceFirmware extends CommonDevice
                 [
                     'name'  => 'devicefirmwaretypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'date',
                     'label'  => __('Release date'),
-                    'type'   => 'date'
+                    'type'   => 'date',
                 ],
                 [
                     'name'   => 'version',
                     'label'  => _n('Version', 'Versions', 1),
-                    'type'   => 'text'
+                    'type'   => 'text',
                 ],
                 [
                     'name'   => 'devicefirmwaremodels_id',
                     'label'  => _n('Model', 'Models', 1),
-                    'type'   => 'dropdownValue'
-                ]
+                    'type'   => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -80,7 +80,7 @@ class DeviceFirmware extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'date',
             'name'               => __('Release date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -88,7 +88,7 @@ class DeviceFirmware extends CommonDevice
             'table'              => 'glpi_devicefirmwaremodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -96,7 +96,7 @@ class DeviceFirmware extends CommonDevice
             'table'              => 'glpi_devicefirmwaretypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -109,6 +109,11 @@ class DeviceFirmware extends CommonDevice
         return $tab;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
@@ -126,9 +131,9 @@ class DeviceFirmware extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicefirmwares',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -143,9 +148,9 @@ class DeviceFirmware extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicefirmwares',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -161,11 +166,11 @@ class DeviceFirmware extends CommonDevice
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                    ]
-                ]
-            ]
+                            'joinparams' => ['jointype' => 'itemtype_item'],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -181,11 +186,11 @@ class DeviceFirmware extends CommonDevice
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                    ]
-                ]
-            ]
+                            'joinparams' => ['jointype' => 'itemtype_item'],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -201,11 +206,11 @@ class DeviceFirmware extends CommonDevice
                     'joinparams' => [
                         'beforejoin' => [
                             'table'      => Item_DeviceFirmware::getTable(),
-                            'joinparams' => ['jointype' => 'itemtype_item']
-                        ]
-                    ]
-                ]
-            ]
+                            'joinparams' => ['jointype' => 'itemtype_item'],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         //SO defined from relation (glpi_items_devicefirmwares) table
@@ -243,7 +248,6 @@ class DeviceFirmware extends CommonDevice
         ?HTMLTableHeader $father = null,
         array $options = []
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $column = parent::getHTMLTableHeader($itemtype, $base, $super, $father, $options);
 
@@ -252,10 +256,10 @@ class DeviceFirmware extends CommonDevice
         }
 
         if (in_array($itemtype, $CFG_GLPI['itemdevicefirmware_types'])) {
-            Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-            $base->addHeader('devicefirmware_type', _n('Type', 'Types', 1), $super, $father);
-            $base->addHeader('version', _n('Version', 'Versions', 1), $super, $father);
-            $base->addHeader('date', __('Release date'), $super, $father);
+            Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+            $base->addHeader('devicefirmware_type', _sn('Type', 'Types', 1), $super, $father);
+            $base->addHeader('version', _sn('Version', 'Versions', 1), $super, $father);
+            $base->addHeader('date', __s('Release date'), $super, $father);
         }
     }
 
@@ -265,7 +269,6 @@ class DeviceFirmware extends CommonDevice
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $column = parent::getHTMLTableCellForItem($row, $item, $father, $options);
 
@@ -279,23 +282,20 @@ class DeviceFirmware extends CommonDevice
             if ($this->fields["devicefirmwaretypes_id"]) {
                 $row->addCell(
                     $row->getHeaderByName('devicefirmware_type'),
-                    Dropdown::getDropdownName(
-                        "glpi_devicefirmwaretypes",
-                        $this->fields["devicefirmwaretypes_id"]
-                    ),
+                    htmlescape(Dropdown::getDropdownName("glpi_devicefirmwaretypes", $this->fields["devicefirmwaretypes_id"])),
                     $father
                 );
             }
             $row->addCell(
                 $row->getHeaderByName('version'),
-                $this->fields["version"],
+                htmlescape($this->fields["version"]),
                 $father
             );
 
             if ($this->fields["date"]) {
                 $row->addCell(
                     $row->getHeaderByName('date'),
-                    Html::convDate($this->fields["date"]),
+                    htmlescape(Html::convDate($this->fields["date"])),
                     $father
                 );
             }
@@ -309,12 +309,12 @@ class DeviceFirmware extends CommonDevice
             'designation'              => 'equal',
             'devicefirmwaretypes_id'   => 'equal',
             'manufacturers_id'         => 'equal',
-            'version'                  => 'equal'
+            'version'                  => 'equal',
         ];
     }
 
     public static function getIcon()
     {
-        return "fas fa-microchip";
+        return "ti ti-cpu";
     }
 }

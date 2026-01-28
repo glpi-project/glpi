@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Item_DeviceCamera';
+    public static $itemtype_1 = Item_DeviceCamera::class;
     public static $items_id_1 = 'items_devicecameras_id';
 
-    public static $itemtype_2 = 'ImageResolution';
+    public static $itemtype_2 = ImageResolution::class;
     public static $items_id_2 = 'imageresolutions_id';
 
     public static function getTypeName($nb = 0)
@@ -55,7 +55,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             $nb = countElementsInTable(
                 self::getTable(),
                 [
-                    'items_devicecameras_id' => $item->getID()
+                    'items_devicecameras_id' => $item->getID(),
                 ]
             );
         }
@@ -64,8 +64,10 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof DeviceCamera) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -81,13 +83,10 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
     /**
      * Print items
      * @param  DeviceCamera $camera the current camera instance
-     * @return void
+     * @return bool
      */
-    public static function showItems(DeviceCamera $camera)
+    public static function showItems(DeviceCamera $camera): bool
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $ID = $camera->getID();
@@ -108,13 +107,13 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 ImageResolution::getTable() => [
                     'ON' => [
                         ImageResolution::getTable() => 'id',
-                        self::getTable() => 'imageresolutions_id'
-                    ]
-                ]
+                        self::getTable() => 'imageresolutions_id',
+                    ],
+                ],
             ],
             'WHERE'  => [
-                'items_devicecameras_id' => $camera->getID()
-            ]
+                'items_devicecameras_id' => $camera->getID(),
+            ],
         ]);
 
         $entries = [];
@@ -127,7 +126,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 'id' => $row['id'],
                 'imageresolutions_id' => $item->getLink(),
                 'is_video' => Dropdown::getYesNo($row['is_video']),
-                'is_dynamic' => $row['is_dynamic']
+                'is_dynamic' => $row['is_dynamic'],
             ];
         }
 
@@ -137,19 +136,20 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             'columns' => [
                 'imageresolutions_id' => ImageResolution::getTypeName(1),
                 'is_video' => __('Is Video'),
-                'is_dynamic' => __('Is dynamic')
+                'is_dynamic' => __('Is dynamic'),
             ],
             'formatters' => [
-                'imageresolutions_id' => 'raw_html'
+                'imageresolutions_id' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,19 +34,20 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\StateInterface;
 
 /**
  * SoftwareVersion Class
  **/
-class SoftwareVersion extends CommonDBChild
+class SoftwareVersion extends CommonDBChild implements StateInterface
 {
     use Glpi\Features\State;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
-   // From CommonDBChild
-    public static $itemtype  = 'Software';
+    // From CommonDBChild
+    public static $itemtype = Software::class;
     public static $items_id  = 'softwares_id';
 
     protected $displaylist = false;
@@ -75,8 +76,8 @@ class SoftwareVersion extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Item_SoftwareVersion', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Item_SoftwareVersion::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -93,7 +94,7 @@ class SoftwareVersion extends CommonDBChild
     /**
      * Print the Software / version form
      *
-     * @param integer $ID Id of the version or the template to print
+     * @param int $ID Id of the version or the template to print
      * @param array $options of possible options:
      *     - target form target
      *     - softwares_id ID of the software for add process
@@ -122,7 +123,7 @@ class SoftwareVersion extends CommonDBChild
         $twig_params = [
             'item' => $this,
             'softwares_id' => $softwares_id,
-            'params' => $options
+            'params' => $options,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -147,7 +148,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -163,15 +164,15 @@ TWIG, $twig_params);
             'table'              => OperatingSystem::getTable(),
             'field'              => 'name',
             'name'               => OperatingSystem::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -180,7 +181,7 @@ TWIG, $twig_params);
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -189,7 +190,7 @@ TWIG, $twig_params);
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -204,13 +205,12 @@ TWIG, $twig_params);
      *    - value         : integer / value of the selected version
      *    - used          : array / already used items
      *
-     * @return integer|string
+     * @return int|string
      *    integer if option display=true (random part of elements id)
      *    string if option display=false (HTML code)
      **/
     public static function dropdownForOneSoftware($options = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $p['softwares_id']          = 0;
@@ -229,7 +229,7 @@ TWIG, $twig_params);
         $criteria = [
             'SELECT'    => [
                 'glpi_softwareversions.*',
-                'glpi_states.name AS sname'
+                'glpi_states.name AS sname',
             ],
             'DISTINCT'  => true,
             'FROM'      => 'glpi_softwareversions',
@@ -237,14 +237,14 @@ TWIG, $twig_params);
                 State::getTable()  => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
-                        State::getTable()           => 'id'
-                    ]
-                ]
+                        State::getTable()           => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_softwareversions.softwares_id'   => $p['softwares_id']
+                'glpi_softwareversions.softwares_id'   => $p['softwares_id'],
             ],
-            'ORDERBY'   => 'name'
+            'ORDERBY'   => 'name',
         ];
 
         if (count($p['used'])) {
@@ -278,10 +278,9 @@ TWIG, $twig_params);
      **/
     public static function showForSoftware(Software $soft)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        $softwares_id = $soft->getField('id');
+        $softwares_id = $soft->getID();
 
         if (!$soft->can($softwares_id, READ)) {
             return;
@@ -306,21 +305,21 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => [
                 "$sv_table.*",
-                "$state_table.name AS sname"
+                "$state_table.name AS sname",
             ],
             'FROM' => $sv_table,
             'LEFT JOIN' => [
                 $state_table  => [
                     'ON' => [
                         $sv_table => 'states_id',
-                        $state_table => 'id'
-                    ]
-                ]
+                        $state_table => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'softwares_id' => $softwares_id
+                'softwares_id' => $softwares_id,
             ],
-            'ORDERBY'   => 'name'
+            'ORDERBY'   => 'name',
         ]);
 
         $tot = 0;
@@ -339,13 +338,12 @@ TWIG, $twig_params);
                 'os' => Dropdown::getDropdownName('glpi_operatingsystems', $data['operatingsystems_id']),
                 'arch' => $data['arch'],
                 'installations' => $nb,
-                'comments' => nl2br(htmlescape($data['comment']))
+                'comments' => nl2br(htmlescape($data['comment'])),
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -354,24 +352,23 @@ TWIG, $twig_params);
                 'os' => OperatingSystem::getTypeName(1),
                 'arch' => _n('Architecture', 'Architectures', 1),
                 'installations' => _n('Installation', 'Installations', Session::getPluralNumber()),
-                'comments' => __('Comments')
+                'comments' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ],
             'formatters' => [
                 'version' => 'raw_html',
                 'comments' => 'raw_html',
             ],
             'footers' => [
-                ['', '', '', __('Total'), $tot, '']
+                ['', '', '', __('Total'), $tot, ''],
             ],
             'footer_class' => 'fw-bold',
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 

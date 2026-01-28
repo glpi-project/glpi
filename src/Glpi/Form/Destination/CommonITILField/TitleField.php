@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,14 +38,22 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Destination\FormDestination;
+use Glpi\Form\Destination\HasFormTags;
 use Glpi\Form\Form;
-use InvalidArgumentException;
+use Glpi\Form\Migration\DestinationFieldConverterInterface;
+use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Migration\TagConversionTrait;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
+use InvalidArgumentException;
 use Override;
 
-class TitleField extends AbstractConfigField
+#[HasFormTags]
+final class TitleField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
+    use TagConversionTrait;
+
     #[Override]
     public function getLabel(): string
     {
@@ -62,6 +69,7 @@ class TitleField extends AbstractConfigField
     #[Override]
     public function renderConfigForm(
         Form $form,
+        FormDestination $destination,
         JsonFieldInterface $config,
         string $input_name,
         array $display_options
@@ -87,6 +95,7 @@ class TitleField extends AbstractConfigField
                     'toolbar'          : false,
                     'editor_height'    : 0,
                     'statusbar'        : false,
+                    'mb'               : '',
                 })
             ) }}
 
@@ -103,10 +112,11 @@ class TitleField extends AbstractConfigField
             </script>
 TWIG;
 
+        $tag_manager = new FormTagsManager();
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'form_id'    => $form->fields['id'],
-            'value'      => $config->getValue(),
+            'value'      => $tag_manager->refreshTagsContent($config->getValue()),
             'input_name' => $input_name . "[" . SimpleValueConfig::VALUE . "]",
             'options'    => $display_options,
         ]);
@@ -152,5 +162,22 @@ TWIG;
     public function getWeight(): int
     {
         return 10;
+    }
+
+    #[Override]
+    public function getCategory(): Category
+    {
+        return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
+    {
+        if (isset($rawData['target_name'])) {
+            $title = $this->convertLegacyTags($rawData['target_name'], $migration);
+            return new SimpleValueConfig($title);
+        }
+
+        return $this->getDefaultConfig($form);
     }
 }

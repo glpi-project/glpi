@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,7 +34,7 @@
 
 namespace Glpi\Error\ErrorDisplayHandler;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -49,17 +49,7 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
 
     public function canOutput(): bool
     {
-        if (!self::$currentRequest) {
-            return false;
-        }
-
-        $is_dev_env    = GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT;
-        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
-
-        if (
-            !$is_dev_env       // error messages are always displayed in development environment
-            && !$is_debug_mode // error messages are always displayed in debug mode
-        ) {
+        if (self::$currentRequest === null) {
             return false;
         }
 
@@ -68,8 +58,15 @@ final class HtmlErrorDisplayHandler implements ErrorDisplayHandler
 
     public function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
+        $is_env_with_debug_tools = Environment::get()->shouldEnableExtraDevAndDebugTools();
+        $is_debug_mode = isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE;
+        if (!$is_debug_mode && !$is_env_with_debug_tools) {
+            // Do not display messages if debug mode is not active and if the environment should not enable debug tools.
+            return;
+        }
+
         echo \sprintf(
-            '<div class="alert alert-important alert-danger glpi-debug-alert" style="z-index:10000"><span class="fw-bold">%s: </span>%s</div>',
+            '<div class="alert alert-important alert-danger glpi-debug-alert"><span class="fw-bold">%s: </span>%s</div>',
             \htmlescape($error_label),
             \htmlescape($message)
         );

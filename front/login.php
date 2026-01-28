@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,15 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\AuthenticationFailedException;
+
+use function Safe\session_destroy;
 
 /**
  * @since 0.85
  */
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 if (!isset($_SESSION["glpicookietest"]) || ($_SESSION["glpicookietest"] != 'testcookie')) {
@@ -56,42 +57,16 @@ if (isset($_POST['totp_code']) && is_array($_POST['totp_code'])) {
     $_POST['totp_code'] = implode('', $_POST['totp_code']);
 }
 
-//Do login and checks
-//$user_present = 1;
-if (isset($_SESSION['namfield']) && isset($_POST[$_SESSION['namfield']])) {
-    $login = $_POST[$_SESSION['namfield']];
-} else {
-    $login = '';
-}
-if (isset($_SESSION['pwdfield']) && isset($_POST[$_SESSION['pwdfield']])) {
-    $password = $_POST[$_SESSION['pwdfield']];
-} else {
-    $password = '';
-}
-// Manage the selection of the auth source (local, LDAP id, MAIL id)
-if (isset($_POST['auth'])) {
-    $login_auth = $_POST['auth'];
-} else {
-    $login_auth = '';
-}
-
-$remember = isset($_SESSION['rmbfield']) && isset($_POST[$_SESSION['rmbfield']]) && $CFG_GLPI["login_remember_time"];
+$remember = ($_POST['login_remember'] ?? 0) && $CFG_GLPI["login_remember_time"];
 
 $auth = new Auth();
-
 
 // now we can continue with the process...
 if (isset($_REQUEST['totp_cancel'])) {
     session_destroy();
     Html::redirect($CFG_GLPI['root_doc'] . '/index.php');
 }
-$mfa_params = [];
-if (!empty($_POST['totp_code'])) {
-    $mfa_params['totp_code'] = $_POST['totp_code'];
-} else if (!empty($_POST['backup_code'])) {
-    $mfa_params['backup_code'] = $_POST['backup_code'];
-}
-if ($auth->login($login, $password, (isset($_REQUEST["noAUTO"]) ? $_REQUEST["noAUTO"] : false), $remember, $login_auth, $mfa_params)) {
+if ($auth->login($_POST['login_name'] ?? '', $_POST['login_password'] ?? '', ($_REQUEST["noAUTO"] ?? false), $remember, $_POST['auth'] ?? '')) {
     Auth::redirectIfAuthenticated();
 } else {
     throw new AuthenticationFailedException(authentication_errors: $auth->getErrors());

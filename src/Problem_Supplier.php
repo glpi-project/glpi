@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,9 +41,9 @@
  **/
 class Problem_Supplier extends CommonITILActor
 {
-   // From CommonDBRelation
-    public static $itemtype_1 = 'Problem';
+    // From CommonDBRelation
+    public static $itemtype_1 = Problem::class;
     public static $items_id_1 = 'problems_id';
-    public static $itemtype_2 = 'Supplier';
+    public static $itemtype_2 = Supplier::class;
     public static $items_id_2 = 'suppliers_id';
 }

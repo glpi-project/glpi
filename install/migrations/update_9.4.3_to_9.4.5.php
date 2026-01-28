@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,15 +40,13 @@
 function update943to945()
 {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
     global $DB, $migration;
 
     $updateresult     = true;
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.4.5'));
     $migration->setVersion('9.4.5');
 
     /** Add OLA TTR begin date field to Tickets */
@@ -61,7 +58,7 @@ function update943to945()
         [
             'after'     => 'olalevels_id_ttr',
             'update'    => $DB->quoteName('date'), // Assign ticket creation date by default
-            'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']])
+            'condition' => 'WHERE ' . $iterator->analyseCrit(['NOT' => ['olas_id_ttr' => '0']]),
         ]
     );
     /** /Add OLA TTR begin date field to Tickets */
@@ -91,7 +88,7 @@ function update943to945()
     }
     /** /Fix language fields */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

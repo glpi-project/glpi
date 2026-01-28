@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,18 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * @since 0.85
  */
 
-/**
- * @var array $CFG_GLPI
- */
 global $CFG_GLPI;
 
 if (
     $CFG_GLPI["ssovariables_id"] > 0
-    && strlen($CFG_GLPI['ssologout_url']) > 0
+    && ((string) $CFG_GLPI['ssologout_url']) !== ''
 ) {
     Session::cleanOnLogout();
     Html::redirect($CFG_GLPI["ssologout_url"]);
@@ -70,9 +69,9 @@ if (
 $toADD = "";
 
 // Redirect management
-if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
+if (isset($_POST['redirect']) && ((string) $_POST['redirect']) !== '') {
     $toADD = "?redirect=" . rawurlencode($_POST['redirect']);
-} else if (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
+} elseif (isset($_GET['redirect']) && ((string) $_GET['redirect']) !== '') {
     $toADD = "?redirect=" . rawurlencode($_GET['redirect']);
 }
 

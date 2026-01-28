@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,9 @@
 namespace Glpi\Console\Rules;
 
 use Glpi\Console\AbstractCommand;
+use RuleCollection;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -73,9 +76,8 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
     {
 
         if (empty($input->getOption('dictionnary'))) {
-           // Ask for dictionary argument is empty
-            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
-            $question_helper = $this->getHelper('question');
+            // Ask for dictionary argument is empty
+            $question_helper = new QuestionHelper();
             $question = new ChoiceQuestion(
                 __('Which dictionary do you want to replay?'),
                 $this->getDictionnaryTypes()
@@ -93,14 +95,14 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
     {
 
         $dictionnary = $input->getOption('dictionnary');
-        $rulecollection = \RuleCollection::getClassByType($dictionnary);
+        $rulecollection = RuleCollection::getClassByType($dictionnary);
 
         if (
             !in_array($dictionnary, $this->getDictionnaryTypes())
-            || !($rulecollection instanceof \RuleCollection)
+            || !($rulecollection instanceof RuleCollection)
         ) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
-                sprintf(__('Invalid "dictionary" value.'))
+            throw new InvalidArgumentException(
+                __('Invalid "dictionary" value.')
             );
         }
 
@@ -109,9 +111,9 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
             $params['manufacturer'] = $manufacturer_id;
         }
 
-       // Nota: implementations of RuleCollection::replayRulesOnExistingDB() are printing
-       // messages during execution on CLI mode.
-       // This could be improved by using the $output object to handle choosed verbosity level.
+        // Nota: implementations of RuleCollection::replayRulesOnExistingDB() are printing
+        // messages during execution on CLI mode.
+        // This could be improved by using the $output object to handle choosed verbosity level.
         $rulecollection->replayRulesOnExistingDB(0, 0, [], $params);
 
         return 0; // Success
@@ -124,7 +126,6 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
      */
     private function getDictionnaryTypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $types = $CFG_GLPI['dictionnary_types'];
         sort($types);

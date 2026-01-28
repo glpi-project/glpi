@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@
 /// since version 0.83
 class Entity_KnowbaseItem extends CommonDBRelation
 {
-   // From CommonDBRelation
-    public static $itemtype_1          = 'KnowbaseItem';
+    // From CommonDBRelation
+    public static $itemtype_1 = KnowbaseItem::class;
     public static $items_id_1          = 'knowbaseitems_id';
-    public static $itemtype_2          = 'Entity';
+    public static $itemtype_2 = Entity::class;
     public static $items_id_2          = 'entities_id';
 
     public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
@@ -50,13 +50,12 @@ class Entity_KnowbaseItem extends CommonDBRelation
     /**
      * Get entities for a knowbaseitem
      *
-     * @param integer $knowbaseitems_id ID of the knowbaseitem
+     * @param int $knowbaseitems_id ID of the knowbaseitem
      *
      * @return array of entities linked to a knowbaseitem
      **/
     public static function getEntities($knowbaseitems_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ent   = [];
@@ -64,8 +63,8 @@ class Entity_KnowbaseItem extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'knowbaseitems_id' => $knowbaseitems_id
-            ]
+                'knowbaseitems_id' => $knowbaseitems_id,
+            ],
         ]);
 
         foreach ($iterator as $data) {

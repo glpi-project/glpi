@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -48,7 +47,7 @@ describe('ITILCategory configuration', () => {
             }).as('itilcategory_id');
         });
 
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My ITILCategory question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Dropdowns');
@@ -68,12 +67,11 @@ describe('ITILCategory configuration', () => {
         cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
-        cy.findByRole('tab', {'name': "Items to create"}).click();
-        cy.findByRole('button', {'name': "Add ticket"}).click();
-        cy.checkAndCloseAlert('Item successfully added');
+        cy.findByRole('tab', { 'name': "Destinations 1" }).click();
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "ITIL category configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('ITIL category').as("itilcategory_dropdown");
 
@@ -97,6 +95,7 @@ describe('ITILCategory configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@itilcategory_dropdown').should('have.text', 'Specific ITIL category');
         cy.get('@form_id').then((form_id) => {
             const itilcategory_name = `Test ITIL Category for the ITILCategory configuration suite - ${form_id}`;
@@ -110,6 +109,7 @@ describe('ITILCategory configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@itilcategory_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My ITILCategory question');
     });
@@ -123,7 +123,7 @@ describe('ITILCategory configuration', () => {
         ;
 
         // Fill the form
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

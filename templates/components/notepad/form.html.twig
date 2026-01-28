@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,12 +37,17 @@
     is_horizontal: false,
 } %}
 
-<div class="my-3">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form">
-        <i class="ti ti-plus"></i>
-        <span>{{ __('Add a note') }}</span>
-    </button>
+{% include 'components/tab/addlink_block.html.twig' with {
+    'add_link': 'javascript:return false;',
+    'button_label': _x('button', 'Add a note'),
+    'button_attributes': {
+        'data-bs-toggle': 'modal',
+        'data-bs-target': '#new-note-form',
+        'aria-label': __('Add a note'),
+    }
+} %}
 
+<div class="my-3">
     <div id="new-note-form" class="modal fade">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -96,11 +100,21 @@
         {% set id = "note#{ note['id'] }#{ rand }" %}
         <div class="accordion-item">
             <div class="accordion-header">
-                <button class="accordion-button collapsed d-flex align-self-center" type="button"
-                        data-bs-toggle="collapse" data-bs-target="#{{ id }}"
-                        aria-expanded="false" aria-controls="{{ id }}">
-                    <i class="ti ti-notes me-1"></i>
-                    <span>#{{ id }}</span>
+                <button
+                    class="accordion-button collapsed d-flex align-self-center"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#{{ id }}"
+                    aria-expanded="false"
+                    aria-controls="{{ id }}"
+                    data-testid="note-container"
+                >
+                    <i class="ti ti-notes"></i>
+                    {% set title = '#' ~ note['id'] ~ ' - ' ~ note['date_creation']|formatted_datetime %}
+                    {% if note['date_mod'] != note['date_creation'] %}
+                        {% set title = title ~ ' (' ~ __('Last update on %s')|format(note['date_mod']|formatted_datetime) ~ ')' %}
+                    {% endif %}
+                    <span>{{ title }}</span>
                 </button>
             </div>
 
@@ -116,39 +130,61 @@
                                     'date_creation': note['date_creation'],
                                     'date_mod': note['date_mod'],
                                     'users_id_editor': note['users_id_lastupdater'],
+                                    'anchor': 'Notepad' ~ '_' ~ note['id'],
+                                    'user_object': null,
                                 }, with_context = false) }}
                             </span>
 
                             <span>
-                                <button class="btn btn-sm btn-ghost-danger delete-note" name="purge" type="submit" value="1"
-                                        onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
-                                        data-id="{{ id }}">
+                                <button
+                                    class="btn btn-sm btn-ghost-danger delete-note"
+                                    name="purge"
+                                    type="submit"
+                                    value="1"
+                                    onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                    data-id="{{ id }}"
+                                    aria-label="{{ __("Delete") }}"
+                                >
                                     <i class="ti ti-trash"></i>
                                     <span>{{ __('Delete') }}</span>
                                 </button>
 
-                                <button class="btn btn-sm btn-ghost-secondary edit-note" type="button"
-                                        data-id="{{ id }}"
-                                        data-bs-toggle="modal" data-bs-target="#edit-{{ id }}">
+                                <button
+                                    class="btn btn-sm btn-ghost-secondary edit-note"
+                                    type="button"
+                                    data-id="{{ id }}"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#edit-{{ id }}"
+                                    aria-label="{{ __("Edit") }}"
+                                >
                                     <i class="ti ti-edit"></i>
                                     <span>{{ __('Edit') }}</span>
                                 </button>
                             </span>
                         </div>
 
-                        <div class="rich_text_container" id="contentread{{ id }}">
+                        <div
+                            class="rich_text_container"
+                            id="contentread{{ id }}"
+                            data-testid="note-content"
+                        >
                             {{ note['content']|safe_html }}
                         </div>
 
                         {{ include('components/itilobject/timeline/sub_documents.html.twig', {
-                            'item': note,
+                            'item': get_item(note['itemtype'], note['items_id']),
                             'entry': note
                         }) }}
 
-                        <div id="edit-{{ id }}" class="modal fade">
+                    </form>
 
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
+                    <div id="edit-{{ id }}" class="modal fade">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                    <input type="hidden" name="id" value="{{ note['id'] }}" />
+
                                     <div class="modal-header">
                                         <h3 class="modal-title">
                                             <i class="ti ti-notes"></i>
@@ -181,22 +217,27 @@
 
                                     <div class="modal-footer">
                                         <button class="btn btn-outline-danger" type="submit" name="purge" value="1"
-                                                onclick="return confirm('{{ __('Confirm the final deletion?') }}');"
+                                                onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
                                                 data-bs-toggle="tooltip" data-bs-position="top"
                                                 title="{{ _x('button', 'Delete permanently') }}">
                                             <i class="ti ti-trash"></i>
                                         </button>
 
-                                        <button type="submit" value="Update" name="update" class="btn btn-primary">
+                                        <button
+                                            type="submit"
+                                            value="Update"
+                                            name="update"
+                                            class="btn btn-primary"
+                                            aria-label="{{ __('Update') }}"
+                                        >
                                             <i class="ti ti-device-floppy"></i>
                                             <span>{{ __('Update') }}</span>
                                         </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

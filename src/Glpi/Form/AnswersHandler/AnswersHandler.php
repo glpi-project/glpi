@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,13 +35,27 @@
 
 namespace Glpi\Form\AnswersHandler;
 
-use CommonDBTM;
+use Exception;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
+use Glpi\Form\Condition\Engine;
+use Glpi\Form\Condition\EngineInput;
+use Glpi\Form\Condition\ValidationStrategy;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
-use Glpi\Form\QuestionType\QuestionTypeInterface;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\CustomMandatoryMessageInterface;
+use Glpi\Form\QuestionType\QuestionTypeValidationInterface;
+use Glpi\Form\Section;
+use Glpi\Form\ValidationResult;
+use LogicException;
+use Throwable;
+
+use function Safe\json_encode;
 
 /**
  * Helper class to handle raw answers data
@@ -57,9 +71,7 @@ final class AnswersHandler
     /**
      * Private constructor to prevent instantiation (singleton)
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the singleton instance
@@ -76,6 +88,96 @@ final class AnswersHandler
     }
 
     /**
+     * Check if the given answers are valid for the given form
+     *
+     * @param Form|Section $questions_container The form or section to check
+     * @param array $answers The answers to check
+     * @return ValidationResult The validation result
+     */
+    public function validateAnswers(
+        Form|Section $questions_container,
+        array $answers
+    ): ValidationResult {
+        $form = ($questions_container instanceof Section) ? $questions_container->getForm() : $questions_container;
+        $result = new ValidationResult();
+        $engine = new Engine($form, new EngineInput($answers));
+        $visibility = $engine->computeVisibility();
+        $validation = $engine->computeValidation();
+
+        // Retrieve visible mandatory questions
+        $mandatory_questions = array_filter(
+            $questions_container->getQuestions(),
+            fn($question) => $question->fields['is_mandatory']
+                && $visibility->isQuestionVisible($question->getID())
+                && $visibility->isSectionVisible($question->getSection()->getID())
+        );
+
+        foreach ($mandatory_questions as $question) {
+            $answer = $answers[$question->getID()] ?? null;
+            $question_type = $question->getQuestionType();
+            if ($question_type instanceof ConditionValueTransformerInterface) {
+                $answer = $question_type->transformConditionValueForComparisons($answer, $question->getExtraDataConfig());
+            }
+
+            // Check if the question is not answered (empty or not set)
+            if ($answer === null || (is_string($answer) && strip_tags($answer) === '') || (is_array($answer) && count($answer) === 0)) {
+                $message = __('This field is mandatory');
+                $type = $question->getQuestionType();
+                if ($type instanceof CustomMandatoryMessageInterface) {
+                    $message = $type->getCustomMandatoryErrorMessage();
+                }
+                $result->addError($question, $message);
+            }
+        }
+
+        // Validate answers for each question if validation conditions are defined
+        foreach ($questions_container->getQuestions() as $question) {
+            // Check if the question is visible
+            if (!$visibility->isQuestionVisible($question->getID())) {
+                continue;
+            }
+
+            // Check if the question is not answered (empty or not set)
+            if (empty($answers[$question->getID()])) {
+                continue;
+            }
+
+            if ($question->getConfiguredValidationStrategy() !== ValidationStrategy::NO_VALIDATION) {
+                // Validate the answer
+                if (!$validation->isQuestionValid($question->getID())) {
+                    // Add error for each condition that is not met
+                    foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
+                        $result->addError(
+                            $question,
+                            $condition->getValueOperator()?->getErrorMessageForValidation(
+                                $question->getConfiguredValidationStrategy(),
+                                $condition
+                            )
+                        );
+                    }
+                }
+            }
+
+            // Validate specific question type requirements
+            $type = $question->getQuestionType();
+            if ($type === null) {
+                throw new LogicException(); // Can never happen
+            }
+            if ($type instanceof QuestionTypeValidationInterface) {
+                $type_result = $type->validateAnswer(
+                    $question,
+                    $answers[$question->getID()]
+                );
+                foreach ($type_result->getErrors() as $error) {
+                    $result->addFormattedError($error);
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Saves the given answers of a given form into an AnswersSet object and
      * create destinations objects.
      *
@@ -85,39 +187,70 @@ final class AnswersHandler
      *
      * @return AnswersSet The created AnswersSet object
      *
-     * @throws \Exception If the data can't be fully saved
+     * @throws Exception If the data can't be fully saved
      */
     public function saveAnswers(
         Form $form,
         array $answers,
         int $users_id,
-        array $files = []
+        array $files = [],
+        DelegationData $delegation = new DelegationData(),
     ): AnswersSet {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        if ($DB->inTransaction()) {
-            return $this->doSaveAnswers($form, $answers, $users_id);
-        } else {
-            // We do not want to commit the answers unless everything was processed
-            // correctly
-            $DB->beginTransaction();
+        // We do not want to commit the answers unless everything was processed
+        // correctly
+        $DB->beginTransaction();
 
-            try {
-                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $files);
-                $DB->commit();
-                return $answers_set;
-            } catch (\Throwable $e) {
-                $DB->rollback();
-                trigger_error(
-                    "Failed to save answers: " . $e->getMessage(),
-                    E_USER_WARNING
-                );
+        try {
+            $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
+            $DB->commit();
+            return $answers_set;
+        } catch (Throwable $e) {
+            $DB->rollback();
 
-                // Propagate the exception
-                throw $e;
+            // Propagate the exception
+            throw $e;
+        }
+    }
+
+    public function removeUnusedAnswers(Form $form, array $answers): array
+    {
+        // Do not include answers to questions that were hidden by some visibility
+        // conditions.
+        $input = new EngineInput(
+            answers: $answers,
+        );
+        $engine = new Engine($form, $input);
+        $result = $engine->computeVisibility();
+
+        foreach (array_keys($answers) as $anwer_id) {
+            // If the question itself is hidden, remove it
+            if (!$result->isQuestionVisible($anwer_id)) {
+                unset($answers[$anwer_id]);
+                continue;
+            }
+
+            // We now need to load the parent section to make sure it is not
+            // hidden too
+            $question = Question::getById($anwer_id);
+            if (!$question) {
+                unset($answers[$anwer_id]); // Unexpected data
+                continue;
+            }
+
+            $section = $question->getSection();
+            if (!$section) {
+                unset($answers[$anwer_id]); // Unexpected data
+                continue;
+            }
+
+            if (!$result->isSectionVisible($section->getId())) {
+                unset($answers[$anwer_id]);
             }
         }
+
+        return $answers;
     }
 
     /**
@@ -133,13 +266,14 @@ final class AnswersHandler
      *
      * @return AnswersSet The created AnswersSet object
      *
-     * @throws \Exception If the data can't be saved
+     * @throws Exception If the data can't be saved
      */
     protected function doSaveAnswers(
         Form $form,
         array $answers,
         int $users_id,
-        array $files = []
+        DelegationData $delegation,
+        array $files = [],
     ): AnswersSet {
         // Save answers
         $answers_set = $this->createAnswserSet(
@@ -148,6 +282,7 @@ final class AnswersHandler
             $users_id
         );
         $answers_set->setSubmittedFiles($files);
+        $answers_set->setDelegation($delegation);
 
         // Create destinations objects
         $this->createDestinations(
@@ -155,7 +290,29 @@ final class AnswersHandler
             $answers_set
         );
 
+        // Increment the form usage counter
+        $this->incrementFormUsageCount($form);
+
         return $answers_set;
+    }
+
+    /**
+     * Increment the usage count of a form
+     *
+     * @param Form $form The form to increment the usage count for
+     *
+     * @return void
+     */
+    protected function incrementFormUsageCount(Form $form): void
+    {
+        global $DB;
+
+        // Note: Using direct DB update prevents race conditions
+        $DB->update(
+            Form::getTable(),
+            ['usage_count' => new QueryExpression('usage_count + 1')],
+            ['id' => $form->getID()]
+        );
     }
 
     /**
@@ -171,14 +328,13 @@ final class AnswersHandler
      *
      * @return AnswersSet The created AnswersSet object
      *
-     * @throws \Exception If the data can't be saved
+     * @throws Exception If the data can't be saved
      */
     protected function createAnswserSet(
         Form $form,
         array $answers,
         int $users_id
     ): AnswersSet {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // Find next answer index for this form
@@ -231,7 +387,7 @@ final class AnswersHandler
         // If we can't save the answers, throw an exception as it make no sense
         // to keep going
         if (!$id) {
-            throw new \Exception(
+            throw new Exception(
                 "Failed to save answers: " . json_encode($input)
             );
         }
@@ -245,7 +401,7 @@ final class AnswersHandler
      * @param Form       $form
      * @param AnswersSet $answers_set
      *
-     * @throws \Exception If the data can't be saved
+     * @throws Exception If the data can't be saved
      *
      * @return void
      */
@@ -253,6 +409,13 @@ final class AnswersHandler
     {
         // Get defined destinations
         $destinations = $form->getDestinations();
+
+        // Init the contionnal creation engine
+        $engine = new Engine($form, new EngineInput($answers_set->toArray()));
+        $engine_output = $engine->computeItemsThatMustBeCreated();
+
+        // Store created items for post-creation processing
+        $created_items = [];
 
         /** @var FormDestination $destination */
         foreach ($destinations as $destination) {
@@ -262,19 +425,21 @@ final class AnswersHandler
                 continue;
             }
 
+            // Skip if the destination failed its required conditions.
+            if (!$engine_output->itemMustBeCreated($destination)) {
+                continue;
+            }
+
+
             // Create destination item
             $items = $concrete_destination->createDestinationItems(
                 $form,
                 $answers_set,
-                $destination->getConfig()
+                $destination->getConfig(),
             );
 
             // Link items to answers by creating a AnswersSet_FormDestinationItem object
             foreach ($items as $item) {
-                if (!($item instanceof CommonDBTM)) {
-                    throw new \Exception("Invalid destination item");
-                }
-
                 $form_item = new AnswersSet_FormDestinationItem();
                 $input = [
                     AnswersSet::getForeignKeyField() => $answers_set->getID(),
@@ -282,12 +447,36 @@ final class AnswersHandler
                     'items_id'                       => $item->getID(),
                 ];
                 if (!$form_item->add($input)) {
-                    throw new \Exception(
+                    throw new Exception(
                         "Failed to create destination item: "
                         . json_encode($input)
                     );
                 }
             }
+
+            // Store created items for post-creation processing
+            $created_items[$destination->getID()] = $items;
+        }
+
+        foreach ($destinations as $destination) {
+            $concrete_destination = $destination->getConcreteDestinationItem();
+            if (!$concrete_destination) {
+                // The configured destination might belong to an inactive plugin
+                continue;
+            }
+
+            // Skip if the destination failed its required conditions.
+            if (!$engine_output->itemMustBeCreated($destination)) {
+                continue;
+            }
+
+            // Post creation processing for destination items
+            $concrete_destination->postCreateDestinationItems(
+                $form,
+                $answers_set,
+                $destination,
+                $created_items,
+            );
         }
     }
 }

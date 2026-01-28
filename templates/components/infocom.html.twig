@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -40,7 +39,7 @@
 
    {% if infocom.fields['id'] <= 0 %}
       {% if can_create and withtemplate != 2 %}
-         <div class="mx-auto my-4" style="width: 400px;">
+         <div class="firstbloc">
                <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                <button type="submit" class="btn btn-primary" name="add" value="1">
@@ -174,7 +173,7 @@
                         _x('price', 'Value'),
                         {
                             'disabled': disabled,
-                            'step': 'any',
+                            'step': '0.0001',
                         }
                      ) }}
 
@@ -184,7 +183,7 @@
                         __('Warranty extension value'),
                         {
                             'disabled': disabled,
-                            'step': 'any',
+                            'step': '0.0001',
                         }
                      ) }}
 
@@ -232,10 +231,10 @@
                         'sink_coeff',
                         infocom.fields['sink_coeff'],
                         __('Amortization coefficient'),
-                        {'disabled': disabled, 'step': 'any'}
+                        {'disabled': disabled, 'step': '0.0001'}
                      ) }}
 
-                     {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense'])  %}
+                     {% if item.getType() not in infocom.getExcludedTypes()|merge(['Cartridge', 'Consumable', 'SoftwareLicense']) and item.isField('ticket_tco') %}
                         {% set ticket_tco_value = infocom.showTco(item.fields['ticket_tco'], infocom.fields['value']) %}
                         {{ fields.readOnlyField(
                            'ticket_tco',
@@ -303,7 +302,7 @@
                               'toadd'          : {'-1': __('Lifelong')},
                               'unit'           : 'month',
                               'disabled'       : disabled,
-                              'add_field_html' : '<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>'
+                              'add_field_html' : warrantyexpir is not empty ? ('<span class="text-muted">' ~ __('Valid to %s')|format(warrantyexpir) ~ '</span>') : ''
                            }
                         ) }}
                      {% endif %}
@@ -338,7 +337,7 @@
 
                      {% do call_plugin_hook_func(constant('Glpi\\Plugin\\Hooks::INFOCOM'), item) %}
 
-                     <div class="card-body mx-n2 mb-4  border-top">
+                     <div class="card-body mx-n2 border-top d-flex flex-row-reverse align-items-start flex-wrap">
                         {% if can_global_update %}
                            <button class="btn btn-primary me-2" type="submit" name="update">
                               <i class="ti ti-device-floppy"></i>

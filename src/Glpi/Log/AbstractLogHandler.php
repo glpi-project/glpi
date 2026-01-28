@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,22 +35,11 @@
 namespace Glpi\Log;
 
 use Monolog\Handler\StreamHandler;
-use Psr\Log\LogLevel;
 
 abstract class AbstractLogHandler extends StreamHandler
 {
     public function __construct(string $logfile)
     {
-        if (\defined('GLPI_LOG_LVL')) {
-            $log_level = \GLPI_LOG_LVL;
-        } else {
-            $log_level = match (\GLPI_ENVIRONMENT_TYPE) {
-                \GLPI::ENV_DEVELOPMENT => LogLevel::DEBUG,
-                \GLPI::ENV_TESTING => LogLevel::DEBUG,
-                default => LogLevel::WARNING,
-            };
-        }
-
-        parent::__construct($logfile, $log_level);
+        parent::__construct($logfile, GLPI_LOG_LVL);
     }
 }

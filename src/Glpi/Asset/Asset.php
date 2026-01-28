@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,27 +38,44 @@ use CommonDBTM;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Asset\CustomFieldType\TextType;
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
+use Glpi\Features\AssignableItem;
+use Glpi\Features\AssignableItemInterface;
+use Glpi\Features\Clonable;
+use Glpi\Features\Inventoriable;
+use Glpi\Features\StateInterface;
 use Group;
 use Group_Item;
+use InvalidArgumentException;
 use Location;
 use Log;
 use Manufacturer;
+use RuntimeException;
+use Safe\Exceptions\JsonException;
+use Session;
 use State;
 use User;
 
-abstract class Asset extends CommonDBTM
+use function Safe\json_decode;
+use function Safe\json_encode;
+
+abstract class Asset extends CommonDBTM implements AssignableItemInterface, StateInterface
 {
     use CustomObjectTrait;
 
-    use \Glpi\Features\AssignableItem {
+    use AssignableItem {
         getEmpty as getEmptyFromAssignableItem;
         post_getFromDB as post_getFromDBFromAssignableItem;
+        post_addItem as post_addItemFromAssignableItem;
         post_updateItem as post_updateItemFromAssignableItem;
+        canView as canViewFromAssignableItem;
     }
-    use \Glpi\Features\Clonable;
+    /** @use Clonable<static> */
+    use Clonable;
     use \Glpi\Features\State;
-    use \Glpi\Features\Inventoriable;
+    use Inventoriable;
 
     /**
      * Asset definition system name.
@@ -73,8 +89,16 @@ abstract class Asset extends CommonDBTM
     final public function __construct()
     {
         foreach (static::getDefinition()->getEnabledCapacities() as $capacity) {
-            $capacity->onObjectInstanciation($this);
+            $capacity->onObjectInstanciation($this, static::getDefinition()->getCapacityConfiguration($capacity::class));
         }
+    }
+
+    public static function canView(): bool
+    {
+        if (!static::canViewFromAssignableItem()) {
+            return false;
+        }
+        return (bool) static::getDefinition()->fields['is_active'];
     }
 
     /**
@@ -86,20 +110,28 @@ abstract class Asset extends CommonDBTM
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
     }
 
-    public static function getDefinitionClass(): string
+    /**
+     * @return AssetDefinition
+     */
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        return AssetDefinition::class;
+        return new AssetDefinition();
     }
 
     public static function getSectorizedDetails(): array
     {
         return ['assets', static::getDefinition()->getAssetClassName()];
+    }
+
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
     }
 
     public function rawSearchOptions()
@@ -108,10 +140,8 @@ abstract class Asset extends CommonDBTM
 
         $search_options = array_merge($search_options, Location::rawSearchOptionsToAdd());
 
-        /** @var AssetModel $asset_model_class */
-        $asset_model_class = $this->getDefinition()->getAssetModelClassName();
-        /** @var AssetType $asset_type_class */
-        $asset_type_class = $this->getDefinition()->getAssetTypeClassName();
+        $asset_model_class = static::getDefinition()->getAssetModelClassName();
+        $asset_type_class = static::getDefinition()->getAssetTypeClassName();
 
         $search_options[] = [
             'id'            => '2',
@@ -119,14 +149,14 @@ abstract class Asset extends CommonDBTM
             'field'         => 'id',
             'name'          => __('ID'),
             'massiveaction' => false,
-            'datatype'      => 'number'
+            'datatype'      => 'number',
         ];
 
         $search_options[] = [
             'id'        => '4',
             'table'     => $asset_type_class::getTable(),
             'field'     => 'name',
-            'name'      => $asset_type_class::getTypeName(1),
+            'name'      => $asset_type_class::getFieldLabel(),
             'datatype'  => 'dropdown',
             // Search class could not be able to retrieve the concrete type class when using `getItemTypeForTable()`
             // so we have to define an `itemtype` here.
@@ -137,7 +167,7 @@ abstract class Asset extends CommonDBTM
             'id'        => '40',
             'table'     => $asset_model_class::getTable(),
             'field'     => 'name',
-            'name'      => $asset_model_class::getTypeName(1),
+            'name'      => $asset_model_class::getFieldLabel(),
             'datatype'  => 'dropdown',
             // Search class could not be able to retrieve the concrete model class when using `getItemTypeForTable()`
             // so we have to define an `itemtype` here.
@@ -173,8 +203,8 @@ abstract class Asset extends CommonDBTM
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $search_options[] = [
@@ -199,7 +229,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $search_options[] = [
@@ -213,11 +243,13 @@ abstract class Asset extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
-            'datatype'           => 'dropdown'
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
         ];
 
         $search_options[] = [
@@ -226,7 +258,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $search_options[] = [
@@ -235,7 +267,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
 
@@ -244,7 +276,7 @@ abstract class Asset extends CommonDBTM
             'table'              => Manufacturer::getTable(),
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $search_options[] = [
@@ -254,14 +286,13 @@ abstract class Asset extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge of the hardware'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $search_options[] = [
             'id'                 => '49',
             'table'              => Group::getTable(),
             'field'              => 'completename',
-            'linkfield'          => 'groups_id_tech',
             'name'               => __('Group in charge of the hardware'),
             'condition'          => ['is_assign' => 1],
             'joinparams'         => [
@@ -269,21 +300,32 @@ abstract class Asset extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
-            'datatype'           => 'dropdown'
+            'forcegroupby'       => true,
+            'massiveaction'      => false,
+            'datatype'           => 'dropdown',
         ];
 
-        // TODO 65 for template
+        $search_options[] = [
+            'id'                 => '65',
+            'table'              => $this->getTable(),
+            'field'              => 'template_name',
+            'name'               => __('Template name'),
+            'datatype'           => 'text',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nodisplay'          => true,
+        ];
 
         $search_options[] = [
             'id'                 => '80',
             'table'              => Entity::getTable(),
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $search_options[] = [
@@ -302,6 +344,10 @@ abstract class Asset extends CommonDBTM
 
         $search_options = $this->amendSearchOptions($search_options);
 
+        $search_options[] = [
+            'id' => 'customfields',
+            'name' => _n('Custom field', 'Custom fields', Session::getPluralNumber()),
+        ];
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
         foreach ($custom_fields as $custom_field) {
             $opt = $custom_field->getFieldType()->getSearchOption();
@@ -314,6 +360,9 @@ abstract class Asset extends CommonDBTM
         return $search_options;
     }
 
+    /**
+     * @return string[]
+     */
     public function getUnallowedFieldsForUnicity()
     {
         $not_allowed = parent::getUnallowedFieldsForUnicity();
@@ -326,20 +375,32 @@ abstract class Asset extends CommonDBTM
         $all_fields = array_keys(static::getDefinition()->getAllFields());
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $shown_fields = array_column($fields_display, 'key');
-        return array_filter($shown_fields, static fn ($f) => in_array($f, $all_fields, true));
+        return array_filter($shown_fields, static fn($f) => in_array($f, $all_fields, true));
     }
 
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
-        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
+        $custom_fields = array_combine(array_map(static fn($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
+        // Remove fields that are hidden for the current profile
+        $custom_fields = array_filter($custom_fields, static fn($f) => !$f->getFieldType()->getOptionValues()['hidden']);
+
+        $core_fields = static::getDefinition()->getAllFields();
         foreach ($fields_display as $field) {
-            $core_field_options[$field['key']] = $field['field_options'] ?? [];
+            $f = new CustomFieldDefinition();
+            $core_field = $core_fields[$field['key']];
+            $f->fields['system_name'] = $field['key'];
+            $f->fields['type'] = $core_field['type'];
+            $f->fields['field_options'] = $field['field_options'] ?? [];
+            $core_field_options[$field['key']] = $f->getFieldType()->getOptionValues();
         }
+
+        $field_order = $this->getFormFields();
+        $field_order = array_filter($field_order, static fn($f) => $core_field_options[$f]['hidden'] !== true);
 
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
@@ -347,7 +408,7 @@ abstract class Asset extends CommonDBTM
                 'item'   => $this,
                 'params' => $options,
                 'custom_fields' => $custom_fields,
-                'field_order' => $this->getFormFields(),
+                'field_order' => $field_order,
                 'additional_field_options' => $core_field_options,
             ]
         );
@@ -357,7 +418,7 @@ abstract class Asset extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareGroupFields($input);
-
+        $input = $this->handleReadonlyFieldUpdate($input);
         $input = $this->handleCustomFieldsUpdate($input);
 
         return $this->prepareDefinitionInput($input);
@@ -366,10 +427,72 @@ abstract class Asset extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareGroupFields($input);
-
+        $input = $this->handleReadonlyFieldUpdate($input);
         $input = $this->handleCustomFieldsUpdate($input);
 
         return $this->prepareDefinitionInput($input);
+    }
+
+    private function handleReadonlyFieldUpdate(array $input): array
+    {
+        foreach (static::getDefinition()->getDecodedFieldsField() as $field_definition) {
+            $field_options = $field_definition['field_options'] ?? null;
+            if (!$this->isReadonlyForCurrentProfile($field_options)) {
+                continue;
+            }
+
+            $field_name = $field_definition['key'];
+            $input = $this->applyPersistedReadonlyValue($input, $field_name);
+        }
+
+        // Custom fields
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            $field_options = $custom_field->fields['field_options'] ?? null;
+            if (!$this->isReadonlyForCurrentProfile($field_options)) {
+                continue;
+            }
+
+            $field_name = 'custom_' . $custom_field->fields['system_name'];
+            $input = $this->applyPersistedReadonlyValue($input, $field_name);
+        }
+
+        return $input;
+    }
+
+    /**
+     * Determine if a field is readonly for the current active profile.
+     */
+    private function isReadonlyForCurrentProfile(mixed $field_options): bool
+    {
+        $profile_id = $_SESSION['glpiactiveprofile']['id'] ?? null;
+        if ($profile_id === null) {
+            return false;
+        }
+
+        if (!is_array($field_options) || !array_key_exists('readonly', $field_options)) {
+            return false;
+        }
+
+        $readonly_profile_ids = $field_options['readonly'];
+        if (is_array($readonly_profile_ids)) {
+            return in_array($profile_id, $readonly_profile_ids, true);
+        }
+
+        // The normalization can return an empty string instead of an array when no profiles are set
+        return false;
+    }
+
+    /**
+     * Ensure the input value for a readonly field is the persisted value.
+     */
+    private function applyPersistedReadonlyValue(array $input, string $field_name): array
+    {
+        if (array_key_exists($field_name, $this->fields)) {
+            $input[$field_name] = $this->fields[$field_name];
+        } else {
+            unset($input[$field_name]);
+        }
+        return $input;
     }
 
     protected function handleCustomFieldsUpdate(array $input): array
@@ -385,7 +508,7 @@ abstract class Asset extends CommonDBTM
 
             try {
                 $custom_fields[$custom_field->getID()] = $custom_field->getFieldType()->formatValueForDB($value);
-            } catch (\InvalidArgumentException) {
+            } catch (InvalidArgumentException) {
                 continue;
             }
         }
@@ -396,7 +519,13 @@ abstract class Asset extends CommonDBTM
 
     private function getDecodedCustomFields(): array
     {
-        return json_decode($this->fields['custom_fields'] ?? '[]', true) ?? [];
+        $return = [];
+        try {
+            $return = json_decode($this->fields['custom_fields'] ?? '[]', true);
+        } catch (JsonException $e) {
+            //empty catch
+        }
+        return $return;
     }
 
     public function getEmpty()
@@ -440,6 +569,13 @@ abstract class Asset extends CommonDBTM
         }
     }
 
+    public function post_addItem()
+    {
+        $this->post_addItemFromAssignableItem();
+
+        $this->addFilesFromRichTextCustomFields();
+    }
+
     public function post_updateItem($history = true)
     {
         $this->post_updateItemFromAssignableItem($history);
@@ -465,12 +601,50 @@ abstract class Asset extends CommonDBTM
                 }
             }
         }
+        $this->addFilesFromRichTextCustomFields();
+    }
+
+    /**
+     * Add files from rich text custom fields.
+     */
+    private function addFilesFromRichTextCustomFields(): void
+    {
+        $update_input = [];
+        foreach (static::getDefinition()->getCustomFieldDefinitions() as $custom_field) {
+            if (
+                $custom_field->fields['type'] !== TextType::class
+                || ($custom_field->fields['field_options']['enable_richtext'] ?? false) === false
+                || ($custom_field->fields['field_options']['enable_images'] ?? false) === false
+            ) {
+                continue;
+            }
+
+            $custom_field_name = sprintf('custom_%s', $custom_field->fields['system_name']);
+            $current_value     = $this->input[$custom_field_name];
+
+            $result_input = $this->addFiles(
+                $this->input,
+                [
+                    'force_update'  => false,
+                    'name'          => $custom_field_name,
+                    'content_field' => $custom_field_name,
+                ]
+            );
+
+            if ($result_input[$custom_field_name] !== $current_value) {
+                $update_input[$custom_field_name] = $result_input[$custom_field_name];
+            }
+        }
+
+        if (count($update_input) > 0) {
+            (new static())->update(['id' => $this->fields['id']] + $update_input, history: false);
+        }
     }
 
     public function getNonLoggedFields(): array
     {
         $ignored_fields = array_map(
-            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
+            static fn(CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
             static::getDefinition()->getCustomFieldDefinitions()
         );
         $ignored_fields[] = 'custom_fields';
@@ -485,5 +659,10 @@ abstract class Asset extends CommonDBTM
             $relations = [...$relations, ...$capacity->getCloneRelations()];
         }
         return array_unique($relations);
+    }
+
+    public static function getSystemSQLCriteria(?string $tablename = null): array
+    {
+        return static::getDefinition()->getSystemSQLCriteriaForConcreteClass($tablename);
     }
 }

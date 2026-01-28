@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,9 +54,6 @@ class Fieldblacklist extends CommonDropdown
         return static::canUpdate();
     }
 
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         return static::canUpdate();
@@ -69,25 +66,20 @@ class Fieldblacklist extends CommonDropdown
 
         return [['name'  => 'itemtype',
             'label' => _n('Type', 'Types', 1),
-            'type'  => 'blacklist_itemtype'
+            'type'  => 'blacklist_itemtype',
         ],
             ['name'  => 'field',
                 'label' => _n('Field', 'Fields', 1),
-                'type'  => 'blacklist_field'
+                'type'  => 'blacklist_field',
             ],
             ['name'  => 'value',
                 'label' => __('Value'),
-                'type'  => 'blacklist_value'
-            ]
+                'type'  => 'blacklist_value',
+            ],
         ];
     }
 
 
-    /**
-     * Get search function for the class
-     *
-     * @return array of search option
-     **/
     public function rawSearchOptions()
     {
         $tab = parent::rawSearchOptions();
@@ -99,7 +91,7 @@ class Fieldblacklist extends CommonDropdown
             'name'               => _n('Type', 'Types', 1),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'forcegroupby'       => true
+            'forcegroupby'       => true,
         ];
 
         $tab[] = [
@@ -110,8 +102,8 @@ class Fieldblacklist extends CommonDropdown
             'massiveaction'      => false,
             'datatype'           => 'specific',
             'additionalfields'   => [
-                '0'                  => 'itemtype'
-            ]
+                '0'                  => 'itemtype',
+            ],
         ];
 
         $tab[] = [
@@ -122,9 +114,9 @@ class Fieldblacklist extends CommonDropdown
             'datatype'           => 'specific',
             'additionalfields'   => [
                 '0'                  => 'itemtype',
-                '1'                  => 'field'
+                '1'                  => 'field',
             ],
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -142,7 +134,7 @@ class Fieldblacklist extends CommonDropdown
                 if (isset($values['itemtype']) && !empty($values['itemtype'])) {
                     $target       = getItemForItemtype($values['itemtype']);
                     $searchOption = $target->getSearchOptionByField('field', $values[$field]);
-                    return $searchOption['name'];
+                    return htmlescape($searchOption['name']);
                 }
                 break;
 
@@ -194,8 +186,8 @@ class Fieldblacklist extends CommonDropdown
                 ) {
                     if ($item = getItemForItemtype($values['itemtype'])) {
                         if (isset($values['field']) && !empty($values['field'])) {
-                             $searchOption = $item->getSearchOptionByField('field', $values['field']);
-                             return $item->getValueToSelect($searchOption, $name, $values[$field], $options);
+                            $searchOption = $item->getSearchOptionByField('field', $values['field']);
+                            return $item->getValueToSelect($searchOption, $name, $values[$field], $options);
                         }
                     }
                 }
@@ -246,14 +238,13 @@ class Fieldblacklist extends CommonDropdown
      **/
     public function showItemtype()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->fields['id'] > 0) {
             if ($item = getItemForItemtype($this->fields['itemtype'])) {
-                echo $item->getTypeName(1);
+                echo htmlescape($item->getTypeName(1));
             }
-            echo "<input type='hidden' name='itemtype' value='" . $this->fields['itemtype'] . "'>";
+            echo "<input type='hidden' name='itemtype' value='" . htmlescape($this->fields['itemtype']) . "'>";
         } else {
             //Add criteria : display dropdown
             $options = [];
@@ -269,12 +260,12 @@ class Fieldblacklist extends CommonDropdown
                 'itemtype',
                 $options,
                 ['value'               => $this->fields['value'],
-                    'display_emptychoice' => true
+                    'display_emptychoice' => true,
                 ]
             );
 
             $params = ['itemtype' => '__VALUE__',
-                'id'       => $this->fields['id']
+                'id'       => $this->fields['id'],
             ];
             Ajax::updateItemOnSelectEvent(
                 "dropdown_itemtype$rand",
@@ -286,9 +277,11 @@ class Fieldblacklist extends CommonDropdown
     }
 
 
+    /**
+     * @return void
+     */
     public function selectCriterias()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         echo "<span id='span_fields' name='span_fields'>";
@@ -310,7 +303,7 @@ class Fieldblacklist extends CommonDropdown
         ) {
             $params = ['itemtype' => $this->fields['itemtype'],
                 'id_field' => '__VALUE__',
-                'id'       => $this->fields['id']
+                'id'       => $this->fields['id'],
             ];
             Ajax::updateItemOnSelectEvent(
                 "dropdown_field$rand",
@@ -329,10 +322,11 @@ class Fieldblacklist extends CommonDropdown
      *
      * @param string $itemtype
      * @param array  $options
-     **/
+     *
+     * @return string|int|false
+     */
     public static function dropdownField($itemtype, $options = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $p['name']    = 'field';
@@ -350,12 +344,12 @@ class Fieldblacklist extends CommonDropdown
             foreach ($DB->listFields($target->getTable()) as $field) {
                 $searchOption = $target->getSearchOptionByField('field', $field['Field']);
 
-               // MoYo : do not know why  this part ?
-               // if (empty($searchOption)) {
-               //    if ($table = getTableNameForForeignKeyField($field['Field'])) {
-               //       $searchOption = $target->getSearchOptionByField('field', 'name', $table);
-               //    }
-               // }
+                // MoYo : do not know why  this part ?
+                // if (empty($searchOption)) {
+                //    if ($table = getTableNameForForeignKeyField($field['Field'])) {
+                //       $searchOption = $target->getSearchOptionByField('field', 'name', $table);
+                //    }
+                // }
 
                 if (
                     !empty($searchOption)
@@ -373,6 +367,8 @@ class Fieldblacklist extends CommonDropdown
 
     /**
      * @param string $field  (default '')
+     *
+     * @return void
      **/
     public function selectValues($field = '')
     {
@@ -403,11 +399,10 @@ class Fieldblacklist extends CommonDropdown
      * @param string $field         the field to check
      * @param string $value         the field's value
      *
-     * @return true is value if blacklisted, false otherwise
+     * @return bool true is value if blacklisted, false otherwise
      **/
     public static function isFieldBlacklisted($itemtype, $entities_id, $field, $value)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
@@ -416,8 +411,8 @@ class Fieldblacklist extends CommonDropdown
             'WHERE'  => [
                 'itemtype'  => $itemtype,
                 'field'     => $field,
-                'value'     => $value
-            ] + getEntitiesRestrictCriteria('glpi_fieldblacklists', 'entities_id', $entities_id, true)
+                'value'     => $value,
+            ] + getEntitiesRestrictCriteria('glpi_fieldblacklists', 'entities_id', $entities_id, true),
         ])->current();
         return $result['cpt'] > 0;
     }

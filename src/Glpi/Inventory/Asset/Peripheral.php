@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,11 +36,13 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Computer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Peripheral as GPeripheral;
 use RuleImportAssetCollection;
 use RuleMatchedLog;
+use USBVendor;
 
 class Peripheral extends InventoryAsset
 {
@@ -53,7 +55,7 @@ class Peripheral extends InventoryAsset
         ];
 
         $existing = [];
-        $usbvendor = new \USBVendor();
+        $usbvendor = new USBVendor();
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
@@ -68,7 +70,7 @@ class Peripheral extends InventoryAsset
                     && property_exists($val, 'productid')
                     && $val->vendorid != ''
                 ) {
-                   //manufacturer
+                    //manufacturer
                     if (
                         empty($val->manufacturers_id)
                         && $usb_manufacturer = $usbvendor->getManufacturer($val->vendorid)
@@ -76,7 +78,7 @@ class Peripheral extends InventoryAsset
                         $val->manufacturers_id = $usb_manufacturer;
                     }
 
-                   //product name
+                    //product name
                     if (
                         empty($val->productname)
                         && $usb_product = $usbvendor->getProductName($val->vendorid, $val->productid)
@@ -98,7 +100,7 @@ class Peripheral extends InventoryAsset
         }
 
         if ($this->extra_data['inputs'] !== null) {
-           //hanlde inputs
+            //hanlde inputs
             $point_types = [
                 3 => 'Mouse',
                 4 => 'Trackball',
@@ -106,7 +108,7 @@ class Peripheral extends InventoryAsset
                 6 => 'Glide Point',
                 7 => 'Touch Pad',
                 8 => 'Touch Screen',
-                9 => 'Mouse - Optical Sensor'
+                9 => 'Mouse - Optical Sensor',
             ];
 
             foreach ($this->extra_data['inputs'] as $k => &$val) {
@@ -121,7 +123,7 @@ class Peripheral extends InventoryAsset
 
                 if (property_exists($val, 'layout')) {
                     $val->peripheraltypes_id = 'keyboard';
-                } else if (property_exists($val, 'pointingtype') && isset($point_types[$val->pointingtype])) {
+                } elseif (property_exists($val, 'pointingtype') && isset($point_types[$val->pointingtype])) {
                     $val->peripheraltypes_id = $point_types[$val->pointingtype];
                 }
 
@@ -138,7 +140,6 @@ class Peripheral extends InventoryAsset
 
     public function handle()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $rule = new RuleImportAssetCollection();
@@ -149,16 +150,16 @@ class Peripheral extends InventoryAsset
 
         foreach ($value as $key => $val) {
             $input = [
-                'itemtype'     => 'Peripheral',
+                'itemtype'     => GPeripheral::class,
                 'name'         => $val->name ?? '',
                 'serial'       => $val->serial ?? '',
-                'entities_id'  => $this->item->fields['entities_id']
+                'entities_id'  => $this->item->fields['entities_id'],
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = 'Peripheral';
+                $itemtype = GPeripheral::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add peripheral
                     $handled_input = $this->handleInput($val, $peripheral) + ['entities_id' => $this->entities_id];
@@ -178,11 +179,11 @@ class Peripheral extends InventoryAsset
                 }
                 $inputrulelog = [
                     'date'      => date('Y-m-d H:i:s'),
-                    'rules_id'  => $data['rules_id'],
+                    'rules_id'  => $data['_ruleid'],
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -203,17 +204,17 @@ class Peripheral extends InventoryAsset
                 'glpi_peripherals' => [
                     'FKEY' => [
                         'glpi_peripherals' => 'id',
-                        $relation_table    => 'items_id_peripheral'
-                    ]
-                ]
+                        $relation_table    => 'items_id_peripheral',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'itemtype_peripheral' => \Peripheral::class,
-                'itemtype_asset' => \Computer::class,
+                'itemtype_peripheral' => GPeripheral::class,
+                'itemtype_asset' => Computer::class,
                 'items_id_asset' => $this->item->fields['id'],
                 'entities_id' => $this->entities_id,
-                'glpi_peripherals.is_global' => 0
-            ]
+                'glpi_peripherals.is_global' => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -236,7 +237,7 @@ class Peripheral extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_peripherals)) {
-           // Delete peripherals links in DB
+            // Delete peripherals links in DB
             foreach ($db_peripherals as $keydb => $data) {
                 if ($data['is_dynamic']) {
                     (new Asset_PeripheralAsset())->delete(['id' => $keydb], true);
@@ -246,9 +247,9 @@ class Peripheral extends InventoryAsset
         if (count($peripherals)) {
             foreach ($peripherals as $peripherals_id) {
                 $input = [
-                    'itemtype_asset' => \Computer::class,
+                    'itemtype_asset' => Computer::class,
                     'items_id_asset' => $this->item->fields['id'],
-                    'itemtype_peripheral' => \Peripheral::class,
+                    'itemtype_peripheral' => GPeripheral::class,
                     'items_id_peripheral' => $peripherals_id,
                     'is_dynamic'      => 1,
                 ];
@@ -259,7 +260,6 @@ class Peripheral extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_peripheral == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }
@@ -267,6 +267,6 @@ class Peripheral extends InventoryAsset
     public function getItemtype(): string
     {
         //FIXME: check if this is correct - should be the same as Monitor::getItemtype()
-        return \Peripheral::class;
+        return GPeripheral::class;
     }
 }

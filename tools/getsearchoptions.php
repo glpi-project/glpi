@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
 use Glpi\Search\SearchOption;
 
 if (PHP_SAPI != 'cli') {
@@ -42,7 +43,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new Kernel();
 $kernel->boot();
 
 if (isset($_SERVER['argv'])) {
@@ -50,7 +51,7 @@ if (isset($_SERVER['argv'])) {
         $it = explode("=", $_SERVER['argv'][$i], 2);
         $it[0] = preg_replace('/^--/', '', $it[0]);
 
-        $_GET[$it[0]] = (isset($it[1]) ? $it[1] : true);
+        $_GET[$it[0]] = ($it[1] ?? true);
     }
 }
 

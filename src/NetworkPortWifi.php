@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+
 /**
  * Wi-Fi instantitation of NetworkPort
  * @since 0.84
@@ -50,41 +52,38 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return ['link.mac' => 'mac'];
     }
 
+    /**
+     * @param NetworkPort $netport NetworkPort object :the port that owns this instantiation
+     *                               (useful for instance to get network port attributes)
+     * @param array $options array of options given to NetworkPort::showForm
+     * @param array $recursiveItems list of the items on which this port is attached
+     *
+     * @return void
+     */
     public function showInstantiationForm(NetworkPort $netport, $options, $recursiveItems)
     {
         if (!$options['several']) {
-            echo "<tr class='tab_bg_1'>";
             $this->showNetworkCardField($netport, $options, $recursiveItems);
-            echo "<td>" . htmlescape(WifiNetwork::getTypeName(1)) . "</td><td>";
-            WifiNetwork::dropdown(['value'  => $this->fields["wifinetworks_id"]]);
-            echo "</td>";
-            echo "</tr>";
+            $twig_params = [
+                'item' => $this,
+                'netport' => $netport,
+                'params' => $options,
+                'wifinetworks_id' => $this->fields['wifinetworks_id'],
+                'wifinetworks_label' => WifiNetwork::getTypeName(1),
+                'mode_label' => __('Wifi mode'),
+                'modes' => WifiNetwork::getWifiCardModes(),
+                'version_label' => __('Wifi protocol version'),
+                'versions' => WifiNetwork::getWifiCardVersion(),
+            ];
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+            {% import 'components/form/fields_macros.html.twig' as fields %}
+            {{ fields.dropdownField('WifiNetwork', 'wifinetworks_id', wifinetworks_id, wifinetworks_label) }}
+            {{ fields.dropdownArrayField('mode', item.fields['mode'], modes, mode_label) }}
+            {{ fields.dropdownArrayField('version', item.fields['version'], versions, version_label) }}
+            {% do call([item, 'showMacField'], [netport, params]) %}
+TWIG, $twig_params);
 
-            echo "<tr class='tab_bg_1'>";
-            echo "<td>" . __s('Wifi mode') . "</td>";
-            echo "<td>";
-
-            Dropdown::showFromArray(
-                'mode',
-                WifiNetwork::getWifiCardModes(),
-                ['value' => $this->fields['mode']]
-            );
-
-            echo "</td>";
-            echo "<td>" . __s('Wifi protocol version') . "</td><td>";
-
-            Dropdown::showFromArray(
-                'version',
-                WifiNetwork::getWifiCardVersion(),
-                ['value' => $this->fields['version']]
-            );
-
-            echo "</td>";
-            echo "</tr>";
-
-            echo "<tr class='tab_bg_1'>";
-            $this->showMacField($netport, $options);
-            echo "</tr>";
         }
     }
 
@@ -94,7 +93,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -105,8 +104,8 @@ class NetworkPortWifi extends NetworkPortInstantiation
             'name'               => __('MAC'),
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'empty'
-            ]
+                'jointype'           => 'empty',
+            ],
         ];
 
         $tab[] = [
@@ -115,7 +114,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
             'field'              => 'mode',
             'name'               => __('Wifi mode'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -123,7 +122,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
             'table'              => static::getTable(),
             'field'              => 'version',
             'name'               => __('Wifi protocol version'),
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -132,7 +131,7 @@ class NetworkPortWifi extends NetworkPortInstantiation
             'field'              => 'name',
             'name'               => WifiNetwork::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -146,11 +145,11 @@ class NetworkPortWifi extends NetworkPortInstantiation
         switch ($field) {
             case 'mode':
                 $tab = WifiNetwork::getWifiCardModes();
-                return $tab[$values[$field]] ?? NOT_AVAILABLE;
+                return htmlescape($tab[$values[$field]] ?? NOT_AVAILABLE);
 
             case 'version':
                 $tab = WifiNetwork::getWifiCardVersion();
-                return $tab[$values[$field]] ?? NOT_AVAILABLE;
+                return htmlescape($tab[$values[$field]] ?? NOT_AVAILABLE);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -173,6 +172,12 @@ class NetworkPortWifi extends NetworkPortInstantiation
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
+    /**
+     * @param array $tab
+     * @param array $joinparams
+     *
+     * @return void
+     */
     public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
     {
         $tab[] = [
@@ -186,9 +191,9 @@ class NetworkPortWifi extends NetworkPortInstantiation
                 'jointype'           => 'standard',
                 'beforejoin'         => [
                     'table'              => 'glpi_networkportwifis',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -202,9 +207,9 @@ class NetworkPortWifi extends NetworkPortInstantiation
                 'jointype'           => 'standard',
                 'beforejoin'         => [
                     'table'              => 'glpi_networkportwifis',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
     }
 }

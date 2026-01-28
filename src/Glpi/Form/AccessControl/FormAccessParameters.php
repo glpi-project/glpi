@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,10 +43,9 @@ final readonly class FormAccessParameters
         private ?SessionInfo $session_info = null,
         private array $url_parameters = [],
         private bool $bypass_restriction = false,
-    ) {
-    }
+    ) {}
 
-    public function isAuthenticated()
+    public function isAuthenticated(): bool
     {
         return $this->session_info !== null;
     }

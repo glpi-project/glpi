@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,9 +38,7 @@ namespace Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\GraphQL;
 use Glpi\Api\HL\GraphQLGenerator;
-use Glpi\Api\HL\Middleware\CookieAuthMiddleware;
 use Glpi\Api\HL\Route;
-use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
@@ -49,21 +47,17 @@ use Glpi\Http\Response;
 #[Route(path: '/GraphQL', priority: 1, tags: ['GraphQL'])]
 final class GraphQLController extends AbstractController
 {
-    #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[Route(path: '/', methods: ['POST'], security_level: Route::SECURITY_AUTHENTICATED, scopes: ['graphql'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'GraphQL API',
-    )]
+    #[Doc\Route(description: 'GraphQL API')]
     public function index(Request $request): Response
     {
         return new JSONResponse(GraphQL::processRequest($request));
     }
 
-    #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED)]
+    #[Route(path: '/Schema', methods: ['GET'], security_level: Route::SECURITY_AUTHENTICATED, scopes: ['graphql'])]
     #[RouteVersion(introduced: '2.0')]
-    #[Doc\Route(
-        description: 'GraphQL API Schema',
-    )]
+    #[Doc\Route(description: 'GraphQL API Schema')]
     public function getSchema(Request $request): Response
     {
         $graphql_generator = new GraphQLGenerator($this->getAPIVersion($request));

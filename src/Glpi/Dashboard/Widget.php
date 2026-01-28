@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,17 +40,24 @@ use Glpi\Debug\Profiler;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Toolbox\MarkdownRenderer;
+use Html;
+use Line;
 use Mexitek\PHPColors\Color;
 use Plugin;
-use Symfony\Component\DomCrawler\Crawler;
 use Search;
+use Symfony\Component\DomCrawler\Crawler;
 use Toolbox;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
+use function Safe\preg_match;
 
 /**
  * Widget class
  **/
 class Widget
 {
+    /** @var int */
     public static $animation_duration = 1000; // in millseconds
 
 
@@ -63,7 +70,6 @@ class Widget
      */
     public static function getAllTypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         Profiler::getInstance()->start(__METHOD__);
@@ -129,7 +135,7 @@ class Widget
                 'height'     => 3,
             ],
             'line' => [
-                'label'      => \Line::getTypeName(1),
+                'label'      => Line::getTypeName(1),
                 'function'   => 'Glpi\\Dashboard\\Widget::simpleLine',
                 'image'      => $CFG_GLPI['root_doc'] . '/pics/charts/line.png',
                 'haspalette' => false,
@@ -323,49 +329,72 @@ class Widget
         ];
         $p = array_merge($default, $params);
 
+
         $formatted_number = Toolbox::shortenNumber($p['number']);
+
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color         = Toolbox::getFgColor($p['color']);
         $fg_hover_color   = Toolbox::getFgColor($p['color'], 15);
         $fg_hover_border  = Toolbox::getFgColor($p['color'], 30);
 
-        $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
+        $class = htmlescape(count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "");
 
         $href = strlen($p['url'])
-         ? "href='{$p['url']}'"
-         : "";
+            ? 'href="' . \htmlescape($p['url']) . '"'
+            : "";
 
-        $label = $p['label'];
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+
+        if (empty($p['alt'])) {
+            $p['alt'] = sprintf(
+                __('%1$s %2$s'),
+                $p['number'],
+                $p['label'],
+            );
+        }
+        $alt = \htmlescape($p['alt']);
+
+        $id = Toolbox::slugify($p['id']);
+
         $html = <<<HTML
-      <style>
-         #{$p['id']} {
-            background-color: {$p['color']};
-            color: {$fg_color};
-         }
+            <style>
+                #{$id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color};
+                }
 
-         #{$p['id']}:hover {
-            background-color: {$fg_hover_color};
-            border: 1px solid {$fg_hover_border};
-         }
+                #{$id}:hover {
+                    background-color: {$fg_hover_color};
+                    border: 1px solid {$fg_hover_border};
+                }
 
-         .theme-dark #{$p['id']} {
-            background-color: {$fg_color};
-            color: {$p['color']};
-         }
+                .theme-dark #{$id} {
+                    background-color: {$fg_color};
+                    color: {$bg_color};
+                }
 
-         .theme-dark #{$p['id']}:hover {
-            background-color: {$fg_hover_color};
-            color: {$fg_color};
-            border: 1px solid {$fg_hover_border};
-         }
-      </style>
-      <a {$href}
-         id="{$p['id']}"
-         class="card big-number $class"
-         title="{$p['alt']}">
-         <span class="content">$formatted_number</span>
-         <div class="label" title="{$label}">{$label}</div>
-         <i class="main-icon {$p['icon']}"></i>
-      </a>
+                .theme-dark #{$id}:hover {
+                    background-color: {$fg_hover_color};
+                    color: {$fg_color};
+                    border: 1px solid {$fg_hover_border};
+                }
+            </style>
+            <a {$href}
+               id="{$id}"
+               data-testid="dashboard-widget"
+               class="card big-number $class"
+               data-bs-toggle="tooltip" data-bs-placement="top" title="{$alt}">
+                <span class="content">$formatted_number</span>
+                <div class="label">{$label}</div>
+                <i class="main-icon {$icon}"></i>
+            </a>
 HTML;
 
         return $html;
@@ -424,6 +453,13 @@ HTML;
         $nb_lines = min($p['limit'], count($p['data']));
         array_splice($p['data'], $nb_lines);
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color = Toolbox::getFgColor($p['color']);
 
         $class = $p['class'];
@@ -438,25 +474,28 @@ HTML;
             $entry = array_merge($default_entry, $entry);
 
             $href = strlen($entry['url'])
-            ? "href='{$entry['url']}'"
-            : "";
+                ? 'href="' . \htmlescape($entry['url']) . '"'
+                : "";
 
             $color = isset($entry['color'])
-            ? "style=\"color: {$entry['color']};\""
-            : "";
+                ? 'style="color: ' . \htmlescape($entry['color']) . ';"'
+                : "";
 
             $color2 = isset($entry['color'])
-            ? "style=\"color: " . Toolbox::getFgColor($entry['color'], 20) . ";\""
-            : "";
+                ? 'style="color: ' . \htmlescape(Toolbox::getFgColor($entry['color'], 20)) . ';"'
+                : "";
 
             $formatted_number = Toolbox::shortenNumber($entry['number']);
 
+            $icon = \htmlescape($entry['icon']);
+            $label = \htmlescape($entry['label']);
+
             $numbers_html .= <<<HTML
-            <a {$href} class="line line-{$i}">
-               <span class="content" {$color}>$formatted_number</span>
-               <i class="icon {$entry['icon']}" {$color2}></i>
-               <span class="label" {$color2}>{$entry['label']}</span>
-            </a>
+                <a {$href} class="line line-{$i}">
+                    <span class="content" {$color}>$formatted_number</span>
+                    <i class="icon {$icon}" {$color2}></i>
+                    <span class="label" {$color2}>{$label}</span>
+                </a>
 HTML;
             $i++;
         }
@@ -467,58 +506,71 @@ HTML;
                <span class='content'>
                   <i class='icon ti ti-alert-triangle'></i>
                </span>
-               <span class='label'>" . __('No data found') . "</span>
+               <span class='label'>" . __s('No data found') . "</span>
             <span>";
         }
 
-        $palette_style = "";
+        $rand = (int) $p['rand'];
+
+        $colors = self::getPalette($p['palette'], $i);
         if ($p['use_gradient']) {
-            $palette = self::getGradientPalette($p['color'], $i, false);
-            foreach ($palette['names'] as $index => $letter) {
-                $bgcolor   = $palette['colors'][$index];
-                $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
-                $color     = Toolbox::getFgColor($bgcolor);
-
-                $palette_style .= "
-               #chart-{$p['rand']} .line-$letter {
-                  background-color: $bgcolor;
-                  color: $color;
-               }
-
-               #chart-{$p['rand']} .line-$letter:hover {
-                  background-color: $bgcolor_h;
-                  font-weight: bold;
-               }
-            ";
-            }
+            $palette = self::getGradientPalette(
+                $p['color'],
+                $i,
+                false
+            );
+            $colors = $palette['colors'];
         }
 
+        $palette_style = "";
+        foreach ($colors as $index => $bgcolor) {
+            $bgcolor_h = Toolbox::getFgColor($bgcolor, 10);
+            $color     = Toolbox::getFgColor($bgcolor);
+
+            $palette_style .= "
+                    #chart-{$rand} .line-$index {
+                        background-color: $bgcolor;
+                        color: $color;
+                    }
+
+                    #chart-{$rand} .line-$index:hover {
+                        background-color: $bgcolor_h;
+                        font-weight: bold;
+                    }
+                ";
+        }
+
+        $label = \htmlescape($p['label']);
+        $alt = \htmlescape($p['alt']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
-      <style>
-         {$palette_style}
+            <style>
+                {$palette_style}
 
-         #chart-{$p['rand']} {
-            background-color: {$p['color']};
-            color: {$fg_color};
-         }
+                #chart-{$rand} {
+                    background-color: {$bg_color};
+                    color: {$fg_color};
+                }
 
-         .theme-dark #chart-{$p['rand']} {
-            background-color: {$fg_color};
-            color: {$p['color']};
-         }
-      </style>
+                .theme-dark #chart-{$rand} {
+                    background-color: {$fg_color};
+                    color: {$bg_color};
+                }
+            </style>
 
-      <div class="card $class"
-           id="chart-{$p['rand']}"
-           title="{$p['alt']}">
-         <div class='scrollable'>
-            <div class='table'>
-            {$numbers_html}
+            <div class="card $class"
+                 id="chart-{$rand}"
+                 title="{$alt}">
+                <div class="scrollable">
+                    <div class="table">
+                        {$numbers_html}
+                    </div>
+                </div>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}" style="color: {$fg_color}"></i>
             </div>
-         </div>
-         <span class="main-label">{$p['label']}</span>
-         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
-      </div>
 HTML;
 
         return $html;
@@ -565,7 +617,7 @@ HTML;
             'rand'         => mt_rand(),
         ];
         $p = array_merge($default, $params);
-        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
+        $p['cache_key'] ??= $p['rand'];
         $default_entry = [
             'url'    => '',
             'icon'   => '',
@@ -578,6 +630,13 @@ HTML;
 
         $nodata   = isset($p['data']['nodata']) && $p['data']['nodata'];
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color      = Toolbox::getFgColor($p['color']);
         $dark_bg_color = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color = Toolbox::getFgColor($p['color'], 40);
@@ -592,51 +651,51 @@ HTML;
         $no_data_html = "";
         if ($nodata) {
             $no_data_html = "<span class='empty-card no-data'>
-               <div>" . __('No data found') . "</div>
+               <div>" . __s('No data found') . "</div>
             <span>";
         }
 
         $nb_series = min($p['limit'], count($p['data']));
 
-        $html = <<<HTML
-        <style>
-            #{$chart_id} {
-                background-color: {$p['color']};
-                color: {$fg_color}
-            }
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
 
-            .theme-dark #{$chart_id} {
-                background-color: {$dark_bg_color};
-                color: {$dark_fg_color};
-            }
-        </style>
-        <div class="card g-chart {$class}" id="{$chart_id}">
-            <div class="chart ct-chart">{$no_data_html}</div>
-            <span class="main-label">{$p['label']}</span>
-            <i class="main-icon {$p['icon']}"></i>
-        </div>
+        $html = <<<HTML
+            <style>
+                #{$chart_id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color}
+                }
+
+                .theme-dark #{$chart_id} {
+                    background-color: {$dark_bg_color};
+                    color: {$dark_fg_color};
+                }
+            </style>
+            <div class="card g-chart {$class}" id="{$chart_id}" data-testid="dashboard-widget">
+                <div class="chart ct-chart">{$no_data_html}</div>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}"></i>
+            </div>
 HTML;
 
         if ($nodata) {
             return $html;
         }
 
-        $labels = [];
         $series = [];
         $total = 0;
         foreach ($p['data'] as $entry) {
             $entry = array_merge($default_entry, $entry);
             $total += $entry['number'];
 
-            $labels[] = $entry['label'];
             $series[] = [
                 'name'  => $entry['label'],
                 'value' => $entry['number'],
                 'url'   => $entry['url'],
             ];
         }
-
-        $labels = json_encode($labels);
 
         $colors = self::getPalette($p['palette'], $nb_series);
         if ($p['use_gradient']) {
@@ -661,11 +720,25 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title'    => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
-                    ]
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
+                    ],
                 ],
             ],
             'series' => [
@@ -686,8 +759,8 @@ HTML;
                     'labelLine'         => [
                         'showAbove' => true,
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
 
         if ($p['legend']) {
@@ -745,24 +818,28 @@ HTML;
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <script type="module">
-                const target = GLPI.Dashboard.getActiveDashboard() ?
-                    GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
-                    : $('#{{ chart_id }} .chart');
-                const myChart = echarts.init(target[0]);
-                myChart.setOption({{ options|json_encode|raw }});
-                myChart
-                    .on('click', function (params) {
-                        const data_url = _.get(params, 'data.url', '');
-                        if (data_url.length > 0) {
-                            window.location.href = data_url;
-                        }
-                    });
+                (async () => {
+                    await import('/js/modules/Dashboard/Dashboard.js');
 
-                target.on('mouseover', () => {
-                    myChart.setOption({'toolbox': {'show': true}});
-                }).on('mouseout', () => {
-                    myChart.setOption({'toolbox': {'show': false}});
-                });
+                    const target = GLPI.Dashboard.getActiveDashboard() ?
+                        GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                        : $('#{{ chart_id }} .chart');
+                    const myChart = echarts.init(target[0]);
+                    myChart.setOption({{ options|json_encode|raw }});
+                    myChart
+                        .on('click', function (params) {
+                            const data_url = _.get(params, 'data.url', '');
+                            if (data_url.length > 0) {
+                                window.location.href = data_url;
+                            }
+                        });
+
+                    target.on('mouseover', () => {
+                        myChart.setOption({'toolbox': {'show': true}});
+                    }).on('mouseout', () => {
+                        myChart.setOption({'toolbox': {'show': false}});
+                    });
+                })();
             </script>
 TWIG, $twig_params);
 
@@ -856,7 +933,7 @@ TWIG, $twig_params);
             ];
         }
 
-       // simple bar graphs are always multiple lines
+        // simple bar graphs are always multiple lines
         if (!$params['distributed']) {
             $series = [$series];
         }
@@ -999,7 +1076,7 @@ TWIG, $twig_params);
         ];
         $p = array_merge($defaults, $params);
 
-        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
+        $p['cache_key'] ??= $p['rand'];
         $chart_id = Toolbox::slugify('chart_' . $p['cache_key']);
 
         $nb_labels = min($p['limit'], count($labels));
@@ -1024,7 +1101,7 @@ TWIG, $twig_params);
             $series = [
                 [
                     'data' => $series,
-                ]
+                ],
             ];
         }
 
@@ -1044,7 +1121,7 @@ TWIG, $twig_params);
             $serie = [
                 'name'            => $value['name'] ?? "",
                 'type'            => 'bar',
-                'color'           => $palette[$serie_i],
+                'color'           => $palette[$serie_i] ?? Toolbox::getFgColor($p['color']),
                 'data'            => $value['data'],
                 'legendHoverLink' => true,
             ];
@@ -1068,6 +1145,13 @@ TWIG, $twig_params);
             $serie_i++;
         }
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color        = Toolbox::getFgColor($p['color']);
         $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
@@ -1084,27 +1168,31 @@ TWIG, $twig_params);
         $no_data_html = "";
         if ($nodata) {
             $no_data_html = "<span class='empty-card no-data'>
-               <div>" . __('No data found') . "</div>
+               <div>" . __s('No data found') . "</div>
             <span>";
         }
 
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
             <style>
-            #{$chart_id} {
-                background-color: {$p['color']};
-                color: {$fg_color}
-            }
+                #{$chart_id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color}
+                }
 
-            .theme-dark #{$chart_id} {
-                background-color: {$dark_bg_color};
-                color: {$dark_fg_color};
-            }
+                .theme-dark #{$chart_id} {
+                    background-color: {$dark_bg_color};
+                    color: {$dark_fg_color};
+                }
             </style>
 
-            <div class="card g-chart $class" id="{$chart_id}">
+            <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart">$no_data_html</div>
-                <span class="main-label">{$p['label']}</span>
-                <i class="main-icon {$p['icon']}"></i>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}"></i>
             </div>
 HTML;
 
@@ -1114,7 +1202,7 @@ HTML;
                 'trigger'      => 'axis',
                 'appendToBody' => true,
                 'axisPointer'  => [
-                    'type' => 'shadow'
+                    'type' => 'shadow',
                 ],
             ],
             'grid'              => [
@@ -1131,12 +1219,26 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title'    => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
-                    ]
-                ]
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'series' => $echarts_series,
             'xAxis'  => [
@@ -1144,7 +1246,7 @@ HTML;
                 'data' => $labels,
                 'splitLine' => [
                     'lineStyle' => [
-                        'type' => 'dashed'
+                        'type' => 'dashed',
                     ],
                     'show' => true,
                 ],
@@ -1153,11 +1255,11 @@ HTML;
                 'type' => 'value',
                 'splitLine' => [
                     'lineStyle' => [
-                        'type' => 'dashed'
+                        'type' => 'dashed',
                     ],
                     'show' => true,
                 ],
-            ]
+            ],
         ];
 
         if ($p['horizontal']) {
@@ -1177,8 +1279,11 @@ HTML;
 
         if ($p['legend']) {
             $options['legend'] = [
-                'show' => true,
-                'left' => 'left',
+                'show'      => true,
+                'left'      => 'left',
+                'textStyle' => [
+                    'color' => $fg_color,
+                ],
             ];
         }
 
@@ -1192,55 +1297,59 @@ HTML;
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <script type="module">
-                const target = GLPI.Dashboard.getActiveDashboard() ?
-                    GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
-                    : $('#{{ chart_id }} .chart');
-                const chart_options = {{ options|json_encode|raw }};
-                const palette = {{ palette|json_encode|raw }};
-                $.each(chart_options.series, function (index, serie) {
-                    if ({{ distributed ? 'true' : 'false' }}) {
-                        serie['itemStyle'] = {
-                            ...serie['itemStyle'],
-                            'color': (param) => palette[param.dataIndex]
-                        }
-                    }
-                    serie['label'] = {
-                        ...serie['label'],
-                        'formatter': (param) => param.data.value == 0 ? '' : param.data.value
-                    };
-                });
-                if ({{ horizontal ? 'true' : 'false' }}) {
-                    chart_options['xAxis'] = {
-                        ...chart_options['xAxis'],
-                        'axisLabel': {
-                            'formatter': (value) => {
-                                if (value < 1e3) {
-                                    return value;
-                                } else if (value < 1e6) {
-                                    return value / 1e3 + "K";
-                                } else {
-                                    return value / 1e6 + "M";
-                                }
+                (async () => {
+                    await import('/js/modules/Dashboard/Dashboard.js');
+
+                    const target = GLPI.Dashboard.getActiveDashboard() ?
+                        GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                        : $('#{{ chart_id }} .chart');
+                    const chart_options = {{ options|json_encode|raw }};
+                    const palette = {{ palette|json_encode|raw }};
+                    $.each(chart_options.series, function (index, serie) {
+                        if ({{ distributed ? 'true' : 'false' }}) {
+                            serie['itemStyle'] = {
+                                ...serie['itemStyle'],
+                                'color': (param) => palette[param.dataIndex % palette.length]
                             }
                         }
-                    };
-                }
-
-                const myChart = echarts.init(target[0]);
-                myChart.setOption(chart_options);
-                myChart
-                    .on('click', function (params) {
-                        const data_url = _.get(params, 'data.url', '');
-                        if (data_url.length > 0) {
-                            window.location.href = data_url;
-                        }
+                        serie['label'] = {
+                            ...serie['label'],
+                            'formatter': (param) => param.data.value == 0 ? '' : param.data.value
+                        };
                     });
+                    if ({{ horizontal ? 'true' : 'false' }}) {
+                        chart_options['xAxis'] = {
+                            ...chart_options['xAxis'],
+                            'axisLabel': {
+                                'formatter': (value) => {
+                                    if (value < 1e3) {
+                                        return value;
+                                    } else if (value < 1e6) {
+                                        return value / 1e3 + "K";
+                                    } else {
+                                        return value / 1e6 + "M";
+                                    }
+                                }
+                            }
+                        };
+                    }
 
-                target.on('mouseover', () => {
-                    myChart.setOption({'toolbox': {'show': true}});
-                }).on('mouseout', () => {
-                    myChart.setOption({'toolbox': {'show': false}});
-                });
+                    const myChart = echarts.init(target[0]);
+                    myChart.setOption(chart_options);
+                    myChart
+                        .on('click', function (params) {
+                            const data_url = _.get(params, 'data.url', '');
+                            if (data_url.length > 0) {
+                                window.location.href = data_url;
+                            }
+                        });
+
+                    target.on('mouseover', () => {
+                        myChart.setOption({'toolbox': {'show': true}});
+                    }).on('mouseout', () => {
+                        myChart.setOption({'toolbox': {'show': false}});
+                    });
+                })();
             </script>
 TWIG, $twig_params);
 
@@ -1276,12 +1385,12 @@ TWIG, $twig_params);
             ];
         }
 
-       // simple line graphs are always multiple lines
+        // simple line graphs are always multiple lines
         $series = [
             [
                 'name' => $params['label'],
                 'data'  => $series,
-            ]
+            ],
         ];
 
         return self::getLinesGraph($params, $labels, $series);
@@ -1384,7 +1493,7 @@ TWIG, $twig_params);
             'rand'         => mt_rand(),
         ];
         $p = array_merge($defaults, $params);
-        $p['cache_key'] = $p['cache_key'] ?? $p['rand'];
+        $p['cache_key'] ??= $p['rand'];
 
         $chart_id = Toolbox::slugify('chart_' . $p['cache_key']);
 
@@ -1412,11 +1521,11 @@ TWIG, $twig_params);
             $echart_serie = [
                 'name'            => $serie['name'],
                 'type'            => 'line',
-                'color'           => $palette[$serie_i],
+                'color'           => $palette[$serie_i] ?? Toolbox::getFgColor($p['color']),
                 'data'            => $serie['data'],
                 'smooth'          => 0.4,
                 'lineStyle'       => [
-                    'width'  => $p['line_width']
+                    'width'  => $p['line_width'],
                 ],
                 'symbol'         => 'none',
                 'legendHoverLink' => true,
@@ -1444,6 +1553,13 @@ TWIG, $twig_params);
             $serie_i++;
         }
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color        = Toolbox::getFgColor($p['color']);
         $dark_bg_color   = Toolbox::getFgColor($p['color'], 80);
         $dark_fg_color   = Toolbox::getFgColor($p['color'], 40);
@@ -1453,23 +1569,27 @@ TWIG, $twig_params);
         $class .= $p['multiple'] ? " multiple" : "";
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
             <style>
-            #{$chart_id} {
-                background-color: {$p['color']};
-                color: {$fg_color}
-            }
+                #{$chart_id} {
+                    background-color: {$bg_color};
+                    color: {$fg_color}
+                }
 
-            .theme-dark #{$chart_id} {
-                background-color: {$dark_bg_color};
-                color: {$dark_fg_color};
-            }
+                .theme-dark #{$chart_id} {
+                    background-color: {$dark_bg_color};
+                    color: {$dark_fg_color};
+                }
             </style>
 
-            <div class="card g-chart $class" id="{$chart_id}">
+            <div class="card g-chart $class" id="{$chart_id}" data-testid="dashboard-widget">
                 <div class="chart ct-chart"></div>
-                <span class="main-label">{$p['label']}</span>
-                <i class="main-icon {$p['icon']}"></i>
+                <span class="main-label">{$label}</span>
+                <i class="main-icon {$icon}"></i>
             </div>
 HTML;
 
@@ -1492,12 +1612,26 @@ HTML;
                         'show'     => true,
                         'readOnly' => true,
                         'title' => __('View data'),
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
                     ],
                     'saveAsImage' => [
                         'show'  => true,
                         'title' => __('Save as image'),
-                    ]
-                ]
+                        'emphasis' => [
+                            'iconStyle' => [
+                                'color' => $dark_fg_color,
+                                'textBackgroundColor' => $dark_bg_color,
+                                'textPadding' => 5,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'xAxis'  => [
                 'type'        => 'category',
@@ -1512,8 +1646,11 @@ HTML;
 
         if ($p['legend']) {
             $options['legend'] = [
-                'show' => true,
-                'left' => 'left',
+                'show'      => true,
+                'left'      => 'left',
+                'textStyle' => [
+                    'color' => $fg_color,
+                ],
             ];
         }
 
@@ -1526,35 +1663,40 @@ HTML;
         // language=Twig
         $js = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <script type="module">
-                const target = GLPI.Dashboard.getActiveDashboard() ?
-                    GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
-                    : $('#{{ chart_id }} .chart');
-                const chart_options = {{ options|json_encode|raw }};
-                
-                $.each(chart_options.series, function (index, serie) {
-                    if ({{ show_points ? 'true' : 'false' }}) {
-                        serie['symbol'] = (value) => value > 0 ? 'circle': 'none';
-                    }
-                    if ({{ point_labels ? 'true' : 'false' }}) {
-                        serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
-                    }
-                });
+                (async () => {
+                    await import('/js/modules/Dashboard/Dashboard.js');
 
-                const myChart = echarts.init(target[0]);
-                myChart.setOption(chart_options);
-                myChart
-                    .on('click', function (params) {
-                        const data_url = _.get(params, 'data.url', '');
-                        if (data_url.length > 0) {
-                            window.location.href = data_url;
+                    const target = GLPI.Dashboard.getActiveDashboard() ?
+                        GLPI.Dashboard.getActiveDashboard().element.find('#{{ chart_id }} .chart')
+                        : $('#{{ chart_id }} .chart');
+                    const chart_options = {{ options|json_encode|raw }};
+
+                    $.each(chart_options.series, function (index, serie) {
+                        if ({{ show_points ? 'true' : 'false' }}) {
+                            serie['symbol'] = (value) => value > 0 ? 'circle': 'none';
+                        }
+                        if ({{ point_labels ? 'true' : 'false' }}) {
+                            serie['label']['formatter'] = (param) => param.data.value == 0 ? '': param.data.value;
                         }
                     });
 
-                target.on('mouseover', () => {
-                    myChart.setOption({'toolbox': {'show': true}});
-                }).on('mouseout', () => {
-                    myChart.setOption({'toolbox': {'show': false}});
-                });
+                    const myChart = echarts.init(target[0]);
+                    myChart.setOption(chart_options);
+                    myChart
+                        .on('click', function (params) {
+                            const data_url = _.get(params, 'data.url', '');
+                            if (data_url.length > 0) {
+                                window.location.href = data_url;
+                            }
+                        });
+
+                    target.on('mouseover', () => {
+                        myChart.setOption({'toolbox': {'show': true}});
+                    }).on('mouseout', () => {
+                        myChart.setOption({'toolbox': {'show': false}});
+                    });
+
+                })();
             </script>
 TWIG, $twig_params);
 
@@ -1579,24 +1721,33 @@ TWIG, $twig_params);
         ];
         $p = array_merge($default, $params);
 
-        $ph           = __("Type markdown text here");
+        $ph           = __s("Type markdown text here");
+
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color     = Toolbox::getFgColor($p['color']);
         $border_color = Toolbox::getFgColor($p['color'], 10);
 
         // Parse markdown
         $md = new MarkdownRenderer();
 
-        $content = RichText::getSafeHtml($md->disableHeadings()->render($p['markdown_content']));
+        $html_content = RichText::getSafeHtml($md->disableHeadings()->render($p['markdown_content']));
+        $md_content   = \htmlescape($p['markdown_content']);
 
         $html = <<<HTML
       <div
          class="card markdown"
-         style="background-color: {$p['color']}; color: {$fg_color}; border-color: {$border_color}">
+         style="background-color: {$bg_color}; color: {$fg_color}; border-color: {$border_color}">
 
-         <div class="html_content">{$content}</div>
+         <div class="html_content">{$html_content}</div>
          <textarea
             class="markdown_content"
-            placeholder="{$ph}">{$p['markdown_content']}</textarea>
+            placeholder="{$ph}">{$md_content}</textarea>
 
       </div>
 HTML;
@@ -1638,13 +1789,18 @@ HTML;
         ];
         $p = array_merge($default, $params);
 
-        $p['label'] = \htmlescape($p['label']);
-
         $id = "search-table-" . $p['rand'];
 
         $color = new Color($p['color']);
         $is_light = $color->isLight();
 
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color  = Toolbox::getFgColor($p['color'], $is_light ? 65 : 40);
         $fg_color2 = Toolbox::getFgColor($p['color'], 5);
 
@@ -1654,7 +1810,7 @@ HTML;
 
         $class = count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
 
-       // prepare search data
+        // prepare search data
         $_GET['_in_modal'] = true;
         $params = [
             'criteria' => $p['s_criteria'],
@@ -1663,38 +1819,41 @@ HTML;
 
         ob_start();
         $params = Search::manageParams($p['itemtype'], $params, false);
-       // remove parts of search list
+        // remove parts of search list
         $params = array_merge($params, [
             'showmassiveactions' => false,
             'dont_flush'         => true,
             'show_pager'         => false,
             'show_footer'        => false,
             'no_sort'            => true,
-            'list_limit'         => $p['limit']
+            'list_limit'         => $p['limit'],
         ]);
         Search::showList($p['itemtype'], $params);
 
         $crawler = new Crawler(ob_get_clean());
         $search_result = $crawler->filter('.search-results')->outerHtml();
 
+        $label = \htmlescape($p['label']);
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
+
         $html = <<<HTML
-      <style>
-         #{$id} .tab_cadrehov th {
-            background: {$fg_color2};
-         }
-      </style>
-      <div
-         class="card search-table {$class}"
-         id="{$id}"
-         style="background-color: {$p['color']}; color: {$fg_color}">
-         <div class='table-container'>
-            $search_result
-         </div>
-         <span class="main-label">
-            <a {$href}>{$p['label']}</a>
-         </span>
-         <i class="main-icon {$p['icon']}"></i>
-      </div>
+            <style>
+                #{$id} table th {
+                    background: {$fg_color2};
+                }
+            </style>
+            <div class="card search-table {$class}"
+                 id="{$id}"
+                 style="background-color: {$bg_color}; color: {$fg_color}">
+                <div class='table-container'>
+                    $search_result
+                </div>
+                <span class="main-label">
+                    <a {$href}>{$label}</a>
+                </span>
+                <i class="main-icon {$icon}"></i>
+            </div>
 HTML;
 
         return $html;
@@ -1725,11 +1884,21 @@ HTML;
 
         $nb_lines = min($p['limit'], count($p['data']));
         array_splice($p['data'], $nb_lines);
+
+        $bg_color         = $p['color'];
+        if (
+            preg_match('/rgba?\((\d+),\s*(\d+),\s*(\d+),?\s*([\d\.]+)?\)/i', $bg_color) !== 1
+            && preg_match('/^#[A-F0-9]+$/i', $bg_color) !== 1
+        ) {
+            $bg_color = '#CCCCCC';
+        }
         $fg_color = Toolbox::getFgColor($p['color']);
         $bg_color_2 = Toolbox::getFgColor($p['color'], 5);
 
         $class = $p['class'];
         $class .= count($p['filters']) > 0 ? " filter-" . implode(' filter-', $p['filters']) : "";
+
+        $label = \htmlescape($p['label']);
 
         $i = 0;
         $list_html = "";
@@ -1741,90 +1910,99 @@ HTML;
             $entry = array_merge($default_entry, $entry);
 
             $href = strlen($entry['url'])
-            ? "href='{$entry['url']}'"
-            : "";
+                ? 'href="' . \htmlescape($entry['url']) . '"'
+                : "";
 
             $author = strlen($entry['author'])
-            ? "<i class='ti ti-user'></i>&nbsp;{$entry['author']}"
-            : "";
+                ? "<i class='ti ti-user'></i>&nbsp;" . \htmlescape($entry['author'])
+                : "";
 
             $content_size = strlen($entry['content']);
             $content = strlen($entry['content'])
-            ? RichText::getEnhancedHtml($entry['content']) .
-              ($content_size > 300
-               ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
-               : ""
-              )
-             : "";
+                ? RichText::getEnhancedHtml($entry['content'])
+                    . (
+                        $content_size > 300
+                        ? "<p class='read_more'><span class='read_more_button'>...</span></p>"
+                        : ""
+                    )
+                : "";
+
+            $date = \htmlescape($p['date']);
 
             $list_html .= <<<HTML
-            <li class="line"><a {$href}>
-               <span class="label">{$entry['label']}</span>
-               <div class="content long_text">{$content}</div>
-               <span class="author">$author</span>
-               <span class="date">{$entry['date']}</span>
-            </a></li>
+                <li class="line"><a {$href}>
+                    <span class="label">{$label}</span>
+                    <div class="content long_text">{$content}</div>
+                    <span class="author">{$author}</span>
+                    <span class="date">{$date}</span>
+                </a></li>
 HTML;
             $i++;
         }
 
         $nodata = isset($p['data']['nodata']) && $p['data']['nodata'];
         if ($nodata) {
-            $list_html = "<span class='line empty-card no-data'>
-            <span class='content'>
-               <i class='icon ti ti-alert-triangle'></i>
-            </span>
-            <span class='label'>" . __('No data found') . "</span>
-         <span>";
+            $list_html = "
+                <span class='line empty-card no-data'>
+                    <span class='content'>
+                        <i class='icon ti ti-alert-triangle'></i>
+                    </span>
+                    <span class='label'>" . __s('No data found') . "</span>
+                <span>
+            ";
         }
 
         $view_all = strlen($p['url'])
-         ? "<a href='{$p['url']}'><i class='ti ti-eye' title='" . __("See all") . "'></i></a>"
-         : "";
+            ? "<a href='" . \htmlescape($p['url']) . "'><i class='ti ti-eye' title='" . __s("See all") . "'></i></a>"
+            : "";
+
+        $rand = (int) $p['rand'];
+        $icon = \htmlescape($p['icon']);
+        $class = \htmlescape($class);
 
         $html = <<<HTML
-      <style>
-         #chart-{$p['rand']} .line {
-            background-color: $bg_color_2;
-         }
+            <style>
+                #chart-{$rand} .line {
+                    background-color: $bg_color_2;
+                }
 
-         #chart-{$p['rand']} .ti-eye {
-            color: {$fg_color};
-         }
-      </style>
+                #chart-{$rand} .ti-eye {
+                    color: {$fg_color};
+                }
+            </style>
 
-      <div class="card {$class}"
-           id="chart-{$p['rand']}"
-           title="{$p['alt']}"
-           style="background-color: {$p['color']}; color: {$fg_color}">
-         <div class='scrollable'>
-            <ul class='list'>
-            {$list_html}
-   </ul>
-         </div>
-         <span class="main-label">
-            {$p['label']}
-            $view_all
-         </span>
-         <i class="main-icon {$p['icon']}" style="color: {$fg_color}"></i>
-      </div>
+            <div class="card {$class}"
+                 id="chart-{$rand}"
+                 title="{$p['alt']}"
+                 style="background-color: {$bg_color}; color: {$fg_color}">
+                <div class='scrollable'>
+                    <ul class='list'>
+                        {$list_html}
+                    </ul>
+                </div>
+                <span class="main-label">
+                    {$label}
+                    $view_all
+                </span>
+                <i class="main-icon {$icon}" style="color: {$fg_color}"></i>
+            </div>
 HTML;
 
         $js = <<<JAVASCRIPT
-      $(function () {
-         // init readmore controls
-         read_more();
+            $(function () {
+                // init readmore controls
+                read_more();
 
-         // set dates in relative format
-         $('#chart-{$p['rand']} .date').each(function() {
-            var line_date = $(this).html();
-            var rel_date = relativeDate(line_date);
+                // set dates in relative format
+                $('#chart-{$rand} .date').each(function() {
+                    var line_date = $(this).html();
+                    var rel_date = relativeDate(line_date);
 
-            $(this).html(rel_date).attr('title', line_date);
-         });
-      });
+                    $(this).html(rel_date).attr('title', line_date);
+                });
+            });
 JAVASCRIPT;
-        $js = \Html::scriptBlock($js);
+        $js = Html::scriptBlock($js);
 
         return $html . $js;
     }
@@ -1907,14 +2085,14 @@ JAVASCRIPT;
         $colors = [];
 
         for ($i = 1; $i <= $nb_series; $i++) {
-            $names[$i - 1] = $i - 1;
+            $names[$i - 1] = chr(97 + ($i - 1) % 26);
 
-           // adjust luminosity
+            // adjust luminosity
             $i_l_step = $i * $step_l + $min_l / 100;
             $hsl['L'] = min(1, $revert
             ? 1 - $i_l_step
             : $i_l_step);
-           // adjust saturation
+            // adjust saturation
             if ($hsl['H'] != 0 && $hsl['H'] != 1) {
                 $i_s_step = $i * $step_s + $min_s / 100;
                 $hsl['S'] = min(1, $revert

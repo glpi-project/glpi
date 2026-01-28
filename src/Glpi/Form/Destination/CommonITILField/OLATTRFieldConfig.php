@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,21 +34,10 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use OLA;
 use Override;
 
-class OLATTRFieldConfig extends SLMFieldConfig
+final class OLATTRFieldConfig extends SLMFieldConfig
 {
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyHandler(key: self::SLM_ID, itemtype: OLA::class)
-        ];
-    }
-
     #[Override]
     public static function jsonDeserialize(array $data): self
     {

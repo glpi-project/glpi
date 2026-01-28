@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,16 +36,21 @@
 namespace Glpi\Form\AccessControl\ControlType;
 
 use AbstractRightsDropdown;
+use CommonDBTM;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
+use Glpi\Session\SessionInfo;
 use Group;
+use InvalidArgumentException;
 use Override;
 use Profile;
-use Glpi\Session\SessionInfo;
 use User;
 
 final class AllowList implements ControlTypeInterface
@@ -63,15 +68,15 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): string
+    public function getConfig(): JsonFieldInterface
     {
-        return AllowListConfig::class;
+        return new AllowListConfig();
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $warnings;
+        return [];
     }
 
     #[Override]
@@ -79,7 +84,7 @@ final class AllowList implements ControlTypeInterface
     {
         $config = $access_control->getConfig();
         if (!$config instanceof AllowListConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         $twig = TemplateRenderer::getInstance();
@@ -110,11 +115,12 @@ final class AllowList implements ControlTypeInterface
 
     #[Override]
     public function canAnswer(
+        Form $form,
         JsonFieldInterface $config,
         FormAccessParameters $parameters
     ): AccessVote {
         if (!$config instanceof AllowListConfig) {
-            throw new \InvalidArgumentException("Invalid config class");
+            throw new InvalidArgumentException("Invalid config class");
         }
 
         if (!$parameters->isAuthenticated()) {
@@ -166,7 +172,19 @@ final class AllowList implements ControlTypeInterface
         SessionInfo $session_info
     ): bool {
         foreach ($session_info->getGroupIds() as $group_id) {
+            // Check if the user is directly part of the allowed group
             if (in_array($group_id, $config->getGroupIds())) {
+                return true;
+            }
+
+            // If at least one parent group of the user is part of the allowlist
+            // then he should be able to see the form
+            $children_groups = getAncestorsOf(Group::getTable(), $group_id);
+            $membership = array_intersect(
+                $config->getGroupIds(),
+                $children_groups
+            );
+            if (count($membership) > 0) {
                 return true;
             }
         }
@@ -184,5 +202,80 @@ final class AllowList implements ControlTypeInterface
     public function allowUnauthenticated(JsonFieldInterface $config): bool
     {
         return false;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        $fallback = new DynamicExportDataField($config, []);
+        if (!$config instanceof AllowListConfig) {
+            return $fallback;
+        }
+
+        $to_handle =  [
+            User::class    => AllowListConfig::KEY_USER_IDS,
+            Group::class   => AllowListConfig::KEY_GROUP_IDS,
+            Profile::class => AllowListConfig::KEY_PROFILE_IDS,
+        ];
+
+        // Handler users, groups and profiles ids.
+        $data = $config->jsonSerialize();
+        $requirements = [];
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<CommonDBTM> $itemtype */
+            // Iterate on ids
+            $ids = $data[$data_key] ?? [];
+            foreach ($ids as $i => $item_id) {
+                // Only operate on valid ids
+                if (intval($item_id) === 0) {
+                    continue;
+                }
+
+                // Try to load item
+                $item = $itemtype::getById($item_id);
+                if (!$item) {
+                    continue;
+                }
+
+                // Replace id with name and add a requirement
+                $requirement = DataRequirementSpecification::fromItem($item);
+                $requirements[] = $requirement;
+                $data[$data_key][$i] = $requirement->name;
+            }
+        }
+
+        return new DynamicExportDataField($data, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        $to_handle =  [
+            User::class    => AllowListConfig::KEY_USER_IDS,
+            Group::class   => AllowListConfig::KEY_GROUP_IDS,
+            Profile::class => AllowListConfig::KEY_PROFILE_IDS,
+        ];
+
+        // Handler users, groups and profiles ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<CommonDBTM> $itemtype */
+            // Iterate on names
+            $names = $config[$data_key] ?? [];
+            foreach ($names as $i => $name) {
+                // Exclude special values
+                if ($name == "all") {
+                    continue;
+                }
+
+                // Restore correct id
+                $id = $mapper->getItemId($itemtype, $name);
+                $config[$data_key][$i] = $id;
+            }
+        }
+
+        return $config;
     }
 }

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,20 +34,26 @@
 
 namespace Glpi\Tests;
 
+use Change;
+use CommonDBTM;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
+use Glpi\Form\Condition\Type;
+use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
-use Glpi\Session\SessionInfo;
-use Glpi\Tests\FormBuilder;
-use Profile;
+use LogicException;
+use Problem;
+use RuntimeException;
 use Session;
 use Ticket;
 use User;
@@ -77,8 +82,13 @@ trait FormTesterTrait
             'is_active'             => $builder->getIsActive(),
             'header'                => $builder->getHeader(),
             'is_draft'              => $builder->getIsDraft(),
+            'is_pinned'             => $builder->getIsPinned(),
             'forms_categories_id'   => $builder->getCategory(),
-            '_do_not_init_sections' => true, // We will handle sections ourselves
+            'usage_count'           => $builder->getUsageCount(),
+            'render_layout'         => $builder->getRenderLayout()->value,
+            '_init_sections'        => false,  // We will handle sections ourselves
+            '_init_access_policies' => $builder->getUseDefaultAccessPolicies(),
+            '_init_destinations'    => $builder->shouldInitDestinations(),
         ]);
 
         $section_rank = 0;
@@ -102,9 +112,11 @@ trait FormTesterTrait
                     'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                    'horizontal_rank'   => $question_data['horizontal_rank'],
                     'vertical_rank'     => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
+                    'extra_data', // Might be changed by some prepare methods
                 ]);
             }
 
@@ -142,8 +154,266 @@ trait FormTesterTrait
             ]);
         }
 
-        // Reload form
-        $form->getFromDB($form->getID());
+        // Add visibility conditions on form
+        if (!empty($builder->getSubmitButtonVisibility())) {
+            $form_conditions = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $builder->getSubmitButtonVisibility()['conditions']);
+
+            $this->updateItem(Form::class, $form->getID(), [
+                'submit_button_visibility_strategy' => $builder->getSubmitButtonVisibility()['strategy'],
+                'submit_button_conditions'          => json_encode($form_conditions),
+            ], ['submit_button_conditions']);
+        }
+
+        // Add visibility conditions on questions
+        foreach ($builder->getQuestionVisibility() as $name => $params) {
+            // Find the correct question
+            $id = $this->getQuestionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(Question::class, $id, [
+                'visibility_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
+        // Add validation conditions on questions
+        foreach ($builder->getQuestionValidation() as $name => $params) {
+            // Find the correct question
+            $id = $this->getQuestionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            // Add validation strategy
+            if (isset($params['validation_strategy'])) {
+                // Update item with validation strategy
+                $this->updateItem(Question::class, $id, [
+                    'validation_strategy' => $params['validation_strategy'],
+                ]);
+            }
+
+            // Update item with conditions
+            if (isset($params['conditions'])) {
+                // Update item with conditions
+                $this->updateItem(Question::class, $id, [
+                    'validation_conditions' => json_encode($params['conditions']),
+                ], ['validation_conditions']);
+            }
+        }
+
+        // Add visibility conditions on comments
+        foreach ($builder->getCommentVisibility() as $name => $params) {
+            // Find the correct comment
+            $id = $this->getCommentId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(Comment::class, $id, [
+                'visibility_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
+        // Add visibility conditions on section
+        foreach ($builder->getSectionVisibility() as $name => $params) {
+            // Find the correct comment
+            $id = $this->getSectionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(Section::class, $id, [
+                'visibility_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
+        // Add creation conditions on destinations
+        foreach ($builder->getDestinationCondition() as $name => $params) {
+            // Find the correct comment
+            $id = $this->getDestinationId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            $this->updateItem(FormDestination::class, $id, [
+                'creation_strategy' => $params['strategy'],
+                'conditions' => json_encode($params['conditions']),
+            ], ['conditions']);
+        }
+
+        // Reload form to clear cached data
+        $id = $form->getID();
+        $form = new Form();
+        $form->getFromDB($id);
 
         return $form;
     }
@@ -278,6 +548,20 @@ trait FormTesterTrait
         }
     }
 
+    protected function getDestinationId(Form $form, string $name): int
+    {
+        $destinations = $form->getDestinations();
+        $destination = array_filter(
+            $destinations,
+            fn($destination) => $destination->fields['name'] === $name
+        );
+        if (count($destination) !== 1) {
+            throw new RuntimeException("Destination not found or ambiguous: $name");
+        }
+        $destination = current($destination);
+        return $destination->getID();
+    }
+
     /**
      * Get the given access control object of a form.
      *
@@ -351,6 +635,42 @@ trait FormTesterTrait
         return $comment;
     }
 
+    protected function addTranslationToForm(
+        CommonDBTM $item,
+        string $language,
+        string $key,
+        string $translation,
+    ): void {
+        $form_translation = new FormTranslation();
+        if (
+            $form_translation->getFromDBByCrit([
+                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$items_id  => $item->getID(),
+                'language'                  => $language,
+                'key'                       => $key,
+            ]) === false
+        ) {
+            $form_translation = $this->createItem(FormTranslation::class, [
+                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$items_id  => $item->getID(),
+                'language'                  => $language,
+                'key'                       => $key,
+                'translations'              => '',
+            ], ['translations']);
+        }
+
+        $this->updateItem(
+            FormTranslation::class,
+            $form_translation->getID(),
+            [
+                'translations' => [
+                    'one' => $translation,
+                ],
+            ],
+            ['translations']
+        );
+    }
+
     protected function sendFormAndGetAnswerSet(
         Form $form,
         array $answers = [],
@@ -390,23 +710,6 @@ trait FormTesterTrait
         $ticket = current($created_items);
         $this->assertInstanceOf(Ticket::class, $ticket);
         return $ticket;
-    }
-
-    /**
-     * Get the default parameters containing a mocked session of the TU_USER
-     * user and no URL parameters.
-     *
-     * @return FormAccessParameters
-     */
-    protected function getDefaultParametersForTestUser(): FormAccessParameters
-    {
-        $session_info = new SessionInfo(
-            user_id: getItemByTypeName(User::class, TU_USER, true),
-            group_ids: [],
-            profile_id: getItemByTypeName(Profile::class, "Super-Admin", true),
-        );
-
-        return new FormAccessParameters($session_info, []);
     }
 
     private function exportForm(Form $form): string
@@ -453,8 +756,248 @@ trait FormTesterTrait
             $form = new Form();
             $form->update([
                 'id' => $row['id'],
-                'is_active' => false
+                'is_active' => false,
             ]);
         }
+    }
+
+    protected function getFormJson(string $filename): string
+    {
+        $path = FIXTURE_DIR . "/forms/$filename";
+        return file_get_contents($path);
+    }
+
+    private function sendFormAndGetCreatedChange(Form $form, array $answers): Change
+    {
+        // The provider use a simplified answer format to be more readable.
+        // Rewrite answers into expected format.
+        $formatted_answers = [];
+        foreach ($answers as $question => $answer) {
+            $key = $this->getQuestionId($form, $question);
+            $formatted_answers[$key] = $answer;
+        }
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            $formatted_answers,
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        // Get created change
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $change = current($created_items);
+
+        // Check request type
+        if (!$change instanceof Change) {
+            throw new LogicException("Test should have create a change");
+        }
+
+        return $change;
+    }
+
+    private function sendFormAndGetCreatedProblem(Form $form, array $answers): Problem
+    {
+        // Submit form
+        $answers = $this->sendForm($form, $answers);
+
+        // Get created problem
+        $created_items = $answers->getCreatedItems();
+        $this->assertCount(1, $created_items);
+        $problem = current($created_items);
+
+        // Check request type
+        if (!$problem instanceof Problem) {
+            throw new LogicException("Test should have create a problem");
+        }
+
+        return $problem;
+    }
+
+    private function sendForm(Form $form, array $answers): AnswersSet
+    {
+        // The provider use a simplified answer format to be more readable.
+        // Rewrite answers into expected format.
+        $formatted_answers = [];
+        foreach ($answers as $question => $answer) {
+            $key = $this->getQuestionId($form, $question);
+            $formatted_answers[$key] = $answer;
+        }
+
+        // Submit form
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            $formatted_answers,
+            getItemByTypeName(User::class, TU_USER, true)
+        );
+
+        return $answers;
+    }
+
+
+    private function createAndGetFormWithFirstAndLastNameQuestions(
+        string $destination_type
+    ): Form {
+        $builder = new FormBuilder("My form name");
+        $builder->addQuestion("First name", QuestionTypeShortText::class);
+        $builder->addQuestion("Last name", QuestionTypeShortText::class);
+        $builder->addDestination($destination_type, "My item to create", []);
+        $builder->setShouldInitDestinations(false); // Prevent default ticket
+        return $this->createForm($builder);
+    }
+
+    private function setDestinationFieldConfig(
+        Form $form,
+        string $key,
+        string|JsonFieldInterface $config
+    ): void {
+        if (is_string($config)) {
+            $config = new SimpleValueConfig($config);
+        }
+
+        $destinations = $form->getDestinations();
+        $this->assertCount(1, $destinations);
+
+        $destination = current($destinations);
+        $original_config = json_decode($destination->fields['config'], true);
+        $added_config = [
+            $key => $config->jsonSerialize(),
+        ];
+        $new_config = array_merge($original_config, $added_config);
+
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => $new_config,
+            ],
+            ["config"],
+        );
+    }
+
+    protected function createSimpleFormcreatorForm(
+        string $name,
+        array $questions,
+        array $submit_conditions = [],
+        array $ticket_destinations = [],
+        array $properties = [],
+    ): int {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Add form
+        $DB->insert('glpi_plugin_formcreator_forms', [
+            'name' => $name,
+            'show_rule' => $submit_conditions['show_rule'] ?? 1,
+        ] + $properties);
+        $form_id = $DB->insertId();
+
+        // Add a section
+        $DB->insert('glpi_plugin_formcreator_sections', [
+            'plugin_formcreator_forms_id' => $form_id,
+        ]);
+        $section_id = $DB->insertId();
+
+        // Add questions
+        $questions_names_map = [];
+        foreach ($questions as $data) {
+            $conditions = null;
+            if (isset($data['_conditions'])) {
+                $conditions = $data['_conditions'];
+                unset($data['_conditions']);
+            }
+
+            $data['plugin_formcreator_sections_id'] = $section_id;
+            $DB->insert('glpi_plugin_formcreator_questions', $data);
+            $question_id = $DB->insertId();
+
+            // Keep track of name => id map
+            $questions_names_map[$data['name']] = $question_id;
+
+            if ($conditions) {
+                foreach ($conditions as $condition) {
+                    // Replace target question name by id
+                    $target_q_name = $condition['plugin_formcreator_questions_id'];
+                    $target_q_id = $questions_names_map[$target_q_name];
+                    $condition['plugin_formcreator_questions_id'] = $target_q_id;
+
+                    $condition['itemtype'] = 'PluginFormcreatorQuestion';
+                    $condition['items_id'] = $question_id;
+
+                    $DB->insert('glpi_plugin_formcreator_conditions', $condition);
+                }
+            }
+        }
+
+        // Add submit conditions
+        if ($submit_conditions !== []) {
+            // Replace target question name by id
+            $target_q_name = $submit_conditions['plugin_formcreator_questions_id'];
+            $target_q_id = $questions_names_map[$target_q_name];
+
+            $DB->insert('glpi_plugin_formcreator_conditions', [
+                'itemtype'                        => 'PluginFormcreatorForm',
+                'items_id'                        => $form_id,
+                'plugin_formcreator_questions_id' => $target_q_id,
+                'show_condition'                  => $submit_conditions['show_condition'],
+                'show_value'                      => $submit_conditions['show_value'],
+                'show_logic'                      => $submit_conditions['show_logic'],
+                'order'                           => $submit_conditions['order'],
+            ]);
+        }
+
+        foreach ($ticket_destinations as $ticket_destination) {
+            $ticket_destination['plugin_formcreator_forms_id'] = $form_id;
+            $DB->insert(
+                'glpi_plugin_formcreator_targettickets',
+                $ticket_destination,
+            );
+        }
+
+        return $form_id;
+    }
+
+    protected function addChangeTargetToFromcreatorForm(
+        int $form_id,
+        array $data
+    ): void {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $data['plugin_formcreator_forms_id'] = $form_id;
+        $DB->insert('glpi_plugin_formcreator_targetchanges', $data);
+    }
+
+    protected function addProblemTargetToFromcreatorForm(
+        int $form_id,
+        array $data
+    ): void {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $data['plugin_formcreator_forms_id'] = $form_id;
+        $DB->insert('glpi_plugin_formcreator_targetproblems', $data);
+    }
+
+    protected function getFormCreatorQuestionId(string $name): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $results = $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_plugin_formcreator_questions',
+            'WHERE'  => ['name' => $name],
+        ]);
+
+        if (count($results) !== 1) {
+            $this->fail("Can't find a unique question named $name");
+        }
+
+        $result = current(iterator_to_array($results));
+        return $result['id'];
     }
 }

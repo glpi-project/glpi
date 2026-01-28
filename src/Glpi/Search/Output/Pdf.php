@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageMargins;
 use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
 
@@ -50,7 +52,7 @@ final class Pdf extends Spreadsheet
         $style = $this->spread->getDefaultStyle();
 
         $borders = $style->getBorders();
-        $borders->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_DOTTED);
+        $borders->getBottom()->setBorderStyle(Border::BORDER_DOTTED);
 
         $pagesetup = $this->spread->getActiveSheet()->getPageSetup();
         $pagesetup->setPaperSize(PageSetup::PAPERSIZE_A4);
@@ -62,10 +64,11 @@ final class Pdf extends Spreadsheet
             ->setRight($margin)
             ->setLeft($margin);
 
-        \PhpOffice\PhpSpreadsheet\IOFactory::registerWriter('GLPIPdf', Tcpdf::class);
-        $this->writer = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($this->spread, 'GLPIPdf');
-
-        $this->writer->setOrientation($orientation);
+        IOFactory::registerWriter('GLPIPdf', Tcpdf::class);
+        /** @var \PhpOffice\PhpSpreadsheet\Writer\Pdf $writer */
+        $writer = IOFactory::createWriter($this->spread, 'GLPIPdf');
+        $writer->setOrientation($orientation);
+        $this->writer = $writer;
     }
 
     public function getMime(): string

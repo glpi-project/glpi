@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,22 +40,22 @@
  **/
 class Supplier_Ticket extends CommonITILActor
 {
-   // From CommonDBRelation
-    public static $itemtype_1 = 'Ticket';
+    // From CommonDBRelation
+    public static $itemtype_1 = Ticket::class;
     public static $items_id_1 = 'tickets_id';
-    public static $itemtype_2 = 'Supplier';
+    public static $itemtype_2 = Supplier::class;
     public static $items_id_2 = 'suppliers_id';
 
 
     /**
-     * @param $items_id
-     * @param $email
+     * @param int $items_id
+     * @param string $email
+     * @return bool
      *
      * @since 0.85
      **/
     public function isSupplierEmail($items_id, $email)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -64,31 +64,19 @@ class Supplier_Ticket extends CommonITILActor
                 'glpi_suppliers'  => [
                     'ON' => [
                         $this->getTable() => 'suppliers_id',
-                        'glpi_suppliers'  => 'id'
-                    ]
-                ]
+                        'glpi_suppliers'  => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 $this->getTable() . '.tickets_id'   => $items_id,
-                'glpi_suppliers.email'              => $email
-            ]
+                'glpi_suppliers.email'              => $email,
+            ],
         ]);
 
         foreach ($iterator as $data) {
             return true;
         }
         return false;
-    }
-
-    public function post_addItem()
-    {
-
-        switch ($this->input['type']) { // Values from CommonITILObject::getSearchOptionsActors()
-            case CommonITILActor::ASSIGN:
-                $this->_force_log_option = 6;
-                break;
-        }
-        parent::post_addItem();
-        unset($this->_force_log_option);
     }
 }

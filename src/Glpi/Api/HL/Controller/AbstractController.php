@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,17 +36,17 @@
 namespace Glpi\Api\HL\Controller;
 
 use CommonDBTM;
+use Entity;
 use Glpi\Api\HL\Doc as Doc;
-use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
-use Glpi\Api\HL\RSQLInput;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryUnion;
-use Search;
+use Glpi\Plugin\Hooks;
+use Plugin;
+use RuntimeException;
+use Session;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
@@ -71,50 +71,6 @@ abstract class AbstractController
     public const CRUD_ACTION_DELETE = 'delete';
     public const CRUD_ACTION_PURGE = 'purge';
     public const CRUD_ACTION_RESTORE = 'restore';
-    public const CRUD_ACTION_LIST = 'list';
-
-    protected const PARAMETER_RSQL_FILTER = [
-        'name' => 'filter',
-        'description' => 'RSQL query string',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_STRING,
-        ]
-    ];
-
-    protected const PARAMETER_START = [
-        'name' => 'start',
-        'description' => 'The first item to return',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-            'minimum' => 0,
-            'default' => 0,
-        ]
-    ];
-
-    protected const PARAMETER_LIMIT = [
-        'name' => 'limit',
-        'description' => 'The maximum number of items to return',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-            'minimum' => 0,
-            'default' => 100,
-        ]
-    ];
-
-    protected const PARAMETER_SORT = [
-        'name' => 'sort',
-        'description' => 'One or more properties to sort by in the form of property:direction where property is the full property name in dot notation and direction is either asc or desc.
-                          If no direction is provided, asc is assumed. Multiple sorts can be provided by separating them with a comma.',
-        'location' => 'query',
-        'schema' => [
-            'type' => Doc\Schema::TYPE_STRING,
-        ]
-    ];
 
     /**
      * Get the requested API version from the request
@@ -144,7 +100,7 @@ abstract class AbstractController
     {
         $schemas = static::getRawKnownSchemas();
         // Allow plugins to inject or modify schemas
-        $schemas = \Plugin::doHookFunction('redefine_api_schemas', [
+        $schemas = Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
@@ -198,26 +154,31 @@ abstract class AbstractController
                 'id' => [
                     'type' => Doc\Schema::TYPE_INTEGER,
                     'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'x-readonly' => $class !== \Entity::class,
                 ],
-                $name_field => ['type' => Doc\Schema::TYPE_STRING],
-            ]
+                $name_field => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+            ],
         ];
         if ($full_schema !== null) {
             $schema['x-full-schema'] = $full_schema;
+        }
+        if ($class === Entity::class) {
+            $schema['properties']['id']['readOnly'] = true;
         }
         return $schema;
     }
 
     /**
      * @return int
-     * @throws \RuntimeException if the user ID is not set in the current session
+     * @throws RuntimeException if the user ID is not set in the current session
      */
     protected function getMyUserID(): int
     {
-        $user_id = \Session::getLoginUserID();
+        $user_id = Session::getLoginUserID();
         if (!is_int($user_id)) {
-            throw new \RuntimeException('Invalid session');
+            throw new RuntimeException('Invalid session');
         }
         return $user_id;
     }
@@ -270,19 +231,17 @@ abstract class AbstractController
         $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'] ?? [];
         $additional_messages = [];
         if (count($messages) > 0) {
-            $get_priority_name = static function ($priority) {
-                return match ($priority) {
-                    0 => 'info',
-                    1 => 'error',
-                    2 => 'warning',
-                    default => 'unknown',
-                };
-            };
+            $get_priority_name = (static fn($priority) => match ($priority) {
+                0 => 'info',
+                1 => 'error',
+                2 => 'warning',
+                default => 'unknown',
+            });
             foreach ($messages as $priority => $message_texts) {
                 foreach ($message_texts as $message) {
                     $additional_messages[] = [
                         'priority' => $get_priority_name($priority),
-                        'message' => $message
+                        'message' => $message,
                     ];
                 }
             }
@@ -325,7 +284,7 @@ abstract class AbstractController
             foreach ($errors['invalid'] as $invalid_info) {
                 $msg = [
                     'priority' => 'error',
-                    'message' => 'Invalid parameter: ' . $invalid_info['name']
+                    'message' => 'Invalid parameter: ' . $invalid_info['name'],
                 ];
                 if (isset($invalid_info['reason'])) {
                     $msg['message'] .= '. ' . $invalid_info['reason'];
@@ -341,12 +300,17 @@ abstract class AbstractController
     }
 
     /**
+     * @param array|string|null $detail
      * @return Response
      */
-    public static function getAccessDeniedErrorResponse(): Response
+    public static function getAccessDeniedErrorResponse(array|string|null $detail = null): Response
     {
         return new JSONResponse(
-            self::getErrorResponseBody(self::ERROR_RIGHT_MISSING, "You don't have permission to perform this action."),
+            self::getErrorResponseBody(
+                status: self::ERROR_RIGHT_MISSING,
+                title: "You don't have permission to perform this action.",
+                detail: $detail,
+            ),
             403
         );
     }
@@ -361,16 +325,17 @@ abstract class AbstractController
     {
         return new JSONResponse([
             'id' => $id,
-            'href' => $api_path
+            'href' => $api_path,
         ], $status, ['Location' => $api_path]);
     }
 
     public static function getAPIPathForRouteFunction(string $controller, string $function, array $params = [], bool $allow_invalid = false): string
     {
         $route_paths = Router::getInstance()->getAllRoutes();
-        $matches = array_filter($route_paths, static function (/** @var RoutePath $route_path */$route_path) use ($controller, $function) {
-            return $route_path->getController() === $controller && $route_path->getMethod()->getName() === $function;
-        });
+        $matches = array_filter($route_paths, static fn(
+            /** @var RoutePath $route_path */
+            $route_path
+        ) => $route_path->getController() === $controller && $route_path->getMethod()->getName() === $function);
         if (count($matches) === 0) {
             return '/';
         }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,11 +42,56 @@ use Glpi\Application\View\TemplateRenderer;
 class SoftwareLicense_User extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'User';
+    public static $itemtype_1 = User::class;
     public static $items_id_1 = 'users_id';
 
-    public static $itemtype_2 = 'SoftwareLicense';
+    public static $itemtype_2 = SoftwareLicense::class;
     public static $items_id_2 = 'softwarelicenses_id';
+
+    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+
+    public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+
+    public function prepareInputForAdd($input)
+    {
+        if (
+            !isset($input['softwarelicenses_id'])
+            || !is_numeric($input['softwarelicenses_id'])
+            || !isset($input['users_id'])
+        ) {
+            trigger_error('softwarelicenses_id and users_id are mandatory', E_USER_WARNING);
+            return false;
+        }
+
+        $softwarelicenses_id = (int) $input['softwarelicenses_id'];
+
+        $license = new SoftwareLicense();
+        if (!$license->getFromDB($softwarelicenses_id)) {
+            trigger_error(sprintf('Unable to load software license %d', $softwarelicenses_id), E_USER_WARNING);
+            return false;
+        }
+
+        // Check quota if not unlimited (-1) and over-quota not allowed
+        if (
+            $license->getField('number') != -1
+            && !$license->getField('allow_overquota')
+        ) {
+            // Count current assignments (users + items)
+            $count = self::countForLicense($softwarelicenses_id);
+            $count += Item_SoftwareLicense::countForLicense($softwarelicenses_id);
+
+            if ($count >= $license->getField('number')) {
+                Session::addMessageAfterRedirect(
+                    __s('Maximum number of items reached for this license.'),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
+        return parent::prepareInputForAdd($input);
+    }
 
     public static function getTypeName($nb = 0)
     {
@@ -82,10 +127,29 @@ class SoftwareLicense_User extends CommonDBRelation
 
     public static function countForLicense(int $softwarelicenses_id): int
     {
-        return countElementsInTable(static::getTable(), ['softwarelicenses_id' => $softwarelicenses_id]);
+        global $DB;
+
+        $iterator = $DB->request([
+            'COUNT' => 'cpt',
+            'FROM'  => static::getTable(),
+            'INNER JOIN' => [
+                User::getTable() => [
+                    'FKEY' => [
+                        static::getTable() => 'users_id',
+                        User::getTable() => 'id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                static::getTable() . '.softwarelicenses_id' => $softwarelicenses_id,
+                User::getTable() . '.is_deleted' => 0,
+            ],
+        ]);
+
+        return $iterator->current()['cpt'];
     }
 
-    private static function showForUser(CommonDBTM $item, $withtemplate = 0): void
+    private static function showForUser(CommonDBTM $item, int $withtemplate = 0): void
     {
         $ID = $item->fields['id'];
 
@@ -143,7 +207,7 @@ TWIG, $twig_params);
                 'itemtype'  => self::class,
                 'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'number'    => $data['number']
+                'number'    => $data['number'],
             ];
             $license = new SoftwareLicense();
             $license->getFromResultSet($data);
@@ -173,7 +237,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -188,12 +251,11 @@ TWIG, $twig_params);
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit && (int) $withtemplate !== 2,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

@@ -23,6 +23,7 @@ Thank you for improving the security of glpi.
 
 | Version | Supported          |
 | ------- | ------------------ |
+| 11.0.x  | :heavy_check_mark: |
 | 10.0.x  | :heavy_check_mark: |
 | 9.5.x   | :x:                |
 | 9.4.x   | :x:                |

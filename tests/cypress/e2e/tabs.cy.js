@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,16 +36,16 @@ describe('Tabs', () => {
         cy.changeProfile('Super-Admin');
     });
     it('can use the "forcetab" URL parameter to land on a specific tab', () => {
-        cy.visit("/front/user.form.php?id=2&forcetab=Change_Item$1");
-        cy.findByRole('tab', { name: 'Changes' })
+        cy.visit("/front/user.form.php?id=2&forcetab=Change$1");
+        cy.findByRole('tab', { name: 'Created changes' })
             .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Problems' })
+        cy.findByRole('tab', { name: 'Created problems' })
             .should('not.have.attr', 'aria-selected', 'true');
 
-        cy.visit("/front/user.form.php?id=2&forcetab=Item_Problem$1");
-        cy.findByRole('tab', { name: 'Problems' })
+        cy.visit("/front/user.form.php?id=2&forcetab=Problem$1");
+        cy.findByRole('tab', { name: 'Created problems' })
             .should('have.attr', 'aria-selected', 'true');
-        cy.findByRole('tab', { name: 'Changes' })
+        cy.findByRole('tab', { name: 'Created changes' })
             .should('not.have.attr', 'aria-selected', 'true');
     });
 });

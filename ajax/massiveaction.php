@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,6 @@
  * @since 0.84
  */
 
-/** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -45,10 +44,10 @@ Html::header_nocache();
 
 try {
     $ma = new MassiveAction($_POST, $_GET, 'initial');
-} catch (\Throwable $e) {
-    echo "<div class='center'><img src='" . $CFG_GLPI["root_doc"] . "/pics/warning.png' alt='" .
-                              __s('Warning') . "'><br><br>";
-    echo "<span class='b'>" . $e->getMessage() . "</span><br>";
+} catch (Throwable $e) {
+    echo "<div class='center'><img src='" . htmlescape($CFG_GLPI["root_doc"]) . "/pics/warning.png' alt='"
+                              . __s('Warning') . "'><br><br>";
+    echo "<span class='b'>" . htmlescape($e->getMessage()) . "</span><br>";
     echo "</div>";
     return;
 }

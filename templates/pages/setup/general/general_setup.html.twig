@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -34,16 +33,7 @@
 {% extends "pages/setup/general/base_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-
-
 {% set field_options = {
-    'field_class': 'col-12 col-xxl-6 col-sm-6',
-    'label_class': 'col-xxl-8',
-    'input_class': 'col-xxl-4',
-} %}
-
-{% set field_options = {
-    'field_class': 'col-12 col-xxl-6 col-sm-6',
     'full_width': true,
 } %}
 
@@ -93,6 +83,7 @@
         inline_field_options|merge({
             'min': 1,
             'max': 4,
+            'required': true,
         })
     ) }}
 
@@ -101,6 +92,15 @@
         config['use_public_faq'],
         __('Allow FAQ anonymous access'),
         field_options
+    ) }}
+
+    {{ fields.checkboxField(
+        'allow_unauthenticated_uploads',
+        config['allow_unauthenticated_uploads'] ?? false,
+        __('Allow unauthenticated uploads'),
+        field_options|merge({
+            helper: __("Do not use this option if your GLPI is reachable from the internet. Use at your own risk."),
+        })
     ) }}
 
 </div>
@@ -119,6 +119,7 @@
         inline_field_options|merge({
             'min': 1,
             'max': 200,
+            'required': true,
         })
     ) }}
 
@@ -131,6 +132,7 @@
             'max': 200,
             'toadd': {'0': __('Never')},
             'width': 'auto',
+            'required': true,
         })
     ) }}
 </div>
@@ -186,6 +188,7 @@
             'min': 5,
             'max': 200,
             'step': 5,
+            'required': true,
         })
     ) }}
 
@@ -195,6 +198,7 @@
         __('Default characters limit (summary text boxes)'),
         inline_field_options|merge({
             'step': 50,
+            'required': true,
         })
     ) }}
 
@@ -206,6 +210,7 @@
             'min': 20,
             'max': 80,
             'step': 5,
+            'required': true,
         })
     ) }}
 

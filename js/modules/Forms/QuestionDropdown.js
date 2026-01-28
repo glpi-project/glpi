@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -31,9 +31,9 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable */
+/* global sortable, hasUnsavedChanges, setHasUnsavedChanges */
 
-import { GlpiFormQuestionTypeSelectable } from './QuestionSelectable.js';
+import { GlpiFormQuestionTypeSelectable } from '/js/modules/Forms/QuestionSelectable.js';
 
 export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
 
@@ -43,10 +43,8 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
      * @param {string} inputType
      * @param {JQuery<HTMLElement>} container
      */
-    constructor(inputType = null, container = null) {
-        super(inputType, container);
-
-        this._container.on('sortupdate', () => this.#handleSortableUpdate());
+    constructor(inputType = null, container = null, is_from_template = false) {
+        super(inputType, container, is_from_template);
 
         this._container.closest('[data-glpi-form-editor-question-details]')
             .find('div[data-glpi-form-editor-specific-question-options]')
@@ -97,7 +95,10 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
         // Make visible the right preview dropdown
         this._container.closest('[data-glpi-form-editor-question-type-specific]')
             .find('[data-glpi-form-editor-preview-dropdown]')
-            .children().toggleClass('d-none');
+            .children().toggleClass('d-none')
+            .find('select').prop('disabled', function() {
+                return !$(this).prop('disabled');
+            });
     }
 
     /**
@@ -113,6 +114,8 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
         const dropdown = this._container.closest('[data-glpi-form-editor-question-type-specific]')
             .find('[data-glpi-form-editor-preview-dropdown] select');
 
+        const has_changes = window.hasUnsavedChanges();
+
         // Remove all options, keep the empty choice (value=0)
         dropdown.find('option[value!=0]').remove();
 
@@ -127,6 +130,12 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
                 selected: is_checked,
             })).trigger('change', { skip_update: true });
         });
+
+        // The code above will trigger some changes event but we don't want the
+        // form to be set as unsaved if it was not yet modified
+        if (!has_changes) {
+            window.setHasUnsavedChanges(false);
+        }
     }
 
     _registerOptionListeners(option) {
@@ -142,7 +151,8 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
     /**
      * Handle the sortable update event.
      */
-    #handleSortableUpdate() {
+    _handleSortableUpdate() {
+        super._handleSortableUpdate();
         this.#updateDropdownOptions();
     }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -51,7 +51,6 @@ class DatesModFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'date_mod');
@@ -65,7 +64,7 @@ class DatesModFilter extends AbstractFilter
         }
 
         return [
-            'WHERE' => self::getDatesCriteria("$table.date_mod", $value)
+            'WHERE' => self::getDatesCriteria("$table.date_mod", $value),
         ];
     }
 
@@ -116,6 +115,6 @@ class DatesModFilter extends AbstractFilter
 JAVASCRIPT;
         $field .= Html::scriptBlock($js);
 
-        return self::field('dates_mod', $field, $label, is_array($values) && count($values) > 0);
+        return self::field('dates_mod', $field, $label, count($values) > 0);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,12 +37,16 @@ namespace Glpi\Console\Cache;
 
 use Glpi\Cache\CacheManager;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Safe\json_encode;
+
 class DebugCommand extends Command
 {
+    /** @var bool */
     protected $requires_db_up_to_date = false;
 
     protected function configure()
@@ -76,7 +80,7 @@ class DebugCommand extends Command
         $keys = $input->getOption('key');
         $context = $input->getOption('context');
         if (!in_array($context, $cache_manager->getKnownContexts())) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(__('Invalid cache context: "%s".'), $context)
             );
         }

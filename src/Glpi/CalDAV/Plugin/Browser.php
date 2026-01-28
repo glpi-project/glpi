@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,7 @@
 namespace Glpi\CalDAV\Plugin;
 
 use Config;
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
 use Sabre\DAV\Browser\Plugin;
 use Sabre\HTTP\RequestInterface;
@@ -54,7 +54,7 @@ class Browser extends Plugin
     public function httpGet(RequestInterface $request, ResponseInterface $response)
     {
         if (!$this->canDisplayDebugInterface()) {
-            return;
+            return false;
         }
 
         return parent::httpGet($request, $response);
@@ -63,10 +63,10 @@ class Browser extends Plugin
     /**
      * Check if connected user can display the HTML frontend.
      *
-     * @return boolean
+     * @return bool
      */
     private function canDisplayDebugInterface()
     {
-        return GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT || Config::canUpdate();
+        return Environment::get()->shouldEnableExtraDevAndDebugTools() || Config::canUpdate();
     }
 }

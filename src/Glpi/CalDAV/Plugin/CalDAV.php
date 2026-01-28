@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,12 @@ namespace Glpi\CalDAV\Plugin;
 
 use Glpi\CalDAV\Backend\Calendar;
 use Glpi\CalDAV\Traits\CalDAVUriUtilTrait;
+use Group;
 use Sabre\CalDAV\Plugin;
 use Sabre\DAV\INode;
 use Sabre\DAV\IProperties;
 use Sabre\DAV\PropFind;
+use User;
 
 /**
  * CalDAV plugin for CalDAV server.
@@ -58,10 +60,10 @@ class CalDAV extends Plugin
 
         $principal_itemtype = $this->getPrincipalItemtypeFromUri($principalUrl);
         switch ($principal_itemtype) {
-            case \Group::class:
+            case Group::class:
                 $calendar_uri = Calendar::PREFIX_GROUPS . '/' . $this->getGroupIdFromPrincipalUri($principalUrl);
                 break;
-            case \User::class:
+            case User::class:
                 $calendar_uri = Calendar::PREFIX_USERS . '/' . $this->getUsernameFromPrincipalUri($principalUrl);
                 break;
         }
@@ -69,10 +71,16 @@ class CalDAV extends Plugin
         return $calendar_uri;
     }
 
+    /**
+     * @param PropFind $propFind
+     * @param INode $node
+     *
+     * @return void
+     */
     public function propFind(PropFind $propFind, INode $node)
     {
 
-       // Return any requested property as long as it is defined in node.
+        // Return any requested property as long as it is defined in node.
         if ($node instanceof IProperties) {
             $properties = $node->getProperties([]);
             foreach ($properties as $property_name => $property_value) {

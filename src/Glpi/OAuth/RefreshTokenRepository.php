@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -50,8 +50,12 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
+
+        // clean expired tokens
+        $DB->delete('glpi_oauth_refresh_tokens', [
+            'date_expiration' => ['<', date('Y-m-d H:i:s')],
+        ]);
 
         $DB->insert('glpi_oauth_refresh_tokens', [
             'identifier' => $refreshTokenEntity->getIdentifier(),
@@ -60,9 +64,13 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         ]);
     }
 
+    /**
+     * @param string $tokenId
+     *
+     * @return void
+     */
     public function revokeRefreshToken($tokenId): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $DB->delete('glpi_oauth_refresh_tokens', [
@@ -70,13 +78,17 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
         ]);
     }
 
+    /**
+     * @param string $tokenId
+     *
+     * @return bool
+     */
     public function isRefreshTokenRevoked($tokenId): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
-            'SELECT' => 'id',
+            'SELECT' => 'identifier',
             'FROM' => 'glpi_oauth_refresh_tokens',
             'WHERE' => [
                 'identifier' => $tokenId,

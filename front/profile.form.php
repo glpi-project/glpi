@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
@@ -59,9 +61,9 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $prof->check($_POST['id'], PURGE);
-    if ($prof->delete($_POST, 1)) {
+    if ($prof->delete($_POST, true)) {
         Event::log(
             $_POST['id'],
             "profiles",
@@ -74,7 +76,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::back();
     }
-} else if (
+} elseif (
     isset($_POST["update"])
            || isset($_POST["interface"])
 ) {
@@ -94,5 +96,5 @@ if (isset($_POST["add"])) {
 
 $menus = ["admin", "profile"];
 Profile::displayFullPageForItem($_GET["id"], $menus, [
-    'formoptions'  => " data-track-changes='true'"
+    'formoptions'  => " data-track-changes='true'",
 ]);

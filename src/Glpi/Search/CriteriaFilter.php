@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,8 @@ use CommonDBTM;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\Input\QueryBuilder;
-use Session;
+
+use function Safe\json_decode;
 
 /**
  * Define filters for a given itemtype, using the search engine UI
@@ -55,7 +56,7 @@ final class CriteriaFilter extends CommonDBChild
         return __('Filter');
     }
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // Only on filterable items
         if (!$item instanceof CommonDBTM || !$item instanceof FilterableInterface) {
@@ -144,7 +145,7 @@ final class CriteriaFilter extends CommonDBChild
         // Decode filter
         $this->fields['search_criteria'] = json_decode(
             $this->fields['search_criteria'],
-            JSON_OBJECT_AS_ARRAY
+            true
         );
     }
 
@@ -185,8 +186,9 @@ final class CriteriaFilter extends CommonDBChild
     public static function getDefaultSearch(string $itemtype): array
     {
         // Some item may define a getDefaultSearchRequest method
-        if (method_exists($itemtype, 'getDefaultSearchRequest')) {
-            $default_search_request = $itemtype::getDefaultSearchRequest();
+        $item = getItemForItemtype($itemtype);
+        if ($item instanceof DefaultSearchRequestInterface) {
+            $default_search_request = $item::getDefaultSearchRequest();
 
             // Not all search request define search criteria
             if (isset($default_search_request['criteria'])) {

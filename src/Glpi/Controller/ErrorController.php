@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +36,8 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
+use Glpi\Application\Environment;
+use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
 use Symfony\Component\ErrorHandler\Error\OutOfMemoryError;
@@ -46,10 +48,11 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class ErrorController extends AbstractController
 {
-    public function __invoke(Request $request, ?\Throwable $exception = null): Response
+    public function __invoke(Request $request, ?Throwable $exception = null): Response
     {
         if ($exception === null) {
             return new Response('', 500);
@@ -58,7 +61,7 @@ class ErrorController extends AbstractController
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         $title      = _n('Error', 'Errors', 1);
-        $message    = __('An unexpected error has occurred.');
+        $message    = __('An unexpected error occurred');
         $link_text  = null;
         $link_url   = null;
 
@@ -99,20 +102,20 @@ class ErrorController extends AbstractController
         $trace = null;
         if (
             (
-                GLPI_ENVIRONMENT_TYPE === 'development'
+                Environment::get()->shouldEnableExtraDevAndDebugTools()
                 || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
             )
         ) {
             $trace = sprintf(
                 "%s\nIn %s(%s)",
-                $exception->getMessage() ?: $exception::class,
-                $exception->getFile(),
+                $this->cleanPaths($exception->getMessage() ?: $exception::class),
+                $this->cleanPaths($exception->getFile()),
                 $exception->getLine()
             );
 
             if (!($exception instanceof OutOfMemoryError)) {
                 // Note: OutOfMemoryError has no stack trace, we can only get filename and line.
-                $trace .= "\n" . $exception->getTraceAsString();
+                $trace .= "\n" . $this->cleanPaths($exception->getTraceAsString());
             }
 
             $current = $exception;
@@ -120,11 +123,11 @@ class ErrorController extends AbstractController
             while ($depth < 10 && $previous = $current->getPrevious()) {
                 $trace .= sprintf(
                     "\n\nPrevious: %s\nIn %s(%s)",
-                    $previous->getMessage() ?: $previous::class,
-                    $previous->getFile(),
+                    $this->cleanPaths($previous->getMessage() ?: $previous::class),
+                    $this->cleanPaths($previous->getFile()),
                     $previous->getLine()
                 );
-                $trace .= "\n" . $previous->getTraceAsString();
+                $trace .= "\n" . $this->cleanPaths($previous->getTraceAsString());
 
                 $current = $previous;
                 $depth++;
@@ -181,5 +184,10 @@ class ErrorController extends AbstractController
             ] + $error_block_params,
             new Response(status: $status_code)
         );
+    }
+
+    private function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,7 +35,10 @@
 
 use Glpi\Features\CacheableListInterface;
 use Glpi\Inventory\FilesToJSON;
-use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\InvalidArgumentException;
+
+use function Safe\file_get_contents;
+use function Safe\json_decode;
 
 /**
  * PCIVendor class
@@ -55,12 +58,12 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
             [
                 'name'   => 'vendorid',
                 'label'  => __('Vendor ID'),
-                'type'   => 'text'
+                'type'   => 'text',
             ], [
                 'name'  => 'deviceid',
                 'label' => __('Device ID'),
-                'type'  => 'text'
-            ]
+                'type'  => 'text',
+            ],
         ];
     }
 
@@ -73,7 +76,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
             'table'              => static::getTable(),
             'field'              => 'vendorid',
             'name'               => __('Vendor ID'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -81,7 +84,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
             'table'              => static::getTable(),
             'field'              => 'deviceid',
             'name'               => __('Device ID'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         return $tab;
@@ -94,7 +97,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     public static function getList(): array
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $vendors = new PCIVendor();
@@ -118,7 +120,6 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      */
     private function getDbList(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $list = [];
@@ -143,11 +144,10 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
      * Clean cache
      *
      * @return void
-     * @throws \Psr\SimpleCache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function invalidateListCache(): void
     {
-        /** @var CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;
 
         $GLPI_CACHE->delete($this->cache_key);

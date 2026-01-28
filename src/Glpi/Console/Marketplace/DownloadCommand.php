@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,8 @@
 
 namespace Glpi\Console\Marketplace;
 
-use GLPINetwork;
-use Glpi\Console\AbstractCommand;
 use Glpi\Marketplace\Controller;
+use GLPINetwork;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -86,7 +85,7 @@ class DownloadCommand extends AbstractMarketplaceCommand
             // If the plugin is already downloaded, refuse to download it again
             if (!$input->getOption('force') && is_dir(GLPI_MARKETPLACE_DIR . '/' . $plugin)) {
                 if (Controller::hasVcsDirectory($plugin)) {
-                    $error_msg = sprintf(__('Plugin "%s" as a local source versioning directory.'), $plugin);
+                    $error_msg = sprintf(__('Plugin "%s" has a local source versioning directory.'), $plugin);
                     $error_msg .=  "\n" . __('To avoid overwriting a potential branch under development, downloading is disabled.');
                 } else {
                     $error_msg = sprintf(__('Plugin "%s" is already downloaded. Use --force to force it to re-download.'), $plugin);
@@ -97,8 +96,8 @@ class DownloadCommand extends AbstractMarketplaceCommand
             $controller = new Controller($plugin);
             if ($controller->canBeDownloaded($version)) {
                 $result = $controller->downloadPlugin(false, $version);
-                $success_msg = sprintf(__("Plugin %s downloaded successfully"), $plugin);
-                $error_msg = sprintf(__("Plugin %s could not be downloaded"), $plugin);
+                $success_msg = sprintf(__('Plugin "%s" downloaded successfully'), $plugin);
+                $error_msg = sprintf(__('Plugin "%s" could not be downloaded'), $plugin);
                 if ($result) {
                     $output->writeln("<info>$success_msg</info>");
                 } else {

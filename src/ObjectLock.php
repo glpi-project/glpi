@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -46,7 +46,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class ObjectLock extends CommonDBTM
 {
-    private static $shutdownregistered = false;
+    private static bool $shutdownregistered = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -55,7 +55,7 @@ class ObjectLock extends CommonDBTM
 
     /**
      * @inheritDoc
-     * @return integer Always 0 (Root entity)
+     * @return int Always 0 (Root entity)
      **/
     public function getEntityID()
     {
@@ -68,7 +68,6 @@ class ObjectLock extends CommonDBTM
      **/
     public static function getLockableObjects()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = [];
@@ -106,7 +105,6 @@ class ObjectLock extends CommonDBTM
      **/
     private function lockObject()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = false;
@@ -119,7 +117,12 @@ class ObjectLock extends CommonDBTM
         $autolock = $this->isAutolockReadonlyMode();
 
         $user = new User();
-        if (isset($this->fields['users_id']) && $this->fields['users_id'] > 0 && $user->getFromDB($this->fields['users_id'])) {
+        if (
+            isset($this->fields['users_id'])
+            && $this->fields['users_id'] > 0
+            && $this->fields['users_id'] !== Session::getLoginUserID()
+            && $user->getFromDB($this->fields['users_id'])
+        ) {
             $user_data = [
                 'name' => $user->getName(),
                 'comment' => $user->getInfoCard(),
@@ -128,19 +131,22 @@ class ObjectLock extends CommonDBTM
             $useremail = new UserEmail();
             $showAskUnlock = $useremail->getFromDBByCrit([
                 'users_id' => $this->fields['users_id'],
-                'is_default' => 1
+                'is_default' => 1,
             ]) && ($CFG_GLPI['notifications_mailing'] == 1);
+        } else {
+            // No locking user found, so the lock is invalid
+            $autolock = false;
         }
 
         if (!$autolock) {
             if (
                 !($gotIt = $this->getFromDBByCrit([
                     'itemtype' => $this->fields['itemtype'],
-                    'items_id' => $this->fields['items_id']
+                    'items_id' => $this->fields['items_id'],
                 ]))
                 && $id = $this->add(['itemtype' => $this->fields['itemtype'],
                     'items_id' => $this->fields['items_id'],
-                    'users_id' => Session::getLoginUserID()
+                    'users_id' => Session::getLoginUserID(),
                 ])
             ) {
                 $new_lock = true;
@@ -149,7 +155,7 @@ class ObjectLock extends CommonDBTM
                 if (!$gotIt) {
                     $this->getFromDBByCrit([
                         'itemtype' => $this->fields['itemtype'],
-                        'items_id' => $this->fields['items_id']
+                        'items_id' => $this->fields['items_id'],
                     ]);
                 }
                 // open the object as read-only as it is already locked by someone
@@ -164,7 +170,7 @@ class ObjectLock extends CommonDBTM
             'item' => $this,
             'user_data' => $user_data,
             'show_ask_unlock' => $showAskUnlock,
-            'autolock_readmode' => $autolock
+            'autolock_readmode' => $autolock,
         ]);
         return $ret;
     }
@@ -174,7 +180,6 @@ class ObjectLock extends CommonDBTM
      **/
     private function getLockedObjectInfo(string $itemtype, int $items_id)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = false;
@@ -185,7 +190,7 @@ class ObjectLock extends CommonDBTM
             && in_array($this->fields['itemtype'], $CFG_GLPI['lock_item_list'], true)
             && $this->getFromDBByCrit([
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
+                'items_id' => $items_id,
             ])
         ) {
             $ret = true;
@@ -195,9 +200,9 @@ class ObjectLock extends CommonDBTM
 
     /**
      * @param string $itemtype
-     * @param integer $items_id
+     * @param int $items_id
      *
-     * @return bool|ObjectLock: returns ObjectLock if locked, else false
+     * @return false|ObjectLock returns ObjectLock if locked, else false
      **/
     public static function isLocked($itemtype, $items_id)
     {
@@ -209,17 +214,18 @@ class ObjectLock extends CommonDBTM
      * Switches current profile with read-only profile
      * Registers a shutdown function to be sure that even in case of a fatal error,
      * the switch back will be done: to ensure correct reset of normal profile
-     **/
+     *
+     * @return void
+     */
     public static function setReadOnlyProfile()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // to prevent double set ReadOnlyProfile
         if (!isset($_SESSION['glpilocksavedprofile']) && isset($CFG_GLPI['lock_lockprofile'])) {
             if (!self::$shutdownregistered) {
                 // this is a security in case of a fatal error that can prevent correct revert of profile
-                register_shutdown_function([__CLASS__,  'revertProfile']);
+                register_shutdown_function([self::class,  'revertProfile']);
                 self::$shutdownregistered = true;
             }
             $_SESSION['glpilocksavedprofile'] = $_SESSION['glpiactiveprofile'];
@@ -243,6 +249,8 @@ class ObjectLock extends CommonDBTM
 
     /**
      * Will revert normal user profile
+     *
+     * @return void
      **/
     public static function revertProfile()
     {
@@ -255,12 +263,13 @@ class ObjectLock extends CommonDBTM
     /**
      * Is the main function to be called in order to lock an item
      *
-     * @param  string $itemtype
-     * @param  array $options
-     **/
+     * @param string $itemtype
+     * @param array $options
+     *
+     * @return void
+     */
     public static function manageObjectLock($itemtype, &$options)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($options['id']) && ($options['id'] > 0)) {
@@ -299,9 +308,13 @@ class ObjectLock extends CommonDBTM
         }
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $tab = [];
 
@@ -324,9 +337,9 @@ class ObjectLock extends CommonDBTM
                     'jointype'   => '',
                     'beforejoin' => [
                         'table'      => self::getTable(),
-                        'joinparams' => ['jointype' => "itemtype_item"]
-                    ]
-                ]
+                        'joinparams' => ['jointype' => "itemtype_item"],
+                    ],
+                ],
             ];
 
             $tab[] = [
@@ -337,7 +350,7 @@ class ObjectLock extends CommonDBTM
                 'name'          => __('Locked date'),
                 'joinparams'    => ['jointype' => 'itemtype_item'],
                 'massiveaction' => false,
-                'forcegroupby'  => true
+                'forcegroupby'  => true,
             ];
 
             $tab[] = [
@@ -349,7 +362,7 @@ class ObjectLock extends CommonDBTM
                 'joinparams'    => ['jointype' => 'itemtype_item'],
                 'massiveaction' => false,
                 'forcegroupby'  => true,
-                'additionalfields' => ['date', 'users_id']
+                'additionalfields' => ['date', 'users_id'],
             ];
         }
 
@@ -367,8 +380,8 @@ class ObjectLock extends CommonDBTM
                 $templateContent = <<<TWIG
                     {% set color = is_locked ? 'bg-red-lt' : 'bg-green-lt' %}
                     {% set icon = is_locked ? 'ti-lock' : 'ti-lock-open' %}
-                    {% set text = is_locked ? __('Locked') : __('Free') %}
-                    {% set tooltip = is_locked ? __('Locked by %s at %s')|format(user_name, date) : text %}
+                    {% set text = is_locked ? locked_label : free_label %}
+                    {% set tooltip = is_locked ? locked_by_label|format(user_name, date) : text %}
 
                     <span class="badge {{ color }}" data-bs-toggle="tooltip" title="{{ tooltip }}">
                         <i class="ti {{ icon }}"></i>
@@ -377,9 +390,12 @@ class ObjectLock extends CommonDBTM
 TWIG;
 
                 return TemplateRenderer::getInstance()->renderFromStringTemplate($templateContent, [
-                    'is_locked' => $values['id'] > 0,
-                    'user_name' => getUserName($values['users_id']),
-                    'date'      => $values['date'],
+                    'is_locked'       => $values['id'] > 0,
+                    'user_name'       => getUserName($values['users_id']),
+                    'date'            => $values['date'],
+                    'locked_label'    => __('Locked'),
+                    'free_label'      => __('Free'),
+                    'locked_by_label' => __('Locked by %s at %s'),
                 ]);
         }
 
@@ -390,11 +406,10 @@ TWIG;
      * @param  string $itemtype
      * @param  string $interface
      *
-     * @return array: empty array if itemtype is not lockable; else returns UNLOCK right
+     * @return array empty array if itemtype is not lockable; else returns UNLOCK right
      **/
     public static function getRightsToAdd($itemtype, $interface = 'central')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $ret = [];
@@ -412,17 +427,17 @@ TWIG;
     /**
      * Give cron information
      *
-     * @param $name Task's name
+     * @param string $name Task's name
      *
-     * @return array of information
-     **/
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
             case 'unlockobject':
                 return [
                     'description' => __('Unlock forgotten locked objects'),
-                    'parameter'   => __('Timeout to force unlock (hours)')
+                    'parameter'   => __('Timeout to force unlock (hours)'),
                 ];
         }
         return [];
@@ -433,7 +448,7 @@ TWIG;
      *
      * @param CronTask $task Crontask object
      *
-     * @return integer  >0: done. -1: error, 0: nothing to do
+     * @return int  >0: done. -1: error, 0: nothing to do
      * @used-by CronTask
      **/
     public static function cronUnlockObject($task)
@@ -443,9 +458,9 @@ TWIG;
         $task->setVolume(0); // start with zero
 
         $lockedItems = getAllDataFromTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             [
-                'date' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))]
+                'date' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))],
             ]
         );
 
@@ -453,7 +468,7 @@ TWIG;
             $ol = new self();
             if ($ol->delete($row)) {
                 $actionCode++;
-                $item = new $row['itemtype']();
+                $item = getItemForItemtype($row['itemtype']);
                 $item->getFromDB($row['items_id']);
                 $task->log($row['itemtype'] . " #" . $row['items_id'] . ": " . $item->getLink());
                 $task->addVolume(1);

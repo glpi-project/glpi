@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Socket;
+
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkRight("reports", READ);
 
 Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "report");
@@ -40,7 +44,7 @@ Html::header(Report::getTypeName(Session::getPluralNumber()), '', "tools", "repo
 $itemtype = match (true) {
     isset($_GET['locations_id']) => Location::class,
     isset($_GET['switch']) => NetworkEquipment::class,
-    isset($_GET['prise']) => \Glpi\Socket::class,
+    isset($_GET['prise']) => Socket::class,
     default => null
 };
 $items_id = $_GET['locations_id'] ?? $_GET['switch'] ?? $_GET['prise'] ?? 0;

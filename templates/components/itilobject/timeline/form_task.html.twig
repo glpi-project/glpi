@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -35,10 +34,10 @@
 
 {% set params = {'parent': item}|merge(params|default({})) %}
 
-{% set candedit = item.maySolve() %}
+{% set candedit = item.isNewItem() or item.maySolve() %}
 {% set can_read_kb = has_profile_right('knowbase', constant('READ')) or has_profile_right('knowbase', constant('KnowbaseItem::READFAQ')) %}
 {% set can_update_kb = has_profile_right('knowbase', constant('UPDATE')) %}
-{% set nokb = params['nokb'] is defined or params['nokb'] == true %}
+{% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set rand = random() %}
 {% set formoptions  = params['formoptions'] ?? '' %}
 
@@ -124,11 +123,11 @@
 
       <script type="text/javascript">
          function change_task_state(tasks_id, target) {
-            $.post('{{ path('/ajax/timeline.php') }}',
+            $.post(`${CFG_GLPI.root_doc}/ajax/timeline.php`,
                {'action':     'change_task_state',
                   'tasks_id':   tasks_id,
-                  'parenttype': '{{ item.getType() }}',
-                  '{{ item.getForeignKeyField() }}': {{ item.fields.id }}
+                  'parenttype': '{{ item.getType()|e('js') }}',
+                  '{{ item.getForeignKeyField()|e('js') }}': {{ item.fields.id|json_encode|raw }}
                })
                .done(function(response) {
                   $(target).closest('.timeline-item').find('.state')
@@ -157,16 +156,17 @@
       <script type="text/javascript">
          function itiltasktemplate_update{{ rand }}(value) {
             $.ajax({
-               url: '{{ path('/ajax/task.php') }}',
+               url: `${CFG_GLPI.root_doc}/ajax/task.php`,
                type: 'POST',
                data: {
                   tasktemplates_id: value,
-                  items_id: '{{ item.fields['id'] }}',
-                  itemtype: '{{ item.getType() }}'
+                  items_id: '{{ item.fields['id']|e('js') }}',
+                  itemtype: '{{ item.getType()|e('js') }}'
                }
             }).done(function (data) {
-                if (data.content !== undefined) {
-                    // set textarea content
+                // set textarea content ONLY if template defines content
+                // If template has no content defined, preserve user's existing content
+                if (data.content && data.content.trim() !== '') {
                     setRichTextEditorContent("content_{{ rand }}", data.content);
                 }
 
@@ -210,10 +210,11 @@
                    $("#dropdown_groups_id_tech{{ rand }}").trigger('setValue', data.groups_id_tech);
                }
 
-               // set predefined pending reason
-               $("#enable-pending-reasons-{{ rand }}")
-                  .prop("checked", data.pendingreasons_id > 0);
+               // set predefined pending reason ONLY if template defines one
+               // If template has no pending reason defined, preserve user's choices
                if (data.pendingreasons_id > 0) {
+                  $("#enable-pending-reasons-{{ rand }}")
+                     .prop("checked", true);
                   $("#pending-reasons-setup-{{ rand }}")
                      .collapse('show');
 
@@ -223,17 +224,9 @@
                   $("#dropdown_pendingreasons_id{{ rand }}")
                      .append(newOption)
                      .trigger('change');
-               } else if (
-                  $("#dropdown_pendingreasons_id{{ rand }}").val() > 0
-                     && $("#pending-reasons-setup-{{ rand }}").hasClass('show')
-               ) {
-                  $("#pending-reasons-setup-{{ rand }}")
-                     .collapse('hide');
-
-                  $("#dropdown_pendingreasons_id{{ rand }}")
-                     .val(0)
-                     .trigger('change');
                }
+               // If template has NO pending (data.pendingreasons_id is 0 or undefined),
+               // DO NOTHING to preserve user's pending choices
             });
          }
       </script>

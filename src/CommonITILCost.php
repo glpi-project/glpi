@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,6 +57,9 @@ abstract class CommonITILCost extends CommonDBChild
         return Infocom::getIcon();
     }
 
+    /**
+     * @return class-string<CommonDBTM>
+     */
     public function getItilObjectItemType()
     {
         return str_replace('Cost', '', static::class);
@@ -64,7 +67,6 @@ abstract class CommonITILCost extends CommonDBChild
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-
         // can exists for template
         if (
             (get_class($item) == static::$itemtype)
@@ -83,14 +85,13 @@ abstract class CommonITILCost extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item object
-     * @param integer $tabnum          (default 1)
-     * @param integer $withtemplate    (default 0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showForObject($item, $withtemplate);
+        if (!$item instanceof CommonITILObject && !$item instanceof Project) {
+            return false;
+        }
+
+        self::showForObject($item);
         return true;
     }
 
@@ -100,7 +101,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -119,15 +120,15 @@ abstract class CommonITILCost extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -135,7 +136,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'begin_date',
             'name'               => __('Begin date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -143,7 +144,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -151,7 +152,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'actiontime',
             'name'               => __('Duration'),
-            'datatype'           => 'timestamp'
+            'datatype'           => 'timestamp',
         ];
 
         $tab[] = [
@@ -159,7 +160,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost_time',
             'name'               => __('Time cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -167,7 +168,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost_fixed',
             'name'               => __('Fixed cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -175,7 +176,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost_material',
             'name'               => __('Material cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -183,7 +184,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => Budget::getTable(),
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -192,22 +193,21 @@ abstract class CommonITILCost extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
     }
 
-    public static function rawSearchOptionsToAdd()
+    public static function rawSearchOptionsToAdd(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
 
         $tab[] = [
             'id'                 => 'cost',
-            'name'               => _n('Cost', 'Costs', 1)
+            'name'               => _n('Cost', 'Costs', 1),
         ];
 
         $tab[] = [
@@ -220,14 +220,14 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
-                        HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material'))
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / '
+                        . HOUR_TIMESTAMP . ' + ' . $DB::quoteName('TABLE.cost_fixed') . ' + ' . $DB::quoteName('TABLE.cost_material'))
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -242,14 +242,14 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
-                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / ' .
-                        HOUR_TIMESTAMP)
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                    expression: new QueryExpression($DB::quoteName('TABLE.actiontime') . ' * ' . $DB::quoteName('TABLE.cost_time') . ' / '
+                        . HOUR_TIMESTAMP)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -264,8 +264,8 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -278,13 +278,13 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
                     expression: 'TABLE.cost_fixed'
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -299,13 +299,13 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
                     expression: 'TABLE.cost_material'
-                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * ' .
-                    QueryFunction::count(expression: 'TABLE.id', distinct: true)
+                ) . ' / ' . QueryFunction::count('TABLE.id') . ') * '
+                    . QueryFunction::count(expression: 'TABLE.id', distinct: true)
             ),
             'nometa'             => true, // cannot GROUP_CONCAT a SUM
         ];
@@ -315,19 +315,21 @@ abstract class CommonITILCost extends CommonDBChild
 
     /**
      * Init cost for creation based on previous cost
+     *
+     * @return void
      **/
-    public function initBasedOnPrevious()
+    public function initBasedOnPrevious(): void
     {
 
-        $item = new static::$itemtype();
+        $item = getItemForItemtype(static::$itemtype);
         if (
             !isset($this->fields[static::$items_id])
             || !$item->getFromDB($this->fields[static::$items_id])
         ) {
-            return false;
+            return;
         }
 
-       // Set actiontime to
+        // Set actiontime to
         $this->fields['actiontime']
                     = max(
                         0,
@@ -360,40 +362,43 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Get total action time used on costs for an item
      *
-     * @param integer $items_id ID of the item
+     * @param int $items_id ID of the item
+     *
+     * @return int
      **/
     public function getTotalActionTimeForItem($items_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
             'SELECT' => ['SUM' => 'actiontime AS sumtime'],
             'FROM'   => static::getTable(),
-            'WHERE'  => [static::$items_id => $items_id]
+            'WHERE'  => [static::$items_id => $items_id],
         ])->current();
-        return $result['sumtime'];
+
+        return (int) $result['sumtime'];
     }
 
     /**
      * Get last datas for an item
      *
-     * @param integer $items_id ID of the item
+     * @param int $items_id ID of the item
+     *
+     * @return array
      **/
     public function getLastCostForItem($items_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id => $items_id
+                static::$items_id => $items_id,
             ],
             'ORDER'  => [
                 'end_date DESC',
-                'id DESC'
-            ]
+                'id DESC',
+            ],
         ])->current();
         return $result;
     }
@@ -401,12 +406,12 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Print the item cost form
      *
-     * @param integer $ID ID of the item
+     * @param int $ID ID of the item
      * @param array $options options used
      **/
     public function showForm($ID, array $options = [])
     {
-        if (!($ID > 0) && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+        if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;
@@ -415,7 +420,7 @@ abstract class CommonITILCost extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options[static::$items_id] = $options['parent']->fields["id"];
             $this->check(-1, CREATE, $options);
             $this->initBasedOnPrevious();
@@ -427,7 +432,7 @@ abstract class CommonITILCost extends CommonDBChild
             $items_id = $options['parent']->fields["id"];
         }
 
-        $item = new static::$itemtype();
+        $item = getItemForItemtype(static::$itemtype);
         if (!$item->getFromDB($items_id)) {
             return false;
         }
@@ -439,7 +444,7 @@ abstract class CommonITILCost extends CommonDBChild
             'parent_id' => $item->getID(),
             'params' => [
                 'canedit' => $this->canUpdateItem(),
-            ]
+            ],
         ]);
 
         return true;
@@ -448,25 +453,18 @@ abstract class CommonITILCost extends CommonDBChild
     /**
      * Print the item costs
      *
-     * @param CommonITILObject $item object or Project
-     * @param boolean $withtemplate Template or basic item (default 0)
-     *
-     * @return false|integer total cost
+     * @return false|float total cost
      **/
-    public static function showForObject($item, $withtemplate = 0)
+    public static function showForObject(CommonITILObject|Project $item): false|float
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $forproject = false;
-        if (is_a($item, 'Project', true)) {
+        if (is_a($item, Project::class, true)) {
             $forproject = true;
         }
 
-        $ID = $item->fields['id'];
+        $ID = $item->getID();
 
         if (
             !$item->getFromDB($ID)
@@ -477,7 +475,7 @@ abstract class CommonITILCost extends CommonDBChild
         }
         $canedit = false;
         if (!$forproject) {
-            $canedit = $item->canAddItem(__CLASS__);
+            $canedit = $item->canAddItem(self::class);
         }
 
         $items_ids = $ID;
@@ -488,32 +486,31 @@ abstract class CommonITILCost extends CommonDBChild
         $iterator = $DB->request([
             'SELECT' => [
                 static::$items_id, 'id', 'name', 'begin_date', 'end_date', 'actiontime',
-                'budgets_id', 'cost_time', 'cost_fixed', 'cost_material', 'comment'
+                'budgets_id', 'cost_time', 'cost_fixed', 'cost_material', 'comment',
             ],
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id   => $items_ids
+                static::$items_id   => $items_ids,
             ],
-            'ORDER'  => 'begin_date'
+            'ORDER'  => 'begin_date',
         ]);
 
         $rand   = mt_rand();
 
         if (
             $canedit
+            && static::canCreate()
             && !in_array($item->fields['status'], array_merge(
                 $item->getClosedStatusArray(),
                 $item->getSolvedStatusArray()
             ))
         ) {
             $twig_params = [
-                'cancreate' => static::canCreate(),
                 'id'        => $ID,
                 'rand'      => $rand,
                 'type'      => static::getType(),
                 'parenttype' => static::$itemtype,
                 'items_id'  => static::$items_id,
-                'add_new_label' => __('Add a new cost'),
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div id='viewcost{{ id }}_{{ rand }}'></div>
@@ -533,17 +530,18 @@ abstract class CommonITILCost extends CommonDBChild
                         ]) %}
                     }
                 </script>
-                {% if cancreate %}
-                    <div class="text-center mt-1 mb-3">
-                        <button type="button" class="btn btn-primary" onclick="viewAddCost{{ id }}_{{ rand }}(this);">
-                            {{ add_new_label }}
-                        </button>
-                    </div>
-                {% endif %}
 TWIG, $twig_params);
+
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:viewAddCost' . $ID . '_' . $rand . '(this);',
+                    'button_label' => __('Add a new cost'),
+                ]
+            );
         }
 
-        $total          = 0;
+        $total          = 0.;
         $total_time     = 0;
         $total_costtime = 0;
         $total_fixed    = 0;
@@ -581,7 +579,7 @@ TWIG, $twig_params);
             $entry = [
                 'itemtype' => static::getType(),
                 'id'       => $data['id'],
-                'name'     => sprintf(__('%1$s %2$s'), $name, Html::showToolTip($data['comment'], ['display' => false])),
+                'name'     => sprintf(__s('%1$s %2$s'), htmlescape($name), Html::showToolTip($data['comment'], ['display' => false])),
                 'begin_date' => $data['begin_date'],
                 'end_date' => $data['end_date'],
                 'budget' => $budget_links[$data['budgets_id']],
@@ -625,7 +623,7 @@ TWIG, $twig_params);
         ];
         if ($forproject) {
             $columns = [
-                'ticket' => Ticket::getTypeName(1)
+                'ticket' => Ticket::getTypeName(1),
             ] + $columns;
             $footer = [
                 'ticket' => '',
@@ -635,7 +633,6 @@ TWIG, $twig_params);
             'datatable_id' => 'datatable_costs' . $ID . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'super_header' => $super_header,
             'columns' => $columns,
             'formatters' => [
@@ -653,32 +650,27 @@ TWIG, $twig_params);
             'entries' => $entries,
             'row_class' => $canedit ? 'cursor-pointer' : '',
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => false,
         ]);
         if ($canedit) {
             $cost_class = static::class;
             $parent_class = static::$itemtype;
             $items_id_field = static::$items_id;
-            echo Html::scriptBlock(<<<JS
+            echo Html::scriptBlock("
                 $(() => {
                     $('#datatable_costs{$ID}{$rand}').on('click', 'tbody tr', (e) => {
-                        //ignore click in first column (the massive action checkbox)
-                        if ($(e.target).closest('td').is('td:first-child')) {
-                            return;
-                        }
                         const cost_id = $(e.currentTarget).data('id');
                         if (cost_id) {
                             $('#viewcost{$ID}_{$rand}').load('/ajax/viewsubitem.php',{
-                                type: "{$cost_class}",
-                                parenttype: "{$parent_class}",
-                                {$items_id_field}: $ID,
+                                type: '" . jsescape($cost_class) . "',
+                                parenttype: '" . jsescape($parent_class) . "',
+                                '" . jsescape($items_id_field) . "': $ID,
                                 id: cost_id
                             });
                         }
                     });
                 });
-JS);
+            ");
         }
         return $total;
     }
@@ -687,14 +679,13 @@ JS);
      * Get costs summary values
      *
      * @param string $type type
-     * @param integer $ID ID of the ticket
+     * @param int $ID ID of the ticket
      *
      * @return array of costs and actiontime
      * @used-by src/NotificationTargetCommonITILObject.php
      **/
     public static function getCostsSummary($type, $ID)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $result = $DB->request(
@@ -703,14 +694,14 @@ JS);
                     'actiontime',
                     'cost_time',
                     'cost_fixed',
-                    'cost_material'
+                    'cost_material',
                 ],
                 'FROM'      => getTableForItemType($type),
                 'WHERE'     => [
                     static::$items_id      => $ID,
                 ],
                 'ORDER'     => [
-                    'begin_date'
+                    'begin_date',
                 ],
             ]
         );
@@ -719,7 +710,7 @@ JS);
             'actiontime'   => 0,
             'costfixed'    => 0,
             'costtime'     => 0,
-            'costmaterial' => 0
+            'costmaterial' => 0,
         ];
 
         foreach ($result as $data) {
@@ -748,7 +739,7 @@ JS);
      * @param float $cost_time time cost
      * @param float $cost_fixed fixed cost
      * @param float $cost_material material cost
-     * @param boolean $edit used for edit of computation ? (true by default)
+     * @param bool $edit used for edit of computation ? (true by default)
      *
      * @return string total cost formatted string
      **/

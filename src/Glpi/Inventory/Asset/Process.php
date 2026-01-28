@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Process;
-use Toolbox;
 
 class Process extends InventoryAsset
 {
@@ -76,9 +75,11 @@ class Process extends InventoryAsset
         return $this->data;
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -88,8 +89,8 @@ class Process extends InventoryAsset
             'FROM'   => Item_Process::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType()
-            ]
+                'itemtype' => $this->item->getType(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $dbid = $data['id'];
@@ -118,7 +119,7 @@ class Process extends InventoryAsset
             foreach ($db_itemProcess as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
-                    $input = (array)$val + [
+                    $input = (array) $val + [
                         'id'           => $keydb,
                     ];
                     $itemProcess->update($input);
@@ -130,19 +131,19 @@ class Process extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemProcess) != 0) {
-           // Delete Item_Process in DB
+            // Delete Item_Process in DB
             foreach ($db_itemProcess as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
-                    $itemProcess->delete(['id' => $dbid], 1);
+                    $itemProcess->delete(['id' => $dbid], true);
                 }
             }
         }
         if (count($value)) {
             foreach ($value as $val) {
-                $input = (array)$val + [
+                $input = (array) $val + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType()
+                    'itemtype'     => $this->item->getType(),
                 ];
 
                 $itemProcess->add($input);
@@ -152,7 +153,6 @@ class Process extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $this->conf = $conf;
         return $conf->import_process == 1 && in_array($this->item::class, $CFG_GLPI['process_types']);

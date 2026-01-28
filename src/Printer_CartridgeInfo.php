@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,10 +34,13 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Inventory\Asset\Cartridge;
+
+use function Safe\preg_match;
 
 class Printer_CartridgeInfo extends CommonDBChild
 {
-    public static $itemtype        = 'Printer';
+    public static $itemtype = Printer::class;
     public static $items_id        = 'printers_id';
     public $dohistory              = true;
 
@@ -46,16 +49,20 @@ class Printer_CartridgeInfo extends CommonDBChild
         return _n('Cartridge inventoried information', 'Cartridge inventoried information', $nb);
     }
 
+    /**
+     * @param Printer $printer
+     *
+     * @return array
+     */
     public function getInfoForPrinter(Printer $printer)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                self::$items_id => $printer->fields['id']
-            ]
+                self::$items_id => $printer->fields['id'],
+            ],
         ]);
 
         $info = [];
@@ -66,11 +73,16 @@ class Printer_CartridgeInfo extends CommonDBChild
         return $info;
     }
 
+    /**
+     * @param Printer $printer
+     *
+     * @return void
+     */
     public function showForPrinter(Printer $printer)
     {
         $info = $this->getInfoForPrinter($printer);
 
-        $asset = new Glpi\Inventory\Asset\Cartridge($printer);
+        $asset = new Cartridge($printer);
         $tags = $asset->knownTags();
         $entries = [];
 
@@ -85,20 +97,20 @@ class Printer_CartridgeInfo extends CommonDBChild
             if (str_contains($value, 'pages')) {
                 $pages = str_replace('pages', '', $value);
                 $value = sprintf(
-                    _sx('%1$s remaining page', '%1$s remaining pages', $pages),
+                    _x('%1$s remaining page', '%1$s remaining pages', $pages),
                     $pages
                 );
-            } else if ($value === 'OK') {
-                $value = __s('OK');
+            } elseif ($value === 'OK') {
+                $value = __('OK');
             }
 
             if (is_numeric($value)) {
                 $progressbar_data = [
                     'percent'           => $value,
                     'percent_text'      => $value,
-                    'background-color'  => $bar_color,
+                    'background-color'  => htmlescape($bar_color),
                     'text-color'        => $text_color,
-                    'text'              => ''
+                    'text'              => '',
                 ];
 
 
@@ -118,43 +130,44 @@ class Printer_CartridgeInfo extends CommonDBChild
                     </div>
 HTML;
             } else {
-                $out = $value;
+                $out = htmlescape($value);
             }
             $entries[] = [
                 'property' => $tags[$property]['name'] ?? $property,
-                'value'    => $out
+                'value'    => $out,
             ];
         }
 
         if (count($entries)) {
             TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
                 'is_tab' => true,
-                'nopager' => true,
                 'nofilter' => true,
                 'nosort' => true,
                 'super_header' => self::getTypeName(Session::getPluralNumber()),
                 'columns' => [
                     'property' => __('Property'),
-                    'value' => __('Value')
+                    'value' => __('Value'),
                 ],
                 'formatters' => [
-                    'value' => 'raw_html'
+                    'value' => 'raw_html',
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
-                'filtered_number' => count($entries),
-                'showmassiveactions' => false
+                'showmassiveactions' => false,
             ]);
         }
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
 
         $tab[] = [
             'id' => strtolower(self::getType()),
-            'name' => self::getTypeName(1)
+            'name' => self::getTypeName(1),
         ];
 
         $tab[] = [
@@ -166,13 +179,13 @@ HTML;
             'massiveaction'     => false,
             'nosearch'          => true,
             'joinparams'        => [
-                'jointype' => 'child'
+                'jointype' => 'child',
             ],
             'additionalfields'  => ['property', 'value'],
             'forcegroupby'      => true,
             'aggregate'         => true,
             'searchtype'        => ['contains'],
-            'nosort'            => true
+            'nosort'            => true,
         ];
 
         $tab[] = [
@@ -184,13 +197,13 @@ HTML;
             'massiveaction'     => false,
             'nosearch'          => true,
             'joinparams'        => [
-                'jointype' => 'child'
+                'jointype' => 'child',
             ],
             'additionalfields'  => ['property', 'value'],
             'forcegroupby'      => true,
             'aggregate'         => true,
             'searchtype'        => ['contains'],
-            'nosort'            => true
+            'nosort'            => true,
         ];
 
         return $tab;
@@ -220,12 +233,12 @@ HTML;
             'yellow'        => __('Yellow'),
         ];
 
-        if (isset($data['property'], $data['value']) && is_array($data) && str_starts_with($data['property'], $type)) {
+        if (isset($data['property'], $data['value']) && str_starts_with($data['property'], $type)) {
             $color = str_replace($type, '', $data['property']);
             $twig_params = [
                 'color_translated' => $color_translations[$color] ?? ucwords($color),
                 'color' => $color_aliases[$color] ?? $color,
-                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value']
+                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value'],
             ];
             // language=Twig
             return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -243,11 +256,12 @@ TWIG, $twig_params);
         $printer = new Printer();
         if (str_starts_with($field, '_virtual_')) {
             $type = preg_match('/_virtual_(.*)_percent/', $field, $matches) ? $matches[1] : '';
+            $raw_data = $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)] ?? [];
+            // Filter to keep only numeric keys (actual data entries, not metadata like 'count')
+            $data_entries = array_filter($raw_data, static fn($key) => is_int($key), ARRAY_FILTER_USE_KEY);
             $badges = array_filter(array_map(
-                static function ($data) use ($type) {
-                    return self::createCartridgeInformationBadge($data, $type);
-                },
-                $options['raw_data']['Printer_' . $printer->getSearchOptionIDByField('field', $field)]
+                static fn($data) => self::createCartridgeInformationBadge($data, $type),
+                $data_entries
             ));
 
             if ($badges) {

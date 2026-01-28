@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,13 +37,13 @@ use Glpi\DBAL\QueryExpression;
 
 class Appliance_Item_Relation extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Appliance_Item';
+    public static $itemtype_1 = Appliance_Item::class;
     public static $items_id_1 = 'appliances_items_id';
-   //static public $take_entity_1 = false;
+    //static public $take_entity_1 = false;
 
     public static $itemtype_2 = 'itemtype';
     public static $items_id_2 = 'items_id';
-   //static public $take_entity_2 = true;
+    //static public $take_entity_2 = true;
 
     public static function getTypeName($nb = 0)
     {
@@ -53,13 +53,12 @@ class Appliance_Item_Relation extends CommonDBRelation
     /**
      * Get item types that can be linked to an appliance item
      *
-     * @param boolean $all Get all possible types or only allowed ones
+     * @param bool $all Get all possible types or only allowed ones
      *
      * @return array
      */
     public static function getTypes($all = false): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $types = $CFG_GLPI['appliance_relation_types'];
@@ -111,7 +110,7 @@ class Appliance_Item_Relation extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))
@@ -178,25 +177,24 @@ class Appliance_Item_Relation extends CommonDBRelation
      */
     public static function getForApplianceItem(int $appliances_items_id = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => ['id', 'itemtype', 'items_id'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                Appliance_Item::getForeignKeyField() => $appliances_items_id
-            ]
+                Appliance_Item::getForeignKeyField() => $appliances_items_id,
+            ],
         ]);
 
         $relations = [];
         foreach ($iterator as $row) {
             $itemtype = $row['itemtype'];
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item->getFromDB($row['items_id']);
-            $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>" .
-                        "&nbsp;" . htmlescape($item::getTypeName(1)) .
-                        "&nbsp;-&nbsp;" . $item->getLink();
+            $relations[$row['id']] = "<i class='" . htmlescape($item->getIcon()) . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>"
+                        . "&nbsp;" . htmlescape($item::getTypeName(1))
+                        . "&nbsp;-&nbsp;" . $item->getLink();
         }
 
         return $relations;
@@ -220,12 +218,12 @@ class Appliance_Item_Relation extends CommonDBRelation
         foreach (self::getForApplianceItem($appliances_items_id) as $rel_id => $link) {
             $del = "";
             if ($canedit) {
-                $del = "<i class='delete_relation pointer ti ti-x' data-relations-id='$rel_id'></i>";
+                $del = "<i class='delete_relation pointer ti ti-x' data-relations-id='" . htmlescape($rel_id) . "'></i>";
             }
             $relations_str .= "<li>$link $del</li>";
         }
 
-        return "<ul>$relations_str</ul>
+        return "<ul class='mb-0'>$relations_str</ul>
          <span class='cursor-pointer add_relation' data-appliances-items-id='{$appliances_items_id}'>
             <i class='ti ti-plus' title='" . __s('New relation') . "'></i>
             <span class='sr-only'>" . __s('New relation') . "</span>
@@ -250,9 +248,8 @@ class Appliance_Item_Relation extends CommonDBRelation
     ) {
         if ($canedit) {
             $form_url  = Appliance_Item_Relation::getFormURL();
-            $modal_html = json_encode("
-                <form action='{$form_url}' method='POST'>
-                <p>"
+            $modal_html = "<form action='" . htmlescape($form_url) . "' method='POST'>"
+                . "<p>"
                 . Dropdown::showSelectItemFromItemtypes([
                     'items_id_name'   => 'items_id',
                     'itemtypes'       => Appliance_Item_Relation::getTypes(true),
@@ -262,41 +259,41 @@ class Appliance_Item_Relation extends CommonDBRelation
                     'checkright'     => true,
                     'display'        => false,
                 ])
-                . "</p>
-                <input type='hidden' name='appliances_items_id'>
-                " . Html::submit(_x('button', "Add"), ['name' => 'add']) . "
-            " . Html::closeForm(false));
+                . "</p>"
+                . "<input type='hidden' name='appliances_items_id'>"
+                . Html::submit(_x('button', "Add"), ['name' => 'add'])
+                . Html::closeForm(false);
 
             $crsf_token = Session::getNewCSRFToken();
 
-            $js = <<<JAVASCRIPT
-         $(function() {
-            $(document).on('click', '.add_relation', function() {
-               var appliances_items_id = $(this).data('appliances-items-id');
+            $js = "
+                $(function() {
+                    $(document).on('click', '.add_relation', function() {
+                        var appliances_items_id = $(this).data('appliances-items-id');
 
-               glpi_html_dialog({
-                  title: _x('button', "Add an item"),
-                  body: {$modal_html},
-                  id: 'add_relation_dialog',
-                  show: function() {
-                     $('#add_relation_dialog input[name=appliances_items_id]').val(appliances_items_id);
-                  },
-               })
-            });
+                        glpi_html_dialog({
+                            title: '" . jsescape(_x('button', "Add an item")) . "',
+                            body: '" . jsescape($modal_html) . "',
+                            id: 'add_relation_dialog',
+                            show: function() {
+                                $('#add_relation_dialog input[name=appliances_items_id]').val(appliances_items_id);
+                            },
+                        })
+                    });
 
-            $(document).on('click', '.delete_relation', function() {
-               var relations_id = $(this).data('relations-id');
+                    $(document).on('click', '.delete_relation', function() {
+                        var relations_id = $(this).data('relations-id');
 
-               $.post('{$form_url}', {
-                  'id': relations_id,
-                  '_glpi_csrf_token': '$crsf_token',
-                  'purge': 1,
-               }, function() {
-                  location.reload();
-               })
-            });
-         });
-JAVASCRIPT;
+                        $.post('" . jsescape($form_url) . "', {
+                            'id': relations_id,
+                            '_glpi_csrf_token': '" . jsescape($crsf_token) . "',
+                            'purge': 1,
+                        }, function() {
+                            location.reload();
+                        })
+                    });
+                });
+            ";
             return Html::scriptBlock($js);
         }
 

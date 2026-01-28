@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ use Glpi\Search\Input\QueryBuilder;
 use Glpi\Search\Output\ExportSearchOutput;
 use Glpi\Search\Output\HTMLSearchOutput;
 use Glpi\Search\Output\MapSearchOutput;
+use Glpi\Search\Output\NamesListSearchOutput;
 use Glpi\Search\Provider\SQLProvider;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -56,15 +57,15 @@ class Search
      * @var int
      * @see GLOBAL_SEARCH
      */
-    const GLOBAL_DISPLAY_COUNT = 10;
+    public const GLOBAL_DISPLAY_COUNT = 10;
 
-   // EXPORT TYPE
+    // EXPORT TYPE
     /**
      * The global search view (Search across many item types).
      * This is NOT the same as the AllAssets view which is just a special itemtype.
      * @var int
      */
-    const GLOBAL_SEARCH        = -1;
+    public const GLOBAL_SEARCH        = -1;
 
     /**
      * The standard view.
@@ -74,55 +75,55 @@ class Search
      * - Browse
      * @var int
      */
-    const HTML_OUTPUT          = 0;
+    public const HTML_OUTPUT          = 0;
 
     /**
      * PDF export format (Landscape mode)
      * @var int
      */
-    const PDF_OUTPUT_LANDSCAPE = 2;
+    public const PDF_OUTPUT_LANDSCAPE = 2;
 
     /**
      * CSV export format
      * @var int
      */
-    const CSV_OUTPUT           = 3;
+    public const CSV_OUTPUT           = 3;
 
     /**
      * PDF export format (Portrait mode)
      * @var int
      */
-    const PDF_OUTPUT_PORTRAIT  = 4;
+    public const PDF_OUTPUT_PORTRAIT  = 4;
 
     /**
      * Names list export format
      * @var int
      */
-    const NAMES_OUTPUT         = 5;
+    public const NAMES_OUTPUT         = 5;
 
     /**
      * ODS export
      * @var int
      */
-    const ODS_OUTPUT = 6;
+    public const ODS_OUTPUT = 6;
 
     /**
      * XLSX export
      * @var int
      */
-    const XLSX_OUTPUT = 7;
+    public const XLSX_OUTPUT = 7;
 
     /**
      * Placeholder for a <br> line break
      * @var string
      */
-    const LBBR = '#LBBR#';
+    public const LBBR = '#LBBR#';
 
     /**
      * Placeholder for a <hr> line break
      * @var string
      */
-    const LBHR = '#LBHR#';
+    public const LBHR = '#LBHR#';
 
     /**
      * Separator used to separate values of a same element in CONCAT MySQL function.
@@ -130,7 +131,7 @@ class Search
      * @var string
      * @see LONGSEP
      */
-    const SHORTSEP = '$#$';
+    public const SHORTSEP = '$#$';
 
     /**
      * Separator used to separate each element in GROUP_CONCAT MySQL function.
@@ -138,19 +139,22 @@ class Search
      * @var string
      * @see SHORTSEP
      */
-    const LONGSEP  = '$$##$$';
+    public const LONGSEP  = '$$##$$';
 
     /**
      * Placeholder for a null value
      * @var string
      */
-    const NULLVALUE = '__NULL__';
+    public const NULLVALUE = '__NULL__';
 
     /**
      * The output format for the search results
      * @var int
      */
     public static $output_type = self::HTML_OUTPUT;
+    /**
+     * @var array
+     */
     public static $search = [];
 
     /**
@@ -167,9 +171,9 @@ class Search
 
 
     /**
-     * Display result table for search engine for an type
+     * Display result table for search engine for a type
      *
-     * @param class-string<CommonDBTM> $itemtype Item type to manage
+     * @param class-string<AllAssets|CommonDBTM> $itemtype Item type to manage
      * @param array  $params       Search params passed to
      *                             prepareDatasForSearch function
      * @param array  $forcedisplay Array of columns to display (default empty
@@ -199,7 +203,7 @@ class Search
 
         $data = SearchEngine::getData($itemtype, $params);
         $data['as_map'] = true;
-        \Search::displayData($data);
+        Search::displayData($data);
     }
 
 
@@ -272,7 +276,7 @@ class Search
      *                            contains all the search part (sql, criteria, params, itemtype etc)
      *                            TODO: should be a property of the class
      * @param  array   $searchopt Search options for the current itemtype
-     * @param  boolean $is_having Do we construct sql WHERE or HAVING part
+     * @param  bool $is_having Do we construct sql WHERE or HAVING part
      *
      * @return string             the sql sub string
      */
@@ -315,7 +319,7 @@ class Search
      * @since 0.85
      *
      * @param array   $data      array of search data prepared to get data
-     * @param boolean $onlycount If we just want to count results
+     * @param bool $onlycount If we just want to count results
      *
      * @return void|false May return false if the SQL data in $data is not valid
      **/
@@ -331,7 +335,7 @@ class Search
      * @param array $data   Array of search datas prepared to get datas
      * @param array $params Array of parameters
      *
-     * @return void
+     * @return bool
      **/
     public static function displayData(array $data, array $params = [])
     {
@@ -475,21 +479,20 @@ class Search
      * @since 9.4: $num param has been dropped
      *
      * @param string  $LINK           link to use
-     * @param string  $NOT            is is a negative search ?
+     * @param bool    $NOT            is is a negative search ?
      * @param string  $itemtype       item type
-     * @param integer $ID             ID of the item to search
+     * @param int     $ID             ID of the item to search
      * @param string  $searchtype     search type ('contains' or 'equals')
      * @param string  $val            value search
      *
-     * @return string|false HAVING clause sub-string (Does not include the "HAVING" keyword).
-     *                      May return false if the related search option is not valid for SQL searching.
+     * @return string HAVING clause sub-string (Does not include the "HAVING" keyword).
      **/
     public static function addHaving($LINK, $NOT, $itemtype, $ID, $searchtype, $val)
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getHavingCriteria($LINK, $NOT, $itemtype, $ID, $searchtype, $val);
         if (count($criteria) === 0) {
+            // Related search option is not valid for SQL searching.
             return '';
         }
         $iterator = new DBmysqlIterator($DB);
@@ -528,7 +531,7 @@ class Search
     public static function addOrderBy($itemtype, $sort_fields)
     {
         $order = SQLProvider::getOrderByCriteria($itemtype, $sort_fields);
-        if (empty($order)) {
+        if ($order === []) {
             return '';
         }
         return (new DBmysqlIterator(null))->handleOrderClause($order);
@@ -577,8 +580,8 @@ class Search
      * @since 9.4: $num param has been dropped
      *
      * @param string  $itemtype     item type
-     * @param integer $ID           ID of the item to add
-     * @param boolean $meta         boolean is a meta
+     * @param int $ID           ID of the item to add
+     * @param bool $meta         boolean is a meta
      * @param string  $meta_type    meta item type
      *
      * @return string Select string
@@ -610,7 +613,6 @@ class Search
      **/
     public static function addDefaultWhere($itemtype)
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getDefaultWhereCriteria($itemtype);
         if (count($criteria) === 0) {
@@ -630,18 +632,17 @@ class Search
      * Generic Function to add where to a request
      *
      * @param string  $link         Link string
-     * @param boolean $nott         Is it a negative search ?
+     * @param bool $nott         Is it a negative search ?
      * @param class-string<CommonDBTM>  $itemtype     Item type
-     * @param integer $ID           ID of the item to search
+     * @param int $ID           ID of the item to search
      * @param string  $searchtype   Searchtype used (equals or contains)
      * @param string  $val          Item num in the request
-     * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
+     * @param bool    $meta         Is a meta search (meta=2 in search.class.php) (default 0)
      *
-     * @return string|false Where string or false if an error occured or if there was no valid WHERE string that could be created.
+     * @return string|false Where string or false if an error occurred or if there was no valid WHERE string that could be created.
      **/
-    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
+    public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta);
         if (count($criteria) === 0) {
@@ -674,7 +675,6 @@ class Search
      **/
     public static function addDefaultJoin($itemtype, $ref_table, array &$already_link_tables)
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getDefaultJoinCriteria($itemtype, $ref_table, $already_link_tables);
         $iterator = new DBmysqlIterator($DB);
@@ -697,10 +697,11 @@ class Search
      * @param array   $already_link_tables  Array of tables already joined
      * @param string  $new_table            New table to join
      * @param string  $linkfield            Linkfield for LeftJoin
-     * @param boolean $meta                 Is it a meta item ? (default 0)
+     * @param bool $meta                 Is it a meta item ? (default 0)
      * @param string  $meta_type            Meta item type
      * @param array   $joinparams           Array join parameters (condition / joinbefore...)
      * @param string  $field                Field to display (needed for translation join) (default '')
+     * @param bool    $use_join_subquery    Use a subquery for the join (default false)
      *
      * @return string Left join string
      **/
@@ -713,9 +714,9 @@ class Search
         $meta = false,
         $meta_type = '',
         $joinparams = [],
-        $field = ''
+        $field = '',
+        $use_join_subquery = false
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
         $criteria = SQLProvider::getLeftJoinCriteria(
             $itemtype,
@@ -726,7 +727,8 @@ class Search
             (bool) $meta,
             (string) $meta_type,
             $joinparams,
-            $field
+            $field,
+            $use_join_subquery
         );
         $iterator = new DBmysqlIterator($DB);
         $iterator->buildQuery([
@@ -746,16 +748,16 @@ class Search
      * @param string $from_type             Reference item type ID
      * @param string $to_type               Item type to add
      * @param array  $already_link_tables2  Array of tables already joined
-     *showGenericSearch
+     * @param array $joinparams             Array join parameters (condition / joinbefore...)
+     *
      * @return string Meta Left join string
-     **/
+     */
     public static function addMetaLeftJoin(
         $from_type,
         $to_type,
         array &$already_link_tables2,
         $joinparams = []
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
         $joins = SQLProvider::getMetaLeftJoinCriteria($from_type, $to_type, $already_link_tables2, $joinparams);
         $iterator = new DBmysqlIterator($DB);
@@ -769,7 +771,7 @@ class Search
      * @since 9.4: $num param has been dropped
      *
      * @param string  $itemtype item type
-     * @param integer $ID       ID of the SEARCH_OPTION item
+     * @param int $ID       ID of the SEARCH_OPTION item
      * @param array   $data     array retrieved data array
      *
      * @return string String to print
@@ -786,9 +788,9 @@ class Search
      * @since 9.4: $num param has been dropped
      *
      * @param string  $itemtype        item type
-     * @param integer $ID              ID of the SEARCH_OPTION item
+     * @param int $ID              ID of the SEARCH_OPTION item
      * @param array   $data            array containing data results
-     * @param boolean $meta            is a meta item ? (default false)
+     * @param bool $meta            is a meta item ? (default false)
      * @param array   $addobjectparams array added parameters for union search
      * @param string  $orig_itemtype   Original itemtype, used for union_search_type
      *
@@ -822,8 +824,8 @@ class Search
      *
      * @param string  $itemtype        Item type to manage
      * @param array   $params          Params to parse
-     * @param boolean $usesession      Use datas save in session (true by default)
-     * @param boolean $forcebookmark   Force trying to load parameters from default bookmark:
+     * @param bool $usesession      Use datas save in session (true by default)
+     * @param bool $forcebookmark   Force trying to load parameters from default bookmark:
      *                                  used for global search (false by default)
      *
      * @return array parsed params
@@ -842,9 +844,9 @@ class Search
      * Clean search options depending of user active profile
      *
      * @param string  $itemtype     Item type to manage
-     * @param integer $action       Action which is used to manupulate searchoption
+     * @param int $action       Action which is used to manupulate searchoption
      *                               (default READ)
-     * @param boolean $withplugins  Get plugins options (true by default)
+     * @param bool $withplugins  Get plugins options (true by default)
      *
      * @return array Clean $SEARCH_OPTION array
      **/
@@ -861,7 +863,7 @@ class Search
      * @param class-string<CommonDBTM> $itemtype  Item type
      * @param string $field     Name
      *
-     * @return integer
+     * @return int
      **/
     public static function getOptionNumber($itemtype, $field)
     {
@@ -874,7 +876,7 @@ class Search
      * Get the SEARCH_OPTION array
      *
      * @param string  $itemtype     Item type
-     * @param boolean $withplugins  Get search options from plugins (true by default)
+     * @param bool $withplugins  Get search options from plugins (true by default)
      *
      * @return array The array of search options for the given item type
      **/
@@ -887,9 +889,9 @@ class Search
      * Is the search item related to infocoms
      *
      * @param string  $itemtype  Item type
-     * @param integer $searchID  ID of the element in $SEARCHOPTION
+     * @param int $searchID  ID of the element in $SEARCHOPTION
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isInfocomOption($itemtype, $searchID)
     {
@@ -899,8 +901,10 @@ class Search
 
     /**
      * @param string  $itemtype
-     * @param integer $field_num
-     **/
+     * @param int $field_num
+     *
+     * @return array
+     */
     public static function getActionsFor($itemtype, $field_num)
     {
         return SearchOption::getActionsFor($itemtype, $field_num);
@@ -910,11 +914,11 @@ class Search
     /**
      * Print generic Header Column
      *
-     * @param integer          $type     Display type (see Search::*_OUTPUT constants)
+     * @param int          $type     Display type (see Search::*_OUTPUT constants)
      * @param string           $value    Value to display. This value may contain HTML data. Non-HTML content should be escaped before calling this function.
-     * @param integer          &$num     Column number
+     * @param int          &$num     Column number
      * @param string           $linkto   Link display element (HTML specific) (default '')
-     * @param boolean|integer  $issort   Is the sort column ? (default 0)
+     * @param bool|int  $issort   Is the sort column ? (default 0)
      * @param string           $order    Order type ASC or DESC (defaut '')
      * @param string           $options  Options to add (default '')
      *
@@ -930,39 +934,43 @@ class Search
         $options = ""
     ) {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showHeaderItem($value, $num, $linkto, $issort, $order, $options);
+        }
+        return '';
     }
 
 
     /**
      * Print generic normal Item Cell
      *
-     * @param integer $type        Display type (see Search::*_OUTPUT constants)
+     * @param int $type        Display type (see Search::*_OUTPUT constants)
      * @param string  $value       Value to display
-     * @param integer &$num        Column number
-     * @param integer $row         Row number
+     * @param int &$num        Column number
+     * @param int $row         Row number
      * @param string  $extraparam  Extra parameters for display (default '')
      *
      * @return string HTML to display
      **/
     public static function showItem($type, $value, &$num, $row, $extraparam = '')
     {
-
-        $out = "";
         // Handle null values
         if ($value === null) {
             $value = '';
         }
 
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showItem($value, $num, $row, $extraparam);
+        if ($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) {
+            return $output::showItem($value, $num, $row, $extraparam);
+        }
+        return '';
     }
 
 
     /**
      * Print generic error
      *
-     * @param integer $type     Display type (see Search::*_OUTPUT constants)
+     * @param int $type     Display type (see Search::*_OUTPUT constants)
      * @param string  $message  Message to display, if empty "no item found" will be displayed
      *
      * @return string HTML to display
@@ -970,55 +978,60 @@ class Search
     public static function showError($type, $message = "")
     {
         if (strlen($message) == 0) {
-            $message = __('No item found');
+            $message = __('No results found');
         }
 
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showError($message);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showError($message);
+        }
+        return '';
     }
 
 
     /**
      * Print generic footer
      *
-     * @param integer $type  Display type (see Search::*_OUTPUT constants)
+     * @param int $type  Display type (see Search::*_OUTPUT constants)
      * @param string  $title title of file : used for PDF (default '')
-     * @param integer $count Total number of results
+     * @param int $count Total number of results
      *
      * @return string HTML to display
      **/
     public static function showFooter($type, $title = "", $count = null)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showFooter($title, $count);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showFooter($title, $count);
+        }
+        return '';
     }
 
 
     /**
      * Print generic footer
      *
-     * @param integer         $type   Display type (see Search::*_OUTPUT constants)
-     * @param integer         $rows   Number of rows
-     * @param integer         $cols   Number of columns
-     * @param boolean|integer $fixed  Used tab_cadre_fixe table for HTML export ? (default 0)
+     * @param int         $type   Display type (see Search::*_OUTPUT constants)
+     * @param int         $rows   Number of rows
+     * @param int         $cols   Number of columns
+     * @param bool|int $fixed  Used tab_cadre_fixe table for HTML export ? (default 0)
      *
      * @return string HTML to display
      **/
     public static function showHeader($type, $rows, $cols, $fixed = 0)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        if (!defined('TU_USER')) {
+        if (($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) && !defined('TU_USER')) {
             return $output::showHeader($rows, $cols, $fixed);
-        } else {
-            return '';
         }
+        return '';
     }
 
 
     /**
      * Print begin of header part
      *
-     * @param integer $type   Display type (see Search::*_OUTPUT constants)
+     * @param int $type   Display type (see Search::*_OUTPUT constants)
      *
      * @since 0.85
      *
@@ -1027,14 +1040,17 @@ class Search
     public static function showBeginHeader($type)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showBeginHeader();
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showBeginHeader();
+        }
+        return '';
     }
 
 
     /**
      * Print end of header part
      *
-     * @param integer $type   Display type (see Search::*_OUTPUT constants)
+     * @param int $type   Display type (see Search::*_OUTPUT constants)
      *
      * @since 0.85
      *
@@ -1043,41 +1059,52 @@ class Search
     public static function showEndHeader($type)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showEndHeader();
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showEndHeader();
+        }
+        return '';
     }
 
 
     /**
      * Print generic new line
      *
-     * @param integer $type        Display type (see Search::*_OUTPUT constants)
-     * @param boolean $odd         Is it a new odd line ? (false by default)
-     * @param boolean $is_deleted  Is it a deleted search ? (false by default)
+     * @param int $type        Display type (see Search::*_OUTPUT constants)
+     * @param bool $odd         Is it a new odd line ? (false by default)
+     * @param bool $is_deleted  Is it a deleted search ? (false by default)
      *
      * @return string HTML to display
      **/
     public static function showNewLine($type, $odd = false, $is_deleted = false)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showNewLine($odd, $is_deleted);
+        if ($output instanceof HTMLSearchOutput) {
+            return $output::showNewLine($odd, $is_deleted);
+        }
+        return '';
     }
 
 
     /**
      * Print generic end line
      *
-     * @param integer $type  Display type (see Search::*_OUTPUT constants)
+     * @param int $type  Display type (see Search::*_OUTPUT constants)
      *
      * @return string HTML to display
      **/
     public static function showEndLine($type, bool $is_header_line = false)
     {
         $output = SearchEngine::getOutputForLegacyKey($type);
-        return $output::showEndLine($is_header_line);
+        if ($output instanceof HTMLSearchOutput || $output instanceof NamesListSearchOutput) {
+            return $output::showEndLine();
+        }
+        return '';
     }
 
     /**
      * @param array $joinparams
+     *
+     * @return string
      */
     public static function computeComplexJoinID(array $joinparams)
     {
@@ -1089,7 +1116,7 @@ class Search
      *
      * @param string  $field  Nname (should be ` protected)
      * @param string  $val    Value to search
-     * @param boolean $not    Is a negative search ? (false by default)
+     * @param bool $not    Is a negative search ? (false by default)
      * @param string  $link   With previous criteria (default 'AND')
      *
      * @return string Search SQL string
@@ -1117,7 +1144,7 @@ class Search
      * Create SQL search condition
      *
      * @param string  $val  Value to search
-     * @param boolean $not  Is a negative search ? (false by default)
+     * @param bool $not  Is a negative search ? (false by default)
      *
      * @return string Search string
      **/
@@ -1139,31 +1166,6 @@ class Search
     }
 
     /**
-     * Add join for dropdown translations
-     *
-     * @param string $alias    Alias for translation table
-     * @param string $table    Table to join on
-     * @param class-string<CommonDBTM> $itemtype Item type
-     * @param string $field    Field name
-     *
-     * @return string
-     * @deprecated 11.0.0
-     */
-    public static function joinDropdownTranslations($alias, $table, $itemtype, $field)
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        Toolbox::deprecated();
-
-        return "LEFT JOIN " . $DB::quoteName('glpi_dropdowntranslations') . " AS " . $DB::quoteName($alias) . "
-                  ON (" . $DB::quoteName($alias . '.itemtype') . " = " . $DB->quote($itemtype) . "
-                    AND " . $DB::quoteName($alias . '.items_id') . " = " . $DB::quoteName($table . '.id') . "
-                    AND " . $DB::quoteName($alias . '.language') . " = " . $DB->quote($_SESSION['glpilanguage']) . "
-                    AND " . $DB::quoteName($alias . '.field') . " = " . $DB->quote($field) . ")";
-    }
-
-    /**
      * Get table name for item type
      *
      * @param class-string<CommonDBTM> $itemtype
@@ -1182,6 +1184,6 @@ class Search
      */
     public static function isVirtualField(string $field): bool
     {
-        return strpos($field, '_virtual') === 0;
+        return str_starts_with($field, '_virtual');
     }
 }

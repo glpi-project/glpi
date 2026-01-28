@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  */
 
 /* global glpi_alert, glpi_html_dialog */
+/* global _ */
+
 class Knowbase {
     constructor() {
         this.#registerListeners();
@@ -60,7 +62,7 @@ class Knowbase {
                         body: `
                             <div>
                                 <h2>${__('Subject')}</h2>
-                                <div>${data.name}</div>
+                                <div>${_.escape(data.name)}</div>
                                 <h2>${__('Content')}</h2>
                                 <div>${data.answer}</div>
                             </div>
@@ -77,8 +79,8 @@ class Knowbase {
 
         $(document).on('click', '.compare', (e) => {
             e.preventDefault();
-            const _oldid = $('[name="oldid"]:checked').val();
-            const _diffid = $('[name="diff"]:checked').val();
+            const _oldid = Number.parseInt($('[name="oldid"]:checked').val());
+            const _diffid = Number.parseInt($('[name="diff"]:checked').val());
             const kbitem_id = $(e.currentTarget).data('kbitem_id');
             this.#showRevisionComparison(kbitem_id, _oldid, _diffid);
         });
@@ -98,11 +100,11 @@ class Knowbase {
     }
 
     #showRevisionComparison(kb_item_id, old_id, new_id) {
-        // We will need the public/lib/jquery-prettytextdiff.js script to display the differences once the data is retrieved
+        // We will need the lib/jquery-prettytextdiff.js script to display the differences once the data is retrieved
         // from the server. We can load the library (if it isn't already and the data at the same time and await both promises.
         // The dynamic import will not load the library again if it is already loaded, it will simply resolve immediately.
 
-        const lib_import = import(`${CFG_GLPI.root_doc}/lib/jquery-prettytextdiff.js`);
+        const lib_import = import('/lib/jquery-prettytextdiff.js');
         const data_promise = $.ajax({
             url: `${CFG_GLPI.root_doc}/ajax/compareKbRevisions.php`,
             method: 'post',
@@ -134,8 +136,8 @@ class Knowbase {
                             </tr>
                             <tr>
                                 <th>${__('Subject')}</th>
-                                <td class="original">${data['old']['name']}</td>
-                                <td class="changed">${data['diff']['name']}</td>
+                                <td class="original">${_.escape(data['old']['name'])}</td>
+                                <td class="changed">${_.escape(data['diff']['name'])}</td>
                                 <td class="diff"></td>
                             </tr>
                             <tr>

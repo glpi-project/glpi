@@ -1,0 +1,12 @@
+Subject: Expired licences
+From: noreply@glpi-project.org
+To: tech@glpi-project.org
+Message-ID: <GLPI-SoftwareLicence-1.1716977698.1280320605@localhost>
+Date: Wed, 29 May 2024 11:48:25 +0200
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr-FR
+Content-Transfer-Encoding: 7bit
+
+This is a notification for expiring software licences, sent by GLPI < 10.0.0.
+It should be refused by default rules, based on its Message-ID header.

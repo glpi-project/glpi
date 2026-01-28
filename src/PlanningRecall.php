@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,11 +37,13 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
+use function Safe\strtotime;
+
 // Class PlanningRecall
 // @since 0.84
 class PlanningRecall extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
 
@@ -66,9 +68,11 @@ class PlanningRecall extends CommonDBChild
         $class->cleanDBonItemDelete(static::class, $this->fields['id']);
     }
 
+    /**
+     * @return int
+     */
     public static function isAvailable()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Cache in session
@@ -101,17 +105,17 @@ class PlanningRecall extends CommonDBChild
      * Retrieve an item from the database
      *
      * @param string $itemtype itemtype to get
-     * @param integer $items_id id of the item
-     * @param integer $users_id id of the user
+     * @param int $items_id id of the item
+     * @param int $users_id id of the user
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBForItemAndUser($itemtype, $items_id, $users_id)
     {
         return $this->getFromDBByCrit([
             static::getTable() . '.itemtype'  => $itemtype,
             static::getTable() . '.items_id'  => $items_id,
-            static::getTable() . '.users_id'  => $users_id
+            static::getTable() . '.users_id'  => $users_id,
         ]);
     }
 
@@ -127,7 +131,9 @@ class PlanningRecall extends CommonDBChild
      * Manage recall set
      *
      * @param array $data array of data to manage
-     **/
+     *
+     * @return void|false
+     */
     public static function manageDatas(array $data)
     {
         // Check data information
@@ -151,7 +157,7 @@ class PlanningRecall extends CommonDBChild
             )
         ) {
             if ($data['before_time'] !== $pr->fields['before_time']) {
-               // Recall exists and is different : update datas and clean alert
+                // Recall exists and is different : update datas and clean alert
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     if (
                         $item->getFromDB($data['items_id'])
@@ -166,19 +172,19 @@ class PlanningRecall extends CommonDBChild
                             if ($pr->can($pr->fields['id'], UPDATE)) {
                                 $pr->update(['id'          => $pr->fields['id'],
                                     'before_time' => $data['before_time'],
-                                    'when'        => $when
+                                    'when'        => $when,
                                 ]);
                             }
                         } else {
                             if ($pr->can($pr->fields['id'], PURGE)) {
-                                 $pr->delete(['id' => $pr->fields['id']]);
+                                $pr->delete(['id' => $pr->fields['id']]);
                             }
                         }
                     }
                 }
             }
         } else {
-           // Recall does not exists : create it
+            // Recall does not exists : create it
             if ($pr->can(-1, CREATE, $data)) {
                 if ($item = getItemForItemtype($data['itemtype'])) {
                     $item->getFromDB($data['items_id']);
@@ -192,7 +198,7 @@ class PlanningRecall extends CommonDBChild
                             - $data['before_time']
                         );
                         if ($data['before_time'] >= 0) {
-                             $pr->add($data);
+                            $pr->add($data);
                         }
                     }
                 }
@@ -204,14 +210,13 @@ class PlanningRecall extends CommonDBChild
      * Update planning recal date when changing begin of planning
      *
      * @param string $itemtype itemtype to get
-     * @param integer $items_id id of the item
+     * @param int $items_id id of the item
      * @param string $begin new begin date
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public static function managePlanningUpdates($itemtype, $items_id, $begin)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (isset($_SESSION['glpiplanningreminder_isavailable'])) {
@@ -225,11 +230,11 @@ class PlanningRecall extends CommonDBChild
                     date: new QueryExpression($DB::quoteValue($begin)),
                     interval: new QueryExpression($DB::quoteName('before_time')),
                     interval_unit: 'SECOND'
-                )
+                ),
             ],
             [
                 'itemtype'  => $itemtype,
-                'items_id'  => $items_id
+                'items_id'  => $items_id,
             ]
         );
     }
@@ -334,7 +339,7 @@ TWIG, $p);
     /**
      * Give cron information
      *
-     * @param $name : task's name
+     * @param string $name task's name
      *
      * @return array of information
      * @used-by CronTask
@@ -353,13 +358,11 @@ TWIG, $p);
      *
      * @param CronTask $task for log, if NULL display (default NULL)
      * @used-by CronTask
-     **/
+     *
+     * @return int
+     */
     public static function cronPlanningRecall($task = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -377,17 +380,17 @@ TWIG, $p);
                         'glpi_alerts'           => 'items_id', [
                             'AND' => [
                                 'glpi_alerts.itemtype'  => 'PlanningRecall',
-                                'glpi_alerts.type'      => Alert::ACTION
-                            ]
-                        ]
-                    ]
-                ]
+                                'glpi_alerts.type'      => Alert::ACTION,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'NOT'                         => ['glpi_planningrecalls.when' => null],
                 'glpi_planningrecalls.when'   => ['<', QueryFunction::now()],
-                'glpi_alerts.date'            => null
-            ]
+                'glpi_alerts.date'            => null,
+            ],
         ]);
 
         $pr = new self();
@@ -400,7 +403,7 @@ TWIG, $p);
                 //               -> ChangeTask ->  Change which have entity notion
                 //               -> ProblemTask -> Problem which have entity notion
                 $itemToNotify = $pr->getItem();
-                if ($itemToNotify instanceof \CommonITILTask) {
+                if ($itemToNotify instanceof CommonITILTask) {
                     /** @var CommonITILObject $linkedItem */
                     $linkedItem = $itemToNotify->getItem();
                     // No recall, if the parent item is in a closed status
@@ -417,7 +420,7 @@ TWIG, $p);
                     $cron_status         = 1;
                     $task->addVolume(1);
                     $alert               = new Alert();
-                    $input["itemtype"]   = __CLASS__;
+                    $input["itemtype"]   = self::class;
                     $input["type"]       = Alert::ACTION;
                     $input["items_id"]   = $data['id'];
 

@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -30,7 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-import '../../../lib/tablericons-definitions.js';
+/* global _ */
+
+import '/lib/tablericons-definitions.js';
 
 /**
  * Web icon selector component.
@@ -215,7 +217,7 @@ export class WebIconSelector {
             if (iconset_prefix === "fa") {
                 style = "style=\"font-family: 'Font Awesome 6 Free', 'Font Awesome 6 Brands';\"";
             }
-            container.innerHTML = `<i class="${iconset_prefix} ${option.id}" ${style}></i> ${option.id}`;
+            container.innerHTML = `<i class="${_.escape(iconset_prefix)} ${_.escape(option.id)}" ${style}></i> ${_.escape(option.id)}`;
             return container;
         } else {
             return option.text;

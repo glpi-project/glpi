@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  */
 
 /* global tinycolor */
+/* global _ */
+
 export class TeamBadgeProvider {
     constructor(display_initials, max_team_images = 3) {
         this.badges = {
@@ -46,7 +48,7 @@ export class TeamBadgeProvider {
          * The size in pixels for the team badges
          * @type {number}
          */
-        this.team_image_size = 24;
+        this.team_image_size = 26;
         this.max_team_images = max_team_images;
         this.display_initials = display_initials;
 
@@ -67,7 +69,7 @@ export class TeamBadgeProvider {
         const itemtype = team_member["itemtype"];
         const items_id = team_member["id"];
         const content = this.getTeamBadge(team_member);
-        return btoa(itemtype + items_id + content).slice(0, 8);
+        return btoa(encodeURI(itemtype + items_id + content)).slice(0, 8);
     }
 
     /**
@@ -97,16 +99,16 @@ export class TeamBadgeProvider {
         // Pictures from groups, supplier, contact
         switch (itemtype) {
             case 'Group':
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-users');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-users-group');
                 break;
             case 'Supplier':
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-briefcase');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-truck-loading');
                 break;
             case 'Contact':
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-user');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-user');
                 break;
             default:
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-user');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-user');
         }
         return this.badges[itemtype][items_id];
     }
@@ -138,7 +140,7 @@ export class TeamBadgeProvider {
             Object.keys(users_ids).forEach((user_id) => {
                 if (data[user_id] !== undefined) {
                     // Store new image in cache
-                    this.badges['User'][user_id] = `<span>${data[user_id]}</span>`;
+                    this.badges['User'][user_id] = `<span>${_.escape(data[user_id])}</span>`;
                     to_reload.push(user_id);
                 }
             });
@@ -210,15 +212,15 @@ export class TeamBadgeProvider {
         initials = initials.toUpperCase();
 
         if (!this.display_initials || initials.length === 0) {
-            return this.generateOtherBadge(team_member, 'fa-user');
+            return this.generateOtherBadge(team_member, 'ti ti-user');
         }
 
         const canvas = this.getBadgeCanvas(this.getBadgeColor(team_member));
         const context = canvas.getContext('2d');
         context.fillText(initials, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
-        const name = team_member['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-        return `<span><img src='${src}' title='${name}' data-bs-toggle='tooltip' data-placeholder-users-id='${team_member["id"]}'/></span>`;
+        const name = team_member['name'];
+        return `<span><img src="${_.escape(src)}" title="${_.escape(name)}" data-bs-toggle="tooltip" data-bs-placement="top" data-placeholder-users-id="${_.escape(team_member["id"])}"/></span>`;
     }
 
     /**
@@ -229,12 +231,11 @@ export class TeamBadgeProvider {
      */
     generateOtherBadge(team_member, icon) {
         const bg_color = this.getBadgeColor(team_member);
-        const name = team_member['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        const name = team_member['name'];
 
         return `
-            <span class='fa-stack fa-lg' style='font-size: ${(this.team_image_size / 2)}px'>
-                <i class='fas fa-circle fa-stack-2x' style="color: ${bg_color}" title="${team_member['name']}"></i>
-                <i class='fas ${icon} fa-stack-1x' title="${name}" data-bs-toggle='tooltip'></i>
+            <span class="badge badge-pill" style="background-color: ${_.escape(bg_color)}; font-size: ${(this.team_image_size / 2)}px; height: 26px; padding: 0.25em;">
+                <i class="${_.escape(icon)}" title="${_.escape(name)}" data-bs-toggle="tooltip" data-bs-placement="top"></i>
             </span>
         `;
     }
@@ -251,6 +252,6 @@ export class TeamBadgeProvider {
         const context = canvas.getContext('2d');
         context.fillText(`+${overflow_count}`, this.team_image_size / 2, this.team_image_size / 2);
         const src = canvas.toDataURL("image/png");
-        return `<span class='position-relative'><img src='${src}' title='${__('%d other team members').replace('%d', overflow_count)}' data-bs-toggle='tooltip'/></span>`;
+        return `<span class="position-relative"><img src="${_.escape(src)}" title="${__('%d other team members').replace('%d', overflow_count)}" data-bs-toggle="tooltip" data-bs-placement="top"></span>`;
     }
 }

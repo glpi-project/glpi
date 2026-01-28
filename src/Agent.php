@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -40,14 +40,21 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Psr7\Response;
+use Safe\DateTime;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * @since 10.0.0
  **/
 class Agent extends CommonDBTM
 {
-    /** @var integer */
+    /** @var int */
     public const DEFAULT_PORT = 62354;
 
     /** @var string */
@@ -56,17 +63,14 @@ class Agent extends CommonDBTM
     /** @var string */
     public const ACTION_INVENTORY = 'inventory';
 
-
-    /** @var integer */
-    protected const TIMEOUT  = 5;
-
-    /** @var boolean */
+    /** @var bool */
     public $dohistory = true;
 
     /** @var string */
     public static $rightname = 'agent';
-   //static $rightname = 'inventory';
+    //static $rightname = 'inventory';
 
+    /** @var bool */
     private static $found_address = false;
 
     public $history_blacklist = ['last_contact'];
@@ -92,7 +96,7 @@ class Agent extends CommonDBTM
         $tab = [
             [
                 'id'            => 'common',
-                'name'          => self::getTypeName(1)
+                'name'          => self::getTypeName(1),
             ], [
                 'id'            => '1',
                 'table'         => $this->getTable(),
@@ -168,7 +172,7 @@ class Agent extends CommonDBTM
                 'datatype'         => 'specific',
                 'searchtype'       => 'equals',
                 'additionalfields' => ['itemtype'],
-                'joinparams'       => ['jointype' => 'child']
+                'joinparams'       => ['jointype' => 'child'],
             ],
             [
                 'id'            => '16',
@@ -241,7 +245,7 @@ class Agent extends CommonDBTM
                 'name'          => __('Remote inventory'),
                 'datatype'      => 'bool',
                 'massiveaction' => false,
-            ]
+            ],
 
         ];
 
@@ -258,11 +262,11 @@ class Agent extends CommonDBTM
         switch ($field) {
             case 'items_id':
                 $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
-                if ($itemtype !== null && class_exists($itemtype)) {
+                if ($itemtype !== null && class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         $item->getFromDB($values[$field]);
-                        return "<a href='" . $item->getLinkURL() . "'>" . $item->fields['name'] . "</a>";
+                        return "<a href='" . htmlescape($item->getLinkURL()) . "'>" . htmlescape($item->fields['name']) . "</a>";
                     }
                 } else {
                     return ' ';
@@ -273,6 +277,9 @@ class Agent extends CommonDBTM
     }
 
 
+    /**
+     * @return array<array<string, mixed>>
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -342,19 +349,13 @@ class Agent extends CommonDBTM
         return $tab;
     }
 
-    /**
-     * Define tabs to display on form page
-     *
-     * @param array $options
-     * @return array containing the tabs name
-     */
     public function defineTabs($options = [])
     {
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('RuleMatchedLog', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(RuleMatchedLog::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -362,14 +363,13 @@ class Agent extends CommonDBTM
     /**
      * Display form for agent configuration
      *
-     * @param integer $id      ID of the agent
-     * @param array   $options Options
+     * @param int $id      ID of the agent
+     * @param array<string, mixed> $options Options
      *
-     * @return boolean
+     * @return bool
      */
     public function showForm($id, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (!empty($id)) {
@@ -395,13 +395,12 @@ class Agent extends CommonDBTM
     /**
      * Handle agent
      *
-     * @param array $metadata Agents metadata from Inventory
+     * @param array<string, mixed> $metadata Agents metadata from Inventory
      *
-     * @return integer
+     * @return int
      */
     public function handleAgent($metadata)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $deviceid = $metadata['deviceid'];
@@ -424,7 +423,7 @@ class Agent extends CommonDBTM
             'last_contact' => date('Y-m-d H:i:s'),
             'useragent'    => $_SERVER['HTTP_USER_AGENT'] ?? null,
             'agenttypes_id' => $atype->fields['id'],
-            'itemtype'     => $metadata['itemtype'] ?? 'Computer'
+            'itemtype'     => $metadata['itemtype'] ?? 'Computer',
         ];
 
         if (isset($metadata['provider']['version'])) {
@@ -472,7 +471,7 @@ class Agent extends CommonDBTM
         if ($deviceid === 'foo' || (!$has_expected_agent_type && !$aid)) {
             $input += [
                 'items_id' => 0,
-                'id' => 0
+                'id' => 0,
             ];
             $this->fields = $input;
             return 0;
@@ -502,9 +501,9 @@ class Agent extends CommonDBTM
     /**
      * Prepare input for add and update
      *
-     * @param array $input Input
+     * @param array<string, mixed> $input Input
      *
-     * @return array|false
+     * @return array<string, mixed>|false
      */
     public function prepareInputs(array $input)
     {
@@ -517,7 +516,6 @@ class Agent extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (isset($CFG_GLPI['threads_networkdiscovery']) && !isset($input['threads_networkdiscovery'])) {
@@ -549,7 +547,7 @@ class Agent extends CommonDBTM
     public function getLinkedItem(): CommonDBTM
     {
         $itemtype = $this->fields['itemtype'];
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($this->fields['items_id']);
         return $item;
     }
@@ -557,22 +555,21 @@ class Agent extends CommonDBTM
     /**
      * Guess possible addresses the agent should answer on
      *
-     * @return array
+     * @return string[]
      */
     public function guessAddresses(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $addresses = [];
 
-       //retrieve linked items
+        //retrieve linked items
         $item = $this->getLinkedItem();
-        if ((int)$item->getID() > 0) {
+        if ((int) $item->getID() > 0) {
             $item_name = $item->getFriendlyName();
             $addresses[] = $item_name;
 
-           //deviceid should contains machines name
+            //deviceid should contains machines name
             $matches = [];
             preg_match('/^(\s)+-\d{4}(-\d{2}){5}$/', $this->fields['deviceid'], $matches);
             if (isset($matches[1])) {
@@ -581,7 +578,7 @@ class Agent extends CommonDBTM
                 }
             }
 
-           //append linked ips
+            //append linked ips
             $ports_iterator = $DB->request([
                 'SELECT' => ['ips.name', 'ips.version'],
                 'FROM'   => NetworkPort::getTable() . ' AS netports',
@@ -592,13 +589,13 @@ class Agent extends CommonDBTM
                         'OR'  => [
                             'AND' => [
                                 'NOT' => [
-                                    'netports.instantiation_type' => 'NULL'
+                                    'netports.instantiation_type' => 'NULL',
                                 ],
-                                'netports.instantiation_type' => 'NetworkPortLocal'
+                                'netports.instantiation_type' => 'NetworkPortLocal',
                             ],
-                            'ips.name'                    => ['127.0.0.1', '::1']
-                        ]
-                    ]
+                            'ips.name'                    => ['127.0.0.1', '::1'],
+                        ],
+                    ],
                 ],
                 'INNER JOIN'   => [
                     NetworkName::getTable() . ' AS netnames' => [
@@ -606,22 +603,22 @@ class Agent extends CommonDBTM
                             'netnames'  => 'items_id',
                             'netports'  => 'id', [
                                 'AND' => [
-                                    'netnames.itemtype'  => NetworkPort::getType()
-                                ]
-                            ]
-                        ]
+                                    'netnames.itemtype'  => NetworkPort::getType(),
+                                ],
+                            ],
+                        ],
                     ],
                     IPAddress::getTable() . ' AS ips' => [
                         'ON'  => [
                             'ips'       => 'items_id',
                             'netnames'  => 'id', [
                                 'AND' => [
-                                    'ips.itemtype' => NetworkName::getType()
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                    'ips.itemtype' => NetworkName::getType(),
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ]);
             foreach ($ports_iterator as $row) {
                 if (!in_array($row['name'], $addresses)) {
@@ -634,26 +631,26 @@ class Agent extends CommonDBTM
                 }
             }
 
-           //append linked domains
+            //append linked domains
             $iterator = $DB->request([
                 'SELECT' => ['d.name'],
                 'FROM'   => Domain_Item::getTable(),
                 'WHERE'  => [
                     'itemtype'  => $item->getType(),
-                    'items_id'  => $item->getID()
+                    'items_id'  => $item->getID(),
                 ],
                 'INNER JOIN'   => [
                     Domain::getTable() . ' AS d'  => [
                         'ON'  => [
                             Domain_Item::getTable() => Domain::getForeignKeyField(),
-                            'd'                     => 'id'
-                        ]
-                    ]
-                ]
+                            'd'                     => 'id',
+                        ],
+                    ],
+                ],
             ]);
 
             foreach ($iterator as $row) {
-                 $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
+                $addresses[] = sprintf('%s.%s', $item_name, $row['name']);
             }
         }
 
@@ -663,13 +660,13 @@ class Agent extends CommonDBTM
     /**
      * Get agent URLs
      *
-     * @return array
+     * @return string[]
      */
     public function getAgentURLs(): array
     {
         $addresses = $this->guessAddresses();
         $protocols = ['http', 'https'];
-        $port = (int)$this->fields['port'];
+        $port = (int) $this->fields['port'];
         if ($port === 0) {
             $port = self::DEFAULT_PORT;
         }
@@ -698,7 +695,6 @@ class Agent extends CommonDBTM
      */
     public function requestAgent($endpoint): Response
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (self::$found_address !== false) {
@@ -712,8 +708,11 @@ class Agent extends CommonDBTM
         foreach ($addresses as $address) {
             $options = [
                 'base_uri'        => $address,
-                'connect_timeout' => self::TIMEOUT,
             ];
+
+            if (in_array(self::class, $CFG_GLPI['proxy_exclusions'])) {
+                $options['proxy_excluded'] = true;
+            }
 
             // init guzzle client with base options
             $httpClient = Toolbox::getGuzzleClient($options);
@@ -721,10 +720,7 @@ class Agent extends CommonDBTM
                 $response = $httpClient->request('GET', $endpoint, []);
                 self::$found_address = $address;
                 break;
-            } catch (\GuzzleHttp\Exception\RequestException $exception) {
-                // got an error response, we don't need to try other addresses
-                break;
-            } catch (\Throwable $exception) {
+            } catch (Throwable $exception) {
                 // many addresses will be incorrect
             }
         }
@@ -734,13 +730,13 @@ class Agent extends CommonDBTM
             throw $exception;
         }
 
-        return $response;
+        return $response; // @phpstan-ignore return.type
     }
 
     /**
      * Request status from agent
      *
-     * @return array
+     * @return array{answer: string}
      */
     public function requestStatus()
     {
@@ -748,11 +744,11 @@ class Agent extends CommonDBTM
         try {
             $response = $this->requestAgent('status');
             return $this->handleAgentResponse($response, self::ACTION_STATUS);
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // no response
             return ['answer' => __('Unknown')];
         }
@@ -761,7 +757,7 @@ class Agent extends CommonDBTM
     /**
      * Request inventory from agent
      *
-     * @return array
+     * @return array{answer: string}
      */
     public function requestInventory()
     {
@@ -769,11 +765,11 @@ class Agent extends CommonDBTM
         try {
             $this->requestAgent('now');
             return $this->handleAgentResponse(new Response(), self::ACTION_INVENTORY);
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
+        } catch (ClientException $e) {
             ErrorHandler::logCaughtException($e);
             // not authorized
             return ['answer' => __('Not allowed')];
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // no response
             return ['answer' => __('Unknown')];
         }
@@ -785,13 +781,13 @@ class Agent extends CommonDBTM
      * @param Response $response Response
      * @param string   $request  Request type (either status or now)
      *
-     * @return array
+     * @return array{answer: string}
      */
     private function handleAgentResponse(Response $response, $request): array
     {
         $data = [];
 
-        $raw_content = (string)$response->getBody();
+        $raw_content = (string) $response->getBody();
 
         switch ($request) {
             case self::ACTION_STATUS:
@@ -805,7 +801,7 @@ class Agent extends CommonDBTM
                 );
                 break;
             default:
-                throw new \RuntimeException(sprintf('Unknown request type %s', $request));
+                throw new RuntimeException(sprintf('Unknown request type %s', $request));
         }
 
         return $data;
@@ -828,13 +824,9 @@ class Agent extends CommonDBTM
      */
     public static function cronCleanoldagents($task = null)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var array $PLUGIN_HOOKS
-         */
         global $DB, $PLUGIN_HOOKS;
 
-        $config = \Config::getConfigurationValues('inventory');
+        $config = Config::getConfigurationValues('inventory');
 
         $retention_time = $config['stale_agents_delay'] ?? 0;
         if ($retention_time <= 0) {
@@ -853,9 +845,9 @@ class Agent extends CommonDBTM
                         date: QueryFunction::now(),
                         interval: $retention_time,
                         interval_unit: 'DAY'
-                    )
-                ]
-            ]
+                    ),
+                ],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -907,7 +899,7 @@ class Agent extends CommonDBTM
                                 $input = [
                                     'id'        => $item->fields['id'],
                                     'states_id' => $config['stale_agents_status'],
-                                    'is_dynamic' => 1
+                                    'is_dynamic' => 1,
                                 ];
                                 if ($item->update($input)) {
                                     $task->addVolume(1);

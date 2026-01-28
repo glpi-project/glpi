@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,7 +50,7 @@
 
 .force-full-width {
     width: 100vw;
-    margin-left: calc(50% - 50vw);
+    margin-inline-start: calc(50% - 50vw);
 }
 
 .border-dashed {
@@ -83,4 +83,36 @@
 
 .min-height-110 {
     min-height: 110px;
+}
+
+.pointer-events-none {
+    pointer-events: none;
+}
+
+.border-menu {
+    border-color: var(--glpi-mainmenu-bg) !important;
+}
+
+.hover-no-shadow:hover {
+    box-shadow: none !important;
+}
+
+.hover-bg:hover {
+    background-color: var(--glpi-hover-bg) !important;
+}
+
+.border-transparent {
+    border-color: transparent;
+}
+
+.min-width-200 {
+    min-width: 200px;
+}
+
+.auto-resize {
+    // Note: this is not yet supported by firefox
+    // See: https://bugzilla.mozilla.org/show_bug.cgi?id=1832409
+    // A backlog entry has been added to review this and implement a fallback
+    // if it is still unsuported when we are ready to release the 12.0 version.
+    field-sizing: content;
 }

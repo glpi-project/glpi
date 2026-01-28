@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,39 +35,17 @@
 
 namespace Glpi\DBAL;
 
-/**
- *  Database iterator class for Mysql
- **/
 class QueryParam
 {
-    private $value;
-
     /**
-     * Create a query param with a value
-     *
-     * @param string $value Query parameter value, defaults to '?'
-     */
-    public function __construct($value = '?')
-    {
-        if ($value == null || trim($value) == '') {
-            $value = '?';
-        }
-        if ($value != '?' && !str_starts_with($value, ':')) {
-            $value = ':' . $value;
-        }
-        $this->value = $value;
-    }
-
-    /**
-     * Query parameter value
+     * Query parameter value.
      *
      * @return string
      */
     public function getValue()
     {
-        return $this->value;
+        return '?';
     }
-
 
     public function __toString()
     {

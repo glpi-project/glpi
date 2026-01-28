@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,6 +30,8 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set rand = rand|default(random())|safe_dom_id %}
+
 {% set load_actors = params['load_actors'] ?? true %}
 {% set actors = load_actors ? item.getActorsForType(actortypeint, params) : [] %}
 
@@ -47,7 +48,7 @@
 {% set onchange = '' %}
 {% set allow_auto_submit = allow_auto_submit ?? true %}
 {% if allow_auto_submit and item.isNewItem() and actortype == "requester" %}
-   {% set onchange = 'this.form.submit();' %}
+   {% set onchange = 'e.target.form.submit();' %}
 {% endif %}
 
 {% if not is_actor_hidden %}
@@ -55,9 +56,10 @@
         {{ required ? 'required' : '' }}>
    {% for actor in actors %}
       {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}
+      {% set actor_use_notification = actor['use_notification'] ?? false %}
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
-            data-use-notification="{{ actor['use_notification'] }}"
+            data-use-notification="{{ actor_use_notification ? 1 : 0 }}"
             data-default-email="{{ actor['default_email'] ?? '' }}"
             data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
@@ -69,20 +71,30 @@
    {% endfor %}
    </select>
 
-   {% if not item.isNewItem() and not params['template_preview'] and canassigntome %}
+   {% if not item.isNewItem() and not (params['template_preview'] ?? false) and canassigntome %}
       {{ include('components/itilobject/actors/assign_to_me.html.twig') }}
    {% endif %}
 
+    {#
+        Prevent WAF (Web Application Firewall) from triggering on item.fields['content']
+
+        The WAF rule (signature ID 010000092) is triggered due to the presence of HTML-encoded content
+        in the 'content' field, which is falsely identified as a potential XSS injection.
+        This key is removed from the AJAX payload to avoid false positives.
+
+        Reference: https://github.com/glpi-project/glpi/pull/10300
+    #}
+    {% set safe_item_fields = item.fields|filter((value, key) => key != 'content') %}
     <script type="module" defer>
-        const actorytype = '{{ actortype }}';
+        const actorytype = '{{ actortype|e('js') }}';
 
         // function to display an option in the list or the selected input
         function genericTemplate(option = {}, is_selection = false) {
             const element   = $(option.element);
             const itemtype  = element.data('itemtype') ?? option.itemtype;
             const items_id  = element.data('items-id') ?? option.items_id;
-            let text        = escapeMarkupText(element.data('text') ?? option.text ?? '');
-            const title     = escapeMarkupText(element.data('title') ?? option.title ?? '');
+            let text        = _.escape(element.data('text') ?? option.text ?? '');
+            const title     = _.escape(element.data('title') ?? option.title ?? '');
             const use_notif = element.data('use-notification') ?? option.use_notification ?? 1;
             const alt_email = element.data('alternative-email') ?? option.alternative_email ?? '';
 
@@ -92,30 +104,30 @@
                 case "User":
                     if (items_id == 0) {
                         text = alt_email;
-                        icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email') }}"></i>`;
+                        icon = `<i class="ti ti-mail mx-1" title="{{ __('Direct email')|e('html')|e('js') }}"></i>`;
                     } else {
-                        icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name }}"></i>`;
+                        icon = `<i class="ti ti-user mx-1" title="{{ 'User'|itemtype_name|e('html')|e('js') }}"></i>`;
                     }
-                    if ("{{ actortype }}" == "assign") {
+                    if ("{{ actortype|e('js') }}" == "assign") {
                         fk = "users_id_assign";
-                    } else if ("{{ actortype }}" == "requester") {
+                    } else if ("{{ actortype|e('js') }}" == "requester") {
                         fk = "users_id_requester";
-                    } else if ("{{ actortype }}" == "observer") {
+                    } else if ("{{ actortype|e('js') }}" == "observer") {
                         fk = "users_id_observer";
                     }
                     break;
                 case "Group":
-                    icon = `<i class="ti ti-users mx-1" title="{{ 'Group'|itemtype_name }}"></i>`;
-                    if ("{{ actortype }}" == "assign") {
+                    icon = `<i class="ti ti-users mx-1" title="{{ 'Group'|itemtype_name|e('html')|e('js') }}"></i>`;
+                    if ("{{ actortype|e('js') }}" == "assign") {
                         fk = "groups_id_assign";
-                    } else if ("{{ actortype }}" == "requester") {
+                    } else if ("{{ actortype|e('js') }}" == "requester") {
                         fk = "groups_id_requester";
-                    } else if ("{{ actortype }}" == "observer") {
+                    } else if ("{{ actortype|e('js') }}" == "observer") {
                         fk = "groups_id_observer";
                     }
                     break;
                 case "Supplier":
-                    icon = `<i class="ti ti-package mx-1" title="{{ 'Supplier'|itemtype_name }}"></i>`;
+                    icon = `<i class="ti ti-package mx-1" title="{{ 'Supplier'|itemtype_name|e('html')|e('js') }}"></i>`;
                     fk   = "suppliers_id_assign";
                     break;
             }
@@ -128,7 +140,7 @@
                 actions = `
                     <button class="btn btn-sm btn-ghost-secondary edit-notify-user"
                               data-bs-toggle="tooltip" data-bs-placement="top"
-                              title="{{ __('Email followup') }}"
+                              title="{{ __('Email followup')|e('html')|e('js') }}"
                               type="button">
                         <i class="ti ${icon_class} notify-icon"></i>
                     </button>`;
@@ -147,20 +159,21 @@
             // prepare html for option element
             text = (is_selection && itemtype == "Group") ? title : text;
             const option_text    = `<span class="actor_text">${text}</span>`;
-            const option_element = $(`<span class="actor_entry" data-itemtype="${itemtype}" data-items-id="${items_id}" data-actortype="${actorytype}">${indent}${icon}${option_text}${actions}</span>`);
+            const option_element = $(`<span class="actor_entry" data-itemtype="${_.escape(itemtype)}" data-items-id="${_.escape(items_id)}" data-actortype="${_.escape(actorytype)}">${indent}${icon}${option_text}${actions}</span>`);
 
             if (is_selection && itemtype == "User") {
                 const unique_id = "user_opt_" + actor_select.attr('data-actor-type') + "User" + items_id;
                 $.ajax({
-                    url: '{{ path('/ajax/comments.php') }}',
+                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
                     type: 'POST',
                     data: {
                         'itemtype': 'User',
                         'value': items_id,
                     }
                 }).then((result) => {
+                    {# `result` is a safe HTML string #}
                     if (result) {
-                        actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
                         option_element.attr('data-glpi-popover-source', `content${unique_id}`);
                     }
                 });
@@ -169,15 +182,34 @@
             if (is_selection && itemtype == "Group") {
                 const unique_id = "group_opt_" + actor_select.attr('data-actor-type') + "Group" + items_id;
                 $.ajax({
-                    url: '{{ path('/ajax/comments.php') }}',
+                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
                     type: 'POST',
                     data: {
                         'itemtype': 'Group',
                         'value': items_id,
                     }
                 }).then((result) => {
+                    {# `result` is a safe HTML string #}
                     if (result) {
-                        actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
+                        option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+                    }
+                });
+            }
+
+            if (is_selection && itemtype == "Supplier") {
+                const unique_id = "supplier_opt_" + actor_select.attr('data-actor-type') + "Supplier" + items_id;
+                $.ajax({
+                    url: `${CFG_GLPI.root_doc}/ajax/comments.php`,
+                    type: 'POST',
+                    data: {
+                        'itemtype': 'Supplier',
+                        'value': items_id,
+                    }
+                }).then((result) => {
+                    {# `result` is a safe HTML string #}
+                    if (result) {
+                        actor_select.parent().append('<' + `div id="content${_.escape(unique_id)}" style="display: none;">${result}<` + '/div>');
                         option_element.attr('data-glpi-popover-source', `content${unique_id}`);
                     }
                 });
@@ -186,24 +218,25 @@
             // manage ticket information (number of assigned ticket for an actor)
             if (is_selection && itemtype != "Email") {
                 let label = '';
-                if ("{{ actortype }}" == "assign") {
-                    label = "{{ __('Number of tickets already assigned') }}";
-                } else if ("{{ actortype }}" == "requester") {
-                    label = "{{ __('Number of tickets as requester') }}";
+                if ("{{ actortype|e('js') }}" == "assign") {
+                    label = "{{ __('Number of tickets already assigned')|e('js') }}";
+                } else if ("{{ actortype|e('js') }}" == "requester") {
+                    label = "{{ __('Number of tickets as requester')|e('js') }}";
                 }
                 const existing_element = $(`
-                    <span class="assign_infos ms-1" title="${label}"
+                    <span class="assign_infos ms-1" title="${_.escape(label)}"
                         data-bs-toggle="tooltip" data-bs-placement="top"
-                        data-id="${items_id}" data-fk="${fk}">
-                        <span class="spinner-border" role="status" aria-hidden="true"></span>
+                        data-id="${_.escape(items_id)}" data-fk="${_.escape(fk)}">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
                     </span>
                 `);
                 option_element.append(existing_element);
 
-                $.get("{{ path('/ajax/actorinformation.php') }}", {
+                $.get(`${CFG_GLPI.root_doc}/ajax/actorinformation.php`, {
                     [fk]: items_id,
                     only_number: true,
                 }).done((number) => {
+                    {# `number` is a safe HTML string #}
                     const badge = number.length > 0 ? `<span class="badge bg-secondary-lt">${number}</span>` : '';
                     existing_element.html(badge);
                 });
@@ -246,7 +279,7 @@
                 }
             },
             ajax: {
-                url: '{{ path('/ajax/actors.php') }}',
+                url: `${CFG_GLPI.root_doc}/ajax/actors.php`,
                 datatype: 'json',
                 type: 'POST',
                 delay:250,
@@ -255,16 +288,16 @@
                     return {
                         action: 'getActors',
                         actortype: actorytype,
-                        users_right: '{{ users_right ?? 'all' }}',
-                        entity_restrict: (window.actors.requester.length === 0 && is_new_item) ? -1 : {{ entities_id }},
+                        users_right: '{{ (users_right ?? 'all')|e('js') }}',
+                        entity_restrict: (window.actors.requester.length === 0 && is_new_item) ? -1 : {{ entities_id|json_encode|raw }},
                         searchText: params.term,
-                        _idor_token: '{{ idor_token(item.getType(), {'users_right': users_right ?? 'all'}) }}',
-                        itiltemplate_class: '{{ itiltemplate.getType() }}',
-                        itiltemplates_id: {{ itiltemplate.fields['id'] ?? 0 }},
-                        itemtype: '{{ item.getType() }}',
-                        items_id: {{ item.isNewItem() ? -1 : item.fields['id'] }},
-                        item: {{ item.fields|json_encode|raw }},
-                        returned_itemtypes: {{ (returned_itemtypes ?? ['User', 'Group', 'Supplier'])|json_encode()|raw }},
+                        _idor_token: '{{ idor_token(item.getType(), {'users_right': users_right ?? 'all'})|e('js') }}',
+                        itiltemplate_class: '{{ itiltemplate.getType()|e('js') }}',
+                        itiltemplates_id: {{ (itiltemplate.fields['id'] ?? 0)|json_encode|raw }},
+                        itemtype: '{{ item.getType()|e('js') }}',
+                        items_id: {{ (item.isNewItem() ? -1 : item.fields['id'])|json_encode|raw }},
+                        item: {{ safe_item_fields|json_encode|raw }},
+                        returned_itemtypes: {{ (returned_itemtypes ?? ['User', 'Group', 'Supplier'])|json_encode|raw }},
                         page: params.page || 1
                     };
                 },
@@ -297,6 +330,10 @@
             if ($('.group-info-card:hover').length > 0) {
                 return false;
             }
+            // prevent closing popover when group card is hover
+            if ($('.supplier-info-card:hover').length > 0) {
+                return false;
+            }
         });
 
         // when the mouse leave the user card in the popover, close it
@@ -308,6 +345,13 @@
 
         // when the mouse leave the group card in the popover, close it
         $(document).on('mouseleave', '.group-info-card', () => {
+            setTimeout(() => {
+                $('.popover').popover('hide');
+            }, 300);
+        });
+
+        // when the mouse leave the supplier card in the popover, close it
+        $(document).on('mouseleave', '.supplier-info-card', () => {
             setTimeout(() => {
                 $('.popover').popover('hide');
             }, 300);
@@ -347,11 +391,11 @@
             saveActorsToDom();
         }
 
-        $("#actor_{{ rand }}").on('select2:select', () => {
+        $("#actor_{{ rand }}").on('select2:select', (e) => {
             updateActors();
             {{ onchange }}
         });
-        $("#actor_{{ rand }}").on('select2:unselect', () => {
+        $("#actor_{{ rand }}").on('select2:unselect', (e) => {
             updateActors();
             {{ onchange }}
         });
@@ -374,10 +418,10 @@
         }, {capture: true})
 
         {% if itiltemplate.isHiddenField('_users_id_' ~ actortype) %}
-        $(".actor_entry[data-itemtype=\"User\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
+        $(".actor_entry[data-itemtype=\"User\"][data-actortype=\"{{ actortype|e('css')|e('js') }}\"]").parent().css("display", "none");
         {% endif %}
         {% if itiltemplate.isHiddenField('_groups_id_' ~ actortype) %}
-        $(".actor_entry[data-itemtype=\"Group\"][data-actortype=\"{{ actortype }}\"]").parent().css("display", "none");
+        $(".actor_entry[data-itemtype=\"Group\"][data-actortype=\"{{ actortype|e('css')|e('js') }}\"]").parent().css("display", "none");
         {% endif %}
     </script>
 {% endif %}

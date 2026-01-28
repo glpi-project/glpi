@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,12 @@
 
 /**
  * NotificationTargetSoftwareLicense Class
- **/
+ *
+ * @extends NotificationTarget<SoftwareLicense>
+ */
 class NotificationTargetSoftwareLicense extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarms on expired licenses')];
@@ -82,7 +85,7 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
 
@@ -92,20 +95,20 @@ class NotificationTargetSoftwareLicense extends NotificationTarget
             'license.serial'         => __('Serial number'),
             'license.entity'         => Entity::getTypeName(1),
             'license.url'            => __('URL'),
-            'license.action'         => _n('Event', 'Events', 1)
+            'license.action'         => _n('Event', 'Events', 1),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'licenses',
             'label'   => __('Device list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
         asort($this->tag_descriptions);

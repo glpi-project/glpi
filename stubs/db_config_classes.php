@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,16 +35,10 @@
 // This file contains class stubs for the DB config classes.
 // It permits to indicates to PHPStan and IDEs that the `DB` and the `DBSlave` classes are extending the `DBmysql` class.
 
-// phpcs:disable PSR1.Classes.ClassDeclaration
-
 if (!class_exists('DB', false)) {
-    class DB extends DBmysql
-    {
-    }
+    class DB extends DBmysql {}
 }
 
 if (!class_exists('DBSlave', false)) {
-    class DBSlave extends DBmysql
-    {
-    }
+    class DBSlave extends DBmysql {}
 }

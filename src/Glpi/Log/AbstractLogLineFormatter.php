@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,25 +34,48 @@
 
 namespace Glpi\Log;
 
+use Glpi\Error\ErrorUtils;
 use Monolog\Formatter\LineFormatter;
+use Override;
+use Throwable;
 
 abstract class AbstractLogLineFormatter extends LineFormatter
 {
-    #[\Override()]
-    protected function normalizeException(\Throwable $e, int $depth = 0): string
+    #[Override()]
+    protected function normalizeException(Throwable $e, int $depth = 0): string
     {
         $message = \sprintf(
             "\n  Backtrace :\n%s",
-            $this->getTraceAsString($e->getTrace())
+            $this->getTraceAsString(
+                array_merge(
+                    [
+                        [
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                        ],
+                    ],
+                    $e->getTrace()
+                )
+            )
         );
 
-        if (($previous = $e->getPrevious()) instanceof \Throwable) {
+        if (($previous = $e->getPrevious()) instanceof Throwable) {
             do {
                 $depth++;
                 $message .= sprintf(
                     "  Previous: %s\n%s",
                     $previous->getMessage(),
-                    $this->getTraceAsString($previous->getTrace()),
+                    $this->getTraceAsString(
+                        array_merge(
+                            [
+                                [
+                                    'file' => $previous->getFile(),
+                                    'line' => $previous->getLine(),
+                                ],
+                            ],
+                            $previous->getTrace()
+                        )
+                    ),
                 );
                 if ($depth > $this->maxNormalizeDepth) {
                     break;
@@ -63,9 +86,14 @@ abstract class AbstractLogLineFormatter extends LineFormatter
         return $message;
     }
 
+    public function stringify($value): string
+    {
+        return $this->cleanPath(parent::stringify($value));
+    }
+
     private function getTraceAsString(array $trace): string
     {
-        if (empty($trace)) {
+        if ($trace === []) {
             return '';
         }
 
@@ -92,15 +120,8 @@ abstract class AbstractLogLineFormatter extends LineFormatter
         return $message;
     }
 
-    /**
-     * Remove the GLPI root directory from file paths.
-     */
     private function cleanPath(string $path): string
     {
-        if (\str_starts_with($path, \GLPI_ROOT)) {
-            $path = \substr($path, \strlen(\GLPI_ROOT) + 1);
-        }
-
-        return $path;
+        return ErrorUtils::cleanPaths($path);
     }
 }

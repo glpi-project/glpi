@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,41 +35,61 @@
 
 namespace Glpi\Console\Database;
 
+use DBConnection;
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 class CheckSchemaIntegrityCommand extends AbstractCommand
 {
     /**
      * Error code returned when empty SQL file is not available / readable.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
+    public const ERROR_UNABLE_TO_READ_EMPTYSQL = 1;
 
     /**
      * Error code returned when differences are found.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_FOUND_DIFFERENCES = 2;
+    public const ERROR_FOUND_DIFFERENCES = 2;
 
     /**
      * Error code returned when a DB update is necessary to be able to perform the check.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_REQUIRE_DB_UPDATE = 3;
+    public const ERROR_REQUIRE_DB_UPDATE = 3;
 
     /**
      * Error code returned when a DB version is not supported.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_UNSUPPORTED_VERSION = 4;
+    public const ERROR_UNSUPPORTED_VERSION = 4;
+
+    /**
+     * Error code returned when no database connection is available.
+     */
+    public const ERROR_NO_DB_CONNECTION = 5;
+
+    /**
+     * Error code returned when the GLPI version cannot be found.
+     */
+    public const ERROR_NO_VERSION_FOUND = 6;
+
+    /**
+     * Error code returned when no tables are found in the database.
+     */
+    public const ERROR_NO_TABLES_FOUND = 7;
+
+    protected $requires_db = false;
 
     protected $requires_db_up_to_date = false;
 
@@ -144,9 +164,20 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
         );
     }
 
+    protected function initDbConnection()
+    {
+        if (!DBConnection::isDbAvailable()) {
+            throw new EarlyExitException(
+                '<error>' . __('Unable to connect to database.') . '</error>',
+                self::ERROR_NO_DB_CONNECTION
+            );
+        }
+
+        parent::initDbConnection();
+    }
+
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $plugin_key = $input->getOption('plugin');
@@ -166,18 +197,35 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
             $installed_version = null; // Cannot know installed schema of plugins
         } else {
             $context = 'core';
-            $installed_version = $CFG_GLPI['dbversion'] ?? $CFG_GLPI['version']; // `dbversion` has been added in GLPI 9.2
+            $installed_version = $CFG_GLPI['dbversion'] ?? $CFG_GLPI['version'] ?? null; // `dbversion` has been added in GLPI 9.2
+
+            if ($installed_version === null) {
+                throw new EarlyExitException(
+                    '<error>' . __('Unable to fetch GLPI version.') . '</error>',
+                    self::ERROR_NO_VERSION_FOUND
+                );
+            }
 
             // Some versions were stored with unexpected whitespaces.
             // e.g. ` 0.80`, ` 0.80.1`, ...
             $installed_version = trim($installed_version);
         }
 
+        if (!$checker->hasTables($context)) {
+            $message = $plugin_key === null
+                ? __('The database contains no GLPI tables.')
+                : sprintf(__('The database contains no tables of the plugin "%s".'), $plugin_key);
+            throw new EarlyExitException(
+                '<error>' . $message . '</error>',
+                self::ERROR_NO_TABLES_FOUND
+            );
+        }
+
         if (!$checker->canCheckIntegrity($installed_version, $context)) {
             $message = $plugin_key === null
                 ? sprintf(__('Checking database integrity of version "%s" is not supported.'), $installed_version)
                 : sprintf(__('Checking database integrity of plugin "%s" is not supported.'), $plugin_key);
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_UNSUPPORTED_VERSION
             );
@@ -185,7 +233,7 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
 
         try {
             $differences = $checker->checkCompleteSchemaForVersion($installed_version, true, $context);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $output->writeln(
                 '<error>' . $e->getMessage() . '</error>',
                 OutputInterface::VERBOSITY_QUIET

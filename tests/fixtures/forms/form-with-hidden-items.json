@@ -1,0 +1,140 @@
+{
+    "version": 1,
+    "forms": [
+        {
+            "id": 49,
+            "uuid": "7d9b903d-a51a-4dfa-8c3b-fad6631f7d92",
+            "name": "Form with hidden items",
+            "header": null,
+            "description": null,
+            "entity_name": "Root entity > E2ETestEntity",
+            "is_recursive": true,
+            "is_active": false,
+            "submit_button_visibility_strategy": "",
+            "illustration": "",
+            "submit_button_conditions": [],
+            "sections": [
+                {
+                    "id": 87,
+                    "uuid": "895eb3dc-b4ee-4d90-9f63-5af7886e15ad",
+                    "name": "Visible section",
+                    "description": null,
+                    "rank": 0,
+                    "visibility_strategy": "",
+                    "conditions": []
+                },
+                {
+                    "id": 88,
+                    "uuid": "ca4864ae-6033-47ac-a61a-c3fcedac28cc",
+                    "name": "Hidden section",
+                    "description": "",
+                    "rank": 1,
+                    "visibility_strategy": "hidden_if",
+                    "conditions": [
+                        {
+                            "item_uuid": "5ad77d63-5a39-40a7-9802-e439e33cc98e",
+                            "item_type": "question",
+                            "value_operator": "visible",
+                            "logic_operator": "and",
+                            "value": ""
+                        }
+                    ]
+                }
+            ],
+            "comments": [],
+            "questions": [
+                {
+                    "id": 332,
+                    "uuid": "5ad77d63-5a39-40a7-9802-e439e33cc98e",
+                    "name": "Visible question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 87,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 333,
+                    "uuid": "9799d212-6900-48a8-9368-1168d356221b",
+                    "name": "Hidden question",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeUrgency",
+                    "is_mandatory": false,
+                    "vertical_rank": 1,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": 0,
+                    "extra_data": null,
+                    "section_id": 87,
+                    "visibility_strategy": "hidden_if",
+                    "validation_strategy": "",
+                    "conditions": [
+                        {
+                            "item_uuid": "5ad77d63-5a39-40a7-9802-e439e33cc98e",
+                            "item_type": "question",
+                            "value_operator": "visible",
+                            "logic_operator": "and",
+                            "value": ""
+                        }
+                    ],
+                    "validation_conditions": []
+                },
+                {
+                    "id": 334,
+                    "uuid": "d4ad39f6-0600-4b72-a59d-b3a16de38bab",
+                    "name": "Visible question inside hidden section",
+                    "type": "Glpi\\Form\\QuestionType\\QuestionTypeShortText",
+                    "is_mandatory": false,
+                    "vertical_rank": 0,
+                    "horizontal_rank": null,
+                    "description": "",
+                    "default_value": "",
+                    "extra_data": null,
+                    "section_id": 88,
+                    "visibility_strategy": "",
+                    "validation_strategy": "",
+                    "conditions": [],
+                    "validation_conditions": []
+                }
+            ],
+            "policies": [
+                {
+                    "strategy": "Glpi\\Form\\AccessControl\\ControlType\\AllowList",
+                    "config": {
+                        "user_ids": [
+                            "all"
+                        ],
+                        "group_ids": [],
+                        "profile_ids": []
+                    },
+                    "is_active": true
+                }
+            ],
+            "destinations": [
+                {
+                    "id": 72,
+                    "itemtype": "Glpi\\Form\\Destination\\FormDestinationTicket",
+                    "name": "Ticket",
+                    "config": [],
+                    "creation_strategy": "",
+                    "conditions": []
+                }
+            ],
+            "translations": [],
+            "data_requirements": [
+                {
+                    "itemtype": "Entity",
+                    "name": "Root entity > E2ETestEntity"
+                }
+            ],
+            "custom_types_requirements": [],
+            "plugin_requirements": []
+        }
+    ]
+}

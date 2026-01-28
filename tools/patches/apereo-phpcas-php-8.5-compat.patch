@@ -1,0 +1,22 @@
+diff --git a/source/CAS/Client.php b/source/CAS/Client.php
+index 8ca9711..6c2ae0a 100644
+--- a/source/CAS/Client.php
++++ b/source/CAS/Client.php
+@@ -788,7 +788,7 @@ class CAS_Client
+             'file' => $dbg[1]['file'],
+             'line' => $dbg[1]['line'],
+             'method' => $dbg[1]['class'] . '::' . $dbg[1]['function'],
+-            'result' => (boolean)$auth
++            'result' => (bool)$auth
+         );
+     }
+     private $_authentication_caller;
+@@ -3166,7 +3166,7 @@ class CAS_Client
+                 $proxiedService->setCasClient($this);
+             }
+             return $proxiedService;
+-        case PHPCAS_PROXIED_SERVICE_IMAP;
++        case PHPCAS_PROXIED_SERVICE_IMAP:
+             $proxiedService = new CAS_ProxiedService_Imap($this->_getUser());
+             if ($proxiedService instanceof CAS_ProxiedService_Testable) {
+                 $proxiedService->setCasClient($this);

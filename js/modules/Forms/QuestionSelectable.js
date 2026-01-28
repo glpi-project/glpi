@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -54,11 +54,12 @@ export class GlpiFormQuestionTypeSelectable {
      *
      * @param {JQuery<HTMLElement>} container
      */
-    constructor(inputType = null, container = null) {
+    constructor(inputType = null, container = null, is_from_template = false) {
         this._inputType = inputType;
         this._container = $(container);
 
         if (this._container !== null) {
+            // Register listeners for existing options
             this._container.children()
                 .each((index, option) => this._registerOptionListeners($(option)));
 
@@ -67,7 +68,15 @@ export class GlpiFormQuestionTypeSelectable {
                 .siblings('div[data-glpi-form-editor-question-extra-details]')
                 .each((index, option) => this._registerOptionListeners($(option)));
 
-            this.#getFormController().computeState();
+            if (is_from_template) {
+                // From template = new question added after the initial rendering.
+                // We only compute the state in this case as it would be useful
+                // during the initial rendering as nothing was changed yet.
+                this.#getFormController().computeState();
+            }
+
+            // Register sortable event
+            this._container.on('sortupdate', () => this._handleSortableUpdate());
 
             // Restore the checked state
             if (this._inputType === 'radio') {
@@ -82,6 +91,70 @@ export class GlpiFormQuestionTypeSelectable {
 
     #getFormController() {
         return this._container.closest('form[data-glpi-form-editor-container]').data('controller');
+    }
+
+    /**
+     * Get the options from the container.
+     *
+     * @returns {Array<{value: string, checked: boolean, uuid: string, order: number}>}
+     */
+    getOptions() {
+        const options = [];
+
+        this._container.children().each((index, option) => {
+            const input      = $(option).find('input[type="text"]');
+            const selectable = $(option).find(`input[type="${CSS.escape(this._inputType)}"]`);
+            const order      = $(option).find('input[data-glpi-form-editor-question-option-order]');
+
+            options[index] = {
+                value: input.val(),
+                checked: selectable.is(':checked'),
+                uuid: selectable.val(),
+                order: parseInt(order.val()),
+            };
+        });
+
+        return options;
+    }
+
+    /**
+     * Set the options.
+     *
+     * @param {Array<{value: string, checked: boolean, uuid: string, order: number}>} options
+     */
+    setOptions(options) {
+        this._container.empty();
+
+        for (const [, value] of Object.entries(options)) {
+            const template = this._container.closest('div[data-glpi-form-editor-question-type-specific]').find('template').get(0);
+            const clone = template.content.cloneNode(true);
+            const uuid = getUUID(); // Generate a new UUID to avoid duplicates
+
+            $(clone).find('input[type="text"]')
+                .val(value.value)
+                .attr('name', `options[${uuid}]`);
+            $(clone).find(`input[type="${CSS.escape(this._inputType)}"]`)
+                .val(uuid)
+                .prop('checked', value.checked);
+            $(clone).find('input[data-glpi-form-editor-question-option-order]')
+                .val(value.order)
+                .attr('name', `options_order[${uuid}]`);
+
+            const insertedElement = $(clone).children().appendTo(this._container);
+
+            // Make option visible
+            this.#showOption($(insertedElement).find('input[type="text"]'));
+
+            // Register the new option listeners
+            this._registerOptionListeners($(insertedElement));
+
+            // Call the onAddOption method
+            this.onAddOption($(insertedElement));
+        }
+
+        this.#reindexOptions();
+        this.#getFormController().computeState();
+        this.#enableOptionsSortable();
     }
 
     /**
@@ -138,7 +211,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
-     * Add a new option after the specified input element.
+     * Add a option after the specified input element.
      *
      * @param {HTMLElement} input - The input element after which to add the new option.
      * @param {boolean} focus - Whether to focus the new option.
@@ -166,6 +239,8 @@ export class GlpiFormQuestionTypeSelectable {
         const uuid = getUUID();
         $(input).parent().next().find('input[type="radio"], input[type="checkbox"]').val(uuid);
         $(input).parent().next().find('input[type="text"]').attr('name', `options[${uuid}]`);
+        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').attr('name', `options_order[${uuid}]`);
+        $(input).parent().next().find('input[data-glpi-form-editor-question-option-order]').val(this._container.children().length + 1);
 
         /**
          * Compute the state to update the input names
@@ -241,7 +316,7 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
-     * Add a new option if needed.
+     * Add a option if needed.
      *
      * @param {HTMLElement} input - The input element.
      */
@@ -314,6 +389,22 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
+     * Reindex the order of the options.
+     */
+    #reindexOptions() {
+        // Reindex the order of the options
+        this._container.children().each((index, option) => {
+            $(option).find('input[data-glpi-form-editor-question-option-order]').val(index);
+        });
+
+        // Reindex the order of the empty option
+        this._container.closest('div[data-glpi-form-editor-question-type-specific]')
+            .find('div[data-glpi-form-editor-question-extra-details]')
+            .find('input[data-glpi-form-editor-question-option-order]')
+            .val(this._container.children().length);
+    }
+
+    /**
      * Handle the input event.
      *
      * @param {InputEvent} event - The input event.
@@ -341,9 +432,16 @@ export class GlpiFormQuestionTypeSelectable {
     }
 
     /**
+     * Handle the sortable update event.
+     */
+    _handleSortableUpdate() {
+        this.#reindexOptions();
+    }
+
+    /**
      * Handle the keydown event.
      *
-     * Enter: Add a new option after the current one and focus it.
+     * Enter: Add a option after the current one and focus it.
      * Backspace: Remove the option if the value is empty.
      * Arrow Up or Shift + Tab: Focus the previous option.
      * Arrow Down or Tab: Focus the next option.
@@ -357,7 +455,7 @@ export class GlpiFormQuestionTypeSelectable {
         if (event.key === 'Enter') {
             event.preventDefault();
 
-            // Add a new option after the current one and focus it
+            // Add a option after the current one and focus it
             if (input.value) {
                 // Focus the next option if the current one is not the last and if the next one is empty
                 if (

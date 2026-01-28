@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,17 +33,13 @@
  */
 
 use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 Session::checkRight(AssetDefinition::$rightname, READ);
-Session::writeClose();
 
 if ($_REQUEST['action'] === 'get_all_fields') {
+    Session::writeClose();
     header("Content-Type: application/json; charset=UTF-8");
     $definition = new AssetDefinition();
     if (!$definition->getFromDB($_GET['assetdefinitions_id'])) {
@@ -52,18 +48,26 @@ if ($_REQUEST['action'] === 'get_all_fields') {
     $all_fields = $definition->getAllFields();
     $field_results = [];
     foreach ($all_fields as $k => $v) {
-        if (!empty($_POST['searchText']) && stripos($v['text'], $_POST['searchText']) === false) {
+        if (!empty($_POST['searchText']) && stripos($v['text'], (string) $_POST['searchText']) === false) {
             continue;
         }
         $v['id'] = $k;
         $field_results[] = $v;
     }
-    echo json_encode([
+
+    /**
+     * Safe JSON response.
+     * @psalm-taint-escape has_quotes
+     * @psalm-taint-escape html
+     */
+    $response = json_encode([
         'results' => $field_results,
-        'count' => count($all_fields)
+        'count' => count($all_fields),
     ], JSON_THROW_ON_ERROR);
+
+    echo $response;
     return;
-} else if ($_REQUEST['action'] === 'get_core_field_editor') {
+} elseif ($_REQUEST['action'] === 'get_core_field_editor') {
     header("Content-Type: text/html; charset=UTF-8");
     $asset_definition = new AssetDefinition();
     if (!$asset_definition->getFromDB($_GET['assetdefinitions_id'])) {

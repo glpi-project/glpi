@@ -3,7 +3,31 @@ SHELL=bash
 COMPOSE = docker compose
 
 PHP = $(COMPOSE) exec app
+PHP_ROOT = $(COMPOSE) exec --user=root app
+DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
+INI_DIR = /usr/local/etc/php/custom_conf.d
+
+# Get playwright's version so that the correct docker image is used.
+PLAYWRIGHT_VERSION = $(shell $(PHP) jq -r '.packages["node_modules/@playwright/test"].version' package-lock.json)
+
+# Load E2E env files
+include tests/e2e/.env
+-include tests/e2e/.env.local
+
+# See: https://playwright.dev/docs/docker
+PLAYWRIGHT = docker run \
+	-it \
+	--rm \
+	--ipc=host \
+	--user=$(shell id -u):$(shell id -g) \
+	-v .:/app \
+	-w /app \
+	-p 9323:9323 \
+	-e E2E_BASE_URL=$(E2E_BASE_URL) \
+	--add-host host.docker.internal:host-gateway \
+	mcr.microsoft.com/playwright:v$(PLAYWRIGHT_VERSION)-noble \
+	npx playwright
 
 # Helper variables
 _TITLE := "\033[32m[%s]\033[0m %s\n" # Green text
@@ -14,70 +38,83 @@ _ERROR := "\033[31m[%s]\033[0m %s\n" # Red text
 ## Production or deployment should be handled following GLPI's documentation.
 ##
 
+## —— General ——————————————————————————————————————————————————————————————————
 .DEFAULT_GOAL := help
 help: ## Show this help message
-	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
+	@grep -hE '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 .PHONY: help
 
-install: .env build start vendor db test-db ## Install the project
+install: init-override build up vendor db-install test-db-install ## Install the project
 .PHONY: install
 
-.env:
+## —— Docker ———————————————————————————————————————————————————————————————————
+init-override:
 	@\
-	if [ ! -f ".devcontainer/docker-compose.override.yaml" ]; then \
-		printf $(_TITLE) "Project" "Creating \".devcontainer/docker-compose.override.yaml\" file for Docker Compose" ; \
-		touch .devcontainer/docker-compose.override.yaml ; \
-	fi ; \
-	if [ ! -f ".env" ]; then \
-		printf $(_TITLE) "Project" "Creating \".env\" file for Docker Compose" ; \
-		touch .env ; \
-	fi ; \
-	if grep -q COMPOSE_FILE ".env"; then \
-		printf $(_TITLE) "Project" "\".env\" file is already populated" ; \
-	else \
-		printf $(_TITLE) "Project" "Writing config to \".env\" file" ; \
-		echo "COMPOSE_FILE=./.devcontainer/docker-compose.yaml:./.devcontainer/docker-compose.override.yaml" >> .env ; \
-    fi
-
-.PHONY: .env
+	if [ ! -f "./docker-compose.override.yaml" ]; then \
+		printf $(_TITLE) "Project" "Creating \"./docker-compose.override.yaml\" file for Docker Compose" ; \
+		touch ./docker-compose.override.yaml ; \
+	fi ;
+.PHONY: init-override
 
 build: ## Build the Docker images
 	@printf $(_TITLE) "Project" "Pulling Docker images" \
 	@$(COMPOSE) pull
-	@$(COMPOSE) build
+	@$(COMPOSE) build --no-cache
 .PHONY: build
 
-start: ## Start all containers
-	@$(COMPOSE) up -d --remove-orphans
+up: ## Start all containers
+	@$(COMPOSE) up -d
 .PHONY: start
 
-stop: ## Stop all containers
-	@$(COMPOSE) stop
+down: ## Stop the containers
+	@$(COMPOSE) down --remove-orphans
 .PHONY: stop
 
-restart: ## Restart the containers & the PHP server
-	@$(MAKE) stop
-	@$(MAKE) start
-.PHONY: restart
-
-vendor: ## Install Composer dependencies
-	@$(CONSOLE) dependencies install
-.PHONY: vendor
-
-locales: ## Compile locales
-	@$(CONSOLE) locales:compile
-.PHONY: locales
-
-kill: ## Stop and remove all containers
+kill: ## Stop the containers and remove the volumes (use with caution)
 	@$(COMPOSE) kill
 	@$(COMPOSE) down --volumes --remove-orphans
 .PHONY: kill
 
-reset: ## Reset and start a fresh install of the project
-reset: kill install
-.PHONY: reset
+bash: ## Start a shell inside the php container
+	@$(PHP) bash
+.PHONY: bash
 
-db: ## Install local development's database
+sql: ## Enter the database cli
+	@$(DB) sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
+.PHONY: sql
+
+## —— GLPI commands ————————————————————————————————————————————————————————————
+console: ## Run a console command, example: make console c='glpi:mycommand'
+	@$(eval c ?=)
+	@$(CONSOLE) $(c)
+.PHONY: console
+
+vendor: c=dependencies install ## Install dependencies
+vendor: console
+.PHONY: vendor
+
+locales-extract: ## Extract locales
+	@$(PHP) vendor/bin/extract-locales
+.PHONY: locales-extract
+
+locales-compile: c=locales:compile ## Compile locales
+locales-compile: console
+.PHONY: locales-compile
+
+cc: c=cache:clear ## Clear the cache
+cc: console
+.PHONY: cc
+
+license-headers-check: ## Verify that the license headers is present all files
+	@$(PHP) vendor/bin/licence-headers-check
+.PHONY: license-headers-check
+
+license-headers-fix: ## Add the missing license headers in all files
+	@$(PHP) vendor/bin/licence-headers-check --fix
+.PHONY: license-headers-fix
+
+## —— Database —————————————————————————————————————————————————————————————————
+db-install: ## Install local development's database
 	@$(CONSOLE) database:install \
 		-r -f \
 		--db-host=db \
@@ -87,9 +124,38 @@ db: ## Install local development's database
 		--db-password=glpi \
 		--no-interaction \
 		--no-telemetry
-.PHONY: db
+.PHONY: db-install
 
-test-db: ## Install automated testing's database
+db-update: ## Update local development's database
+	@$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks
+.PHONY: db-update
+
+db-dump: ## Dump the database
+	@mkdir -p ./.dump; \
+	DUMP_FILE="./.dump/dump_`date +%Y-%m-%d"_"%H_%M_%S`.sql.gz"; \
+	printf $(_TITLE) "db-dump" "Dumping database to $$DUMP_FILE"; \
+	$(DB) sh -c 'mariadb-dump --user $$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE | gzip' > $$DUMP_FILE; \
+	printf $(_TITLE) "db-dump" "Database successfully dumped to $$DUMP_FILE"
+.PHONY: db-dump
+
+db-restore: ## Drop the database and restores it from a dump file, i.e: make db-restore f=./.dump/dump.sql.gz
+	@$(eval f ?=)
+	@if [ -z "$(f)" ]; then \
+		printf $(_ERROR) "db-restore" "Please provide a file path, i.e: make db-restore f=./.dump/dump.sql.gz"; \
+		exit 1; \
+	fi
+	@printf $(_TITLE) "db-restore" "Dropping and recreating database..."
+	@$(DB) sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD -e "DROP DATABASE IF EXISTS \`$$MARIADB_DATABASE\`; CREATE DATABASE \`$$MARIADB_DATABASE\`;"'
+	@printf $(_TITLE) "db-restore" "Restoring from $(f)"
+	@gunzip -c $(f) | $(COMPOSE) exec -T db sh -c 'mariadb --user=$$MARIADB_USER --password=$$MARIADB_PASSWORD $$MARIADB_DATABASE'
+.PHONY: db-restore
+
+
+test-db-install: ## Install testing's database
 	@$(CONSOLE) database:install \
 		-r -f \
 		--db-host=db \
@@ -100,8 +166,175 @@ test-db: ## Install automated testing's database
 		--no-interaction \
 		--no-telemetry \
 		--env=testing
-.PHONY: test-db
+.PHONY: test-db-install
 
-cc: ## Clear the cache
-	@$(CONSOLE) cache:clear
-.PHONY: cc
+test-db-update: ## Update testing's database
+	@$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks \
+		--env=testing
+.PHONY: test-db-update
+
+e2e-db-install: ## Install e2e testing's database
+	@$(CONSOLE) database:install \
+		-r -f \
+		--db-host=db \
+		--db-port=3306 \
+		--db-name=glpi_e2e \
+		--db-user=root \
+		--db-password=glpi \
+		--no-interaction \
+		--no-telemetry \
+		--env=e2e_testing
+.PHONY: e2e-db-install
+
+e2e-db-update: ## Update e2e testing's database
+	@$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks  \
+		--env=e2e_testing
+.PHONY: e2e-db-update
+
+## —— Dependencies —————————————————————————————————————————————————————————————
+composer: ## Run a composer command, example: make composer c='require mypackage/package'
+	@$(eval c ?=)
+	@$(PHP) composer $(c)
+.PHONY: composer
+
+npm: ## Run a npm command, example: make npm c='install mypackage/package'
+	@$(eval c ?=)
+	@$(PHP) npm $(c)
+.PHONY: npm
+
+## —— Testing and static analysis ——————————————————————————————————————————————
+phpunit: ## Run phpunits tests, example: make phpunit c='tests/functional/Glpi/MySpecificTest.php'
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/phpunit $(c)
+.PHONY: phpunit
+
+phpstan: ## Run phpstan
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/phpstan --memory-limit=1G $(c)
+.PHONY: phpstan
+
+phpstan-generate-baseline: c=--generate-baseline=.phpstan-baseline.php analyze  ## Generate phpstan baseline file
+phpstan-generate-baseline: phpstan
+.PHONY: phpstan-generate-baseline
+
+parallel-lint:
+	@$(eval c ?=.)
+	$(PHP) php vendor/bin/parallel-lint \
+		--show-deprecated \
+		--colors \
+		--exclude ./files/ \
+		--exclude ./marketplace/ \
+		--exclude ./plugins/ \
+		--exclude ./vendor/ \
+		$(c)
+.PHONY: parallel-lint
+
+psalm: ## Run psalm analysis
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/psalm $(c)
+.PHONY: psalm
+
+rector-check: ## Run rector with dry run
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/rector --dry-run $(c)
+.PHONY: rector-check
+
+rector-apply: ## Run rector
+	@$(eval c ?=)
+	@$(PHP) php vendor/bin/rector $(c)
+.PHONY: rector-apply
+
+cypress: ## Run cypress tests
+	@$(eval c ?=)
+	@$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
+	@$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
+	@$(PHP) node_modules/.bin/cypress run --project tests $(c)
+.PHONY: cypress
+
+cypress-open: ## Open cypress UI
+	@$(eval c ?=)
+	@$(CONSOLE) config:set url_base http://localhost:8080 --env=testing
+	@$(PHP) bash -c 'node_modules/.bin/cypress verify || node_modules/.bin/cypress install'
+	@$(PHP) node_modules/.bin/cypress open --e2e --browser electron --project tests $(c)
+.PHONY: cypress-open
+
+playwright: ## Run playwright tests
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) test $(c)
+.PHONY: playwright
+
+playwright-report: ## View playwright reports
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) show-report tests/e2e/results --host=0.0.0.0 $(c)
+.PHONY: playwright-report
+
+playwright-ui: ## Open playwright's UI mode
+	@$(eval c ?=)
+	@$(PLAYWRIGHT) test --ui-host=0.0.0.0 --ui-port=9323 $(c)
+.PHONY: playwright-ui
+
+## —— Coding standards —————————————————————————————————————————————————————————
+phpcsfixer-check: ## Check for php coding standards issues
+	@$(PHP) vendor/bin/php-cs-fixer check --diff -vvv
+.PHONY: phpcsfixer-check
+
+phpcsfixer-fix: ## Fix php coding standards issues
+	@$(PHP) vendor/bin/php-cs-fixer fix
+.PHONY: phpcsfixer-fix
+
+## —— Linters ——————————————————————————————————————————————————————————————————
+lint: lint-php lint-scss lint-twig lint-js ## Run all linters
+.PHONY: lint
+
+lint-php: ## Run the php linter script
+	@$(PHP) .github/actions/lint_php-lint.sh
+.PHONY: lint-php
+
+lint-scss: ## Run the scss linter script
+	@$(PHP) .github/actions/lint_scss-lint.sh
+.PHONY: lint-scss
+
+lint-twig: ## Run the twig linter script
+	@$(PHP) .github/actions/lint_twig-lint.sh
+.PHONY: lint-twig
+
+lint-js: ## Run the js linter script
+	@$(PHP) .github/actions/lint_js-lint.sh
+.PHONY: lint-js
+
+lint-playwright: ## Run the ts linter script
+	@$(PHP) npx tsc -p tsconfig.json --noEmit
+.PHONY: lint-playwright
+
+## —— Xdebug ———————————————————————————————————————————————————————————————————
+XDEBUG_FILE = xdebug-mode.ini
+
+xdebug-off: ## Disable xdebug
+	@$(PHP_ROOT) bash -c 'echo "xdebug.mode=off" > $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP_ROOT) service apache2 reload
+.PHONY: xdebug-off
+
+xdebug-on: ## Enable xdebug
+	@$(PHP_ROOT) bash -c 'echo "xdebug.mode=debug" > $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP_ROOT) bash -c 'echo "xdebug.start_with_request=1" >> $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP_ROOT) service apache2 reload
+.PHONY: xdebug-on
+
+xdebug-profile: ## Enable xdebug performance profiling
+	@$(PHP_ROOT) bash -c 'echo "xdebug.mode=profile" > $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP_ROOT) bash -c 'echo "xdebug.start_with_request=1" >> $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP_ROOT) service apache2 reload
+.PHONY: xdebug-profile
+
+xdebug-reset: ## Reset xdebug config by deleting custom ini file
+	@$(PHP_ROOT) bash -c 'test -e $(INI_DIR)/$(XDEBUG_FILE) && rm $(INI_DIR)/$(XDEBUG_FILE) || true'
+	@$(PHP_ROOT) service apache2 reload
+.PHONY: xdebug-reset

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,19 +33,21 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Features\PlanningEvent;
+
 /**
  * Template for PlanningExternalEvent
  * @since 9.5
  **/
 class PlanningExternalEventTemplate extends CommonDropdown
 {
-    use Glpi\Features\PlanningEvent {
+    use PlanningEvent {
         prepareInputForAdd as protected prepareInputForAddTrait;
         prepareInputForUpdate as protected prepareInputForUpdateTrait;
         rawSearchOptions as protected trait_rawSearchOptions;
     }
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -67,11 +69,11 @@ class PlanningExternalEventTemplate extends CommonDropdown
                 'name'  => 'planningeventcategories_id',
                 'label' => _n('Category', 'Categories', 1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'background',
                 'label' => __('Background event'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ], [
                 'name'  => 'plan',
                 'label' => _n('Calendar', 'Calendars', 1),
@@ -88,7 +90,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
                 // When an element will be created from a template, tinymce will catch the base64 image and trigger the
                 // document upload process.
                 'convert_images_to_documents' => false,
-            ]
+            ],
         ];
     }
 
@@ -127,7 +129,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
 
         switch ($field) {
             case 'state':
-                return Planning::getState($values[$field]);
+                return htmlescape(Planning::getState($values[$field]));
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -143,7 +145,12 @@ class PlanningExternalEventTemplate extends CommonDropdown
 
         switch ($field) {
             case 'state':
-                return Planning::dropdownState($name, $values[$field], $options);
+                return Planning::dropdownState(
+                    name: $name,
+                    value: $values[$field],
+                    display: false,
+                    options: $options
+                );
         }
 
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -159,6 +166,11 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
 
+    /**
+     * @param array $input
+     *
+     * @return array
+     */
     public function prepareInputForupdate($input)
     {
         $saved_input = $input;
@@ -167,6 +179,12 @@ class PlanningExternalEventTemplate extends CommonDropdown
         return $this->parseExtraInput($saved_input, $input);
     }
 
+    /**
+     * @param array $orig_input
+     * @param array $input
+     *
+     * @return array
+     */
     public function parseExtraInput(array $orig_input = [], array $input = [])
     {
         if (
@@ -194,6 +212,6 @@ class PlanningExternalEventTemplate extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 /**
  * @since 0.85
@@ -69,7 +71,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::redirect(ProjectTask::getFormURL() . "?projects_id=" . $task->fields['projects_id']);
     }
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $task->check($_POST["id"], DELETE);
 
     $task->restore($_POST);
@@ -82,7 +84,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores a task'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $task->check($_POST['id'], DELETE);
     $task->delete($_POST);
 
@@ -95,9 +97,9 @@ if (isset($_POST["add"])) {
         sprintf(__('%s delete a task'), $_SESSION["glpiname"])
     );
     Html::redirect(Project::getFormURLWithID($task->fields['projects_id']));
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $task->check($_POST['id'], PURGE);
-    $task->delete($_POST, 1);
+    $task->delete($_POST, true);
 
     Event::log(
         $task->fields['projects_id'],
@@ -108,7 +110,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges a task'), $_SESSION["glpiname"])
     );
     Html::redirect(Project::getFormURLWithID($task->fields['projects_id']));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $task->check($_POST["id"], UPDATE);
     $task->update($_POST);
 
@@ -121,7 +123,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates a task'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_GET['_in_modal'])) {
+} elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(ProjectTask::getTypeName(1), in_modal: true);
     $task->showForm($_GET["id"], ['withtemplate' => $_GET["withtemplate"]]);
     Html::popFooter();

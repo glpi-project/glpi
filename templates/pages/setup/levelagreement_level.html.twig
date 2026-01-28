@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -59,5 +58,5 @@
     {% endif %}
     <input type="hidden" name="{{ la.getForeignKeyField() }}" value="{{ la.fields['id'] }}">
     <input type="hidden" name="entities_id" value="{{ la.fields['entities_id'] }}">
-    <input type="hidden" name="is_recursive" value="{{ la.fields['is_recursive'] }}">
+    <input type="hidden" name="is_recursive" value="{{ la.fields['is_recursive'] ? 1 : 0 }}">
 {% endblock %}

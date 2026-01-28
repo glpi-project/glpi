@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,7 @@ use Glpi\Features\Clonable;
 abstract class CommonDCModelDropdown extends CommonDropdown
 {
     use AssetImage;
+    /** @use Clonable<static> */
     use Clonable;
 
     public $additional_fields_for_dictionnary = ['manufacturer'];
@@ -58,7 +59,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      **/
     public function getAdditionalFields()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $fields = parent::getAdditionalFields();
@@ -77,7 +77,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'name'   => 'required_units',
                 'type'   => 'integer',
                 'min'    => 1,
-                'label'  => __('Required units')
+                'label'  => __('Required units'),
             ];
         }
 
@@ -85,7 +85,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             $fields[] = [
                 'name'   => 'depth',
                 'type'   => 'depth',
-                'label'  => __('Depth')
+                'label'  => __('Depth'),
             ];
         }
 
@@ -122,7 +122,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
             $fields[] = [
                 'name'   => 'is_half_rack',
                 'type'   => 'bool',
-                'label'  => __('Is half rack')
+                'label'  => __('Is half rack'),
             ];
         }
 
@@ -131,7 +131,6 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public function rawSearchOptions()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $options = parent::rawSearchOptions();
         $table   = $this->getTable();
@@ -142,7 +141,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'weight',
                 'name'     => __('Weight'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
         }
 
@@ -152,7 +151,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'required_units',
                 'name'     => __('Required units'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
         }
 
@@ -171,7 +170,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'power_connections',
                 'name'     => __('Power connections'),
-                'datatype' => 'number'
+                'datatype' => 'number',
             ];
         }
 
@@ -181,7 +180,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'power_consumption',
                 'name'     => __('Power consumption'),
-                'datatype' => 'decimal'
+                'datatype' => 'decimal',
             ];
         }
 
@@ -191,7 +190,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'table'    => $table,
                 'field'    => 'is_half_rack',
                 'name'     => __('Is half rack'),
-                'datatype' => 'bool'
+                'datatype' => 'bool',
             ];
         }
 
@@ -206,7 +205,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         switch ($field) {
             case 'picture_front':
             case 'picture_rear':
-                if (isset($values['name']) && strlen($values['name']) > 0 && isset($options['html']) && $options['html']) {
+                if (isset($values['name']) && ((string) $values['name']) !== '' && isset($options['html']) && $options['html']) {
                     return Html::image(Toolbox::getPictureUrl($values[$field]), [
                         'alt'   => $options['searchopt']['name'],
                         'style' => 'max-height: 60px;',
@@ -224,7 +223,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
      */
     public function getItemtypeForModel(): string
     {
-        return str_replace('Model', '', get_called_class());
+        return str_replace('Model', '', static::class);
     }
 
     /**
@@ -242,8 +241,8 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                 'FROM'   => $itemtype::getTable(),
                 'WHERE'  => [
                     $this->getForeignKeyField() => $this->fields['id'],
-                ]
-            ])
+                ],
+            ]),
         ]);
     }
 
@@ -268,11 +267,11 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         if (isset($cell[$hpos])) {
             // Get the first $depth * 4 units of the cell to check if they are filled
             $accurateCell = array_slice(
-                $orientation ?
-                    array_reverse($cell[$hpos]) // If orientation is rear, reverse the array
+                $orientation
+                    ? array_reverse($cell[$hpos]) // If orientation is rear, reverse the array
                     : $cell[$hpos],
                 0,
-                $depth * 4
+                (int) ceil($depth * 4)
             );
 
             // Check if any of the units is filled
@@ -312,13 +311,16 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     {
         // Checks whether any fields that might be causing a problem have been modified
         if (
-            (!isset($input['required_units'])
+            (
+                !isset($input['required_units'])
                 || $input['required_units'] <= $this->fields['required_units']
             )
-            && (!isset($input['is_half_rack'])
+            && (
+                !isset($input['is_half_rack'])
                 || $input['is_half_rack'] == $this->fields['is_half_rack']
             )
-            && (!isset($input['depth'])
+            && (
+                !isset($input['depth'])
                 || $input['depth'] == $this->fields['depth']
             )
         ) {
@@ -332,6 +334,9 @@ abstract class CommonDCModelDropdown extends CommonDropdown
         $positionsToCheck = [];
         foreach ($this->getItemsRackForModel() as $item_rack) {
             $rack = Rack::getById($item_rack['racks_id']);
+            if (!$rack instanceof Rack) {
+                continue;
+            }
             $filled = $rack->getFilled($itemtype, $item_rack['items_id']);
             $requiredUnits = $input['required_units'] ?? $this->fields['required_units'];
             $orientation = $item_rack['orientation'];
@@ -427,27 +432,30 @@ abstract class CommonDCModelDropdown extends CommonDropdown
                         '1'      => __('1'),
                         '0.5'    => __('1/2'),
                         '0.33'   => __('1/3'),
-                        '0.25'   => __('1/4')
+                        '0.25'   => __('1/4'),
                     ],
                     [
                         'value'   => $this->fields[$field['name']],
-                        'width'   => '100%'
+                        'width'   => '100%',
                     ]
                 );
                 break;
             default:
-                throw new \RuntimeException("Unknown {$field['type']}");
+                throw new RuntimeException("Unknown {$field['type']}");
         }
     }
 
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $soptions = [];
 
         $soptions[] = [
             'id'   => 'pictures',
-            'name' => _n('Picture', 'Pictures', Session::getPluralNumber())
+            'name' => _n('Picture', 'Pictures', Session::getPluralNumber()),
         ];
 
         $soptions[] = [
@@ -477,7 +485,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
 
     public static function getIcon()
     {
-        $model_class  = get_called_class();
+        $model_class  = static::class;
         $device_class = str_replace('Model', '', $model_class);
         return $device_class::getIcon();
     }

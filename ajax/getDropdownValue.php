@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,4 +40,11 @@
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 
-echo Dropdown::getDropdownValue($_POST);
+/**
+ * Safe JSON response.
+ * @psalm-taint-escape has_quotes
+ * @psalm-taint-escape html
+ */
+$response = Dropdown::getDropdownValue($_POST, json: true);
+
+echo $response;

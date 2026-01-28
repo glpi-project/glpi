@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -43,57 +43,69 @@ use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
 use NotificationEvent;
 use Plugin;
+use Safe\Exceptions\FilesystemException;
 use Session;
+use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
+use wapmorgan\UnifiedArchive\Abilities;
+use wapmorgan\UnifiedArchive\Drivers\Basic\BasicDriver;
+use wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException;
 use wapmorgan\UnifiedArchive\Formats;
-use wapmorgan\UnifiedArchive\UnifiedArchive;
+
+use function Safe\ob_end_clean;
+use function Safe\ob_start;
+use function Safe\parse_url;
+use function Safe\realpath;
+use function Safe\session_write_close;
 
 /**
  * Nota: `CommonGLPI` is required here to be able to provide a displayable name for its crons and notifications.
  */
 class Controller extends CommonGLPI
 {
+    /** @var string */
     protected $plugin_key = "";
 
     public static $rightname = 'config';
+    /** @var ?PluginsApi */
     public static $api       = null;
 
     /**
      * Prompt to replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_ASK   = 1;
+    public const MP_REPLACE_ASK   = 1;
     /**
      * Replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_YES   = 2;
+    public const MP_REPLACE_YES   = 2;
     /**
      * Do not replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_NEVER = 3;
+    public const MP_REPLACE_NEVER = 3;
 
     /**
      * Disable all access to the Marketplace.
      * @var int
      */
-    const MP_MODE_DISABLED = 0;
+    public const MP_MODE_DISABLED = 0;
     /**
      * Allow access to the Marketplace via the CLI only.
      * @var int
      */
-    const MP_MODE_CLI_ONLY = 1;
+    public const MP_MODE_CLI_ONLY = 1;
     /**
      * Allow access to the Marketplace via the web interface only.
      * @var int
      */
-    const MP_MODE_WEB_ONLY = 2;
+    public const MP_MODE_WEB_ONLY = 2;
     /**
      * Allow access to the Marketplace via both the CLI and the web interface.
      * @var int
      */
-    const MP_MODE_FULL     = 3;
+    public const MP_MODE_FULL     = 3;
 
     public function __construct(string $plugin_key = "")
     {
@@ -169,14 +181,11 @@ class Controller extends CommonGLPI
         $plugin   = $api->getPlugin($this->plugin_key, true);
 
         if ($version === null) {
-            $url = $plugin['installation_url'] ?? "";
+            $url = $plugin['installation_url'] ?? null;
+            $version = $plugin['version'] ?? null;
         } else {
             $specific_version = self::getPluginVersionInfo($plugin, $version);
-            $url = null;
-            if ($specific_version !== null) {
-                $url = $specific_version['download_url'] ?? null;
-            }
-            if ($url === null) {
+            if ($specific_version === null) {
                 Session::addMessageAfterRedirect(
                     __s('Cannot find the specified version of the plugin.'),
                     false,
@@ -184,11 +193,12 @@ class Controller extends CommonGLPI
                 );
                 return false;
             }
+            $url = $specific_version['download_url'] ?? null;
         }
-        $filename = basename(parse_url($url, PHP_URL_PATH));
-        $dest     = GLPI_TMP_DIR . '/' . $filename;
 
-        if (!$api->downloadArchive($url, $dest, $this->plugin_key)) {
+        $dest = $url !== null ? GLPI_TMP_DIR . '/' . basename(parse_url($url, PHP_URL_PATH)) : null;
+
+        if ($url === null || !$api->downloadArchive($url, $dest, $this->plugin_key)) {
             Session::addMessageAfterRedirect(
                 __s('Unable to download plugin archive.'),
                 false,
@@ -198,10 +208,15 @@ class Controller extends CommonGLPI
         }
 
         // extract the archive
-        if (!UnifiedArchive::canOpen($dest)) {
-            $type = Formats::detectArchiveFormat($dest);
+        $format = Formats::detectArchiveFormat($dest);
+        $driver = $format !== null
+            // @phpstan-ignore argument.type (see https://github.com/wapmorgan/UnifiedArchive/pull/54)
+            ? Formats::getFormatDriver($format, [Abilities::OPEN, Abilities::EXTRACT_CONTENT])
+            : null;
+
+        if (!is_a($driver, BasicDriver::class, true)) {
             Session::addMessageAfterRedirect(
-                htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $type)),
+                htmlescape(sprintf(__('Plugin archive format is not supported by your system : %s.'), $format)),
                 false,
                 ERROR
             );
@@ -210,26 +225,18 @@ class Controller extends CommonGLPI
 
         // Some plugins archives may be huge, as they may embed some binaries.
         // Upgrade memory limit to 512M, which should be enough.
-        $memory_limit = (int)Toolbox::getMemoryLimit();
+        $memory_limit = (int) Toolbox::getMemoryLimit();
         if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
-            ini_set('memory_limit', '512M');
+            Toolbox::safeIniSet('memory_limit', '512M');
         }
 
-        $archive = UnifiedArchive::open($dest);
-        $error = $archive === null;
-        if (!$error) {
-            // clean dir in case of update
-            Toolbox::deleteDir(GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}");
+        // clean dir in case of update
+        Toolbox::deleteDir(GLPI_MARKETPLACE_DIR . "/{$this->plugin_key}");
 
-            try {
-                // copy files
-                $archive->extract(GLPI_MARKETPLACE_DIR) !== false;
-            } catch (\wapmorgan\UnifiedArchive\Exceptions\ArchiveExtractionException $e) {
-                $error = true;
-            }
-        }
-
-        if ($error) {
+        $archive = new $driver($dest, $format);
+        try {
+            $archive->extractArchive(GLPI_MARKETPLACE_DIR);
+        } catch (ArchiveExtractionException $e) {
             Session::addMessageAfterRedirect(
                 __s('Unable to extract plugin archive.'),
                 false,
@@ -240,16 +247,35 @@ class Controller extends CommonGLPI
 
         $plugin_inst = new Plugin();
 
-        if (
-            $plugin_inst->getFromDBbyDir($this->plugin_key)
-            && !in_array($plugin_inst->fields['state'], [Plugin::ANEW, Plugin::NOTINSTALLED, Plugin::NOTUPDATED])
-        ) {
-            // Plugin was already existing, make it "not updated" before checking its state
-            // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
-            $plugin_inst->update([
-                'id'    => $plugin_inst->fields['id'],
-                'state' => Plugin::NOTUPDATED
+        if ($plugin_inst->getFromDBbyDir($this->plugin_key)) {
+            // Plugin exists, update its version/state
+            $update_input = [
+                'id'      => $plugin_inst->fields['id'],
+                'version' => $version,
+            ];
+            if (!in_array($plugin_inst->fields['state'], [Plugin::ANEW, Plugin::NOTINSTALLED, Plugin::NOTUPDATED])) {
+                // Plugin was already existing, make it "not updated" before checking its state
+                // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
+                $update_input['state'] = Plugin::NOTUPDATED;
+            }
+
+            $plugin_inst->update($update_input);
+        } else {
+            // Plugin does not exist, initialize it with known information
+            $plugin_inst->add([
+                'name'      => $plugin['name'] ?? $this->plugin_key,
+                'directory' => $this->plugin_key,
+                'version'   => $version,
+                'state'     => Plugin::NOTINSTALLED,
+                'author'    => implode(' ', array_column($plugin['authors'] ?? [], 'name')),
+                'homepage'  => $plugin['homepage_url'] ?? '',
+                'license'   => $plugin['license'] ?? '',
             ]);
+        }
+
+        if ($plugin_inst->isPluginsExecutionSuspended()) {
+            // Plugins execution is suspended, so we stop here to not include any plugin file.
+            return true;
         }
 
         $plugin_inst->checkPluginState($this->plugin_key);
@@ -269,10 +295,8 @@ class Controller extends CommonGLPI
 
     /**
      * Get plugin archive from its download URL and serve it to the browser.
-     *
-     * @return void
      */
-    public function proxifyPluginArchive(): void
+    public function proxifyPluginArchive(): Response
     {
         // close session to prevent blocking other requests
         session_write_close();
@@ -281,7 +305,9 @@ class Controller extends CommonGLPI
         $plugin = $api->getPlugin($this->plugin_key, true);
 
         if (!array_key_exists('installation_url', $plugin) || empty($plugin['installation_url'])) {
-            return;
+            $exception = new HttpException(500);
+            $exception->setMessageToDisplay(__('Unable to download plugin archive.'));
+            throw $exception;
         }
 
         $url      = $plugin['installation_url'];
@@ -294,7 +320,7 @@ class Controller extends CommonGLPI
             throw $exception;
         }
 
-        Toolbox::sendFile($dest, $filename);
+        return Toolbox::getFileAsResponse($dest, $filename);
     }
 
     /**
@@ -308,16 +334,20 @@ class Controller extends CommonGLPI
 
         // Compute marketplace dir priority
         $marketplace_priority = null;
-        foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
-            if (realpath($base_dir) !== false && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
-                $marketplace_priority = -$position;
-                break;
+        foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
+            try {
+                if (realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
+                    $marketplace_priority = -$position;
+                    break;
+                }
+            } catch (FilesystemException $e) {
+                //no error
             }
         }
 
         $found_outside_marketplace = false;
         $found_dir_priority        = null;
-        foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
             if (file_exists($base_dir . '/' . $this->plugin_key . '/setup.php')) {
                 $found_outside_marketplace = true;
                 $found_dir_priority = -$position;
@@ -330,7 +360,7 @@ class Controller extends CommonGLPI
                 // Plugin has been found outside marketplace and marketplace priority is lower than its parent directory
                 // -> disallow plugin update from marketplace as it cannot be loaded from there.
                 return false;
-            } else if ($found_in_marketplace_dir) {
+            } elseif ($found_in_marketplace_dir) {
                 // Plugin has been found on marketplace and marketplace priority is higher than other location
                 // -> allow plugin update from marketplace as it is already loaded from there.
                 return is_writable(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key) && !self::hasVcsDirectory($this->plugin_key);
@@ -378,7 +408,7 @@ class Controller extends CommonGLPI
     public static function getAllUpdates()
     {
         $plugin_inst = new Plugin();
-        $plugin_inst->init(true);
+        $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
         $installed   = $plugin_inst->getList();
 
         $updates = [];
@@ -397,6 +427,11 @@ class Controller extends CommonGLPI
     }
 
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         return ['description' => __('Check all plugin updates')];
@@ -408,11 +443,10 @@ class Controller extends CommonGLPI
      *
      * @param CronTask|null $task to log, if NULL display (default NULL)
      *
-     * @return integer 0 : nothing to do 1 : done with success
+     * @return int 0 : nothing to do 1 : done with success
      */
     public static function cronCheckAllUpdates(?CronTask $task = null): int
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $cron_status = 0;
@@ -434,7 +468,7 @@ class Controller extends CommonGLPI
             }
 
             NotificationEvent::raiseEvent('checkpluginsupdate', new self(), [
-                'plugins' => $updates
+                'plugins' => $updates,
             ]);
         }
 
@@ -478,7 +512,7 @@ class Controller extends CommonGLPI
         } else {
             $url = $api_plugin['installation_url'] ?? '';
         }
-        return strlen($url) > 0;
+        return $url !== '';
     }
 
     /**
@@ -571,21 +605,6 @@ class Controller extends CommonGLPI
         return $this->setPluginState("unactivate") == Plugin::NOTACTIVATED;
     }
 
-    /**
-     * Suspend current plugin
-     *
-     * @return bool
-     */
-    public function suspendPlugin(): bool
-    {
-        $plugin = new Plugin();
-        if ($plugin->getFromDBbyDir($this->plugin_key)) {
-            return $plugin->suspend();
-        }
-
-        return true;
-    }
-
 
     /**
      * Clean (remove database data) current plugin
@@ -660,8 +679,14 @@ class Controller extends CommonGLPI
         $plugin->checkPluginState($this->plugin_key);
         $plugin->getFromDBbyDir($this->plugin_key);
 
-       // reload plugins
-        $plugin->init(true);
+        // reload plugins
+        // FIXME: The marketplace should use 2 distinct requests for its actions
+        // 1. call the method (install, update, ...)
+        // 2. call an endpoint to refresh the corresponding plugin card
+        //
+        // Indeed, forcing the plugins boot/init here may cause issues when trying to reload a plugin already loaded.
+        $plugin->bootPlugins();
+        $plugin->init();
 
         ob_end_clean();
 

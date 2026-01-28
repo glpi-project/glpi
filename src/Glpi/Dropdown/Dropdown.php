@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +36,9 @@ namespace Glpi\Dropdown;
 
 use CommonTreeDropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
+use RuntimeException;
 
 abstract class Dropdown extends CommonTreeDropdown
 {
@@ -51,6 +53,14 @@ abstract class Dropdown extends CommonTreeDropdown
      */
     protected static string $definition_system_name;
 
+    public static function canView(): bool
+    {
+        if (!parent::canView()) {
+            return false;
+        }
+        return (bool) static::getDefinition()->fields['is_active'];
+    }
+
     /**
      * Get the dropdown definition related to concrete class.
      *
@@ -60,20 +70,19 @@ abstract class Dropdown extends CommonTreeDropdown
     {
         $definition = DropdownDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof DropdownDefinition)) {
-            throw new \RuntimeException('Dropdown definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Dropdown definition is expected to be defined in concrete class.');
         }
 
         return $definition;
     }
 
     /**
-     * Get the definition class.
-     *
-     * @return string
+     * Get the definition class instance.
+     * @return AbstractDefinition<Dropdown>
      */
-    public static function getDefinitionClass(): string
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        return DropdownDefinition::class;
+        return new DropdownDefinition();
     }
 
     public function prepareInputForAdd($input)
@@ -103,7 +112,7 @@ abstract class Dropdown extends CommonTreeDropdown
             [
                 'item'   => $this,
                 'params' => $options,
-                'additional_fields' => $this->getAdditionalFields()
+                'additional_fields' => $this->getAdditionalFields(),
             ]
         );
         return true;

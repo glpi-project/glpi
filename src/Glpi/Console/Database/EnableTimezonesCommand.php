@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@ namespace Glpi\Console\Database;
 use DBConnection;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\Requirement\DbTimezones;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -47,23 +48,23 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
     /**
      * Error code returned if DB configuration file cannot be updated.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_UNABLE_TO_UPDATE_CONFIG = 1;
+    public const ERROR_UNABLE_TO_UPDATE_CONFIG = 1;
 
     /**
      * Error code returned if prerequisites are missing.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_MISSING_PREREQUISITES = 2;
+    public const ERROR_MISSING_PREREQUISITES = 2;
 
     /**
      * Error code returned if some tables are still using datetime field type.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_TIMESTAMP_FIELDS_REQUIRED = 3;
+    public const ERROR_TIMESTAMP_FIELDS_REQUIRED = 3;
 
     protected function configure()
     {
@@ -83,7 +84,7 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
             foreach ($timezones_requirement->getValidationMessages() as $validation_message) {
                 $message .= PHP_EOL . ' - <error>' . $validation_message . '</error>';
             }
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 $message,
                 self::ERROR_MISSING_PREREQUISITES
             );
@@ -93,14 +94,14 @@ class EnableTimezonesCommand extends AbstractCommand implements ConfigurationCom
             $message = sprintf(__('%1$s columns are using the deprecated datetime storage field type.'), $datetime_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:timestamps');
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . $message . '</error>',
                 self::ERROR_TIMESTAMP_FIELDS_REQUIRED
             );
         }
 
         if (!DBConnection::updateConfigProperty(DBConnection::PROPERTY_USE_TIMEZONES, true)) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to update DB configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_UPDATE_CONFIG
             );

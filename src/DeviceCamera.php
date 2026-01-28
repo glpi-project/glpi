@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,12 +47,12 @@ class DeviceCamera extends CommonDevice
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('Item_DeviceCamera_ImageResolution', $ong, $options)
-         ->addStandardTab('Item_DeviceCamera_ImageFormat', $ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
-         ->addStandardTab('Item_Project', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Item_DeviceCamera_ImageResolution::class, $ong, $options)
+         ->addStandardTab(Item_DeviceCamera_ImageFormat::class, $ong, $options)
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Item_Project::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 
@@ -64,7 +64,7 @@ class DeviceCamera extends CommonDevice
                 [
                     'name'  => 'devicecameramodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'flashunit',
@@ -95,7 +95,7 @@ class DeviceCamera extends CommonDevice
                     'name'   => 'support',
                     'label'  => __('Support'),
                     'type'   => 'text',
-                ]
+                ],
             ]
         );
     }
@@ -109,7 +109,7 @@ class DeviceCamera extends CommonDevice
             'table'              => 'glpi_devicecameramodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -177,14 +177,14 @@ class DeviceCamera extends CommonDevice
             return $father;
         }
 
-        Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-        $base->addHeader('devicecamera_model', _n('Model', 'Models', 1), $super, $father);
-        $base->addHeader('flashunit', __('Flashunit'), $super, $father);
-        $base->addHeader('lensfacing', __('lensfacing'), $super, $father);
-        $base->addHeader('orientation', __('orientation'), $super, $father);
-        $base->addHeader('focallength', __('focal length'), $super, $father);
-        $base->addHeader('sensorsize', __('sensorsize'), $super, $father);
-        $base->addHeader('support', __('support'), $super, $father);
+        Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+        $base->addHeader('devicecamera_model', _sn('Model', 'Models', 1), $super, $father);
+        $base->addHeader('flashunit', __s('Flashunit'), $super, $father);
+        $base->addHeader('lensfacing', __s('lensfacing'), $super, $father);
+        $base->addHeader('orientation', __s('orientation'), $super, $father);
+        $base->addHeader('focallength', __s('focal length'), $super, $father);
+        $base->addHeader('sensorsize', __s('sensorsize'), $super, $father);
+        $base->addHeader('support', __s('support'), $super, $father);
     }
 
     public function getHTMLTableCellForItem(
@@ -204,7 +204,7 @@ class DeviceCamera extends CommonDevice
         if ($this->fields["devicecameramodels_id"]) {
             $row->addCell(
                 $row->getHeaderByName('devicecamera_model'),
-                Dropdown::getDropdownName("glpi_devicecameramodels", $this->fields["devicecameramodels_id"]),
+                htmlescape(Dropdown::getDropdownName("glpi_devicecameramodels", $this->fields["devicecameramodels_id"])),
                 $father
             );
         }
@@ -212,7 +212,7 @@ class DeviceCamera extends CommonDevice
         if ($this->fields["lensfacing"]) {
             $row->addCell(
                 $row->getHeaderByName('lensfacing'),
-                $this->fields["lensfacing"],
+                htmlescape($this->fields["lensfacing"]),
                 $father
             );
         }
@@ -220,7 +220,7 @@ class DeviceCamera extends CommonDevice
         if ($this->fields["flashunit"]) {
             $row->addCell(
                 $row->getHeaderByName('flashunit'),
-                $this->fields["flashunit"],
+                htmlescape($this->fields["flashunit"]),
                 $father
             );
         }
@@ -232,7 +232,7 @@ class DeviceCamera extends CommonDevice
         return [
             'designation'           => 'equal',
             'devicecameramodels_id' => 'equal',
-            'manufacturers_id'      => 'equal'
+            'manufacturers_id'      => 'equal',
         ];
     }
 

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,18 +35,24 @@
 
 namespace Glpi\Features;
 
+use CommonITILObject;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QuerySubQuery;
 use Group_Item;
 use Session;
 
+/**
+ * @phpstan-require-implements AssignableItemInterface
+ */
 trait AssignableItem
 {
+    /** @see AssignableItemInterface::canView() */
     public static function canView(): bool
     {
         return Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
     }
 
+    /** @see AssignableItemInterface::canViewItem() */
     public function canViewItem(): bool
     {
         if (!parent::canViewItem()) {
@@ -67,11 +73,13 @@ trait AssignableItem
         return true;
     }
 
+    /** @see AssignableItemInterface::canUpdate() */
     public static function canUpdate(): bool
     {
         return Session::haveRightsOr(static::$rightname, [UPDATE, UPDATE_ASSIGNED, UPDATE_OWNED]);
     }
 
+    /** @see AssignableItemInterface::canUpdateItem() */
     public function canUpdateItem(): bool
     {
         if (!parent::canUpdateItem()) {
@@ -92,8 +100,35 @@ trait AssignableItem
         return true;
     }
 
-    public static function getAssignableVisiblityCriteria(): array
-    {
+    /**
+     * @param string|null $item_table_reference Table name to use in criteria, defaults to static::getTable().
+     * Useful if the criteria that this will be used with uses aliases.
+     * @return array[]|QueryExpression[]
+     * @see AssignableItemInterface::getAssignableVisiblityCriteria()
+     */
+    public static function getAssignableVisiblityCriteria(
+        ?string $item_table_reference = null
+    ): array {
+        if (Session::isCron() || Session::isRightChecksDisabled()) {
+            $criteria = [new QueryExpression('1')];
+        } elseif (Session::getCurrentInterface() === "central") {
+            $criteria = self::getAssignableVisiblityCriteriaForCentral($item_table_reference);
+        } else {
+            $criteria = self::getAssignableVisiblityCriteriaForHelpdesk($item_table_reference);
+        }
+
+        // Add another layer to the array to prevent losing duplicates keys if the
+        // result of the function is merged with another array
+        return [crc32(serialize($criteria)) => $criteria];
+    }
+
+    /**
+     * @param string|null $item_table_reference
+     * @return array[]|QueryExpression[]
+     */
+    private static function getAssignableVisiblityCriteriaForCentral(
+        ?string $item_table_reference = null
+    ): array {
         if (!Session::haveRightsOr(static::$rightname, [READ, READ_ASSIGNED, READ_OWNED])) {
             return [new QueryExpression('0')];
         }
@@ -102,7 +137,7 @@ trait AssignableItem
             return [new QueryExpression('1')];
         }
 
-        $item_table     = static::getTable();
+        $item_table     = $item_table_reference ?? static::getTable();
         $relation_table = Group_Item::getTable();
 
         $or = [];
@@ -119,43 +154,78 @@ trait AssignableItem
                             'itemtype'  => static::class,
                             'groups_id' => $_SESSION['glpigroups'],
                             'type'      => Group_Item::GROUP_TYPE_TECH,
-                        ]
-                    ])
+                        ],
+                    ]),
                 ];
             }
         }
         if (Session::haveRight(static::$rightname, READ_OWNED)) {
-            $or[] = [
-                $item_table . '.users_id' => $_SESSION['glpiID'],
-            ];
-            if (count($_SESSION['glpigroups']) > 0) {
-                $or[] = [
-                    $item_table . '.id' => new QuerySubQuery([
-                        'SELECT'     => $relation_table . '.items_id',
-                        'FROM'       => $relation_table,
-                        'WHERE' => [
-                            'itemtype'  => static::class,
-                            'groups_id' => $_SESSION['glpigroups'],
-                            'type'      => Group_Item::GROUP_TYPE_NORMAL,
-                        ]
-                    ])
-                ];
-            }
+            $or += self::getOwnAssetsCriteria($item_table, $relation_table);
         }
 
-        // Add another layer to the array to prevent losing duplicates keys if the
-        // result of the function is merged with another array
-        $criteria = [crc32(serialize($or)) => ['OR' => $or]];
-
-        return $criteria;
+        return ['OR' => $or];
     }
 
     /**
-     * @param string $interface
-     * @phpstan-param 'central'|'helpdesk' $interface
-     * @return array
-     * @phpstan-return array<integer, string|array>
+     * @param string|null $item_table_reference
+     * @return array[]|QueryExpression[]
      */
+    private static function getAssignableVisiblityCriteriaForHelpdesk(
+        ?string $item_table_reference = null
+    ): array {
+        // Helpdesk doesn't support READ, READ_ASSIGNED, READ_OWNED rights.
+        // Instead, we will directly check the helpdesk_hardware and
+        // helpdesk_item_type properties from the profile
+        $profile = Session::getCurrentProfile();
+
+        $raw_allowed_itemtypes = $profile->fields['helpdesk_item_type'];
+        $allowed_itemtypes = importArrayFromDB($raw_allowed_itemtypes);
+        if (!in_array(static::class, $allowed_itemtypes)) {
+            return [new QueryExpression('0')];
+        }
+
+        $raw_rights = $profile->fields['helpdesk_hardware'];
+        $all_assets = $raw_rights & (2 ** CommonITILObject::HELPDESK_ALL_HARDWARE);
+        if ($all_assets) {
+            return [new QueryExpression('1')];
+        }
+
+        $my_assets = $raw_rights & (2 ** CommonITILObject::HELPDESK_MY_HARDWARE);
+        if ($my_assets) {
+            $item_table     = $item_table_reference ?? static::getTable();
+            $relation_table = Group_Item::getTable();
+            $or = self::getOwnAssetsCriteria($item_table, $relation_table);
+
+            return ['OR' => $or];
+        }
+
+        // User can't see any assets
+        return [new QueryExpression('0')];
+    }
+
+    private static function getOwnAssetsCriteria(
+        string $item_table,
+        string $relation_table,
+    ): array {
+        $or = [$item_table . '.users_id' => $_SESSION['glpiID']];
+        if (count($_SESSION['glpigroups']) > 0) {
+            $or[] = [
+                $item_table . '.id' => new QuerySubQuery([
+                    'SELECT'     => $relation_table . '.items_id',
+                    'FROM'       => $relation_table,
+                    'WHERE' => [
+                        'itemtype'  => static::class,
+                        'groups_id' => $_SESSION['glpigroups'],
+                        'type'      => Group_Item::GROUP_TYPE_NORMAL,
+                    ],
+                ]),
+            ];
+        }
+
+        return $or;
+    }
+
+    /** @see AssignableItemInterface::getRights() */
     public function getRights($interface = 'central')
     {
         $rights = parent::getRights($interface);
@@ -168,7 +238,8 @@ trait AssignableItem
         return $rights;
     }
 
-    protected function prepareGroupFields(array $input)
+    /** @see AssignableItemInterface::prepareGroupFields() */
+    public function prepareGroupFields(array $input)
     {
         $fields = ['groups_id', 'groups_id_tech'];
         foreach ($fields as $field) {
@@ -176,14 +247,20 @@ trait AssignableItem
                 if (!is_array($input[$field])) {
                     $input[$field] = [$input[$field]];
                 }
-                $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn ($v) => $v > 0);
+                $input['_' . $field] = array_filter(array_map('intval', $input[$field] ?? []), static fn($v) => $v > 0);
                 unset($input[$field]);
             }
         }
         return $input;
     }
 
-    public function prepareInputForAdd($input): array|false
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     * @see AssignableItemInterface::prepareInputForAdd()
+     */
+    public function prepareInputForAdd($input)
     {
         if ($input === false) {
             return false;
@@ -195,7 +272,14 @@ trait AssignableItem
         return $this->prepareGroupFields($input);
     }
 
-    public function prepareInputForUpdate($input): array|false
+    /**
+     * @param array $input
+     *
+     * @return false|array
+     * @see AssignableItemInterface::prepareInputForUpdate()
+     */
+
+    public function prepareInputForUpdate($input)
     {
         if ($input === false) {
             return false;
@@ -207,12 +291,9 @@ trait AssignableItem
         return $this->prepareGroupFields($input);
     }
 
-    /**
-     * Update the values in the 'glpi_groups_items' link table as needed based on the groups set in the 'groups_id' and 'groups_id_tech' fields.
-     */
-    private function updateGroupFields()
+    /** @see AssignableItemInterface::updateGroupFields() */
+    public function updateGroupFields()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // Find existing links
@@ -268,18 +349,35 @@ trait AssignableItem
         $this->loadGroupFields();
     }
 
+    /**
+     * @see AssignableItemInterface::post_addItem()
+     *
+     * @return void
+     */
     public function post_addItem()
     {
         parent::post_addItem();
         $this->updateGroupFields();
     }
 
+    /**
+     * @see AssignableItemInterface::post_updateItem()
+     *
+     * @param bool $history
+     *
+     *@return void
+     */
     public function post_updateItem($history = true)
     {
         parent::post_updateItem($history);
         $this->updateGroupFields();
     }
 
+    /**
+     * @see AssignableItemInterface::getEmpty()
+     *
+     * @return bool
+     */
     public function getEmpty()
     {
         if (!parent::getEmpty()) {
@@ -292,9 +390,8 @@ trait AssignableItem
         return true;
     }
 
-    private function loadGroupFields()
+    private function loadGroupFields(): void
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // Find existing links
@@ -317,6 +414,11 @@ trait AssignableItem
         }
     }
 
+    /**
+     * @see AssignableItemInterface::post_getFromDB()
+     *
+     * @return void
+     */
     public function post_getFromDB()
     {
         $this->loadGroupFields();

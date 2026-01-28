@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@
  */
 class GeolocationField {
     constructor(element_id) {
-        this.element_id = element_id;
+        this.element_id = CSS.escape(element_id);
         this.rand = Math.floor(Math.random() * 10000);
         this.marker = null;
         this.#init();
@@ -84,7 +84,7 @@ class GeolocationField {
     #finalizeMap() {
         const geocoder = L.Control.geocoder({
             defaultMarkGeocode: false,
-            errorMessage: __('No result found'),
+            errorMessage: __('No results found'),
             placeholder: __('Search')
         });
         geocoder.on('markgeocode', (e) => {

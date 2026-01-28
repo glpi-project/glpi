@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,16 +35,24 @@
 
 namespace Glpi\Console;
 
+use Auth;
 use DBmysql;
 use Glpi\Console\Command\GlpiCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
 use Glpi\System\RequirementsManager;
 use Override;
+use Session;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
+use User;
+
+use function Safe\preg_replace;
 
 abstract class AbstractCommand extends Command implements GlpiCommandInterface
 {
@@ -66,21 +74,21 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     /**
      * Flag to indicate if command requires a DB connection.
      *
-     * @var boolean
+     * @var bool
      */
     protected $requires_db = true;
 
     /**
      * Flag to indicate if command requires an up-to-date DB.
      *
-     * @var boolean
+     * @var bool
      */
     protected $requires_db_up_to_date = true;
 
     /**
      * Current progress bar.
      *
-     * @var ProgressBar
+     * @var ?ProgressBar
      */
     protected $progress_bar;
 
@@ -109,11 +117,14 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     protected function initDbConnection()
     {
 
-        /** @var \DBmysql|null $DB */
+        /** @var DBmysql|null $DB */
         global $DB;
 
-        if ($this->requires_db && (!($DB instanceof DBmysql) || !$DB->connected)) {
-            throw new \Symfony\Component\Console\Exception\RuntimeException(__('Unable to connect to database.'));
+        if ($this->requires_db && !\DBConnection::isDbAvailable()) {
+            throw new EarlyExitException(
+                '<error>' . __('Unable to connect to database.') . '</error>',
+                Application::ERROR_DB_UNAVAILABLE
+            );
         }
 
         $this->db = $DB;
@@ -124,7 +135,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
      *
      * @param string|array $messages
      * @param ProgressBar  $progress_bar
-     * @param integer      $verbosity
+     * @param int      $verbosity
      *
      * @return void
      */
@@ -205,7 +216,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
             return;
         }
 
-        $db = property_exists($this, 'db') ? $this->db : null;
+        $db = $this->db;
 
         $requirements_manager = new RequirementsManager();
         $core_requirements = $requirements_manager->getCoreRequirementList(
@@ -245,7 +256,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
     {
         $abort = false;
         if (!$this->input->getOption('no-interaction')) {
-            $question_helper = $this->getHelper('question');
+            $question_helper = new QuestionHelper();
             $run = $question_helper->ask(
                 $this->input,
                 $this->output,
@@ -260,7 +271,7 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         }
 
         if ($abort) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<comment>' . __('Aborted.') . '</comment>',
                 0 // Success code
             );
@@ -322,9 +333,9 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
         $this->progress_bar = new ProgressBar($this->output);
         $this->progress_bar->setMessage(''); // Empty message on iteration start
         $this->progress_bar->start(
-            !is_null($count) ?
-            $count :
-            (is_countable($iterable) ? \count($iterable) : 0)
+            !is_null($count)
+            ? $count
+            : (is_countable($iterable) ? \count($iterable) : 0)
         );
 
         // Iterate on items
@@ -367,6 +378,35 @@ abstract class AbstractCommand extends Command implements GlpiCommandInterface
             $this->output->writeln(
                 $message,
                 $verbosity
+            );
+        }
+    }
+
+    /**
+     * Load user in session.
+     *
+     * @throws InvalidArgumentException
+     */
+    protected function loadUserSession(string $username): void
+    {
+        $user = new User();
+        if ($user->getFromDBbyName($username)) {
+            // Store computed output parameters
+            $lang = $_SESSION['glpilanguage'];
+            $session_use_mode = $_SESSION['glpi_use_mode'];
+
+            $auth = new Auth();
+            $auth->auth_succeded = true;
+            $auth->user = $user;
+            Session::init($auth);
+
+            // Force usage of computed output parameters
+            $_SESSION['glpilanguage'] = $lang;
+            $_SESSION['glpi_use_mode'] = $session_use_mode;
+            Session::loadLanguage();
+        } else {
+            throw new InvalidArgumentException(
+                __('User name defined by --username option is invalid.')
             );
         }
     }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 final class Item_Environment extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
@@ -52,8 +52,12 @@ final class Item_Environment extends CommonDBChild
     }
 
 
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
+        if (!$item instanceof CommonDBTM) {
+            throw new RuntimeException("Only CommonDBTM items are supported");
+        }
+
         if ($item::canView()) {
             $nb = countElementsInTable(
                 self::getTable(),
@@ -77,15 +81,23 @@ final class Item_Environment extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
 
         self::showForItem($item, $withtemplate);
         return true;
     }
 
 
+    /**
+     * @param CommonDBTM $item
+     * @param int $withtemplate
+     *
+     * @return void
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $itemtype = $item->getType();
@@ -109,15 +121,15 @@ final class Item_Environment extends CommonDBChild
             'FROM' => self::getTable(),
             'WHERE' => [
                 'items_id' => $items_id,
-                'itemtype' => $itemtype
-            ]
+                'itemtype' => $itemtype,
+            ],
         ]);
         $all_data = iterator_to_array($all_data);
         $filtered_data = $DB->request([
             'FROM' => self::getTable(),
             'WHERE' => [
                 'items_id' => $items_id,
-                'itemtype' => $itemtype
+                'itemtype' => $itemtype,
             ] + $sql_filters,
             'LIMIT' => $_SESSION['glpilist_limit'],
             'START' => $start,
@@ -127,7 +139,7 @@ final class Item_Environment extends CommonDBChild
         $total_number = count($all_data);
         $filtered_number = count(getAllDataFromTable(self::getTable(), [
             'items_id' => $items_id,
-            'itemtype' => $itemtype
+            'itemtype' => $itemtype,
         ] + $sql_filters));
 
         $envs = [];
@@ -135,16 +147,13 @@ final class Item_Environment extends CommonDBChild
             $envs[$env['id']] = $env;
         }
 
-        $users = array_unique(array_column($all_data, 'user'));
-        $users = array_combine($users, $users);
-
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'start' => $start,
             'sort' => $sort,
             'order' => $order,
             'href' => $item::getFormURLWithID($items_id),
             'additional_params' => $is_filtered ? http_build_query([
-                'filters' => $filters
+                'filters' => $filters,
             ]) : "",
             'is_tab' => true,
             'items_id' => $items_id,

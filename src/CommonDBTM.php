@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,17 +37,28 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
+use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
+use Glpi\Exception\TooManyResultsException;
+use Glpi\Features\AssignableItem;
 use Glpi\Features\CacheableListInterface;
 use Glpi\Features\Clonable;
+use Glpi\Features\DCBreadcrumbInterface;
 use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\FilterableInterface;
 use Glpi\Search\SearchOption;
 use Glpi\Socket;
+use Glpi\Toolbox\UuidStore;
+use Glpi\UI\IllustrationManager;
+
+use function Safe\getimagesize;
+use function Safe\preg_grep;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Common DataBase Table Manager Class - Persistent Object
@@ -57,41 +68,41 @@ class CommonDBTM extends CommonGLPI
     /**
      * Data fields of the Item.
      *
-     * @var mixed[]
+     * @var array<string,mixed>
      */
     public $fields = [];
 
     /**
      * Add/Update fields input. Filled during add/update process.
      *
-     * @var mixed[]
+     * @var false|array<string,mixed>
      */
     public $input = [];
 
     /**
      * Updated fields keys. Filled during update process.
      *
-     * @var mixed[]
+     * @var list<string>
      */
     public $updates = [];
 
     /**
      * Previous values of updated fields. Filled during update process.
      *
-     * @var mixed[]
+     * @var array<string,mixed>
      */
     public $oldvalues = [];
 
 
     /**
-     * Flag to determine whether or not changes must be logged into history.
+     * Flag to determine whether changes must be logged into history.
      *
-     * @var boolean
+     * @var bool
      */
     public $dohistory = false;
 
     /**
-     * List of fields that must not be taken into account when logging history or computating last
+     * List of fields that must not be taken into account when logging history or computing last
      * modification date.
      *
      * @var string[]
@@ -99,17 +110,17 @@ class CommonDBTM extends CommonGLPI
     public $history_blacklist = [];
 
     /**
-     * Flag to determine whether or not automatic messages must be generated on actions.
+     * Flag to determine whether automatic messages must be generated on actions.
      *
-     * @var boolean
+     * @var bool
      */
     public $auto_message_on_action = true;
 
     /**
-     * Flag to determine whether or not a link to item form can be automatically generated via
+     * Flag to determine whether a link to item form can be automatically generated via
      * self::getLink() method.
      *
-     * @var boolean
+     * @var bool
      */
     public $no_form_page = false;
 
@@ -117,7 +128,7 @@ class CommonDBTM extends CommonGLPI
      * Flag to determine whether or not table name of item can be automatically generated via
      * self::getTable() method.
      *
-     * @var boolean
+     * @var bool
      */
     protected static $notable = false;
 
@@ -131,6 +142,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * List of linked item types on which entities information should be forwarded on update.
      *
+     * An update is triggered on declared item types when the current item is updated.
+     * It happens if the current item is linked to an entity using relation (foreign key or itemtype/items_id)
+     * and other conditions (@see \CommonDBTM::forwardEntityInformations() and \CommonDBTM::forwardEntityInformations() call for more details).
+     *
      * @var string[]
      */
     protected static $forward_entity_to = [];
@@ -138,20 +153,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Search option of item. Initialized on first call to self::getOptions() and used as cache.
      *
-     * @var array
+     * @var array|false
      *
      * @TODO Should be removed and replaced by real cache usage.
      */
     protected $searchopt = false;
 
-    /**
-     * {@inheritDoc}
-     */
     public $taborientation = 'vertical';
 
-    /**
-     * {@inheritDoc}
-     */
     public $get_item_to_display_tab = true;
 
     /**
@@ -162,9 +171,9 @@ class CommonDBTM extends CommonGLPI
     protected static $plugins_forward_entity = [];
 
     /**
-     * Flag to determine whether or not table name of item has a notepad.
+     * Flag to determine whether table name of item has a notepad.
      *
-     * @var boolean
+     * @var bool
      */
     protected $usenotepad = false;
 
@@ -183,18 +192,19 @@ class CommonDBTM extends CommonGLPI
 
     /**
      * Fields to remove when querying data with api
-     * @var array
+     * @var string[]
      */
     public static $undisclosedFields = [];
 
     /**
      * Current right that can be evaluated in "item_can" hook.
      * Variable is set prior to hook call then unset.
-     * @var int
+     * @var ?int
      */
     public $right;
 
-    private static $search_options_cache = [];
+    /** @var array<class-string, array<string,mixed>> */
+    private static array $search_options_cache = [];
 
     /**
      * If this method return true, a third 'Helpdesk view' display preference
@@ -215,7 +225,7 @@ class CommonDBTM extends CommonGLPI
     public static function getTable($classname = null)
     {
         if ($classname === null) {
-            $classname = get_called_class();
+            $classname = static::class;
         }
 
         if (!class_exists($classname) || $classname::$notable) {
@@ -243,6 +253,9 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    /**
+     * @return string
+     */
     public static function getForeignKeyField()
     {
         $classname = static::class;
@@ -272,12 +285,12 @@ class CommonDBTM extends CommonGLPI
     {
 
         if (empty($field)) {
-            throw new \InvalidArgumentException('Argument $field cannot be empty.');
+            throw new InvalidArgumentException('Argument $field cannot be empty.');
         }
 
         $tablename = static::getTable($classname);
         if (empty($tablename)) {
-            throw new \LogicException('Invalid table name.');
+            throw new LogicException('Invalid table name.');
         }
 
         return sprintf('%s.%s', $tablename, $field);
@@ -311,18 +324,17 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Retrieve an item from the database
+     * Retrieve an item from the database and update $this->fields
      *
-     * @param integer $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
+     * @param int|string $ID ID of the item to get (matched against the index field of the table, not necessarily the ID)
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed to find a single item matching $ID else false (no items or more than one item)
      * @see self::getIndexName()
      **/
     public function getFromDB($ID)
     {
-        /** @var \DBmysql $DB */
         global $DB;
-       // Make new database object and fill variables
+        // Make new database object and fill variables
 
         if ((string) $ID === '') {
             return false;
@@ -331,23 +343,23 @@ class CommonDBTM extends CommonGLPI
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::getTable() . '.' . static::getIndexName() => Toolbox::cleanInteger($ID)
+                static::getTable() . '.' . static::getIndexName() => Toolbox::cleanInteger($ID),
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator) === 1) {
             $this->fields = $iterator->current();
             $this->post_getFromDB();
             return true;
-        } else if (count($iterator) > 1) {
-            trigger_error(
+        } elseif (count($iterator) > 1) {
+            throw new TooManyResultsException(
                 sprintf(
-                    'getFromDB expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iterator),
                     $iterator->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
 
@@ -392,37 +404,38 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Get an object using some criteria
+     * Update the current object fields with data from database, only if there's single entry matching the criteria
      *
+     * If there's more than one entry, an error is triggered
+     *
+     * return true if the matched object was found and updated, false otherwise (no match or multiple matches)
+     * @param array $criteria search criteria
+     *
+     * @return bool
      * @since 9.2
-     *
-     * @param array $crit search criteria
-     *
-     * @return boolean|array
      */
-    public function getFromDBByCrit(array $crit)
+    public function getFromDBByCrit(array $criteria)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        $crit = [
+        $criteria = [
             'SELECT' => static::getIndexName(),
             'FROM'   => static::getTable(),
-            'WHERE'  => $crit
+            'WHERE'  => $criteria,
         ];
 
-        $iter = $DB->request($crit);
+        $iter = $DB->request($criteria);
         if (count($iter) === 1) {
             $row = $iter->current();
             return $this->getFromDB($row[static::getIndexName()]);
-        } else if (count($iter) > 1) {
-            trigger_error(
+        } elseif (count($iter) > 1) {
+            throw new TooManyResultsException(
                 sprintf(
-                    'getFromDBByCrit expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iter),
                     $iter->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
         return false;
@@ -438,14 +451,13 @@ class CommonDBTM extends CommonGLPI
      *
      * @param array $request expression
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getFromDBByRequest(array $request)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-       // Limit the request to the useful expressions
+        // Limit the request to the useful expressions
         $request = array_diff_key($request, [
             'FROM' => '',
             'SELECT' => '',
@@ -460,14 +472,14 @@ class CommonDBTM extends CommonGLPI
             $this->fields = $iterator->current();
             $this->post_getFromDB();
             return true;
-        } else if (count($iterator) > 1) {
-            trigger_error(
+        } elseif (count($iterator) > 1) {
+            throw new TooManyResultsException(
                 sprintf(
-                    'getFromDBByRequest expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iterator),
                     $iterator->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
         return false;
@@ -476,12 +488,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the identifier of the current item
      *
-     * @return integer ID
+     * @return int ID
      **/
     public function getID()
     {
         if (isset($this->fields[static::getIndexName()])) {
-            return (int)$this->fields[static::getIndexName()];
+            return (int) $this->fields[static::getIndexName()];
         }
         return -1;
     }
@@ -491,23 +503,24 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_getFromDB()
-    {
-    }
+    public function post_getFromDB() {}
 
     public function getFormFields(): array
     {
-        // NOTE: Post code field named differently for Suppliers. Placed after town to maintain field order from 9.5
         $fields = [
             'name', 'firstname', 'template_name', '_template_is_active', 'states_id', static::getForeignKeyField(), 'is_helpdesk_visible',
             '_dc_breadcrumbs', 'locations_id', 'item_type', 'itemtype', 'date_domaincreation', $this->getTypeForeignKeyField(),
             'usertitles_id', 'registration_number', 'phone', 'phone2', 'phonenumber', 'mobile', 'fax', 'website', 'email',
-            'address', 'postalcode', 'town', 'postcode', 'state', 'country', 'date_expiration', 'ref', 'users_id_tech',
+            'address', 'town', 'postcode', 'state', 'country', 'date_expiration', 'ref', 'users_id_tech',
             'manufacturers_id', 'groups_id_tech', $this->getModelForeignKeyField(), 'contact_num', 'serial', 'contact', 'otherserial',
             'sysdescr', 'snmpcredentials_id', 'users_id', 'is_global', 'size', 'networks_id', 'groups_id', 'uuid', 'version',
-            'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot'
+            'comment', 'ram', 'alarm_threshold', 'brand', 'begin_date', 'autoupdatesystems_id', 'pictures', 'is_active', 'last_boot',
         ];
         return array_filter($fields, function ($f) {
+            $assignable_item = Toolbox::hasTrait(static::class, AssignableItem::class);
+            if ($assignable_item && in_array($f, ['groups_id', 'groups_id_tech'], true)) {
+                return true;
+            }
             return $f !== null && (str_starts_with($f, '_') || $this->isField($f));
         });
     }
@@ -525,7 +538,6 @@ class CommonDBTM extends CommonGLPI
      */
     public function showForm($ID, array $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->initForm($ID, $options);
@@ -539,7 +551,7 @@ class CommonDBTM extends CommonGLPI
             'params' => $options,
             'no_header' => !$new_item && !$in_modal,
             'cluster' => $cluster,
-            'field_order' => $this->getFormFields()
+            'field_order' => $this->getFormFields(),
         ]);
         return true;
     }
@@ -571,7 +583,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done to not show some fields when getting a single item from API calls
      *
-     * @param array $fields Fields to unset undiscloseds
+     * @param array<string,mixed> $fields Fields to unset undisclosed
      *
      * @return void
      */
@@ -585,19 +597,18 @@ class CommonDBTM extends CommonGLPI
     /**
      * Retrieve all items from the database
      *
-     * @param array        $condition condition used to search if needed (empty get all) (default '')
-     * @param array|string $order     order field if needed (default '')
-     * @param integer      $limit     limit retrieved data if needed (default '')
+     * @param array        $condition WHERE condition used to filter (can be empty to get all)
+     * @param array|string $order     ORDER field (can be empty)
+     * @param int      $limit     LIMIT sql clause
      *
      * @return array all retrieved data in an associative array by id
      **/
     public function find($condition = [], $order = [], $limit = null)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
-            'FROM'   => static::getTable()
+            'FROM'   => static::getTable(),
         ];
 
         if (count($condition)) {
@@ -611,8 +622,8 @@ class CommonDBTM extends CommonGLPI
             $criteria['ORDERBY'] = $order;
         }
 
-        if ((int)$limit > 0) {
-            $criteria['LIMIT'] = (int)$limit;
+        if ((int) $limit > 0) {
+            $criteria['LIMIT'] = (int) $limit;
         }
 
         $data = [];
@@ -637,19 +648,18 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get an empty item
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function getEmpty()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // make an empty database object
         $table = static::getTable();
 
         if (
-            !empty($table) &&
-            ($fields = $DB->listFields($table))
+            !empty($table)
+            && ($fields = $DB->listFields($table))
         ) {
             foreach (array_keys($fields) as $key) {
                 $this->fields[$key] = "";
@@ -667,7 +677,7 @@ class CommonDBTM extends CommonGLPI
 
         $this->post_getEmpty();
 
-       // Call the plugin hook - $this->fields can be altered
+        // Call the plugin hook - $this->fields can be altered
         Plugin::doHook(Hooks::ITEM_EMPTY, $this);
         return true;
     }
@@ -677,9 +687,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_getEmpty()
-    {
-    }
+    public function post_getEmpty() {}
 
     /**
      * Get type to register log on
@@ -703,7 +711,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function updateInDB($updates, $oldvalues = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tobeupdated = [];
@@ -726,7 +733,7 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
         $result = $DB->update(
-            $this->getTable(),
+            static::getTable(),
             $tobeupdated,
             ['id' => $this->fields['id']]
         );
@@ -746,11 +753,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item to the database
      *
-     * @return integer|boolean new ID of the item is insert successful else false
+     * @return int|bool new ID of the item is insert successful else false
      **/
     public function addToDB()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $nb_fields = count($this->fields);
@@ -788,11 +794,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Restore item = set deleted flag to 0
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function restoreInDB()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->maybeDeleted()) {
@@ -812,14 +817,13 @@ class CommonDBTM extends CommonGLPI
     /**
      * Mark deleted or purge an item in the database
      *
-     * @param boolean $force force the purge of the item (not used if the table do not have a deleted field)
+     * @param bool $force force the purge of the item (not used if the table do not have a deleted field)
      *               (default false)
      *
-     * @return boolean true if succeed else false
+     * @return bool true if succeed else false
      **/
     public function deleteFromDB($force = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (
@@ -839,7 +843,7 @@ class CommonDBTM extends CommonGLPI
             $result = $DB->delete(
                 static::getTable(),
                 [
-                    'id' => $this->fields['id']
+                    'id' => $this->fields['id'],
                 ]
             );
             if ($result) {
@@ -850,7 +854,7 @@ class CommonDBTM extends CommonGLPI
                 return true;
             }
         } else {
-           // Auto set date_mod if exsist
+            // Auto set date_mod if exsist
             $toadd = [];
             if (isset($this->fields['date_mod'])) {
                 $toadd['date_mod'] = $_SESSION["glpi_currenttime"];
@@ -859,10 +863,10 @@ class CommonDBTM extends CommonGLPI
             $result = $DB->update(
                 static::getTable(),
                 [
-                    'is_deleted' => 1
+                    'is_deleted' => 1,
                 ] + $toadd,
                 [
-                    'id' => $this->fields['id']
+                    'id' => $this->fields['id'],
                 ]
             );
             $this->cleanDBonMarkDeleted();
@@ -882,7 +886,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanHistory()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($this->dohistory) {
@@ -890,7 +893,7 @@ class CommonDBTM extends CommonGLPI
                 'glpi_logs',
                 [
                     'itemtype'  => static::getType(),
-                    'items_id'  => $this->fields['id']
+                    'items_id'  => $this->fields['id'],
                 ]
             );
         }
@@ -908,16 +911,15 @@ class CommonDBTM extends CommonGLPI
      **/
     public function cleanRelationData()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $RELATION = getDbRelations();
         if (isset($RELATION[static::getTable()])) {
-            $newval = (isset($this->input['_replace_by']) ? (int)$this->input['_replace_by'] : 0);
+            $newval = (isset($this->input['_replace_by']) ? (int) $this->input['_replace_by'] : 0);
 
             foreach ($RELATION[static::getTable()] as $tablename => $fields) {
                 if ($tablename[0] == '_') {
-                    // Relation in tables prefixed by `_` are manualy handled.
+                    // Relation in tables prefixed by `_` are manually handled.
                     continue;
                 }
 
@@ -972,10 +974,11 @@ class CommonDBTM extends CommonGLPI
                         ]
                     );
                     foreach ($result as $data) {
-                        $item = new $itemtype();
+                        $item = $itemtype::getById($data[$id_field]);
                         $input =  [
                             $id_field       => $data[$id_field],
                             '_disablenotif' => true,
+                            '_skip_locks'   => true,
                         ] + $update;
 
                         //prevent lock if item is dynamic
@@ -996,18 +999,14 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_deleteFromDB()
-    {
-    }
+    public function post_deleteFromDB() {}
 
     /**
      * Actions done when item is deleted from the database
      *
      * @return void
      **/
-    public function cleanDBonPurge()
-    {
-    }
+    public function cleanDBonPurge() {}
 
     /**
      * Delete children items and relation with other items from database.
@@ -1051,7 +1050,7 @@ class CommonDBTM extends CommonGLPI
             $translation = new DropdownTranslation();
             $translation->deleteByCriteria([
                 'itemtype' => static::class,
-                'items_id' => $this->getID()
+                'items_id' => $this->getID(),
             ]);
         }
     }
@@ -1065,10 +1064,6 @@ class CommonDBTM extends CommonGLPI
      */
     public function cleanRelationTable()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (in_array(static::class, $CFG_GLPI['assignable_types'], true)) {
@@ -1076,14 +1071,14 @@ class CommonDBTM extends CommonGLPI
             $group_item->deleteByCriteria(
                 [
                     'itemtype' => static::class,
-                    'items_id' => $this->getID()
+                    'items_id' => $this->getID(),
                 ],
                 true
             );
         }
 
         if (in_array(static::class, $CFG_GLPI['agent_types'], true)) {
-           // Agent does not extend CommonDBConnexity
+            // Agent does not extend CommonDBConnexity
             $agent = new Agent();
             $agent->deleteByCriteria(['itemtype' => static::class, 'items_id' => $this->getID()]);
         }
@@ -1102,7 +1097,7 @@ class CommonDBTM extends CommonGLPI
             );
         }
 
-       // If this type have NOTEPAD, clean one associated to purged item
+        // If this type have NOTEPAD, clean one associated to purged item
         if ($this->usenotepad) {
             $note = new Notepad();
             $note->cleanDBonItemDelete(static::class, $this->fields['id']);
@@ -1117,8 +1112,8 @@ class CommonDBTM extends CommonGLPI
                 'FROM'   => 'glpi_items_tickets',
                 'WHERE'  => [
                     'items_id'  => $this->getID(),
-                    'itemtype'  => static::class
-                ]
+                    'itemtype'  => static::class,
+                ],
             ]);
 
             foreach ($iterator as $data) {
@@ -1132,7 +1127,7 @@ class CommonDBTM extends CommonGLPI
 
         if (in_array(static::class, $CFG_GLPI['line_types'], true)) {
             $this->deleteChildrenAndRelationsFromDb([
-                Item_Line::class
+                Item_Line::class,
             ]);
         }
 
@@ -1150,9 +1145,9 @@ class CommonDBTM extends CommonGLPI
             Asset_PeripheralAsset::class   => $CFG_GLPI['directconnect_types'],
             Consumable::class              => $CFG_GLPI['consumables_types'],
             Contract_Item::class           => $CFG_GLPI['contract_types'],
-            Document_Item::class           => \Document::getItemtypesThatCanHave(),
+            Document_Item::class           => Document::getItemtypesThatCanHave(),
             Domain_Item::class             => $CFG_GLPI['domain_types'],
-            Infocom::class                 => \Infocom::getItemtypesThatCanHave(),
+            Infocom::class                 => Infocom::getItemtypesThatCanHave(),
             Item_Cluster::class            => $CFG_GLPI['cluster_types'],
             Item_Disk::class               => $CFG_GLPI['disk_types'],
             Item_Enclosure::class          => $CFG_GLPI['rackable_types'],
@@ -1185,9 +1180,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function cleanDBonMarkDeleted()
-    {
-    }
+    public function cleanDBonMarkDeleted() {}
 
     /**
      * Save the input data in the Session
@@ -1211,14 +1204,6 @@ class CommonDBTM extends CommonGLPI
     protected function clearSavedInput()
     {
         unset($_SESSION['saveInput'][static::class]);
-    }
-
-    /**
-     * @return bool true if input data is saved in the session
-     */
-    protected function hasSavedInput(): bool
-    {
-        return isset($_SESSION['saveInput'][static::class]);
     }
 
     /**
@@ -1285,23 +1270,20 @@ class CommonDBTM extends CommonGLPI
         }
     }
 
-   // Common functions
+    // Common functions
     /**
      * Add an item in the database with all it's items.
      *
      * @param array   $input   the _POST vars returned by the item form when press add
      * @param array   $options with the insert options
      *   - unicity_message : do not display message if item it a duplicate (default is yes)
-     * @param boolean $history do history log ? (true by default)
+     *   - disable_infocom_creation: do not automatically create infocom (default is false)
+     * @param bool $history do history log ? (true by default)
      *
-     * @return false|integer the new ID of the added item (or false if fail)
+     * @return false|int the new ID of the added item (or false if fail)
      **/
     public function add(array $input, $options = [], $history = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if ($DB->isSlave()) {
@@ -1310,7 +1292,7 @@ class CommonDBTM extends CommonGLPI
 
         // This means we are not adding a cloned object
         if (
-            (!Toolbox::hasTrait($this, \Glpi\Features\Clonable::class) || !isset($input['clone']))
+            (!Toolbox::hasTrait($this, Clonable::class) || !isset($input['clone']))
             && method_exists($this, 'clone')
         ) {
             // This means we are asked to clone the object (old way). This will clone the clone method
@@ -1368,7 +1350,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         // Process business rules for assets
-        $this->assetBusinessRules(\RuleAsset::ONADD);
+        $this->assetBusinessRules(RuleAsset::ONADD);
 
         if ($this->input && is_array($this->input)) {
             $this->fields = [];
@@ -1376,14 +1358,12 @@ class CommonDBTM extends CommonGLPI
 
             $this->pre_addInDB();
 
-            // fill array for add
-            $this->cleanLockedsOnAdd();
             foreach (array_keys($this->input) as $key) {
                 if (
                     ($key[0] !== '_')
                     && isset($table_fields[$key])
                 ) {
-                    $this->fields[$key] = $this->input[$key];
+                    $this->fields[$key] = $this->input['_raw' . $key] ?? $this->input[$key];
                 }
             }
 
@@ -1399,12 +1379,6 @@ class CommonDBTM extends CommonGLPI
 
             if ($this->checkUnicity(true, $options)) {
                 if ($this->addToDB() !== false) {
-                    $this->post_addItem();
-                    if ($this instanceof CacheableListInterface) {
-                        $this->invalidateListCache();
-                    }
-                    $this->addMessageOnAddAction();
-
                     if ($this->dohistory && $history) {
                         $changes = [
                             0,
@@ -1420,9 +1394,16 @@ class CommonDBTM extends CommonGLPI
                         );
                     }
 
+                    $this->post_addItem();
+                    if ($this instanceof CacheableListInterface) {
+                        $this->invalidateListCache();
+                    }
+                    $this->addMessageOnAddAction();
+
                     // Auto create infocoms
                     if (
-                        isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
+                        ($options['disable_infocom_creation'] ?? false) !== true
+                        && isset($CFG_GLPI["auto_create_infocoms"]) && $CFG_GLPI["auto_create_infocoms"]
                         && (!isset($input['clone']) || !$input['clone'])
                         && Infocom::canApplyOn($this)
                     ) {
@@ -1430,7 +1411,7 @@ class CommonDBTM extends CommonGLPI
                         if (!$ic->getFromDBforDevice(static::class, $this->fields['id'])) {
                             $ic->add([
                                 'itemtype' => static::class,
-                                'items_id' => $this->fields['id']
+                                'items_id' => $this->fields['id'],
                             ]);
                         }
                     }
@@ -1454,7 +1435,7 @@ class CommonDBTM extends CommonGLPI
                     if (isset($this->input['_add'])) {
                         $this->clearSavedInput();
                     }
-                    return $this->fields['id'];
+                    return $this->getID();
                 }
             }
         }
@@ -1512,13 +1493,13 @@ class CommonDBTM extends CommonGLPI
 
 
         $icon = $p['icon']
-            ? $this->getIcon()
+            ? static::getIcon()
             : '';
 
         $html = '';
         if ($link_url !== '') {
             $html .= sprintf(
-                '<a href="%s" title="%s"%s>',
+                '<a href="%s" data-bs-toggle="tooltip" data-bs-placement="bottom" title="%s"%s>',
                 htmlescape($link_url),
                 htmlescape($link_title),
                 $p['class'] !== '' ? sprintf(' class="%s"', htmlescape($p['class'])) : '',
@@ -1584,7 +1565,7 @@ class CommonDBTM extends CommonGLPI
         if ($addMessAfterRedirect) {
             $link = $this->getFormURL();
             if ($this->getName() == NOT_AVAILABLE) {
-               //TRANS: %1$s is the itemtype, %2$d is the id of the item
+                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $this->fields['name'] = sprintf(
                     __('%1$s - ID %2$d'),
                     $this->getTypeName(1),
@@ -1595,8 +1576,8 @@ class CommonDBTM extends CommonGLPI
             $display = (isset($this->input['_no_message_link']) ? htmlescape($this->getNameID($opt))
                                                             : $this->getLink($opt));
 
-           // Do not display quotes
-           //TRANS : %s is the description of the added item
+            // Do not display quotes
+            //TRANS : %s is the description of the added item
             Session::addMessageAfterRedirect(sprintf(
                 __s('%1$s: %2$s'),
                 __s('Item successfully added'),
@@ -1624,9 +1605,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Prepare input data for adding the item. If false, add is cancelled.
      *
-     * @param array $input datas used to add the item
+     * @param array<string, mixed> $input datas used to add the item
      *
-     * @return false|array the modified $input array
+     * @return false|array<string, mixed> the modified $input array
      **/
     public function prepareInputForAdd($input)
     {
@@ -1650,18 +1631,14 @@ class CommonDBTM extends CommonGLPI
      * Update some elements of an item in the database.
      *
      * @param array   $input   the _POST vars returned by the item form when press update
-     * @param boolean $history do history log ? (default true)
+     * @param bool $history do history log ? (default true)
      * @param array   $options with the insert options
      *
-     * @return boolean true on success
+     * @return bool true on success
      **/
     public function update(array $input, $history = true, $options = [])
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
-        global $DB, $GLPI_CACHE;
+        global $DB;
 
         if ($DB->isSlave()) {
             return false;
@@ -1702,62 +1679,63 @@ class CommonDBTM extends CommonGLPI
         }
 
         //Process business rules for assets
-        $this->assetBusinessRules(\RuleAsset::ONUPDATE);
+        $this->assetBusinessRules(RuleAsset::ONUPDATE);
 
         // Valid input for update
         if ($this->checkUnicity(false, $options)) {
             if ($this->input && is_array($this->input)) {
-               // Fill the update-array with changes
+                // Fill the update-array with changes
                 $x               = 0;
                 $this->updates   = [];
                 $this->oldvalues = [];
 
                 foreach (array_keys($this->input) as $key) {
                     if ($DB->fieldExists(static::getTable(), $key)) {
-                      // Prevent history for date statement (for date for example)
+                        // Prevent history for date statement (for date for example)
                         if (
                             is_null($this->fields[$key])
                             && ($this->input[$key] == 'NULL')
                         ) {
-                             $this->fields[$key] = 'NULL';
+                            $this->fields[$key] = 'NULL';
                         }
                         // Compare item
                         $ischanged = true;
-                        $searchopt = $this->getSearchOptionByField('field', $key, $this->getTable());
+                        $searchopt = $this->getSearchOptionByField('field', $key, static::getTable());
 
                         if (isset($searchopt['datatype'])) {
                             switch ($searchopt['datatype']) {
                                 case 'string':
                                 case 'text':
                                     $ischanged = (strcmp(
-                                        (string)$this->fields[$key],
-                                        (string)$this->input[$key]
+                                        (string) $this->fields[$key],
+                                        (string) $this->input[$key]
                                     ) != 0);
                                     break;
 
                                 case 'itemlink':
                                     if ($key == 'name') {
                                         $ischanged = (strcmp(
-                                            (string)$this->fields[$key],
-                                            (string)$this->input[$key]
+                                            (string) $this->fields[$key],
+                                            (string) $this->input[$key]
                                         ) != 0);
                                         break;
                                     }
-                               // else default
+                                    // else default
 
+                                    // no break
                                 default:
                                     $ischanged = ($this->fields[$key] != $this->input[$key]);
                                     break;
                             }
                         } else {
-                         // No searchoption case
+                            // No searchoption case
                             $ischanged = ($this->fields[$key] != $this->input[$key]);
                         }
                         if ($ischanged) {
                             if ($key != "id") {
                                 // Store old values
                                 if (!in_array($key, $this->history_blacklist)) {
-                                     $this->oldvalues[$key] = $this->fields[$key];
+                                    $this->oldvalues[$key] = $this->fields[$key];
                                 }
 
                                 $this->fields[$key] = $this->input[$key];
@@ -1797,13 +1775,13 @@ class CommonDBTM extends CommonGLPI
                                     static::$forward_entity_to[] = $itemtype;
                                 }
                             }
-                           // forward entity information if needed
+                            // forward entity information if needed
                             if (
                                 count(static::$forward_entity_to)
                                 && (in_array("entities_id", $this->updates)
                                 || in_array("is_recursive", $this->updates))
                             ) {
-                                 $this->forwardEntityInformations();
+                                $this->forwardEntityInformations();
                             }
 
                             // If itemtype is in infocomtype and if states_id field is filled
@@ -1843,34 +1821,6 @@ class CommonDBTM extends CommonGLPI
         return false;
     }
 
-    /**
-     * Clean locked fields from add, if needed
-     *
-     * @return void
-     */
-    protected function cleanLockedsOnAdd()
-    {
-        if (isset($this->input['is_dynamic']) && $this->input['is_dynamic'] == true) {
-            $lockedfield = new Lockedfield();
-            $config = Config::getConfigurationValues('inventory');
-            $locks = $lockedfield->getLockedNames($this->getType(), 0);
-            foreach ($locks as $lock) {
-                //bypass for states_id if default value is define from inventory conf
-                if ($lock == 'states_id' && $config['states_id_default']) {
-                    continue;
-                }
-                //bypass for entities_id // default inventory conf is 0 'root entity')
-                if ($lock == 'entities_id') {
-                    continue;
-                }
-
-                if (array_key_exists($lock, $this->input)) {
-                    unset($this->input[$lock]);
-                }
-            }
-        }
-    }
-
 
     /**
      * Clean locked fields from update, if needed
@@ -1880,7 +1830,8 @@ class CommonDBTM extends CommonGLPI
     protected function cleanLockeds()
     {
         if (
-            (
+            ($this->input['_skip_locks'] ?? false) !== true
+            && (
                 (
                     isset($this->input['_transfer'])
                     // lock updated fields in transfer only if requested
@@ -1900,7 +1851,12 @@ class CommonDBTM extends CommonGLPI
                 if ($idx !== false) {
                     //do not update global lock value
                     if (!$lock['is_global']) {
-                        $lockedfield->setLastValue($this->getType(), $this->fields['id'], $lock_field, $this->input[$lock_field]);
+                        $lockedfield->setLastValue(
+                            $this->getType(),
+                            $this->fields['id'],
+                            $lock_field,
+                            $this->input['_raw' . $lock_field] ?? $this->input[$lock_field]
+                        );
                     }
                     unset($this->updates[$idx]);
                     unset($this->input[$lock_field]);
@@ -1919,7 +1875,6 @@ class CommonDBTM extends CommonGLPI
      */
     protected function manageLocks()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $lockedfield = new Lockedfield();
@@ -1944,7 +1899,7 @@ class CommonDBTM extends CommonGLPI
                         'itemtype'        => $this->getType(),
                         'items_id'        => $this->fields['id'],
                         'date_creation'   => $_SESSION["glpi_currenttime"],
-                        'field'           => new QueryParam()
+                        'field'           => new QueryParam(),
                     ]
                 )
             );
@@ -1967,36 +1922,35 @@ class CommonDBTM extends CommonGLPI
      **/
     protected function forwardEntityInformations()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        if (!isset($this->fields['id']) || !($this->fields['id'] >= 0)) {
-            return false;
+        if (!isset($this->fields['id']) || $this->fields['id'] < 0) {
+            return;
         }
 
         if (count(static::$forward_entity_to)) {
             foreach (static::$forward_entity_to as $type) {
-                $item  = new $type();
+                $item  = getItemForItemtype($type);
                 $query = [
                     'SELECT' => ['id'],
-                    'FROM'   => $item->getTable()
+                    'FROM'   => $item->getTable(),
                 ];
 
                 $OR = [];
                 if ($item->isField('itemtype')) {
                     $OR[] = [
                         'itemtype'  => $this->getType(),
-                        'items_id'  => $this->getID()
+                        'items_id'  => $this->getID(),
                     ];
                 }
-                if ($item->isField($this->getForeignKeyField())) {
-                    $OR[] = [$this->getForeignKeyField() => $this->getID()];
+                if ($item->isField(static::getForeignKeyField())) {
+                    $OR[] = [static::getForeignKeyField() => $this->getID()];
                 }
                 $query['WHERE'][] = ['OR' => $OR];
 
                 $input = [
                     'entities_id'  => $this->getEntityID(),
-                    '_transfer'    => 1
+                    '_transfer'    => 1,
                 ];
                 if ($this->maybeRecursive()) {
                     $input['is_recursive'] = $this->isRecursive();
@@ -2005,8 +1959,8 @@ class CommonDBTM extends CommonGLPI
                 $iterator = $DB->request($query);
                 foreach ($iterator as $data) {
                     $input['id'] = $data['id'];
-                   // No history for such update
-                    $item->update($input, 0);
+                    // No history for such update
+                    $item->update($input, false);
                 }
             }
         }
@@ -2056,7 +2010,7 @@ class CommonDBTM extends CommonGLPI
             if (isset($this->fields['name'])) {
                 $this->fields['name'] = $this->fields['name'];
             } else {
-               //TRANS: %1$s is the itemtype, %2$d is the id of the item
+                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $this->fields['name'] = sprintf(
                     __('%1$s - ID %2$d'),
                     $this->getTypeName(1),
@@ -2073,20 +2027,44 @@ class CommonDBTM extends CommonGLPI
     /**
      * Prepare input data for updating the item. If false, update is cancelled.
      *
-     * @param array $input data used to update the item
+     * @param array<string, mixed> $input data used to update the item
      *
-     * @return false|array the modified $input array
+     * @return false|array<string, mixed> the modified $input array
      **/
     public function prepareInputForUpdate($input)
     {
+        $this->deleteUnusedCustomIllustrationFile($input);
+
         return $input;
     }
 
+    private function deleteUnusedCustomIllustrationFile(array $input): void
+    {
+        if (
+            // This item support illustrations?
+            isset($this->fields['illustration'])
+            // An illustration was set before these changes?
+            && str_starts_with(
+                $this->fields['illustration'],
+                IllustrationManager::CUSTOM_ILLUSTRATION_PREFIX,
+            )
+            // A new illustration value exist in the input?
+            && isset($input['illustration'])
+            // The new illustration value is different?
+            && $input['illustration'] !== $this->fields['illustration']
+        ) {
+            $manager = (new IllustrationManager());
+            $id = $manager->getCustomIconIdFromPrefixedString(
+                $this->fields['illustration']
+            );
+            $manager->deleteCustomIllustrationFile($id);
+        }
+    }
 
     /**
      * Actions done after the UPDATE of the item in the database
      *
-     * @param boolean $history store changes history ? (default true)
+     * @param bool $history store changes history ? (default true)
      *
      * @return void
      **/
@@ -2114,33 +2092,28 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      */
-    public function pre_addInDB()
-    {
-    }
+    public function pre_addInDB() {}
 
 
-     /**
-     * Actions done before the UPDATE of the item in the database
-     *
-     * @return void
-     **/
-    public function pre_updateInDB()
-    {
-    }
+    /**
+    * Actions done before the UPDATE of the item in the database
+    *
+    * @return void
+    **/
+    public function pre_updateInDB() {}
 
 
     /**
      * Delete an item in the database.
      *
      * @param array   $input   the _POST vars returned by the item form when press delete
-     * @param boolean $force   force deletion (default false)
-     * @param boolean $history do history log ? (default true)
+     * @param bool $force   force deletion (default false)
+     * @param bool $history do history log ? (default true)
      *
-     * @return boolean true on success
+     * @return bool true on success
      **/
     public function delete(array $input, $force = false, $history = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($DB->isSlave()) {
@@ -2151,7 +2124,7 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
 
-       // Force purge for templates / may not to be deleted / not dynamic lockable items
+        // Force purge for templates / may not to be deleted / not dynamic lockable items
         if (
             $this->isTemplate()
             || !$this->maybeDeleted()
@@ -2162,23 +2135,23 @@ class CommonDBTM extends CommonGLPI
             $force = 1;
         }
 
-       // Store input in the object to be available in all sub-method / hook
+        // Store input in the object to be available in all sub-method / hook
         $this->input = $input;
 
         if (isset($this->input['purge'])) {
             $this->input['_purge'] = $this->input['purge'];
             unset($this->input['purge']);
-        } else if ($force) {
+        } elseif ($force) {
             $this->input['_purge'] = 1;
-            $this->input['_no_message'] = $this->input['_no_message'] ?? 1;
+            $this->input['_no_message'] ??= 1;
         }
 
         if (isset($this->input['delete'])) {
             $this->input['_delete'] = $this->input['delete'];
             unset($this->input['delete']);
-        } else if (!$force) {
+        } elseif (!$force) {
             $this->input['_delete'] = 1;
-            $this->input['_no_message'] = $this->input['_no_message'] ?? 1;
+            $this->input['_no_message'] ??= 1;
         }
 
         if (!isset($this->input['_no_history'])) {
@@ -2189,7 +2162,7 @@ class CommonDBTM extends CommonGLPI
             $this->pre_purgeInventory();
         }
 
-       // Purge
+        // Purge
         if ($force) {
             Plugin::doHook(Hooks::PRE_ITEM_PURGE, $this);
         } else {
@@ -2197,7 +2170,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if (!is_array($this->input)) {
-           // $input clear by a hook to cancel delete
+            // $input clear by a hook to cancel delete
             return false;
         }
 
@@ -2256,9 +2229,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_deleteItem()
-    {
-    }
+    public function post_deleteItem() {}
 
 
     /**
@@ -2266,9 +2237,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_purgeItem()
-    {
-    }
+    public function post_purgeItem() {}
 
 
     /**
@@ -2341,7 +2310,7 @@ class CommonDBTM extends CommonGLPI
      * Actions done before the DELETE of the item in the database /
      * Maybe used to add another check for deletion
      *
-     * @return boolean true if item need to be deleted else false
+     * @return bool true if item need to be deleted else false
      **/
     public function pre_deleteItem()
     {
@@ -2353,9 +2322,9 @@ class CommonDBTM extends CommonGLPI
      * Restore an item put in the trashbin in the database.
      *
      * @param array   $input   the _POST vars returned by the item form when press restore
-     * @param boolean $history do history log ? (default true)
+     * @param bool $history do history log ? (default true)
      *
-     * @return boolean true on success
+     * @return bool true on success
      **/
     public function restore(array $input, $history = true)
     {
@@ -2369,14 +2338,14 @@ class CommonDBTM extends CommonGLPI
             unset($input['restore']);
         } else {
             $this->input['_restore'] = 1;
-            $this->input['_no_message'] = $this->input['_no_message'] ?? 1;
+            $this->input['_no_message'] ??= 1;
         }
 
-       // Store input in the object to be available in all sub-method / hook
+        // Store input in the object to be available in all sub-method / hook
         $this->input = $input;
         Plugin::doHook(Hooks::PRE_ITEM_RESTORE, $this);
         if (!is_array($this->input)) {
-           // $input clear by a hook to cancel restore
+            // $input clear by a hook to cancel restore
             return false;
         }
 
@@ -2416,9 +2385,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @return void
      **/
-    public function post_restoreItem()
-    {
-    }
+    public function post_restoreItem() {}
 
 
     /**
@@ -2462,13 +2429,12 @@ class CommonDBTM extends CommonGLPI
      * Unglobalize the item : duplicate item and connections.
      *
      * @see Asset_PeripheralAsset::unglobalizeItem()
+     * @return bool true on success, false on failure
      */
     public function unglobalize()
     {
         // Wrapper only to standardize the usage of form actions in generic forms
-        Asset_PeripheralAsset::unglobalizeItem($this);
-
-        return null;
+        return Asset_PeripheralAsset::unglobalizeItem($this);
     }
 
     /**
@@ -2477,7 +2443,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $type itemtype of object to add
      *
-     * @return boolean
+     * @return bool
      **@since 0.83
      *
      */
@@ -2494,7 +2460,7 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
+     * @return bool
      **/
     public function canCreateItem(): bool
     {
@@ -2513,12 +2479,12 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUpdateItem(): bool
     {
 
-        if (!$this->checkEntity(true)) {
+        if (!$this->checkEntity()) {
             return false;
         }
         return true;
@@ -2532,12 +2498,12 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
+     * @return bool
      **/
     public function canDeleteItem(): bool
     {
 
-        if (!$this->checkEntity(true)) {
+        if (!$this->checkEntity()) {
             return false;
         }
         return true;
@@ -2549,18 +2515,18 @@ class CommonDBTM extends CommonGLPI
      *
      * Default is true and check entity if the objet is entity assign
      *
-     * @return boolean
+     * @return bool
      **@since 0.85
      *
      */
     public function canPurgeItem(): bool
     {
 
-        if (!$this->checkEntity(true)) {
+        if (!$this->checkEntity()) {
             return false;
         }
 
-       // Can purge an object with Infocom only if can purge Infocom
+        // Can purge an object with Infocom only if can purge Infocom
         if (Infocom::canApplyOn($this)) {
             $infocom = new Infocom();
 
@@ -2576,7 +2542,7 @@ class CommonDBTM extends CommonGLPI
      * Have I the right to "view" the Object
      * May be overloaded if needed
      *
-     * @return boolean
+     * @return bool
      **/
     public function canViewItem(): bool
     {
@@ -2585,7 +2551,7 @@ class CommonDBTM extends CommonGLPI
             return false;
         }
 
-       // else : Global item
+        // else : Global item
         return true;
     }
 
@@ -2593,9 +2559,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Have I right to see action button
      *
-     * @param integer $ID ID to check
+     * @param int $ID ID to check
      *
-     * @return boolean
+     * @return bool
      **@since 0.85
      *
      */
@@ -2614,6 +2580,9 @@ class CommonDBTM extends CommonGLPI
     }
 
 
+    /**
+     * @return bool
+     */
     public function canRecurs()
     {
 
@@ -2638,14 +2607,10 @@ class CommonDBTM extends CommonGLPI
      *
      * May be overloaded if needed
      *
-     * @return boolean
+     * @return bool
      **/
     public function canUnrecurs()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $ID  = $this->fields['id'];
@@ -2661,11 +2626,11 @@ class CommonDBTM extends CommonGLPI
         $RELATION  = getDbRelations();
 
         if ($this instanceof CommonTreeDropdown) {
-            $f = getForeignKeyFieldForTable($this->getTable());
+            $f = getForeignKeyFieldForTable(static::getTable());
 
             if (
                 countElementsInTable(
-                    $this->getTable(),
+                    static::getTable(),
                     [ $f => $ID, 'NOT' => [ 'entities_id' => $entities ]]
                 ) > 0
             ) {
@@ -2673,8 +2638,8 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        if (isset($RELATION[$this->getTable()])) {
-            foreach ($RELATION[$this->getTable()] as $tablename => $fields) {
+        if (isset($RELATION[static::getTable()])) {
+            foreach ($RELATION[static::getTable()] as $tablename => $fields) {
                 if ($tablename[0] != '_') {
                     $or_criteria = [];
                     foreach ($fields as $field) {
@@ -2722,7 +2687,7 @@ class CommonDBTM extends CommonGLPI
                         foreach ($RELATION as $othertable => $rel) {
                             // Search for a N->N Relation
                             if (
-                                ($othertable != $this->getTable())
+                                ($othertable != static::getTable())
                                 && isset($rel[$tablename])
                             ) {
                                 if ($DB->fieldExists($othertable, 'entities_id')) {
@@ -2759,7 +2724,7 @@ class CommonDBTM extends CommonGLPI
                                                 [
                                                     $item_criteria,
                                                     'FKEY' => $fkey,
-                                                    'NOT'  => [$othertable . '.entities_id' => $entities ]
+                                                    'NOT'  => [$othertable . '.entities_id' => $entities ],
                                                 ]
                                             ) > '0'
                                         ) {
@@ -2774,21 +2739,20 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-       // Doc links to this item
+        // Doc links to this item
         if (
-            ($this->getType() > 0)
-            && countElementsInTable(
+            countElementsInTable(
                 ['glpi_documents_items', 'glpi_documents'],
                 ['glpi_documents_items.items_id' => $ID,
                     'glpi_documents_items.itemtype' => $this->getType(),
                     'FKEY' => ['glpi_documents_items' => 'documents_id','glpi_documents' => 'id'],
-                    'NOT'  => ['glpi_documents.entities_id' => $entities]
+                    'NOT'  => ['glpi_documents.entities_id' => $entities],
                 ]
             ) > '0'
         ) {
             return false;
         }
-       // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
+        // TODO : do we need to check all relations in $RELATION["_virtual_device"] for this item
 
         // check connections between assets
         if (
@@ -2807,10 +2771,10 @@ class CommonDBTM extends CommonGLPI
      * @since 0.83
      *
      * @param string  $action name of the action
-     * @param integer $field  id of the field
+     * @param int $field  id of the field
      * @param string  $value  value of the field
      *
-     * @return boolean
+     * @return bool
      **/
     public function canMassiveAction($action, $field, $value)
     {
@@ -2868,11 +2832,11 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.84
      *
-     * @param integer $ID      ID of the item/template
+     * @param int $ID      ID of the item/template
      * @param array   $options Array of possible options:
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
-     * @return integer|void value of withtemplate option (throw an exception if not enough rights)
+     * @return int|void value of withtemplate option (throw an exception if not enough rights)
      **/
     public function initForm($ID, array $options = [])
     {
@@ -2880,33 +2844,33 @@ class CommonDBTM extends CommonGLPI
         if (
             isset($options['withtemplate'])
             && ($options['withtemplate'] == 2)
-            && !$this->isNewID($ID)
+            && !static::isNewID($ID)
         ) {
-           // Create item from template
-           // Check read right on the template
+            // Create item from template
+            // Check read right on the template
             $this->check($ID, READ);
 
-           // Restore saved input or template data
+            // Restore saved input or template data
             $input = $this->restoreInput($this->fields);
 
-           // If entity assign force current entity to manage recursive templates
+            // If entity assign force current entity to manage recursive templates
             if ($this->isEntityAssign()) {
                 $input['entities_id'] = $_SESSION['glpiactive_entity'];
             }
 
-           // Check create right
+            // Check create right
             $this->check(-1, CREATE, $input);
-        } else if ($this->isNewID($ID)) {
-           // Restore saved input if available
+        } elseif (static::isNewID($ID)) {
+            // Restore saved input if available
             $input = $this->restoreInput($options);
-           // Create item
+            // Create item
             $this->check(-1, CREATE, $input);
         } else {
-           // Existing item
+            // Existing item
             $this->check($ID, READ);
         }
 
-        return (isset($options['withtemplate']) ? $options['withtemplate'] : '');
+        return ($options['withtemplate'] ?? '');
     }
 
 
@@ -2947,7 +2911,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-       // Template case : clean entities data
+        // Template case : clean entities data
         if (
             ($params['withtemplate'] == 2)
             && $this->isEntityAssign()
@@ -2968,61 +2932,32 @@ class CommonDBTM extends CommonGLPI
 
         echo "<table class='tab_cadre_fixe'>";
         echo "<tr class='tab_bg_2'>";
-        echo "<td class='center' colspan='" . ($params['colspan'] * 2) . "'>";
+        echo "<td class='center' colspan='" . ((int) $params['colspan'] * 2) . "'>";
     }
 
-
-    /**
-     * is the parameter ID must be considered as new one ?
-     * Default is empty of <0 may be overriden (for entity for example)
-     *
-     * @param integer $ID ID of the item (-1 if new item)
-     *
-     * @return boolean
-     **/
     public static function isNewID($ID)
     {
+        // Default is empty of <0 may be overriden (for entity for example)
         return (empty($ID) || ($ID <= 0));
     }
 
-
-    /**
-     * is the current object a new  one
-     *
-     * @since 0.83
-     *
-     * @return boolean
-     **/
     public function isNewItem()
     {
 
         if (isset($this->fields['id'])) {
-            return $this->isNewID($this->fields['id']);
+            return static::isNewID($this->fields['id']);
         }
         return true;
     }
 
-
-    /**
-     * Check right on an item
-     *
-     * @param integer $ID    ID of the item (-1 if new item)
-     * @param int $right Right to check : r / w / recursive / READ / UPDATE / DELETE
-     * @param ?array   $input array of input data (used for adding item) (default NULL)
-     *
-     * @return boolean
-     **/
     public function can($ID, int $right, ?array &$input = null): bool
     {
         if (Session::isInventory()) {
             return true;
         }
 
-       // Clean ID :
-        $ID = Toolbox::cleanInteger($ID);
-
-       // Create process
-        if ($this->isNewID($ID)) {
+        // Create process
+        if (static::isNewID($ID)) {
             if (!isset($this->fields['id'])) {
                 // Only once
                 $this->getEmpty();
@@ -3030,14 +2965,14 @@ class CommonDBTM extends CommonGLPI
 
             if (is_array($input)) {
                 $input = $this->addNeededInfoToInput($input);
-               // Copy input field to allow getEntityID() to work
-               // from entites_id field or from parent item ref
+                // Copy input field to allow getEntityID() to work
+                // from entites_id field or from parent item ref
                 foreach ($input as $key => $val) {
                     if (isset($this->fields[$key])) {
                         $this->fields[$key] = $val;
                     }
                 }
-               // Store to be available for others functions
+                // Store to be available for others functions
                 $this->input = $input;
             }
 
@@ -3049,15 +2984,15 @@ class CommonDBTM extends CommonGLPI
             }
             return (static::canCreate() && $this->canCreateItem());
         }
-       // else : Get item if not already loaded
+        // else : Get item if not already loaded
         if (!isset($this->fields['id']) || ($this->fields['id'] != $ID)) {
-           // Item not found : no right
+            // Item not found : no right
             if (!$this->getFromDB($ID)) {
                 return false;
             }
         }
 
-       /* Hook to restrict user right on current item @since 9.2 */
+        /* Hook to restrict user right on current item @since 9.2 */
         $this->right = $right;
         Plugin::doHook(Hooks::ITEM_CAN, $this);
         if ($this->right !== $right) {
@@ -3067,7 +3002,7 @@ class CommonDBTM extends CommonGLPI
 
         switch ($right) {
             case READ:
-               // Personal item
+                // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3077,7 +3012,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canView() && $this->canViewItem());
 
             case UPDATE:
-               // Personal item
+                // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3087,7 +3022,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canUpdate() && $this->canUpdateItem());
 
             case DELETE:
-               // Personal item
+                // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3097,7 +3032,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canDelete() && $this->canDeleteItem());
 
             case PURGE:
-               // Personal item
+                // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3107,7 +3042,7 @@ class CommonDBTM extends CommonGLPI
                 return (static::canPurge() && $this->canPurgeItem());
 
             case CREATE:
-               // Personal item
+                // Personal item
                 if (
                     $this->isPrivate()
                     && ($this->fields['users_id'] === Session::getLoginUserID())
@@ -3129,7 +3064,7 @@ class CommonDBTM extends CommonGLPI
     final public function checkIfExistOrNew($id): bool
     {
         return
-            $this->isNewID($id)
+            static::isNewID($id)
             || (
                 isset($this->fields['id'])
                 && $this->fields['id'] === $id
@@ -3141,7 +3076,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check right on an item with block
      *
-     * @param integer $ID    ID of the item (-1 if new item)
+     * @param int $ID    ID of the item (-1 if new item)
      * @param int $right Right to check
      * @param ?array $input array of input data (used for adding item) (default NULL)
      *
@@ -3195,25 +3130,25 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check if have right on this entity
      *
-     * @param boolean $recursive set true to accept recursive items of ancestors
+     * @param bool $recursive set true to accept recursive items of ancestors
      *                           of active entities (View case for example) (default false)
      * @since 0.85
      *
-     * @return boolean
+     * @return bool
      **/
     public function checkEntity($recursive = false)
     {
 
-       // Is an item assign to an entity
+        // Is an item assign to an entity
         if ($this->isEntityAssign()) {
-           // Can be recursive check
+            // Can be recursive check
             if ($recursive && $this->maybeRecursive()) {
                 return Session::haveAccessToEntity($this->getEntityID(), $this->isRecursive());
             }
-           //  else : No recursive item         // Have access to entity
+            //  else : No recursive item         // Have access to entity
             return Session::haveAccessToEntity($this->getEntityID());
         }
-       // else : Global item
+        // else : Global item
         return true;
     }
 
@@ -3260,9 +3195,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the ID of entity assigned to the object
      *
-     * Can be overloaded (ex : infocom)
-     *
-     * @return integer ID of the entity
+     * @return int ID of the entity
      **/
     public function getEntityID()
     {
@@ -3277,9 +3210,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object assigned to an entity
      *
-     * Can be overloaded (ex : infocom)
-     *
-     * @return boolean
+     * @return bool
      **/
     public function isEntityAssign()
     {
@@ -3294,9 +3225,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be recursive
      *
-     * Can be overloaded (ex : infocom)
-     *
-     * @return boolean
+     * @return bool
      **/
     public function maybeRecursive()
     {
@@ -3311,25 +3240,21 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object recursive
      *
-     * Can be overloaded (ex : infocom)
-     *
-     * @return boolean
+     * @return bool
      **/
     public function isRecursive()
     {
-
         if ($this->maybeRecursive()) {
-            return $this->fields["is_recursive"];
+            return (bool) $this->fields["is_recursive"];
         }
-       // Return integer value to be used to fill is_recursive field
-        return 0;
+        return false;
     }
 
 
     /**
      * Is the object may be deleted
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeDeleted()
     {
@@ -3344,16 +3269,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object deleted
      *
-     * @return boolean
+     * @return bool
      **/
     public function isDeleted()
     {
-
         if ($this->maybeDeleted()) {
-            return $this->fields["is_deleted"];
+            return (bool) $this->fields["is_deleted"];
         }
-       // Return integer value to be used to fill is_deleted field
-        return 0;
+        return false;
     }
 
 
@@ -3362,7 +3285,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeActive()
     {
@@ -3379,23 +3302,21 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @return boolean
+     * @return bool
      **/
     public function isActive()
     {
-
         if ($this->maybeActive()) {
-            return $this->fields["is_active"];
+            return (bool) $this->fields["is_active"];
         }
-       // Return integer value to be used to fill is_active field
-        return 1;
+        return true;
     }
 
 
     /**
      * Is the object may be a template
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeTemplate()
     {
@@ -3410,16 +3331,14 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object a template
      *
-     * @return boolean
+     * @return bool
      **/
     public function isTemplate()
     {
-
         if ($this->maybeTemplate()) {
-            return $this->fields["is_template"];
+            return (bool) $this->fields["is_template"];
         }
-       // Return integer value to be used to fill is_template field
-        return 0;
+        return false;
     }
 
 
@@ -3428,7 +3347,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybeDynamic()
     {
@@ -3446,7 +3365,7 @@ class CommonDBTM extends CommonGLPI
      * need to be overriden if object need to use standard deleted management (Computer...)
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public function useDeletedToLockIfDynamic()
     {
@@ -3459,13 +3378,12 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.84
      *
-     * @return boolean
+     * @return bool
      **/
     public function isDynamic()
     {
-
         if ($this->maybeDynamic()) {
-            return (bool)$this->fields['is_dynamic'];
+            return (bool) $this->fields['is_dynamic'];
         }
         return false;
     }
@@ -3474,7 +3392,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object may be private
      *
-     * @return boolean
+     * @return bool
      **/
     public function maybePrivate()
     {
@@ -3490,13 +3408,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Is the object private
      *
-     * @return boolean
+     * @return bool
      **/
     public function isPrivate()
     {
-
         if ($this->maybePrivate()) {
-            return (bool)$this->fields["is_private"];
+            return (bool) $this->fields["is_private"];
         }
         return false;
     }
@@ -3506,7 +3423,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.3
      *
-     * @return boolean
+     * @return bool
      */
     public function maybeLocated()
     {
@@ -3532,7 +3449,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Return the count of linked items (`Asset_PeripheralAsset` relations)
      *
-     * @return integer number of linked items
+     * @return int number of linked items
      * @since 0.84.4
      **/
     public function getLinkedItemsCount()
@@ -3552,9 +3469,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Return a field Value if exists
      *
+     * Use it for display only.
+     *
      * @param string $field field name
      *
-     * @return mixed value of the field or 'N/A' if it does not exist
+     * @return mixed value of the field or NOT_AVAILABLE constant ('N/A') if it does not exist
      **/
     public function getField($field)
     {
@@ -3571,15 +3490,17 @@ class CommonDBTM extends CommonGLPI
      *
      * @param string $field field name
      *
-     * @return boolean
+     * @return bool
      **/
     public function isField($field)
     {
+        global $DB;
 
-        if (!isset($this->fields['id'])) {
-            $this->getEmpty();
+        if (static::$notable === true) {
+            return false;
         }
-        return array_key_exists($field, $this->fields);
+
+        return array_key_exists($field, $DB->listFields(static::getTable()));
     }
 
 
@@ -3613,9 +3534,9 @@ class CommonDBTM extends CommonGLPI
             ];
         }
 
-        if ($this->isField('states_id') && $this->getType() != 'State') {
+        if ($this->isField('states_id') && !$this instanceof State) {
             $name = Dropdown::getDropdownName('glpi_states', $this->fields['states_id']);
-            if (strlen($name) > 0) {
+            if ($name !== '') {
                 $toadd[] = [
                     'name'  => __s('Status'),
                     'value' => htmlescape($name),
@@ -3623,9 +3544,9 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        if ($this->isField('locations_id') && $this->getType() != 'Location') {
+        if ($this->isField('locations_id') && !$this instanceof Location) {
             $name = Dropdown::getDropdownName("glpi_locations", $this->fields['locations_id']);
-            if (strlen($name) > 0) {
+            if ($name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(Location::getTypeName(1)),
                     'value' => htmlescape($name),
@@ -3635,7 +3556,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->isField('users_id')) {
             $name = getUserName($this->fields['users_id']);
-            if (strlen($name) > 0) {
+            if ($name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(User::getTypeName(1)),
                     'value' => htmlescape($name),
@@ -3643,14 +3564,14 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        if ($this->isField('groups_id') && $this->getType() != 'Group') {
+        if ($this->isField('groups_id') && !$this instanceof Group) {
             $groups = $this->fields['groups_id'];
             if (!is_array($groups)) {
                 $groups = [$groups];
             }
             foreach ($groups as $group) {
                 $name = Dropdown::getDropdownName("glpi_groups", $group);
-                if (strlen($name) > 0) {
+                if ((string) $name !== '') {
                     $toadd[] = [
                         'name'  => htmlescape(Group::getTypeName(1)),
                         'value' => htmlescape($name),
@@ -3661,7 +3582,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->isField('users_id_tech')) {
             $name = getUserName($this->fields['users_id_tech']);
-            if (strlen($name) > 0) {
+            if ($name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(__('Technician in charge')),
                     'value' => htmlescape($name),
@@ -3693,7 +3614,7 @@ class CommonDBTM extends CommonGLPI
                         $infocom->fields["warranty_duration"],
                         0,
                         true
-                    )
+                    ),
                 ];
             }
         }
@@ -3762,10 +3683,7 @@ class CommonDBTM extends CommonGLPI
     public function getRawCompleteName()
     {
 
-        if (isset($this->fields[static::getCompleteNameField()])) {
-            return $this->fields[static::getCompleteNameField()];
-        }
-        return '';
+        return $this->fields[static::getCompleteNameField()] ?? '';
     }
 
 
@@ -3894,8 +3812,7 @@ class CommonDBTM extends CommonGLPI
 
         if (
             $p['forceid']
-            ||
-            (
+            || (
                 isset($_SESSION['glpiis_ids_visible'])
                 && $_SESSION['glpiis_ids_visible']
             )
@@ -3920,15 +3837,16 @@ class CommonDBTM extends CommonGLPI
      **/
     final public function searchOptions()
     {
-        $type = $this->getType();
-
-        if (isset(self::$search_options_cache[$type])) {
-            return self::$search_options_cache[$type];
+        if (isset(self::$search_options_cache[static::class])) {
+            return self::$search_options_cache[static::class];
         }
 
-        $options[$type] = [];
+        self::$search_options_cache[static::class] = [];
 
-        foreach ($this->rawSearchOptions() as $opt) {
+        // Force usage of a new object, to be sure that the current object will not be altered.
+        $self = new static();
+
+        foreach ($self->rawSearchOptions() as $opt) {
             // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             $missingFields = [];
@@ -3939,13 +3857,13 @@ class CommonDBTM extends CommonGLPI
                 $missingFields[] = 'name';
             }
             if (count($missingFields) > 0) {
-                throw new \Exception(
+                throw new Exception(
                     vsprintf(
                         'Invalid search option in "%1$s": missing "%2$s" field(s). %3$s',
                         [
-                            get_called_class(),
+                            static::class,
                             implode('", "', $missingFields),
-                            print_r($opt, true)
+                            print_r($opt, true),
                         ]
                     )
                 );
@@ -3954,20 +3872,21 @@ class CommonDBTM extends CommonGLPI
             $optid = $opt['id'];
             unset($opt['id']);
 
-            if (isset($options[$type][$optid])) {
-                $message = "Duplicate key $optid ({$options[$type][$optid]['name']}/{$opt['name']}) in " .
-                  get_class($this) . " searchOptions!";
-
+            if (isset(self::$search_options_cache[static::class][$optid])) {
+                $message = sprintf(
+                    'Duplicate key `%s` (`%s`/`%s`) in `%s` search options.',
+                    $optid,
+                    self::$search_options_cache[static::class][$optid]['name'],
+                    $opt['name'],
+                    static::class
+                );
                 trigger_error($message, E_USER_WARNING);
             }
 
-            foreach ($opt as $k => $v) {
-                $options[$type][$optid][$k] = $v;
-            }
+            self::$search_options_cache[static::class][$optid] = $opt;
         }
 
-        self::$search_options_cache[$type] = $options[$type];
-        return $options[$type];
+        return self::$search_options_cache[static::class];
     }
 
 
@@ -3979,26 +3898,25 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @return array a *not indexed* array of search options
+     * @return array<array<string, mixed>> a *not indexed* array of search options
      *
      * @see https://glpi-developer-documentation.rtfd.io/en/master/devapi/search.html
-     **/
+     */
     public function rawSearchOptions()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $tab = [];
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         if ($this->isField('name')) {
             $tab[] = [
                 'id'            => 1,
-                'table'         => $this->getTable(),
+                'table'         => static::getTable(),
                 'field'         => 'name',
                 'name'          => __('Name'),
                 'datatype'      => 'itemlink',
@@ -4009,7 +3927,7 @@ class CommonDBTM extends CommonGLPI
         if ($this->isField('is_recursive')) {
             $tab[] = [
                 'id'       => 86,
-                'table'      => $this->getTable(),
+                'table'      => static::getTable(),
                 'field'      => 'is_recursive',
                 'name'       => __('Child entities'),
                 'datatype'   => 'bool',
@@ -4017,7 +3935,7 @@ class CommonDBTM extends CommonGLPI
             ];
         }
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         // Add project for assets
@@ -4041,13 +3959,13 @@ class CommonDBTM extends CommonGLPI
     {
         $options = [];
 
-        $classname = get_called_class();
+        $classname = static::class;
         $method_name = 'rawSearchOptionsToAdd';
         if (!method_exists($classname, $method_name)) {
             return $options;
         }
 
-        if (defined('TU_USER') && $itemtype != null && $itemtype != AllAssets::getType()) {
+        if (defined('TU_USER') && $itemtype != null && is_a($itemtype, CommonDBTM::class, true)) {
             $item = new $itemtype();
             $all_options = $item->searchOptions();
         }
@@ -4056,15 +3974,15 @@ class CommonDBTM extends CommonGLPI
             // FIXME In GLPI 11.0, trigger a warning on invalid datatype (see `tests\units\Search::testSearchOptionsDatatype()`)
 
             if (!isset($opt['id'])) {
-                throw new \Exception(get_called_class() . ': invalid search option! ' . print_r($opt, true));
+                throw new Exception(static::class . ': invalid search option! ' . print_r($opt, true));
             }
             $optid = $opt['id'];
             unset($opt['id']);
 
             if (defined('TU_USER') && $itemtype != null) {
                 if (isset($all_options[$optid])) {
-                    $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in " .
-                    self::class . " searchOptionsToAdd for $itemtype!";
+                    $message = "Duplicate key $optid ({$all_options[$optid]['name']}/{$opt['name']}) in "
+                    . self::class . " searchOptionsToAdd for $itemtype!";
 
                     trigger_error($message, E_USER_WARNING);
                 }
@@ -4087,7 +4005,7 @@ class CommonDBTM extends CommonGLPI
      * @param array      $actions    Array of the actions to update where the keys are the internal identifier for the action and the values are the displayed value.
      *          Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
      * @param string $itemtype   the type of the item for which we want the actions
-     * @param boolean    $is_deleted (default false)
+     * @param bool    $is_deleted (default false)
      * @param ?CommonDBTM $checkitem  (default NULL)
      *
      * @return void (update is set inside $actions)
@@ -4099,8 +4017,7 @@ class CommonDBTM extends CommonGLPI
         $itemtype,
         $is_deleted = false,
         ?CommonDBTM $checkitem = null
-    ) {
-    }
+    ) {}
 
 
     /**
@@ -4110,7 +4027,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @param MassiveAction $ma the current massive action object
      *
-     * @return boolean false if parameters displayed ?
+     * @return bool false if parameters displayed ?
      **/
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
@@ -4133,8 +4050,7 @@ class CommonDBTM extends CommonGLPI
         MassiveAction $ma,
         CommonDBTM $item,
         array $ids
-    ) {
-    }
+    ) {}
 
 
     /**
@@ -4166,7 +4082,7 @@ class CommonDBTM extends CommonGLPI
             '*:delete',
             '*:remove',
             '*:purge',
-            '*:unlock'
+            '*:unlock',
         ];
 
         if (Infocom::canApplyOn($this)) {
@@ -4206,7 +4122,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getWhitelistedSingleMassiveActions()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $actions = ['MassiveAction:add_transfer_list'];
@@ -4226,39 +4141,35 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @param CommonGLPI $checkitem link item to check right (default NULL)
+     * @param CommonDBTM $checkitem link item to check right (default NULL)
      *
      * @return array An array of massive actions where the keys are the internal identifier for the action and the values are the displayed value.
      *         Displayed values may contain HTML code, so text data must be sanitized before returning them from this method.
      **/
     public function getSpecificMassiveActions($checkitem = null)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $actions = [];
-       // test if current profile has rights to unlock current item type
+        // test if current profile has rights to unlock current item type
         if (Session::haveRight(static::$rightname, UNLOCK)) {
             $actions['ObjectLock' . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock']
                         = _sx('button', 'Unlock items');
         }
 
         if (static::canUpdate()) {
-            if ($DB->fieldExists(static::getTable(), 'entities_id')) {
+            if ($DB->fieldExists(static::getTable(), 'entities_id') && !$this instanceof User) {
                 MassiveAction::getAddTransferList($actions);
             }
 
             if (in_array(static::getType(), Appliance::getTypes(true))) {
-                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'] =
-                "<i class='" . Appliance::getIcon() . "'></i>" . _sx('button', 'Associate to an appliance');
+                $actions['Appliance' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item']
+                = "<i class='" . htmlescape(Appliance::getIcon()) . "'></i>" . _sx('button', 'Associate to an appliance');
             }
 
             if (in_array(static::getType(), $CFG_GLPI['rackable_types'])) {
-                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete'] =
-                "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
+                $actions['Item_Rack' . MassiveAction::CLASS_ACTION_SEPARATOR . 'delete']
+                = "<i class='ti ti-server-off'></i>" . _sx('button', 'Remove from a rack');
             }
         }
 
@@ -4271,26 +4182,15 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @param array $options array of possible options:
-     * Parameters which could be used in options array :
-     *    - name : string / name of the select (default is depending itemtype)
-     *    - value : integer / preselected value (default 0)
-     *    - comments : boolean / is the comments displayed near the dropdown (default true)
-     *    - entity : integer or array / restrict to a defined entity or array of entities
-     *                   (default -1 : no restriction)
-     *    - toupdate : array / Update a specific item on select change on dropdown
-     *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
-     *                   and may have moreparams)
-     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     * @param array $options @see Dropdown::show()
      *
-     * @return string|false|integer
+     * @return string|false|int
      **/
     public static function dropdown($options = [])
     {
-       /// TODO try to revert usage : Dropdown::show calling this function
-       /// TODO use this function instead of Dropdown::show
-        return Dropdown::show(get_called_class(), $options);
+        /// TODO try to revert usage : Dropdown::show calling this function
+        /// TODO use this function instead of Dropdown::show
+        return Dropdown::show(static::class, $options);
     }
 
 
@@ -4315,7 +4215,7 @@ class CommonDBTM extends CommonGLPI
                     ($table == '')
                     || (($table != '') && ($searchOption['table'] == $table))
                 ) {
-                  // Set ID;
+                    // Set ID;
                     $searchOption['id'] = $id;
                     return $searchOption;
                 }
@@ -4358,27 +4258,24 @@ class CommonDBTM extends CommonGLPI
     {
 
         $tab = $this->getSearchOptionByField($field, $value, $table);
-        if (isset($tab['id'])) {
-            return $tab['id'];
-        }
-        return -1;
+        return $tab['id'] ?? -1;
     }
 
 
     /**
      * Check float and decimal values
      *
-     * @param boolean $display display or not messages in and addAfterRedirect (true by default)
+     * @param bool $display display or not messages in and addAfterRedirect (true by default)
      *
      * @return void
      **/
     public function filterValues($display = true)
     {
-       // MoYo : comment it because do not understand why filtering is disable
-       // if (in_array('CommonDBRelation', class_parents($this))) {
-       //    return true;
-       // }
-       //Type mismatched fields
+        // MoYo : comment it because do not understand why filtering is disable
+        // if (in_array('CommonDBRelation', class_parents($this))) {
+        //    return true;
+        // }
+        //Type mismatched fields
         $fails = [];
         if (is_array($this->input) && count($this->input)) {
             foreach ($this->input as $key => $value) {
@@ -4393,11 +4290,11 @@ class CommonDBTM extends CommonGLPI
                     switch ($searchOption['datatype']) {
                         case 'date':
                         case 'datetime':
-                              // don't use $unset', because this is not a failure
-                              $this->input[$key] = 'NULL';
+                            // don't use $unset', because this is not a failure
+                            $this->input[$key] = 'NULL';
                             break;
                     }
-                } else if (
+                } elseif (
                     isset($searchOption['datatype'])
                        && !is_null($value)
                        && ($value != '')
@@ -4408,14 +4305,14 @@ class CommonDBTM extends CommonGLPI
                         case 'count':
                         case 'number':
                         case 'decimal':
-                              $value = str_replace(',', '.', $value);
+                            $value = str_replace(',', '.', $value);
                             if ($searchOption['datatype'] == 'decimal') {
                                 $this->input[$key] = floatval(Toolbox::cleanDecimal($value));
                             } else {
                                 $this->input[$key] = intval(Toolbox::cleanInteger($value));
                             }
                             if (!is_numeric($this->input[$key])) {
-                                 $unset = true;
+                                $unset = true;
                             }
                             break;
 
@@ -4429,56 +4326,44 @@ class CommonDBTM extends CommonGLPI
                             $address = new IPAddress();
                             if (!$address->setAddressFromString($value)) {
                                 $unset = true;
-                            } else if (!$address->is_ipv4()) {
+                            } elseif (!$address->is_ipv4()) {
                                 $unset = true;
                             }
                             break;
 
                         case 'mac':
                             preg_match("/([0-9a-fA-F]{1,2}([:-]|$)){6}$/", $value, $regs);
-                            if (empty($regs)) {
+                            if ($regs === []) {
                                 $unset = true;
                             }
-                           // Define the MAC address to lower to reduce complexity of SQL queries
+                            // Define the MAC address to lower to reduce complexity of SQL queries
                             $this->input[$key] = strtolower($value);
                             break;
 
                         case 'date':
                         case 'datetime':
-                           // Date is already "reformat" according to getDateFormat()
+                            // Date is already "reformat" according to getDateFormat()
                             $pattern  = "/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})";
                             $pattern .= "([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/";
                             preg_match($pattern, $value, $regs);
-                            if (empty($regs)) {
+                            if ($regs === []) {
                                 $unset = true;
                             }
                             break;
 
                         case 'itemtype':
-                           //Want to insert an itemtype, but the associated class doesn't exists
+                            //Want to insert an itemtype, but the associated class doesn't exists
                             if (!class_exists($value)) {
                                 $unset = true;
                             }
                             break;
 
-                        case 'email':
-                        case 'string':
-                        case 'itemlink':
-                            if (is_string($value) && ($length = mb_strlen($value, 'UTF-8')) > 255) {
-                                trigger_error(
-                                    "{$value} exceed 255 characters long ({$length}), it will be truncated.",
-                                    E_USER_WARNING
-                                );
-                                $this->input[$key] = mb_substr($value, 0, 255, 'UTF-8');
-                            }
-                            break;
-
                         default:
-                           //Plugins can implement their own checks
+                            //Plugins can implement their own checks
                             if (!$this->checkSpecificValues($searchOption['datatype'], $value)) {
                                 $unset = true;
                             }
-                           // Copy value if check have update it
+                            // Copy value if check have update it
                             $this->input[$key] = $value;
                             break;
                     }
@@ -4491,14 +4376,14 @@ class CommonDBTM extends CommonGLPI
             }
         }
         if ($display && count($fails)) {
-           //Display a message to indicate that one or more value where filtered
-           //TRANS: %s is the list of the failed fields
+            //Display a message to indicate that one or more value where filtered
+            //TRANS: %s is the list of the failed fields
             $message = sprintf(
                 __('%1$s: %2$s'),
                 __('At least one field has an incorrect value'),
                 implode(',', $fails)
             );
-            Session::addMessageAfterRedirect(htmlescape($message), INFO, true);
+            Session::addMessageAfterRedirect(htmlescape($message), false, INFO);
         }
     }
 
@@ -4509,7 +4394,7 @@ class CommonDBTM extends CommonGLPI
      * @param string $datatype datatype of the value
      * @param array  $value    value to check (pass by reference)
      *
-     * @return boolean true if value is ok, false if not
+     * @return bool true if value is ok, false if not
      **/
     public function checkSpecificValues($datatype, &$value)
     {
@@ -4527,11 +4412,14 @@ class CommonDBTM extends CommonGLPI
 
         return ['id'          => __('ID'),
             'serial'      => __('Serial number'),
-            'entities_id' => Entity::getTypeName(1)
+            'entities_id' => Entity::getTypeName(1),
         ];
     }
 
 
+    /**
+     * @return array
+     */
     public function getUnallowedFieldsForUnicity()
     {
         return ['alert', 'comment', 'date_mod', 'id', 'is_recursive', 'items_id'];
@@ -4576,10 +4464,10 @@ class CommonDBTM extends CommonGLPI
 
         foreach ($doubles as $double) {
             if ($this instanceof CommonDBChild) {
-                if ($this->getField($this->itemtype)) {
-                    $item = new $double['itemtype']();
+                if ($this->getField($this::$itemtype)) {
+                    $item = getItemForItemtype($double['itemtype']);
                 } else {
-                    $item = new $this->itemtype();
+                    $item = getItemForItemtype($this::$itemtype);
                 }
 
                 $item->getFromDB($double['items_id']);
@@ -4610,7 +4498,7 @@ class CommonDBTM extends CommonGLPI
                     }
                 }
             }
-           // Add information on item in trashbin
+            // Add information on item in trashbin
             if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
                 $double_text = sprintf(__s('%1$s - %2$s'), $double_text, __s('Item in the trashbin'));
             }
@@ -4624,14 +4512,13 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check field unicity before insert or update
      *
-     * @param boolean $add     true for insert, false for update (false by default)
+     * @param bool $add     true for insert, false for update (false by default)
      * @param array   $options array
      *
-     * @return boolean true if item can be written in DB, false if not
+     * @return bool true if item can be written in DB, false if not
      **/
     public function checkUnicity($add = false, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $p = [
@@ -4646,19 +4533,22 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-       // Do not check for template
-        if (isset($this->input['is_template']) && $this->input['is_template']) {
+        // Do not check for template
+        if (
+            (isset($this->input['is_template']) && $this->input['is_template']) // on add template
+            || (isset($this->fields['is_template']) && $this->fields['is_template']) // on update template
+        ) {
             return true;
         }
 
         $result = true;
 
-       //Do not check unicity when creating infocoms or if checking is expliclty disabled
+        //Do not check unicity when creating infocoms or if checking is explicitly disabled
         if ($p['disable_unicity_check']) {
             return $result;
         }
 
-       //Get all checks for this itemtype and this entity
+        //Get all checks for this itemtype and this entity
         if (in_array(get_class($this), $CFG_GLPI["unicity_types"])) {
             // Get input entities if set / else get object one
             if ($this instanceof User) {
@@ -4675,7 +4565,7 @@ class CommonDBTM extends CommonGLPI
 
             $all_fields =  FieldUnicity::getUnicityFieldsConfig(get_class($this), $entities_id);
             foreach ($all_fields as $key => $fields) {
-               //If there's fields to check
+                //If there's fields to check
                 if (!empty($fields) && !empty($fields['fields'])) {
                     $where    = [];
                     $continue = true;
@@ -4695,7 +4585,7 @@ class CommonDBTM extends CommonGLPI
                                 $this->input[$field]
                             )
                         ) {
-                            $where[$this->getTable() . '.' . $field] = $this->input[$field];
+                            $where[static::getTable() . '.' . $field] = $this->input[$field];
                         } else {
                             $continue = false;
                         }
@@ -4709,19 +4599,19 @@ class CommonDBTM extends CommonGLPI
                         if ($fields['is_recursive']) {
                             $entities = getSonsOf('glpi_entities', $fields['entities_id']);
                         }
-                        $where[] = getEntitiesRestrictCriteria($this->getTable(), '', $entities);
+                        $where[] = getEntitiesRestrictCriteria(static::getTable(), '', $entities);
 
                         $tmp = clone $this;
                         if ($tmp->maybeTemplate()) {
                             $where['is_template'] = 0;
                         }
 
-                       //If update, exclude ID of the current object
+                        //If update, exclude ID of the current object
                         if (!$add) {
-                            $where['NOT'] = [$this->getTable() . '.id' => $this->input['id']];
+                            $where['NOT'] = [static::getTable() . '.id' => $this->input['id']];
                         }
 
-                        $doubles = getAllDataFromTable($this->getTable(), $where);
+                        $doubles = getAllDataFromTable(static::getTable(), $where);
                         if (count($doubles) > 0) {
                             $message = [];
                             if (
@@ -4735,14 +4625,14 @@ class CommonDBTM extends CommonGLPI
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                                 if ($p['unicity_error_message']) {
                                     if (!$fields['action_refuse']) {
-                                        $show_other_messages = ($fields['action_refuse'] ? true : false);
+                                        $show_other_messages = ((bool) $fields['action_refuse']);
                                     } else {
                                         $show_other_messages = true;
                                     }
                                     Session::addMessageAfterRedirect(
                                         $message_text,
                                         true,
-                                        $show_other_messages,
+                                        ERROR,
                                         $show_other_messages
                                     );
                                 }
@@ -4774,7 +4664,7 @@ class CommonDBTM extends CommonGLPI
                                     'refuse'      => $fields['action_refuse'],
                                     'label'       => $message,
                                     'field'       => $fields,
-                                    'double'      => $doubles
+                                    'double'      => $doubles,
                                 ];
                                 NotificationEvent::raiseEvent('refuse', new FieldUnicity(), $params);
                             }
@@ -4792,20 +4682,19 @@ class CommonDBTM extends CommonGLPI
      * Clean all infos which match some criteria
      *
      * @param array   $crit    array of criteria (ex array('is_active'=>'1'))
-     * @param boolean $force   force purge not on put in trashbin (default false)
-     * @param boolean $history do history log ? (true by default)
+     * @param bool $force   force purge not on put in trashbin (default false)
+     * @param bool $history do history log ? (true by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteByCriteria($crit = [], $force = false, $history = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ok = false;
         if (is_array($crit) && (count($crit) > 0)) {
             $crit['FIELDS'] = [$this::getTable() => $this::getIndexName()];
-            $crit['FROM'] = $this->getTable();
+            $crit['FROM'] = static::getTable();
             $ok = true;
             $iterator = $DB->request($crit);
             foreach ($iterator as $row) {
@@ -4822,9 +4711,9 @@ class CommonDBTM extends CommonGLPI
      * get the Entity of an Item
      *
      * @param string  $itemtype item type
-     * @param integer $items_id id of the item
+     * @param int $items_id id of the item
      *
-     * @return integer ID of the entity or -1
+     * @return int ID of the entity or -1
      **/
     public static function getItemEntity($itemtype, $items_id)
     {
@@ -4844,24 +4733,20 @@ class CommonDBTM extends CommonGLPI
     /**
      * display a specific field value
      *
-     * @since 0.83
-     *
-     * @param string       $field   name of the field
-     * @param string|array $values  with the value to display or a Single value
-     * @param array        $options Array of options
+     * @param string                      $field   name of the field
+     * @param string|array<string, mixed> $values  with the value to display or a Single value
+     * @param array<string, mixed>        $options Array of options
      *
      * @return string the string to display
      **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
-        switch ($field) {
-            case '_virtual_datacenter_position':
-                $static = new static();
-                if (method_exists($static, 'renderDcBreadcrumb')) {
-                    /** @var class-string $static */
-                    return $static::renderDcBreadcrumb($values['id']);
-                }
+        if ($field == '_virtual_datacenter_position') {
+            $static = new static();
+            if ($static instanceof DCBreadcrumbInterface) {
+                return $static::renderDcBreadcrumb($values['id']);
+            }
         }
 
         return '';
@@ -4873,7 +4758,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.83
      *
-     * @param integer|string|array $field_id_or_search_options id of the search option field
+     * @param int|string|array $field_id_or_search_options id of the search option field
      *                                                             or field name
      *                                                             or search option array
      * @param mixed                $values                     value to display
@@ -4886,7 +4771,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -4905,7 +4789,7 @@ class CommonDBTM extends CommonGLPI
         } else {
             $searchopt = $this->searchOptions();
 
-           // Get if id of search option is passed
+            // Get if id of search option is passed
             if (is_numeric($field_id_or_search_options)) {
                 if (isset($searchopt[$field_id_or_search_options])) {
                     $searchoptions = $searchopt[$field_id_or_search_options];
@@ -4914,7 +4798,7 @@ class CommonDBTM extends CommonGLPI
                 $searchoptions = $this->getSearchOptionByField(
                     'field',
                     $field_id_or_search_options,
-                    $this->getTable()
+                    static::getTable()
                 );
             }
         }
@@ -4924,7 +4808,7 @@ class CommonDBTM extends CommonGLPI
         if (count($searchoptions)) {
             $field = $searchoptions['field'];
 
-           // Normalize option
+            // Normalize option
             if (is_array($values)) {
                 $value = $values[$field];
             } else {
@@ -4941,105 +4825,116 @@ class CommonDBTM extends CommonGLPI
                     case "count":
                     case "number":
                         if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
-                             return $searchoptions['toadd'][$value];
+                            return htmlescape($searchoptions['toadd'][$value]);
                         }
                         if ($options['html']) {
-                            return Dropdown::getValueWithUnit($value, $unit);
+                            return htmlescape(Dropdown::getValueWithUnit($value, $unit));
                         }
-                        return $value;
+                        return htmlescape($value);
 
                     case "decimal":
                         if ($options['html']) {
-                            return Dropdown::getValueWithUnit($value, $unit, $CFG_GLPI["decimal_number"]);
+                            return htmlescape(Dropdown::getValueWithUnit($value, $unit, $CFG_GLPI["decimal_number"]));
                         }
-                        return $value;
+                        return htmlescape($value);
 
                     case "string":
                     case "mac":
                     case "ip":
-                        return $value;
+                        return htmlescape($value);
 
                     case "text":
                         if (isset($searchoptions['htmltext']) && $searchoptions['htmltext']) {
-                            $value = RichText::getTextFromHtml($value, true, false, true);
+                            $value = RichText::getTextFromHtml($value);
                         }
+                        $value = htmlescape($value);
 
                         return $options['html'] ? nl2br($value) : $value;
 
                     case "bool":
-                        return Dropdown::getYesNo($value);
+                        return htmlescape(Dropdown::getYesNo($value));
 
                     case "date":
                     case "date_delay":
                         if (isset($options['relative_dates']) && $options['relative_dates']) {
                             $dates = Html::getGenericDateTimeSearchItems(['with_time'   => true,
-                                'with_future' => true
+                                'with_future' => true,
                             ]);
-                            return $dates[$value];
+                            return htmlescape($dates[$value]);
                         }
-                        return empty($value) ? $value : Html::convDate(Html::computeGenericDateTimeSearch($value, true));
+                        return htmlescape(
+                            empty($value)
+                                ? $value
+                                : Html::convDate(Html::computeGenericDateTimeSearch($value, true))
+                        );
 
                     case "datetime":
                         if (isset($options['relative_dates']) && $options['relative_dates']) {
                             $dates = Html::getGenericDateTimeSearchItems(['with_time'   => true,
-                                'with_future' => true
+                                'with_future' => true,
                             ]);
-                            return $dates[$value];
+                            return htmlescape($dates[$value]);
                         }
-                        return empty($value) ? $value : Html::convDateTime(Html::computeGenericDateTimeSearch($value, false));
+                        return htmlescape(
+                            empty($value)
+                                ? $value
+                                : Html::convDateTime(Html::computeGenericDateTimeSearch($value, false))
+                        );
 
                     case "timestamp":
                         if (
                             ($value == 0)
                             && isset($searchoptions['emptylabel'])
                         ) {
-                            return $searchoptions['emptylabel'];
+                            return htmlescape($searchoptions['emptylabel']);
                         }
                         $withseconds = false;
                         if (isset($searchoptions['withseconds'])) {
                             $withseconds = $searchoptions['withseconds'];
                         }
-                        return Html::timestampToString($value, $withseconds);
+                        return htmlescape(Html::timestampToString($value, $withseconds));
 
                     case "email":
                         if ($options['html']) {
-                            return "<a href='mailto:$value'>$value</a>";
+                            return "<a href='mailto:" . htmlescape($value) . "'>" . htmlescape($value) . "</a>";
                         }
-                        return $value;
+                        return htmlescape($value);
 
                     case "weblink":
                         $orig_link = trim($value);
                         if (!empty($orig_link)) {
-                           // strip begin of link
+                            // strip begin of link
                             $link = preg_replace('/https?:\/\/(www[^\.]*\.)?/', '', $orig_link);
                             $link = preg_replace('/\/$/', '', $link);
                             if (Toolbox::strlen($link) > $CFG_GLPI["url_maxlength"]) {
                                 $link = Toolbox::substr($link, 0, $CFG_GLPI["url_maxlength"]) . "...";
                             }
-                            return "<a href=\"" . Toolbox::formatOutputWebLink($orig_link) . "\" target='_blank'>$link" .
-                            "</a>";
+                            return "<a href=\"" . htmlescape(Toolbox::formatOutputWebLink($orig_link)) . "\" target='_blank'>"
+                                . htmlescape($link)
+                                . "</a>";
                         }
                         return "&nbsp;";
 
                     case "itemlink":
-                        if ($searchoptions['table'] == $this->getTable()) {
+                        if ($searchoptions['table'] == static::getTable()) {
                             break;
                         }
-                       //use dropdown per default
+                        //use dropdown per default
 
+                        // no break
                     case "dropdown":
                         if (isset($searchoptions['toadd']) && isset($searchoptions['toadd'][$value])) {
-                            return $searchoptions['toadd'][$value];
+                            return htmlescape($searchoptions['toadd'][$value]);
                         }
                         if (!is_numeric($value)) {
-                            return $value;
+                            return htmlescape($value);
                         }
 
                         if (
                             ($value == 0)
                             && isset($searchoptions['emptylabel'])
                         ) {
-                            return $searchoptions['emptylabel'];
+                            return htmlescape($searchoptions['emptylabel']);
                         }
 
                         $user = new User();
@@ -5047,16 +4942,16 @@ class CommonDBTM extends CommonGLPI
                             if (!$user->getFromDB($value)) {
                                 return '';
                             }
-                            if ($param['comments']) {
+                            if ($options['comments']) {
                                 return $user->getLink() . '&nbsp;' . Html::showToolTip(
                                     $user->getInfoCard(),
                                     ['display' => false]
                                 );
                             }
-                            return getUserName($value);
+                            return htmlescape(getUserName($value));
                         }
                         $name = Dropdown::getDropdownName($searchoptions['table'], $value);
-                        if ($param['comments']) {
+                        if ($options['comments']) {
                             $comments = Dropdown::getDropdownComments($searchoptions['table'], (int) $value);
                             return htmlescape($name) . '&nbsp;' . Html::showToolTip(
                                 $comments,
@@ -5067,18 +4962,18 @@ class CommonDBTM extends CommonGLPI
 
                     case "itemtypename":
                         if ($obj = getItemForItemtype($value)) {
-                            return $obj->getTypeName(1);
+                            return htmlescape($obj->getTypeName(1));
                         }
                         break;
 
                     case "language":
                         if (isset($CFG_GLPI['languages'][$value])) {
-                            return $CFG_GLPI['languages'][$value][0];
+                            return htmlescape($CFG_GLPI['languages'][$value][0]);
                         }
-                        return __('Default value');
+                        return __s('Default value');
                 }
             }
-           // Get specific display if available
+            // Get specific display if available
             $itemtype = getItemTypeForTable($searchoptions['table']);
             if (is_a($itemtype, CommonDBTM::class, true)) {
                 $options['searchopt'] = $searchoptions;
@@ -5088,7 +4983,8 @@ class CommonDBTM extends CommonGLPI
                 }
             }
         }
-        return $value;
+
+        return htmlescape($value);
     }
 
     /**
@@ -5114,7 +5010,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 0.83
      *
-     * @param integer|string|array $field_id_or_search_options id of the search option field
+     * @param int|string|array $field_id_or_search_options id of the search option field
      *                                                             or field name
      *                                                             or search option array
      * @param string               $name                       name of the select (if empty use linkfield)
@@ -5130,7 +5026,6 @@ class CommonDBTM extends CommonGLPI
      **/
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $param = [
@@ -5149,7 +5044,7 @@ class CommonDBTM extends CommonGLPI
         } else {
             $searchopt = $this->searchOptions();
 
-           // Get if id of search option is passed
+            // Get if id of search option is passed
             if (is_numeric($field_id_or_search_options)) {
                 if (isset($searchopt[$field_id_or_search_options])) {
                     $searchoptions = $searchopt[$field_id_or_search_options];
@@ -5158,7 +5053,7 @@ class CommonDBTM extends CommonGLPI
                 $searchoptions = $this->getSearchOptionByField(
                     'field',
                     $field_id_or_search_options,
-                    $this->getTable()
+                    static::getTable()
                 );
             }
         }
@@ -5167,7 +5062,7 @@ class CommonDBTM extends CommonGLPI
 
         if (count($searchoptions)) {
             $field = $searchoptions['field'];
-           // Normalize option
+            // Normalize option
             if (is_array($values)) {
                 $value = $values[$field];
             } else {
@@ -5177,7 +5072,7 @@ class CommonDBTM extends CommonGLPI
             if (empty($name)) {
                 $name = $searchoptions['linkfield'];
             }
-           // If not set : set to specific
+            // If not set : set to specific
             if (!isset($searchoptions['datatype'])) {
                 $searchoptions['datatype'] = 'specific';
             }
@@ -5225,10 +5120,10 @@ class CommonDBTM extends CommonGLPI
                             'value'             => $value,
                             'enable_fileupload' => false,
                             'enable_richtext'   => $is_htmltext,
-                        // For now, this textarea is displayed only in the "update" massive action form, for fields
-                        // corresponding to a search option having "htmltext" property.
-                        // Uploaded images processing is not able to handle multiple use of same uploaded file, so until this is fixed,
-                        // it is preferable to disable image pasting in rich text inside massive actions.
+                            // For now, this textarea is displayed only in the "update" massive action form, for fields
+                            // corresponding to a search option having "htmltext" property.
+                            // Uploaded images processing is not able to handle multiple use of same uploaded file, so until this is fixed,
+                            // it is preferable to disable image pasting in rich text inside massive actions.
                             'enable_images'     => false,
                             'cols'              => 45,
                             'rows'              => 5,
@@ -5245,7 +5140,7 @@ class CommonDBTM extends CommonGLPI
                 case "date_delay":
                     if (isset($options['relative_dates']) && $options['relative_dates']) {
                         if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
-                             $options['with_future'] = true;
+                            $options['with_future'] = true;
                         }
                         return Html::showGenericDateTimeSearch($name, $value, $options);
                     }
@@ -5261,13 +5156,13 @@ class CommonDBTM extends CommonGLPI
                 case "datetime":
                     if (isset($options['relative_dates']) && $options['relative_dates']) {
                         if (isset($searchoptions['maybefuture']) && $searchoptions['maybefuture']) {
-                             $options['with_future'] = true;
+                            $options['with_future'] = true;
                         }
                         $options['with_time'] = true;
                         return Html::showGenericDateTimeSearch($name, $value, $options);
                     }
                     $copytooption = ['mindate', 'maxdate', 'mintime', 'maxtime',
-                        'maybeempty', 'timestep'
+                        'maybeempty', 'timestep',
                     ];
                     foreach ($copytooption as $key) {
                         if (isset($searchoptions[$key]) && !isset($options[$key])) {
@@ -5279,7 +5174,7 @@ class CommonDBTM extends CommonGLPI
 
                 case "timestamp":
                     $copytooption = ['addfirstminutes', 'emptylabel', 'inhours',  'max', 'min',
-                        'step', 'toadd', 'display_emptychoice'
+                        'step', 'toadd', 'display_emptychoice',
                     ];
                     foreach ($copytooption as $key) {
                         if (isset($searchoptions[$key]) && !isset($options[$key])) {
@@ -5291,14 +5186,15 @@ class CommonDBTM extends CommonGLPI
 
                 case "itemlink":
                     if (isset($options['itemlink_as_string']) && $options['itemlink_as_string']) {
-                       // Do not use dropdown if wanted to select string value instead of ID
+                        // Do not use dropdown if wanted to select string value instead of ID
                         break;
                     }
-                   //use dropdown case per default
+                    //use dropdown case per default
 
+                    // no break
                 case "dropdown":
                     $copytooption     = ['condition', 'displaywith', 'emptylabel',
-                        'right', 'toadd'
+                        'right', 'toadd',
                     ];
                     $options['name']  = $name;
                     $options['value'] = $value;
@@ -5320,7 +5216,7 @@ class CommonDBTM extends CommonGLPI
                         $name,
                         $value,
                         ['multiple' => false,
-                            'display'  => false
+                            'display'  => false,
                         ]
                     );
 
@@ -5328,8 +5224,8 @@ class CommonDBTM extends CommonGLPI
                     if (isset($searchoptions['itemtype_list'])) {
                         $options['types'] = $CFG_GLPI[$searchoptions['itemtype_list']];
                     }
-                     $copytooption     = ['types'];
-                     $options['value'] = $value;
+                    $copytooption     = ['types'];
+                    $options['value'] = $value;
                     foreach ($copytooption as $key) {
                         if (isset($searchoptions[$key]) && !isset($options[$key])) {
                             $options[$key] = $searchoptions[$key];
@@ -5354,7 +5250,7 @@ class CommonDBTM extends CommonGLPI
                     $options['value'] = $value;
                     return Dropdown::showLanguages($name, $options);
             }
-           // Get specific display if available
+            // Get specific display if available
             $itemtype = $searchoptions['itemtype'] ?? getItemTypeForTable($searchoptions['table']);
             if ($item = getItemForItemtype($itemtype)) {
                 $options['searchopt'] = $searchoptions;
@@ -5365,24 +5261,23 @@ class CommonDBTM extends CommonGLPI
                     $options
                 );
                 if (strlen($specific)) {
-                     return $specific;
+                    return $specific;
                 }
             }
         }
-       // default case field text
+        // default case field text
         return Html::input($name, ['value' => $value]);
     }
 
     /**
      * @param string  $itemtype Item type
      * @param string  $target   Target
-     * @param boolean $add      If true, displays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
+     * @param bool $add      If true, displays the template list to select the template to use when creating an item. Otherwise, displays the list of templates with the options to add/delete templates.
      *
      * @return false|void
      */
     public static function listTemplates($itemtype, $target, $add = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!($item = getItemForItemtype($itemtype))) {
@@ -5406,9 +5301,9 @@ class CommonDBTM extends CommonGLPI
         $request = [
             'FROM'   => $item::getTable(),
             'WHERE'  => [
-                'is_template'  => 1
-            ],
-            'ORDER'  => ['template_name']
+                'is_template' => 1,
+            ] + $item::getSystemSQLCriteria(),
+            'ORDER'  => ['template_name'],
         ];
 
         if ($item->isEntityAssign()) {
@@ -5429,24 +5324,19 @@ class CommonDBTM extends CommonGLPI
             Html::redirect($target_blank);
         }
 
-        $columns = [
-            'template' => _n('Template', 'Templates', 1)
-        ];
-        if (!$add && Session::isMultiEntitiesMode()) {
-            $columns['entity'] = Entity::getTypeName(1);
-        }
-
         $entries = [];
         $entity_cache = [];
 
         if ($add) {
             $entries[] = [
-                'template' => '<a href="' . htmlescape($target_blank) . '">' . __s('Blank Template') . '</a>'
+                'name' => '<a href="' . htmlescape($target_blank) . '">' . __s('Blank Template') . '</a>',
             ];
         }
 
         foreach ($iterator as $data) {
-            $entry = [];
+            $entry = [
+                'id' => $data['id'],
+            ];
             $templname = $data["template_name"];
             if ($_SESSION["glpiis_ids_visible"] || empty($data["template_name"])) {
                 $templname = sprintf(__('%1$s (%2$s)'), $templname, $data["id"]);
@@ -5455,7 +5345,7 @@ class CommonDBTM extends CommonGLPI
                 $modify_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=1";
                 $target_modify = $target . $modify_params;
 
-                $entry['template'] = '<a href="' . htmlescape($target_modify) . '">' . htmlescape($templname) . '</a>';
+                $entry['name'] = '<a href="' . htmlescape($target_modify) . '">' . htmlescape($templname) . '</a>';
                 if (Session::isMultiEntitiesMode()) {
                     if (!isset($entity_cache[$data['entities_id']])) {
                         $entity_cache[$data['entities_id']] = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
@@ -5463,49 +5353,25 @@ class CommonDBTM extends CommonGLPI
                     $entity = Dropdown::getDropdownName('glpi_entities', $data['entities_id']);
                     $entry['entity'] = $entity;
                 }
+                $entry['can_delete'] = $item::canPurge() && $item->can($data['id'], PURGE);
             } else {
                 $add_params = (strpos($target, '?') ? '&' : '?') . "id=" . $data['id'] . "&withtemplate=2";
                 $target_add = $target . $add_params;
-                $entry['template'] = '<a href="' . htmlescape($target_add) . '">' . htmlescape($templname) . '</a>';
+                $entry['name'] = '<a href="' . htmlescape($target_add) . '">' . htmlescape($templname) . '</a>';
             }
             $entries[] = $entry;
         }
 
         $twig_params = [
-            'datatable_params' => [
-                'is_tab' => true,
-                'nopager' => true,
-                'nofilter' => true,
-                'nosort' => true,
-                'columns' => $columns,
-                'formatters' => [
-                    'template' => 'raw_html'
-                ],
-                'entries' => $entries,
-                'total_number' => count($entries),
-                'filtered_number' => count($entries),
-                'showmassiveactions' => false,
-            ],
+            'add_mode' => (bool) $add,
+            'templates' => $entries,
+            'target' => $target,
+            'can_delete' => $item::canPurge(),
             'add_template' => $item::canCreate() && !$add,
             'target_create' => $target . (strpos($target, '?') ? '&id=-1&withtemplate=1' : '?id=-1&withtemplate=1'),
-            'add_template_label' => __('Add a template...')
         ];
 
-        // language=Twig
-        echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-            <div class="d-flex mx-auto justify-content-center">
-                <div class="card col-10 col-sm-6 col-xxl-3">
-                    <div class="card-body p-0">
-                        {{ include('components/datatable.html.twig', datatable_params, with_context = false) }}
-                    </div>
-                    {% if add_template %}
-                        <div class="card-footer text-center py-2">
-                            <a href="{{ target_create }}" class="mt-3">{{ add_template_label }}</a>
-                        </div>
-                    {% endif %}
-                </div>
-            </div>
-TWIG, $twig_params);
+        TemplateRenderer::getInstance()->display('pages/assets/template_list.html.twig', $twig_params);
     }
 
     /**
@@ -5530,7 +5396,7 @@ TWIG, $twig_params);
      *
      * @param string $itemtype itemtype to check
      *
-     * @return boolean
+     * @return bool
      **/
     public static function isEntityForwardTo($itemtype)
     {
@@ -5563,8 +5429,8 @@ TWIG, $twig_params);
             READ    => __('Read'),
             UPDATE  => __('Update'),
             PURGE   => ['short' => __('Purge'),
-                'long'  => _x('button', 'Delete permanently')
-            ]
+                'long'  => _x('button', 'Delete permanently'),
+            ],
         ];
 
         $values += ObjectLock::getRightsToAdd(get_class($this), $interface);
@@ -5572,17 +5438,17 @@ TWIG, $twig_params);
         if ($this->maybeDeleted()) {
             $values[DELETE] = [
                 'short' => __('Delete'),
-                'long'  => _x('button', 'Put in trashbin')
+                'long'  => _x('button', 'Put in trashbin'),
             ];
         }
         if ($this->usenotepad) {
             $values[READNOTE] = [
                 'short' => __('Read notes'),
-                'long' => __("Read the item's notes")
+                'long' => __("Read the item's notes"),
             ];
             $values[UPDATENOTE] = [
                 'short' => __('Update notes'),
-                'long' => __("Update the item's notes")
+                'long' => __("Update the item's notes"),
             ];
         }
 
@@ -5624,13 +5490,12 @@ TWIG, $twig_params);
      **/
     public function addFiles(array $input, $options = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $default_options = [
             'force_update'  => false,
             'content_field' => 'content',
-            'name'          => 'filename',
+            'name'          => array_key_exists('_filename', $input) ? 'filename' : ($options['content_field'] ?? 'content'),
             'date'          => null,
         ];
         $options = array_merge($default_options, $options);
@@ -5668,9 +5533,9 @@ TWIG, $twig_params);
             $entities_id = $_SESSION['glpiactive_entity'] ?? 0;
             if (isset($this->fields["entities_id"])) {
                 $entities_id = $this->fields["entities_id"];
-            } else if (isset($input['entities_id'])) {
+            } elseif (isset($input['entities_id'])) {
                 $entities_id = $input['entities_id'];
-            } else if (isset($input['_job']->fields['entities_id'])) {
+            } elseif (isset($input['_job']->fields['entities_id'])) {
                 $entities_id = $input['_job']->fields['entities_id'];
             }
 
@@ -5678,18 +5543,18 @@ TWIG, $twig_params);
             $is_recursive = 0;
             if (isset($this->fields["is_recursive"])) {
                 $is_recursive = $this->fields["is_recursive"];
-            } else if (isset($input['is_recursive'])) {
+            } elseif (isset($input['is_recursive'])) {
                 $is_recursive = $input['is_recursive'];
-            } else if (isset($input['_job']->fields['is_recursive'])) {
+            } elseif (isset($input['_job']->fields['is_recursive'])) {
                 $is_recursive = $input['_job']->fields['is_recursive'];
-            } else if ($this instanceof CommonDBVisible) {
+            } elseif ($this instanceof CommonDBVisible) {
                 // CommonDBVisible visibility restriction is unpredictable as
                 // it may change over time, and can be related to dynamic profiles assignation.
                 // Related documents have to be available on all entities.
                 $is_recursive = 1;
             }
 
-           // Check for duplicate and availability (e.g. file deleted in _files)
+            // Check for duplicate and availability (e.g. file deleted in _files)
             if ($doc->getDuplicateOf($entities_id, $filename)) {
                 $docID = $doc->fields["id"];
                 // File already exist, we replace the tag by the existing one
@@ -5718,10 +5583,17 @@ TWIG, $twig_params);
                     $doc->update($input2);
                 }
             } else {
-                if (static::class === Ticket::class) {
+                if ($this instanceof Ticket || (isset($input['_job']) && $input['_job'] instanceof Ticket)) {
+                    if (isset($input['_job']) && $input['_job'] instanceof Ticket) {
+                        $ticket_id = $input['_job']->getID();
+                    } else {
+                        $ticket_id = $this->getID();
+                    }
+
                     //TRANS: Default document to files attached to tickets : %d is the ticket id
                     $input2["name"] = sprintf(__('Document Ticket %d'), $this->getID());
-                    $input2["tickets_id"] = $this->getID();
+                    $input2["tickets_id"] = $ticket_id;
+                    $input2['itemtype'] = Ticket::class;
                 }
 
                 if (isset($input['_tag'][$key])) {
@@ -5731,7 +5603,6 @@ TWIG, $twig_params);
 
                 $input2["entities_id"]             = $entities_id;
                 $input2["is_recursive"]            = $is_recursive;
-                $input2["documentcategories_id"]   = $CFG_GLPI["documentcategories_id_forticket"];
                 $input2["_only_if_upload_succeed"] = 1;
                 $input2["_filename"]               = [$file];
                 if (isset($this->input[$prefixUploadName][$key])) {
@@ -5746,7 +5617,7 @@ TWIG, $twig_params);
             }
 
             if ($docID > 0) {
-               // complete doc information
+                // complete doc information
                 $docadded[$docID]['data'] = sprintf(
                     __('%1$s - %2$s'),
                     $doc->fields["name"],
@@ -5760,9 +5631,9 @@ TWIG, $twig_params);
                     '_do_notif'     => $donotif,
                     '_disablenotif' => $disablenotif,
                     'itemtype'      => static::class,
-                    'items_id'      => $this->getID()
+                    'items_id'      => $this->getID(),
                 ];
-               // Set date, needed if it differs from the creation date
+                // Set date, needed if it differs from the creation date
                 $toadd['date'] = $options['date'] ?? $_SESSION['glpi_currenttime'];
 
                 if (isset($input['users_id'])) {
@@ -5784,11 +5655,11 @@ TWIG, $twig_params);
 
                 $docitem->add($toadd);
             }
-           // Only notification for the first New doc
+            // Only notification for the first New doc
             $donotif = false;
         }
 
-       // manage content transformation
+        // manage content transformation
         if (isset($input[$options['content_field']])) {
             $input[$options['content_field']] = Toolbox::convertTagToImage(
                 $input[$options['content_field']],
@@ -5802,7 +5673,7 @@ TWIG, $twig_params);
                 unset($input['_disablenotif']);
             }
 
-           // force update of content on add process (we are in post_addItem function)
+            // force update of content on add process (we are in post_addItem function)
             if ($options['force_update']) {
                 $this->fields[$options['content_field']] = $input[$options['content_field']];
                 $this->updateInDB([$options['content_field']]);
@@ -5827,7 +5698,7 @@ TWIG, $twig_params);
         $title = null;
         if ((int) $options['withtemplate'] === 1 && ($this->isTemplate() || $this->isNewItem())) {
             $title = __s('You can define an autofill template');
-        } else if ($this->isTemplate()) {
+        } elseif ($this->isTemplate()) {
             if ($value === null) {
                 $value = $this->getField($field);
             }
@@ -5852,15 +5723,13 @@ TWIG, $twig_params);
     /**
      * Manage business rules for assets
      *
-     * @since 9.4
-     *
-     * @param boolean $condition the condition (RuleAsset::ONADD or RuleAsset::ONUPDATE)
+     * @param int $condition the condition
+     * @phpstan-param RuleAsset::ONADD|RuleAsset::ONUPDATE $condition
      *
      * @return void
      */
-    private function assetBusinessRules($condition)
+    private function assetBusinessRules(int $condition): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if ($this->input === false) {
@@ -5874,6 +5743,7 @@ TWIG, $twig_params);
         // Only process itemtype that are assets
         if (in_array(static::class, $CFG_GLPI['asset_types'], true)) {
             $ruleasset          = new RuleAssetCollection();
+            $ruleasset->setEntity($this->input['entities_id'] ?? $this->fields['entities_id']);
             $input              = $this->input;
             $input['_itemtype'] = static::class;
 
@@ -5908,20 +5778,9 @@ TWIG, $twig_params);
                 $input['last_inventory_update'] = $this->fields['last_inventory_update'];
             }
 
-            //if agent exist pass the 'tag' to RuleAssetCollection
-            if (
-                Toolbox::hasTrait($this, \Glpi\Features\Inventoriable::class)
-                && method_exists($this, 'getInventoryAgent')
-            ) {
-                $agent = $this->getInventoryAgent();
-                if ($agent !== null) {
-                    $input['_tag'] = $agent->fields['tag'];
-                }
-            }
-
             // Set the condition (add or update)
             $output = $ruleasset->processAllRules($input, [], [], [
-                'condition' => $condition
+                'condition' => $condition,
             ]);
 
             // If at least one rule has matched
@@ -5946,7 +5805,6 @@ TWIG, $twig_params);
      */
     public static function checkCircularRelation($items_id, $parents_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $fk = static::getForeignKeyField();
@@ -5957,22 +5815,22 @@ TWIG, $twig_params);
         $next_parent = $parents_id;
         while ($next_parent > 0) {
             if ((int) $next_parent === (int) $items_id) {
-               // This item is a parent higher up
+                // This item is a parent higher up
                 return true;
             }
             $iterator = $DB->request([
                 'SELECT' => [$fk],
                 'FROM'   => static::getTable(),
-                'WHERE'  => ['id' => $next_parent]
+                'WHERE'  => ['id' => $next_parent],
             ]);
             if ($iterator->count()) {
                 $next_parent = $iterator->current()[$fk];
             } else {
-               // Invalid parent
+                // Invalid parent
                 return false;
             }
         }
-       // No circular relations
+        // No circular relations
         return false;
     }
 
@@ -6017,7 +5875,7 @@ TWIG, $twig_params);
                     $this->getID()
                 ),
                 false
-            )
+            ),
         ];
 
         if ($count) {
@@ -6030,6 +5888,7 @@ TWIG, $twig_params);
         return $data;
     }
 
+    /** @return string */
     public static function getIcon()
     {
         // Generic icon that is not visible, but still takes up space to allow proper alignment in lists
@@ -6131,7 +5990,7 @@ TWIG, $twig_params);
      * Correct entity id if needed when cloning a template
      *
      * @param array   $data
-     * @param integer $parent_id
+     * @param int $parent_id
      * @param string  $parent_itemtype
      *
      * @return array
@@ -6141,19 +6000,19 @@ TWIG, $twig_params);
         $parent_id,
         $parent_itemtype
     ) {
-       // No entity field -> no modification needed
+        // No entity field -> no modification needed
         if (!isset($data['entities_id'])) {
             return $data;
         }
 
-       // If the entity used in the template in not allowed for our current user,
-       // fallback to the parent template entity
+        // If the entity used in the template in not allowed for our current user,
+        // fallback to the parent template entity
         if (!Session::haveAccessToEntity($data['entities_id'])) {
-           // Load parent
-            $parent = new $parent_itemtype();
+            // Load parent
+            $parent = getItemForItemtype($parent_itemtype);
 
             if (!$parent->getFromDB($parent_id)) {
-               // Can't load parent -> no modification
+                // Can't load parent -> no modification
                 return $data;
             }
 
@@ -6179,7 +6038,7 @@ TWIG, $twig_params);
         return [
             'RAW' => [
                 (string) QueryFunction::lower("$table.$name_field") => ['LIKE', "%$filter%"],
-            ]
+            ],
         ];
     }
 
@@ -6223,6 +6082,20 @@ TWIG, $twig_params);
         $model_fk = $model_class::getForeignKeyField();
         return $this->isField($model_fk) ? $model_class : null;
     }
+
+    public function getModelClassInstance(): CommonDBTM
+    {
+        $model_class = $this->getModelClass();
+        if (is_a($model_class, CommonDBTM::class, true)) {
+            return new $model_class();
+        }
+
+        throw new RuntimeException(sprintf(
+            'Model class "%s" does not exist or is not a valid CommonDBTM.',
+            $model_class
+        ));
+    }
+
 
     /**
      * Returns model class foreign key field name, or null if item has no model class.
@@ -6269,55 +6142,55 @@ TWIG, $twig_params);
      */
     public function hasItemtypeOrModelPictures(array $picture_fields = ['picture_front', 'picture_rear', 'pictures']): bool
     {
-        $itemtype = static::class;
-        $modeltype = $itemtype . "Model";
-        $fk = getForeignKeyFieldForItemType($modeltype);
-        $has_model = class_exists($modeltype) && isset($this->fields[$fk]) && $this->fields[$fk] > 0;
-        if ($has_model) {
-            /** @var CommonDBTM $model */
-            $model = new $modeltype();
-        }
-
-        $has_pictures = false;
-
         foreach ($picture_fields as $picture_field) {
             if ($this->isField($picture_field)) {
                 if ($picture_field === 'pictures') {
                     $urls = importArrayFromDB($this->fields[$picture_field]);
                     if (!empty($urls)) {
-                        $has_pictures = true;
-                        break;
+                        return true;
                     }
-                } else if (!empty($this->fields[$picture_field])) {
-                    $has_pictures = true;
-                    break;
+                } elseif (!empty($this->fields[$picture_field])) {
+                    return true;
                 }
             }
         }
-        if (!$has_pictures && $has_model && $model->getFromDB(($this->fields[$fk]))) {
-            foreach ($picture_fields as $picture_field) {
-                if ($model->isField($picture_field)) {
-                    if ($picture_field === 'pictures') {
-                        $urls = importArrayFromDB($model->fields[$picture_field]);
-                        if (!empty($urls)) {
-                             $has_pictures = true;
-                             break;
-                        }
-                    } else if (!empty($model->fields[$picture_field])) {
-                        $has_pictures = true;
-                        break;
+
+        $model_class = $this->getModelClass();
+        if (!is_a($model_class, CommonDBTM::class, true)) {
+            return false;
+        }
+
+        $model = new $model_class();
+        $model_fkey = $model_class::getForeignKeyField();
+        if (
+            !isset($this->fields[$model_fkey])
+            || $this->fields[$model_fkey] <= 0
+            || !$model->getFromDB(($this->fields[$model_fkey]))
+        ) {
+            return false;
+        }
+
+        foreach ($picture_fields as $picture_field) {
+            if ($model->isField($picture_field)) {
+                if ($picture_field === 'pictures') {
+                    $urls = importArrayFromDB($model->fields[$picture_field]);
+                    if (!empty($urls)) {
+                        return true;
                     }
+                } elseif (!empty($model->fields[$picture_field])) {
+                    return true;
                 }
             }
         }
-        return $has_pictures;
+
+        return false;
     }
 
     public function getItemtypeOrModelPicture(string $picture_field = 'picture_front', array $params = []): array
     {
         $p = [
             'thumbnail_w'  => 'auto',
-            'thumbnail_h'  => 'auto'
+            'thumbnail_h'  => 'auto',
         ];
         $p = array_replace($p, $params);
 
@@ -6334,15 +6207,14 @@ TWIG, $twig_params);
             }
             $clearable = static::canUpdate();
         } else {
-            $modeltype = $itemtype . "Model";
-            if (class_exists($modeltype)) {
-                /** @var CommonDBTM $model */
-                $model = new $modeltype();
+            $model_class = $this->getModelClass();
+            if (is_a($model_class, CommonDBTM::class, true)) {
+                $model = new $model_class();
                 if (!$model->isField($picture_field)) {
                     return [];
                 }
 
-                $fk = getForeignKeyFieldForItemType($modeltype);
+                $fk = $model::getForeignKeyField();
                 if ($model->getFromDB(($this->fields[$fk]) ?? 0)) {
                     if ($picture_field === 'pictures') {
                         $urls = importArrayFromDB($model->fields[$picture_field]);
@@ -6355,7 +6227,7 @@ TWIG, $twig_params);
 
         foreach ($urls as $url) {
             if (!empty($url)) {
-                $resolved_url = \Toolbox::getPictureUrl($url);
+                $resolved_url = Toolbox::getPictureUrl($url);
                 $src_file = GLPI_PICTURE_DIR . '/' . $url;
                 if (file_exists($src_file)) {
                     $size = getimagesize($src_file);
@@ -6364,7 +6236,7 @@ TWIG, $twig_params);
                         'w'               => $size[0],
                         'h'               => $size[1],
                         'clearable'       => $clearable,
-                        '_is_model_img'   => isset($model)
+                        '_is_model_img'   => isset($model),
                     ] + $p;
                 } else {
                     $owner_type = isset($model) ? $model::getType() : $itemtype;
@@ -6389,11 +6261,12 @@ TWIG, $twig_params);
     public function getMassiveActionsForItem(): MassiveAction
     {
         $params = [
+            '_from_single_item' => true,
             'item' => [
                 static::class => [
-                    $this->fields['id'] => 1
-                ]
-            ]
+                    $this->fields['id'] => 1,
+                ],
+            ],
         ];
         if ($this->isEntityAssign()) {
             $params['entity_restrict'] = $this->getEntityID();
@@ -6451,6 +6324,10 @@ TWIG, $twig_params);
         // Get input value
         $input_value = $this->input[$field] ?? null;
 
+        if ($input_value === '') {
+            $input_value = [];
+        }
+
         // See dropdownField twig macro, needed for empty values as an empty
         // array won't be sent in the HTML form
         $input_defined = (bool) ($this->input["_{$field}_defined"] ?? false);
@@ -6474,7 +6351,7 @@ TWIG, $twig_params);
         ) {
             foreach ($existing_relations as $relation) {
                 $success = $commondb_relation->delete([
-                    'id' => $relation['id']
+                    'id' => $relation['id'],
                 ]);
                 if (!$success) {
                     $warning = "Failed to delete " . get_class($commondb_relation);
@@ -6490,7 +6367,7 @@ TWIG, $twig_params);
             // Delete missing value
             if (!in_array($item_2_id, $input_value)) {
                 $success = $commondb_relation->delete([
-                    'id' => $relation['id']
+                    'id' => $relation['id'],
                 ]);
                 if (!$success) {
                     $warning = "Failed to delete " . get_class($commondb_relation);
@@ -6511,7 +6388,7 @@ TWIG, $twig_params);
 
             $success = $commondb_relation->add(array_merge($extra_input, [
                 $item_1_fk => $item_1_id,
-                $item_2_fk => $item_2_id
+                $item_2_fk => $item_2_id,
             ]));
             if (!$success) {
                 $warning = "Failed to add " . get_class($commondb_relation);
@@ -6628,7 +6505,7 @@ TWIG, $twig_params);
         ?array $menus = null,
         array $options = []
     ): void {
-        \Glpi\Debug\Profiler::getInstance()->start(static::class . '::displayFullPageForItem');
+        Profiler::getInstance()->start(static::class . '::displayFullPageForItem');
         $id = (int) $id;
         $item = new static();
 
@@ -6665,9 +6542,9 @@ TWIG, $twig_params);
 
         // Show header
         if ($interface == 'central') {
-            \Glpi\Debug\Profiler::getInstance()->start(static::class . '::displayCentralHeader');
+            Profiler::getInstance()->start(static::class . '::displayCentralHeader');
             static::displayCentralHeader($title, $menus);
-            \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::displayCentralHeader');
+            Profiler::getInstance()->stop(static::class . '::displayCentralHeader');
         } else {
             static::displayHelpdeskHeader($title, $menus);
         }
@@ -6677,14 +6554,9 @@ TWIG, $twig_params);
         }
         // Show item
         $options['loaded'] = true;
-        \Glpi\Debug\Profiler::getInstance()->start(static::class . '::display');
+        Profiler::getInstance()->start(static::class . '::display');
         $item->display($options);
-        \Glpi\Debug\Profiler::getInstance()->stop(static::class . '::display');
-
-        // Display extra html if needed
-        if (!empty($options['after_display'] ?? "")) {
-            echo $options['after_display'];
-        }
+        Profiler::getInstance()->stop(static::class . '::display');
 
         // Show footer
         if ($interface == 'central') {
@@ -6712,7 +6584,7 @@ TWIG, $twig_params);
             $title = static::getTypeName(1);
         }
 
-        \Glpi\Debug\Profiler::getInstance()->start('Html::header');
+        Profiler::getInstance()->start('Html::header');
         Html::header(
             $title,
             '',
@@ -6721,7 +6593,7 @@ TWIG, $twig_params);
             $menus[2] ?? '',
             false
         );
-        \Glpi\Debug\Profiler::getInstance()->stop('Html::header');
+        Profiler::getInstance()->stop('Html::header');
     }
 
     /**
@@ -6768,7 +6640,7 @@ TWIG, $twig_params);
                 'items_id' => $this->fields['id'],
             ];
             $alert = new Alert();
-            $alert->deleteByCriteria($input, 1);
+            $alert->deleteByCriteria($input, true);
         }
     }
 
@@ -6779,9 +6651,9 @@ TWIG, $twig_params);
         }
 
         $confname = strtolower($this->gettype()) . 's_management_restrict';
-        if (\Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANAGEMENT) {
+        if (Config::getConfigurationValue('core', $confname) == Config::GLOBAL_MANAGEMENT) {
             $is_global = true;
-        } else if (\Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
+        } elseif (Config::getConfigurationValue('core', $confname) == Config::UNIT_MANAGEMENT) {
             $is_global = false;
         } else {
             $is_global = ($this->fields['is_global'] ?? false) == 1;
@@ -6837,14 +6709,11 @@ TWIG, $twig_params);
 
     /**
      * Return the action to execute after a generic form action has been done.
-     *
-     * @param string $form_action
-     * @return string|null
      */
-    public static function getPostFormAction(string $form_action): ?string
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
     {
         return match ($form_action) {
-            'add' => 'backcreated',
+            'add' => $action_success ? 'backcreated' : 'back',
             'update' => 'back',
             'delete', 'restore', 'purge' => 'list',
             'unglobalize' => 'form',
@@ -6852,8 +6721,14 @@ TWIG, $twig_params);
         };
     }
 
-    public static function getByUuid(string $uuid): ?self
+    public static function getByUuid(string $uuid): ?static
     {
+        $store = UuidStore::getInstance();
+        $content = $store->get($uuid);
+        if ($content instanceof static) {
+            return $content;
+        }
+
         $item = new static();
         if ($item->getFromDBByCrit(['uuid' => $uuid])) {
             return $item;
@@ -6878,5 +6753,24 @@ TWIG, $twig_params);
             'order'              => $order,
             'as_map'             => false,
         ]);
+    }
+
+    /** @return iterable<static> */
+    public static function getSeveralFromDBByCrit(
+        array $where = [],
+        array $order = [],
+        ?int $limit = null,
+    ): iterable {
+        $data = (new static())->find(
+            $where,
+            $order,
+            $limit,
+        );
+        foreach ($data as $row) {
+            $item = new static();
+            $item->getFromResultSet($row);
+            $item->post_getFromDB();
+            yield $item;
+        }
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,7 +47,7 @@ interface CalDAVCompatibleItemInterface
     /**
      * Get group items as VCalendar documents.
      *
-     * @param integer $groups_id
+     * @param int $groups_id
      *
      * @return VCalendar[]
      */
@@ -56,7 +56,7 @@ interface CalDAVCompatibleItemInterface
     /**
      * Get user items as VCalendar documents.
      *
-     * @param integer $users_id
+     * @param int $users_id
      *
      * @return VCalendar[]
      */

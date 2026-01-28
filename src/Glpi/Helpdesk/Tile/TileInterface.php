@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,12 +32,18 @@
  * ---------------------------------------------------------------------
  */
 
- namespace Glpi\Helpdesk\Tile;
+namespace Glpi\Helpdesk\Tile;
 
- use Glpi\Session\SessionInfo;
+use Glpi\Session\SessionInfo;
 
 interface TileInterface
 {
+    /**
+     * Used to sort tiles in dropdowns.
+     * Lowest weight will be displayed first.
+     */
+    public function getWeight(): int;
+
     public function getLabel(): string;
 
     public function getTitle(): string;

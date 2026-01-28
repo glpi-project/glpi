@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -47,10 +47,9 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     #[Override]
     protected static function getAjaxUrl(): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        return $CFG_GLPI['root_doc'] . "/ajax/getFormQuestionActorsDropdownValue.php";
+        return $CFG_GLPI['root_doc'] . "/Form/Question/ActorsDropdown";
     }
 
     #[Override]
@@ -76,8 +75,8 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         $params['templateSelection'] = <<<JS
             function (data) {
                 let icon = '';
-                let text = data.text;
-                let title = data.title;
+                let text = _.escape(data.text);
+                let title = _.escape(data.title);
                 if (
                     (data.itemtype && data.itemtype === 'User')
                     || (data.id && data.id.startsWith('users_id-'))
@@ -107,10 +106,9 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     protected static function getValueNames(array $values): array
     {
         return array_map(function ($value) {
-            $data = explode("-", $value);
-            $itemtype = getItemtypeForForeignKeyField($data[0]);
-            $items_id = $data[1];
-            $item = new $itemtype();
+            $data     = explode("-", $value);
+            $item     = getItemForForeignKeyField($data[0]);
+            $items_id = (int) $data[1];
 
             return Dropdown::getDropdownName(
                 $item->getTable(),
@@ -127,7 +125,11 @@ final class FormActorsDropdown extends AbstractRightsDropdown
             $right = $options['right_for_users'];
         }
 
-        $users = User::getSqlSearchResult(false, $right, -1, 0, [], $text, 0, self::LIMIT);
+        $page = $options['page'] ?? 1;
+        $page_size = $options['page_size'] ?? self::LIMIT;
+        $start = ($page - 1) * $page_size;
+
+        $users = User::getSqlSearchResult(false, $right, -1, 0, [], $text, $start, $page_size);
         $users_items = [];
         foreach ($users as $user) {
             $new_key = 'users_id-' . $user['id'];
@@ -157,11 +159,12 @@ final class FormActorsDropdown extends AbstractRightsDropdown
         }
 
         // Add suppliers if enabled
-        if (self::isTypeEnabled(Supplier::getType())) {
-            $possible_rights[Supplier::getType()] = self::getSuppliers($text);
+        if (self::isTypeEnabled(Supplier::getType(), $options)) {
+            $possible_rights[Supplier::getType()] = self::getSuppliers($text, $options);
         }
 
         $results = [];
+        $count = 0;
         foreach ($possible_rights as $itemtype => $ids) {
             $new_group = [];
             foreach ($ids as $id => $labels) {
@@ -175,17 +178,21 @@ final class FormActorsDropdown extends AbstractRightsDropdown
                     'selection_text' => "$itemtype - $text",
                 ];
             }
-            $results[] = [
-                'itemtype' => $itemtype,
-                'text' => $itemtype::getTypeName(1),
-                'title' => $itemtype::getTypeName(1),
-                'children' => $new_group,
-            ];
+
+            if (count($new_group)) {
+                $results[] = [
+                    'itemtype' => $itemtype,
+                    'text' => $itemtype::getTypeName(1),
+                    'title' => $itemtype::getTypeName(1),
+                    'children' => $new_group,
+                ];
+                $count += count($new_group);
+            }
         }
 
         $ret = [
             'results' => $results,
-            'count' =>  count($results)
+            'count' => $count,
         ];
 
         return $ret;

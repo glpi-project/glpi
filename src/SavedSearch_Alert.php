@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,18 +44,18 @@ use Glpi\Plugin\Hooks;
  **/
 class SavedSearch_Alert extends CommonDBChild
 {
-   // From CommonDBChild
-    public static $itemtype = 'SavedSearch';
+    // From CommonDBChild
+    public static $itemtype = SavedSearch::class;
     public static $items_id = 'savedsearches_id';
     public $dohistory       = true;
     protected $displaylist  = false;
 
-    const OP_LESS     = 0;
-    const OP_LESSEQ   = 1;
-    const OP_EQ       = 2;
-    const OP_NOT      = 3;
-    const OP_GREATEQ  = 4;
-    const OP_GREAT    = 5;
+    public const OP_LESS     = 0;
+    public const OP_LESSEQ   = 1;
+    public const OP_EQ       = 2;
+    public const OP_NOT      = 3;
+    public const OP_GREATEQ  = 4;
+    public const OP_GREAT    = 5;
 
     public static function getTypeName($nb = 0)
     {
@@ -88,6 +88,10 @@ class SavedSearch_Alert extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof SavedSearch) {
+            return false;
+        }
+
         self::showForSavedSearch($item, $withtemplate);
         return true;
     }
@@ -97,7 +101,7 @@ class SavedSearch_Alert extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -105,12 +109,12 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Print the form
      *
-     * @param integer $ID      integer ID of the item
+     * @param int $ID      integer ID of the item
      * @param array   $options array
      *     - target for the Form
      *     - computers_id ID of the computer for add process
      *
-     * @return boolean true if displayed  false if item not found or not right to display
+     * @return bool true if displayed  false if item not found or not right to display
      **/
     public function showForm($ID, array $options = [])
     {
@@ -128,7 +132,7 @@ class SavedSearch_Alert extends CommonDBChild
             if ($data = $search->execute()) {
                 $count = $data['data']['totalcount'];
             }
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
         }
@@ -148,13 +152,12 @@ class SavedSearch_Alert extends CommonDBChild
      * Print the searches alerts
      *
      * @param SavedSearch $search       Object instance
-     * @param integer     $withtemplate Template or basic item (default '')
+     * @param int     $withtemplate Template or basic item (default '')
      *
      * @return void
      **/
     public static function showForSavedSearch(SavedSearch $search, $withtemplate = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $search->getID();
@@ -163,7 +166,7 @@ class SavedSearch_Alert extends CommonDBChild
             !$search->getFromDB($ID)
             || !$search->can($ID, READ)
         ) {
-            return false;
+            return;
         }
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
@@ -179,8 +182,8 @@ class SavedSearch_Alert extends CommonDBChild
             'FROM'   => Notification::getTable(),
             'WHERE'  => [
                 'itemtype'  => self::getType(),
-                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID())
-            ]
+                'event'     => 'alert' . ($search->getField('is_private') ? '' : '_' . $search->getID()),
+            ],
         ]);
 
         $total_count = countElementsInTable(self::getTable(), ['savedsearches_id' => $ID]);
@@ -189,7 +192,7 @@ class SavedSearch_Alert extends CommonDBChild
             'WHERE'  => ['savedsearches_id' => $ID],
             'ORDER'  => ["$sort $order"],
             'START'  => $start,
-            'LIMIT'  => $_SESSION['glpilist_limit']
+            'LIMIT'  => $_SESSION['glpilist_limit'],
         ]);
 
         $alert = new self();
@@ -210,7 +213,7 @@ class SavedSearch_Alert extends CommonDBChild
             'params' => [
                 'canedit' => $search->canEdit($ID),
                 'withtemplate' => $withtemplate,
-            ]
+            ],
         ]);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
@@ -227,11 +230,10 @@ class SavedSearch_Alert extends CommonDBChild
                 'is_active' => __('Active'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => $total_count,
-            'filtered_number' => $total_count,
             'showmassiveactions' => false,
         ]);
     }
@@ -239,7 +241,7 @@ class SavedSearch_Alert extends CommonDBChild
     /**
      * Get operators
      *
-     * @param integer $id ID for the operator to retrieve, or null for the full list
+     * @param int $id ID for the operator to retrieve, or null for the full list
      *
      * @return string|array
      */
@@ -251,11 +253,16 @@ class SavedSearch_Alert extends CommonDBChild
             self::OP_EQ       => '=',
             self::OP_NOT      => '!=',
             self::OP_GREATEQ  => '>=',
-            self::OP_GREAT    => '>'
+            self::OP_GREAT    => '>',
         ];
         return ($id === null ? $ops : $ops[$id]);
     }
 
+    /**
+     * @param string $name
+     *
+     * @return array
+     */
     public static function cronInfo($name)
     {
         switch ($name) {
@@ -272,9 +279,8 @@ class SavedSearch_Alert extends CommonDBChild
      *
      * @return array[] which contains a copy of $_SESSION and $CFG_GLPI
      */
-    private static function saveContext()
+    private static function saveContext(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $context = [];
         $context['$_SESSION'] = $_SESSION;
@@ -289,11 +295,10 @@ class SavedSearch_Alert extends CommonDBChild
      * to be sure that logs will be in GLPI default datetime and language
      * and that session is restored for the next crontaskaction
      *
-     * @param mixed $context is the array returned by saveContext
+     * @param array $context is the array returned by saveContext
      */
-    private static function restoreContext($context)
+    private static function restoreContext(array $context): void
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         $_SESSION = $context['$_SESSION'];
         $CFG_GLPI = $context['$CFG_GLPI'];
@@ -310,12 +315,11 @@ class SavedSearch_Alert extends CommonDBChild
      */
     public static function cronSavedSearchesAlerts($task)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_savedsearches_alerts.*'
+                'glpi_savedsearches_alerts.*',
             ],
             'FROM'   => self::getTable(),
             'LEFT JOIN' => [
@@ -329,8 +333,8 @@ class SavedSearch_Alert extends CommonDBChild
                                 'glpi_alerts.type'     => Alert::PERIODICITY,
                             ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_savedsearches_alerts.is_active' => true,
@@ -342,11 +346,11 @@ class SavedSearch_Alert extends CommonDBChild
                                 date: QueryFunction::now(),
                                 interval: new QueryExpression($DB::quoteName('glpi_savedsearches_alerts.frequency')),
                                 interval_unit: 'SECOND'
-                            )
-                        ]
-                    ]
-                ]
-            ]
+                            ),
+                        ],
+                    ],
+                ],
+            ],
         ]);
 
         if ($iterator->numrows()) {
@@ -357,15 +361,15 @@ class SavedSearch_Alert extends CommonDBChild
                 $_SESSION['glpiname'] = 'crontab';
             }
 
-           // Will save $_SESSION and $CFG_GLPI cron context into an array
+            // Will save $_SESSION and $CFG_GLPI cron context into an array
             $context = self::saveContext();
 
             foreach ($iterator as $row) {
-               //execute saved search to get results
+                //execute saved search to get results
                 try {
                     $savedsearch->getFromDB($row['savedsearches_id']);
                     if (isCommandLine()) {
-                       //search requires a logged in user...
+                        //search requires a logged in user...
                         $user = new User();
                         $user->getFromDB($savedsearch->fields['users_id']);
                         $auth = new Auth();
@@ -376,11 +380,11 @@ class SavedSearch_Alert extends CommonDBChild
 
                     $count = null;
                     if ($data = $savedsearch->execute(true)) {
-                        $count = (int)$data['data']['totalcount'];
+                        $count = (int) $data['data']['totalcount'];
                     } else {
                         $data = [];
                     }
-                    $value = (int)$row['value'];
+                    $value = (int) $row['value'];
 
                     $notify = false;
                     $tr_op = null;
@@ -395,12 +399,12 @@ class SavedSearch_Alert extends CommonDBChild
                             $tr_op = __('less or equals than');
                             break;
                         case self::OP_EQ:
-                               $notify = $count == $value;
-                               $tr_op = __('equals to');
+                            $notify = $count == $value;
+                            $tr_op = __('equals to');
                             break;
                         case self::OP_NOT:
-                               $notify = $count != $value;
-                               $tr_op = __('not equals to');
+                            $notify = $count != $value;
+                            $tr_op = __('not equals to');
                             break;
                         case self::OP_GREATEQ:
                             $notify = $count >= $value;
@@ -411,7 +415,7 @@ class SavedSearch_Alert extends CommonDBChild
                             $tr_op = __('greater than');
                             break;
                         default:
-                            throw new \RuntimeException("Unknown operator '{$row['operator']}'");
+                            throw new RuntimeException("Unknown operator '{$row['operator']}'");
                     }
 
                     //TRANS : %1$s is the name of the saved search,
@@ -431,25 +435,25 @@ class SavedSearch_Alert extends CommonDBChild
                     self::restoreContext($context);
 
                     if ($notify) {
-                          $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
-                          $savedsearch_alert = new self();
-                          $savedsearch_alert->getFromDB($row['id']);
-                          $data['savedsearch'] = $savedsearch;
-                          NotificationEvent::raiseEvent($event, $savedsearch_alert, $data);
-                          $task->addVolume(1);
+                        $event = 'alert' . ($savedsearch->getField('is_private') ? '' : '_' . $savedsearch->getID());
+                        $savedsearch_alert = new self();
+                        $savedsearch_alert->getFromDB($row['id']);
+                        $data['savedsearch'] = $savedsearch;
+                        NotificationEvent::raiseEvent($event, $savedsearch_alert, $data);
+                        $task->addVolume(1);
 
-                          $alert = new Alert();
-                          $alert->deleteByCriteria([
-                              'itemtype' => SavedSearch_Alert::class,
-                              'items_id' => $row['id'],
-                          ], 1);
-                          $alert->add([
-                              'type'     => Alert::PERIODICITY,
-                              'itemtype' => SavedSearch_Alert::class,
-                              'items_id' => $row['id'],
-                          ]);
+                        $alert = new Alert();
+                        $alert->deleteByCriteria([
+                            'itemtype' => SavedSearch_Alert::class,
+                            'items_id' => $row['id'],
+                        ], true);
+                        $alert->add([
+                            'type'     => Alert::PERIODICITY,
+                            'itemtype' => SavedSearch_Alert::class,
+                            'items_id' => $row['id'],
+                        ]);
                     }
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     self::restoreContext($context);
                     ErrorHandler::logCaughtException($e);
                     ErrorHandler::displayCaughtExceptionMessage($e);

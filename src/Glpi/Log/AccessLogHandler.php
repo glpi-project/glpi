@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +35,8 @@
 namespace Glpi\Log;
 
 use Monolog\LogRecord;
-use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Override;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AccessLogHandler extends AbstractLogHandler
 {
@@ -46,22 +47,14 @@ class AccessLogHandler extends AbstractLogHandler
         $this->setFormatter(new AccessLogLineFormatter());
     }
 
-    #[\Override()]
+    #[Override()]
     public function isHandling(LogRecord $record): bool
     {
-        // Only log access errors.
-        // @see \Glpi\Log\ErrorLogHandler::canHandle()
-        if (!isset($record->context['exception'])) {
-            return false;
-        }
-
-        /** @var \Throwable $exception */
-        $exception = $record->context['exception'];
         if (
-            !($exception instanceof HttpExceptionInterface)
-            || $exception->getStatusCode() < 400
-            || $exception->getStatusCode() >= 500
+            !isset($record->context['exception'])
+            || !($record->context['exception'] instanceof AccessDeniedHttpException)
         ) {
+            // Do not log anything else than "access denied" exceptions.
             return false;
         }
 

@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-vendor/bin/phpunit phpunit/imap $@
+vendor/bin/phpunit tests/imap $@

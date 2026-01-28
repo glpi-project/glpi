@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
@@ -58,7 +60,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $group->check($_POST["id"], PURGE);
     if (
         $group->isUsed()
@@ -74,7 +76,7 @@ if (isset($_POST["add"])) {
         $group->showDeleteConfirmForm();
         Html::footer();
     } else {
-        $group->delete($_POST, 1);
+        $group->delete($_POST, true);
         Event::log(
             $_POST["id"],
             "groups",
@@ -85,7 +87,7 @@ if (isset($_POST["add"])) {
         );
         $group->redirectToList();
     }
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $group->check($_POST["id"], UPDATE);
     $group->update($_POST);
     Event::log(
@@ -97,13 +99,13 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_GET['_in_modal'])) {
+} elseif (isset($_GET['_in_modal'])) {
     Html::popHeader(Group::getTypeName(Session::getPluralNumber()), in_modal: true);
     $group->showForm($_GET["id"]);
     Html::popFooter();
-} else if (isset($_POST["replace"])) {
+} elseif (isset($_POST["replace"])) {
     $group->check($_POST["id"], PURGE);
-    $group->delete($_POST, 1);
+    $group->delete($_POST, true);
 
     Event::log(
         $_POST["id"],
@@ -117,6 +119,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["admin", "group"];
     Group::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,8 @@
 namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
+use Item_DeviceControl;
+use PCIVendor;
 
 class Controller extends Device
 {
@@ -47,9 +49,9 @@ class Controller extends Device
             'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'type'          => 'interfacetypes_id',
-            'model'         => 'devicecontrolmodels_id'
+            'model'         => 'devicecontrolmodels_id',
         ];
-        $pcivendor = new \PCIVendor();
+        $pcivendor = new PCIVendor();
 
         foreach ($this->data as $k => &$val) {
             if (property_exists($val, 'name')) {
@@ -59,11 +61,11 @@ class Controller extends Device
                     }
                 }
                 if (property_exists($val, 'vendorid')) {
-                   //manufacturer
+                    //manufacturer
                     if ($pci_manufacturer = $pcivendor->getManufacturer($val->vendorid)) {
                         $val->manufacturers_id = $pci_manufacturer;
                         if (property_exists($val, 'productid')) {
-                          //product name
+                            //product name
                             if ($pci_product = $pcivendor->getProductName($val->vendorid, $val->productid)) {
                                 $val->designation = $pci_product;
                             }
@@ -99,6 +101,6 @@ class Controller extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DeviceControl::class;
+        return Item_DeviceControl::class;
     }
 }

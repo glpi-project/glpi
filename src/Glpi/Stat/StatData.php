@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,19 +42,24 @@ use Stat;
  */
 abstract class StatData
 {
+    /** @var array */
     protected $labels;
+    /** @var array */
     protected $series;
+    /** @var int */
     protected $total;
+    /** @var string */
     protected $csv_link;
+    /** @var array */
     protected $options;
+    /** @var array */
     protected $params;
 
     public function __construct(array $params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Set up link to the download as csv page with the same parameters
+        // Set up link to the download as csv page with the same parameters
         if (count($params)) {
             $base_link = $CFG_GLPI['root_doc'] . '/front/graph.send.php?';
             $params['statdata_itemtype'] = static::class;
@@ -68,6 +73,12 @@ abstract class StatData
         $this->total  = 0;
     }
 
+    /**
+     * @param array $params
+     * @param string $type
+     *
+     * @return ?array
+     */
     public function getDataByType(array $params, string $type)
     {
         return Stat::constructEntryValues(

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Stat\Data\Location\StatDataClosed;
 use Glpi\Stat\Data\Location\StatDataLate;
@@ -40,7 +42,9 @@ use Glpi\Stat\Data\Location\StatDataOpened;
 use Glpi\Stat\Data\Location\StatDataOpenSatisfaction;
 use Glpi\Stat\Data\Location\StatDataSolved;
 
-/** @var array $CFG_GLPI */
+use function Safe\mktime;
+use function Safe\preg_match;
+
 global $CFG_GLPI;
 
 Html::header(__('Statistics'), '', "helpdesk", "stat");
@@ -48,21 +52,17 @@ Html::header(__('Statistics'), '', "helpdesk", "stat");
 Session::checkRight("statistic", READ);
 
 
-if (empty($_GET["showgraph"])) {
-    $_GET["showgraph"] = 0;
-} else {
-    $_GET["showgraph"] = (int)$_GET["showgraph"];
-}
+$_GET["showgraph"] = (int) ($_GET["showgraph"] ?? 0);
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
-    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string)$_GET[$key]) !== 1) {
+    if (array_key_exists($key, $_GET) && preg_match('/^\d{4}-\d{2}-\d{2}$/', (string) $_GET[$key]) !== 1) {
         unset($_GET[$key]);
     }
 }
 if (empty($_GET["date1"]) && empty($_GET["date2"])) {
-    $year          = date("Y") - 1;
-    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, date("m"), date("d"), $year));
+    $year          = ((int) date("Y")) - 1;
+    $_GET["date1"] = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), $year));
     $_GET["date2"] = date("Y-m-d");
 }
 
@@ -79,19 +79,19 @@ if (
 if (!isset($_GET["start"])) {
     $_GET["start"] = 0;
 } else {
-    $_GET["start"] = (int)$_GET["start"];
+    $_GET["start"] = (int) $_GET["start"];
 }
 
 if (empty($_GET["dropdown"])) {
     $_GET["dropdown"] = "ComputerType";
 } else {
-    $_GET["dropdown"] = (string)$_GET["dropdown"];
+    $_GET["dropdown"] = (string) $_GET["dropdown"];
 }
 
 if (!isset($_GET['itemtype'])) {
     $_GET['itemtype'] = 'Ticket';
 } else {
-    $_GET['itemtype'] = (string)$_GET["itemtype"];
+    $_GET['itemtype'] = (string) $_GET["itemtype"];
 }
 
 $stat = new Stat();
@@ -107,21 +107,19 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig'
     ],
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
-    'showgraph' => $_GET['showgraph'] ?? 0,
+    'showgraph' => $_GET['showgraph'],
 ]);
 
 if (
-    empty($_GET["dropdown"])
-    || !($item = getItemForItemtype($_GET["dropdown"]))
+    !($item = getItemForItemtype($_GET["dropdown"]))
 ) {
-   // Do nothing
+    // Do nothing
     Html::footer();
     return;
 }
 
 
 if (!($item instanceof CommonDevice)) {
-   // echo "Dropdown";
     $type = "comp_champ";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
@@ -129,10 +127,9 @@ if (!($item instanceof CommonDevice)) {
         'dropdown' => $_GET["dropdown"],
         'date1'    => $_GET["date1"],
         'date2'    => $_GET["date2"],
-        'start'    => $_GET["start"]
+        'start'    => $_GET["start"],
     ];
 } else {
-   //   echo "Device";
     $type  = "device";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
@@ -140,7 +137,7 @@ if (!($item instanceof CommonDevice)) {
         'dropdown' => $_GET["dropdown"],
         'date1'    => $_GET["date1"],
         'date2'    => $_GET["date2"],
-        'start'    => $_GET["start"]
+        'start'    => $_GET["start"],
     ];
 }
 
@@ -154,8 +151,7 @@ Html::printPager(
             'date2'    => $_GET['date2'],
             'itemtype' => $_GET['itemtype'],
             'dropdown' => $_GET['dropdown'],
-        ],
-        '&amp;'
+        ]
     ),
     'Stat',
     $params

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,14 +35,21 @@
 
 namespace Glpi\Api\HL;
 
+use Exception;
 use Glpi\Api\HL\Controller\AbstractController;
-use Glpi\Api\HL\Doc\Parameter;
+use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\AbstractMiddleware;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use RuntimeException;
+use Throwable;
+
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace_callback;
 
 /**
  * @phpstan-type RoutePathCacheHint array{key: string, path: string, compiled_path: string, methods: string[], priority: int, security: int}
@@ -147,18 +154,21 @@ final class RoutePath
         if (!$is_hydrated) {
             [$controller, $method] = explode('::', $this->key);
             try {
+                if (!\is_a($controller, AbstractController::class, true)) {
+                    throw new Exception('Invalid controller');
+                }
                 $this->controller = new ReflectionClass($controller);
                 $this->method = $this->controller->getMethod($method);
                 if (!$this->method->isPublic()) {
-                    throw new \Exception('Method is not public');
+                    throw new Exception('Method is not public');
                 }
                 $route_attributes = $this->method->getAttributes(Route::class);
                 if (count($route_attributes) === 0) {
-                    throw new \Exception("RoutePath has no Route attribute");
+                    throw new Exception("RoutePath has no Route attribute");
                 }
                 $this->route = $route_attributes[0]->newInstance();
-            } catch (\Throwable $e) {
-                throw new \RuntimeException(
+            } catch (Throwable $e) {
+                throw new RuntimeException(
                     "Unable to hydrate RoutePath {$this->key}: {$e->getMessage()}",
                     0,
                     $e
@@ -202,7 +212,6 @@ final class RoutePath
         $attributes = [];
         $placeholders = [];
         preg_match_all('/\{([^}]+)\}/', $this->getRoutePath(), $placeholders);
-        $placeholders = $placeholders[1];
         $path_parts = explode('/', $path);
         $route_parts = explode('/', $this->getRoutePath());
         foreach ($route_parts as $i => $part) {
@@ -215,12 +224,15 @@ final class RoutePath
         return $attributes;
     }
 
+    /**
+     * @param string $path
+     *
+     * @return bool
+     */
     public function isValidPath($path): bool
     {
         // Ensure no placeholders are left
-        $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static function ($v, $k) {
-            return is_callable($v);
-        }, ARRAY_FILTER_USE_BOTH);
+        $dynamic_expandable_placeholders = array_filter($this->getRouteRequirements(), static fn($v, $k) => is_callable($v), ARRAY_FILTER_USE_BOTH);
         $leftover_placeholders = [];
         preg_match_all('/\{([^}]+)\}/', $path, $leftover_placeholders);
         // Remove dynamic expandable placeholders
@@ -265,6 +277,14 @@ final class RoutePath
     /**
      * @return string[]
      */
+    public function getRouteScopes(): array
+    {
+        return $this->getRoute()->scopes;
+    }
+
+    /**
+     * @return string[]
+     */
     public function getRouteTags(): array
     {
         return $this->getRoute()->tags;
@@ -303,10 +323,16 @@ final class RoutePath
     public function getRouteDocs(): array
     {
         $this->hydrate();
-        $controller_doc_attrs = $this->controller->getAttributes(Doc\Route::class);
+        $controller_doc_attrs = array_filter(
+            $this->controller->getAttributes(),
+            static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)
+        );
         /** @var Doc\Route $controller_doc_attr */
         $controller_doc_attr = count($controller_doc_attrs) ? reset($controller_doc_attrs)->newInstance() : null;
-        $doc_attrs = $this->getMethod()->getAttributes(Doc\Route::class);
+        $doc_attrs = array_filter(
+            $this->getMethod()->getAttributes(),
+            static fn($attr) => is_a($attr->getName(), Doc\Route::class, true)
+        );
         $docs = [];
 
         foreach ($doc_attrs as $doc_attr) {
@@ -328,7 +354,7 @@ final class RoutePath
             if (empty($doc->getMethods())) {
                 // Non-specific. Store in $result in case a specific doc is found later
                 $result = $doc;
-            } else if (in_array($method, $doc->getMethods(), true)) {
+            } elseif (in_array($method, $doc->getMethods(), true)) {
                 // Specific. Return immeditately
                 return $doc;
             }
@@ -349,16 +375,19 @@ final class RoutePath
     public function matchesAPIVersion(string $api_version): bool
     {
         $version = $this->getRouteVersion();
-        return (version_compare($api_version, $version->introduced, '>=') && (empty($version->removed) || version_compare($api_version, $version->removed, '<')));
+        return (
+            version_compare($api_version, $version->introduced, '>=')
+            && (empty($version->removed) || version_compare($api_version, $version->removed, '<'))
+        );
     }
 
-    private function setPath(string $path)
+    private function setPath(string $path): void
     {
         $this->path = $path;
         $this->route->path = $path;
     }
 
-    private function setPriority(int $priority)
+    private function setPriority(int $priority): void
     {
         $this->priority = $priority;
         $this->route->priority = $priority;
@@ -437,7 +466,7 @@ final class RoutePath
         }, $compiled_path);
 
         if ($compiled_path === null) {
-            throw new \RuntimeException('Failed to compile path');
+            throw new RuntimeException('Failed to compile path');
         }
 
         // Ensure the compiled path starts with a slash but does not end with one (unless the path is just '/')
@@ -458,12 +487,10 @@ final class RoutePath
         // Set parameters to defaults if not provided and a default is available
         $params = $request->getParameters();
         $docs = $this->getRouteDocs();
-        $matched_doc = array_filter($docs, static function (Doc\Route $doc) use ($request) {
-            return !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true);
-        });
+        $matched_doc = array_filter($docs, static fn(Doc\Route $doc) => !count($doc->getMethods()) || in_array($request->getMethod(), $doc->getMethods(), true));
         if (count($matched_doc)) {
             $route_params = $matched_doc[0]->getParameters();
-            /** @var Parameter $param */
+            /** @var Doc\Parameter $param */
             foreach ($route_params as $param) {
                 if (!isset($params[$param->getName()]) && $param->getDefaultValue() !== null) {
                     $request->setParameter($param->getName(), $param->getDefaultValue());
@@ -474,7 +501,7 @@ final class RoutePath
         if ($response instanceof Response) {
             return $response;
         }
-        throw new \RuntimeException('Controller method must return a Response object');
+        throw new RuntimeException('Controller method must return a Response object');
     }
 
     /**

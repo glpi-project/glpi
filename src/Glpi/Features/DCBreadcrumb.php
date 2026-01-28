@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,16 +52,9 @@ use Rack;
  **/
 trait DCBreadcrumb
 {
-    /**
-     * Specific value for "Data center position".
-     *
-     * @param int $items_id
-     *
-     * @return string
-     */
+    /** @see DCBreadcrumbInterface::renderDcBreadcrumb() */
     final public static function renderDcBreadcrumb(int $items_id): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $breadcrumb = [];
@@ -70,22 +63,25 @@ trait DCBreadcrumb
         if ($item->getFromDB($items_id)) {
             $types = $CFG_GLPI['rackable_types'];
 
-            if ($item instanceof PDU) {
+            // TODO: avoid instanceof in traits
+            if ($item instanceof PDU) { // @phpstan-ignore instanceof.alwaysTrue, instanceof.alwaysFalse
                 $pdu_rack = new PDU_Rack();
                 $rack = new Rack();
                 if (
                     $pdu_rack->getFromDBByCrit(['pdus_id'  => $item->getID()])
                     && $rack->getFromDB($pdu_rack->fields['racks_id'])
                 ) {
+                    $location = Location::getFromItem($rack) ?: null;
                     $breadcrumb[Rack::getType()] = [
                         'link'     => $rack->getLink(
                             [
                                 'class' => $rack->isDeleted() ? 'target-deleted' : '',
-                                'icon'  => true
+                                'icon'  => true,
                             ]
                         ),
                         'position' => $pdu_rack->fields['position'],
                         'side'     => $pdu_rack->fields['side'],
+                        'location' => $location?->fields,
                     ];
 
                     $item = $rack;
@@ -101,7 +97,7 @@ trait DCBreadcrumb
                     'link'     => $enclosure->getLink(
                         [
                             'class' => $enclosure->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'position' => $item->getPositionInEnclosure(),
@@ -118,7 +114,7 @@ trait DCBreadcrumb
                     'link'     => $rack->getLink(
                         [
                             'class' => $rack->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'position' => $item->getPositionInRack(),
@@ -131,7 +127,7 @@ trait DCBreadcrumb
             // Add DCRoom part of breadcrumb
             $dcroom = new DCRoom();
             if (
-                $item->getType() == Rack::getType()
+                $item instanceof Rack
                 && $item->fields['dcrooms_id'] > 0
                 && $dcroom->getFromDB($item->fields['dcrooms_id'])
             ) {
@@ -140,7 +136,7 @@ trait DCBreadcrumb
                     'link'     => $dcroom->getLink(
                         [
                             'class' => $dcroom->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'location' => $location !== null ? $location->fields : null,
@@ -152,7 +148,7 @@ trait DCBreadcrumb
             // Add Datacenter part of breadcrumb
             $datacenter = new Datacenter();
             if (
-                $item->getType() == DCRoom::getType()
+                $item instanceof DCRoom
                 && $item->fields['datacenters_id'] > 0
                 && $datacenter->getFromDB($item->fields['datacenters_id'])
             ) {
@@ -161,7 +157,7 @@ trait DCBreadcrumb
                     'link'     => $datacenter->getLink(
                         [
                             'class' => $datacenter->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'location' => $location !== null ? $location->fields : null,
@@ -174,16 +170,12 @@ trait DCBreadcrumb
         return TemplateRenderer::getInstance()->render(
             'layout/parts/dcbreadcrumbs.html.twig',
             [
-                'breadcrumbs'   => $breadcrumb
+                'breadcrumbs'   => $breadcrumb,
             ]
         );
     }
 
-    /**
-     * Get parent Enclosure.
-     *
-     * @return Enclosure|null
-     */
+    /** @see DCBreadcrumbInterface::getParentEnclosure() */
     final public function getParentEnclosure(): ?Enclosure
     {
         $ien = new Item_Enclosure();
@@ -198,11 +190,7 @@ trait DCBreadcrumb
         return $enclosure->getFromDB($ien->fields['enclosures_id']) ? $enclosure : null;
     }
 
-    /**
-     * Get position in Enclosure.
-     *
-     * @return int|null
-     */
+    /** @see DCBreadcrumbInterface::getPositionInEnclosure() */
     final public function getPositionInEnclosure(): ?int
     {
         $ien = new Item_Enclosure();
@@ -216,11 +204,7 @@ trait DCBreadcrumb
         return $ien->fields['position'];
     }
 
-    /**
-     * Get parent Rack.
-     *
-     * @return Rack|null
-     */
+    /** @see DCBreadcrumbInterface::getParentRack() */
     final public function getParentRack(): ?Rack
     {
         $ira = new Item_Rack();
@@ -235,11 +219,7 @@ trait DCBreadcrumb
         return $rack->getFromDB($ira->fields['racks_id']) ? $rack : null;
     }
 
-    /**
-     * Get position in Rack.
-     *
-     * @return int|null
-     */
+    /** @see DCBreadcrumbInterface::getPositionInRack() */
     final public function getPositionInRack(): ?int
     {
         $ira = new Item_Rack();

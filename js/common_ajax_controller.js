@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,7 @@
 /* global glpi_toast_info */
 /* global glpi_toast_warning */
 /* global glpi_toast_error */
+/* global _ */
 
 // Isolate functions and run when document is ready
 class GlpiCommonAjaxController
@@ -65,8 +66,10 @@ class GlpiCommonAjaxController
 
         // Send AJAX request
         try {
-            const response = await $.post({
-                url: `${CFG_GLPI.root_doc}/ajax/common_ajax_controller.php`,
+            const response = await $.ajax({
+                url: `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
+                method: 'POST',
+                contentType: 'application/json',
                 data: data,
             });
 
@@ -93,7 +96,7 @@ class GlpiCommonAjaxController
                 console.error(error);
                 this.#handleFeedbackMessages({
                     messages: {
-                        error: __("Unexpected error"),
+                        error: [__("Unexpected error.")],
                     },
                 });
             }
@@ -108,9 +111,6 @@ class GlpiCommonAjaxController
      * @returns {string}
      */
     #buildFormData(form) {
-        // Parse raw form data
-        const data = form.serializeArray();
-
         // Try to get submit button info
         const active_element = document.activeElement;
         let action = null;
@@ -134,17 +134,46 @@ class GlpiCommonAjaxController
             action = "update";
         }
 
+        const form_data = new FormData(form.get(0));
+        const form_object = {};
+
+        let key;
+        let value;
+        for ([key, value] of form_data.entries()) {
+            if (value === '' && form.get(0).querySelector(`[name="${CSS.escape(key)}[]"]:not([disabled])`)) {
+                // Empty hidden field placed before each multiple select dropdown
+                // to be sure to send an empty value if no option is selected.
+                if (_.get(form_object, key) === undefined) {
+                    _.setWith(form_object, key, [], Object);
+                }
+                continue;
+            }
+
+            if (key.endsWith('[]')) {
+                const baseKey = key.slice(0, -2);
+                // Initialize as array if not an array
+                if (_.get(form_object, baseKey) === undefined || !Array.isArray(_.get(form_object, baseKey))) {
+                    _.set(form_object, baseKey, []);
+                }
+                // Push value to array directly instead of using indexed key
+                _.get(form_object, baseKey).push(value);
+            } else {
+                _.setWith(form_object, key, value, Object);
+            }
+        }
+
         // Add submit button info to the form data
-        data.push({'name': '_action', 'value': action});
+        form_object._action = action;
 
         // Also keep action as a "direct" parameter as some internal code will
         // look for it that way
-        data.push({'name': action, 'value': true});
+        form_object[action] = true;
 
         // Add target itemtype
-        data.push({'name': 'itemtype', 'value': form.data('ajaxSubmitItemtype')});
+        form_object.itemtype = form.data('ajaxSubmitItemtype');
 
-        return $.param(data);
+        // Use JSON format for large forms to avoid max_input_vars limitation
+        return JSON.stringify(form_object);
     }
 
     /**
@@ -159,9 +188,15 @@ class GlpiCommonAjaxController
         }
 
         // Display feedback messages as a toast
-        response.messages.info.forEach(message => glpi_toast_info(message));
-        response.messages.warning.forEach(message => glpi_toast_warning(message));
-        response.messages.error.forEach(message => glpi_toast_error(message));
+        if (response.messages.info !== undefined) {
+            response.messages.info.forEach(message => glpi_toast_info(message));
+        }
+        if (response.messages.warning !== undefined) {
+            response.messages.warning.forEach(message => glpi_toast_warning(message));
+        }
+        if (response.messages.error !== undefined) {
+            response.messages.error.forEach(message => glpi_toast_error(message));
+        }
     }
 
     /**

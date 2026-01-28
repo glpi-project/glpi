@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,11 +33,10 @@
  */
 
 /**
- * @var \Migration $migration
+ * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
- * @var \DBmysql $DB
+ * @var DBmysql $DB
  */
-
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();
@@ -56,7 +54,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
       `payload` longtext,
       `use_default_payload` tinyint NOT NULL DEFAULT '1',
       `custom_headers` text,
-      `url` varchar(255) DEFAULT NULL,
+      `url` text DEFAULT NULL,
       `secret` text,
       `use_cra_challenge` tinyint NOT NULL DEFAULT '0',
       `http_method` varchar(255) DEFAULT 'POST',
@@ -82,12 +80,14 @@ if (!$DB->tableExists('glpi_webhooks')) {
       KEY `webhookcategories_id` (`webhookcategories_id`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
+} else {
+    $migration->changeField('glpi_webhooks', 'url', 'url', 'text');
 }
 
 if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
     // Dev migration
     $migration->addField('glpi_webhooks', 'webhookcategories_id', 'fkey', [
-        'after' => 'comment'
+        'after' => 'comment',
     ]);
     $migration->addKey('glpi_webhooks', 'webhookcategories_id', 'webhookcategories_id');
 }
@@ -125,7 +125,7 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
       `is_deleted` tinyint NOT NULL DEFAULT '0',
       `sent_try` int NOT NULL DEFAULT '0',
       `webhooks_id` int unsigned NOT NULL DEFAULT '0',
-      `url` varchar(255) DEFAULT NULL,
+      `url` text DEFAULT NULL,
       `create_time` timestamp NULL DEFAULT NULL,
       `send_time` timestamp NULL DEFAULT NULL,
       `sent_time` timestamp NULL DEFAULT NULL,
@@ -147,25 +147,27 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
       KEY `sent_time` (`sent_time`)
     ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = {$default_charset} COLLATE = {$default_collation};";
     $DB->doQuery($query);
+} else {
+    $migration->changeField('glpi_queuedwebhooks', 'url', 'url', 'text');
 }
 
 // Entity, ID, Webhook, Itemtype, Items ID, URL, Creation date
 $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
 
-CronTask::register('QueuedWebhook', 'queuedwebhook', MINUTE_TIMESTAMP, [
-    'state' => CronTask::STATE_WAITING,
-    'mode'  => CronTask::MODE_INTERNAL,
-    'hourmin' => 0,
-    'hourmax' => 24,
-    'logs_lifetime' => 30,
-    'param' => 50 // Limit for webhooks to send per cron task run
-]);
+$migration->addCrontask(
+    'QueuedWebhook',
+    'queuedwebhook',
+    MINUTE_TIMESTAMP,
+    param: 50, // Limit for webhooks to send per cron task run
+);
 
-CronTask::register('QueuedWebhook', 'queuedwebhookclean', DAY_TIMESTAMP, [
-    'state' => CronTask::STATE_WAITING,
-    'mode'  => CronTask::MODE_INTERNAL,
-    'hourmin' => 0,
-    'hourmax' => 6,
-    'logs_lifetime' => 30,
-    'param' => 30 // webhooks older than 30 days will be deleted
-]);
+$migration->addCrontask(
+    'QueuedWebhook',
+    'queuedwebhookclean',
+    DAY_TIMESTAMP,
+    param: 30, // webhooks older than 30 days will be deleted
+    options: [
+        'hourmin' => 0,
+        'hourmax' => 6,
+    ]
+);

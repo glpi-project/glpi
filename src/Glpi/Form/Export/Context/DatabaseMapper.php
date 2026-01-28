@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,11 +36,17 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
+use CommonTreeDropdown;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
+use Glpi\Form\Section;
+use Glpi\Toolbox\MapperInterface;
 use InvalidArgumentException;
+use LogicException;
+use Override;
 
-final class DatabaseMapper
+final class DatabaseMapper implements MapperInterface
 {
     // Store itemtype => [name => id] relations.
     /** @var array<string, array<string, int>> $values */
@@ -51,14 +57,15 @@ final class DatabaseMapper
 
     public function __construct(array $entities_restrictions)
     {
-        if (empty($entities_restrictions)) {
+        if ($entities_restrictions === []) {
             throw new InvalidArgumentException("Must specify at least one entity");
         }
 
         $this->entities_restrictions = $entities_restrictions;
     }
 
-    public function addMappedItem(string $itemtype, string $name, int $id): void
+    #[Override]
+    public function addMappedItem(string $itemtype, string|int $key, int $id): void
     {
         if (!$this->isValidItemtype($itemtype)) {
             return;
@@ -68,19 +75,20 @@ final class DatabaseMapper
             $this->values[$itemtype] = [];
         }
 
-        $this->values[$itemtype][$name] = $id;
+        $this->values[$itemtype][$key] = $id;
     }
 
-    public function getItemId(string $itemtype, string $name): int
+    #[Override]
+    public function getItemId(string $itemtype, string|int $key): int
     {
-        if (!$this->contextExist($itemtype, $name)) {
+        if (!$this->contextExist($itemtype, $key)) {
             // Can't recover from this point, it is the serializer
             // responsability to validate that all requirements are found in the
             // context before attempting to import the forms.
-            throw new \LogicException();
+            throw new LogicException("Unknown item: {$itemtype}::{$key}");
         }
 
-        return $this->values[$itemtype][$name];
+        return $this->values[$itemtype][$key];
     }
 
     /** @param DataRequirementSpecification[] $data_requirements */
@@ -135,7 +143,11 @@ final class DatabaseMapper
 
     private function contextExist(string $itemtype, string $name): bool
     {
-        if ($itemtype === Question::class) {
+        if (
+            $itemtype === Question::class
+            || $itemtype === Comment::class
+            || $itemtype === Section::class
+        ) {
             return true;
         }
 
@@ -144,21 +156,22 @@ final class DatabaseMapper
 
     private function tryTofindOneRowByName(string $itemtype, string $name): ?array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!$this->isValidItemtype($itemtype)) {
             throw new InvalidArgumentException();
         }
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $query = [
             'FROM' => $item::getTable(),
         ];
-        $condition = [
-            'name' => $name
-        ];
+
+        if ($item instanceof CommonTreeDropdown) {
+            $condition = ['completename' => $name];
+        } else {
+            $condition = ['name' => $name];
+        }
 
         // Check entities
         if ($item->isEntityAssign()) {

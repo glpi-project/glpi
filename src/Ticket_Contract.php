@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Ticket_Contract extends CommonDBRelation
 {
-    public static $itemtype_1 = 'Ticket';
+    public static $itemtype_1 = Ticket::class;
     public static $items_id_1 = 'tickets_id';
 
-    public static $itemtype_2 = 'Contract';
+    public static $itemtype_2 = Contract::class;
     public static $items_id_2 = 'contracts_id';
     public static $checkItem_2_Rights = self::HAVE_VIEW_RIGHT_ON_ITEM;
     public static $check_entity_coherency = false;
@@ -59,7 +59,7 @@ class Ticket_Contract extends CommonDBRelation
                     $nb = count(self::getListForItem($item));
                 }
                 return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-            } else if ($item::class === Contract::class) {
+            } elseif ($item::class === Contract::class) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
@@ -85,7 +85,7 @@ class Ticket_Contract extends CommonDBRelation
         if ($item instanceof Ticket) {
             $item_a_fkey = self::$items_id_1;
             $linked_itemtype = self::$itemtype_2;
-        } else if ($item instanceof Contract) {
+        } elseif ($item instanceof Contract) {
             $item_a_fkey = self::$items_id_2;
             $linked_itemtype = self::$itemtype_1;
         } else {
@@ -104,13 +104,12 @@ class Ticket_Contract extends CommonDBRelation
 
         $canedit = $item->canEdit($ID);
 
-        $linked_items = array_map(static function ($entry) use ($linked_itemtype, $ID) {
+        $linked_items = array_map(static function ($entry) use ($linked_itemtype) {
             $entry['itemtype'] = $linked_itemtype;
-            $entry['item_id'] = $ID;
+            $entry['item_id'] = $entry['id'];
             return $entry;
         }, iterator_to_array(self::getListForItem($item), false));
         $twig_params['used'] = [];
-        $numrows = count($linked_items);
         foreach ($linked_items as $linked_item) {
             $twig_params['used'][$linked_item['id']] = $linked_item['id'];
         }
@@ -131,7 +130,7 @@ class Ticket_Contract extends CommonDBRelation
                                 nochecklimit: true
                             }) }}
                             {% set btn %}
-                                <button type="submit" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" class="btn btn-primary" name="add">{{ btn_label }}</button>
                             {% endset %}
                             {{ fields.htmlField('', btn, null) }}
                         </div>
@@ -143,6 +142,11 @@ TWIG, $twig_params);
         if ($linked_itemtype === Ticket::class) {
             [$columns, $formatters] = array_values(Ticket::getCommonDatatableColumns(['ticket_stats' => true]));
             $entries = Ticket::getDatatableEntries($linked_items, ['ticket_stats' => true]);
+            $entries = array_map(static function ($entry) {
+                $entry['itemtype'] = self::class;
+                $entry['id'] = $entry['linkid'];
+                return $entry;
+            }, $entries);
         } else {
             $columns = [
                 'name' => __('Name'),
@@ -151,7 +155,7 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'begin_date' => __('Start date'),
                 'end_date' => __('End date'),
-                'comment' => __('Comments'),
+                'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ];
             $formatters = [
                 'name' => 'raw_html',
@@ -162,13 +166,15 @@ TWIG, $twig_params);
             $entity_cache = [];
             $type_cache = [];
             foreach ($linked_items as $data) {
-                $item = new $linked_itemtype();
+                if (!($item = getItemForItemtype($linked_itemtype))) {
+                    continue;
+                }
                 if (!$item->getFromDB($data['id'])) {
                     continue;
                 }
                 $entry = [
                     'itemtype' => self::class,
-                    'id' => $data['id'],
+                    'id' => $data['linkid'],
                     'name' => $item->getLink(),
                     'num' => $item->fields['num'],
                     'begin_date' => $item->fields['begin_date'],
@@ -189,14 +195,12 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
             'formatters' => $formatters,
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
@@ -204,8 +208,8 @@ TWIG, $twig_params);
                 'specific_actions' => [
                     'purge' => _x('button', 'Delete permanently'),
                 ],
-                'extraparams'      => [$item_a_fkey => $item->getID()]
-            ]
+                'extraparams'      => [$item_a_fkey => $item->getID()],
+            ],
         ]);
 
         return true;

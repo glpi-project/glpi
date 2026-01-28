@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
@@ -65,10 +67,10 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $mgmt->check($_POST["id"], PURGE);
 
-    if ($mgmt->delete($_POST, 1)) {
+    if ($mgmt->delete($_POST, true)) {
         Event::log(
             $mgmt->fields['items_id'],
             $mgmt->fields['itemtype'],
@@ -79,11 +81,11 @@ if (isset($_POST["add"])) {
         );
     }
     $itemtype = $mgmt->fields['itemtype'];
-    $item = new $itemtype();
+    $item = getItemForItemtype($itemtype);
     $item->getFromDB($mgmt->fields['items_id']);
-    Html::redirect($itemtype::getFormURLWithID($mgmt->fields['items_id']) .
-                  ($item->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["update"])) {
+    Html::redirect($itemtype::getFormURLWithID($mgmt->fields['items_id'])
+                  . ($item->fields['is_template'] ? "&withtemplate=1" : ""));
+} elseif (isset($_POST["update"])) {
     $mgmt->check($_POST["id"], UPDATE);
 
     if ($mgmt->update($_POST)) {
@@ -98,19 +100,19 @@ if (isset($_POST["add"])) {
     }
     Html::back();
 } else {
-    $itemtype = "computer";
+    $itemtype = Computer::class;
     if ($_GET['id'] != '') {
         $mgmt->getFromDB($_GET['id']);
     }
     if (!$mgmt->isNewItem()) {
         $itemtype = $mgmt->fields['itemtype'];
-    } else if ($_GET['itemtype'] != '') {
+    } elseif ($_GET['itemtype'] != '') {
         $itemtype = $_GET['itemtype'];
     }
 
     $menus = ["assets", $itemtype];
     Item_RemoteManagement::displayFullPageForItem($_GET["id"], $menus, [
         'items_id'  => $_GET["items_id"],
-        'itemtype'  => $_GET['itemtype']
+        'itemtype'  => $_GET['itemtype'],
     ]);
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,15 +36,16 @@
 namespace Glpi\Controller\Form;
 
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Condition\Engine;
+use Glpi\Form\Condition\EngineInput;
 use Glpi\Form\Form;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Html;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,6 +53,8 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class RendererController extends AbstractController
 {
+    use CanCheckAccessPolicies;
+
     private string $interface;
 
     public function __construct()
@@ -68,6 +71,8 @@ final class RendererController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
+        $is_unauthenticated_user = !Session::isAuthenticated();
+
         $form = $this->loadTargetForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
@@ -89,16 +94,23 @@ final class RendererController extends AbstractController
             ];
         }
 
+        // Compute the initial visibility of the form items
+        $engine = new Engine($form, EngineInput::fromForm($form));
+        $visibility_engine_output = $engine->computeVisibility();
+
+        // Insert altcha for public forms
+        if ($is_unauthenticated_user) {
+            Html::requireJs('altcha');
+        }
+
         return $this->render('pages/form_renderer.html.twig', [
             'title' => $form->fields['name'],
             'menu' => ['helpdesk', ServiceCatalog::getType()],
             'form' => $form,
-            'unauthenticated_user' => !Session::isAuthenticated(),
+            'unauthenticated_user' => $is_unauthenticated_user,
             'my_tickets_url_param' => http_build_query($my_tickets_criteria),
-
-            // Direct access token must be included in the form data as it will
-            // be checked in the submit answers controller.
-            'token' => $request->query->getString('token'),
+            'visibility_engine_output' => $visibility_engine_output,
+            'params' => $request->query->all(),
         ]);
     }
 
@@ -110,30 +122,10 @@ final class RendererController extends AbstractController
         }
 
         $form = Form::getById($forms_id);
-        if (!$form) {
+        if (!$form instanceof Form) {
             throw new NotFoundHttpException();
         }
 
         return $form;
-    }
-
-    private function checkFormAccessPolicies(Form $form, Request $request)
-    {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (Session::haveRight(Form::$rightname, READ)) {
-            // Form administrators can bypass restrictions while previewing forms.
-            $parameters = new FormAccessParameters(bypass_restriction: true);
-        } else {
-            // Load current user session info and URL parameters.
-            $parameters = new FormAccessParameters(
-                session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->query->all(),
-            );
-        }
-
-        if (!$form_access_manager->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
     }
 }

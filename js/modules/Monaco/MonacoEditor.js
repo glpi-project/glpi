@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -60,6 +60,10 @@ export default class MonacoEditor {
 
         // Can't just specify the loader when registering the language apparently...
         async function registerNewLangLoaderData() {
+            // If the language is not registered or does not have a loader, we can't set language configuration
+            if (!existing_lang || typeof existing_lang.loader !== "function") {
+                return;
+            }
             const loader = await existing_lang.loader();
             window.monaco.languages.setMonarchTokensProvider(new_lang_id, loader.language);
             window.monaco.languages.setLanguageConfiguration(new_lang_id, loader.conf);
@@ -262,7 +266,7 @@ window.GLPI.Monaco = {
         window.GLPI.Monaco._themes_registered = true;
     },
     createEditor: async (element_id, language, value = '', completions = [], options = {}) => {
-        return import('../../../lib/monaco.js').then(() => {
+        return import('/lib/monaco.js').then(() => {
             return new MonacoEditor(element_id, language, value, completions, options);
         });
     },
@@ -273,11 +277,11 @@ window.GLPI.Monaco = {
      * @return {Promise<string>}
      */
     colorizeText: async (text, language) => {
-        return import('../../../lib/monaco.js').then(() => {
-            window.GLPI.Monaco.registerGLPIThemes();
-            // Theme set here because colorize doesn't support specifying the theme in the options like colorizeElement does
-            window.monaco.editor.setTheme('glpi');
-            return window.monaco.editor.colorize(text, language);
+        const el = document.createElement('div');
+        $(el).attr('lang', language);
+        $(el).text(text);
+        return window.GLPI.Monaco.colorizeElement(el, language).then(() => {
+            return el.innerHTML;
         });
     },
     /**
@@ -287,7 +291,7 @@ window.GLPI.Monaco = {
      * @return {Promise<void>}
      */
     colorizeElement: async (element, language) => {
-        return import('../../../lib/monaco.js').then(() => {
+        return import('/lib/monaco.js').then(() => {
             window.GLPI.Monaco.registerGLPIThemes();
             return window.monaco.editor.colorizeElement(element, {
                 language: language,

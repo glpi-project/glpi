@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Diagnostic;
 
+use CommonTreeDropdown;
+
 /**
  * @since 10.0.0
  */
@@ -54,7 +56,7 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
         $columns = $this->getColumnsNames($table_name);
         $itemtype = getItemTypeForTable($table_name);
 
-        if (is_subclass_of($itemtype, \CommonTreeDropdown::class)) {
+        if (is_subclass_of($itemtype, CommonTreeDropdown::class)) {
             foreach (['level', 'ancestors_cache', 'sons_cache'] as $expected_col) {
                 if (!in_array($expected_col, $columns)) {
                     $missing_columns[] = $expected_col;
@@ -78,9 +80,9 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
                     break;
                 case 'date_mod':
                     if ($table_name === 'glpi_logs') {
-                      // Logs cannot be modified and their date is stored on `date_mod`.
-                      // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
-                      // can contains millions of rows.
+                        // Logs cannot be modified and their date is stored on `date_mod`.
+                        // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
+                        // can contains millions of rows.
                         break;
                     }
                     if (!in_array('date_creation', $columns)) {

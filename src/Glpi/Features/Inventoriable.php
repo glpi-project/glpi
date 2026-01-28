@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,7 +36,6 @@
 namespace Glpi\Features;
 
 use Agent;
-use CommonDBTM;
 use Computer;
 use DatabaseInstance;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -45,21 +44,32 @@ use Glpi\Plugin\Hooks;
 use Html;
 use Plugin;
 use RefusedEquipment;
+use Safe\Exceptions\FilesystemException;
+use Toolbox;
+
+use function Safe\unlink;
 
 trait Inventoriable
 {
-    /** @var CommonDBTM|null */
-    protected ?CommonDBTM $agent = null;
+    protected ?Agent $agent = null;
 
+    /**
+     * @return bool
+     */
     public function pre_purgeInventory()
     {
         $file_name = $this->getInventoryFileName();
         if ($file_name === null) {
-           //file does not exist
+            //file does not exist
             return true;
         }
 
-        return unlink($file_name);
+        try {
+            unlink($file_name);
+            return true;
+        } catch (FilesystemException $e) {
+            return false;
+        }
     }
 
 
@@ -97,14 +107,14 @@ trait Inventoriable
      * Display information on inventory
      *
      * @return void
+     *
+     * @deprecated 12.0.0
      */
     protected function showInventoryInfo()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
+
+        Toolbox::deprecated();
 
         if (!$this->isDynamic()) {
             return;
@@ -122,20 +132,19 @@ trait Inventoriable
                 $CFG_GLPI["root_doc"],
                 $download_file
             );
-            $title = sprintf(
-             //TRANS: parameter is the name of the asset
-                __s('Download "%1$s" inventory file'),
-                htmlescape($this->getName())
-            );
 
             echo sprintf(
                 "<a href='%s' style='float: right;' target='_blank'><i class='ti ti-download' title='%s'></i></a>",
                 \htmlescape($href),
-                \htmlescape($title)
+                sprintf(
+                    //TRANS: parameter is the name of the asset
+                    __s('Download "%1$s" inventory file'),
+                    htmlescape($this->getName())
+                )
             );
 
             if (static::class === RefusedEquipment::class) { //@phpstan-ignore-line - phpstan bug with traits
-                $url = $CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment';
+                $url = \htmlescape($CFG_GLPI['root_doc'] . '/Inventory/RefusedEquipment');
                 $title = __s('Try a reimport from stored inventory file');
                 echo <<<HTML
                         <button type="submit" class="btn btn-sm btn-ghost-secondary" name="redo_inventory"
@@ -165,7 +174,7 @@ HTML;
             $this->displayAgentInformation();
         }
 
-       // Display auto inventory information
+        // Display auto inventory information
         if (
             !empty($this->fields['id'])
             && $this->maybeDynamic() && $this->fields["is_dynamic"]
@@ -178,11 +187,16 @@ HTML;
 
     /**
      * Display agent information
+     *
+     * @deprecated 12.0.0
+     *
+     * @return void
      */
     protected function displayAgentInformation()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        Toolbox::deprecated();
 
         echo '<tr class="tab_bg_1">';
         echo '<td>' . htmlescape(Agent::getTypeName(1)) . '</td>';
@@ -204,7 +218,7 @@ HTML;
         echo "<i id='update-status' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Ask agent about its current status') . "'></i>";
         echo '</td>';
         echo '<td id="agent_status">' . __s('Unknown') . '</td>';
-        echo '<td>' .  __s('Request inventory');
+        echo '<td>' . __s('Request inventory');
         echo "<i id='update-inventory' class='ti ti-refresh' style='float: right;cursor: pointer;' title='" . __s('Request agent to proceed an new inventory') . "'></i>";
         echo '</td>';
         echo '<td id="inventory_status">' . __s('None') . '</td>';
@@ -212,39 +226,38 @@ HTML;
 
         $status = Agent::ACTION_STATUS;
         $inventory = Agent::ACTION_INVENTORY;
-        $agents_id = (int)$this->agent->fields['id'];
+        $agents_id = (int) $this->agent->fields['id'];
+        $root_doc = \jsescape($CFG_GLPI['root_doc']);
         $js = <<<JAVASCRIPT
-         $(function() {
-            $('#update-status').on('click', function() {
-               $.post({
-                  url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
-                  timeout: 3000, //3 seconds timeout
-                  data: {'action': '{$status}', 'id': '{$agents_id}'},
-                  success: function(json) {
-                     $('#agent_status').html(json.answer);
-                  }
-               });
-            });
+            $(function() {
+                $('#update-status').on('click', function() {
+                    $.post({
+                        url: '{$root_doc}/ajax/agent.php',
+                        timeout: 3000, //3 seconds timeout
+                        data: {'action': '{$status}', 'id': '{$agents_id}'},
+                        success: function(json) {
+                            $('#agent_status').html(json.answer);
+                        }
+                    });
+                });
 
-            $('#update-inventory').on('click', function() {
-               $.post({
-                  url: '{$CFG_GLPI['root_doc']}/ajax/agent.php',
-                  timeout: 3000, //3 seconds timeout
-                  data: {'action': '{$inventory}', 'id': '{$agents_id}'},
-                  success: function(json) {
-                     $('#inventory_status').html(json.answer);
-                  }
-               });
+                $('#update-inventory').on('click', function() {
+                    $.post({
+                        url: '{$root_doc}/ajax/agent.php',
+                        timeout: 3000, //3 seconds timeout
+                        data: {'action': '{$inventory}', 'id': '{$agents_id}'},
+                        success: function(json) {
+                            $('#inventory_status').html(json.answer);
+                        }
+                    });
+                });
             });
-
-         });
 JAVASCRIPT;
         echo Html::scriptBlock($js);
     }
 
     public function getInventoryAgent(): ?Agent
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $agent = $this->getMostRecentAgent([
@@ -272,13 +285,13 @@ JAVASCRIPT;
                 [
                     'SELECT' => [
                         'itemtype_peripheral',
-                        'items_id_peripheral'
+                        'items_id_peripheral',
                     ],
                     'FROM'   => Asset_PeripheralAsset::getTable(),
                     'WHERE'  => [
                         'itemtype_asset' => Computer::class,
-                        'items_id_asset' => $this->getID()
-                    ]
+                        'items_id_asset' => $this->getID(),
+                    ],
                 ]
             );
             if (count($relations_iterator) > 0) {
@@ -295,7 +308,7 @@ JAVASCRIPT;
                     if (count($ids) > 0) {
                         $conditions['OR'][] = [
                             'itemtype' => $itemtype,
-                            'items_id' => $ids
+                            'items_id' => $ids,
                         ];
                     }
                 }
@@ -317,7 +330,6 @@ JAVASCRIPT;
      */
     private function getMostRecentAgent(array $conditions): ?Agent
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -325,7 +337,7 @@ JAVASCRIPT;
             'FROM'      => Agent::getTable(),
             'WHERE'     => $conditions,
             'ORDERBY'   => ['last_contact DESC'],
-            'LIMIT'     => 1
+            'LIMIT'     => 1,
         ]);
         if (count($iterator) === 0) {
             return null;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,13 +36,15 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\CalDAV\Contracts\CalDAVCompatibleItemInterface;
 use Glpi\CalDAV\Traits\VobjectConverterTrait;
-use Glpi\RichText\RichText;
+use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QueryFunction;
+use Glpi\Features\PlanningEvent;
 use Sabre\VObject\Component\VCalendar;
 use Sabre\VObject\Component\VTodo;
 
 class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemInterface
 {
-    use Glpi\Features\PlanningEvent {
+    use PlanningEvent {
         rawSearchOptions as protected trait_rawSearchOptions;
     }
     use VobjectConverterTrait;
@@ -66,8 +68,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -79,7 +81,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         return Session::haveRightsOr(self::$rightname, [
             CREATE,
             UPDATE,
-            self::MANAGE_BG_EVENTS
+            self::MANAGE_BG_EVENTS,
         ]);
     }
 
@@ -107,8 +109,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
             return false;
         }
 
-       // the current user can update only this own events without PURGE right
-       // but not bg one, see above
+        // the current user can update only this own events without PURGE right
+        // but not bg one, see above
         if (
             (int) $this->fields['users_id'] !== Session::getLoginUserID()
             && !Session::haveRight(self::$rightname, PURGE)
@@ -148,6 +150,9 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
             || ($options['from_planning_edit_ajax'] ?? false)
         ) {
             $options['no_header'] = true;
+            $options['in_modal']  = true;
+        } else {
+            $options['in_modal']  = false;
         }
 
         $is_ajax  = isset($options['from_planning_edit_ajax']) && $options['from_planning_edit_ajax'];
@@ -206,11 +211,17 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
     public static function getUserItemsAsVCalendars($users_id)
     {
+        global $DB;
+
         return self::getItemsAsVCalendars([
             'OR' => [
                 self::getTableField('users_id')        => $users_id,
-                self::getTableField('users_id_guests') => ['LIKE', '%"' . $users_id . '"%'],
-            ]
+                QueryFunction::jsonContains(
+                    self::getTableField('users_id_guests'),
+                    new QueryExpression($DB::quoteValue((int) $users_id)),
+                    '$'
+                ),
+            ],
         ]);
     }
 
@@ -219,11 +230,10 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
      *
      * @param array $criteria
      *
-     * @return \Sabre\VObject\Component\VCalendar[]
+     * @return VCalendar[]
      */
     private static function getItemsAsVCalendars(array $criteria)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -274,8 +284,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         unset($input['content']);
 
         if ($vcomp instanceof VTodo && !array_key_exists('state', $input)) {
-           // Force default state to TO DO or event will be considered as VEVENT
-            $input['state'] = \Planning::TODO;
+            // Force default state to TO DO or event will be considered as VEVENT
+            $input['state'] = Planning::TODO;
         }
 
         return $input;
@@ -288,6 +298,8 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
 
     public static function getVisibilityCriteria(): array
     {
+        global $DB;
+
         if (Session::haveRight(Planning::$rightname, Planning::READALL)) {
             return [];
         }
@@ -295,8 +307,12 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
         $condition = [
             'OR' => [
                 self::getTableField('users_id') => $_SESSION['glpiID'],
-                self::getTableField('users_id_guests') => ['LIKE', '%"' . $_SESSION['glpiID'] . '"%'],
-            ]
+                QueryFunction::jsonContains(
+                    self::getTableField('users_id_guests'),
+                    new QueryExpression($DB::quoteValue((int) $_SESSION['glpiID'])),
+                    '$'
+                ),
+            ],
         ];
 
         if (Session::haveRight(Planning::$rightname, Planning::READGROUP)) {

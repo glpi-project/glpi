@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -58,6 +58,7 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowndefinitions')) {
             PRIMARY KEY (`id`),
             UNIQUE KEY `system_name` (`system_name`),
             KEY `is_active` (`is_active`),
+            KEY `label` (`label`),
             KEY `date_creation` (`date_creation`),
             KEY `date_mod` (`date_mod`)
     ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;
@@ -68,6 +69,17 @@ SQL;
         'after' => 'system_name',
         'update' => $DB::quoteName('system_name'),
     ]);
+    $migration->addKey('glpi_dropdowns_dropdowndefinitions', 'label');
+
+    // Add `Dropdown` suffix to custom asset classes.
+    $definitions_iterator = $DB->request(['FROM' => 'glpi_dropdowns_dropdowndefinitions']);
+    foreach ($definitions_iterator as $definition_data) {
+        $migration->renameItemtype(
+            'Glpi\\CustomDropdown\\' . $definition_data['system_name'],
+            'Glpi\\CustomDropdown\\' . $definition_data['system_name'] . 'Dropdown',
+            false
+        );
+    }
 }
 
 if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
@@ -99,6 +111,5 @@ if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {
 SQL;
     $DB->doQuery($query);
 } else {
-    // TODO Remove it before the GLPI 11.0 final release.
     $migration->dropField('glpi_dropdowns_dropdowns', 'is_deleted');
 }

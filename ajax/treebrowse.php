@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
 header("Content-Type: text/html; charset=UTF-8");
@@ -53,9 +54,15 @@ switch ($_REQUEST['action']) {
         ];
 
         $itemtype = $_REQUEST['itemtype'];
-        $category_itemtype = $itemtype::getCategoryItemType($itemtype);
-        $category_table = $category_itemtype::getTable();
-        $item = new $itemtype();
+        // If public FAQ is enabled we allow anonymous access to this script
+        // but only for FAQ/knowbase browsing. Prevent anonymous users from
+        // using this endpoint to list other item types (users, etc.).
+        if ($itemtype::canView() === false) {
+            throw new AccessDeniedHttpException();
+        }
+        $category_item = $itemtype::getCategoryItem($itemtype);
+        $category_table = $category_item::getTable();
+        $item = getItemForItemtype($itemtype);
         $so = $item->rawSearchOptions();
 
         $field = 0;

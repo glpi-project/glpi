@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,12 +34,13 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\preg_replace;
+
 foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
     /**
-     * @var \DBmysql $DB
-     * @var \Migration $migration
+     * @var DBmysql $DB
+     * @var Migration $migration
      */
-
     // field has to be nullable to be able to set empty values to null
     $migration->changeField(
         $table,

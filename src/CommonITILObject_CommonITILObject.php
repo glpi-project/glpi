@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -77,7 +77,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed
                 if ($link['items_id'] === $input[static::$items_id_1] || $link['items_id'] === $input[static::$items_id_2]) {
                     if ((int) $link['link'] === self::LINK_TO && (int) $input['link'] === self::DUPLICATE_WITH) {
-                        $link_item = new $link['link_class']();
+                        $link_item = getItemForItemtype($link['link_class']);
                         $link_item->delete(['id' => $link['id']]);
                         return $input;
                     }
@@ -106,7 +106,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         switch ($ma->getAction()) {
@@ -116,7 +115,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     'itemtype_name'   => 'itemtype_2',
                     'itemtypes'       => $CFG_GLPI['itil_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                    'entity_restrict' => $_SESSION['glpiactive_entity'],
                 ]);
                 self::dropdownLinks('link');
                 echo "<br><input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
@@ -127,9 +126,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     'itemtype_name'   => 'itemtype_2',
                     'itemtypes'       => $CFG_GLPI['itil_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                    'entity_restrict' => $_SESSION['glpiactive_entity'],
                 ]);
-                echo "<br><input type='submit' name='delete' value=\"" . __s('Delete permanently') . "\" class='btn btn-primary'>";
+                echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
                 return true;
         }
         return false;
@@ -156,7 +155,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                             'itemtype_2' => $input['itemtype_2'],
                             'items_id_2' => $input['items_id_2'],
                             'link'       => $input['link'],
-                        ]
+                        ],
                     ];
                     if ($item->can($id, UPDATE)) {
                         if ($item->update($update_input)) {
@@ -185,9 +184,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
                     $link_class = self::getLinkClass($input['itemtype_1'], $input['itemtype_2']);
 
-                    if ($link_class !== null) {
-                        /* @var CommonDBRelation $link_class */
-                        /* @var CommonDBRelation $link */
+                    if (is_a($link_class, CommonDBRelation::class, true)) {
                         $condition = [];
                         $link = new $link_class();
                         if ($link_class::$itemtype_1 == $link_class::$itemtype_2) {
@@ -201,7 +198,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                                     [
                                         $link_class::$items_id_1 => $input['items_id_2'],
                                         $link_class::$items_id_2 => $input['items_id_1'],
-                                    ]
+                                    ],
                                 ],
                             ];
                         } else {
@@ -262,11 +259,13 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     private function updateParentItems(): void
     {
 
-        $item_1 = new static::$itemtype_1();
-        $item_2 = new static::$itemtype_2();
+        $item_1 = getItemForItemtype(static::$itemtype_1);
+        $item_2 = getItemForItemtype(static::$itemtype_2);
 
         if (
-            $item_1->getFromDB($this->fields[static::$items_id_1])
+            $item_1 instanceof CommonITILObject
+            && $item_2 instanceof CommonITILObject
+            && $item_1->getFromDB($this->fields[static::$items_id_1])
             && $item_2->getFromDB($this->fields[static::$items_id_2])
         ) {
             $item_1->updateDateMod($this->fields[static::$items_id_1]);
@@ -290,9 +289,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     public static function getLinkedTo(string $itemtype, int $items_id): array
     {
         if (static::class === self::class) {
-            throw new \LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
+            throw new LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
         }
-        /** @var \DBmysql $DB */
+
         global $DB;
 
         $links = [];
@@ -307,9 +306,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 'WHERE' => [
                     'OR' => [
                         static::$items_id_1 => $items_id,
-                        static::$items_id_2 => $items_id
-                    ]
-                ]
+                        static::$items_id_2 => $items_id,
+                    ],
+                ],
             ]);
         } else {
             // Fetch items from Change_Problem, Change_Ticket, or Problem_Ticket
@@ -317,8 +316,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             $iterator = $DB->request([
                 'FROM' => static::getTable(),
                 'WHERE' => [
-                    $item_fk => $items_id
-                ]
+                    $item_fk => $items_id,
+                ],
             ]);
         }
 
@@ -368,7 +367,6 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      **/
     public static function getAllLinkedTo(string $itemtype, int $items_id): array
     {
-        /** @var CommonDBRelation[] $link_classes */
         $link_classes = self::getAllLinkClasses();
         $links = [];
 
@@ -383,25 +381,25 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         return $links;
     }
 
-    protected static function getITILLinkTypes(): array
+    public static function getITILLinkTypes(): array
     {
         return [
             self::LINK_TO => [
                 'name' => __('Linked to'),
-                'icon' => 'fas fa-link',
+                'icon' => 'ti ti-link',
             ],
             self::DUPLICATE_WITH => [
                 'name' => __('Duplicates'),
-                'icon' => 'fas fa-clone',
+                'icon' => 'ti ti-copy-plus-filled',
             ],
             self::SON_OF => [
                 'name' => __('Son of'),
-                'icon' => 'fa-level-up-alt fa-flip-horizontal',
+                'icon' => 'ti ti-corner-left-up',
                 'inverse' => self::PARENT_OF,
             ],
             self::PARENT_OF => [
                 'name' => __('Parent of'),
-                'icon' => 'fa-level-up-alt',
+                'icon' => 'ti ti-corner-left-down',
                 'inverse' => self::SON_OF,
             ],
         ];
@@ -411,22 +409,22 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      * Dropdown for link types
      *
      * @param string  $myname select name
-     * @param integer $value  default value (default self::LINK_TO)
+     * @param int $value  default value (default self::LINK_TO)
      *
      * @return void
      **/
     public static function dropdownLinks($myname, $value = self::LINK_TO)
     {
-        $link_options = array_map(static fn ($link) => $link['name'], self::getITILLinkTypes());
+        $link_options = array_map(static fn($link) => $link['name'], self::getITILLinkTypes());
         Dropdown::showFromArray($myname, $link_options, ['value' => $value]);
     }
 
     /**
      * Get Link Name
      *
-     * @param integer $value     Current value
-     * @param boolean $inverted  Whether to invert label
-     * @param boolean $with_icon prefix label with an icon
+     * @param int $value     Current value
+     * @param bool $inverted  Whether to invert label
+     * @param bool $with_icon prefix label with an icon
      *
      * @return string
      **/
@@ -435,7 +433,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $link_types = static::getITILLinkTypes();
 
         if (!isset($link_types[$value])) {
-            return NOT_AVAILABLE;
+            return htmlescape(NOT_AVAILABLE);
         }
 
         $icon_tag = '<i class="fas %1$s me-1" title="%2$s" data-bs-toggle="tooltip"></i>%2$s';
@@ -464,16 +462,16 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
         $itemtypes = [$itemtype_1, $itemtype_2];
         if (in_array(Change::class, $itemtypes, true) && in_array(Problem::class, $itemtypes, true)) {
             return Change_Problem::class;
-        } else if (in_array(Change::class, $itemtypes, true) && in_array(Ticket::class, $itemtypes, true)) {
+        } elseif (in_array(Change::class, $itemtypes, true) && in_array(Ticket::class, $itemtypes, true)) {
             return Change_Ticket::class;
-        } else if (in_array(Problem::class, $itemtypes, true) && in_array(Ticket::class, $itemtypes, true)) {
+        } elseif (in_array(Problem::class, $itemtypes, true) && in_array(Ticket::class, $itemtypes, true)) {
             return Problem_Ticket::class;
-        } else if ($itemtype_1 === $itemtype_2) {
+        } elseif ($itemtype_1 === $itemtype_2) {
             if ($itemtype_1 === Change::class) {
                 return Change_Change::class;
-            } else if ($itemtype_1 === Problem::class) {
+            } elseif ($itemtype_1 === Problem::class) {
                 return Problem_Problem::class;
-            } else if ($itemtype_1 === Ticket::class) {
+            } elseif ($itemtype_1 === Ticket::class) {
                 return Ticket_Ticket::class;
             }
         }
@@ -482,7 +480,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
     /**
      * Get array of all ITIL Object link classes
-     * @return string[]
+     * @return class-string<CommonITILObject_CommonITILObject>[]
      */
     public static function getAllLinkClasses(): array
     {
@@ -524,10 +522,9 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     public static function countLinksByStatus(string $itemtype, int $items_id, array $status = [], array $link_types = []): int
     {
         if (static::class === self::class) {
-            throw new \LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
+            throw new LogicException(sprintf('%s should be called only from sub classes.', __METHOD__));
         }
 
-        /** @var \DBmysql $DB */
         global $DB;
 
         $count = 0;
@@ -549,7 +546,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     unset($other_link_types[$key]);
                 }
                 // Count everything except SON_OF links using original parameters
-                if (!empty($other_link_types)) {
+                if ($other_link_types !== []) {
                     $count = static::countLinksByStatus($itemtype, $items_id, $status, $other_link_types);
                 }
 
@@ -566,15 +563,15 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
             $where_fk = static::$itemtype_1 === $itemtype ? static::$items_id_1 : static::$items_id_2;
             $where = [
-                'links.' . $where_fk => $items_id
+                'links.' . $where_fk => $items_id,
             ];
         }
 
-        if (!empty($link_types)) {
+        if ($link_types !== []) {
             $where['links.link'] = $link_types;
         }
 
-        if (!empty($status)) {
+        if ($status !== []) {
             $where['items.status'] = $status;
         }
 
@@ -585,15 +582,22 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 $linked_table . ' AS items' => [
                     'ON' => [
                         'links' => $linked_fk,
-                        'items' => 'id'
-                    ]
+                        'items' => 'id',
+                    ],
                 ],
             ],
-            'WHERE'        => $where
+            'WHERE'        => $where,
         ])->current();
-        return ((int)$result['cpt']) + $count;
+        return ((int) $result['cpt']) + $count;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param int $items_id
+     * @param array $changes
+     *
+     * @return void
+     */
     public static function manageLinksOnChange($itemtype, $items_id, $changes): void
     {
         if ($itemtype === Ticket::class) {
@@ -622,12 +626,12 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                             $new_solution = new ITILSolution();
                             $new_solution->add($solution_data);
                         }
-                    } else if (isset($changes['status']) && in_array($changes['status'], Ticket::getSolvedStatusArray())) {
+                    } elseif (isset($changes['status']) && in_array($changes['status'], Ticket::getSolvedStatusArray())) {
                         $linked_ticket = new Ticket();
                         foreach ($tickets as $data) {
                             $linked_ticket->update([
                                 'id'     => $data['items_id'],
-                                'status' => $changes['status']
+                                'status' => $changes['status'],
                             ]);
                         }
                     }

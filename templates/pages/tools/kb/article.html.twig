@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,75 +30,105 @@
  # ---------------------------------------------------------------------
  #}
 
-{% import 'components/form/fields_macros.html.twig' as fields %}
+<div class="d-flex mx-n2 my-n2" data-glpi-knowbase-article>
+    <article class="col-9 container ms-0 px-4 py-3 kb-article">
+        <div class="d-flex align-items-center mb-3">
+            <h1 class="fw-bold mb-0" data-testid="subject">{{ subject }}</h1>
+            <div class="dropdown ms-auto cursor-pointer d-flex align-items-center">
+                {% if edit_mode and actions|length > 0 %}
+                    <i
+                        class="ti ti-dots-vertical"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                        role="button"
+                        title="{{ __('More actions') }}"
+                    ></i>
+                    <ul class="dropdown-menu" data-bs-popper="none">
+                        {% for action in actions %}
+                            <li>
+                                <button
+                                    type="button"
+                                    class="dropdown-item"
+                                    aria-label="{{ action.label }}"
+                                    data-glpi-kb-action="{{ action.type.value }}"
+                                    {% for key, param in action.params %}
+                                        data-glpi-kb-action-param-{{ key }}="{{ param }}"
+                                    {% endfor %}
+                                >
+                                    <i class="{{ action.icon }}"></i>
+                                    <span>{{ action.label }}</span>
+                                </button>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+        </div>
+        <div class="text-muted d-flex align-items-center gap-3">
+            {# Last update #}
+            <div class="d-flex align-items-center" data-testid="last-update">
+                <i class="ti ti-clock me-1 fs-3"></i>
+                <span>
+                    <span>{{ __("Updated:") }}</span>
+                    <time
+                        title="{{ last_update_date }}"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="bottom"
+                    >{{ last_update_relative_date }}</time>
+                    <span>{{ __("by") }}</span>
+                </span>
+                <address class="mb-0">
+                    {% if last_update_author_link is not null and last_update_can_view_author %}
+                        <a
+                            rel="author"
+                            href="{{ last_update_author_link }}"
+                            class="badge bg-azure-lt ms-1"
+                            data-testid="author_link"
+                        >
+                            @{{ last_update_author_name }}
+                        </a>
+                    {% else %}
+                        <span class="badge bg-dark-lt ms-1">
+                            @{{ last_update_author_name }}
+                        </span>
+                    {% endif %}
+                </address>
+            </div>
 
-<div>
-    {% set kb_cats %}
-        {% for cat_id, cat_name in categories %}
-            <span class="badge badge-outline text-secondary">
-                <a href="{{ 'KnowbaseItem'|itemtype_search_path ~ '?knowbaseitemcategories_id=' ~ cat_id ~ '&forcetab=Knowbase$2' }}">
-                    {{ cat_name }}
-                </a>
-            </span>
-        {% endfor %}
-    {% endset %}
-    {{ fields.htmlField('', kb_cats, _n('Category', 'Categories', get_plural_number()), {
-        full_width: true,
-        is_horizontal: false,
-        label_class: 'pb-0'
-    }) }}
+            {# Views #}
+            <div class="d-flex align-items-center">
+                <i class="ti ti-eye me-1 fs-3"></i>
+                <span data-testid="views">
+                    {% if views == 0 %}
+                        {{ __("No views") }}
+                    {% else %}
+                        {{ _n("%s view", "%s views", views)|format(views|formatted_integer) }}
+                    {% endif %}
+                </span>
+            </div>
+        </div>
 
-    {{ fields.htmlField('', subject|e, __('Subject'), {
-        full_width: true,
-        is_horizontal: false,
-        label_class: 'fs-2'
-    }) }}
-    {% set answer_field %}
-        <div class="rich_text_container">
+        <hr class="mt-4 mb-4">
+
+        <div class="rich_text_container" data-testid="content">
             {{ answer|safe_html }}
         </div>
-    {% endset %}
-    {{ fields.htmlField('', answer_field, __('Content'), {
-        full_width: true,
-        is_horizontal: false,
-        label_class: 'fs-2'
-    }) }}
-
-    {% if attachments|length > 0 %}
-        {% include 'components/datatable.html.twig' with {
-            is_tab: true,
-            nopager: true,
-            nofilter: true,
-            columns: {
-                filename: __('File'),
-                headings: __('Heading'),
-                assocdate: _n('Date', 'Dates', 1)
-            },
-            formatters: {
-                filename: 'raw_html',
-                assocdate: 'datetime'
-            },
-            entries: attachments,
-            total_number: attachments|length,
-            filtered_number: attachments|length,
-            showmassiveactions: false
-        } only %}
-    {% endif %}
-
-    <div class="card-footer mx-n2 mb-n2 mt-4 fw-bold">
-        <div class="d-flex row">
-            <div class="col-sm-6 col-12">
-                {{ __('%1$s: %2$s')|e|format(__('Writer')|e, writer_link)|raw }}
-            </div>
-            <div class="col-sm-6 col-12">
-                {{ _n('%d view', '%d views', item.fields['view'])|format(item.fields['view']) }}
-            </div>
-        </div>
-        <div class="d-flex row">
-            <div class="col-sm-6 col-12">
-                {{ item.fields['is_faq'] ? __('This item is part of the FAQ') : __('This item is not part of the FAQ') }}
-            </div>
-        </div>
-        {{ include('components/form/dates.html.twig') }}
+    </article>
+    <div
+        class="col-3 container kb-sidepanel px-4 py-3 d-none d-flex flex-column"
+        data-glpi-knowbase-side-panel
+    >
     </div>
 </div>
+
+<script type="module">
+    (async () => {
+        const module = await import(
+            "{{ js_path('js/modules/Knowbase/ArticleController.js') }}"
+        );
+        new module.GlpiKnowbaseArticleController(
+            document.querySelector('[data-glpi-knowbase-article]'),
+            document.querySelector('[data-glpi-knowbase-side-panel]'),
+        );
+    })();
+</script>

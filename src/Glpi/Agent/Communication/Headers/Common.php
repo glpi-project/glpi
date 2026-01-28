@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,11 @@ namespace Glpi\Agent\Communication\Headers;
 
 use ReflectionClass;
 use ReflectionProperty;
+use RuntimeException;
 
 class Common
 {
-   //Global headers
+    //Global headers
     /**
      * "Content-Type" HTTP header
      *
@@ -73,17 +74,7 @@ class Common
      */
     protected string $connection = 'close';
 
-    /**
-     * "Pragma" HTTP header
-     * Required
-     *
-     * Avoid any caching done by the server
-     *
-     * @var string
-     */
-    protected string $pragma = 'no-cache';
-
-   //GLPI agent headers
+    //GLPI agent headers
     /**
      * "GLPI-Agent-ID" HTTP header
      * Required
@@ -133,34 +124,39 @@ class Common
      */
     protected string $www_authenticate;
 
+    /**
+     * @return string[]
+     */
     public function getRequireds(): array
     {
         return [
             'content_type',
-            'pragma',
             'glpi_agent_id',
             'cache_control',
-            'connection'
+            'connection',
         ];
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getHeadersNames(): array
     {
         return [
-            'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID'
+            'glpi_cryptokey_id' => 'GLPI-CryptoKey-ID',
         ];
     }
 
     /**
      * Get HTTP headers
      *
-     * @param boolean $legacy Set to true to shunt required headers checks
+     * @param bool $legacy Set to true to shunt required headers checks
      *
-     * @return array
+     * @return array<string, string>
      */
     public function getHeaders(bool $legacy = true): array
     {
-       //parse class attributes and normalize key name
+        //parse class attributes and normalize key name
         $reflect = new ReflectionClass($this);
         $props   = $reflect->getProperties(ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED);
 
@@ -171,8 +167,8 @@ class Common
             $headername = $this->getHeaderName($propname);
             if (!empty($this->$propname)) {
                 $headers[$headername] = $this->$propname;
-            } else if (in_array($propname, $this->getRequireds()) && $legacy === false) {
-                throw new \RuntimeException(
+            } elseif (in_array($propname, $this->getRequireds()) && $legacy === false) {
+                throw new RuntimeException(
                     sprintf(
                         '%1$s HTTP header is mandatory!',
                         $headername
@@ -207,8 +203,6 @@ class Common
      */
     final public function getHeaderName(string $prop): string
     {
-        $name = $prop;
-
         if (isset($this->getHeadersNames()[$prop])) {
             return $this->getHeadersNames()[$prop];
         }
@@ -233,7 +227,7 @@ class Common
     /**
      * Set multiple HTTP header values at once
      *
-     * @param array $headers Array of HTTP header name as key and value
+     * @param array<string, string> $headers Array of HTTP header name as key and value
      *
      * @return $this
      */

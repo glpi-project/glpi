@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,6 @@
 
 namespace Glpi\Http;
 
-use Toolbox;
-
 /**
  * @since 10.0.0
  */
@@ -45,74 +43,15 @@ class Response extends \GuzzleHttp\Psr7\Response
     /**
      * "application/json" content type.
      */
-    const CONTENT_TYPE_JSON = 'application/json';
+    public const CONTENT_TYPE_JSON = 'application/json';
 
     /**
      * "text/html" content type.
      */
-    const CONTENT_TYPE_TEXT_HTML = 'text/html';
+    public const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
     /**
      * "text/plain" content type.
      */
-    const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
-
-    /**
-     * Send the given HTTP code then die with the error message in the given format.
-     *
-     * @param int     $code          HTTP code to set for the response
-     * @param string  $message       Error message to send
-     * @param string  $content_type  Response content type
-     *
-     * @return never
-     *
-     * @deprecated 11.0.0
-     */
-    public static function sendError(int $code, string $message, string $content_type = self::CONTENT_TYPE_JSON): never
-    {
-        Toolbox::deprecated('Response::sendError() is deprecated. Throw a `Glpi\Exception\Http\*HttpException` exception instead.');
-
-        switch ($content_type) {
-            case self::CONTENT_TYPE_JSON:
-                $output = json_encode(['message' => $message]);
-                break;
-
-            case self::CONTENT_TYPE_TEXT_HTML:
-            default:
-                $output = $message;
-                break;
-        }
-
-        header(sprintf('Content-Type: %s; charset=UTF-8', $content_type), true, $code);
-
-        Toolbox::logDebug($message);
-
-        echo($output);
-        exit(1);
-    }
-
-    public function sendHeaders(): Response
-    {
-        if (headers_sent()) {
-            return $this;
-        }
-        $headers = $this->getHeaders();
-        foreach ($headers as $name => $values) {
-            header(sprintf('%s: %s', $name, implode(', ', $values)), true);
-        }
-        http_response_code($this->getStatusCode());
-        return $this;
-    }
-
-    public function sendContent(): Response
-    {
-        echo $this->getBody();
-        return $this;
-    }
-
-    public function send(): Response
-    {
-        return $this->sendHeaders()
-            ->sendContent();
-    }
+    public const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,13 +34,18 @@
 
 namespace Glpi\Error;
 
-use GLPI;
-use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
+use Glpi\Application\Environment;
 use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
+use Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
+use Monolog\Logger;
+use Override;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
+use Throwable;
+use Toolbox;
 
 /**
  * @phpstan-ignore class.extendsFinalByPhpDoc
@@ -72,15 +77,35 @@ final class ErrorHandler extends BaseErrorHandler
         E_USER_DEPRECATED   => LogLevel::INFO,
     ];
 
-    private static LoggerInterface $currentLogger;
+    private const PSR_ERROR_LEVEL_VALUES = [
+        LogLevel::EMERGENCY => 0,
+        LogLevel::ALERT     => 1,
+        LogLevel::CRITICAL  => 2,
+        LogLevel::ERROR     => 3,
+        LogLevel::WARNING   => 4,
+        LogLevel::NOTICE    => 5,
+        LogLevel::INFO      => 6,
+        LogLevel::DEBUG     => 7,
+    ];
 
-    private string $env;
+    /**
+     * Indicates whether the error messages should be buffered instead of being displayed immediately.
+     * By default, messages are buffered only on Web context to prevent any output before headers are sent
+     * and to be able to NOT output them on specific context (JS/JSON response for instance).
+     */
+    private static bool $is_buffer_active = (PHP_SAPI === 'cli');
+
+    /**
+     * @var list<array{error_label: string, message: string, log_level: string}>
+     */
+    private static array $buffered_messages = [];
+
+    private static LoggerInterface $currentLogger;
 
     public function __construct(LoggerInterface $logger)
     {
-        parent::__construct(debug: \GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT);
-
-        $this->env = \GLPI_ENVIRONMENT_TYPE;
+        $env = Environment::get();
+        parent::__construct(debug: $env->shouldEnableExtraDevAndDebugTools());
 
         $this->scopeAt(E_ALL, true); // Preserve variables for all errors
         $this->traceAt(E_ALL, true); // Preserve stack trace for all errors
@@ -96,7 +121,20 @@ final class ErrorHandler extends BaseErrorHandler
     }
 
     /**
-     * @return array<\Glpi\Error\ErrorDisplayHandler\ErrorDisplayHandler>
+     * Disable the message buffer and flush the messages present in the buffer.
+     */
+    public static function disableBufferAndFlushMessages(): void
+    {
+        self::$is_buffer_active = false;
+
+        foreach (self::$buffered_messages as $key => $message_specs) {
+            self::displayErrorMessage($message_specs['error_label'], $message_specs['message'], $message_specs['log_level']);
+            unset(self::$buffered_messages[$key]);
+        }
+    }
+
+    /**
+     * @return array<ErrorDisplayHandler>
      */
     private static function getOutputHandlers(): array
     {
@@ -119,15 +157,24 @@ final class ErrorHandler extends BaseErrorHandler
      */
     public static function displayErrorMessage(string $error_label, string $message, string $log_level): void
     {
+        if (self::$is_buffer_active) {
+            self::$buffered_messages[] = [
+                'error_label' => $error_label,
+                'message'     => $message,
+                'log_level'   => $log_level,
+            ];
+            return;
+        }
+
         foreach (self::getOutputHandlers() as $handler) {
             if ($handler->canOutput()) {
                 $handler->displayErrorMessage($error_label, $message, $log_level);
-                break; // Only one display per handler
+                break; // Stop after the first available handler
             }
         }
     }
 
-    #[\Override()]
+    #[Override()]
     public function handleError(int $type, string $message, string $file, int $line): bool
     {
         if (0 === (error_reporting() & $type)) {
@@ -161,7 +208,7 @@ final class ErrorHandler extends BaseErrorHandler
 
         self::displayErrorMessage(
             \sprintf('PHP %s (%s)', $error_type, $type),
-            \sprintf('%s in %s at line %s', $message, $file, $line),
+            \sprintf('%s in %s at line %s', self::cleanPaths($message), self::cleanPaths($file), $line),
             self::ERROR_LEVEL_MAP[$type],
         );
 
@@ -171,8 +218,8 @@ final class ErrorHandler extends BaseErrorHandler
         return true;
     }
 
-    #[\Override()]
-    public function handleException(\Throwable $exception): void
+    #[Override()]
+    public function handleException(Throwable $exception): void
     {
         // /!\ Once the kernel is booted, the `\Symfony\Component\HttpKernel\EventListener\ErrorListener`
         // will handle the exceptions via the `kernel.exception` event.
@@ -187,7 +234,7 @@ final class ErrorHandler extends BaseErrorHandler
      *
      * @FIXME Can be done directly in the caller class if the `logger` service is set by the DI system.
      */
-    public static function logCaughtException(\Throwable $exception): void
+    public static function logCaughtException(Throwable $exception): void
     {
         $message = \sprintf(
             'Caught %s: %s',
@@ -208,46 +255,42 @@ final class ErrorHandler extends BaseErrorHandler
      *        a custom message should then be displayed, to indicate to the end user what happens or what he can
      *        do to fix this error.
      */
-    public static function displayCaughtExceptionMessage(\Throwable $exception): void
+    public static function displayCaughtExceptionMessage(Throwable $exception): void
     {
         self::displayErrorMessage(
             \sprintf('Caught %s', $exception::class),
-            \sprintf('%s in %s at line %s', $exception->getMessage(), $exception->getFile(), $exception->getLine()),
+            \sprintf('%s in %s at line %s', self::cleanPaths($exception->getMessage()), self::cleanPaths($exception->getFile()), $exception->getLine()),
             LogLevel::ERROR,
         );
     }
 
     /**
-     * Adjust reporting level to the environment, to ensure that all the errors supposed to be logged are
-     * actually reported, and to prevent reporting other errors.
+     * Adjust reporting level to the environment, to ensure that all the errors
+     * supposed to be logged are actually reported, and to prevent reporting
+     * other errors.
      */
     private function configureErrorReporting(): void
     {
+        // Define base reporting level
         $reporting_level = E_ALL;
-        foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
-            if (
-                $this->env !== GLPI::ENV_DEVELOPMENT
-                && \in_array($log_level, [LogLevel::DEBUG, LogLevel::INFO], true)
-            ) {
-                // Do not report debug and info messages unless in development env.
-                // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
-                //
-                // Suppressing the deprecations in the testing environment is mandatory to prevent deprecations
-                // triggered in vendor code to make our test suite fail.
-                // We may review this part once we will have migrate all our test suite on PHPUnit.
-                // For now, we rely on PHPStan to detect usages of deprecated code.
-                $reporting_level &= ~$value;
-            }
 
-            if (
-                $log_level === LogLevel::NOTICE
-                && !\in_array($this->env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
-            ) {
-                // Do not report notice messages unless in development/testing env.
-                // Notices are errors with no functional impact, so we do not want people to report them as issues.
+        // Convert error level to PSR log level
+        $monolog_level = Logger::toMonologLevel(GLPI_LOG_LVL);
+        $psr_level     = $monolog_level->toPsrLogLevel();
+
+        // Compute max error level that should be reported
+        $env_report_value = self::PSR_ERROR_LEVEL_VALUES[$psr_level];
+
+        foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
+            $psr_level_value = self::PSR_ERROR_LEVEL_VALUES[$log_level];
+
+            // Error must be removed from the reporting level if its level
+            // is superior to the max level defined by the current env.
+            if ($psr_level_value > $env_report_value) {
                 $reporting_level &= ~$value;
             }
         }
+
         \error_reporting($reporting_level);
     }
 
@@ -257,6 +300,11 @@ final class ErrorHandler extends BaseErrorHandler
      */
     private function disableNativeErrorDisplaying(): void
     {
-        \ini_set('display_errors', 'Off');
+        Toolbox::safeIniSet('display_errors', 'Off');
+    }
+
+    private static function cleanPaths(string $message): string
+    {
+        return ErrorUtils::cleanPaths($message);
     }
 }

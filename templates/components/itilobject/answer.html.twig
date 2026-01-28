@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -55,7 +54,8 @@
                         {% if timeline_itemtype.template is defined %}
                            {{ include(timeline_itemtype.template, {
                               'item': item,
-                              'subitem': timeline_itemtype.item
+                              'subitem': timeline_itemtype.item,
+                              'mention_options': mention_options,
                            }) }}
                         {% else %}
                            {% set sf_options = {'parent': item} %}

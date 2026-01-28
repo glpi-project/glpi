@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Location;
@@ -95,17 +96,20 @@ enum LocationFieldStrategy: string
     private function getLocationIDForLastValidAnswer(
         AnswersSet $answers_set,
     ): ?int {
-        $valid_answers = $answers_set->getAnswersByType(
+        $items_answers = $answers_set->getAnswersByType(
             QuestionTypeItemDropdown::class
         );
-
-        if (count($valid_answers) == 0) {
+        $location_answers = array_filter(
+            $items_answers,
+            fn(Answer $a) => ($a->getRawAnswer()['itemtype'] ?? '') === Location::class,
+        );
+        if (count($location_answers) == 0) {
             return null;
         }
 
-        $answer = end($valid_answers);
+        $answer = end($location_answers);
         $value = $answer->getRawAnswer();
-        if ($value['itemtype'] !== Location::getType() || !is_numeric($value['items_id'])) {
+        if (!is_numeric($value['items_id'])) {
             return null;
         }
 

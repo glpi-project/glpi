@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,8 @@
 
 namespace Glpi\Console;
 
-use AppendIterator;
 use DirectoryIterator;
+use Glpi\Application\Environment;
 use Glpi\Kernel\Kernel;
 use Plugin;
 use RecursiveDirectoryIterator;
@@ -45,6 +45,9 @@ use ReflectionClass;
 use SplFileInfo;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\CommandLoader\CommandLoaderInterface;
+use Symfony\Component\Console\Exception\CommandNotFoundException;
+
+use function Safe\preg_match;
 
 /**
  * Core and plugins command loader.
@@ -97,7 +100,7 @@ class CommandLoader implements CommandLoaderInterface
         $commands = $this->getCommands();
 
         if (!array_key_exists($name, $commands)) {
-            throw new \Symfony\Component\Console\Exception\CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
+            throw new CommandNotFoundException(sprintf('Command "%s" does not exist.', $name));
         }
 
         return $commands[$name];
@@ -157,7 +160,7 @@ class CommandLoader implements CommandLoaderInterface
      *
      * return void
      */
-    private function findCoreCommands()
+    private function findCoreCommands(): void
     {
 
         $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'src';
@@ -179,7 +182,7 @@ class CommandLoader implements CommandLoaderInterface
             );
 
             if (null === $command) {
-                 continue;
+                continue;
             }
 
             $names = [$command->getName(), ...$command->getAliases()];
@@ -216,37 +219,18 @@ class CommandLoader implements CommandLoaderInterface
             $this->plugin = new Plugin();
         }
 
-        $plugins_directories = new AppendIterator();
-        foreach (PLUGINS_DIRECTORIES as $directory) {
-            $directory = str_replace(GLPI_ROOT, $this->rootdir, $directory);
-            $plugins_directories->append(new DirectoryIterator($directory));
+        if ($this->plugin->isPluginsExecutionSuspended()) {
+            return;
         }
 
-        $already_loaded = [];
-
-        /** @var SplFileInfo $plugin_directory */
-        foreach ($plugins_directories as $plugin_directory) {
-            if (in_array($plugin_directory->getFilename(), ['.', '..'])) {
-                continue;
-            }
-
-            $plugin_key = $plugin_directory->getFilename();
-
-            if (in_array($plugin_key, $already_loaded)) {
-                continue; // Do not load twice commands of plugin that is installed on multiple locations
-            }
-
-            if (!$this->plugin->isActivated($plugin_key)) {
-                continue; // Do not load commands of disabled plugins
-            }
+        foreach ($this->plugin->getPlugins() as $plugin_key) {
+            $plugin_directory = $this->plugin->getPhpDir($plugin_key);
 
             foreach (['inc', 'src'] as $source_dir) {
-                $plugin_basedir = $plugin_directory->getPathname() . DIRECTORY_SEPARATOR . $source_dir;
+                $plugin_basedir = $plugin_directory . DIRECTORY_SEPARATOR . $source_dir;
                 if (!is_readable($plugin_basedir) || !is_dir($plugin_basedir)) {
                     continue;
                 }
-
-                $plugin_dirname = $plugin_directory->getFilename();
 
                 $plugin_files = new RecursiveIteratorIterator(
                     new RecursiveDirectoryIterator($plugin_basedir),
@@ -267,19 +251,19 @@ class CommandLoader implements CommandLoaderInterface
                         $file,
                         $plugin_basedir,
                         [
-                            NS_PLUG . ucfirst($plugin_dirname) . '\\',
-                            'Plugin' . ucfirst($plugin_dirname),
+                            NS_PLUG . ucfirst($plugin_key) . '\\',
+                            'Plugin' . ucfirst($plugin_key),
                             '',
                         ]
                     );
 
                     if (null === $command) {
-                         continue;
+                        continue;
                     }
 
                     $expected_pattern = '/^'
                         . 'plugins:'            // starts with `plugins:` prefix
-                        . $plugin_dirname       // followed by plugin key (directory name)
+                        . $plugin_key       // followed by plugin key (directory name)
                         . '(:[^:]+)+'           // followed by, at least, another command name part
                         . '$/';
                     $names = [$command->getName(), ...$command->getAliases()];
@@ -290,7 +274,7 @@ class CommandLoader implements CommandLoaderInterface
                                 sprintf(
                                     'Plugin command `%s` must be moved in the `plugins:%s` namespace.',
                                     $name,
-                                    $plugin_dirname
+                                    $plugin_key
                                 ),
                                 E_USER_WARNING
                             );
@@ -301,8 +285,6 @@ class CommandLoader implements CommandLoaderInterface
                     $this->registerCommand($command);
                 }
             }
-
-            $already_loaded[] = $plugin_key;
         }
     }
 
@@ -311,29 +293,33 @@ class CommandLoader implements CommandLoaderInterface
      *
      * return void
      */
-    private function findToolsCommands()
+    private function findToolsCommands(): void
     {
 
-        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools';
+        $basedir = $this->rootdir . DIRECTORY_SEPARATOR . 'tools/src';
 
         if (!is_dir($basedir)) {
             return;
         }
 
-        $tools_files = new DirectoryIterator($basedir);
-        /** @var SplFileInfo $file */
+        $tools_files = new RecursiveIteratorIterator(
+            new RecursiveDirectoryIterator($basedir),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
         foreach ($tools_files as $file) {
+            /** @var DirectoryIterator $file */
             if (!$file->isReadable() || !$file->isFile()) {
                 continue;
             }
 
             $command = $this->getCommandFromFile(
                 $file,
-                $basedir
+                $basedir,
+                ['Glpi\\Tools\\']
             );
 
             if (null === $command) {
-                 continue;
+                continue;
             }
 
             $expected_pattern = '/^'
@@ -368,8 +354,7 @@ class CommandLoader implements CommandLoaderInterface
             return;
         }
 
-        if (!\in_array($kernel->getEnvironment(), [\GLPI::ENV_DEVELOPMENT, \GLPI::ENV_TESTING], true)) {
-            // Don't load commands if non-dev/test
+        if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
             return;
         }
 
@@ -413,12 +398,12 @@ class CommandLoader implements CommandLoaderInterface
     private function getCommandFromFile(SplFileInfo $file, $basedir, array $prefixes = []): ?Command
     {
 
-       // Check if file is readable
+        // Check if file is readable
         if (!$file->isReadable() || !$file->isFile()) {
             return null;
         }
 
-       // Check if is a class file and finishes by "command"
+        // Check if is a class file and finishes by "command"
         if (
             !preg_match('/^(.*)command\.class\.php$/', $file->getFilename())
             && !preg_match('/^(.*)Command\.php$/', $file->getFilename())
@@ -426,14 +411,14 @@ class CommandLoader implements CommandLoaderInterface
             return null;
         }
 
-       // Classname will be lowercased, but it is ok for PHP.
+        // Classname will be lowercased, but it is ok for PHP.
         $classname = str_replace(
             ['.class.php', '.php', DIRECTORY_SEPARATOR],
             ['', '', '\\'],
             $this->getRelativePath($basedir, $file->getPathname())
         );
 
-        if (empty($prefixes)) {
+        if ($prefixes === []) {
             $prefixes = [''];
         }
         foreach ($prefixes as $prefix) {
@@ -442,13 +427,17 @@ class CommandLoader implements CommandLoaderInterface
             include_once($file->getPathname()); // Required as ReflectionClass will not use autoload
 
             if (!class_exists($classname_to_check, false)) {
-               // Try with other prefixes.
-               // Needed as a file located in root source dir of Glpi can be either namespaced either not.
+                // Try with other prefixes.
+                // Needed as a file located in root source dir of Glpi can be either namespaced either not.
+                continue;
+            }
+            if (!is_a($classname_to_check, Command::class, true)) {
+                // Not a console command.
                 continue;
             }
 
             $reflectionClass = new ReflectionClass($classname_to_check);
-            if ($reflectionClass->isInstantiable() && $reflectionClass->isSubclassOf(Command::class)) {
+            if ($reflectionClass->isInstantiable()) {
                 return new $classname_to_check();
             }
         }
@@ -466,13 +455,13 @@ class CommandLoader implements CommandLoaderInterface
     private function getRelativePath($basedir, $filepath)
     {
 
-       // Strip (multiple) ending directory separator to normalize input
+        // Strip (multiple) ending directory separator to normalize input
         while (strrpos($basedir, DIRECTORY_SEPARATOR) == strlen($basedir) - 1) {
             $basedir = substr($basedir, 0, -1);
         }
 
-       // Assume that filepath is prefixed by basedir
-       // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
+        // Assume that filepath is prefixed by basedir
+        // Cannot use realpath to normalize path as it will not work when using a virtual fs (unit tests)
         return str_replace($basedir . DIRECTORY_SEPARATOR, '', $filepath);
     }
 }

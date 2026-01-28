@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
 class ContractCost extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'Contract';
+    public static $itemtype = Contract::class;
     public static $items_id = 'contracts_id';
     public $dohistory       = true;
 
@@ -106,6 +106,10 @@ class ContractCost extends CommonDBChild
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof Contract) {
+            return false;
+        }
+
         self::showForContract($item, $withtemplate);
         return true;
     }
@@ -116,7 +120,7 @@ class ContractCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -135,15 +139,15 @@ class ContractCost extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -151,7 +155,7 @@ class ContractCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'begin_date',
             'name'               => __('Begin date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -159,7 +163,7 @@ class ContractCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -167,7 +171,7 @@ class ContractCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost',
             'name'               => _n('Cost', 'Costs', 1),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -175,7 +179,7 @@ class ContractCost extends CommonDBChild
             'table'              => 'glpi_budgets',
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -184,24 +188,20 @@ class ContractCost extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
     }
 
-    /**
-     * Init cost for creation based on previous cost
-     * @return void|boolean
-     **/
-    public function initBasedOnPrevious()
+    public function initBasedOnPrevious(): void
     {
         $contract = new Contract();
         if (
             !isset($this->fields['contracts_id'])
             || !$contract->getFromDB($this->fields['contracts_id'])
         ) {
-            return false;
+            return;
         }
 
         $lastdata = $this->getLastCostForContract($this->fields['contracts_id']);
@@ -223,18 +223,17 @@ class ContractCost extends CommonDBChild
     /**
      * Get last datas for a contract
      *
-     * @param integer $contracts_id ID of the contract
+     * @param int $contracts_id ID of the contract
      * @return array
      **/
     public function getLastCostForContract($contracts_id)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => ['contracts_id' => $contracts_id],
-            'ORDER'  => ['end_date DESC', 'id DESC']
+            'ORDER'  => ['end_date DESC', 'id DESC'],
         ]);
         if ($result = $iterator->current()) {
             return $result;
@@ -243,19 +242,12 @@ class ContractCost extends CommonDBChild
         return [];
     }
 
-    /**
-     * Print the contract cost form
-     *
-     * @param integer $ID ID of the item
-     * @param array $options options used
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options['contracts_id'] = $options['parent']->getField('id');
             $this->check(-1, CREATE, $options);
             $this->initBasedOnPrevious();
@@ -268,23 +260,22 @@ class ContractCost extends CommonDBChild
             'parent_id' => $this->fields['contracts_id'],
             'params' => [
                 'canedit' => $this->canUpdateItem(),
-            ]
+            ],
         ]);
+
+        return true;
     }
 
     /**
      * Print the contract costs
      *
      * @param Contract $contract
-     * @param integer  $withtemplate Template or basic item
+     * @param int  $withtemplate Template or basic item
      *
      * @return void
      **/
     public static function showForContract(Contract $contract, $withtemplate = 0)
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $ID = $contract->fields['id'];
@@ -320,22 +311,22 @@ class ContractCost extends CommonDBChild
             $twig_params = [
                 'item' => $contract,
                 'rand' => $rand,
-                'button_msg' => __('Add a new cost'),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <div class="text-center">
-                    <button class="btn btn-primary" onclick="showCost{{ rand }}(-1)">{{ button_msg }}</button>
-                </div>
                 <div id="viewsubitem{{ rand }}" class="mb-3"></div>
                 <script>
-                    function showCost{{ rand }}(subitems_id) {
+                    function showCost{{ rand }}(subitems_id, btn) {
+                        // Hide the triggering button
+                        if (typeof btn !== undefined) {
+                            $(btn).hide();
+                        }
                         $.ajax({
                             url: '{{ config('root_doc') }}/ajax/viewsubitem.php',
                             method: 'POST',
                             data: {
                                 type: 'ContractCost',
-                                parenttype: '{{ item.getType() }}',
+                                parenttype: '{{ item.getType()|e('js') }}',
                                 contracts_id: {{ item.getID() }},
                                 id: subitems_id
                             },
@@ -351,6 +342,14 @@ class ContractCost extends CommonDBChild
                     });
                 </script>
 TWIG, $twig_params);
+            TemplateRenderer::getInstance()->display(
+                'components/tab/addlink_block.html.twig',
+                [
+                    'add_link' => 'javascript:showCost' . $rand . '(-1, this);',
+                    'button_label' => __('Add a new cost'),
+                ]
+            );
+
         }
 
         $entries = [];
@@ -362,7 +361,7 @@ TWIG, $twig_params);
                 $data['id']
             ) : $data['name'];
             $name = sprintf(
-                __('%1$s %2$s'),
+                __s('%1$s %2$s'),
                 htmlescape($name),
                 Html::showToolTip(htmlescape($data['comment']), ['display' => false])
             );
@@ -385,7 +384,6 @@ TWIG, $twig_params);
             'datatable_id' => 'contractcostlist' . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'sort' => $sort,
             'order' => $order,
             'columns' => [
@@ -399,7 +397,7 @@ TWIG, $twig_params);
                 'name' => 'raw_html',
                 'begin_date' => 'date',
                 'end_date' => 'date',
-                'cost' => 'number'
+                'cost' => 'number',
             ],
             'footers' => [
                 [
@@ -407,8 +405,8 @@ TWIG, $twig_params);
                     '',
                     '',
                     __('Total cost'),
-                    array_sum(array_column($entries, 'cost'))
-                ]
+                    array_sum(array_column($entries, 'cost')),
+                ],
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -416,7 +414,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
     }

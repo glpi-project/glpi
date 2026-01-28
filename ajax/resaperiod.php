@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,9 +37,6 @@
  * @since 0.84
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
-
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -59,14 +56,22 @@ if (isset($_POST['type'], $_POST['end'])) {
             echo "</td></tr></table>";
             echo "<table class='tab_glpi'>";
             echo "<tr class='center'><td>&nbsp;</td>";
-            $days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+            $days = [
+                'Monday'    => __('Monday'),
+                'Tuesday'   => __('Tuesday'),
+                'Wednesday' => __('Wednesday'),
+                'Thursday'  => __('Thursday'),
+                'Friday'    => __('Friday'),
+                'Saturday'  => __('Saturday'),
+                'Sunday'    => __('Sunday'),
+            ];
             foreach ($days as $day) {
-                echo "<th>" . __s($day) . "</th>";
+                echo "<th>" . htmlescape($day) . "</th>";
             }
             echo "</tr><tr class='center'><td>" . __s('By day') . '</td>';
 
-            foreach ($days as $day) {
-                echo "<td><input type='checkbox' name='periodicity[days][$day]'></td>";
+            foreach (array_keys($days) as $day_key) {
+                echo "<td><input type='checkbox' name='periodicity[days][" . htmlescape($day_key) . "]'></td>";
             }
             echo "</tr>";
             break;
@@ -75,7 +80,7 @@ if (isset($_POST['type'], $_POST['end'])) {
             echo "<tr><td colspan='2'>";
             $values = [
                 'date' => __('Each month, same date'),
-                'day'  => __('Each month, same day of week')
+                'day'  => __('Each month, same day of week'),
             ];
             Dropdown::showFromArray('periodicity[subtype]', $values);
             echo "</td></tr>";

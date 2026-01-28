@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,11 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Marketplace\View;
+
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkRight("config", UPDATE);
 
 // This has to be called before search process is called, in order to add
@@ -42,11 +47,13 @@ $plugin->checkStates(true);
 
 Html::header(__('Setup'), '', "config", "plugin");
 
-\Glpi\Marketplace\View::showFeatureSwitchDialog();
+View::showFeatureSwitchDialog();
+
+echo $plugin->getPluginsListSuspendBanner();
 
 Search::show('Plugin');
 
-echo \Glpi\Application\View\TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <div class="text-center my-2">
         <a href="https://plugins.glpi-project.org" class="btn btn-primary" role="button">
             <i class="ti ti-eye"></i>

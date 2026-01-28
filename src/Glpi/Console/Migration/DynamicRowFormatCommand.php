@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Console\Exception\EarlyExitException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -44,16 +45,16 @@ class DynamicRowFormatCommand extends AbstractCommand
     /**
      * Error code returned if migration failed on, at least, one table.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
+    public const ERROR_MIGRATION_FAILED_FOR_SOME_TABLES = 1;
 
     /**
      * Error code returned if some tables are still using MyISAM engine.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_INNODB_REQUIRED = 2;
+    public const ERROR_INNODB_REQUIRED = 2;
 
     protected $requires_db_up_to_date = false;
 
@@ -81,12 +82,12 @@ class DynamicRowFormatCommand extends AbstractCommand
     private function checkForPrerequisites(): void
     {
 
-       // Check that all tables are using InnoDB engine
+        // Check that all tables are using InnoDB engine
         if (($myisam_count = $this->db->getMyIsamTables()->count()) > 0) {
             $msg = sprintf(__('%d tables are using the deprecated MyISAM storage engine.'), $myisam_count)
             . ' '
             . sprintf(__('Run the "%1$s" command to migrate them.'), 'php bin/console migration:myisam_to_innodb');
-            throw new \Glpi\Console\Exception\EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
+            throw new EarlyExitException('<error>' . $msg . '</error>', self::ERROR_INNODB_REQUIRED);
         }
     }
 
@@ -129,9 +130,7 @@ class DynamicRowFormatCommand extends AbstractCommand
 
         $errors = false;
 
-        $progress_message = function (string $table) {
-            return sprintf(__('Migrating table "%s"...'), $table);
-        };
+        $progress_message = (fn(string $table) => sprintf(__('Migrating table "%s"...'), $table));
 
         foreach ($this->iterate($tables, $progress_message) as $table) {
             $result = $this->db->doQuery(sprintf('ALTER TABLE %s ROW_FORMAT = DYNAMIC', $this->db->quoteName($table)));
@@ -152,7 +151,7 @@ class DynamicRowFormatCommand extends AbstractCommand
         }
 
         if ($errors) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Errors occurred during migration.') . '</error>',
                 self::ERROR_MIGRATION_FAILED_FOR_SOME_TABLES
             );

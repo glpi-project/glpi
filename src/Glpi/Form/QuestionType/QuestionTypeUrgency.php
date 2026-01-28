@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,15 @@ namespace Glpi\Form\QuestionType;
 
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\UrgencyConditionHandler;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Override;
 
-final class QuestionTypeUrgency extends AbstractQuestionType
+final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCriteriaInterface, FormQuestionDataConverterInterface, ConditionValueTransformerInterface
 {
     /**
      * Retrieve the default value for the urgency question type
@@ -71,19 +76,18 @@ final class QuestionTypeUrgency extends AbstractQuestionType
      */
     private function getUrgencyLevels(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         // Get the urgency levels
         $urgency_levels = array_combine(
             range(1, 5),
-            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+            array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
         );
 
         // Filter out the urgency levels that are not enabled
         $urgency_levels = array_filter(
             $urgency_levels,
-            fn ($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
+            fn($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
             ARRAY_FILTER_USE_KEY
         );
 
@@ -148,13 +152,13 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return CommonITILObject::getUrgencyName($answer);
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::URGENCY;
     }
@@ -164,4 +168,58 @@ TWIG;
     {
         return true;
     }
+
+    #[Override]
+    public function formatPredefinedValue(string $value): ?string
+    {
+        $value = strtolower($value);
+
+        return match ($value) {
+            'very low', 'verylow' => "1",
+            'low' => "2",
+            'medium' => "3",
+            'high' => "4",
+            'very high', 'veryhigh' => "5",
+            default => null,
+        };
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new UrgencyConditionHandler()]);
+    }
+
+    #[Override]
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): string
+    {
+        return strval($value);
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): ?int
+    {
+        if (!isset($rawData['default_values'])) {
+            return null;
+        }
+
+        return (int) $rawData['default_values'];
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): null
+    {
+        return null;
+    }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return self::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

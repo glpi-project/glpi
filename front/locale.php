@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,40 +33,44 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
+use Glpi\Application\Environment;
 use Glpi\Error\ErrorHandler;
+use Laminas\I18n\Translator\TextDomain;
+use Laminas\I18n\Translator\Translator;
 
-/**
- * @var array $CFG_GLPI
- * @var \Laminas\I18n\Translator\Translator $TRANSLATE
- */
+use function Safe\fopen;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 global $CFG_GLPI, $TRANSLATE;
-
-session_write_close(); // Unlocks session to permit concurrent calls
 
 header("Content-Type: application/json; charset=UTF-8");
 
-$is_cacheable = GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT; // do not use browser cache on development env
-if (!Update::isDbUpToDate()) {
-   // Make sure to not cache if in the middle of a GLPI update
-    $is_cacheable = false;
-}
+$is_cacheable = Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
-    // Makes CSS cacheable by browsers and proxies,
-    // unless when we are in the middle of a GLPI update.
-    $max_age = WEEK_TIMESTAMP;
-    header_remove('Pragma');
-    header('Cache-Control: public');
-    header('Cache-Control: max-age=' . $max_age);
+    // Makes CSS cacheable by browsers and proxies.
+    $max_age = MONTH_TIMESTAMP;
+    // no `must-revalidate`, a `v=xxx` param is used to prevent extensive caching issues
+    header('Cache-Control: public, max-age=' . $max_age);
     header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $max_age));
 }
 
+$requested_language = $_GET['lang'];
+if (!isset($CFG_GLPI['languages'][$requested_language])) {
+    // Fallback to default language if requested one is not available
+    $requested_language = Session::getPreferredLanguage();
+}
+$requested_language_file = $CFG_GLPI['languages'][$requested_language][1];
 
 // Default response to send if locales cannot be loaded.
 // Prevent JS error for plugins that does not provide any translation files
 $default_response = json_encode(
     [
         '' => [
-            'language'     => $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1],
+            'language'     => $requested_language_file,
             'plural-forms' => 'nplurals=2; plural=(n != 1);',
         ],
     ]
@@ -75,24 +79,20 @@ $default_response = json_encode(
 // Get messages from translator component
 $messages = null;
 try {
-    $messages = $TRANSLATE->getAllMessages($_GET['domain']);
-} catch (\Throwable $e) {
+    $messages = $TRANSLATE->getAllMessages($_GET['domain'], $requested_language);
+} catch (Throwable $e) {
     // Error may happen when overrided translation files does not use same plural rules as GLPI.
     ErrorHandler::logCaughtException($e);
 }
-if (!($messages instanceof \Laminas\I18n\Translator\TextDomain)) {
-   // No TextDomain found means that there is no translations for given domain.
-   // It is mostly related to plugins that does not provide any translations.
+if (!($messages instanceof TextDomain)) {
+    // No TextDomain found means that there is no translations for given domain.
+    // It is mostly related to plugins that does not provide any translations.
     echo $default_response;
     return;
 }
 
 // Extract headers from main po file
-$po_file = GLPI_ROOT . '/locales/' . preg_replace(
-    '/\.mo$/',
-    '.po',
-    $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
-);
+$po_file = GLPI_ROOT . '/locales/' . preg_replace('/\.mo$/', '.po', $requested_language_file);
 $po_file_handle = fopen(
     $po_file,
     'rb'

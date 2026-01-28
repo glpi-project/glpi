@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -53,18 +53,18 @@ class DeviceSoundCard extends CommonDevice
                 [
                     'name'  => 'type',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 [
                     'name'  => 'none',
                     'label' => RegisteredID::getTypeName(Session::getPluralNumber()),
-                    'type'  => 'registeredIDChooser'
+                    'type'  => 'registeredIDChooser',
                 ],
                 [
                     'name'  => 'devicesoundcardmodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -86,7 +86,7 @@ class DeviceSoundCard extends CommonDevice
             'table'              => 'glpi_devicesoundcardmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -108,8 +108,8 @@ class DeviceSoundCard extends CommonDevice
 
         switch ($itemtype) {
             case Computer::class:
-                Manufacturer::getHTMLTableHeader(__CLASS__, $base, $super, $father, $options);
-                $base->addHeader('devicesoundcard_type', _n('Type', 'Types', 1), $super, $father);
+                Manufacturer::getHTMLTableHeader(self::class, $base, $super, $father, $options);
+                $base->addHeader('devicesoundcard_type', _sn('Type', 'Types', 1), $super, $father);
                 break;
         }
     }
@@ -133,7 +133,7 @@ class DeviceSoundCard extends CommonDevice
                 if ($this->fields["type"]) {
                     $cell = $row->addCell(
                         $row->getHeaderByName('devicesoundcard_type'),
-                        $this->fields["type"],
+                        htmlescape($this->fields["type"]),
                         $father
                     );
                 }
@@ -141,6 +141,11 @@ class DeviceSoundCard extends CommonDevice
         return $cell;
     }
 
+    /**
+     * @param class-string<CommonDBTM> $itemtype
+     * @param array $main_joinparams
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype, $main_joinparams)
     {
         $tab = [];
@@ -156,9 +161,33 @@ class DeviceSoundCard extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicesoundcards',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
+        ];
+
+        $tab[] = [
+            'id'                 => '1338',
+            'table'              => 'glpi_items_devicesoundcards',
+            'field'              => 'serial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Serial Number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
+        ];
+
+        $tab[] = [
+            'id'                 => '1339',
+            'table'              => 'glpi_items_devicesoundcards',
+            'field'              => 'otherserial',
+            'name'               => sprintf(__('%1$s: %2$s'), self::getTypeName(1), __('Inventory number')),
+            'forcegroupby'       => true,
+            'usehaving'          => true,
+            'datatype'           => 'string',
+            'massiveaction'      => false,
+            'joinparams'         => $main_joinparams,
         ];
 
         return $tab;

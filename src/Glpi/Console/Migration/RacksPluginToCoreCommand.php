@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,6 @@ use CommonDBTM;
 use Computer;
 use ComputerModel;
 use Datacenter;
-use DB;
 use DCRoom;
 use Glpi\Console\AbstractCommand;
 use Item_Rack;
@@ -67,81 +66,84 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 
+use function Safe\ob_end_clean;
+use function Safe\ob_start;
+
 class RacksPluginToCoreCommand extends AbstractCommand
 {
     /**
      * Error code returned if plugin version or plugin data is invalid.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
+    public const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
      * Error code returned if import failed.
      *
-     * @var integer
+     * @var int
      */
-    const ERROR_PLUGIN_IMPORT_FAILED = 1;
+    public const ERROR_PLUGIN_IMPORT_FAILED = 1;
 
     /**
      * Version of Racks plugin required for this migration.
      * @var string
      */
-    const RACKS_REQUIRED_VERSION = '1.8.0';
+    public const RACKS_REQUIRED_VERSION = '1.8.0';
 
     /**
      * Choice value for other type: ignore.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_IGNORE = 'i';
+    public const OTHER_TYPE_CHOICE_IGNORE = 'i';
 
     /**
      * Choice value for other type: computer.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_COMPUTER = 'c';
+    public const OTHER_TYPE_CHOICE_COMPUTER = 'c';
 
     /**
      * Choice value for other type: network equipment.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT = 'n';
+    public const OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT = 'n';
 
     /**
      * Choice value for other type: peripheral.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_PERIPHERAL = 'p';
+    public const OTHER_TYPE_CHOICE_PERIPHERAL = 'p';
 
     /**
      * Choice value for other type: pdu.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_PDU = 'u';
+    public const OTHER_TYPE_CHOICE_PDU = 'u';
 
     /**
      * Choice value for other type: monitor.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_MONITOR = 'm';
+    public const OTHER_TYPE_CHOICE_MONITOR = 'm';
 
     /**
      * Choice value for other type: passive device.
      * @var string
      */
-    const OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT = 'd';
+    public const OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT = 'd';
 
     /**
      * Datacenter on which rooms will be created.
      *
-     * @var integer
+     * @var int
      */
     private $datacenter_id;
 
     /**
      * Room on which racks will be placed if no corresponding room found.
      *
-     * @var integer
+     * @var int
      */
     private $fallback_room_id;
 
@@ -157,7 +159,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         parent::configure();
 
         $this->setName('migration:racks_plugin_to_core');
-        $this->setDescription(__('Migrate Racks plugin data into GLPI core tables'));
+        $this->setDescription(sprintf(__('Migrate %s plugin data into GLPI core tables'), 'Racks'));
 
         $this->addOption(
             'ignore-other-elements',
@@ -209,11 +211,11 @@ class RacksPluginToCoreCommand extends AbstractCommand
         $no_interaction = $input->getOption('no-interaction');
 
         if (!$no_interaction) {
-           // Ask for confirmation (unless --no-interaction)
+            // Ask for confirmation (unless --no-interaction)
             $output->writeln(
                 [
                     __('You are about to launch migration of Racks plugin data into GLPI core tables.'),
-                    __('It is better to make a backup of your existing data before continuing.')
+                    __('It is better to make a backup of your existing data before continuing.'),
                 ]
             );
 
@@ -242,7 +244,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @throws LogicException
      *
-     * @return boolean
+     * @return bool
      */
     private function checkPlugin()
     {
@@ -259,19 +261,19 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $plugin->checkPluginState('racks');
 
             if (!$plugin->getFromDBbyDir('racks')) {
-                 $message  = __('Racks plugin is not part of GLPI plugin list. It has never been installed or has been cleaned.')
-                  . ' '
-                  . sprintf(
-                      __('You have to install Racks plugin files in version %s to be able to continue.'),
-                      self::RACKS_REQUIRED_VERSION
-                  );
-                 $this->output->writeln(
-                     [
-                         '<error>' . $message . '</error>',
-                     ],
-                     OutputInterface::VERBOSITY_QUIET
+                $message  = __('Racks plugin is not part of GLPI plugin list. It has never been installed or has been cleaned.')
+                 . ' '
+                 . sprintf(
+                     __('You have to install Racks plugin files in version %s to be able to continue.'),
+                     self::RACKS_REQUIRED_VERSION
                  );
-                 return false;
+                $this->output->writeln(
+                    [
+                        '<error>' . $message . '</error>',
+                    ],
+                    OutputInterface::VERBOSITY_QUIET
+                );
+                return false;
             }
 
             $is_version_ok = '1.8.0' === $plugin->fields['version'];
@@ -310,18 +312,18 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     $plugin->install($plugin->fields['id']);
                     ob_end_clean();
 
-                   // Reload and check migration result
+                    // Reload and check migration result
                     $plugin->getFromDB($plugin->fields['id']);
                     if (!in_array($plugin->fields['state'], [Plugin::TOBECONFIGURED, Plugin::NOTACTIVATED])) {
-                            $message  = sprintf(
-                                __('Plugin migration to %s version failed.'),
-                                self::RACKS_REQUIRED_VERSION
-                            );
-                            $this->output->writeln(
-                                '<error>' . $message . '</error>',
-                                OutputInterface::VERBOSITY_QUIET
-                            );
-                            return false;
+                        $message  = sprintf(
+                            __('Plugin migration to %s version failed.'),
+                            self::RACKS_REQUIRED_VERSION
+                        );
+                        $this->output->writeln(
+                            '<error>' . $message . '</error>',
+                            OutputInterface::VERBOSITY_QUIET
+                        );
+                        return false;
                     }
                 } else {
                     $message = sprintf(
@@ -345,8 +347,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 ]
             );
             if (!$is_state_ok) {
-                 // Should not happens as installation should put plugin in awaited state
-                 throw new \Symfony\Component\Console\Exception\LogicException('Unexpected plugin state.');
+                // Should not happens as installation should put plugin in awaited state
+                throw new LogicException('Unexpected plugin state.');
             }
         }
 
@@ -387,7 +389,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @throws RuntimeException
      */
-    private function cleanCoreTables()
+    private function cleanCoreTables(): void
     {
 
         $core_tables = [
@@ -407,7 +409,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $result = $this->db->delete($table, [1]);
 
             if (!$result) {
-                throw new \Symfony\Component\Console\Exception\RuntimeException(
+                throw new RuntimeException(
                     sprintf('Unable to truncate table "%s"', $table)
                 );
             }
@@ -415,14 +417,14 @@ class RacksPluginToCoreCommand extends AbstractCommand
     }
 
 
-    private function migratePlugin()
+    private function migratePlugin(): bool
     {
 
         $no_interaction = $this->input->getOption('no-interaction');
 
         $skip_errors = $this->input->getOption('skip-errors');
 
-       // Create datacenter
+        // Create datacenter
         $this->datacenter_id = $this->createDatacenter();
         if (null === $this->datacenter_id && !$skip_errors) {
             return false;
@@ -455,7 +457,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Create temporary datacenter.
      *
-     * @return null|integer Datacenter id, or null in case of failure
+     * @return null|int Datacenter id, or null in case of failure
      */
     private function createDatacenter()
     {
@@ -490,14 +492,14 @@ class RacksPluginToCoreCommand extends AbstractCommand
      *
      * @throws LogicException
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importOtherElements()
     {
 
         $has_errors = false;
 
-       // Import other models
+        // Import other models
         $this->output->writeln(
             '<comment>' . __('Importing other models...') . '</comment>',
             OutputInterface::VERBOSITY_VERBOSE
@@ -505,7 +507,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
         $othermodels_iterator = $this->db->request(
             [
-                'FROM' => 'glpi_plugin_racks_othermodels'
+                'FROM' => 'glpi_plugin_racks_othermodels',
             ]
         );
 
@@ -522,41 +524,40 @@ class RacksPluginToCoreCommand extends AbstractCommand
             );
 
             foreach ($othermodels_iterator as $othermodel) {
-                 $model_label = $othermodel['name'];
+                $model_label = $othermodel['name'];
                 if (strlen($othermodel['comment'])) {
                     $model_label .= ' (' . $othermodel['comment'] . ')';
                 }
 
-                 /** @var QuestionHelper $question_helper */
-                 $question_helper = $this->getHelper('question');
-                 $answer = $question_helper->ask(
-                     $this->input,
-                     $this->output,
-                     new ChoiceQuestion(
-                         sprintf(__('Where do you want to import "%s"?'), $model_label),
-                         [
-                             self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
-                             self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),
-                             self::OTHER_TYPE_CHOICE_PERIPHERAL          => Peripheral::getTypeName(1),
-                             self::OTHER_TYPE_CHOICE_PDU                 => PDU::getTypeName(1),
-                             self::OTHER_TYPE_CHOICE_MONITOR             => Monitor::getTypeName(1),
-                             self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => PassiveDCEquipment::getTypeName(1),
-                             self::OTHER_TYPE_CHOICE_IGNORE              => __('Ignore (default)'),
-                         ],
-                         self::OTHER_TYPE_CHOICE_IGNORE
-                     )
-                 );
+                $question_helper = new QuestionHelper();
+                $answer = $question_helper->ask(
+                    $this->input,
+                    $this->output,
+                    new ChoiceQuestion(
+                        sprintf(__('Where do you want to import "%s"?'), $model_label),
+                        [
+                            self::OTHER_TYPE_CHOICE_COMPUTER            => Computer::getTypeName(1),
+                            self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT   => NetworkEquipment::getTypeName(1),
+                            self::OTHER_TYPE_CHOICE_PERIPHERAL          => Peripheral::getTypeName(1),
+                            self::OTHER_TYPE_CHOICE_PDU                 => PDU::getTypeName(1),
+                            self::OTHER_TYPE_CHOICE_MONITOR             => Monitor::getTypeName(1),
+                            self::OTHER_TYPE_CHOICE_PASSIVEDCEQUIPEMENT => PassiveDCEquipment::getTypeName(1),
+                            self::OTHER_TYPE_CHOICE_IGNORE              => __('Ignore (default)'),
+                        ],
+                        self::OTHER_TYPE_CHOICE_IGNORE
+                    )
+                );
 
                 if (self::OTHER_TYPE_CHOICE_IGNORE === $answer) {
-                     continue;
+                    continue;
                 }
 
-                 $new_itemtype       = null;
-                 $new_model_itemtype = null;
+                $new_itemtype       = null;
+                $new_model_itemtype = null;
                 switch ($answer) {
                     case self::OTHER_TYPE_CHOICE_COMPUTER:
-                         $new_itemtype       = Computer::class;
-                         $new_model_itemtype = ComputerModel::class;
+                        $new_itemtype       = Computer::class;
+                        $new_model_itemtype = ComputerModel::class;
                         break;
                     case self::OTHER_TYPE_CHOICE_NETWORKEQUIPEMENT:
                         $new_itemtype       = NetworkEquipment::class;
@@ -581,7 +582,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 }
 
                 if (null === $new_model_itemtype) {
-                    throw new \Symfony\Component\Console\Exception\LogicException(
+                    throw new LogicException(
                         sprintf('Answer "%s" has no corresponding itemtype.', $answer)
                     );
                 }
@@ -596,10 +597,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     !($new_model_id = $new_model->getFromDBByCrit($new_model_fields))
                      && !($new_model_id = $new_model->add($new_model_fields))
                 ) {
-                     $has_errors = true;
+                    $has_errors = true;
 
-                     $message = sprintf(__('Unable to import other model "%s".'), $model_label);
-                     $this->outputImportError($message);
+                    $message = sprintf(__('Unable to import other model "%s".'), $model_label);
+                    $this->outputImportError($message);
                     if ($this->input->getOption('skip-errors')) {
                         continue;
                     } else {
@@ -607,34 +608,34 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     }
                 }
 
-                 $this->addElementToMapping(
-                     'PluginRacksOtherModel',
-                     $othermodel['id'],
-                     $new_model_itemtype,
-                     $new_model_id
-                 );
+                $this->addElementToMapping(
+                    'PluginRacksOtherModel',
+                    $othermodel['id'],
+                    $new_model_itemtype,
+                    $new_model_id
+                );
 
-                 // Import items from model
-                 $message = sprintf(__('Importing items from model "%s"...'), $model_label);
-                 $this->output->writeln(
-                     '<comment>' . $message . '</comment>',
-                     OutputInterface::VERBOSITY_NORMAL
-                 );
+                // Import items from model
+                $message = sprintf(__('Importing items from model "%s"...'), $model_label);
+                $this->output->writeln(
+                    '<comment>' . $message . '</comment>',
+                    OutputInterface::VERBOSITY_NORMAL
+                );
 
-                 $otheritems_iterator = $this->db->request(
-                     [
-                         'FROM'  => 'glpi_plugin_racks_others',
-                         'WHERE' => [
-                             'plugin_racks_othermodels_id' => $othermodel['id'],
-                         ],
-                     ]
-                 );
+                $otheritems_iterator = $this->db->request(
+                    [
+                        'FROM'  => 'glpi_plugin_racks_others',
+                        'WHERE' => [
+                            'plugin_racks_othermodels_id' => $othermodel['id'],
+                        ],
+                    ]
+                );
 
                 if ($otheritems_iterator->count()) {
-                     $progress_bar = new ProgressBar($this->output, $otheritems_iterator->count());
-                     $progress_bar->start();
+                    $progress_bar = new ProgressBar($this->output, $otheritems_iterator->count());
+                    $progress_bar->start();
 
-                     $fk_new_model = getForeignKeyFieldForItemType($new_model_itemtype);
+                    $fk_new_model = getForeignKeyFieldForItemType($new_model_itemtype);
 
                     foreach ($otheritems_iterator as $otheritem) {
                         $progress_bar->advance(1);
@@ -644,19 +645,19 @@ class RacksPluginToCoreCommand extends AbstractCommand
                                  ? $otheritem['name']
                                  : $otheritem['id'],
                             'entities_id' => $otheritem['entities_id'],
-                            $fk_new_model => $new_model_id
+                            $fk_new_model => $new_model_id,
                         ];
 
                         $new_item = new $new_itemtype();
 
                         if (!($new_item_id = $new_item->add($new_item_fields))) {
-                                   $has_errors = true;
+                            $has_errors = true;
 
-                                   $message = sprintf(
-                                       __('Unable to import other item "%s".'),
-                                       $new_item_fields['name']
-                                   );
-                                   $this->outputImportError($message, $progress_bar);
+                            $message = sprintf(
+                                __('Unable to import other item "%s".'),
+                                $new_item_fields['name']
+                            );
+                            $this->outputImportError($message, $progress_bar);
                             if ($this->input->getOption('skip-errors')) {
                                 continue;
                             } else {
@@ -672,8 +673,8 @@ class RacksPluginToCoreCommand extends AbstractCommand
                         );
                     }
 
-                     $progress_bar->finish();
-                     $this->output->write(PHP_EOL);
+                    $progress_bar->finish();
+                    $this->output->write(PHP_EOL);
                 } else {
                     $this->output->writeln(
                         '<comment>' . __('No items found.') . '</comment>',
@@ -689,7 +690,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import items specifications.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importItemsSpecifications()
     {
@@ -704,7 +705,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         $specs_iterator = $this->db->request(
             [
                 'FROM'  => 'glpi_plugin_racks_itemspecifications',
-                'ORDER' => 'id ASC'
+                'ORDER' => 'id ASC',
             ]
         );
 
@@ -729,17 +730,17 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 $model = $this->getCorrespondingItem($spec['itemtype'], $spec['model_id']);
 
                 if (null === $model) {
-                     $message = sprintf(
-                         __('Model %s (%s) not found.'),
-                         $spec['itemtype'],
-                         $spec['model_id']
-                     );
-                     $this->writelnOutputWithProgressBar(
-                         $message,
-                         $progress_bar,
-                         OutputInterface::VERBOSITY_VERBOSE
-                     );
-                     continue;
+                    $message = sprintf(
+                        __('Model %s (%s) not found.'),
+                        $spec['itemtype'],
+                        $spec['model_id']
+                    );
+                    $this->writelnOutputWithProgressBar(
+                        $message,
+                        $progress_bar,
+                        OutputInterface::VERBOSITY_VERBOSE
+                    );
+                    continue;
                 }
 
                 $model_input = [
@@ -761,7 +762,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     );
                     $this->outputImportError($message, $progress_bar);
                     if ($this->input->getOption('skip-errors')) {
-                         continue;
+                        continue;
                     } else {
                         return false;
                     }
@@ -783,7 +784,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack models.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackModels()
     {
@@ -828,10 +829,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     !($rackmodel_id = $rackmodel->getFromDBByCrit($rackmodel_fields))
                     && !($rackmodel_id = $rackmodel->add($rackmodel_fields))
                 ) {
-                     $has_errors = true;
+                    $has_errors = true;
 
-                     $message = sprintf(__('Unable to import rack model "%s".'), $old_model['name']);
-                     $this->outputImportError($message, $progress_bar);
+                    $message = sprintf(__('Unable to import rack model "%s".'), $old_model['name']);
+                    $this->outputImportError($message, $progress_bar);
                     if ($this->input->getOption('skip-errors')) {
                         continue;
                     } else {
@@ -862,7 +863,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack types.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackTypes()
     {
@@ -909,10 +910,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     !($racktype_id = $racktype->getFromDBByCrit($racktype_fields))
                     && !($racktype_id = $racktype->add($racktype_fields))
                 ) {
-                     $has_errors = true;
+                    $has_errors = true;
 
-                     $message = sprintf(__('Unable to import rack type "%s".'), $old_type['name']);
-                     $this->outputImportError($message, $progress_bar);
+                    $message = sprintf(__('Unable to import rack type "%s".'), $old_type['name']);
+                    $this->outputImportError($message, $progress_bar);
                     if ($this->input->getOption('skip-errors')) {
                         continue;
                     } else {
@@ -943,7 +944,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack states.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackStates()
     {
@@ -985,9 +986,9 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 ];
 
                 if (!($state_id = $state->getFromDBByCrit($state_fields))) {
-                     $state_fields['comment']      = $old_state['comment'];
-                     $state_fields['entities_id']  = $old_state['entities_id'];
-                     $state_fields['is_recursive'] = $old_state['is_recursive'];
+                    $state_fields['comment']      = $old_state['comment'];
+                    $state_fields['entities_id']  = $old_state['entities_id'];
+                    $state_fields['is_recursive'] = $old_state['is_recursive'];
 
                     if (!($state_id = $state->add($state_fields))) {
                         $has_errors = true;
@@ -995,7 +996,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                         $message = sprintf(__('Unable to import rack state "%s".'), $old_state['name']);
                         $this->outputImportError($message, $progress_bar);
                         if ($this->input->getOption('skip-errors')) {
-                             continue;
+                            continue;
                         } else {
                             return false;
                         }
@@ -1025,7 +1026,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rooms.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRooms()
     {
@@ -1074,10 +1075,10 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     !($room_id = $room->getFromDBByCrit($room_fields))
                     && !($room_id = $room->add($room_fields))
                 ) {
-                     $has_errors = true;
+                    $has_errors = true;
 
-                     $message = sprintf(__('Unable to import room "%s".'), $old_room['completename']);
-                     $this->outputImportError($message, $progress_bar);
+                    $message = sprintf(__('Unable to import room "%s".'), $old_room['completename']);
+                    $this->outputImportError($message, $progress_bar);
                     if ($this->input->getOption('skip-errors')) {
                         continue;
                     } else {
@@ -1108,7 +1109,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import racks.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRacks()
     {
@@ -1162,7 +1163,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     $old_rack['plugin_racks_rackstates_id']
                 );
                 if (null !== $room) {
-                     $room_id = $room->fields['id'];
+                    $room_id = $room->fields['id'];
                 } else {
                     $room_id = $this->getFallbackRoomId();
                     if (0 == $room_id && !$this->input->getOption('skip-errors')) {
@@ -1197,7 +1198,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 ];
 
                 if (!($rack_id = $rack->getFromDBByCrit($rack_fields))) {
-                     $rack_fields['position'] = "9999999999999,-" . (++$i);
+                    $rack_fields['position'] = "9999999999999,-" . (++$i);
 
                     if (!($rack_id = $rack->add($rack_fields))) {
                         $has_errors = true;
@@ -1205,7 +1206,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                         $message = sprintf(__('Unable to import rack "%s".'), $old_rack['name']);
                         $this->outputImportError($message, $progress_bar);
                         if ($this->input->getOption('skip-errors')) {
-                             continue;
+                            continue;
                         } else {
                             return false;
                         }
@@ -1235,7 +1236,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Import rack items.
      *
-     * @return boolean True in case of success, false in case of errors.
+     * @return bool True in case of success, false in case of errors.
      */
     private function importRackItems()
     {
@@ -1250,7 +1251,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
         $items_iterator = $this->db->request(
             [
                 'FROM'  => 'glpi_plugin_racks_racks_items',
-                'ORDER' => 'id'
+                'ORDER' => 'id',
             ]
         );
 
@@ -1277,13 +1278,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
 
                 $item = $this->getCorrespondingItem($itemtype, $items_id);
                 if (null === $item) {
-                     $message = sprintf(__('Item %s (%s) not found.'), $itemtype, $items_id);
-                     $this->writelnOutputWithProgressBar(
-                         $message,
-                         $progress_bar,
-                         OutputInterface::VERBOSITY_VERBOSE
-                     );
-                      continue;
+                    $message = sprintf(__('Item %s (%s) not found.'), $itemtype, $items_id);
+                    $this->writelnOutputWithProgressBar(
+                        $message,
+                        $progress_bar,
+                        OutputInterface::VERBOSITY_VERBOSE
+                    );
+                    continue;
                 }
 
                 $item_input = [
@@ -1325,7 +1326,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     $old_item['plugin_racks_racks_id']
                 );
 
-                $item_input = $item_input + [
+                $item_input += [
                     'racks_id'    => null !== $rack ? $rack->fields['id'] : 0,
                     'position'    => $position,
                     'hpos'        => 0,
@@ -1343,7 +1344,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     );
                     $this->outputImportError($message, $progress_bar);
                     if ($this->input->getOption('skip-errors')) {
-                          continue;
+                        continue;
                     } else {
                         return false;
                     }
@@ -1366,9 +1367,9 @@ class RacksPluginToCoreCommand extends AbstractCommand
      * Add an element to mapping.
      *
      * @param string  $old_itemtype
-     * @param integer $old_id
+     * @param int $old_id
      * @param string  $new_itemtype
-     * @param integer $new_id
+     * @param int $new_id
      *
      * @return void
      */
@@ -1389,7 +1390,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
      * If item has been migrated to another itemtype, il will return the new item.
      *
      * @param string  $itemtype
-     * @param integer $id
+     * @param int $id
      *
      * @return null|CommonDBTM
      */
@@ -1400,13 +1401,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
             array_key_exists($itemtype, $this->elements_mapping)
             && array_key_exists($id, $this->elements_mapping[$itemtype])
         ) {
-           // Element exists in mapping, get new element
+            // Element exists in mapping, get new element
             $mapping  = $this->elements_mapping[$itemtype][$id];
             $id       = $mapping['id'];
             $itemtype = $mapping['itemtype'];
         }
 
-        if (!class_exists($itemtype)) {
+        if (!\is_a($itemtype, CommonDBTM::class, true)) {
             return null;
         }
 
@@ -1421,7 +1422,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Returns fallback room id.
      *
-     * @return number
+     * @return int
      */
     private function getFallbackRoomId()
     {
@@ -1450,19 +1451,6 @@ class RacksPluginToCoreCommand extends AbstractCommand
         }
 
         return $this->fallback_room_id;
-    }
-
-    /**
-     * Returns verbosity level for import errors.
-     *
-     * @return number
-     */
-    private function getImportErrorsVerbosity()
-    {
-
-        return $this->input->getOption('skip-errors')
-         ? OutputInterface::VERBOSITY_NORMAL
-         : OutputInterface::VERBOSITY_QUIET;
     }
 
     /**

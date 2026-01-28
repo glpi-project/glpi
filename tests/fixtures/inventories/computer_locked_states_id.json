@@ -1,0 +1,18 @@
+{
+    "action": "inventory",
+    "content": {
+        "bios": {
+            "ssn": "LOCKED-STATES-TEST-001"
+        },
+        "hardware": {
+            "chassis_type": "Desktop",
+            "name": "test-locked-states",
+            "uuid": "test-uuid-locked-states-001",
+            "vmsystem": "Physical"
+        },
+        "versionclient": "GLPI-Agent_v1.9"
+    },
+    "deviceid": "test-locked-states-2025-10-28",
+    "itemtype": "Computer",
+    "partial": false
+}

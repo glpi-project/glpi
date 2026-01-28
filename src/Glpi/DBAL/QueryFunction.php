@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,6 +37,9 @@ namespace Glpi\DBAL;
 
 use DBmysqlIterator;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  *  Query function class
  *
@@ -52,7 +55,6 @@ use DBmysqlIterator;
  * @method static QueryExpression concat(array $params, ?string $alias = null) Build a 'CONCAT' SQL function call
  * @method static QueryExpression floor(string|QueryExpression $expression, ?string $alias = null) Build a 'FLOOR' function call
  * @method static QueryExpression greatest(array $params, ?string $alias = null) Build a 'GREATEST' function call
- * @method static QueryExpression jsonContains(array $params, ?string $alias = null) Build a 'JSON_CONTAINS' function call
  * @method static QueryExpression jsonExtract(array $params, ?string $alias = null) Build a 'JSON_EXTRACT' function call
  * @method static QueryExpression jsonUnquote(string|QueryExpression $expression, ?string $alias = null) Build a 'JSON_UNQUOTE' function call
  * @method static QueryExpression jsonRemove(array $params, ?string $alias = null) Build a 'JSON_REMOVE' function call
@@ -75,14 +77,17 @@ class QueryFunction
      */
     private static function getExpression(string $func_name, array $params, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
-        $params = array_map(static function ($p) use ($DB) {
-            return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
-        }, $params);
+        $params = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $params);
         return new QueryExpression($func_name . '(' . implode(', ', $params) . ')', $alias);
     }
 
+    /**
+     * @param string $name
+     * @param array $arguments
+     *
+     * @return QueryExpression
+     */
     public static function __callStatic(string $name, array $arguments)
     {
         $args = array_values($arguments);
@@ -105,14 +110,13 @@ class QueryFunction
     /**
      * Build an DATE_ADD SQL function call
      * @param string|QueryExpression $date Date to add interval to
-     * @param string|QueryExpression $interval Interval to add
-     * @param int|string|QueryExpression $interval_unit Interval unit
+     * @param int|string|QueryExpression $interval Interval to add
+     * @param string $interval_unit Interval unit
      * @param string|null $alias Function result alias (will be automatically quoted)
      * @return QueryExpression
      */
     public static function dateAdd(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
         $interval = is_string($interval) ? $DB::quoteValue($interval) : $interval;
@@ -130,7 +134,6 @@ class QueryFunction
      */
     public static function dateSub(string|QueryExpression $date, int|string|QueryExpression $interval, string $interval_unit, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $date = $date instanceof QueryExpression ? $date : $DB::quoteName($date);
         $interval = is_string($interval) ? $DB::quoteValue($interval) : $interval;
@@ -177,7 +180,6 @@ class QueryFunction
      */
     public static function groupConcat(string|QueryExpression $expression, ?string $separator = null, bool $distinct = false, array|string|null $order_by = null, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
@@ -205,7 +207,6 @@ class QueryFunction
      */
     public static function sum(string|QueryExpression $expression, bool $distinct = false, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
@@ -226,7 +227,6 @@ class QueryFunction
      */
     public static function count(string|QueryExpression $expression, bool $distinct = false, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
@@ -247,7 +247,6 @@ class QueryFunction
      */
     public static function cast(string|QueryExpression $expression, string $type, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
@@ -263,7 +262,6 @@ class QueryFunction
      */
     public static function convert(string|QueryExpression $expression, string $transcoding, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
         return new QueryExpression('CONVERT(' . $expression . ' USING ' . $transcoding . ')', $alias);
@@ -327,7 +325,6 @@ class QueryFunction
      */
     public static function dateFormat(string|QueryExpression $expression, string $format, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $format = new QueryExpression($DB::quoteValue($format));
         return self::getExpression('DATE_FORMAT', [$expression, $format], $alias);
@@ -343,9 +340,8 @@ class QueryFunction
      */
     public static function lpad(string|QueryExpression $expression, int $length, string $pad_string, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
-        $length = new QueryExpression((string)$length);
+        $length = new QueryExpression((string) $length);
         $pad_string = new QueryExpression($DB::quoteValue($pad_string));
         return self::getExpression('LPAD', [$expression, $length, $pad_string], $alias);
     }
@@ -361,7 +357,7 @@ class QueryFunction
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
         return self::getExpression('SUBSTRING', [
-            $expression, new QueryExpression($start), new QueryExpression($length)
+            $expression, new QueryExpression((string) $start), new QueryExpression((string) $length),
         ], $alias);
     }
 
@@ -374,7 +370,7 @@ class QueryFunction
      */
     public static function round(string|QueryExpression $expression, int $precision = 0, ?string $alias = null): QueryExpression
     {
-        $precision = new QueryExpression((string)$precision);
+        $precision = new QueryExpression((string) $precision);
         return self::getExpression('ROUND', [$expression, $precision], $alias);
     }
 
@@ -451,7 +447,6 @@ class QueryFunction
      */
     public static function locate(string|QueryExpression $substring, string|QueryExpression $expression, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $substring = is_string($substring) ? new QueryExpression($DB::quoteValue($substring)) : $substring;
         return self::getExpression('LOCATE', [$substring, $expression], $alias);
@@ -459,12 +454,61 @@ class QueryFunction
 
     public static function concat_ws(string|QueryExpression $separator, array $params, ?string $alias = null): QueryExpression
     {
-        /** @var \DBmysql $DB */
         global $DB;
-        $params = array_map(static function ($p) use ($DB) {
-            return $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p);
-        }, $params);
+        $params = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $params);
         $separator = $separator instanceof QueryExpression ? $separator : $DB::quoteName($separator);
         return new QueryExpression('CONCAT_WS(' . $separator . ', ' . implode(', ', $params) . ')', $alias);
+    }
+
+    /**
+     * Build a JSON_CONTAINS SQL function call
+     *
+     * Searches for a value within a JSON document.
+     *
+     * @param string|QueryExpression $target JSON field or expression to search in.
+     * @param string|QueryExpression $candidate Value to search for. String values will be treated as field identifiers.
+     * @param string $path JSON path expression (e.g., '$' for root, '$.fieldname' for nested).
+     * @param string|null $alias Function result alias.
+     * @return QueryExpression
+     *
+     * @example
+     * // Search for a scalar value
+     * QueryFunction::jsonContains(
+     *     'users_id_guests',
+     *     new QueryExpression($DB::quoteValue(4)),
+     *     '$'
+     * )
+     *
+     * @example
+     * // Search using a column reference
+     * QueryFunction::jsonContains(
+     *     'REFTABLE.custom_fields',
+     *     'NEWTABLE.id',
+     *     '$.field_id'
+     * )
+     */
+    public static function jsonContains(string|QueryExpression $target, string|QueryExpression $candidate, string $path, ?string $alias = null): QueryExpression
+    {
+        global $DB;
+
+        if (is_string($target)) {
+            $target = new QueryExpression($DB::quoteName($target));
+        }
+
+        if (is_string($candidate)) {
+            $candidate = new QueryExpression($DB::quoteName($candidate));
+        }
+
+        $path = new QueryExpression($DB::quoteValue($path));
+
+        return self::getExpression(
+            'JSON_CONTAINS',
+            [
+                $target,
+                $DB->getVersionAndServer()['server'] === 'MariaDB' ? $candidate : QueryFunction::cast($candidate, 'JSON'),
+                $path,
+            ],
+            $alias
+        );
     }
 }

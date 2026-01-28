@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,13 +38,28 @@ namespace Glpi\Form\Destination;
 use CommonDBChild;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
+use Glpi\Form\Condition\ConditionableCreationInterface;
+use Glpi\Form\Condition\ConditionableCreationTrait;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
 use InvalidArgumentException;
+use LogicException;
 use Override;
 use ReflectionClass;
+use RuntimeException;
+use Session;
 
-final class FormDestination extends CommonDBChild
+use function Safe\json_decode;
+use function Safe\json_encode;
+
+#[CloneWithoutNameSuffix()]
+final class FormDestination extends CommonDBChild implements ConditionableCreationInterface
 {
+    use ConditionableCreationTrait;
+
     /**
      * Parent item is a Form
      */
@@ -54,17 +69,17 @@ final class FormDestination extends CommonDBChild
     #[Override]
     public static function getTypeName($nb = 0)
     {
-        return __('Items to create', $nb);
+        return _n('Destination', 'Destinations', $nb);
     }
 
     #[Override]
-    public static function getIcon()
+    public static function getIcon(): string
     {
         return "ti ti-arrow-forward";
     }
 
     #[Override]
-    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
+    public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0): string
     {
         // Only for forms
         if (!($item instanceof Form)) {
@@ -77,7 +92,7 @@ final class FormDestination extends CommonDBChild
         }
 
         return self::createTabEntry(
-            self::getTypeName(),
+            self::getTypeName(Session::getPluralNumber()),
             $count,
             null,
             self::getIcon() // Must be passed manually for some reason
@@ -95,26 +110,31 @@ final class FormDestination extends CommonDBChild
             return false;
         }
 
+        $destinations = $item->getDestinations();
+
+        $active = null;
         // Reopen the active accordion item
         if (isset($_SESSION['active_destination'])) {
             $active = $_SESSION['active_destination'];
             unset($_SESSION['active_destination']);
         } else {
-            $active = null;
+            if (count($destinations) === 1) {
+                $active = $destinations[array_key_first($destinations)]->getID();
+            }
         }
 
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('pages/admin/form/form_destination.html.twig', [
             'icon'                         => self::getIcon(),
             'form'                         => $item,
-            'controller_url'               => self::getFormURL(),
             'default_destination_object'   => $manager->getDefaultType(),
-            'destinations'                 => $item->getDestinations(),
+            'destinations'                 => $destinations,
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
             'active_destination'           => $active,
             'can_update'                   => self::canUpdate(),
+            'warnings'                     => $manager->getWarnings($item),
         ]);
 
         return true;
@@ -166,16 +186,9 @@ final class FormDestination extends CommonDBChild
     }
 
     #[Override]
-    public function prepareInputForAdd($input)
+    public function prepareInputForAdd($input): array
     {
         $input = $this->prepareInput($input);
-
-        // Set default name
-        if (!isset($input['name'])) {
-            // It is safe to access the 'itemtype' key here as it has been
-            // validated by the "prepareInput" method
-            $input['name'] = $input['itemtype']::getTypeName(1);
-        }
 
         // Set default config
         if (!isset($input['config'])) {
@@ -184,13 +197,27 @@ final class FormDestination extends CommonDBChild
             $input['config'] = json_encode([]);
         }
 
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['conditions'])) {
+            $input['conditions'] = json_encode([]);
+        }
+
         return $input;
     }
 
     #[Override]
-    public function prepareInputForUpdate($input)
+    public function prepareInputForUpdate($input): array
     {
         return $this->prepareInput($input);
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareDestinationInputForClone(
+            $input,
+        );
     }
 
     /**
@@ -228,7 +255,7 @@ final class FormDestination extends CommonDBChild
             $type = $input['itemtype'] ?? null;
             if (
                 $type === null
-                || !is_a($type, AbstractFormDestinationType::class, true)
+                || !is_a($type, FormDestinationInterface::class, true)
                 || (new ReflectionClass($type))->isAbstract()
             ) {
                 throw new InvalidArgumentException("Invalid itemtype");
@@ -236,7 +263,7 @@ final class FormDestination extends CommonDBChild
         }
 
         // Validate extra config
-        if (isset($input['config'])) {
+        if (isset($input['config']) && is_array($input['config'])) {
             $destination_item = $this->getConcreteDestinationItem();
             if ($destination_item instanceof AbstractCommonITILFormDestination) {
                 foreach ($destination_item->getConfigurableFields() as $field) {
@@ -251,6 +278,14 @@ final class FormDestination extends CommonDBChild
             $input['config'] = json_encode($input['config']);
         }
 
+        // Encode conditions
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
+        $input = $this->removeSavedConditionsIfAlwaysCreated($input);
+
         return $input;
     }
 
@@ -262,48 +297,45 @@ final class FormDestination extends CommonDBChild
     public function getConcreteDestinationItem(): ?FormDestinationInterface
     {
         $class = $this->fields['itemtype'] ?? $this->input['itemtype'] ?? null;
-
-        if (!is_a($class, FormDestinationInterface::class, true)) {
-            return null;
-        }
-
-        if ((new ReflectionClass($class))->isAbstract()) {
-            return null;
-        }
-
-        return new $class();
+        return self::getConcreteDestinationItemForItemtype($class);
     }
 
-    /**
-     * Get valid destinations for a given form
-     *
-     * @param Form $form
-     *
-     * @return AbstractFormDestinationType[]
-     */
-    protected function getDestinationsForForm(Form $form): array
-    {
-        $destinations = [];
-        $raw_data = $this->find(['forms_forms_id' => $form->getID()]);
-
-        foreach ($raw_data as $row) {
-            if (
-                !is_a($row['itemtype'], AbstractFormDestinationType::class, true)
-                || (new ReflectionClass($row['itemtype']))->isAbstract()
-            ) {
-                // Invalid itemtype, maybe from a disabled plugin
-                continue;
-            }
-
-            $destination = $row['itemtype']::getById($row['items_id']);
-            if (!$destination) {
-                continue;
-            }
-
-            $destinations[] = $destination;
+    public static function getConcreteDestinationItemForItemtype(
+        string $itemtype
+    ): ?FormDestinationInterface {
+        if (!is_a($itemtype, FormDestinationInterface::class, true)) {
+            return null;
         }
 
-        return $destinations;
+        if ((new ReflectionClass($itemtype))->isAbstract()) {
+            return null;
+        }
+
+        return new $itemtype();
+    }
+
+    public function exportDynamicData(): DynamicExportData
+    {
+        $type = $this->getConcreteDestinationItem();
+        $config = $this->getConfig();
+
+        $data = new DynamicExportData();
+        $data->addField('config', $type->exportDynamicConfig($config));
+
+        return $data;
+    }
+
+    public static function prepareDynamicImportData(
+        FormDestinationInterface $type,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['config'] = $type->prepareDynamicConfigDataForImport(
+            $input['config'],
+            $mapper,
+        );
+
+        return $input;
     }
 
     /**
@@ -338,5 +370,24 @@ final class FormDestination extends CommonDBChild
         }
 
         return $config;
+    }
+
+    public function isMandatory(): bool
+    {
+        if (!isset($this->fields['is_mandatory'])) {
+            throw new LogicException("Fields are not loaded");
+        }
+
+        return (bool) $this->fields['is_mandatory'];
+    }
+
+    public function getForm(): Form
+    {
+        $form = $this->getItem();
+        if (!($form instanceof Form)) {
+            throw new RuntimeException("Can't load parent form");
+        }
+
+        return $form;
     }
 }

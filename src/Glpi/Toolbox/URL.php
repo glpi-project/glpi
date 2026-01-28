@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,9 @@
  */
 
 namespace Glpi\Toolbox;
+
+use function Safe\parse_url;
+use function Safe\preg_match;
 
 final class URL
 {
@@ -104,6 +107,8 @@ final class URL
             || !array_key_exists('path', $parsed_url)
             // GLPI URLs are not supposed to contain special chars.
             || preg_match('#[^a-z0-9_/\.-]#i', $parsed_url['path']) === 1
+            // // The path refers to an hidden resource (name starts with `/.`), or contains a `/..` that may lead outside the GLPI tree.
+            || preg_match('#/\.#', $parsed_url['path']) === 1
         ) {
             return false;
         }
@@ -124,7 +129,7 @@ final class URL
      * @param string $path The filename of the currently executing script,
      *                     relative to the document root.
      *                     For the "http://example.com/foo/bar.php" page, that
-     *                     would be "/foo/bar.php" (= $_SERVER['PHP_SELF']).
+     *                     would be "/foo/bar.php" (= $request->getPathInfo()).
      * @return string|null Null if the itemtype could not be extracted.
      *
      * @todo Support custom marketplace and plugins URL.
@@ -183,7 +188,7 @@ final class URL
         }
     }
 
-    private static function extractedPathContainsNamespace(string $path)
+    private static function extractedPathContainsNamespace(string $path): bool
     {
         return str_contains($path, "/");
     }

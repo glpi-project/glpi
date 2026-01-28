@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -187,11 +186,11 @@
 
        function formatThemes(theme) {
            if (!theme.id) {
-               return theme.text;
+               return _.escape(theme.text);
            }
 
            return $('<span></span>').html(
-               `<img src="${getThemePreviewURL(theme.id)}" /> ${theme.text}`
+               `<img src="${_.escape(getThemePreviewURL(theme.id))}" /> ${_.escape(theme.text)}`
            );
        }
        $('select[name="palette"]').on('change', function(e) {
@@ -204,23 +203,22 @@
        });
        function formatGlobalLayout(layout) {
            if (!layout.id) {
-               return layout.text;
+               return _.escape(layout.text);
            }
            return $('<span></span>').html(
-               `<img src="{{ path('/pics/layout/global_layout_') }}${layout.id.toLowerCase()}.png" /> ${layout.text}`
+               `<img src="{{ path('/pics/layout/global_layout_') }}${_.escape(layout.id.toLowerCase())}.png" /> ${_.escape(layout.text)}`
            );
        }
    </script>
     {{ fields.dropdownArrayField('palette', config['palette'], palettes, __('Color palette'), field_options|merge({
         templateResult: 'formatThemes',
         templateSelection: 'formatThemes',
-        escapeMarkup: 'function(m) { return m; }'
     })) }}
 
    {# Only display the page layout setting for central users #}
    {% if get_current_interface() == 'central' %}
       {{ fields.dropdownArrayField('page_layout', config['page_layout'], {
-         'horizontal': __('Horizontal (menu in header'),
+         'horizontal': __('Horizontal (menu in header)'),
          'vertical': __('Vertical (menu in sidebar)')
       }, __('Page layout'), field_options|merge({
          templateResult: 'formatGlobalLayout',
@@ -235,7 +233,7 @@
 
    {{ fields.dropdownYesNo('highcontrast_css', config['highcontrast_css'], __('Enable high contrast'), field_options) }}
 
-   {% if timezones is not null %}
+   {% if use_timezones %}
       {{ fields.dropdownArrayField('timezone', config['timezone']|default(''), timezones, __('Timezone'), field_options|merge({
          display_emptychoice: true,
          emptylabel: __('Use server configuration')
@@ -276,6 +274,12 @@
          {% do call('Planning::dropdownState', ['task_state', config['task_state'], true]) %}
       {% endset %}
       {{ fields.htmlField('', task_state_dropdown, __('Tasks state by default'), field_options) }}
+
+      {% set planned_task_state_dropdown %}
+         {% do call('Planning::dropdownState', ['planned_task_state', config['planned_task_state'], true]) %}
+      {% endset %}
+      {{ fields.htmlField('', planned_task_state_dropdown, __('Planned tasks state by default'), field_options) }}
+
       {{ fields.dropdownNumberField(
          'refresh_views',
          config['refresh_views'],
@@ -374,10 +378,10 @@
 
    {% if get_current_interface() == 'central' and config('lock_use_lock_item') %}
       {{ fields.smallTitle(__('Item locks'), 'ti ti-lock') }}
-      {{ fields.dropdownYesNo('lock_autolock_mode', config('lock_autolock_mode'), __('Auto-lock Mode'), field_options) }}
+      {{ fields.dropdownYesNo('lock_autolock_mode', config['lock_autolock_mode'], __('Auto-lock Mode'), field_options) }}
       {{ fields.dropdownYesNo(
          'lock_directunlock_notification',
-         config('lock_directunlock_notification'),
+         config['lock_directunlock_notification'],
          __('Direct Notification (requester for unlock will be the notification sender)'),
          field_options
       ) }}
@@ -385,11 +389,11 @@
 
    {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
       {{ fields.smallTitle(__('Dashboards'), call('Glpi\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards') }}
-      {% macro dropdownDashboard(name, config, context = 'core', disabled_option = false) %}
+      {% macro dropdownDashboard(name, config, thecontext = "core", disabled_option = false) %}
          {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
             value: config[name],
             display_emptychoice: true,
-            context: context
+            context: thecontext
          }, disabled_option]) %}
       {% endmacro %}
 

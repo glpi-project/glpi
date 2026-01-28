@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,8 @@
 namespace Glpi\Console\Rules;
 
 use Glpi\Console\AbstractCommand;
+use RuleSoftwareCategoryCollection;
+use Software;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -65,11 +67,11 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
             'SELECT' => [
                 'id',
             ],
-            'FROM'   => \Software::getTable(),
+            'FROM'   => Software::getTable(),
         ];
         if (!$input->getOption('all')) {
             $query['WHERE'] = [
-                'softwarecategories_id' => 0
+                'softwarecategories_id' => 0,
             ];
         }
 
@@ -94,7 +96,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
                 OutputInterface::VERBOSITY_VERY_VERBOSE
             );
 
-            $software = new \Software();
+            $software = new Software();
 
             if (!$software->getFromDB($data['id'])) {
                 $this->writelnOutputWithProgressBar(
@@ -102,10 +104,10 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
                     $progress_bar,
                     OutputInterface::VERBOSITY_NORMAL
                 );
-                 continue;
+                continue;
             }
 
-            $rule_collection = new \RuleSoftwareCategoryCollection();
+            $rule_collection = new RuleSoftwareCategoryCollection();
             $input = $rule_collection->processAllRules(
                 [],
                 $software->fields,

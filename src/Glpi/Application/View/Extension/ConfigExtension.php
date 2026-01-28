@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -61,7 +61,6 @@ class ConfigExtension extends AbstractExtension
      */
     public function config(string $key)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return $CFG_GLPI[$key] ?? null;
@@ -73,7 +72,7 @@ class ConfigExtension extends AbstractExtension
      * @param string        $key              Configuration key.
      * @param int           $entity_id        Entity ID.
      * @param mixed         $default_value    Default value.
-     * @param null|string   $inheritence_key  Key to use for inheritence check if different than key used to get value.
+     * @param null|string   $inheritence_key  Key to use for inheritance check if different than key used to get value.
      *
      * @return mixed
      */

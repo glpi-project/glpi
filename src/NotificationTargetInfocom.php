@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,18 @@
 
 /**
  * NotificationTargetInfocom Class
- **/
+ *
+ * @extends NotificationTarget<Infocom>
+ */
 class NotificationTargetInfocom extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return ['alert' => __('Alarms on financial and administrative information')];
     }
 
-
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
 
@@ -66,8 +69,8 @@ class NotificationTargetInfocom extends NotificationTarget
                                      = $item['warrantyexpiration'];
                 $tmp['##infocom.url##']  = $this->formatURL(
                     $options['additionnaloption']['usertype'],
-                    $item['itemtype'] . "_" .
-                    $item['items_id'] . "_Infocom"
+                    $item['itemtype'] . "_"
+                    . $item['items_id'] . "_Infocom"
                 );
             }
             $this->data['infocoms'][] = $tmp;
@@ -81,7 +84,7 @@ class NotificationTargetInfocom extends NotificationTarget
         }
     }
 
-
+    #[Override]
     public function getTags()
     {
 
@@ -89,20 +92,20 @@ class NotificationTargetInfocom extends NotificationTarget
             'infocom.itemtype'       => __('Item type'),
             'infocom.item'           => _n('Associated item', 'Associated items', 1),
             'infocom.expirationdate' => __('Expiration date'),
-            'infocom.entity'         => Entity::getTypeName(1)
+            'infocom.entity'         => Entity::getTypeName(1),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'items',
             'label'   => __('Device list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
         asort($this->tag_descriptions);

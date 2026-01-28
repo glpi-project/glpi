@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,13 +34,17 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Features\DCBreadcrumb;
+use Glpi\Features\DCBreadcrumbInterface;
+
+use function Safe\preg_match;
 
 /**
  * DCRoom Class
  **/
-class DCRoom extends CommonDBTM
+class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
 {
-    use Glpi\Features\DCBreadcrumb;
+    use DCBreadcrumb;
 
     // From CommonDBTM
     public $dohistory                   = true;
@@ -61,17 +65,17 @@ class DCRoom extends CommonDBTM
     {
         $ong = [];
         $this
-         ->addStandardTab('Rack', $ong, $options)
+         ->addStandardTab(Rack::class, $ong, $options)
          ->addDefaultFormTab($ong)
          ->addImpactTab($ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
-         ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('ManualLink', $ong, $options)
-         ->addStandardTab('Item_Ticket', $ong, $options)
-         ->addStandardTab('Item_Problem', $ong, $options)
-         ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Document_Item::class, $ong, $options)
+         ->addStandardTab(ManualLink::class, $ong, $options)
+         ->addStandardTab(Item_Ticket::class, $ong, $options)
+         ->addStandardTab(Item_Problem::class, $ong, $options)
+         ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
         return $ong;
     }
 
@@ -81,18 +85,54 @@ class DCRoom extends CommonDBTM
             $this->check($ID, READ);
         }
         TemplateRenderer::getInstance()->display('pages/management/dcroom.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
         return true;
     }
 
     public function prepareInputForAdd($input)
     {
+        if ((int) ($input['vis_rows'] ?? 0) < 1) {
+            Session::addMessageAfterRedirect(
+                __s('Number of rows must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if ((int) ($input['vis_cols'] ?? 0) < 1) {
+            Session::addMessageAfterRedirect(
+                __s('Number of columns must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         return $this->manageBlueprint($input);
     }
 
     public function prepareInputForUpdate($input)
     {
+        if (isset($input['vis_rows']) && (int) ($input['vis_rows']) < 1) {
+            Session::addMessageAfterRedirect(
+                __s('Number of rows must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        if (isset($input['vis_cols']) && (int) ($input['vis_cols']) < 1) {
+            Session::addMessageAfterRedirect(
+                __s('Number of columns must be >= 1'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
         return $this->manageBlueprint($input);
     }
 
@@ -142,7 +182,7 @@ class DCRoom extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -160,7 +200,7 @@ class DCRoom extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false, // implicit field is id
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -170,7 +210,7 @@ class DCRoom extends CommonDBTM
             'table'              => Datacenter::getTable(),
             'field'              => 'name',
             'name'               => Datacenter::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -178,7 +218,7 @@ class DCRoom extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'vis_cols',
             'name'               => __('Number of columns'),
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -186,7 +226,7 @@ class DCRoom extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'vis_rows',
             'name'               => __('Number of rows'),
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -195,7 +235,7 @@ class DCRoom extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -204,7 +244,7 @@ class DCRoom extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -212,7 +252,7 @@ class DCRoom extends CommonDBTM
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -222,6 +262,9 @@ class DCRoom extends CommonDBTM
         return $tab;
     }
 
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -247,12 +290,12 @@ class DCRoom extends CommonDBTM
                         'beforejoin'         => [
                             'table'              => 'glpi_items_racks',
                             'joinparams'         => [
-                                'jointype'           => 'itemtype_item'
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'jointype'           => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         return $tab;
@@ -268,7 +311,7 @@ class DCRoom extends CommonDBTM
                         self::getTable(),
                         [
                             'datacenters_id'  => $item->getID(),
-                            'is_deleted'      => 0
+                            'is_deleted'      => 0,
                         ]
                     );
                 }
@@ -284,6 +327,10 @@ class DCRoom extends CommonDBTM
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof Datacenter) {
+            return false;
+        }
+
         self::showForDatacenter($item);
         return true;
     }
@@ -293,11 +340,10 @@ class DCRoom extends CommonDBTM
      *
      * @param Datacenter $datacenter Datacenter object
      *
-     * @return void|boolean (display) Returns false if there is a rights error.
+     * @return void|bool (display) Returns false if there is a rights error.
      **/
     public static function showForDatacenter(Datacenter $datacenter)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $datacenter->getID();
@@ -314,8 +360,8 @@ class DCRoom extends CommonDBTM
         $rooms = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'datacenters_id' => $datacenter->getID()
-            ]
+                'datacenters_id' => $datacenter->getID(),
+            ],
         ]);
 
         if ($canedit) {
@@ -336,7 +382,7 @@ class DCRoom extends CommonDBTM
             $entries[] = [
                 'itemtype' => self::class,
                 'id' => $room['id'],
-                'name' => $dcroom->getLink()
+                'name' => $dcroom->getLink(),
             ];
         }
 
@@ -347,15 +393,14 @@ class DCRoom extends CommonDBTM
                 'name' => __('Name'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -369,7 +414,6 @@ class DCRoom extends CommonDBTM
      */
     public function getFilled($current = null)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -377,8 +421,8 @@ class DCRoom extends CommonDBTM
             'FROM'   => Rack::getTable(),
             'WHERE'  => [
                 'dcrooms_id'   => $this->getID(),
-                'is_deleted'   => 0
-            ]
+                'is_deleted'   => 0,
+            ],
         ]);
 
         $filled = [];
@@ -402,8 +446,8 @@ class DCRoom extends CommonDBTM
     public function getAllPositions()
     {
         $positions = [];
-        for ($x = 1; $x < (int)$this->fields['vis_cols'] + 1; ++$x) {
-            for ($y = 1; $y < (int)$this->fields['vis_rows'] + 1; ++$y) {
+        for ($x = 1; $x < (int) $this->fields['vis_cols'] + 1; ++$x) {
+            for ($y = 1; $y < (int) $this->fields['vis_rows'] + 1; ++$y) {
                 $positions["$x,$y"] = sprintf(
                     __('col: %1$s, row: %2$s'),
                     Toolbox::getBijectiveIndex($x),

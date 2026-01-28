@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,6 +36,7 @@
 namespace Glpi\System\Requirement;
 
 use Psr\Log\LoggerInterface;
+use UnexpectedValueException;
 
 /**
  * @since 9.5.0
@@ -64,12 +65,12 @@ class LogsWriteAccess extends AbstractRequirement
 
     protected function check()
     {
-       // Only write test for GLPI_LOG as SElinux prevent removing log file.
+        // Only write test for GLPI_LOG as SElinux prevent removing log file.
         try {
             $this->logger->warning('Test logger');
             $this->validated = true;
             $this->validation_messages[] = __('The log file has been created successfully.');
-        } catch (\UnexpectedValueException $e) {
+        } catch (UnexpectedValueException $e) {
             $this->validated = false;
             $this->validation_messages[] = sprintf(__('The log file could not be created in %s.'), GLPI_LOG_DIR);
         }

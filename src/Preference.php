@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,22 +40,21 @@ class Preference extends CommonGLPI
 {
     public static function getTypeName($nb = 0)
     {
-       // Always plural
+        // Always plural
         return __('Settings');
     }
-
 
     public function defineTabs($options = [])
     {
 
         $ong = [];
-        $this->addStandardTab('User', $ong, $options);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(User::class, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         if (Session::haveRightsOr('personalization', [READ, UPDATE])) {
-            $this->addStandardTab('Config', $ong, $options);
+            $this->addStandardTab(Config::class, $ong, $options);
         }
-        $this->addStandardTab('ValidatorSubstitute', $ong, $options);
-        $this->addStandardTab('DisplayPreference', $ong, $options);
+        $this->addStandardTab(ValidatorSubstitute::class, $ong, $options);
+        $this->addStandardTab(DisplayPreference::class, $ong, $options);
 
         $ong['no_all_tab'] = true;
 
@@ -64,7 +63,7 @@ class Preference extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        return __('Two-factor authentication (2FA)');
+        return self::createTabEntry(text: __('Two-factor authentication (2FA)'), icon: 'ti ti-shield-lock');
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -77,6 +76,10 @@ class Preference extends CommonGLPI
         return true;
     }
 
+    /**
+     * @FIXME Override the options inside the front controller.
+     * @phpstan-ignore method.parentMethodFinalByPhpDoc (temporary solution to add the final tag)
+     */
     public function showTabsContent($options = [])
     {
         if (isset($_REQUEST['reset_2fa'])) {

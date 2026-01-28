@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../_check_webserver_config.php');
+
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 
@@ -43,7 +45,7 @@ if (isset($_POST["purge"])) {
     $answers_set = new AnswersSet();
     // TODO: Add a specific right to ensure the user can delete an answer
     $answers_set->check($id, DELETE);
-    $answers_set->delete($_POST, 1);
+    $answers_set->delete($_POST, true);
     $answers_set->redirectToList();
 } else {
     Session::checkRight(Form::$rightname, READ);

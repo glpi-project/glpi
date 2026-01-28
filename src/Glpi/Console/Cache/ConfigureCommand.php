@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,9 +38,14 @@ namespace Glpi\Console\Cache;
 use Glpi\Cache\CacheManager;
 use Glpi\Console\AbstractCommand;
 use Glpi\Console\Command\ConfigurationCommandInterface;
+use Glpi\Console\Exception\EarlyExitException;
+use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
+
+use function Safe\json_encode;
 
 /**
  * @since 10.0.0
@@ -52,7 +57,7 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
      *
      * @var int
      */
-    const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
+    public const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
     protected $requires_db = false;
 
@@ -132,26 +137,26 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
         $dsn         = $input->getOption('dsn');
 
         if (!$this->cache_manager->isContextValid($context, true)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(__('Invalid cache context: "%s".'), $context)
             );
         }
 
         if (count($dsn) === 0 && !$use_default) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __('Either --dsn or --use-default options have to be used.')
             );
-        } else if (count($dsn) > 0 && $use_default) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+        } elseif (count($dsn) > 0 && $use_default) {
+            throw new InvalidArgumentException(
                 __('--dsn and --use-default options cannot be used simultaneously.')
             );
         }
 
         if ($use_default) {
-           // Reset configuration for given context.
+            // Reset configuration for given context.
             $success = $this->cache_manager->unsetConfiguration($context);
             if (!$success) {
-                throw new \Glpi\Console\Exception\EarlyExitException(
+                throw new EarlyExitException(
                     '<error>' . __('Unable to write cache configuration file.') . '</error>',
                     self::ERROR_UNABLE_TO_WRITE_CONFIG
                 );
@@ -163,35 +168,35 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
             return 0; // Success
         }
 
-       // Transform $dsn into single string if only one value is passed
+        // Transform $dsn into single string if only one value is passed
         if (count($dsn) === 1) {
             $dsn = reset($dsn);
         }
 
         if (!$this->cache_manager->isDsnValid($dsn)) {
-            throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(__('Invalid cache DSN: "%s".'), json_encode($dsn))
             );
         }
 
-       // Check connection
+        // Check connection
         if (!$input->getOption('skip-connection-checks')) {
             try {
                 $this->cache_manager->testConnection($dsn);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $error_msg = sprintf(__('An error occurred during connection to cache system: "%s"'), $e->getMessage());
-                throw new \Glpi\Console\Exception\EarlyExitException(
+                throw new EarlyExitException(
                     '<error>' . $error_msg . '</error>',
                     self::ERROR_UNABLE_TO_WRITE_CONFIG
                 );
             }
         }
 
-       // Store configuration
+        // Store configuration
         $success = $this->cache_manager->setConfiguration($context, $dsn, []);
 
         if (!$success) {
-            throw new \Glpi\Console\Exception\EarlyExitException(
+            throw new EarlyExitException(
                 '<error>' . __('Unable to write cache configuration file.') . '</error>',
                 self::ERROR_UNABLE_TO_WRITE_CONFIG
             );

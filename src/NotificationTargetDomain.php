@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @extends NotificationTarget<Domain>
+ */
 class NotificationTargetDomain extends NotificationTarget
 {
+    #[Override]
     public function getEvents()
     {
         return [
             'ExpiredDomains'     => __('Expired domains'),
-            'DomainsWhichExpire' => __('Expiring domains')
+            'DomainsWhichExpire' => __('Expiring domains'),
         ];
     }
 
@@ -55,6 +59,7 @@ class NotificationTargetDomain extends NotificationTarget
         );
     }
 
+    #[Override]
     public function addDataForTemplate($event, $options = [])
     {
         $domain = $this->obj;
@@ -86,23 +91,24 @@ class NotificationTargetDomain extends NotificationTarget
             // Old behaviour preserved as notifications rewriting in migrations is kind of complicated
             $this->data['domains'][] = [
                 '##domain.name##'             => $domain_data['name'],
-                '##domain.dateexpiration##'   => Html::convDate($domain_data['date_expiration'])
+                '##domain.dateexpiration##'   => Html::convDate($domain_data['date_expiration']),
             ];
         }
     }
 
+    #[Override]
     public function getTags()
     {
         $tags = [
             'domain.name'           => __('Name'),
-            'domain.dateexpiration' => __('Expiration date')
+            'domain.dateexpiration' => __('Expiration date'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList([
                 'tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
@@ -111,7 +117,7 @@ class NotificationTargetDomain extends NotificationTarget
             'label'   => __('Expired or expiring domains (deprecated; contains only one element)'),
             'value'   => false,
             'foreach' => true,
-            'events'  => ['DomainsWhichExpire', 'ExpiredDomains']
+            'events'  => ['DomainsWhichExpire', 'ExpiredDomains'],
         ]);
 
         asort($this->tag_descriptions);

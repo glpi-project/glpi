@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -38,6 +38,8 @@ namespace Glpi\Api\HL\Middleware;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Router;
 
+use function Safe\inet_pton;
+
 class IPRestrictionRequestMiddleware extends AbstractMiddleware implements RequestMiddlewareInterface
 {
     public function process(MiddlewareInput $input, callable $next): void
@@ -48,18 +50,18 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             return;
         }
 
-        /** @var \DBmysql $DB */
         global $DB;
 
         $request_ip = $_SERVER['REMOTE_ADDR'];
 
-        $allowed_ips = $DB->request([
+        $result = $DB->request([
             'SELECT' => ['allowed_ips'],
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $client['client_id']
-            ]
-        ])->current()['allowed_ips'];
+                'identifier' => $client['client_id'],
+            ],
+        ])->current();
+        $allowed_ips = $result['allowed_ips'] ?? [];
 
         if (empty($allowed_ips)) {
             // No IP restriction
@@ -85,7 +87,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
                 if ($this->isCidrMatch($ip, $allowed_ip)) {
                     return true;
                 }
-            } else if ($ip === $allowed_ip) {
+            } elseif ($ip === $allowed_ip) {
                 return true;
             }
         }
@@ -105,7 +107,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         [$subnet, $mask] = explode('/', $range);
         $subnet = inet_pton($subnet);
         $ip = inet_pton($ip);
-        $mask = $mask === '' ? $max_mask : (int)$mask;
+        $mask = $mask === '' ? $max_mask : (int) $mask;
         $subnet = substr($subnet, 0, $mask / 8);
         $ip = substr($ip, 0, $mask / 8);
         return $subnet === $ip;

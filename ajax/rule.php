@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,13 +33,15 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
-switch ($_REQUEST['action']) {
+switch ($_POST['action']) {
     case "move_rule":
         $rule_collection = getItemForItemtype($_POST['collection_classname']);
         if ($rule_collection instanceof RuleCollection) {
+            if (!$rule_collection->canUpdate()) {
+                throw new AccessDeniedHttpException();
+            }
             $rule_collection->moveRule((int) $_POST['rule_id'], (int) $_POST['ref_id'], $_POST['sort_action']);
         }
         break;

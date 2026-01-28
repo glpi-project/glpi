@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,9 +37,9 @@ namespace Glpi\Controller;
 use Central;
 use Glpi\Dashboard\Grid;
 use Glpi\Http\Firewall;
+use Glpi\Http\RedirectResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -54,9 +54,12 @@ class CentralController extends AbstractController
     {
         if ($request->query->has('embed') && $request->query->has('dashboard')) {
             // embed (anonymous) dashboard
+            $grid = new Grid($request->query->get('dashboard'));
+            $grid->initEmbed($request->query->all());
+
             return $this->render('central/embed_dashboard.html.twig', [
-                'grid'   => new Grid($request->query->get('dashboard')),
-                'params' => $request->query->all(),
+                'grid'  => $grid,
+                'token' => $request->query->get('token'),
             ]);
         }
 

@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -43,12 +42,14 @@
     'full_width'   : true,
     'no_label'     : true,
 } %}
+{% set comment = comment|default(null) %}
 
 <section
     role="option"
+    class="d-flex"
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
-    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\ConditionalVisiblity\\Type').COMMENT.value }}"
+    data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').COMMENT.value }}"
     data-glpi-draggable-item
 >
     <section
@@ -67,6 +68,7 @@
                     class="glpi-form-editor-question-handle ti ti-grip-horizontal cursor-grab ms-auto me-auto mt-n3 mb-n2"
                     data-glpi-form-editor-question-handle
                     draggable="true"
+                    data-glpi-form-editor-state-action
                 ></i>
             </div>
             {# Display comment's title #}
@@ -76,13 +78,14 @@
                     type="text"
                     name="name"
                     value="{{ comment is not null ? comment.fields.name : '' }}"
-                    placeholder="{{ __("Add a title...") }}"
+                    placeholder="{{ __("New comment") }}"
                     aria-label="{{ __("Comment title") }}"
                     data-glpi-form-editor-dynamic-input
-                    data-glpi-form-editor-on-input="compute-dynamic-input"
                     data-glpi-form-editor-comment-details-name
+                    maxlength="255"
                 />
-                <span data-glpi-form-editor-required-mark class="text-danger d-none">*</span>
+
+                <div class="ms-auto"></div>
 
                 {# Visibility dropdown #}
                 {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
@@ -98,6 +101,7 @@
                     title="{{ __("Duplicate comment") }}"
                     data-glpi-form-editor-on-click="duplicate-comment"
                     data-glpi-form-editor-comment-extra-details
+                    data-glpi-form-editor-state-action
                 ></i>
 
                 {# Delete comment #}
@@ -110,6 +114,7 @@
                     aria-label="{{ __("Delete") }}"
                     data-glpi-form-editor-on-click="delete-comment"
                     data-glpi-form-editor-comment-extra-details
+                    data-glpi-form-editor-state-action
                 ></i>
 
                 {# Extra actions #}
@@ -120,6 +125,7 @@
                         aria-expanded="false"
                         role="button"
                         title="{{ __('More actions') }}"
+                        data-glpi-form-editor-state-action
                     ></i>
                     <ul class="dropdown-menu" data-bs-popper="none">
                         <li>
@@ -129,7 +135,7 @@
                                 data-glpi-form-editor-on-click="show-visibility-dropdown"
                             >
                                 <i class="ti ti-eye-cog me-2"></i>
-                                <span>{{ __("Configure visiblity") }}</span>
+                                <span>{{ __("Configure visibility") }}</span>
                             </button>
                         </li>
                     </ul>
@@ -148,16 +154,17 @@
                     comment is not null ? comment.fields.description : '',
                     __('Description'),
                     base_field_options|merge({
-                        'placeholder': __('Add a description...'),
+                        'placeholder': __('Add a description'),
                         'aria_label': __("Comment description"),
                         'enable_richtext': true,
                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
                         'editor_height': "0",
                         'rows' : 1,
                         'toolbar_location': 'bottom',
-                        'init': comment is not null ? true : false,
+                        'init': false,
+                        'init_on_demand': section is not null ? true : false,
                         'mb': 'mb-0',
-                })
+                    })
                 ) }}
             </div>
         </div>
@@ -176,12 +183,12 @@
         <input
             type="hidden"
             name="vertical_rank"
-            value="{{ question is not null ? question.fields.vertical_rank : 0 }}"
+            value="{{ comment is not null ? comment.fields.vertical_rank : 0 }}"
         />
         <input
             type="hidden"
             name="horizontal_rank"
-            value="{{ question is not null ? question.fields.horizontal_rank : null }}"
+            value="{{ comment is not null ? comment.fields.horizontal_rank : 0 }}"
         />
     </section>
 
@@ -189,7 +196,7 @@
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update'     : can_update,
             'form'           : form,
-            'vertical_layout': false
+            'vertical_layout': true
         }, with_context = false) }}
     </div>
     <div data-glpi-form-editor-question-drag-merge></div>

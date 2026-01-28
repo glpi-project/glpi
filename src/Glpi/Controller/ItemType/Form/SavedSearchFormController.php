@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,18 +35,19 @@
 namespace Glpi\Controller\ItemType\Form;
 
 use Glpi\Controller\GenericFormController;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
+use Glpi\Http\Firewall;
+use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
+use Glpi\Security\Attribute\SecurityStrategy;
 use Html;
 use SavedSearch;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class SavedSearchFormController extends GenericFormController
 {
+    #[SecurityStrategy(Firewall::STRATEGY_AUTHENTICATED)]
     #[ItemtypeFormRoute(SavedSearch::class)]
-    #[ItemtypeFormLegacyRoute(SavedSearch::class)]
     public function __invoke(Request $request): Response
     {
         $request->attributes->set('class', SavedSearch::class);

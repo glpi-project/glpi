@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -189,8 +188,8 @@
                         <div class="hr-text">
                             <i class="ti ti-list"></i>
                             <span>{{ __('Supported tasks') }} </span>
-                            <span class="form-help" data-bs-toggle="popover" data-bs-placement="top" data-bs-html="true"
-                                  data-bs-content="{{ '<i>' ~ __('When reported by GLPI agent via native inventory') ~ '</i>' }}">?</span>
+                            <span class="form-help" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-html="true"
+                                  data-bs-title="{{ __('When reported by GLPI agent via native inventory') }}">?</span>
                         </div>
 
                         {% for modulefield, modulelabel in {
@@ -223,7 +222,7 @@
       {{ include('components/form/buttons.html.twig') }}
    {% endif %}
 
-   {% if params['formfooter'] is null or params['formfooter'] == true %}
+   {% if params['formfooter'] ?? true %}
       <div class="card-footer mx-n2 mb-n2 mt-4">
          {{ include('components/form/dates.html.twig') }}
       </div>

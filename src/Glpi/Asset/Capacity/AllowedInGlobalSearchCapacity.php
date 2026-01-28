@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,6 +34,7 @@
 
 namespace Glpi\Asset\Capacity;
 
+use Glpi\Asset\CapacityConfig;
 use Override;
 
 class AllowedInGlobalSearchCapacity extends AbstractCapacity
@@ -64,12 +65,12 @@ class AllowedInGlobalSearchCapacity extends AbstractCapacity
         return '';
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('globalsearch_types', $classname);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         $this->unregisterFromTypeConfig('globalsearch_types', $classname);
     }

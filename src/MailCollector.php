@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,15 +34,31 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Error\ErrorHandler;
 use Laminas\Mail\Address;
 use Laminas\Mail\Header\AbstractAddressList;
 use Laminas\Mail\Header\ContentDisposition;
 use Laminas\Mail\Header\ContentType;
+use Laminas\Mail\Header\MessageId;
 use Laminas\Mail\Storage;
+use Laminas\Mail\Storage\AbstractStorage;
+use Laminas\Mail\Storage\Exception\InvalidArgumentException;
 use Laminas\Mail\Storage\Folder;
+use Laminas\Mail\Storage\Folder\FolderInterface;
 use Laminas\Mail\Storage\Message;
+use Laminas\Mail\Storage\Part;
+use Laminas\Mail\Storage\Writable\WritableInterface;
 use LitEmoji\LitEmoji;
-use Glpi\Error\ErrorHandler;
+use Safe\Exceptions\DatetimeException;
+use Safe\Exceptions\IconvException;
+
+use function Safe\base64_decode;
+use function Safe\file_put_contents;
+use function Safe\iconv;
+use function Safe\mb_convert_encoding;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
 
 /**
  * MailCollector class
@@ -51,39 +67,65 @@ use Glpi\Error\ErrorHandler;
  *
  * modif and debug by  INDEPNET Development Team.
  * Original class ReceiveMail 1.0 by Mitul Koradia Created: 01-03-2006
- * Description: Reciving mail With Attechment
+ * Description: Receiving mail With Attachment
  * Email: mitulkoradia@gmail.com
  **/
 class MailCollector extends CommonDBTM
 {
-   // Specific one
+    // Specific one
     /**
      * IMAP / POP connection
-     * @var Laminas\Mail\Storage\AbstractStorage
      */
-    private $storage;
-   /// UID of the current message
+    private ?AbstractStorage $storage = null;
+    /**
+     * UID of the current message
+     * @var int
+     */
     public $uid             = -1;
-   /// structure used to store files attached to a mail
+    /**
+     * structure used to store files attached to a mail
+     * @var ?array
+     */
     public $files;
-   /// structure used to store alt files attached to a mail
+    /**
+     * structure used to store alt files attached to a mail
+     * @var array
+     */
     public $altfiles;
-   /// Tag used to recognize embedded images of a mail
+    /**
+     * Tag used to recognize embedded images of a mail
+     * @var array
+     */
     public $tags;
-   /// Message to add to body to build ticket
+    /**
+     * Message to add to body to build ticket
+     * @var string
+     */
     public $addtobody;
-   /// Number of fetched emails
+    /**
+     * Number of fetched emails
+     * @var int
+     */
     public $fetch_emails    = 0;
-   /// Maximum number of emails to fetch : default to 10
+    /**
+     * Maximum number of emails to fetch : default to 10
+     * @var int
+     */
     public $maxfetch_emails = 10;
-   /// array of indexes -> uid for messages
+    /**
+     * array of indexes -> uid for messages
+     * @var array
+     */
     public $messages_uid    = [];
-   /// Max size for attached files
+    /**
+     * Max size for attached files
+     * @var int
+     */
     public $filesize_max    = 0;
 
     /**
-     * Flag that tells wheter the body is in HTML format or not.
-     * @var string
+     * Flag that tells whether the body is in HTML format or not.
+     * @var bool
      */
     private $body_is_html   = false;
 
@@ -91,13 +133,13 @@ class MailCollector extends CommonDBTM
 
     public static $rightname       = 'config';
 
-   // Destination folder
-    const REFUSED_FOLDER  = 'refused';
-    const ACCEPTED_FOLDER = 'accepted';
+    // Destination folder
+    public const REFUSED_FOLDER  = 'refused';
+    public const ACCEPTED_FOLDER = 'accepted';
 
-   // Values for requester_field
-    const REQUESTER_FIELD_FROM = 0;
-    const REQUESTER_FIELD_REPLY_TO = 1;
+    // Values for requester_field
+    public const REQUESTER_FIELD_FROM = 0;
+    public const REQUESTER_FIELD_REPLY_TO = 1;
 
     public static $undisclosedFields = [
         'passwd',
@@ -134,24 +176,6 @@ class MailCollector extends CommonDBTM
         return static::canUpdate();
     }
 
-
-    public static function getAdditionalMenuOptions()
-    {
-
-        if (static::canView()) {
-            return [
-                'options' => [
-                    NotImportedEmail::class => [
-                        'links' => [
-                            'search' => '/front/notimportedemail.php',
-                        ],
-                    ],
-                ],
-            ];
-        }
-        return false;
-    }
-
     public static function getAdditionalMenuLinks()
     {
         $links = [];
@@ -163,15 +187,40 @@ class MailCollector extends CommonDBTM
 
     public function post_getEmpty()
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $this->fields['filesize_max'] = $CFG_GLPI['default_mailcollector_filesize_max'];
         $this->fields['is_active']    = 1;
     }
 
-    public function prepareInput(array $input, $mode = 'add'): array
+    /**
+     * @param array $input
+     * @param string $mode
+     *
+     * @return array|false
+     */
+    public function prepareInput(array $input, $mode = 'add')
     {
+        $missing_fields = [];
+        if (($mode === 'add' || array_key_exists('mail_server', $input)) && empty($input['mail_server'])) {
+            $missing_fields[] = __('Server');
+        }
+        if (($mode === 'add' || array_key_exists('server_type', $input)) && empty($input['server_type'])) {
+            $missing_fields[] = __('Connection options');
+        }
+        if (!empty($missing_fields)) {
+            Session::addMessageAfterRedirect(
+                htmlescape(
+                    sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        implode(', ', $missing_fields)
+                    )
+                ),
+                false,
+                ERROR
+            );
+            return false;
+        }
 
         if (isset($input["passwd"])) {
             if (empty($input["passwd"])) {
@@ -181,7 +230,7 @@ class MailCollector extends CommonDBTM
             }
         }
 
-        if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+        if (isset($input['mail_server'])) {
             $input["host"] = Toolbox::constructMailServerConfig($input);
         }
 
@@ -191,6 +240,9 @@ class MailCollector extends CommonDBTM
     public function prepareInputForUpdate($input)
     {
         $input = $this->prepareInput($input, 'update');
+        if ($input === false) {
+            return false;
+        }
 
         if (isset($input["_blank_passwd"]) && $input["_blank_passwd"]) {
             $input['passwd'] = '';
@@ -203,6 +255,9 @@ class MailCollector extends CommonDBTM
     public function prepareInputForAdd($input)
     {
         $input = $this->prepareInput($input, 'add');
+        if ($input === false) {
+            return false;
+        }
         return $input;
     }
 
@@ -212,9 +267,9 @@ class MailCollector extends CommonDBTM
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab(__CLASS__, $ong, $options);
+        $this->addStandardTab(self::class, $ong, $options);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -226,12 +281,26 @@ class MailCollector extends CommonDBTM
      * @param $options   array
      *     - target filename : where to go when done.
      *
-     * @return boolean item found
+     * @return bool item found
      **/
     public function showForm($ID, array $options = [])
     {
+        // warning and no form if can't read keyfile
+        $glpi_encryption_key = new GLPIKey();
+        if ($glpi_encryption_key->hasReadErrors()) {
+            $glpi_encryption_key->showReadErrors();
+
+            return false;
+        }
+
+        $protocol_choices = [];
+        foreach (Toolbox::getMailServerProtocols(allow_plugins_protocols: true) as $key => $protocol) {
+            $protocol_choices['/' . $key] = $protocol['label'];
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/mailcollector/setup_form.html.twig', [
-            'item' => $this,
+            'item'             => $this,
+            'protocol_choices' => $protocol_choices,
         ]);
         return true;
     }
@@ -252,10 +321,13 @@ class MailCollector extends CommonDBTM
         try {
             $this->connect();
             $connected = true;
+            if (!$this->storage instanceof FolderInterface) {
+                throw new RuntimeException("This mailbox do not support listing folders");
+            }
             foreach ($this->storage->getFolders() as $folder) {
                 $folders[] = $this->extractFolderData($folder);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             ErrorHandler::logCaughtException($e);
             ErrorHandler::displayCaughtExceptionMessage($e);
         }
@@ -263,7 +335,7 @@ class MailCollector extends CommonDBTM
             'item' => $this,
             'connected' => $connected,
             'folders' => $folders,
-            'input_id' => $input_id
+            'input_id' => $input_id,
         ]);
     }
 
@@ -293,7 +365,7 @@ class MailCollector extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -310,7 +382,7 @@ class MailCollector extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -319,7 +391,7 @@ class MailCollector extends CommonDBTM
             'field'              => 'host',
             'name'               => __('Connection string'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -336,15 +408,15 @@ class MailCollector extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'filesize_max',
             'name'               => __('Maximum size of each file imported by the mails receiver'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -353,7 +425,7 @@ class MailCollector extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -361,7 +433,7 @@ class MailCollector extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'accepted',
             'name'               => __('Accepted mail archive folder (optional)'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -369,7 +441,7 @@ class MailCollector extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'refused',
             'name'               => __('Refused mail archive folder (optional)'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -377,7 +449,7 @@ class MailCollector extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'errors',
             'name'               => __('Connection errors'),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -386,7 +458,7 @@ class MailCollector extends CommonDBTM
             'field'              => 'last_collect_date',
             'name'               => __('Date of last collection'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -394,13 +466,14 @@ class MailCollector extends CommonDBTM
 
 
     /**
-     * @param $emails_ids   array
-     * @param $action                (default 0)
-     * @param $entity                (default 0)
-     **/
+     * @param array $emails_ids
+     * @param int $action
+     * @param int $entity
+     *
+     * @return void
+     */
     public function deleteOrImportSeveralEmails($emails_ids = [], $action = 0, $entity = 0)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $query = [
@@ -408,7 +481,7 @@ class MailCollector extends CommonDBTM
             'WHERE'  => [
                 'id' => $emails_ids,
             ],
-            'ORDER'  => 'mailcollectors_id'
+            'ORDER'  => 'mailcollectors_id',
         ];
 
         $todelete = [];
@@ -419,7 +492,7 @@ class MailCollector extends CommonDBTM
         foreach ($todelete as $mailcollector_id => $rejected) {
             $collector = new self();
             if ($collector->getFromDB($mailcollector_id)) {
-               // Use refused folder in connection string
+                // Use refused folder in connection string
                 $connect_config = Toolbox::parseMailServerConnectString($collector->fields['host']);
                 $collector->fields['host'] = Toolbox::constructMailServerConfig(
                     [
@@ -437,10 +510,10 @@ class MailCollector extends CommonDBTM
                 );
 
                 $collector->uid          = -1;
-               //Connect to the Mail Box
+                //Connect to the Mail Box
                 try {
-                     $collector->connect();
-                } catch (\Throwable $e) {
+                    $collector->connect();
+                } catch (Throwable $e) {
                     ErrorHandler::logCaughtException($e);
                     ErrorHandler::displayCaughtExceptionMessage($e);
                     continue;
@@ -451,20 +524,20 @@ class MailCollector extends CommonDBTM
                     if (isset($rejected[$head['message_id']])) {
                         if ($action == 1) {
                             $tkt = $collector->buildTicket(
-                                $uid,
+                                (string) $uid,
                                 $message,
                                 [
                                     'mailgates_id' => $mailcollector_id,
-                                    'play_rules'   => false
+                                    'play_rules'   => false,
                                 ]
                             );
                             $tkt['_users_id_requester'] = $rejected[$head['message_id']]['users_id'];
                             $tkt['entities_id']         = $entity;
 
                             if (!isset($tkt['tickets_id'])) {
-                                 // New ticket case
-                                 $ticket = new Ticket();
-                                 $ticket->add($tkt);
+                                // New ticket case
+                                $ticket = new Ticket();
+                                $ticket->add($tkt);
                             } else {
                                 // Followup case
                                 $fup = new ITILFollowup();
@@ -480,21 +553,21 @@ class MailCollector extends CommonDBTM
                         } else {
                             $folder = self::REFUSED_FOLDER;
                         }
-                       //Delete email
-                        if ($collector->deleteMails($uid, $folder)) {
-                             $rejectedmail = new NotImportedEmail();
-                             $rejectedmail->delete(['id' => $rejected[$head['message_id']]['id']]);
+                        //Delete email
+                        if ($collector->deleteMails((string) $uid, $folder)) {
+                            $rejectedmail = new NotImportedEmail();
+                            $rejectedmail->delete(['id' => $rejected[$head['message_id']]['id']]);
                         }
-                      // Unset managed
+                        // Unset managed
                         unset($rejected[$head['message_id']]);
                     }
                 }
 
-               // Email not present in mailbox
+                // Email not present in mailbox
                 if (count($rejected)) {
                     $clean = [
                         '<' => '',
-                        '>' => ''
+                        '>' => '',
                     ];
                     foreach ($rejected as $id => $data) {
                         if ($action == 1) {
@@ -520,25 +593,22 @@ class MailCollector extends CommonDBTM
     /**
      * Do collect
      *
-     * @param integer $mailgateID  ID of the mailgate
-     * @param boolean $display     display messages in MessageAfterRedirect or just return error (default 0=)
+     * @param int $mailgateID  ID of the mailgate
+     * @param bool $display     display messages in MessageAfterRedirect or just return error (default 0=)
      *
      * @return string|void
      **/
     public function collect($mailgateID, $display = false)
     {
-        /**
-         * @var array $CFG_GLPI
-         */
         global $CFG_GLPI;
 
         if ($this->getFromDB($mailgateID)) {
             $this->uid          = -1;
             $this->fetch_emails = 0;
-           //Connect to the Mail Box
+            //Connect to the Mail Box
             try {
                 $this->connect();
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 ErrorHandler::logCaughtException($e);
                 Session::addMessageAfterRedirect(
                     __s('An error occurred trying to connect to collector.') . "<br/>" . htmlescape($e->getMessage()),
@@ -558,16 +628,16 @@ class MailCollector extends CommonDBTM
             }
 
             $rejected = new NotImportedEmail();
-           // Clean from previous collect (from GUI, cron already truncate the table)
+            // Clean from previous collect (from GUI, cron already truncate the table)
             $rejected->deleteByCriteria(['mailcollectors_id' => $this->fields['id']]);
 
-            if ($this->storage) {
+            if ($this->storage !== null) {
                 $maxfetch_emails  = $this->maxfetch_emails;
                 $error            = 0;
                 $refused          = 0;
                 $alreadyseen      = 0;
                 $blacklisted      = 0;
-               // Get Total Number of Unread Email in mail box
+                // Get Total Number of Unread Email in mail box
                 $count_messages   = $this->getTotalMails();
                 $delete           = [];
                 $messages         = [];
@@ -615,7 +685,7 @@ class MailCollector extends CommonDBTM
                         }
 
                         $messages[$message_id] = $message;
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         ErrorHandler::logCaughtException($e);
                         ErrorHandler::displayCaughtExceptionMessage($e);
                         Toolbox::logInFile(
@@ -646,7 +716,7 @@ class MailCollector extends CommonDBTM
                             $message,
                             [
                                 'mailgates_id' => $mailgateID,
-                                'play_rules'   => true
+                                'play_rules'   => true,
                             ]
                         );
 
@@ -655,15 +725,13 @@ class MailCollector extends CommonDBTM
                         $requester = $this->getRequesterEmail($message);
 
                         if (!$tkt['_blacklisted']) {
-                              /** @var \DBmysql $DB */
-                              global $DB;
-                              $rejinput['from']              = $requester ?? '';
-                              $rejinput['to']                = $headers['to'];
-                              $rejinput['users_id']          = $tkt['_users_id_requester'];
-                              $rejinput['subject']           = $this->cleanSubject($headers['subject']);
-                              $rejinput['messageid']         = $headers['message_id'];
+                            $rejinput['from']              = $requester ?? '';
+                            $rejinput['to']                = $headers['to'] ?? '';
+                            $rejinput['users_id']          = $tkt['_users_id_requester'];
+                            $rejinput['subject']           = $this->cleanSubject($headers['subject']);
+                            $rejinput['messageid']         = $headers['message_id'];
                         }
-                    } catch (\Throwable $e) {
+                    } catch (Throwable $e) {
                         $error++;
                         ErrorHandler::logCaughtException($e);
                         ErrorHandler::displayCaughtExceptionMessage($e);
@@ -685,11 +753,11 @@ class MailCollector extends CommonDBTM
                     $is_supplier_anonymous = !(isset($tkt['_supplier_email'])
                                           && $tkt['_supplier_email']);
 
-                  // Keep track of the mail author so we can check his
-                  // notifications preferences later (glpinotification_to_myself)
+                    // Keep track of the mail author so we can check his
+                    // notifications preferences later (glpinotification_to_myself)
                     if (isset($tkt['users_id']) && $tkt['users_id']) {
-                         $_SESSION['mailcollector_user'] = $tkt['users_id'];
-                    } else if (isset($tkt['_users_id_requester_notif']['alternative_email'][0])) {
+                        $_SESSION['mailcollector_user'] = $tkt['users_id'];
+                    } elseif (isset($tkt['_users_id_requester_notif']['alternative_email'][0])) {
                         // Special case when we have no users_id (anonymous helpdesk)
                         // -> use the user email instead
                         $_SESSION['mailcollector_user'] = $tkt["_users_id_requester_notif"]['alternative_email'][0];
@@ -698,21 +766,21 @@ class MailCollector extends CommonDBTM
                     if (isset($tkt['_blacklisted']) && $tkt['_blacklisted']) {
                         $delete[$uid] =  self::REFUSED_FOLDER;
                         $blacklisted++;
-                    } else if (isset($tkt['_refuse_email_with_response'])) {
+                    } elseif (isset($tkt['_refuse_email_with_response'])) {
                         $delete[$uid] =  self::REFUSED_FOLDER;
                         $refused++;
                         $this->sendMailRefusedResponse($requester, $tkt['name']);
-                    } else if (isset($tkt['_refuse_email_no_response'])) {
+                    } elseif (isset($tkt['_refuse_email_no_response'])) {
                         $delete[$uid] =  self::REFUSED_FOLDER;
                         $refused++;
-                    } else if (
+                    } elseif (
                         isset($tkt['entities_id'])
                           && !isset($tkt['tickets_id'])
                           && ($CFG_GLPI["use_anonymous_helpdesk"]
                               || !$is_user_anonymous
                               || !$is_supplier_anonymous)
                     ) {
-                       // New ticket case
+                        // New ticket case
                         $ticket = new Ticket();
 
                         if (
@@ -724,22 +792,22 @@ class MailCollector extends CommonDBTM
                                 $tkt['entities_id']
                             )
                         ) {
-                             $delete[$uid] =  self::REFUSED_FOLDER;
-                             $refused++;
-                             $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
-                             $rejected->add($rejinput);
-                        } else if ($ticket->add($tkt)) {
+                            $delete[$uid] =  self::REFUSED_FOLDER;
+                            $refused++;
+                            $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
+                            $rejected->add($rejinput);
+                        } elseif ($ticket->add($tkt)) {
                             $delete[$uid] =  self::ACCEPTED_FOLDER;
                         } else {
                             $error++;
                             $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                             $rejected->add($rejinput);
                         }
-                    } else if (
+                    } elseif (
                         isset($tkt['tickets_id'])
-                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous)
+                          && ($CFG_GLPI['use_anonymous_followups'] || !$is_user_anonymous || $tkt['_supplier_email'])
                     ) {
-                       // Followup case
+                        // Followup case
                         $ticket = new Ticket();
                         $ticketExist = $ticket->getFromDB($tkt['tickets_id']);
                         $fup = new ITILFollowup();
@@ -755,14 +823,14 @@ class MailCollector extends CommonDBTM
                                 $ticket->fields['entities_id']
                             )
                         ) {
-                             // Get suppliers matching the from email
-                             $suppliers = Supplier::getSuppliersByEmail(
-                                 $rejinput['from']
-                             );
+                            // Get suppliers matching the from email
+                            $suppliers = Supplier::getSuppliersByEmail(
+                                $rejinput['from']
+                            );
 
                             foreach ($suppliers as $supplier) {
-                               // If the supplier is assigned to this ticket then
-                               // the followup must be private
+                                // If the supplier is assigned to this ticket then
+                                // the followup must be private
                                 if (
                                     $ticket->isSupplier(
                                         CommonITILActor::ASSIGN,
@@ -779,15 +847,16 @@ class MailCollector extends CommonDBTM
                             $error++;
                             $rejinput['reason'] = NotImportedEmail::FAILED_OPERATION;
                             $rejected->add($rejinput);
-                        } else if (
+                        } elseif (
                             !$CFG_GLPI['use_anonymous_followups']
                              && !$ticket->canUserAddFollowups($tkt['_users_id_requester'])
+                             && !$tkt['_supplier_email']
                         ) {
                             $delete[$uid] =  self::REFUSED_FOLDER;
                             $refused++;
                             $rejinput['reason'] = NotImportedEmail::NOT_ENOUGH_RIGHTS;
                             $rejected->add($rejinput);
-                        } else if ($fup->add($fup_input)) {
+                        } elseif ($fup->add($fup_input)) {
                             $delete[$uid] =  self::ACCEPTED_FOLDER;
                         } else {
                             $error++;
@@ -805,7 +874,7 @@ class MailCollector extends CommonDBTM
                         $delete[$uid] =  self::REFUSED_FOLDER;
                     }
 
-                  // Clean mail author used for notification settings
+                    // Clean mail author used for notification settings
                     unset($_SESSION['mailcollector_user']);
                 }
 
@@ -819,7 +888,7 @@ class MailCollector extends CommonDBTM
                     'last_collect_date' => $_SESSION["glpi_currenttime"],
                 ]);
 
-              //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
+                //TRANS: %1$d, %2$d, %3$d, %4$d %5$d and %6$d are number of messages
                 $msg = sprintf(
                     __('Number of messages: available=%1$d, already imported=%2$d, retrieved=%3$d, refused=%4$d, errors=%5$d, blacklisted=%6$d'),
                     $count_messages,
@@ -830,7 +899,7 @@ class MailCollector extends CommonDBTM
                     $blacklisted
                 );
                 if ($display) {
-                     Session::addMessageAfterRedirect(htmlescape($msg), false, ($error ? ERROR : INFO));
+                    Session::addMessageAfterRedirect(htmlescape($msg), false, ($error ? ERROR : INFO));
                 } else {
                     return $msg;
                 }
@@ -844,7 +913,7 @@ class MailCollector extends CommonDBTM
                 }
             }
         } else {
-           //TRANS: %s is the ID of the mailgate
+            //TRANS: %s is the ID of the mailgate
             $msg = sprintf(__('Could not find mailgate %d'), $mailgateID);
             if ($display) {
                 Session::addMessageAfterRedirect(htmlescape($msg), false, ERROR);
@@ -860,17 +929,13 @@ class MailCollector extends CommonDBTM
      * Builds and returns the main structure of the ticket to be created
      *
      * @param string                        $uid     UID of the message
-     * @param \Laminas\Mail\Storage\Message $message  Messge
+     * @param Message $message Messge
      * @param array                         $options  Possible options
      *
      * @return array ticket fields
      */
-    public function buildTicket($uid, \Laminas\Mail\Storage\Message $message, $options = [])
+    public function buildTicket($uid, Message $message, $options = [])
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         $play_rules = (isset($options['play_rules']) && $options['play_rules']);
@@ -878,65 +943,60 @@ class MailCollector extends CommonDBTM
 
         $tkt                 = [];
         $tkt['_blacklisted'] = false;
-       // For RuleTickets
+        // For RuleTickets
         $tkt['_mailgate']    = $options['mailgates_id'];
         $tkt['_uid']         = $uid;
         $tkt['_head']        = $headers;
 
         $createuserfromemail = $this->fields['create_user_from_email'];
 
-       // Use mail date if it's defined
+        // Use mail date if it's defined
         if ($this->fields['use_mail_date'] && isset($headers['date'])) {
             $tkt['date'] = $headers['date'];
         }
 
-        if ($this->isMessageSentByGlpi($message)) {
-           // Message was sent by current instance of GLPI.
-           // Message is blacklisted to avoid infinite loop (where GLPI creates a ticket from its own notification).
-            $tkt['_blacklisted'] = true;
-            return $tkt;
-        } else if ($this->isResponseToMessageSentByAnotherGlpi($message)) {
-           // Message is a response to a message sent by another GLPI.
-           // Message is blacklisted as we consider that the other instance of GLPI is responsible to handle this thread.
+        if ($this->isItilNotificationFromSelf($message)) {
+            // Message was sent by current instance of GLPI.
+            // Message is blacklisted to avoid infinite loop (where GLPI creates a ticket from its own notification).
             $tkt['_blacklisted'] = true;
             return $tkt;
         }
 
-       // manage blacklist
+        // manage blacklist
         $blacklisted_emails   = Blacklist::getEmails();
-       // Add name of the mailcollector as blacklisted
+        // Add name of the mailcollector as blacklisted
         $blacklisted_emails[] = $this->fields['name'];
-        if (Toolbox::inArrayCaseCompare($headers['from'], $blacklisted_emails)) {
+        if ($headers['from'] !== null && Toolbox::inArrayCaseCompare($headers['from'], $blacklisted_emails)) {
             $tkt['_blacklisted'] = true;
             return $tkt;
         }
 
-       // max size = 0 : no import attachments
+        // max size = 0 : no import attachments
         if ($this->fields['filesize_max'] > 0) {
             if (is_writable(GLPI_TMP_DIR)) {
                 $tkt['_filename'] = $this->getAttached($message, GLPI_TMP_DIR . "/", $this->fields['filesize_max']);
                 $tkt['_tag']      = $this->tags;
             } else {
-               //TRANS: %s is a directory
+                //TRANS: %s is a directory
                 Toolbox::logInFile('mailgate', sprintf(__('%s is not writable'), GLPI_TMP_DIR . "/") . "\n");
             }
         }
 
-       //  Who is the user ?
+        //  Who is the user ?
         $requester = $this->getRequesterEmail($message);
 
         $tkt['_users_id_requester']                              = User::getOrImportByEmail($requester, $createuserfromemail);
         $tkt["_users_id_requester_notif"]['use_notification'][0] = 1;
-       // Set alternative email if user not found / used if anonymous mail creation is enable
+        // Set alternative email if user not found / used if anonymous mail creation is enable
         if (!$tkt['_users_id_requester']) {
             $tkt["_users_id_requester_notif"]['alternative_email'][0] = $requester;
         }
 
-       // Fix author of attachment
-       // Move requester to author of followup
+        // Fix author of attachment
+        // Move requester to author of followup
         $tkt['users_id'] = $tkt['_users_id_requester'];
 
-       // Add to and cc as additional observer if user found
+        // Add to and cc as additional observer if user found
         $ccs = $headers['ccs'];
         if (is_array($ccs) && count($ccs) && $this->getField("add_cc_to_observer")) {
             foreach ($ccs as $cc) {
@@ -979,15 +1039,15 @@ class MailCollector extends CommonDBTM
             }
         }
 
-       // Auto_import
+        // Auto_import
         $tkt['_auto_import']           = 1;
-       // For followup : do not check users_id = login user
+        // For followup : do not check users_id = login user
         $tkt['_do_not_check_users_id'] = 1;
         $body                          = $this->getBody($message);
 
         try {
             $subject = $message->getHeader('subject')->getFieldValue();
-        } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $subject = '';
         }
         $tkt['name'] = $this->cleanSubject($subject);
@@ -996,44 +1056,41 @@ class MailCollector extends CommonDBTM
 
         $tkt['content'] = $body;
 
-       // Search for referenced item in headers
+        // Search for referenced item in headers
         $found_item = $this->getItemFromHeaders($message);
         if ($found_item instanceof Ticket) {
             $tkt['tickets_id'] = $found_item->fields['id'];
         }
 
-       // See in title
-        if (
-            !isset($tkt['tickets_id'])
-            && preg_match('/\[.+#(\d+)\]/', $subject, $match)
-        ) {
-            $tkt['tickets_id'] = intval($match[1]);
-        }
-
         $tkt['_supplier_email'] = false;
-       // Found ticket link
+
+        // Found ticket link
         if (isset($tkt['tickets_id'])) {
-           // it's a reply to a previous ticket
+            // it's a reply to a previous ticket
             $job = new Ticket();
             $tu  = new Ticket_User();
             $st  = new Supplier_Ticket();
 
-           // Check if ticket  exists and users_id exists in GLPI
+            $tkt['_supplier_email'] = $st->isSupplierEmail($tkt['tickets_id'], $requester);
+
+            // Check if ticket  exists and users_id exists in GLPI
             if (
                 $job->getFromDB($tkt['tickets_id'])
                 && ($job->fields['status'] != CommonITILObject::CLOSED)
-                && ($CFG_GLPI['use_anonymous_followups']
-                 || ($tkt['_users_id_requester'] > 0)
-                 || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $requester)
-                 || ($tkt['_supplier_email'] = $st->isSupplierEmail(
-                     $tkt['tickets_id'],
-                     $requester
-                 )))
+                && (
+                    $CFG_GLPI['use_anonymous_followups']
+                    || ($tkt['_users_id_requester'] > 0)
+                    || $tu->isAlternateEmailForITILObject($tkt['tickets_id'], $requester)
+                    || $tkt['_supplier_email']
+                )
             ) {
                 if ($tkt['_supplier_email']) {
-                    $tkt['content'] = sprintf(__('From %s'), $requester)
-                    . ($this->body_is_html ? '<br /><br />' : "\n\n")
-                    . $tkt['content'];
+                    $tkt['content'] = (
+                        $this->body_is_html
+                            ? htmlescape(sprintf(__('From %s'), $requester)) . '<br /><br />'
+                            : sprintf(__('From %s'), $requester) . "\r\n\r\n"
+                    )
+                        . $tkt['content'];
                 }
 
                 $header_tag      = NotificationTargetTicket::HEADERTAG;
@@ -1052,14 +1109,14 @@ class MailCollector extends CommonDBTM
                         "\r\n",
                         $tkt['content']
                     );
-                } else if ($has_header_line) {
+                } elseif ($has_header_line) {
                     // Strip all contents between header line and end of message
                     $stripped_content = preg_replace(
                         '/\s*' . $header_pattern . '.*$/s',
                         '',
                         $tkt['content']
                     );
-                } else if ($has_footer_line) {
+                } elseif ($has_footer_line) {
                     // Strip all contents between begin of message and footer line
                     $stripped_content = preg_replace(
                         '/^.*' . $footer_pattern . '\s*/s',
@@ -1079,18 +1136,21 @@ class MailCollector extends CommonDBTM
                 }
                 $tkt['content'] = trim($stripped_content);
             } else {
-               // => to handle link in Ticket->post_addItem()
+                // => to handle link in Ticket->post_addItem()
                 $tkt['_linkedto'] = $tkt['tickets_id'];
                 unset($tkt['tickets_id']);
             }
         }
 
-       // Add message from getAttached
+        // Add message from getAttached
         if ($this->addtobody) {
-            $tkt['content'] .= $this->addtobody;
+            $tkt['content'] .= $this->body_is_html
+                ? nl2br(htmlescape($this->addtobody))
+                : $this->addtobody
+            ;
         }
 
-       //If files are present and content is html
+        //If files are present and content is html
         if (isset($this->files) && count($this->files) && $this->body_is_html) {
             $tkt['content'] = Ticket::convertContentForTicket(
                 $tkt['content'],
@@ -1100,25 +1160,25 @@ class MailCollector extends CommonDBTM
         }
 
         if (!$DB->use_utf8mb4) {
-           // Replace emojis by their shortcode
+            // Replace emojis by their shortcode
             $tkt['content'] = LitEmoji::encodeShortcode($tkt['content']);
             $tkt['name']    = LitEmoji::encodeShortcode($tkt['name']);
         }
 
-       // Clean mail content
+        // Clean mail content
         $tkt['content'] = $this->cleanContent($tkt['content']);
 
         if (!isset($tkt['tickets_id'])) {
-           // Which entity ?
-           //$tkt['entities_id']=$this->fields['entities_id'];
-           //$tkt['Subject']= $message->subject;   // not use for the moment
-           // Medium
+            // Which entity ?
+            //$tkt['entities_id']=$this->fields['entities_id'];
+            //$tkt['Subject']= $message->subject;   // not use for the moment
+            // Medium
             $tkt['urgency']  = "3";
-           // No hardware associated
+            // No hardware associated
             $tkt['itemtype'] = "";
-           // Mail request type
+            // Mail request type
         } else {
-           // Reopen if needed
+            // Reopen if needed
             $tkt['add_reopen'] = 1;
         }
 
@@ -1136,7 +1196,7 @@ class MailCollector extends CommonDBTM
                 $rule_options
             );
 
-           // New ticket : compute all
+            // New ticket : compute all
             if (!isset($tkt['tickets_id'])) {
                 foreach ($output as $key => $value) {
                     $tkt[$key] = $value;
@@ -1167,14 +1227,13 @@ class MailCollector extends CommonDBTM
      **/
     public function cleanContent($string)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $original = $string;
 
         $br_marker = '==' . mt_rand() . '==';
 
-       // Wrap content for blacklisted items
+        // Wrap content for blacklisted items
         $cleaned_count = 0;
         $itemstoclean = [];
         $blacklisted_contents = $DB->request(['FROM' => BlacklistedMailContent::getTable()]);
@@ -1185,10 +1244,10 @@ class MailCollector extends CommonDBTM
             }
         }
         if (count($itemstoclean)) {
-           // Replace HTML line breaks to marker
+            // Replace HTML line breaks to marker
             $string = preg_replace('/<br\s*\/?>/', $br_marker, $string);
 
-           // Replace plain text line breaks to marker if content is not html, otherwise remove them
+            // Replace plain text line breaks to marker if content is not html, otherwise remove them
             $string = str_replace(
                 ["\r\n", "\n", "\r"],
                 $this->body_is_html ? ' ' : $br_marker,
@@ -1198,9 +1257,9 @@ class MailCollector extends CommonDBTM
             $string = str_replace($br_marker, $this->body_is_html ? "<br />" : "\r\n", $string);
         }
 
-       // If no clean were done, return original string, as cleaning process may alter
-       // specific contents due to removal of newlines (can break "<pre>" contents for instance).
-       // FIXME: Find a way to clean without removing newlines on legitimate content.
+        // If no clean were done, return original string, as cleaning process may alter
+        // specific contents due to removal of newlines (can break "<pre>" contents for instance).
+        // FIXME: Find a way to clean without removing newlines on legitimate content.
         return $cleaned_count > 0 ? $string : $original;
     }
 
@@ -1232,7 +1291,7 @@ class MailCollector extends CommonDBTM
             'host'      => $config['address'],
             'user'      => $this->fields['login'],
             'password'  => (new GLPIKey())->decrypt($this->fields['passwd']),
-            'port'      => $config['port']
+            'port'      => $config['port'],
         ];
 
         if ($config['ssl']) {
@@ -1254,21 +1313,21 @@ class MailCollector extends CommonDBTM
         try {
             $storage = Toolbox::getMailServerStorageInstance($config['type'], $params);
             if ($storage === null) {
-                throw new \Exception(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
+                throw new Exception(sprintf(__('Unsupported mail server type:%s.'), $config['type']));
             }
             $this->storage = $storage;
             if ($this->fields['errors'] > 0) {
                 $this->update([
                     'id'     => $this->getID(),
-                    'errors' => 0
+                    'errors' => 0,
                 ]);
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->update([
                 'id'     => $this->getID(),
-                'errors' => ($this->fields['errors'] + 1)
+                'errors' => ($this->fields['errors'] + 1),
             ]);
-           // Any errors will cause an Exception.
+            // Any errors will cause an Exception.
             throw $e;
         }
     }
@@ -1277,17 +1336,17 @@ class MailCollector extends CommonDBTM
     /**
      * Get extra headers
      *
-     * @param \Laminas\Mail\Storage\Message $message Message
+     * @param Message $message Message
      *
      * @return array
      **/
-    public function getAdditionnalHeaders(\Laminas\Mail\Storage\Message $message)
+    public function getAdditionnalHeaders(Message $message)
     {
         $head   = [];
         $headers = $message->getHeaders();
 
         foreach ($headers as $header) {
-           // is line with additional header?
+            // is line with additional header?
             $key = $header->getFieldName();
             $value = $header->getFieldValue();
             if (
@@ -1312,7 +1371,7 @@ class MailCollector extends CommonDBTM
     /**
      * Get full headers infos from particular mail
      *
-     * @param \Laminas\Mail\Storage\Message $message Message
+     * @param Message $message Message
      *
      * @return array Associative array with following keys
      *                subject   => Subject of Mail
@@ -1322,7 +1381,7 @@ class MailCollector extends CommonDBTM
      *                from      => From address of mail
      *                fromName  => Form Name of Mail
      **/
-    public function getHeaders(\Laminas\Mail\Storage\Message $message)
+    public function getHeaders(Message $message)
     {
 
         $sender_email = $this->getEmailFromHeader($message, 'from');
@@ -1331,50 +1390,68 @@ class MailCollector extends CommonDBTM
 
         $reply_to_addr = $this->getEmailFromHeader($message, 'reply-to');
 
-        $date         = date("Y-m-d H:i:s", strtotime($message->date));
+        try {
+            $date         = date("Y-m-d H:i:s", strtotime($message->getHeader('date', 'string')));
+        } catch (DatetimeException $e) {
+            //wrong date, ignoring
+            $date = null;
+        }
         $mail_details = [];
 
-       // Construct to and cc arrays
+        // Construct to and cc arrays
         $tos     = [];
         if (isset($message->to)) {
             $h_tos   = $message->getHeader('to');
-            foreach ($h_tos->getAddressList() as $address) {
-                $mailto = Toolbox::strtolower($address->getEmail());
-                if ($mailto === $this->fields['name']) {
-                    $to = $mailto;
+            if ($h_tos instanceof AbstractAddressList) {
+                foreach ($h_tos->getAddressList() as $address) {
+                    $email = $address->getEmail();
+                    if ($email === null) {
+                        continue;
+                    }
+                    $mailto = Toolbox::strtolower($email);
+                    if ($mailto === $this->fields['name']) {
+                        $to = $mailto;
+                    }
+                    $tos[] = $mailto;
                 }
-                $tos[] = $mailto;
             }
         }
 
         $ccs     = [];
         if (isset($message->cc)) {
             $h_ccs   = $message->getHeader('cc');
-            foreach ($h_ccs->getAddressList() as $address) {
-                $ccs[] = Toolbox::strtolower($address->getEmail());
+            if ($h_ccs instanceof AbstractAddressList) {
+                foreach ($h_ccs->getAddressList() as $address) {
+                    $email = $address->getEmail();
+                    if ($email === null) {
+                        continue;
+                    }
+                    $ccs[] = Toolbox::strtolower($email);
+                }
             }
         }
 
-       // secu on subject setting
+        // secu on subject setting
         try {
             $subject = $message->getHeader('subject')->getFieldValue();
-        } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $subject = '';
         }
 
-        $message_id = $message->getHeaders()->has('message-id')
-            ? $message->getHeader('message-id')->getFieldValue()
-            : 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+        $message_id = $this->getMessageIdFromHeaders($message);
+        if ($message_id === null) {
+            $message_id = 'MISSING_ID_' . sha1($message->getHeaders()->toString());
+        }
 
         $mail_details = [
-            'from'       => Toolbox::strtolower($sender_email),
+            'from'       => $sender_email !== null ? Toolbox::strtolower($sender_email) : null,
             'subject'    => $subject,
             'reply-to'   => $reply_to_addr !== null ? Toolbox::strtolower($reply_to_addr) : null,
             'to'         => $to !== null ? Toolbox::strtolower($to) : null,
             'message_id' => $message_id,
             'tos'        => $tos,
             'ccs'        => $ccs,
-            'date'       => $date
+            'date'       => $date,
         ];
 
         if (isset($message->references)) {
@@ -1389,7 +1466,19 @@ class MailCollector extends CommonDBTM
             }
         }
 
-       //Add additional headers in X-
+        if (isset($message->threadtopic)) {
+            if ($threadtopic = $message->getHeader('threadtopic')) {
+                $mail_details['threadtopic'] = $threadtopic->getFieldValue();
+            }
+        }
+
+        if (isset($message->threadindex)) {
+            if ($threadindex = $message->getHeader('threadindex')) {
+                $mail_details['threadindex'] = $threadindex->getFieldValue();
+            }
+        }
+
+        //Add additional headers in X-
         foreach ($this->getAdditionnalHeaders($message) as $header => $value) {
             $mail_details[$header] = $value;
         }
@@ -1401,7 +1490,7 @@ class MailCollector extends CommonDBTM
     /**
      * Number of entries in the mailbox
      *
-     * @return integer
+     * @return int
      **/
     public function getTotalMails()
     {
@@ -1413,15 +1502,15 @@ class MailCollector extends CommonDBTM
      * Recursivly get attached documents
      * Result is stored in $this->files
      *
-     * @param \Laminas\Mail\Storage\Part $part     Message part
+     * @param Part $part Message part
      * @param string                     $path     Temporary path
-     * @param integer                    $maxsize  Maximum size of document to be retrieved
+     * @param int                    $maxsize  Maximum size of document to be retrieved
      * @param string                     $subject  Message subject
      * @param string                     $subpart  Subpart index (used in document filenames)
      *
      * @return void
      **/
-    private function getRecursiveAttached(\Laminas\Mail\Storage\Part $part, $path, $maxsize, $subject, $subpart = "")
+    private function getRecursiveAttached(Part $part, $path, $maxsize, $subject, $subpart = "")
     {
         if ($part->isMultipart()) {
             $index = 0;
@@ -1439,25 +1528,25 @@ class MailCollector extends CommonDBTM
                 !$part->getHeaders()->has('content-type')
                 || !(($content_type_header = $part->getHeader('content-type')) instanceof ContentType)
             ) {
-                return false; // Ignore attachements with no content-type
+                return; // Ignore attachements with no content-type
             }
             $content_type = $content_type_header->getType();
 
             if (!$part->getHeaders()->has('content-disposition') && preg_match('/^text\/.+/', $content_type)) {
-               // Ignore attachements with no content-disposition only if they corresponds to a text part.
-               // Indeed, some mail clients (like some Outlook versions) does not set any content-disposition
-               // header on inlined images.
-                return false;
+                // Ignore attachements with no content-disposition only if they corresponds to a text part.
+                // Indeed, some mail clients (like some Outlook versions) does not set any content-disposition
+                // header on inlined images.
+                return;
             }
 
-           // fix monoparted mail
+            // fix monoparted mail
             if ($subpart == "") {
                 $subpart = 1;
             }
 
             $filename = '';
 
-           // Try to get filename from Content-Disposition header
+            // Try to get filename from Content-Disposition header
             if (
                 $part->getHeaders()->has('content-disposition')
                 && ($content_disp_header = $part->getHeader('content-disposition')) instanceof ContentDisposition
@@ -1465,7 +1554,7 @@ class MailCollector extends CommonDBTM
                 $filename = $content_disp_header->getParameter('filename') ?? '';
             }
 
-           // Try to get filename from Content-Type header
+            // Try to get filename from Content-Type header
             if (empty($filename)) {
                 $filename = $content_type_header->getParameter('name') ?? '';
             }
@@ -1475,8 +1564,8 @@ class MailCollector extends CommonDBTM
                 preg_match("/^(?<encoding>.*)''(?<value>.*)$/", $filename, $filename_matches)
                 && in_array(strtoupper($filename_matches['encoding']), array_map('strtoupper', mb_list_encodings()))
             ) {
-               // Filename is in RFC5987 format: UTF-8''urlencodedfilename.ext
-               // First, urldecode it, then convert if into UTF-8 if needed.
+                // Filename is in RFC5987 format: UTF-8''urlencodedfilename.ext
+                // First, urldecode it, then convert if into UTF-8 if needed.
                 $filename = urldecode($filename_matches['value']);
                 $encoding = strtoupper($filename_matches['encoding']);
                 if ($encoding !== 'UTF-8') {
@@ -1484,8 +1573,8 @@ class MailCollector extends CommonDBTM
                 }
             }
 
-           // part come without correct filename in headers - generate trivial one
-           // (inline images case for example)
+            // part come without correct filename in headers - generate trivial one
+            // (inline images case for example)
             if ((empty($filename) || !Document::isValidDoc($filename))) {
                 $tmp_filename = "doc_$subpart." . str_replace('image/', '', $content_type);
                 if (Document::isValidDoc($tmp_filename)) {
@@ -1493,7 +1582,7 @@ class MailCollector extends CommonDBTM
                 }
             }
 
-           // Embeded email comes without filename - try to get "Subject:" or generate trivial one
+            // Embeded email comes without filename - try to get "Subject:" or generate trivial one
             if (empty($filename)) {
                 if ($subject !== null) {
                     $filename = "msg_{$subpart}_" . Toolbox::slugify($subject) . ".EML";
@@ -1504,17 +1593,17 @@ class MailCollector extends CommonDBTM
 
             $filename = Toolbox::filename($filename);
 
-           //try to avoid conflict between inline image and attachment
+            //try to avoid conflict between inline image and attachment
             while (in_array($filename, $this->files)) {
                 $info = new SplFileInfo($filename);
                 $extension  = $info->getExtension();
                 $basename = $info->getBaseName($extension == '' ? '' : '.' . $extension);
 
-               //replace basename with basename_(num) by basename_(num+1)
+                //replace basename with basename_(num) by basename_(num+1)
                 $matches = [];
                 if (preg_match("/(.*)_([0-9]+)$/", $basename, $matches)) {
-                   //replace basename with basename_(num) by basename_(num+1)
-                    $filename = $matches[1] . '_' . ((int)$matches[2] + 1);
+                    //replace basename with basename_(num) by basename_(num+1)
+                    $filename = $matches[1] . '_' . ((int) $matches[2] + 1);
                 } else {
                     $filename .= '_2';
                 }
@@ -1534,11 +1623,11 @@ class MailCollector extends CommonDBTM
                         Toolbox::getSize($part->getSize())
                     )
                 );
-                return false;
+                return;
             }
 
             if (!Document::isValidDoc($filename)) {
-               //TRANS: %1$s is the filename and %2$s its mime type
+                //TRANS: %1$s is the filename and %2$s its mime type
                 $this->addtobody .= "\n\n" . sprintf(
                     __('%1$s: %2$s'),
                     __('Invalid attached file'),
@@ -1548,7 +1637,7 @@ class MailCollector extends CommonDBTM
                         $content_type
                     )
                 );
-                return false;
+                return;
             }
 
             $contents = $this->getDecodedContent($part);
@@ -1562,10 +1651,10 @@ class MailCollector extends CommonDBTM
                     $tag = Rule::getUuid();
                     $this->tags[$filename]  = $tag;
 
-                   // Link file based on Content-ID header
+                    // Link file based on Content-ID header
                     if (isset($part->contentId)) {
                         $clean = ['<' => '',
-                            '>' => ''
+                            '>' => '',
                         ];
                         $this->altfiles[strtr($part->contentId, $clean)] = $filename;
                     }
@@ -1578,13 +1667,13 @@ class MailCollector extends CommonDBTM
     /**
      * Get attached documents in a mail
      *
-     * @param \Laminas\Mail\Storage\Message $message  Message
+     * @param Message $message Message
      * @param string                        $path     Temporary path
-     * @param integer                       $maxsize  Maximaum size of document to be retrieved
+     * @param int                       $maxsize  Maximaum size of document to be retrieved
      *
      * @return array containing extracted filenames in file/_tmp
      **/
-    public function getAttached(\Laminas\Mail\Storage\Message $message, $path, $maxsize)
+    public function getAttached(Message $message, $path, $maxsize)
     {
         $this->files     = [];
         $this->altfiles  = [];
@@ -1592,7 +1681,7 @@ class MailCollector extends CommonDBTM
 
         try {
             $subject = $message->getHeader('subject')->getFieldValue();
-        } catch (\Laminas\Mail\Storage\Exception\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $subject = null;
         }
 
@@ -1605,9 +1694,11 @@ class MailCollector extends CommonDBTM
     /**
      * Get The actual mail content from this mail
      *
-     * @param \Laminas\Mail\Storage\Message $message Message
+     * @param Message $message Message
+     *
+     * @return string
      **/
-    public function getBody(\Laminas\Mail\Storage\Message $message)
+    public function getBody(Message $message)
     {
         $content = null;
 
@@ -1626,12 +1717,31 @@ class MailCollector extends CommonDBTM
             }
             if ($content_type === 'text/html') {
                 $this->body_is_html = true;
-                $content = $this->getDecodedContent($part);
+                $raw_content = $this->getDecodedContent($part);
 
-                // Keep only HTML body content
+                $content = '';
+
+                // Extract everything located prior to doctype/html declaration
+                $pre_content_matches = [];
+                if (preg_match('/^(?<pre_content>.*?)(?:<!doctype|<html)/is', $raw_content, $pre_content_matches)) {
+                    $content .= trim($pre_content_matches['pre_content']);
+                }
+
+                // Extract everything located inside the body
                 $body_matches = [];
-                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $content, $body_matches) === 1) {
-                    $content = $body_matches['body'];
+                if (preg_match('/<body[^>]*>\s*(?<body>.+?)\s*<\/body>/is', $raw_content, $body_matches)) {
+                    $content .= $body_matches['body'];
+                }
+
+                // Extract everything located after the html closing tag
+                $post_content_matches = [];
+                if (preg_match('/(?:<\/html>)(?<post_content>.*?)$/is', $raw_content, $post_content_matches)) {
+                    $content .= trim($post_content_matches['post_content']);
+                }
+
+                // If we have extracted content, use it, otherwise fallback to original
+                if ($content === '') {
+                    $content = $raw_content;
                 }
 
                 // Strip <style> and <script> tags located in HTML body.
@@ -1680,12 +1790,12 @@ class MailCollector extends CommonDBTM
      * @param string $uid    mail UID
      * @param string $folder Folder to move (delete if empty) (default '')
      *
-     * @return boolean
+     * @return bool
      **/
     public function deleteMails($uid, $folder = '')
     {
 
-       // Disable move support, POP protocol only has the INBOX folder
+        // Disable move support, POP protocol only has the INBOX folder
         if (strstr($this->fields['host'], "/pop")) {
             $folder = '';
         }
@@ -1693,17 +1803,21 @@ class MailCollector extends CommonDBTM
         if (!empty($folder) && isset($this->fields[$folder]) && !empty($this->fields[$folder])) {
             $name = mb_convert_encoding($this->fields[$folder], "UTF7-IMAP", "UTF-8");
             try {
+                if (!$this->storage instanceof WritableInterface) {
+                    throw new RuntimeException("This mailbox do not support moving messages");
+                }
+
                 $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
                 return true;
-            } catch (\Throwable $e) {
-               // raise an error and fallback to delete
-                trigger_error(
+            } catch (Throwable $e) {
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
                     sprintf(
-                    //TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
-                        __('Invalid configuration for %1$s folder in receiver %2$s'),
+                        'Invalid configuration for %1$s folder in receiver %2$s',
                         $folder,
                         $this->getName()
-                    )
+                    ),
+                    ['exception' => $e]
                 );
             }
         }
@@ -1715,13 +1829,12 @@ class MailCollector extends CommonDBTM
     /**
      * Cron action on mailgate : retrieve mail and create tickets
      *
-     * @param $task
+     * @param CronTask $task
      *
-     * @return -1 : done but not finish 1 : done with success
+     * @return int -1 : done but not finish 1 : done with success
      **/
     public static function cronMailgate($task)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         NotImportedEmail::deleteLog();
@@ -1755,8 +1868,8 @@ class MailCollector extends CommonDBTM
         }
 
         if ($max == $task->fields['param']) {
-            return 0; // Nothin to do
-        } else if ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
+            return 0; // Nothing to do
+        } elseif ($max === 0 || count($iterator) < countElementsInTable('glpi_mailcollectors', ['is_active' => 1])) {
             return -1; // still messages to retrieve
         }
 
@@ -1764,6 +1877,11 @@ class MailCollector extends CommonDBTM
     }
 
 
+    /**
+     * @param string $name
+     *
+     * @return array|void
+     */
     public static function cronInfo($name)
     {
 
@@ -1771,7 +1889,7 @@ class MailCollector extends CommonDBTM
             case 'mailgate':
                 return [
                     'description' => __('Retrieve email (Mails receivers)'),
-                    'parameter'   => __('Number of emails to process')
+                    'parameter'   => __('Number of emails to process'),
                 ];
 
             case 'mailgateerror':
@@ -1783,16 +1901,12 @@ class MailCollector extends CommonDBTM
     /**
      * Send Alarms on mailgate errors
      *
-     * @since 0.85
-     *
      * @param CronTask $task for log
-     **/
+     *
+     * @return int
+     */
     public static function cronMailgateError($task)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         if (!$CFG_GLPI["use_notifications"]) {
@@ -1804,8 +1918,8 @@ class MailCollector extends CommonDBTM
             'FROM'   => 'glpi_mailcollectors',
             'WHERE'  => [
                 'errors'    => ['>', 0],
-                'is_active' => 1
-            ]
+                'is_active' => 1,
+            ],
         ]);
 
         $items = [];
@@ -1832,10 +1946,6 @@ class MailCollector extends CommonDBTM
      */
     public function getSystemInformation()
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
         // No need to translate, this part always display in english (for copy/paste to forum)
@@ -1846,13 +1956,9 @@ class MailCollector extends CommonDBTM
                 break;
 
             case MAIL_SMTP:
-                $content .= 'SMTP';
-                break;
-
-            case MAIL_SMTPS:
             case MAIL_SMTPSSL:
             case MAIL_SMTPTLS:
-                $content .= 'SMTPS';
+                $content .= 'SMTP';
                 break;
 
             case MAIL_SMTPOAUTH:
@@ -1876,30 +1982,31 @@ class MailCollector extends CommonDBTM
 
         return [
             'label' => 'Notifications',
-            'content' => $content
+            'content' => $content,
         ];
     }
 
 
     /**
-     * @param $to        (default '')
-     * @param $subject   (default '')
-     **/
+     * @param string $to        (default '')
+     * @param string $subject   (default '')
+     *
+     * @return void
+     */
     public function sendMailRefusedResponse($to = '', $subject = '')
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $mmail = new GLPIMailer();
         $mail = $mmail->getEmail();
         $mail->getHeaders()->addTextHeader('Auto-Submitted', 'auto-replied');
-        $mail->from(new \Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
+        $mail->from(new Symfony\Component\Mime\Address($CFG_GLPI["admin_email"], $CFG_GLPI["admin_email_name"]));
         $mail->to($to);
         // Normalized header, no translation
         $mail->subject('Re: ' . $subject);
         $mail->text(
-            __("Your email could not be processed.\nIf the problem persists, contact the administrator") .
-             "\n-- \n" . $CFG_GLPI["mailing_signature"]
+            __("Your email could not be processed.\nIf the problem persists, contact the administrator")
+             . "\n-- \n" . $CFG_GLPI["mailing_signature"]
         );
         $mmail->send();
     }
@@ -1918,23 +2025,22 @@ class MailCollector extends CommonDBTM
                 $collector->getFromDB($data['id']);
                 $servers[] = [
                     'link' => htmlescape($collector->getLinkURL()),
-                    'name' => htmlescape($collector->getName(['complete' => true]))
+                    'name' => htmlescape($collector->getName(['complete' => true])),
                 ];
             }
         }
 
         if (count($servers)) {
             $server_links = implode(' ', array_map(
-                static fn ($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
+                static fn($v) => '<a class="btn btn-sm btn-ghost-danger align-baseline" href="' . $v['link'] . '">' . $v['name'] . '</a>',
                 $servers
             ));
-            // language=twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                <span class="alert alert-danger p-1 ps-2">
-                    <i class="ti ti-alert-triangle me-2"></i>
-                    <span>{{ receivers_error_msg|raw }}</span>
-                </span>
-TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_links)]);
+            TemplateRenderer::getInstance()->display(
+                'components/search/status_area.html.twig',
+                [
+                    'status_message' => sprintf(__s('Receivers in error: %s'), $server_links),
+                ]
+            );
         }
     }
 
@@ -1942,18 +2048,17 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
     /**
      * Count collectors
      *
-     * @param boolean $active Count active only, defaults to false
+     * @param bool $active Count active only, defaults to false
      *
-     * @return integer
+     * @return int
      */
     public static function countCollectors($active = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $criteria = [
             'COUNT'  => 'cpt',
-            'FROM'   => 'glpi_mailcollectors'
+            'FROM'   => 'glpi_mailcollectors',
         ];
 
         if (true === $active) {
@@ -1962,13 +2067,13 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
 
         $result = $DB->request($criteria)->current();
 
-        return (int)$result['cpt'];
+        return (int) $result['cpt'];
     }
 
     /**
      * Count active collectors
      *
-     * @return integer
+     * @return int
      */
     public static function countActiveCollectors()
     {
@@ -2001,13 +2106,13 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
                 $itemtype = $matches['itemtype'];
                 $items_id = $matches['items_id'];
 
-               // Handle old format MessageId where itemtype was not in header
+                // Handle old format MessageId where itemtype was not in header
                 if (empty($itemtype) && !empty($items_id)) {
                     $itemtype = Ticket::getType();
                 }
 
                 if (empty($itemtype) || !class_exists($itemtype) || !is_a($itemtype, CommonDBTM::class, true)) {
-                   // itemtype not found or invalid
+                    // itemtype not found or invalid
                     continue;
                 }
                 $item = new $itemtype();
@@ -2017,42 +2122,81 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             }
         }
 
+        // Check in subject
+        if ($message->getHeaders()->has('subject')) {
+            $subject = $message->getHeader('subject')->getFieldValue();
+            $matches = [];
+
+            $ticket = new Ticket();
+            if (
+                preg_match('/\[.+#(\d+)\]/', $subject, $matches) === 1
+                && $ticket->getFromDB($matches[1])
+            ) {
+                return $ticket;
+            }
+        }
+
         return null;
     }
 
     /**
-     * Check if message was sent by current instance of GLPI.
-     * This can be verified by checking the MessageId header.
-     *
+     * Retrieve the message ID from headers.
+     * If multiple matching headers are found, the first one parsed as a {@link MessageId} is returned.
      * @param Message $message
-     *
-     * @since 9.5.4
-     *
-     * @return bool
+     * @return string|null
      */
-    public function isMessageSentByGlpi(Message $message): bool
+    private function getMessageIdFromHeaders(Message $message): ?string
     {
-        if (!$message->getHeaders()->has('message-id')) {
-           // Messages sent by GLPI now have always a message-id header.
+        $message_id = null;
+        if ($message->getHeaders()->has('message-id')) {
+            $message_id_headers = $message->getHeaders()->get('message-id');
+            if ($message_id_headers instanceof ArrayIterator) {
+                // In cases of multiple headers, we will try taking the first MessageId.
+                // Some systems may send a non-standard MessageId header which becomes a GenericHeader along with Message-ID which becomes MessageId
+                foreach ($message_id_headers as $mid_header) {
+                    if ($mid_header instanceof MessageId) {
+                        $message_id = $mid_header->getFieldValue();
+                        break;
+                    }
+                }
+            } else {
+                $message_id = $message_id_headers->getFieldValue();
+            }
+        }
+        return $message_id;
+    }
+
+    /**
+     * Check if message was sent by current instance of GLPI and corresponds to a notification related to an ITIL object.
+     */
+    private function isItilNotificationFromSelf(Message $message): bool
+    {
+        $message_id = $this->getMessageIdFromHeaders($message);
+        if ($message_id === null) {
+            // Messages sent by GLPI now have always a message-id header.
             return false;
         }
 
-        $message_id = $message->getHeader('message_id')->getFieldValue();
         $matches = $this->extractValuesFromRefHeader($message_id);
+
         if ($matches === null) {
-           // message-id header does not match GLPI format.
+            // message-id header does not match GLPI format.
+            return false;
+        }
+
+        if (!is_a($matches['itemtype'], CommonITILObject::class, true)) {
             return false;
         }
 
         $uuid = $matches['uuid'];
-        if (empty($uuid)) {
-           // message-id corresponds to old format, without uuid.
-           // We assume that in most environments this message have been sent by this instance of GLPI,
-           // as only one instance of GLPI will be installed.
+        if ($uuid === null) {
+            // message-id corresponds to old format, without uuid.
+            // We assume that in most environments this message have been sent by this instance of GLPI,
+            // as only one instance of GLPI will be installed.
             return true;
         }
 
-        return $uuid == Config::getUuid('notification');
+        return $matches['uuid'] === Config::getUuid('notification');
     }
 
     /**
@@ -2081,15 +2225,15 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
                 }
                 if ($matches['uuid'] == Config::getUuid('notification')) {
                     $has_uuid_from_current_glpi = true;
-                } else if ($matches['uuid'] != Config::getUuid('notification')) {
+                } elseif ($matches['uuid'] != Config::getUuid('notification')) {
                     $has_uuid_from_another_glpi = true;
                 }
             }
         }
 
-       // Matches if one of following conditions matches:
-       // - no UUID found matching current GLPI instance;
-       // - at least one unknown UUID.
+        // Matches if one of following conditions matches:
+        // - no UUID found matching current GLPI instance;
+        // - at least one unknown UUID.
         return !$has_uuid_from_current_glpi && $has_uuid_from_another_glpi;
     }
 
@@ -2105,20 +2249,11 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
      */
     private function extractValuesFromRefHeader(string $header): ?array
     {
-        $defaults = [
-            'uuid'      => null,
-            'itemtype'  => null,
-            'items_id'  => null,
-            'event'     => null,
-        ];
-
-        $values = [];
-
         // Message-Id generated in GLPI >= 10.0.7
         // - without related item:                  GLPI_{$uuid}/{$event}.{$time}.{$rand}@{$uname}
         // - with related item (reference event):   GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}@{$uname}
         // - with related item (other events):      GLPI_{$uuid}-{$itemtype}-{$items_id}/{$event}.{$time}.{$rand}@{$uname}
-        $pattern = '/'
+        $new_pattern = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
             . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optional itemtype + items_id (only when related to an item)
@@ -2126,15 +2261,20 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             . '(\.[0-9]+\.[0-9]+)?' // optional time + rand (only when NOT related to an item OR when event is not the reference one)
             . '@.+'     // uname
             . '/i';
-        if (preg_match($pattern, $header, $values) === 1) {
-            $values += $defaults;
-            return $values;
+        $values = [];
+        if (preg_match($new_pattern, $header, $values) === 1) {
+            return [
+                'uuid'     => $values['uuid'],
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
+                'event'    => $values['event'],
+            ];
         }
 
         // Message-Id generated by GLPI >= 10.0.0 < 10.0.7
         // - without related item:  GLPI_{$uuid}.{$time}.{$rand}@{$uname}
         // - with related item:     GLPI_{$uuid}-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
-        $pattern = '/'
+        $old_pattern_1 = '/'
             . 'GLPI'
             . '_(?<uuid>[a-z0-9]+)' // uuid
             . '(-(?<itemtype>[a-z]+)-(?<items_id>[0-9]+))?' // optionnal itemtype + items_id
@@ -2142,16 +2282,21 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             . '\.[0-9]+' // rand()
             . '@.+'     // uname
             . '/i';
-        if (preg_match($pattern, $header, $values) === 1) {
-            $values += $defaults;
-            return $values;
+        $values = [];
+        if (preg_match($old_pattern_1, $header, $values) === 1) {
+            return [
+                'uuid'     => $values['uuid'],
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : null,
+                'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
+                'event'    => null,
+            ];
         }
 
         // Message-Id generated by GLPI < 10.0.0
         // - for tickets:           GLPI-{$items_id}.{$time}.{$rand}@{$uname}
         // - without related item:  GLPI.{$time}.{$rand}@{$uname}
         // - with related item:     GLPI-{$itemtype}-{$items_id}.{$time}.{$rand}@{$uname}
-        $pattern = '/'
+        $old_pattern_2 = '/'
             . 'GLPI'
             . '(-(?<itemtype>[a-z]+))?' // optionnal itemtype
             . '(-(?<items_id>[0-9]+))?' // optionnal items_id
@@ -2159,18 +2304,25 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             . '\.[0-9]+' // rand()
             . '@.+' // uname
             . '/i';
-        if (preg_match($pattern, $header, $values) === 1) {
-            $values += $defaults;
-            return $values;
+        $values = [];
+        if (preg_match($old_pattern_2, $header, $values) === 1) {
+            return [
+                'uuid'     => null,
+                'itemtype' => !empty($values['itemtype']) ? $values['itemtype'] : (!empty($values['items_id']) ? Ticket::class : null),
+                'items_id' => !empty($values['items_id']) ? (int) $values['items_id'] : null,
+                'event'    => null,
+            ];
         }
 
         return null;
     }
 
     /**
-     * @param $name
-     * @param $value  (default 0)
-     * @param $rand
+     * @param string $name
+     * @param int $value  (default 0)
+     * @param int $rand
+     *
+     * @return void
      **/
     public static function showMaxFilesize($name, $value = 0, $rand = null)
     {
@@ -2190,7 +2342,7 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
 
     public function cleanDBonPurge()
     {
-       // mailcollector for RuleMailCollector, _mailgate for RuleTicket
+        // mailcollector for RuleMailCollector, _mailgate for RuleTicket
         Rule::cleanForItemCriteria($this, 'mailcollector');
         Rule::cleanForItemCriteria($this, '_mailgate');
     }
@@ -2207,12 +2359,12 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
         $email = null;
 
         if ($this->fields['requester_field'] === self::REQUESTER_FIELD_REPLY_TO) {
-           // Try to find requester in "reply-to"
+            // Try to find requester in "reply-to"
             $email = $this->getEmailFromHeader($message, 'reply-to');
         }
 
         if ($email === null) {
-           // Fallback on default "from"
+            // Fallback on default "from"
             $email = $this->getEmailFromHeader($message, 'from');
         }
 
@@ -2243,11 +2395,11 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
     /**
      * Retrieve properly decoded content
      *
-     * @param \Laminas\Mail\Storage\Message $part Message Part
+     * @param Part $part Message Part
      *
      * @return string
      */
-    public function getDecodedContent(\Laminas\Mail\Storage\Part $part)
+    public function getDecodedContent(Part $part)
     {
         $contents = $part->getContent();
 
@@ -2267,7 +2419,7 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
             case '8bit':
             case 'binary':
             default:
-               // returned verbatim
+                // returned verbatim
                 break;
         }
 
@@ -2280,7 +2432,13 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
         }
 
         $charset = $content_type->getParameter('charset');
-        if ($charset !== null && strtoupper($charset) != 'UTF-8') {
+
+        // If charset is not specified, and not UTF-8, force fallback default encoding
+        if ($charset === null) {
+            $charset = mb_check_encoding($contents, 'UTF-8') ? 'UTF-8' : 'ISO-8859-1';
+        }
+
+        if (strtoupper($charset) != 'UTF-8') {
             /* mbstring functions do not handle the 'ks_c_5601-1987' &
              * 'ks_c_5601-1989' charsets. However, these charsets are used, for
              * example, by various versions of Outlook to send Korean characters.
@@ -2297,14 +2455,20 @@ TWIG, ['receivers_error_msg' => sprintf(__s('Receivers in error: %s'), $server_l
                 if (preg_match('/^WINDOWS-\d{4}$/i', $charset)) {
                     $charset = preg_replace('/^WINDOWS-(\d{4})$/i', 'CP$1', $charset);
                 }
+                //convert ISO-8859-8-i
+                if (strtoupper($charset) === 'ISO-8859-8-I') {
+                    $charset = 'ISO-8859-8';
+                }
+
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
                 // TRANSLIT may result in failure depending on system iconv implementation.
-                if ($converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents)) {
-                    $contents = $converted;
-                } else if ($converted = iconv($charset, 'UTF-8//IGNORE', $contents)) {
-                    $contents = $converted;
+                try {
+                    $converted = @iconv($charset, 'UTF-8//TRANSLIT', $contents);
+                } catch (IconvException $e) {
+                    $converted = iconv($charset, 'UTF-8//IGNORE', $contents);
                 }
+                $contents = $converted;
             }
         }
 

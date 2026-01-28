@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,24 +36,45 @@
 namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
+use CommonDBTM;
+use CommonTreeDropdown;
 use ConsumableItem;
+use DbUtils;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Category;
+use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Line;
+use LogicException;
 use Override;
 use PassiveDCEquipment;
 use PDU;
 use Session;
 use Software;
 use TicketRecurrent;
+use User;
 
-class QuestionTypeItem extends AbstractQuestionType
+use function Safe\json_decode;
+use function Safe\json_encode;
+
+class QuestionTypeItem extends AbstractQuestionType implements
+    FormQuestionDataConverterInterface,
+    UsedAsCriteriaInterface,
+    ConditionValueTransformerInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
 
-    #[Override]
     public function __construct()
     {
         parent::__construct();
@@ -65,11 +86,67 @@ class QuestionTypeItem extends AbstractQuestionType
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
+        if (is_array($value) && isset($value['items_id'])) {
+            $value = $value['items_id'];
+        }
+
         if (!is_numeric($value)) {
             return null;
         }
 
-        return json_encode((new QuestionTypeItemDefaultValueConfig($value))->jsonSerialize());
+        return json_encode(new QuestionTypeItemDefaultValueConfig((int) $value));
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        return $rawData['default_values'] ?? null;
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        // Decode JSON string to array
+        $values = [];
+        if (!empty($rawData['values']) && is_string($rawData['values'])) {
+            $values = json_decode($rawData['values'], true);
+        }
+
+        $root_items_id = 0;
+        if (isset($values['show_tree_root']) && is_numeric($values['show_tree_root'])) {
+            $root_items_id = (int) $values['show_tree_root'];
+        }
+
+        $subtree_depth = 0;
+        if (
+            isset($values['show_tree_depth'])
+            && is_numeric($values['show_tree_depth'])
+            && $values['show_tree_depth'] > 0
+        ) {
+            $subtree_depth = (int) $values['show_tree_depth'];
+        }
+
+        $selectable_tree_root = false;
+        if (
+            isset($values['selectable_tree_root'])
+            && is_numeric($values['selectable_tree_root'])
+        ) {
+            $selectable_tree_root = (bool) $values['selectable_tree_root'];
+        }
+
+        // Map specific itemtypes
+        $itemtype = $rawData['itemtype'] ?? null;
+        $itemtype = match ($itemtype) {
+            "PluginFormcreatorCategory" => Category::class,
+            default                     => $itemtype,
+        };
+
+        return (new QuestionTypeItemExtraDataConfig(
+            itemtype: $itemtype,
+            root_items_id: $root_items_id,
+            subtree_depth: $subtree_depth,
+            selectable_tree_root: $selectable_tree_root
+        ))->jsonSerialize();
     }
 
     /**
@@ -79,7 +156,6 @@ class QuestionTypeItem extends AbstractQuestionType
      */
     public function getAllowedItemtypes(): array
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         return [
@@ -102,7 +178,7 @@ class QuestionTypeItem extends AbstractQuestionType
             ),
             __('Management') => $CFG_GLPI['management_types'],
             __('Tools') => $CFG_GLPI['tools_types'],
-            __('Administration') => $CFG_GLPI['admin_types']
+            __('Administration') => $CFG_GLPI['admin_types'],
         ];
     }
 
@@ -145,7 +221,20 @@ class QuestionTypeItem extends AbstractQuestionType
             return 0;
         }
 
-        return (int) $config->getItemsId();
+        $default_value = (int) $config->getItemsId();
+
+        // Fallback to 0 instead of -1 for the empty value as it is already used
+        // as the "Current logged-in user" special value.
+        $extra_config = $question->getExtraDataConfig();
+        if (!$extra_config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new LogicException();
+        }
+
+        if ($extra_config->getItemtype() === User::class) {
+            $default_value = $default_value == -1 ? 0 : $default_value;
+        }
+
+        return $default_value;
     }
 
     #[Override]
@@ -163,6 +252,31 @@ class QuestionTypeItem extends AbstractQuestionType
         ) {
             return false;
         }
+
+        // Check if root_items_id is set and is numeric
+        if (
+            !isset($input['root_items_id'])
+            || !is_numeric($input['root_items_id'])
+        ) {
+            return false;
+        }
+
+        // Check if subtree_depth is set and is numeric
+        if (
+            !isset($input['subtree_depth'])
+            || !is_numeric($input['subtree_depth'])
+        ) {
+            return false;
+        }
+
+        // Check if selectable_tree_root is set and is boolean (optional field)
+        if (
+            !isset($input['selectable_tree_root'])
+            || !(is_numeric($input['selectable_tree_root']) || is_bool($input['selectable_tree_root']))
+        ) {
+            return false;
+        }
+
 
         return true;
     }
@@ -194,110 +308,99 @@ class QuestionTypeItem extends AbstractQuestionType
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render(
+            'pages/admin/form/question_type/item/administration_template.html.twig',
+            [
+                'init'             => $question != null,
+                'question'         => $question,
+                'question_type'    => $this::class,
+                'default_itemtype' => $this->getDefaultValueItemtype($question),
+                'default_items_id' => $this->getDefaultValueItemId($question),
+                'itemtypes'        => $this->getAllowedItemtypes(),
+                'aria_label'       => $this->items_id_aria_label,
+                'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question),
+            ]
+        );
+    }
 
-            {% set rand = random() %}
+    public function renderAdvancedConfigurationTemplate(?Question $question): string
+    {
+        $itemtype = $this->getDefaultValueItemtype($question);
+        if ($itemtype === null) {
+            // Retrieve first allowed itemtype if none is set
+            $itemtype = current(current($this->getAllowedItemtypes()));
+        }
 
-            {{ fields.dropdownField(
-                default_itemtype|default(itemtypes|first|first),
-                'default_value',
-                default_items_id,
-                '',
-                {
-                    'init'               : init,
-                    'no_label'           : true,
-                    'display_emptychoice': true,
-                    'width'              : '100%',
-                    'container_css_class': 'mt-2',
-                    'mb'                 : '',
-                    'comments'           : false,
-                    'addicon'            : false,
-                    'aria_label'         : aria_label,
+        $common_tree_dropdowns = [];
+        foreach ($this->getAllowedItemtypes() as $types) {
+            foreach ($types as $type) {
+                if (is_a($type, CommonTreeDropdown::class, true)) {
+                    $common_tree_dropdowns[$type] = $type;
                 }
-            ) }}
-
-            {% if question == null %}
-                <script>
-                    import("{{ js_path('js/modules/Forms/QuestionItem.js') }}").then((m) => {
-                        new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }});
-                    });
-                </script>
-            {% endif %}
-TWIG;
+            }
+        }
 
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'init'             => $question != null,
-            'question'         => $question,
-            'question_type'    => $this::class,
-            'default_itemtype' => $this->getDefaultValueItemtype($question),
-            'default_items_id' => $this->getDefaultValueItemId($question),
-            'itemtypes'        => $this->getAllowedItemtypes(),
-            'aria_label'       => $this->items_id_aria_label,
-        ]);
+        return $twig->render(
+            'pages/admin/form/question_type/item/advanced_configuration.html.twig',
+            [
+                'question'              => $question,
+                'itemtype'              => $itemtype,
+                'root_items_id'         => $this->getRootItemsId($question),
+                'subtree_depth'         => $this->getSubtreeDepth($question),
+                'selectable_tree_root'  => $this->isSelectableTreeRoot($question),
+                'common_tree_dropdowns' => $common_tree_dropdowns,
+            ]
+        );
     }
 
     #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
+        global $CFG_GLPI;
 
-            {{ fields.hiddenField(
-                question.getEndUserInputName() ~ '[itemtype]',
-                itemtype,
-                '',
-                {
-                    'no_label': true,
-                    'mb': ''
+        $itemtype = $this->getDefaultValueItemtype($question) ?? '0';
+        $is_itil_type = in_array($itemtype, $CFG_GLPI['itil_types']);
+        $id_already_visible = isset($_SESSION['glpiis_ids_visible']) && $_SESSION['glpiis_ids_visible'];
+
+        $displaywith = [];
+        if ($is_itil_type && !$id_already_visible) {
+            $displaywith[] = 'id';
+        }
+
+        if (in_array($itemtype, $CFG_GLPI['asset_types'])) {
+            $item = getItemForItemtype($itemtype);
+            if ($item) {
+                if ($item->isField('serial')) {
+                    $displaywith[] = 'serial';
                 }
-            ) }}
-            {{ fields.dropdownField(
-                itemtype,
-                question.getEndUserInputName() ~ '[items_id]',
-                default_items_id,
-                '',
-                {
-                    'no_label'           : true,
-                    'display_emptychoice': true,
-                    'right'              : 'all',
-                    'aria_label'         : aria_label,
-                    'mb'                 : '',
-                    'addicon'            : false,
-                    'comments'           : false,
+                if ($item->isField('otherserial')) {
+                    $displaywith[] = 'otherserial';
                 }
-            ) }}
-TWIG;
+                if ($item->isField('users_id')) {
+                    $displaywith[] = 'users_id';
+                }
+            }
+        }
 
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'question'         => $question,
-            'itemtype'         => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id' => $this->getDefaultValueItemId($question),
-            'aria_label'       => $this->items_id_aria_label,
-            'sub_types'        => $this->getSubTypes(),
-        ]);
+        return $twig->render(
+            'pages/admin/form/question_type/item/end_user_template.html.twig',
+            [
+                'question'                    => $question,
+                'itemtype'                    => $itemtype,
+                'default_items_id'            => $this->getDefaultValueItemId($question),
+                'aria_label'                  => $question->fields['name'],
+                'sub_types'                   => $this->getSubTypes(),
+                'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
+                'displaywith'                 => $displaywith,
+            ]
+        );
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {{ get_item_link(itemtype, items_id) }}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'itemtype' => $answer['itemtype'],
-            'items_id' => $answer['items_id'],
-        ]);
-    }
-
-    #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $item = $answer['itemtype']::getById($answer['items_id']);
         if (!$item) {
@@ -308,7 +411,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::ITEM;
     }
@@ -341,5 +444,330 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeItemDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        if (!$question_config->getItemtype()) {
+            return parent::getConditionHandlers($question_config);
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [
+                new ItemConditionHandler($question_config->getItemtype()),
+                new ItemAsTextConditionHandler($question_config->getItemtype()),
+            ],
+        );
+    }
+
+    #[Override]
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): string
+    {
+        // Handle empty cases first
+        if (empty($value)) {
+            return '';
+        }
+
+        // If it's a JSON string (from database), decode it
+        if (is_string($value) && json_validate($value)) {
+            $value = json_decode($value, true);
+        }
+
+        // Check the extra data config
+        if (!($question_config instanceof QuestionTypeItemExtraDataConfig)) {
+            throw new LogicException(
+                'Expected QuestionTypeItemExtraDataConfig, got ' . ($question_config !== null ? get_class($question_config) : self::class)
+            );
+        }
+
+        // Get the default value config
+        $config = $this->getDefaultValueConfig($value);
+        if (!($config instanceof QuestionTypeItemDefaultValueConfig)) {
+            throw new LogicException(
+                'Expected QuestionTypeItemDefaultValueConfig, got ' . ($config !== null ? get_class($config) : self::class)
+            );
+        }
+
+        // Check if items_id is set and valid
+        if ($config->getItemsId() < 0) {
+            // If items_id is not >= 0, consider it empty
+            return '';
+        }
+
+        $item = getItemForItemtype($question_config->getItemtype());
+        if ($item && $item->getfromDB($config->getItemsId())) {
+            return $item->getName();
+        }
+
+        return '';
+    }
+
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+        $fallback = parent::exportDynamicDefaultValue(
+            $extra_data_config,
+            $default_value_config
+        );
+
+        // Stop here if one of the parameters is empty or invalid
+        if ($extra_data_config === null || !is_array($default_value_config)) {
+            return $fallback;
+        }
+
+        // Validate configuration values
+        $default_value_config = $this->getDefaultValueConfig($default_value_config);
+        if (
+            !$default_value_config instanceof QuestionTypeItemDefaultValueConfig
+            || !$extra_data_config instanceof QuestionTypeItemExtraDataConfig
+            || $extra_data_config->getItemtype() === null
+            || !is_a($extra_data_config->getItemtype(), CommonDBTM::class, true)
+            || empty($default_value_config->getItemsId())
+        ) {
+            return $fallback;
+        }
+
+        $default_value_data = $default_value_config->jsonSerialize();
+
+        // Load linked item
+        /** @var class-string<CommonDBTM> $itemtype */
+        $itemtype = $extra_data_config->getItemtype();
+        $item = $itemtype::getById(
+            $default_value_config->getItemsId()
+        );
+        if (!$item) {
+            // Invalid item, return empty data with no requirements
+            return new DynamicExportDataField(null, []);
+        }
+
+        // Replace id and register requirement
+        $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;
+        $requirement = DataRequirementSpecification::fromItem($item);
+        $requirements[] = $requirement;
+        $default_value_data[$key] = $requirement->name;
+
+        return new DynamicExportDataField($default_value_data, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Validate we have two valid configs
+        if ($extra_data == null || $default_value_data === null) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] = $id;
+
+        return $default_value_data;
+    }
+
+    /**
+     * Get parameters for dropdown restrictions based on the question
+     *
+     * @param Question|null $question The question to retrieve the parameters for
+     * @return array
+     */
+    public function getDropdownRestrictionParams(?Question $question): array
+    {
+        $params   = [];
+        $itemtype = $this->getDefaultValueItemtype($question);
+        $item     = getItemForItemtype($itemtype);
+        if ($question === null || $itemtype === null) {
+            return $params;
+        }
+
+        if ($item->maybeActive()) {
+            // Ensure only active items are shown
+            $params[$itemtype::getTableField('is_active')] = 1;
+        }
+
+        if (is_a($itemtype, CommonTreeDropdown::class, true)) {
+            // Apply specific root
+            $root_items_id = $this->getRootItemsId($question);
+            if ($root_items_id > 0) {
+                $sons = (new DbUtils())->getSonsOf(
+                    $itemtype::getTable(),
+                    $root_items_id
+                );
+
+                if (!$this->isSelectableTreeRoot($question)) {
+                    unset($sons[$root_items_id]);
+                }
+
+                $params[$itemtype::getTableField('id')] = $sons;
+                $root_item = $item;
+                if ($root_item->getFromDB($root_items_id)) {
+                    $root_item_level = $root_item->fields['level'];
+                }
+            }
+
+            // Apply max level restriction if subtree depth is set
+            $subtree_depth = $this->getSubtreeDepth($question);
+            if ($subtree_depth > 0) {
+                $params[$itemtype::getTableField('level')] = ['<=', $subtree_depth + ($root_item_level ?? 0)];
+            }
+        }
+
+        return ['WHERE' => $params];
+    }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
+
+    /**
+     * Retrieve root items ID for the item question type
+     *
+     * @param Question|null $question The question to retrieve the root items ID for
+     * @return int
+     */
+    public function getRootItemsId(?Question $question): int
+    {
+        if ($question === null) {
+            return 0;
+        }
+
+        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        if ($config === null) {
+            return 0;
+        }
+
+        return $config->getRootItemsId();
+    }
+
+    /**
+     * Retrieve subtree depth for the item question type
+     *
+     * @param Question|null $question The question to retrieve the subtree depth for
+     * @return int
+     */
+    public function getSubtreeDepth(?Question $question): int
+    {
+        if ($question === null) {
+            return 0;
+        }
+
+        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        if ($config === null) {
+            return 0;
+        }
+
+        return $config->getSubtreeDepth();
+    }
+
+    /**
+     * Check if tree root is selectable for the item question type
+     *
+     * @param Question|null $question The question to check
+     * @return bool
+     */
+    public function isSelectableTreeRoot(?Question $question): bool
+    {
+        if ($question === null) {
+            return false;
+        }
+
+        /** @var ?QuestionTypeItemExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        if ($config === null) {
+            return false;
+        }
+
+        return $config->isSelectableTreeRoot();
+    }
+
+    #[Override]
+    public function exportDynamicExtraData(
+        ?array $extra_data_config,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicExtraData($extra_data_config);
+
+        // Stop here if value is invalid or empty
+        $itemtype = $extra_data_config[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $root_id = $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? 0;
+        if ($root_id <= 0 || !is_a($itemtype, CommonDBTM::class, true)) {
+            return $fallback;
+        }
+
+        // Load item
+        $item = $itemtype::getById($root_id);
+
+        // Replace id and register requirement
+        $requirement = DataRequirementSpecification::fromItem($item);
+        $extra_data_config[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $requirement->name;
+
+        return new DynamicExportDataField($extra_data_config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array {
+        $fallback = parent::prepareDynamicExtraDataForImport(
+            $extra_data,
+            $mapper,
+        );
+        if ($extra_data == null) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+            // Both these values represent the root entity, no need to map it
+            || $name == 0
+            || $name == -1
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $extra_data[QuestionTypeItemDropdownExtraDataConfig::ROOT_ITEMS_ID] = $id;
+
+        return $extra_data;
     }
 }

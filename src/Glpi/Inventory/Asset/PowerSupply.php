@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,8 +35,8 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
+use Item_DevicePowerSupply;
 
 class PowerSupply extends Device
 {
@@ -46,7 +46,7 @@ class PowerSupply extends Device
             'serialnumber'  => 'serial',
             'partnum'       => 'designation',
             'manufacturer'  => 'manufacturers_id',
-            'power_max'     => 'power'
+            'power_max'     => 'power',
         ];
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {
@@ -66,6 +66,6 @@ class PowerSupply extends Device
 
     public function getItemtype(): string
     {
-        return \Item_DevicePowerSupply::class;
+        return Item_DevicePowerSupply::class;
     }
 }

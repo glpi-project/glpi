@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,18 +35,36 @@
 
 namespace Glpi\Form\QuestionType;
 
+use CommonDBTM;
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
+use Glpi\Form\Condition\ConditionValueTransformerInterface;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
+use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
 use Group;
+use InvalidArgumentException;
+use LogicException;
 use Override;
+use Safe\Exceptions\JsonException;
 use Supplier;
 use User;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
 
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors extends AbstractQuestionType
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements
+    FormQuestionDataConverterInterface,
+    UsedAsCriteriaInterface,
+    ConditionValueTransformerInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -75,40 +93,92 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
-        if (empty($value)) {
+        if (empty($value) || !is_array($value)) {
             return null;
         }
 
-        if (!is_array($value)) {
-            $value = [$value];
-        }
+        $actors_ids = [
+            'users_id'     => $value['users_ids'] ?? [],
+            'groups_id'    => $value['groups_ids'] ?? [],
+            'suppliers_id' => $value['suppliers_ids'] ?? [],
+        ];
+        unset($value['users_ids']);
+        unset($value['groups_ids']);
+        unset($value['suppliers_ids']);
 
-        $actors_ids = [];
+        // Handle alternative format used by dropdowns (fkey-id)
         foreach ($value as $actor) {
             $actor_parts = explode('-', $actor);
-            $actors_ids[getItemtypeForForeignKeyField($actor_parts[0])][] = (int) $actor_parts[1];
+            $fkey = $actor_parts[0];
+            if (!isset($actors_ids[$fkey])) {
+                continue;
+            }
+
+            $actors_ids[$fkey][] = (int) $actor_parts[1];
         }
 
         // Wrap the array in a config object to serialize it
         $config = new QuestionTypeActorsDefaultValueConfig(
-            users_ids: $actors_ids['User'] ?? [],
-            groups_ids: $actors_ids['Group'] ?? [],
-            suppliers_ids: $actors_ids['Supplier'] ?? []
+            users_ids: $actors_ids['users_id'],
+            groups_ids: $actors_ids['groups_id'],
+            suppliers_ids: $actors_ids['suppliers_id'],
         );
 
         return json_encode($config->jsonSerialize());
     }
 
     #[Override]
+    public function prepareExtraData(array $input): array
+    {
+        $allowed_types_key = QuestionTypeActorsExtraDataConfig::ENABLED_TYPES;
+        if (isset($input[$allowed_types_key])) {
+            // Raw values from the HTML form will be like these:
+            // ['User' => 0, 'Group' => 1]
+            // We want to turn it into:
+            // ["Group"]
+            $types = array_filter(
+                array_keys($input[$allowed_types_key]),
+                fn($key) => $input[$allowed_types_key][$key] == 1,
+            );
+            $types = array_values($types);
+            $input[$allowed_types_key] = $types;
+        }
+
+        return $input;
+    }
+
+    #[Override]
     public function validateExtraDataInput(array $input): bool
     {
-        // Only one key is allowed and optional: 'is_multiple_actors'.
-        // This key must be a valid boolean.
-        return (
-            isset($input['is_multiple_actors'])
-            && count($input) === 1
-            && filter_var($input['is_multiple_actors'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
-        ) || empty($input);
+        // Two allowed keys: is_multiple_actors and enabled_types
+        $types_key = QuestionTypeActorsExtraDataConfig::ENABLED_TYPES;
+        $multiple_keys = QuestionTypeActorsExtraDataConfig::IS_MULTIPLE_ACTORS;
+
+        if (
+            isset($input[$multiple_keys])
+            && filter_var(
+                $input[$multiple_keys],
+                FILTER_VALIDATE_BOOLEAN,
+                FILTER_NULL_ON_FAILURE
+            ) === null
+        ) {
+            return false;
+        }
+
+        if (
+            isset($input[$types_key])
+            && !is_array($input[$types_key])
+        ) {
+            return false;
+        }
+
+        unset($input[$types_key]);
+        unset($input[$multiple_keys]);
+        if (count($input)) {
+            return false;
+        }
+
+        return true;
     }
 
     #[Override]
@@ -131,7 +201,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
 
             $actor_parts = explode('-', $actor);
             $itemtype = getItemtypeForForeignKeyField($actor_parts[0]);
-            $item_id = $actor_parts[1];
+            $item_id = (int) $actor_parts[1];
 
             // Check if the itemtype is allowed
             if (!in_array($itemtype, $this->getAllowedActorTypes())) {
@@ -145,7 +215,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
 
             $actors[] = [
                 'itemtype' => $itemtype,
-                'items_id' => $item_id
+                'items_id' => $item_id,
             ];
         }
 
@@ -154,6 +224,22 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
         }
 
         return $actors;
+    }
+
+    #[Override]
+    public function convertDefaultValue(array $rawData): mixed
+    {
+        $users_ids = json_decode($rawData['default_values'] ?? "[]");
+        return ['users_ids' => $users_ids];
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        // Actors question type was always multiple in FormCreator
+        return (new QuestionTypeActorsExtraDataConfig(
+            is_multiple_actors: true
+        ))->jsonSerialize();
     }
 
     /**
@@ -168,13 +254,37 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
             return false;
         }
 
-        /** @var ?QuestionTypeActorsExtraDataConfig $config */
-        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
-        if ($config === null) {
+        try {
+            /** @var ?QuestionTypeActorsExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'] ?? '', true) ?? []);
+            if ($config === null) {
+                return false;
+            }
+            return $config->isMultipleActors();
+        } catch (JsonException $e) {
             return false;
         }
+    }
 
-        return $config->isMultipleActors();
+    public function isTypeEnabled(?Question $question, string $type): bool
+    {
+        if ($question === null) {
+            return true;
+        }
+
+        try {
+            /** @var ?QuestionTypeActorsExtraDataConfig $config */
+            $config = $this->getExtraDataConfig(
+                json_decode($question->fields['extra_data'] ?? '', true) ?? []
+            );
+            if ($config === null) {
+                return true;
+            }
+
+            return $config->isTypeEnabled($type);
+        } catch (JsonException $e) {
+            return true;
+        }
     }
 
     /**
@@ -182,7 +292,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
      *
      * @param ?Question $question
      * @param bool $multiple
-     * @return int
+     * @return array
      */
     public function getDefaultValue(?Question $question, bool $multiple = false): array
     {
@@ -200,7 +310,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
         $default_values = [
             getForeignKeyFieldForItemType(User::class) => $config->getUsersIds(),
             getForeignKeyFieldForItemType(Group::class) => $config->getGroupsIds(),
-            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds()
+            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds(),
         ];
 
         if ($multiple) {
@@ -213,148 +323,29 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
-        $template = <<<TWIG
-        {% import 'components/form/fields_macros.html.twig' as fields %}
-
-        {% set actors_dropdown = call('Glpi\\\\Form\\\\Dropdown\\\\FormActorsDropdown::show', [
-            'default_value',
-            values,
-            {
-                'multiple'        : false,
-                'init'            : init,
-                'allowed_types'   : allowed_types,
-                'right_for_users' : right_for_users,
-                'group_conditions': group_conditions,
-                'aria_label'      : aria_label,
-                'specific_tags'   : is_multiple_actors ? {
-                    'disabled': 'disabled'
-                } : {}
-            }
-        ]) %}
-        {% set actors_dropdown_multiple = call('Glpi\\\\Form\\\\Dropdown\\\\FormActorsDropdown::show', [
-            'default_value',
-            values,
-            {
-                'multiple'        : true,
-                'init'            : init,
-                'allowed_types'   : allowed_types,
-                'right_for_users' : right_for_users,
-                'group_conditions': group_conditions,
-                'aria_label'      : aria_label,
-                'specific_tags'   : not is_multiple_actors ? {
-                    'disabled': 'disabled'
-                } : {}
-            }
-        ]) %}
-
-        {{ fields.htmlField(
-            'default_value',
-            actors_dropdown,
-            '',
-            {
-                'disabled'     : is_multiple_actors,
-                'no_label'     : true,
-                'mb'           : '',
-                'wrapper_class': '',
-                'field_class': [
-                    'actors-dropdown',
-                    'col-12',
-                    'col-sm-6',
-                    not is_multiple_actors ? '' : 'd-none'
-                ]|join(' '),
-            }
-        ) }}
-        {{ fields.htmlField(
-            'default_value',
-            actors_dropdown_multiple,
-            '',
-            {
-                'no_label'     : true,
-                'wrapper_class': '',
-                'mb'           : '',
-                'field_class'  : [
-                    'actors-dropdown',
-                    'col-12',
-                    'col-sm-6',
-                    is_multiple_actors ? '' : 'd-none'
-                ]|join(' '),
-            }
-        ) }}
-TWIG;
+        $template = "pages/admin/form/question_type/actors_admin.html.twig";
 
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'init'               => $question != null,
-            'values'             => $this->getDefaultValue($question, $this->isMultipleActors($question)),
-            'allowed_types'      => $this->getAllowedActorTypes(),
-            'is_multiple_actors' => $this->isMultipleActors($question),
-            'aria_label'         => __('Select an actor...'),
-            'right_for_users'    => $this->getRightForUsers(),
-            'group_conditions'   => $this->getGroupConditions()
-        ]);
-    }
-
-
-    #[Override]
-    public function renderAdministrationOptionsTemplate(?Question $question): string
-    {
-        $template = <<<TWIG
-            {% set rand = random() %}
-
-            <div id="is_multiple_actors_{{ rand }}" class="d-flex gap-2">
-                <label class="form-check form-switch mb-0">
-                    <input type="hidden" name="is_multiple_actors" value="0"
-                    data-glpi-form-editor-specific-question-extra-data>
-                    <input class="form-check-input" type="checkbox" name="is_multiple_actors"
-                        value="1" {{ is_multiple_actors ? 'checked' : '' }}
-                        onchange="handleMultipleActorsCheckbox_{{ rand }}(this)"
-                        data-glpi-form-editor-specific-question-extra-data>
-                    <span class="form-check-label">{{ is_multiple_actors_label }}</span>
-                </label>
-            </div>
-
-            <script>
-                function handleMultipleActorsCheckbox_{{ rand }}(input) {
-                    const is_checked = $(input).is(':checked');
-                    const selects = $(input).closest('section[data-glpi-form-editor-question]')
-                        .find('div .actors-dropdown');
-
-                    {# Disable all selects and toggle their visibility, then enable the right ones #}
-                    selects.toggleClass('d-none').find('select').prop('disabled', is_checked)
-                        .filter('[multiple]').prop('disabled', !is_checked);
-
-                    {# Handle hidden input for multiple actors #}
-                    selects.find('input[type="hidden"]').prop('disabled', !is_checked);
-                }
-            </script>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'is_multiple_actors' => $this->isMultipleActors($question),
-            'is_multiple_actors_label' => __('Allow multiple actors')
+        $form_id = $question ? $question->getForm()->getId() : null;
+        return $twig->render($template, [
+            'init'                     => $question != null,
+            'question'                 => $question,
+            'values'                   => $this->getDefaultValue($question, $this->isMultipleActors($question)),
+            'allowed_types'            => $this->getAllowedActorTypes(),
+            'enabled_types'            => array_filter(
+                $this->getAllowedActorTypes(),
+                fn($type) => $this->isTypeEnabled($question, $type),
+            ),
+            'is_multiple_actors'       => $this->isMultipleActors($question),
+            'right_for_users'          => $this->getRightForUsers(),
+            'group_conditions'         => $this->getGroupConditions(),
+            'form_id'                  => $form_id,
+            'enabled_types_field'      => QuestionTypeActorsExtraDataConfig::ENABLED_TYPES,
         ]);
     }
 
     #[Override]
-    public function renderAnswerTemplate(mixed $answer): string
-    {
-        $template = <<<TWIG
-            <div class="form-control-plaintext">
-                {% for actors in actors %}
-                    {{ get_item_link(actors.itemtype, actors.items_id) }}
-                {% endfor %}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'actors' => $answer
-        ]);
-    }
-
-    #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $formatted_actors = [];
         foreach ($answer as $actor) {
@@ -381,10 +372,13 @@ TWIG;
             question.getEndUserInputName(),
             value,
             {
-                'multiple'     : is_multiple_actors,
-                'allowed_types': allowed_types,
-                'aria_label'   : aria_label,
-                'mb'           : ''
+                'form_id'         : question.getForm().getId(),
+                'multiple'        : is_multiple_actors,
+                'allowed_types'   : allowed_types,
+                'aria_label'      : aria_label,
+                'mb'              : '',
+                'right_for_users' : right_for_users,
+                'group_conditions': group_conditions,
             }
         ]) %}
 
@@ -409,10 +403,76 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'value'              => $this->getDefaultValue($question, $is_multiple_actors),
             'question'           => $question,
-            'allowed_types'      => $this->getAllowedActorTypes(),
+            'allowed_types'      => array_filter(
+                $this->getAllowedActorTypes(),
+                fn($type) => $this->isTypeEnabled($question, $type),
+            ),
             'is_multiple_actors' => $is_multiple_actors,
-            'aria_label'         => $question->fields['name']
+            'aria_label'         => $question->fields['name'],
+            'right_for_users'    => $this->getRightForUsers(),
+            'group_conditions'   => $this->getGroupConditions(),
         ]);
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeActorsExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new ActorConditionHandler($this, $question_config)]
+        );
+    }
+
+    #[Override]
+    public function transformConditionValueForComparisons(mixed $value, ?JsonFieldInterface $question_config): array
+    {
+        // Handle empty cases first
+        if (empty($value)) {
+            return [];
+        }
+
+        // If it's a JSON string (from database), decode it
+        if (is_string($value) && json_validate($value)) {
+            $value = json_decode($value, true);
+        } elseif (is_array($value)) {
+            $value = json_decode($this->formatDefaultValueForDB($value), true);
+        }
+
+        $config = $this->getDefaultValueConfig($value);
+        if (!($config instanceof QuestionTypeActorsDefaultValueConfig)) {
+            throw new LogicException(
+                'Expected QuestionTypeActorsDefaultValueConfig, got ' . get_class($config)
+            );
+        }
+
+        $actors = [];
+        foreach ($config->getUsersIds() as $user_id) {
+            $user = User::getById($user_id);
+            if ($user) {
+                $actors[] = $user->getName();
+            }
+        }
+
+        foreach ($config->getGroupsIds() as $group_id) {
+            $group = Group::getById($group_id);
+            if ($group) {
+                $actors[] = $group->getName();
+            }
+        }
+
+        foreach ($config->getSuppliersIds() as $supplier_id) {
+            $supplier = Supplier::getById($supplier_id);
+            if ($supplier) {
+                $actors[] = $supplier->getName();
+            }
+        }
+
+        return $actors;
     }
 
     #[Override]
@@ -437,4 +497,102 @@ TWIG;
     {
         return QuestionTypeActorsDefaultValueConfig::class;
     }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        // Fallback to default values if configuration isn't in the expected format
+        if (!is_array($default_value_config)) {
+            return parent::exportDynamicDefaultValue(
+                $extra_data_config,
+                $default_value_config
+            );
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<CommonDBTM> $itemtype */
+            // Iterate on ids
+            $ids = $default_value_config[$data_key] ?? [];
+            foreach ($ids as $i => $item_id) {
+                if (intval($item_id) === 0) {
+                    continue;
+                }
+
+                $item = $itemtype::getById($item_id);
+                if (!$item) {
+                    continue;
+                }
+
+                $requirement = DataRequirementSpecification::fromItem($item);
+                $requirements[] = $requirement;
+                $default_value_config[$data_key][$i] = $requirement->name;
+            }
+        }
+
+        return new DynamicExportDataField($default_value_config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Content should be an array
+        if (!is_array($default_value_data)) {
+            return $fallback;
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<CommonDBTM> $itemtype */
+            // Iterate on names
+            $names = $default_value_data[$data_key] ?? [];
+            foreach ($names as $i => $name) {
+                // Exclude special values
+                if ($name == "all") {
+                    continue;
+                }
+
+                // Restore correct id
+                $id = $mapper->getItemId($itemtype, $name);
+                $default_value_data[$data_key][$i] = $id;
+            }
+        }
+
+        return $default_value_data;
+    }
+
+    #[Override]
+    public function getTargetQuestionType(array $rawData): string
+    {
+        return static::class;
+    }
+
+
+    #[Override]
+    public function beforeConversion(array $rawData): void {}
 }

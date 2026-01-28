@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,12 @@ final class RequestException extends Exception
 {
     protected int $http_code;
 
+    /**
+     * @param int $http_code
+     * @param string $message
+     * @param int $code
+     * @param Exception $previous
+     */
     public function __construct($http_code, $message, $code = 0, $previous = null)
     {
         $this->http_code = $http_code;

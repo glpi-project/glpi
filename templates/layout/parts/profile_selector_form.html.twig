@@ -5,7 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -41,16 +41,19 @@
 
     {% if is_recursive %}
         <form method="POST" action="{{ path('/Session/ChangeEntity') }}">
-            <button class="btn btn-link p-0 bg-transparent">
+            <button
+                class="btn btn-outline-secondary p-0 ms-1"
+                aria-label="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
+            >
                 <i
                     class="ti ti-chevrons-down"
                     data-bs-toggle="tooltip"
                     data-bs-placement="right"
-                    title="{{ __('+ sub-entities') }}"
+                    title="{{ __('Select %1s entity with all its sub entities')|format(name) }}"
                 ></i>
             </button>
             <input type="hidden" name="id" value="{{ id }}">
-            <input type="hidden" name="is_recursive" value="true">
+            <input type="hidden" name="is_recursive" value="1">
             <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token }}">
         </form>
     {% endif %}

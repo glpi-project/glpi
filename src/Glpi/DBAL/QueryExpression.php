@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 namespace Glpi\DBAL;
 
+use RuntimeException;
+
 /**
  *  Query expression class
  **/
@@ -52,8 +54,8 @@ class QueryExpression
      */
     public function __construct($expression, ?string $alias = null)
     {
-        if ($expression === null || $expression === '') {
-            throw new \RuntimeException('Cannot build an empty expression');
+        if ($expression === null || $expression === '' || $expression === false) {
+            throw new RuntimeException('Cannot build an empty expression');
         }
         $this->expression = $expression;
         $this->alias = $alias;
@@ -63,10 +65,11 @@ class QueryExpression
      * Query expression value
      *
      * @return string
+     *
+     * @psalm-taint-escape sql
      */
     public function getValue()
     {
-        /** @var \DBmysql $DB */
         global $DB;
         $sql = $this->expression;
         if (!empty($this->alias)) {

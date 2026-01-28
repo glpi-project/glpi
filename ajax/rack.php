@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -36,9 +36,7 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-
-$this->setAjax();
+use function Safe\json_encode;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -53,7 +51,23 @@ if (!isset($_REQUEST['action'])) {
 $answer = [];
 if (($_GET['action'] ?? null) === 'show_pdu_form') {
     PDU_Rack::showFirstForm((int) $_GET['racks_id']);
-} else if (isset($_POST['action'])) {
+} elseif (($_GET['action'] ?? null) === 'show_rack_form' && isset($_GET['racks_id'])) {
+    $rack = new Rack();
+    if (isset($_GET['room']) && Rack::isNewID((int) $_GET['racks_id']) && $rack->can(-1, CREATE)) {
+        $room = new DCRoom();
+        if ($room->can((int) $_GET['room'], READ)) {
+            $rack->showForm(-1, [
+                'dcrooms_id' => (int) $_GET['room'],
+                'locations_id' => $room->fields['locations_id'],
+                'position' => $_GET['position'],
+            ]);
+        }
+    } elseif ($rack->can((int) $_GET['racks_id'], READ)) {
+        $rack->showForm((int) $_GET['racks_id']);
+    } else {
+        throw new AccessDeniedHttpException();
+    }
+} elseif (isset($_POST['action'])) {
     header("Content-Type: application/json; charset=UTF-8", true);
     switch ($_POST['action']) {
         case 'move_item':
@@ -71,7 +85,7 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
             $pdu_rack->getFromDB((int) $_POST['id']);
             $answer['status'] = $pdu_rack->update([
                 'id'       => (int) $_POST['id'],
-                'position' => (int) $_POST['position']
+                'position' => (int) $_POST['position'],
             ]);
             break;
 

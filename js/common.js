@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -40,6 +40,7 @@
 /* global fuzzy */
 /* global glpi_html_dialog */
 /* global glpi_toast_info, glpi_toast_warning, glpi_toast_error */
+/* global _ */
 
 var timeoutglobalvar;
 
@@ -173,7 +174,7 @@ function displayOtherSelectOptions(select_object, other_option_name) {
 **/
 function checkAsCheckboxes(reference, container_id, checkboxes_selector = 'input[type="checkbox"]') {
     reference = typeof(reference) === 'string' ? document.getElementById(reference) : reference;
-    $('#' + container_id + ' ' + checkboxes_selector + ':enabled')
+    $('#' + CSS.escape(container_id) + ' ' + checkboxes_selector + ':enabled')
         .prop('checked', $(reference).is(':checked'));
 
     return true;
@@ -235,14 +236,14 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
         var _deco;
         var _img;
         if (!_awesome) {
-            _img = $('img[name=' + img_name + ']');
+            _img = $('img[name=' + CSS.escape(img_name) + ']');
             if (_elt.is(':visible')) {
                 _img.attr('src', img_src_close);
             } else {
                 _img.attr('src', img_src_open);
             }
         } else {
-            _deco = $('#'+img_name);
+            _deco = $('#' + CSS.escape(img_name));
             if (_elt.is(':visible')) {
                 _deco
                     .removeClass(img_src_open)
@@ -272,18 +273,15 @@ function showHideDiv(id, img_name = '', img_src_close = '', img_src_open = '') {
  * @param img_src_no
 **/
 function toogle(id, img_name, img_src_yes, img_src_no) {
-
-    if (document.getElementById) { // DOM3 = IE5, NS6
-        if (document.getElementById(id).value == '0') {
-            document.getElementById(id).value = '1';
-            if (img_name !== '') {
-                document[img_name].src=img_src_yes;
-            }
-        } else {
-            document.getElementById(id).value = '0';
-            if (img_name !== '') {
-                document[img_name].src=img_src_no;
-            }
+    if (document.getElementById(id).value == '0') {
+        document.getElementById(id).value = '1';
+        if (img_name !== '') {
+            document[img_name].src=img_src_yes;
+        }
+    } else {
+        document.getElementById(id).value = '0';
+        if (img_name !== '') {
+            document[img_name].src=img_src_no;
         }
     }
 }
@@ -360,7 +358,8 @@ function submitGetLink(target, fields) {
  * @param id
 **/
 function selectAll(id) {
-    var element =$('#'+id);var selected = [];
+    var element = $('#'+CSS.escape(id));
+    var selected = [];
     element.find('option').each(function(i,e){
         selected[selected.length]=$(e).attr('value');
     });
@@ -374,7 +373,7 @@ function selectAll(id) {
  * @param id
 **/
 function deselectAll(id) {
-    $('#'+id).val('').trigger('change');
+    $('#' + CSS.escape(id)).val('').trigger('change');
 }
 
 
@@ -392,7 +391,7 @@ function massiveUpdateCheckbox(criterion, reference) {
     if (typeof(reference) == 'boolean') {
         value = reference;
     } else if (typeof(reference) == 'string') {
-        value = $('#' + reference).prop('checked');
+        value = $('#' + CSS.escape(reference)).prop('checked');
     } else if (typeof(reference) == 'object') {
         value = $(reference).prop('checked');
     }
@@ -611,7 +610,7 @@ var getExtIcon = function(ext) {
         url = CFG_GLPI.root_doc+'/pics/icones/defaut-dist.png';
     }
 
-    return '<img src="'+url+'" title="'+ext+'">';
+    return '<img src="' + _.escape(url) + '" title="' + _.escape(ext) + '">';
 };
 
 /**
@@ -690,33 +689,6 @@ var stopEvent = function(event) {
     event.stopPropagation();
 };
 
-$(() => {
-    /**
-     * Back to top implementation
-     */
-    if ($('#backtotop').length) {
-        var scrollTrigger = 100, // px
-            backToTop = function () {
-                var scrollTop = $(window).scrollTop();
-                if (scrollTop > scrollTrigger) {
-                    $('#backtotop').addClass('d-md-block');
-                } else {
-                    $('#backtotop').removeClass('d-md-block');
-                }
-            };
-        backToTop();
-        $(window).on('scroll', function () {
-            backToTop();
-        });
-        $('#backtotop').on('click', function (e) {
-            e.preventDefault();
-            $('html,body').animate({
-                scrollTop: 0
-            }, 700);
-        });
-    }
-});
-
 /**
  * Returns element height, including margins
 */
@@ -751,7 +723,7 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [0,
     }
 
     //add map, set a default arbitrary location
-    parent_elt.append($('<div id="'+map_id+'" style="height: ' + height + '"></div>'));
+    parent_elt.append($('<div id="'+_.escape(map_id)+'" style="height: ' + _.escape(height) + '"></div>'));
     var map = L.map(map_id, {fullscreenControl: true, minZoom: 2}).setView(initial_view.position, initial_view.zoom);
 
     //setup tiles and © messages
@@ -763,7 +735,7 @@ var initMap = function(parent_elt, map_id, height, initial_view = {position: [0,
 
 var showMapForLocation = function(elt) {
     var _id = $(elt).data('fid');
-    var _items_id = $('#' + _id).val();
+    var _items_id = $('#' + CSS.escape(_id)).val();
 
     if (_items_id == 0) {
         return;
@@ -784,7 +756,7 @@ var showMapForLocation = function(elt) {
                 url: CFG_GLPI.root_doc + '/ajax/getMapPoint.php',
                 data: {
                     itemtype: 'Location',
-                    items_id: $('#' + _id).val()
+                    items_id: $('#' + CSS.escape(_id)).val()
                 }
             }).done(function(data) {
                 if (data.success === false) {
@@ -821,22 +793,22 @@ function markMatch (text, term) {
 
     // If there is no match, move on
     if (match < 0) {
-        _result.append(escapeMarkupText(text));
+        _result.append(_.escape(text));
         return _result.html();
     }
 
     // Put in whatever text is before the match
-    _result.html(escapeMarkupText(text.substring(0, match)));
+    _result.html(_.escape(text.substring(0, match)));
 
     // Mark the match
     var _match = $('<span class=\'select2-rendered__match\'></span>');
-    _match.html(escapeMarkupText(text.substring(match, match + term.length)));
+    _match.html(_.escape(text.substring(match, match + term.length)));
 
     // Append the matching text
     _result.append(_match);
 
     // Put in whatever is after the match
-    _result.append(escapeMarkupText(text.substring(match + term.length)));
+    _result.append(_.escape(text.substring(match + term.length)));
 
     return _result.html();
 }
@@ -849,7 +821,7 @@ var templateResult = function(result) {
     _elt.attr('title', result.title);
 
     if (typeof query.term !== 'undefined' && typeof result.rendered_text !== 'undefined') {
-        _elt.html(result.rendered_text);
+        _elt.html(result.rendered_text); // rendered_text is expected to be a safe HTML string
     } else {
         if (!result.text) {
             return null;
@@ -858,7 +830,7 @@ var templateResult = function(result) {
         var text = result.text;
         if (!result.id) {
             // If result has no id, then it is used as an optgroup and is not used for matches
-            _elt.html(escapeMarkupText(text));
+            _elt.html(_.escape(text));
             return _elt;
         }
 
@@ -908,7 +880,7 @@ var templateSelection = function (selection) {
         text = selection.text;
     }
     var _elt = $('<span></span>');
-    _elt.html(escapeMarkupText(text));
+    _elt.html(_.escape(text));
     return _elt;
 };
 
@@ -922,50 +894,50 @@ var templateItilStatus = function(option) {
     var classes = "";
     switch (parseInt(status)) {
         case 1 :
-            classes = 'new fas fa-circle';
+            classes = 'new ti ti-circle-filled';
             break;
         case 2 :
-            classes = 'assigned far fa-circle';
+            classes = 'assigned ti ti-circle';
             break;
         case 3 :
-            classes = 'planned far fa-calendar';
+            classes = 'planned ti ti-calendar';
             break;
         case 4 :
-            classes = 'waiting fas fa-circle';
+            classes = 'waiting ti ti-circle-filled';
             break;
         case 5 :
-            classes = 'solved far fa-circle';
+            classes = 'solved ti ti-circle';
             break;
         case 6 :
-            classes = 'closed fas fa-circle';
+            classes = 'closed ti ti-circle-filled';
             break;
         case 7:
-            classes = 'accepted fas fa-check-circle';
+            classes = 'accepted ti ti-circle-check-filled';
             break;
         case 8 :
-            classes = 'observe fas fa-eye';
+            classes = 'observe ti ti-eye';
             break;
         case 9 :
-            classes = 'eval far fa-circle';
+            classes = 'eval ti ti-circle';
             break;
         case 10 :
-            classes = 'approval fas fa-question-circle';
+            classes = 'approval ti ti-help-circle';
             break;
         case 11 :
-            classes = 'test fas fa-question-circle';
+            classes = 'test ti ti-help-circle';
             break;
         case 12 :
-            classes = 'qualif far fa-circle';
+            classes = 'qualif ti ti-circle';
             break;
         case 13 :
-            classes = 'refused far fa-times-circle';
+            classes = 'refused ti ti-circle-x';
             break;
         case 14 :
-            classes = 'canceled fas fa-ban';
+            classes = 'canceled ti ti-ban';
             break;
     }
 
-    return $(`<span><i class="itilstatus ${classes}"></i> ${option.text}</span>`);
+    return $(`<span><i class="itilstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateValidation = function(option) {
@@ -979,17 +951,17 @@ var templateValidation = function(option) {
     var classes = "";
     switch (parseInt(status)) {
         case 2 : // WAITING
-            classes = 'waiting far fa-clock';
+            classes = 'waiting ti ti-clock';
             break;
         case 3 : // ACCEPTED
-            classes = 'accepted fas fa-check';
+            classes = 'accepted ti ti-circle-check-filled';
             break;
         case 4 : // REFUSED
-            classes = 'refused fas fa-times';
+            classes = 'refused ti ti-circle-x';
             break;
     }
 
-    return $(`<span><i class="validationstatus ${classes}"></i> ${option.text}</span>`);
+    return $(`<span><i class="validationstatus ${classes}"></i> ${_.escape(option.text)}</span>`);
 };
 
 var templateItilPriority = function(option) {
@@ -1003,10 +975,10 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${_.escape(priority_color)}'></i>`;
     }
 
-    return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
+    return $(`<span>${color_badge}&nbsp;${_.escape(option.text)}</span>`);
 };
 
 /**
@@ -1034,14 +1006,13 @@ var getTextWithoutDiacriticalMarks = function (text) {
  * @return {string}
  */
 var escapeMarkupText = function (text) {
+    // TODO in GLPI 12.0: console.warn('`escapeMarkupText()` is deprecated, use `_.escape()` instead.');
+
     if (typeof(text) !== 'string') {
         return text;
     }
-    if (text.indexOf('>') !== -1 || text.indexOf('<') !== -1) {
-        // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-        text = jQuery.fn.select2.defaults.defaults.escapeMarkup(text);
-    }
-    return text;
+
+    return _.escape(text);
 };
 
 /**
@@ -1051,8 +1022,8 @@ var escapeMarkupText = function (text) {
  * @return void
  */
 function updateProgress(progressid) {
-    var progress = $("progress#progress"+progressid).first();
-    $("div[data-progressid='"+progressid+"']").each(function(i, item) {
+    var progress = $("#"+CSS.escape(progressid)).first();
+    $("div[data-progressid='"+CSS.escape(progressid)+"']").each(function(i, item) {
         var j_item = $(item);
         var fg = j_item.find(".progress-fg").first();
         var calcWidth = (progress.attr('value') / progress.attr('max')) * 100;
@@ -1097,20 +1068,31 @@ function getUuidV4() {
     });
 }
 
+function setHasUnsavedChanges(has_unsaved_changes) {
+    window.glpiUnsavedFormChanges = has_unsaved_changes;
+    document.dispatchEvent(new CustomEvent("glpiFormChangeEvent", {
+        has_unsaved_changes: has_unsaved_changes
+    }));
+}
+
+function hasUnsavedChanges() {
+    return window.glpiUnsavedFormChanges;
+}
+
 /** Track input changes and warn the user of unsaved changes if they try to navigate away */
-window.glpiUnsavedFormChanges = false;
+setHasUnsavedChanges(false);
 $(document).ready(function() {
     // Forms must have the data-track-changes attribute set to true.
     // Form fields may have their data-track-changes attribute set to empty (false) to override the tracking on that input.
     $(document).on('input', 'form[data-track-changes="true"] input:not([data-track-changes=""]),' +
       'form[data-track-changes="true"] textarea:not([data-track-changes="false"])', function() {
-        window.glpiUnsavedFormChanges = true;
+        setHasUnsavedChanges(true);
     });
     $(document).on('change', 'form[data-track-changes="true"] select:not([data-track-changes=""])', function() {
-        window.glpiUnsavedFormChanges = true;
+        setHasUnsavedChanges(true);
     });
     $(window).on('beforeunload', function(e) {
-        if (window.glpiUnsavedFormChanges) {
+        if (hasUnsavedChanges()) {
             e.preventDefault();
             // All supported browsers will show a localized message
             return '';
@@ -1122,7 +1104,7 @@ $(document).ready(function() {
         if (e.originalEvent && $(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
             return;
         }
-        window.glpiUnsavedFormChanges = false;
+        setHasUnsavedChanges(false);
     });
 });
 
@@ -1130,7 +1112,7 @@ function onTinyMCEChange(e) {
     var editor = $(e.target)[0];
     if ($(editor.targetElm).data('trackChanges') !== false) {
         if ($(editor.formElement).data('trackChanges') === true) {
-            window.glpiUnsavedFormChanges = true;
+            setHasUnsavedChanges(true);
         }
     }
 }
@@ -1207,8 +1189,8 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
         $(events).each((i2, event) => {
             //TODO Manage buffer time
 
-            const cleaned_zone_id = zone.replace('[', '_').replace(']', '_');
-            const zone_obj = $(`#${cleaned_zone_id}`);
+            const cleaned_zone_id = zone.replaceAll('[', '_').replaceAll(']', '_');
+            const zone_obj = $(`#${CSS.escape(cleaned_zone_id)}`);
 
             zone_obj.on(event, () => {
                 const conditional = (min_size >= 0 || force_load_for.length > 0);
@@ -1222,9 +1204,9 @@ function updateItemOnEvent(dropdown_ids, target, url, params = {}, events = ['ch
                         if (typeof v === "string") {
                             const reqs = v.match(/^__VALUE(\d+)__$/);
                             if (reqs !== null) {
-                                resolved_params[k] = $('#'+dropdown_ids[reqs[0]]).val();
+                                resolved_params[k] = $('#'+CSS.escape(dropdown_ids[reqs[0]])).val();
                             } else if (v === '__VALUE__') {
-                                resolved_params[k] = $('#'+dropdown_ids[0]).val();
+                                resolved_params[k] = $('#'+CSS.escape(dropdown_ids[0])).val();
                             } else {
                                 resolved_params[k] = v;
                             }
@@ -1341,19 +1323,19 @@ function tableToDetails(table) {
     section_els.each((i, e) => {
         if (e.classList.contains('section-header')) {
             if (in_details) {
-                details += '</pre></details>';
+                details += '\n</pre></details>';
             }
-            details += `<details><summary>${e.innerText}</summary><pre>`;
+            details += `<details><summary>${_.escape(e.innerText)}</summary><pre>\n`;
             in_details = true;
         } else {
             if (in_details) {
-                details += e.innerText;
+                details += _.escape(e.innerText);
             }
         }
     });
 
     if (in_details) {
-        details += '</pre></details>';
+        details += '\n</pre></details>';
     }
     return details;
 }
@@ -1385,8 +1367,11 @@ function flashIconButton(button, button_classes, icon_classes, duration) {
  * @see https://stackoverflow.com/a/48593447
  */
 function uniqid(prefix = "", more_entropy = false) {
-    const sec = Date.now() * 1000 + Math.random() * 1000;
-    const id = sec.toString(16).replace(/\./g, "").padEnd(14, "0");
+    const random = crypto.getRandomValues(new Uint32Array(10)).reduce(
+        (accumulator, value) => accumulator * value,
+        1,
+    );
+    const id = random.toString(16).slice(0, 14).padEnd(14, "0");
     const suffix = more_entropy
         ? '.' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0')
         : '';
@@ -1456,7 +1441,7 @@ $(() => {
             if ((submitter === null || submitter.attr('formnovalidate') === undefined) && !window.validateFormWithBootstrap(e)) {
                 return false;
             }
-            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
+            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && hasUnsavedChanges()) {
                 // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
                 // We fall back to a timed block
                 const block = function(e) {
@@ -1492,8 +1477,18 @@ $(() => {
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
         const text = $(this).data('glpi-clipboard-text');
-        navigator.clipboard.writeText(text);
-        glpi_toast_info(__("Copied to clipboard"));
+        if (navigator.clipboard === undefined) {
+            // The clipboard is not available in non secure environements.
+            // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+            // See: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts
+            // This rarely happens in production but we can still add a specific
+            // error message to identify this issue in our support and/or help
+            // system administrator fix it themselves.
+            glpi_toast_error(__("Unable to copy to clipboard (insecure context)."));
+        } else {
+            navigator.clipboard.writeText(text);
+            glpi_toast_info(__("Copied to clipboard"));
+        }
     });
 });
 
@@ -1534,7 +1529,7 @@ $(document.body).on('shown.bs.tab', 'a[data-bs-toggle="tab"]', (e) => {
  * @param {string} item The ID of the field to be shown
  */
 function showDisclosablePasswordField(item) {
-    $("#" + item).prop("type", "text");
+    $("#" + CSS.escape(item)).prop("type", "text");
 }
 
 /**
@@ -1542,7 +1537,7 @@ function showDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be hidden
  */
 function hideDisclosablePasswordField(item) {
-    $("#" + item).prop("type", "password");
+    $("#" + CSS.escape(item)).prop("type", "password");
 }
 
 /**
@@ -1550,11 +1545,11 @@ function hideDisclosablePasswordField(item) {
  * @param {string} item The ID of the field to be copied
  */
 function copyDisclosablePasswordFieldToClipboard(item) {
-    const is_password_input = $("#" + item).prop("type") === "password";
+    const is_password_input = $("#" + CSS.escape(item)).prop("type") === "password";
     if (is_password_input) {
         showDisclosablePasswordField(item);
     }
-    $("#" + item).select();
+    $("#" + CSS.escape(item)).select();
     try {
         document.execCommand("copy");
     } catch {
@@ -1570,24 +1565,24 @@ function copyDisclosablePasswordFieldToClipboard(item) {
  * @param element_id The ID of the table to be converted
  */
 function initSortableTable(element_id) {
-    const element = $(`#${element_id}`);
+    const element = $(`#${CSS.escape(element_id)}`);
     const sort_table = (column_index) => {
         const current_sort = element.data('sort');
         element.data('sort', column_index);
         const current_order = element.data('order');
-        const new_order = current_sort === column_index && current_order === 'asc' ? 'desc' : 'asc';
+        const new_order = current_sort === column_index && current_order === 'up' ? 'down' : 'up';
         element.data('order', new_order);
         const sortable_header = element.find('thead').first();
         const col = sortable_header.find('th').eq(column_index);
         // Remove all sort icon classes
-        sortable_header.find('th i[class*="fa-sort"]').removeClass('fa-sort fa-sort-asc fa-sort-desc');
+        sortable_header.find('th i[class*="ti ti-caret"]').removeClass('ti-caret-down-filled ti-caret-up-filled');
 
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
-            col.eq(0).append(`<i class="fas fa-sort-${new_order}"></i>`);
+            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled"></i>`);
         } else {
-            sort_icon.addClass(new_order === 'asc' ? 'fa-sort-asc' : 'fa-sort-desc');
+            sort_icon.addClass(new_order === 'up' ? 'ti-caret-up-filled' : 'ti-caret-down-filled');
         }
 
         const rows = element.find('tbody tr');
@@ -1612,7 +1607,7 @@ function initSortableTable(element_id) {
             if (a_value === b_value) {
                 return 0;
             }
-            if (new_order === 'asc') {
+            if (new_order === 'up') {
                 return a_value < b_value ? -1 : 1;
             }
             return a_value > b_value ? -1 : 1;
@@ -1656,72 +1651,6 @@ function waitForElement(selector) {
 }
 
 /**
- * Get the ideal width of an input element based on its content.
- * This allow to make dynamic inputs that grow and shrink based on their content.
- *
- * Inspired by: https://phuoc.ng/collection/html-dom/resize-the-width-of-a-text-box-to-fit-its-content-automatically/
- *
- * @param {HTMLElement} input
- * @param {String} real_font_size It seems the font size computed by styles.fontSize
- *                                 is not really accurate when using rem units.
- *                                 This parameter allows to directly provide the
- *                                 accurate font size if it's known.
- *
- * @return {String} The ideal width of the input element
- */
-function getRealInputWidth(input, real_font_size = null)
-{
-    let fakeEle = $("#fake_dom_getRealInputWidth");
-
-    // Initialize our fake element only once to prevent useless computations
-    if (fakeEle.length === 0) {
-        // Create a div element
-        fakeEle = document.createElement('div');
-        fakeEle.id = "fake_dom_getRealInputWidth";
-
-        // Hide it completely
-        fakeEle.style.position = 'absolute';
-        fakeEle.style.top = '0';
-        fakeEle.style.left = '0';
-        fakeEle.style.left = '-9999px';
-        fakeEle.style.overflow = 'hidden';
-        fakeEle.style.visibility = 'hidden';
-        fakeEle.style.whiteSpace = 'nowrap';
-        fakeEle.style.height = '0';
-
-        // Append the fake element to `body`
-        document.body.appendChild(fakeEle);
-    } else {
-        fakeEle = fakeEle[0];
-    }
-
-    // We copy some styles from the textbox that effect the width
-    const styles = window.getComputedStyle(input);
-
-    // Copy font styles from the textbox
-    fakeEle.style.fontFamily = styles.fontFamily;
-    fakeEle.style.fontSize = real_font_size ?? styles.fontSize;
-    fakeEle.style.fontStyle = styles.fontStyle;
-    fakeEle.style.fontWeight = styles.fontWeight;
-    fakeEle.style.letterSpacing = styles.letterSpacing;
-    fakeEle.style.textTransform = styles.textTransform;
-
-    fakeEle.style.borderLeftWidth = styles.borderLeftWidth;
-    fakeEle.style.borderRightWidth = styles.borderRightWidth;
-    fakeEle.style.paddingLeft = styles.paddingLeft;
-    fakeEle.style.paddingRight = styles.paddingRight;
-
-    // Compute width
-    const string = input.value || input.getAttribute('placeholder') || '';
-    fakeEle.innerHTML = string.replace(/\s/g, '&' + 'nbsp;');
-
-    const fakeEleStyles = window.getComputedStyle(fakeEle);
-    const width = fakeEleStyles.width;
-
-    return width;
-}
-
-/**
  * Get UUID using crypto.randomUUID() if possible
  * Else fallback to uniqid()
  */
@@ -1745,7 +1674,7 @@ if (typeof GlpiCommonAjaxController == "function") {
 function setupAjaxDropdown(config) {
     // Field ID is used as a selector, so we need to escape special characters
     // to avoid issues with jQuery.
-    const field_id = $.escapeSelector(config.field_id);
+    const field_id = CSS.escape(config.field_id);
 
     const select2_el = $('#' + field_id).select2({
         containerCssClass: config.container_css_class,
@@ -1756,7 +1685,7 @@ function setupAjaxDropdown(config) {
         minimumInputLength: 0,
         quietMillis: 100,
         dropdownAutoWidth: true,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         minimumResultsForSearch: config.ajax_limit_count,
         ajax: {
             url: config.url,
@@ -1774,6 +1703,15 @@ function setupAjaxDropdown(config) {
 
                 data.page_limit = config.dropdown_max; // page size
                 data.page = params.page || 1; // page number
+
+                /** convert data false and true values to int **/
+                Object.keys(data).forEach(function(key) {
+                    if (data[key] === false) {
+                        data[key] = 0;
+                    } else if (data[key] === true) {
+                        data[key] = 1;
+                    }
+                });
 
                 return data;
             },
@@ -1832,7 +1770,7 @@ function setupAjaxDropdown(config) {
 
     $('label[for=' + field_id + ']').on('click', function () { $('#' + field_id).select2('open'); });
     $('#' + field_id).on('select2:open', function (e) {
-        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${e.target.id}-results']`);
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
         }
@@ -1845,14 +1783,13 @@ function setupAdaptDropdown(config)
 {
     // Field ID is used as a selector, so we need to escape special characters
     // to avoid issues with jQuery.
-    const field_id = $.escapeSelector(config.field_id);
+    const field_id = CSS.escape(config.field_id);
 
-    const select2_el = $('#' + field_id).select2({
-        placeholder: config.placeholder,
+    const options = {
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
-        dropdownParent: $('#' + field_id).closest('div.modal, div.dropdown-menu, body'),
+        dropdownParent: $('#' + field_id).closest('div.modal, div.offcanvas, div.dropdown-menu:not([data-select2-dont-use-as-parent]), body'),
         quietMillis: 100,
         minimumResultsForSearch: config.ajax_limit_count,
         matcher: function (params, data) {
@@ -1864,19 +1801,23 @@ function setupAdaptDropdown(config)
                 return data;
             }
 
+            const pre_marker = '#-#-#-#-#';
+            const post_marker = '#+#+#+#+#';
+
+            const renderResults = function (text) {
+                return _.escape(text)
+                    .replaceAll(pre_marker, '<span class="select2-rendered__match">')
+                    .replaceAll(post_marker, '</span>');
+            };
+
             var searched_term = getTextWithoutDiacriticalMarks(params.term);
             var data_text = typeof (data.text) === 'string'
                 ? getTextWithoutDiacriticalMarks(data.text)
                 : '';
             var select2_fuzzy_opts = {
-                pre: '<span class="select2-rendered__match">',
-                post: '</span>',
+                pre: pre_marker,
+                post: post_marker,
             };
-
-            if (data_text.indexOf('>') !== -1 || data_text.indexOf('<') !== -1) {
-                // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                data_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(data_text);
-            }
 
             // Skip if there is no 'children' property
             if (typeof data.children === 'undefined') {
@@ -1884,7 +1825,7 @@ function setupAdaptDropdown(config)
                 if (match == null) {
                     return false;
                 }
-                data.rendered_text = match.rendered_text;
+                data.rendered_text = renderResults(match.rendered);
                 data.score = match.score;
                 return data;
             }
@@ -1898,22 +1839,17 @@ function setupAdaptDropdown(config)
                     ? getTextWithoutDiacriticalMarks(child.text)
                     : '';
 
-                if (child_text.indexOf('>') !== -1 || child_text.indexOf('<') !== -1) {
-                    // escape text, if it contains chevrons (can already be escaped prior to this point :/)
-                    child_text = jQuery.fn.select2.defaults.defaults.escapeMarkup(child_text);
-                }
-
                 var match_child = fuzzy.match(searched_term, child_text, select2_fuzzy_opts);
                 var match_text = fuzzy.match(searched_term, data_text, select2_fuzzy_opts);
                 if (match_child !== null || match_text !== null) {
                     if (match_text !== null) {
                         data.score = match_text.score;
-                        data.rendered_text = match_text.rendered;
+                        data.rendered_text = renderResults(match_text.rendered);
                     }
 
                     if (match_child !== null) {
                         child.score = match_child.score;
-                        child.rendered_text = match_child.rendered;
+                        child.rendered_text = renderResults(match_child.rendered);
                     }
                     filteredChildren.push(child);
                 }
@@ -1935,15 +1871,20 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
-    })
-        .bind('setValue', function (e, value) {
-            $('#' + field_id).val(value).trigger('change');
-        });
+    };
+    if (config.placeholder !== undefined && config.placeholder !== '') {
+        options.placeholder = config.placeholder;
+    }
+    const select2_el = $('#' + field_id).select2(options);
+
+    select2_el.bind('setValue', (e, ...value) => {
+        $('#' + field_id).val(value).trigger('change');
+    });
     $('label[for=' + field_id + ']').on('click', function () {
         $('#' + field_id).select2('open');
     });
-    $('#' + field_id).on('select2:open', function () {
-        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-\${e.target.id}-results']`);
+    $('#' + field_id).on('select2:open', function (e) {
+        const search_input = document.querySelector(`.select2-search__field[aria-controls='select2-${CSS.escape(e.target.id)}-results']`);
         if (search_input) {
             search_input.focus();
         }
@@ -1992,5 +1933,36 @@ document.addEventListener('hidden.bs.modal', (e) => {
     const modal = e.target.closest('.modal');
     if (modal) {
         modal.setAttribute('data-cy-shown', 'false');
+    }
+});
+
+// Tinymce on click loading
+$(document).on('click', 'div[data-glpi-tinymce-init-on-demand-render]', function() {
+    const div = $(this);
+    const textarea_id = div.attr('data-glpi-tinymce-init-on-demand-render');
+    div.removeAttr('data-glpi-tinymce-init-on-demand-render');
+    const textarea = $("#" + textarea_id);
+
+    const loadingOverlay = $(`
+        <div class="glpi-form-editor-loading-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center bg-white bg-opacity-75">
+            <div class="spinner-border spinner-border-sm text-secondary" role="status">
+                <span class="visually-hidden">${__('Loading...')}</span>
+            </div>
+        </div>
+    `);
+
+    textarea.show();
+    div.css('position', 'relative').append(loadingOverlay);
+    tinyMCE.init(tinymce_editor_configs[textarea_id]).then((editors) => {
+        editors[0].focus();
+        div.remove();
+    });
+});
+
+// Prevent Bootstrap dialog from blocking focusin
+// See: https://www.tiny.cloud/docs/tinymce/latest/bootstrap-cloud/#usingtinymceinabootstrapdialog
+document.addEventListener('focusin', (e) => {
+    if (e.target.closest(".tox-tinymce, .tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+        e.stopImmediatePropagation();
     }
 });

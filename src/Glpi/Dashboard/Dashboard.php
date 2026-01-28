@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,20 +35,33 @@
 
 namespace Glpi\Dashboard;
 
+use CommonDBTM;
 use Glpi\Debug\Profiler;
+use Glpi\Exception\TooManyResultsException;
 use Ramsey\Uuid\Uuid;
 use Session;
+use Toolbox;
 
-class Dashboard extends \CommonDBTM
+use function Safe\json_decode;
+
+class Dashboard extends CommonDBTM
 {
+    /** @var int */
     protected $id      = 0;
+    /** @var string */
     protected $key     = "";
+    /** @var string */
     protected $title   = "";
+    /** @var bool */
     protected $embed   = false;
+    /** @var ?array  */
     protected $items   = null;
+    /** @var ?array */
     protected $rights  = null;
+    /** @var string */
     protected $filters  = "";
 
+    /** @var array */
     public static $all_dashboards = [];
     public static $rightname = 'dashboard';
 
@@ -101,28 +114,67 @@ class Dashboard extends \CommonDBTM
     }
 
 
+    public function getID()
+    {
+        // Force usage of the `id` field
+        if (isset($this->fields['id'])) {
+            return (int) $this->fields['id'];
+        }
+        return -1;
+    }
+
     public function getFromDB($ID)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'  => self::getTable(),
             'WHERE' => [
-                'key' => $ID
+                'key' => $ID,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ]);
         if (count($iterator) == 1) {
             $this->fields = $iterator->current();
             $this->key    = $ID;
             $this->post_getFromDB();
             return true;
-        } else if (count($iterator) > 1) {
-            trigger_error(
-                sprintf('getFromDB expects to get one result, %1$s found!', count($iterator)),
-                E_USER_WARNING
+        } elseif (count($iterator) > 1) {
+            throw new TooManyResultsException(
+                sprintf(
+                    '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
+                    count($iterator),
+                    $iterator->getSql()
+                )
             );
+        }
+
+        if (\is_numeric($ID)) {
+            // Search also on the `id` field.
+            // This is mandatory to handle the `$this->getFromDB($this->getID());` reload case.
+            $iterator = $DB->request([
+                'FROM'  => self::getTable(),
+                'WHERE' => [
+                    'id' => $ID,
+                ],
+                'LIMIT' => 1,
+            ]);
+            if (count($iterator) == 1) {
+                $this->fields = $iterator->current();
+                $this->key    = $this->fields['key'];
+                $this->post_getFromDB();
+                return true;
+            } elseif (count($iterator) > 1) {
+                throw new TooManyResultsException(
+                    sprintf(
+                        '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
+                        static::class,
+                        count($iterator),
+                        $iterator->getSql()
+                    )
+                );
+            }
         }
 
         return false;
@@ -225,7 +277,7 @@ class Dashboard extends \CommonDBTM
         $this->fields['name']   = $title;
         $this->fields['context'] = $context;
         $this->fields['users_id'] = Session::getLoginUserID();
-        $this->key    = \Toolbox::slugify($title);
+        $this->key    = Toolbox::slugify($title);
         $this->items  = $items;
         $this->rights = $rights;
 
@@ -244,10 +296,6 @@ class Dashboard extends \CommonDBTM
      */
     public function save(bool $skip_child = false)
     {
-        /**
-         * @var \DBmysql $DB
-         * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
-         */
         global $DB, $GLPI_CACHE;
 
         $DB->updateOrInsert(
@@ -259,19 +307,19 @@ class Dashboard extends \CommonDBTM
                 'users_id' => $this->fields['users_id'],
             ],
             [
-                'key'  => $this->key
+                'key'  => $this->key,
             ]
         );
 
-       // reload dashboard
+        // reload dashboard
         $this->getFromDB($this->key);
 
-       //save items
+        //save items
         if (!$skip_child && count($this->items) > 0) {
             $this->saveItems($this->items);
         }
 
-       //save rights
+        //save rights
         if (!$skip_child && count($this->rights) > 0) {
             $this->saveRights($this->rights);
         }
@@ -394,23 +442,23 @@ class Dashboard extends \CommonDBTM
 
         $this->fields['name'] = sprintf(__('Copy of %s'), $this->fields['name']);
         $this->fields['users_id'] = Session::getLoginUserID();
-        $this->key = \Toolbox::slugify($this->fields['name']);
+        $this->key = Toolbox::slugify($this->fields['name']) . '-' . Uuid::uuid4()->toString();
 
-       // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
+        // replace gridstack_id (with uuid V4) in the copy, to avoid cache issue
         $this->items = array_map(function (array $item) {
             $item['gridstack_id'] = $item['card_id'] . Uuid::uuid4();
 
             return $item;
         }, $this->items);
 
-       // convert right to the good format
+        // convert right to the good format
         $this->rights = self::convertRights($this->rights);
 
         $this->save();
 
         return [
             'title' => $this->fields['name'],
-            'key'   => $this->key
+            'key'   => $this->key,
         ];
     }
 
@@ -426,7 +474,6 @@ class Dashboard extends \CommonDBTM
      */
     public static function getAll(bool $force = false, bool $check_rights = true, ?string $context = 'core'): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($force || count(self::$all_dashboards) == 0) {
@@ -440,18 +487,14 @@ class Dashboard extends \CommonDBTM
                 $key = $dashboard['key'];
                 $id  = $dashboard['id'];
 
-                $d_rights = array_filter($rights, static function ($right_line) use ($id) {
-                    return $right_line['dashboards_dashboards_id'] == $id;
-                });
+                $d_rights = array_filter($rights, static fn($right_line) => $right_line['dashboards_dashboards_id'] == $id);
                 $dashboardItem = new self($key);
                 if ($check_rights && !$dashboardItem->canViewCurrent()) {
                     continue;
                 }
                 $dashboard['rights'] = self::convertRights($d_rights);
 
-                $d_items = array_filter($items, static function ($item) use ($id) {
-                    return $item['dashboards_dashboards_id'] == $id;
-                });
+                $d_items = array_filter($items, static fn($item) => $item['dashboards_dashboards_id'] == $id);
                 $d_items = array_map(static function ($item) {
                     $item['card_options'] = importArrayFromDB($item['card_options']);
                     return $item;
@@ -464,9 +507,7 @@ class Dashboard extends \CommonDBTM
 
         // Return dashboards filtered by context (if applicable)
         if ($context !== null && $context !== '') {
-            return array_filter(self::$all_dashboards, static function ($dashboard) use ($context) {
-                return $dashboard['context'] === $context;
-            });
+            return array_filter(self::$all_dashboards, static fn($dashboard) => $dashboard['context'] === $context);
         }
 
         return self::$all_dashboards;
@@ -479,7 +520,7 @@ class Dashboard extends \CommonDBTM
      * IN
      * [
      *    [
-     *       'itemtype' => 'Entity'
+     *       'itemtype' => Entity::class
      *       'items_id' => yyy
      *    ], [
      *       ...
@@ -536,7 +577,7 @@ class Dashboard extends \CommonDBTM
             return false;
         }
 
-       // check specific rights
+        // check specific rights
         if (
             count(array_intersect($rights['entities_id'], $_SESSION['glpiactiveentities']))
             || in_array($_SESSION["glpiactiveprofile"]['id'], $rights['profiles_id'])
@@ -569,7 +610,7 @@ class Dashboard extends \CommonDBTM
     public static function importFromJson($import = null)
     {
         if (!is_array($import)) {
-            if (!\Toolbox::isJSON($import)) {
+            if (!Toolbox::isJSON($import)) {
                 return false;
             }
             $import = json_decode($import, true);
@@ -588,6 +629,11 @@ class Dashboard extends \CommonDBTM
         return true;
     }
 
+    /**
+     * @param bool $is_private
+     *
+     * @return bool
+     */
     public function setPrivate($is_private)
     {
         $this->load();
@@ -595,10 +641,13 @@ class Dashboard extends \CommonDBTM
         return $this->update([
             'id'       => $this->fields['id'],
             'key'      => $this->fields['key'],
-            'users_id' => ($is_private ? Session::getLoginUserID() : 0)
+            'users_id' => ($is_private ? Session::getLoginUserID() : 0),
         ]);
     }
 
+    /**
+     * @return string (int as string... should be a boolean.)
+     */
     public function getPrivate()
     {
         $this->load();
@@ -615,7 +664,7 @@ class Dashboard extends \CommonDBTM
      */
     public function isPrivate(): bool
     {
-        if ((bool)$this->getPrivate() === false) {
+        if ((bool) $this->getPrivate() === false) {
             return false;
         }
         return $this->fields['users_id'] != Session::getLoginUserID();

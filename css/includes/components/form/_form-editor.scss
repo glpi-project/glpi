@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,6 +44,12 @@
         }
     }
 
+    .form-editor-no-merge {
+         [data-glpi-form-editor-question-drag-merge] {
+            position: absolute !important;
+        }
+    }
+
     &[data-glpi-form-editor-sorting] {
         [data-glpi-form-editor-section-blocks] > [data-glpi-form-editor-block] {
             display: flex;
@@ -64,21 +70,24 @@
             }
         }
     }
+
+    [data-glpi-conditions-editor-disabled] {
+        pointer-events: none;
+        cursor: wait;
+    }
 }
 
 .form-editor {
     // Use all available parent space
     flex-grow: 1;
 
-    // Subtle gradient to avoid white on white cards while still keeping a white/white connection to the active tab (experimental)
-    // TODO: keep / remove / tweak when the UX is more complete (questions, sections, ...)
+    // Make sure we keep some padding when scrolling to an active item
+    scroll-padding: 10px;
+
+    // Subtle gradient to avoid the same background color of the cards and tab content/editor
     background: linear-gradient(169deg,
-            rgb(255, 255, 255) 0%,
-            rgb(254, 254, 254) 14%,
-            rgb(253, 253, 253) 22%,
-            rgb(252, 252, 252) 33%,
-            rgb(251, 251, 252) 41%,
-            rgb(248, 250, 252) 48%);
+            var(--tblr-bg-surface) 0%,
+            var(--tblr-bg-surface-tertiary) 48%);
 
     .designer {
         .form-details {
@@ -89,7 +98,7 @@
         }
     }
 
-    overflow: scroll;
+    overflow: auto;
 
     // Revert border radius change from parent div
     .card {
@@ -121,24 +130,24 @@
             }
         }
     }
+
+    [data-glpi-tinymce-init-on-demand-render] {
+        margin-left: 5px;
+    }
 }
 
 .editor-footer {
     border-top: 1px solid var(--tblr-border-color);
-    background: var(--glpi-form-toolbar-bg);
 }
 
 // Show required mark on mandatory question
-.mandatory-question {
-    [data-glpi-form-editor-required-mark] {
-        display: inline !important;
-    }
-}
-
 [data-glpi-form-editor-form] {
+    height: fit-content;
+
     &[data-glpi-form-editor-active-form] {
         // Show secondary data on active form
         [data-glpi-form-editor-form-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -153,9 +162,12 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-form-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
@@ -164,6 +176,7 @@
     &[data-glpi-form-editor-active-section] {
         // Show secondary data on active form
         [data-glpi-form-editor-section-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -178,9 +191,12 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-section-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
@@ -213,7 +229,8 @@
         }
 
         // Hide tinymce toolbar on inactive questions
-        .tox-editor-header {
+        // But allow it to show when simulate-focus is present (during focus transition)
+        .content-editable-tinymce:not(.simulate-focus) .tox-editor-header {
             display: none !important;
         }
     }
@@ -223,6 +240,7 @@
     &[data-glpi-form-editor-active-comment] {
         // Show secondary data on active comments
         [data-glpi-form-editor-comment-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -237,16 +255,19 @@
 
         // Do not show secondary data on inactive comments
         [data-glpi-form-editor-comment-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
 
 .glpi-form-editor-drag-question-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
 }
 
@@ -266,14 +287,14 @@
 
 .glpi-form-editor-drag-question-option-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 40px !important;
 }
 
 .glpi-form-editor-drag-section-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 60px !important;
 }
@@ -301,6 +322,13 @@
     }
 
     margin-bottom: 1rem !important;
+}
+
+// Hide question badge in section when section is not collapsed
+[data-glpi-form-editor-section]:not(.section-collapsed) {
+    [data-glpi-form-editor-section-block-badge] {
+        display: none;
+    }
 }
 
 [data-glpi-form-editor-question] {
@@ -363,21 +391,40 @@
     border-bottom-right-radius: var(--tblr-border-radius) !important;
 }
 
+input.value-selector {
+    // Use extra padding to match height of dropdowns on the same line.
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
 .value-selector {
     border: 0 !important;
     background-color: var(--tblr-yellow-lt) !important;
+    border-radius: var(--tblr-border-radius) !important;
+
+    .select2-selection {
+        // Fix some border conflicts with tabler/select2
+        border-top-right-radius: var(--tblr-border-radius) !important;
+        border-bottom-right-radius: var(--tblr-border-radius) !important;
+        border: 0 !important;
+        background-color: var(--tblr-yellow-lt) !important;
+    }
+
+    .select2-container {
+        width: 100%;
+    }
 }
 
-.visibility-dropdown-card {
-    width: 600px;
+.visibility-dropdown-card, .validation-dropdown-card {
+    min-width: 700px;
+    width: fit-content;
+
+    // Add scrolling as a last ressort, will not happen most of the time
+    overflow: scroll;
 }
 
 [data-glpi-form-editor-block] {
     margin-bottom: 1rem;
-}
-
-[data-glpi-form-editor-toolbar] {
-    margin-top: 0.5rem;
 }
 
 .question-type-dropdown-group {
@@ -385,7 +432,8 @@
         display: flex;
         flex-wrap: wrap;
 
-        &:not(:has(> :nth-child(2).d-none)) {
+        &:not(:has(> :nth-child(2).d-none)),
+        &:not(:has(> :nth-child(3).d-none)) {
             > div:not(:only-child) {
                 &:first-child {
                     .select2-selection {
@@ -430,7 +478,8 @@
             margin-right: auto;
         }
 
-        &:not(:has(> :nth-child(2).d-none)) {
+        &:not(:has(> :nth-child(2).d-none)),
+        &:not(:has(> :nth-child(3).d-none)) {
             > div:not(:only-child) {
                 &:first-child {
                     .select2-selection {
@@ -474,5 +523,100 @@ html {
     // Only apply the overflow hidden on the body when active tab contains the form editor
     &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
         overflow: hidden;
+    }
+}
+
+
+[data-glpi-form-editor-toolbar].btn-group-vertical {
+    &::before {
+        content: "\ea7c";
+        font-family: tabler-icons !important;
+        font-size: x-large;
+        color: var(--tblr-border-active-color);
+        transform: translateY(1.9rem);
+        position: absolute;
+    }
+}
+
+[data-glpi-form-editor-visibility-dropdown-container], [data-glpi-form-editor-validation-dropdown-container] {
+    padding-right: 0.75rem;
+
+    &:has([data-glpi-editor-visibility-badge="always_visible"].d-flex,
+          [data-glpi-editor-validation-badge="no_validation"].d-flex,
+          button[aria-expanded="true"]) {
+        padding-right: 0;
+
+        [data-glpi-editor-visibility-conditions-count-badge],
+        [data-glpi-editor-validation-conditions-count-badge] {
+            display: none !important;
+        }
+    }
+}
+
+[data-glpi-form-editor-active-question]:has([data-glpi-form-editor-advanced-question-configuration-visible]) {
+    .input-group > * {
+        &:first-child:has(.select2-selection) {
+            .select2-selection {
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+            }
+        }
+    }
+}
+
+// Remove margins when form is empty
+[data-glpi-form-editor-form] {
+    &:not(:has([data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-blocks-container])) {
+        > [data-glpi-form-editor-form-extra-details] {
+            margin-bottom: 0 !important;
+        }
+
+        [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
+            margin-top: 0 !important;
+        }
+    }
+}
+
+// Hide section and toolbar container when section is hidden
+div:has(> [data-glpi-form-editor-section-details].d-none) {
+    display: none !important;
+}
+
+// Hide some actions if the form is readonly
+.form-editor-readonly {
+    [data-glpi-form-editor-state-action] {
+        display: none;
+    }
+
+    input, div.tox-tinymce, span.select2, label.form-check, [data-glpi-form-editor-visibility-dropdown] {
+        pointer-events: none;
+    }
+}
+
+[data-glpi-form-editor-question-details] {
+    div[data-glpi-tinymce-init-on-demand-render] {
+        margin-left: 5px;
+        cursor: text;
+    }
+
+    // Specific style for long text question type
+    &:has(input[value="Glpi\\\\Form\\\\QuestionType\\\\QuestionTypeLongText"]) {
+        [data-glpi-form-editor-question-type-specific] {
+            div[data-glpi-tinymce-init-on-demand-render] {
+                margin-left: 0;
+
+                // Draw a border around the div to mimic the textarea style
+                min-height: 100px;
+                padding: 10px;
+                border: var(--tblr-border-width) solid var(--tblr-border-color) !important;
+                border-radius: var(--tblr-border-radius);
+                box-shadow: var(--tblr-box-shadow-input) !important;
+
+                // Hide the div when the editor is loading
+                &:has(.glpi-form-editor-loading-overlay) {
+                    display: none !important;
+                }
+            }
+        }
     }
 }

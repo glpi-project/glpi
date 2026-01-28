@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Search\SearchOption;
-
 /**
  * ITILTemplatePredefinedField Class
  *
@@ -49,25 +47,24 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         return _n('Predefined field', 'Predefined fields', $nb);
     }
 
+    public static function getIcon(): string
+    {
+        return 'ti ti-forms';
+    }
 
     protected function computeFriendlyName()
     {
 
-        $tt_class = static::$itemtype;
-        $tt     = new $tt_class();
+        $tt     = getItemForItemtype(static::$itemtype);
         $fields = $tt->getAllowedFieldsNames(true, true);
-
-        if (isset($fields[$this->fields["num"]])) {
-            return $fields[$this->fields["num"]];
-        }
-        return '';
+        return $fields[$this->fields["num"]] ?? '';
     }
 
 
     public function prepareInputForAdd($input)
     {
-       // Use massiveaction system to manage add system.
-       // Need to update data : value not set but
+        // Use massiveaction system to manage add system.
+        // Need to update data : value not set but
         if (!isset($input['value'])) {
             if (isset($input['field']) && isset($input[$input['field']])) {
                 $input['value'] = $input[$input['field']];
@@ -77,7 +74,18 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         }
 
         if ((int) $input['num'] === 13) { // 13 - Search option ID for Associated Items for CommonITILObject types
+            // An itemtype must be selected
             if ((string) $input['value'] === '0') {
+                Session::addMessageAfterRedirect(
+                    __s('You must select an associated item'),
+                    true,
+                    ERROR
+                );
+                return false;
+            }
+
+            // An item must be selected
+            if (isset($input['add_items_id']) && $input['add_items_id'] == 0) {
                 Session::addMessageAfterRedirect(
                     __s('You must select an associated item'),
                     true,
@@ -93,31 +101,29 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public function post_purgeItem()
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         parent::post_purgeItem();
 
-        $itil_class = static::$itiltype;
-        $itil_object = new $itil_class();
+        $itil_object = getItemForItemtype(static::$itiltype);
         $itemtype_id = $itil_object->getSearchOptionIDByField('field', 'itemtype', $itil_object->getTable());
         $items_id_id = $itil_object->getSearchOptionIDByField('field', 'items_id', $itil_object->getTable());
 
-       // Try to delete itemtype -> delete items_id
+        // Try to delete itemtype -> delete items_id
         if ($this->fields['num'] == $itemtype_id) {
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $this->getTable(),
                 'WHERE'  => [
                     static::$items_id => $this->fields[static::$items_id],
-                    'num'             => $items_id_id
-                ]
+                    'num'             => $items_id_id,
+                ],
             ]);
 
             if (count($iterator)) {
-                 $result = $iterator->current();
-                 $a = new static();
-                 $a->delete(['id' => $result['id']]);
+                $result = $iterator->current();
+                $a = new static();
+                $a->delete(['id' => $result['id']]);
             }
         }
     }
@@ -126,7 +132,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if (
             $item instanceof ITILTemplate
             && Session::haveRight("itiltemplate", READ)
@@ -146,6 +152,9 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof ITILTemplate) {
+            return false;
+        }
 
         self::showForITILTemplate($item, $withtemplate);
         return true;
@@ -157,24 +166,22 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
      *
      * @since 0.83
      *
-     * @param integer $ID                   the template ID
-     * @param boolean $withtypeandcategory  with type and category (false by default)
+     * @param int $ID                   the template ID
+     * @param bool $withtypeandcategory  with type and category (false by default)
      *
      * @return array of predefined fields
      **/
     public function getPredefinedFields($ID, $withtypeandcategory = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
             'FROM'   => $this->getTable(),
             'WHERE'  => [static::$items_id => $ID],
-            'ORDER'  => 'id'
+            'ORDER'  => 'id',
         ]);
 
-        $tt_class       = static::$itemtype;
-        $tt             = new $tt_class();
+        $tt             = getItemForItemtype(static::$itemtype);
         $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
         $fields         = [];
         $multiple       = self::getMultiplePredefinedValues();
@@ -203,38 +210,38 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     /**
      * @since 0.85
      **/
-    public static function getMultiplePredefinedValues()
+    public static function getMultiplePredefinedValues(): array
     {
 
         $itil_class = static::$itiltype;
-        $itil_object = new $itil_class();
+        $itil_object = getItemForItemtype(static::$itiltype);
 
         $itemstable = null;
         switch ($itil_class) {
-            case 'Change':
+            case Change::class:
                 $itemstable = 'glpi_changes_items';
                 break;
-            case 'Problem':
+            case Problem::class:
                 $itemstable = 'glpi_items_problems';
                 break;
-            case 'Ticket':
+            case Ticket::class:
                 $itemstable = 'glpi_items_tickets';
                 break;
             default:
-                throw new \RuntimeException('Unknown ITIL type ' . $itil_class);
+                throw new RuntimeException('Unknown ITIL type ' . $itil_class);
         }
 
         $fields = [
             $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_documents'),
             $itil_object->getSearchOptionIDByField('field', 'items_id', $itemstable),
-            $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates')
+            $itil_object->getSearchOptionIDByField('field', 'name', 'glpi_tasktemplates'),
         ];
 
         return $fields;
     }
 
     /**
-     * Return fields who doesn't need to be used for this part of template
+     * Return fields who don't need to be used for this part of template
      *
      * @since 9.2
      *

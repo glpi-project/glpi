@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Search\SearchOption;
 use Glpi\RichText\RichText;
 
 /**
@@ -82,11 +81,6 @@ class DropdownTranslation extends CommonDBChild
         return '';
     }
 
-    /**
-     * @param CommonGLPI $item            CommonGLPI object
-     * @param integer $tabnum          (default 1)
-     * @param integer $withtemplate    (default 0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         if ($item instanceof CommonDropdown && $item->maybeTranslated()) {
@@ -150,7 +144,6 @@ class DropdownTranslation extends CommonDBChild
                 $translation->generateCompletename($this->fields, false);
             }
         }
-        return true;
     }
 
     public function post_updateItem($history = true)
@@ -177,21 +170,21 @@ class DropdownTranslation extends CommonDBChild
      * Return the number of translations for a field in a language
      *
      * @param string $itemtype
-     * @param integer $items_id
+     * @param int $items_id
      * @param string $field
      * @param string $language
      *
-     * @return integer the number of translations for this field
+     * @return int the number of translations for this field
      **/
     public static function getNumberOfTranslations($itemtype, $items_id, $field, $language): int
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             [
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,
                 'field'    => $field,
-                'language' => $language
+                'language' => $language,
             ]
         );
     }
@@ -201,16 +194,16 @@ class DropdownTranslation extends CommonDBChild
      *
      * @param CommonDBTM $item
      *
-     * @return integer the number of translations for this item
+     * @return int the number of translations for this item
      **/
     public static function getNumberOfTranslationsForItem($item)
     {
         return countElementsInTable(
-            getTableForItemType(__CLASS__),
+            getTableForItemType(self::class),
             [
                 'itemtype' => $item->getType(),
                 'items_id' => $item->getID(),
-                'NOT'      => ['field' => 'completename' ]
+                'NOT'      => ['field' => 'completename' ],
             ]
         );
     }
@@ -219,9 +212,9 @@ class DropdownTranslation extends CommonDBChild
      * Check if a field's translation can be added or updated
      *
      * @param array $input          translation's fields
-     * @param boolean $add true if a transaltion must be added, false if updated (true by default)
+     * @param bool $add true if a transaltion must be added, false if updated (true by default)
      *
-     * @return boolean true if translation can be added/update, false otherwise
+     * @return bool true if translation can be added/update, false otherwise
      **/
     public function checkBeforeAddorUpdate($input, $add = true)
     {
@@ -241,20 +234,19 @@ class DropdownTranslation extends CommonDBChild
      * Generate completename associated with a tree dropdown
      *
      * @param array $input Array of user values
-     * @param boolean $add True if translation is added, false if update (tgrue by default)
+     * @param bool $add True if translation is added, false if update (tgrue by default)
      *
      * @return void
      **/
     public function generateCompletename($input, $add = true)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
-        if (!is_a($input['itemtype'], CommonTreeDropdown::class, true)) {
+        $itemtype = $input['itemtype'];
+
+        if (!is_a($itemtype, CommonTreeDropdown::class, true)) {
             return; // `completename` is used only for tree dropdowns
         }
-        /** @var class-string<CommonTreeDropdown> $itemtype */
-        $itemtype = $input['itemtype'];
 
         //If there's already a completename for this language, get it's ID, otherwise 0
         $completenames_id = self::getTranslationID(
@@ -319,7 +311,7 @@ class DropdownTranslation extends CommonDBChild
             }
         } else {
             if ($completename !== $item->fields['completename']) {
-                 $translation->add($tmp);
+                $translation->add($tmp);
             }
         }
 
@@ -327,8 +319,8 @@ class DropdownTranslation extends CommonDBChild
             'SELECT' => ['id'],
             'FROM'   => $item::getTable(),
             'WHERE'  => [
-                $foreignKey => $item->getID()
-            ]
+                $foreignKey => $item->getID(),
+            ],
         ]);
 
         foreach ($iterator as $tmp) {
@@ -342,12 +334,11 @@ class DropdownTranslation extends CommonDBChild
      * Display all translated field for a dropdown
      *
      * @param CommonDropdown $item  A Dropdown item
-     **/
+     *
+     * @return void
+     */
     public static function showTranslations(CommonDropdown $item)
     {
-        /**
-         * @var \DBmysql $DB
-         */
         global $DB;
 
         $rand    = mt_rand();
@@ -359,7 +350,7 @@ class DropdownTranslation extends CommonDBChild
                 'items_id' => $item->getID(),
                 'item_fk' => $item->getForeignKeyField(),
                 'rand' => $rand,
-                'btn_msg' => __('Add a new translation')
+                'btn_msg' => __('Add a new translation'),
             ];
             // language=twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -392,13 +383,13 @@ TWIG, $twig_params);
         }
 
         $iterator = $DB->request([
-            'FROM'   => getTableForItemType(__CLASS__),
+            'FROM'   => getTableForItemType(self::class),
             'WHERE'  => [
                 'itemtype'  => $item->getType(),
                 'items_id'  => $item->getID(),
-                'field'     => ['<>', 'completename']
+                'field'     => ['<>', 'completename'],
             ],
-            'ORDER'  => ['language ASC']
+            'ORDER'  => ['language ASC'],
         ]);
 
         $entries = [];
@@ -410,7 +401,7 @@ TWIG, $twig_params);
                 'id'       => $data['id'],
                 'row_class' => $canedit ? 'cursor-pointer' : '',
                 'language' => Dropdown::getLanguageName($data['language']),
-                'field'    => $searchOption['name']
+                'field'    => $searchOption['name'],
             ];
             if (($matching_field['type'] ?? null) === 'tinymce') {
                 $entry['value'] = '<div class="rich_text_container">' . RichText::getSafeHtml($data['value']) . '</div>';
@@ -423,23 +414,21 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'datatable_translations' . $rand,
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => [
                 'language' => __('Language'),
                 'field'    => _n('Field', 'Fields', 1),
-                'value'    => __('Value')
+                'value'    => __('Value'),
             ],
             'formatters' => [
-                'value' => 'raw_html'
+                'value' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -447,12 +436,12 @@ TWIG, $twig_params);
     /**
      * Display translation form
      *
-     * @param integer $ID       field (default -1)
+     * @param int $ID       field (default -1)
      * @param array   $options
      */
     public function showForm($ID = -1, array $options = [])
     {
-        if (!isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+        if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {
             // parent is mandatory
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;
@@ -473,7 +462,7 @@ TWIG, $twig_params);
             'item' => $this,
             'search_option' => !$item->isNewItem() ? $item->getSearchOptionByField('field', $this->fields['field']) : [],
             'matching_field' => $item->getAdditionalField($this->fields['field']),
-            'no_header' => true
+            'no_header' => true,
         ]);
         return true;
     }
@@ -485,49 +474,50 @@ TWIG, $twig_params);
      * @param string     $language  language to look for translations (default '')
      * @param string     $value     field which must be selected by default (default '')
      *
-     * @return integer the dropdown's random identifier
+     * @return int the dropdown's random identifier
      **/
     public static function dropdownFields(CommonDBTM $item, $language = '', $value = '')
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $options = [];
-        $opts = SearchOption::getOptionsForItemtype(get_class($item));
-        foreach ($opts as $id => $field) {
-            // Can only translate name, and fields whose datatype is text or string
-            $is_name_field = isset($field['field'])
-                && ($field['field'] === 'name')
-                && ($field['table'] === getTableForItemType(get_class($item)));
-            if ($is_name_field || (isset($field['datatype']) && in_array($field['datatype'], ['text', 'string']))) {
-                $options[$field['field']] = $field['name'];
+        foreach (Search::getOptions(get_class($item)) as $id => $opt) {
+            //Can only translate name, and fields whose datatype is text or string and only fields directly for this itemtype
+            $field = $opt['field'] ?? null;
+            $type  = $opt['datatype'] ?? '';
+            if (
+                $field !== null
+                && ($field === 'name' || in_array($type, ['text', 'string']))
+                && $opt['table'] === getTableForItemType(get_class($item))
+            ) {
+                $options[$field] = $opt['name'];
             }
         }
 
         $used = [];
-        if (!empty($options)) {
+        if ($options !== []) {
             $iterator = $DB->request([
                 'SELECT' => ['field'],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype'  => $item::class,
                     'items_id'  => $item->getID(),
-                    'language'  => $language
-                ]
+                    'language'  => $language,
+                ],
             ]);
             foreach ($iterator as $data) {
                 $used[$data['field']] = $data['field'];
             }
         }
         return Dropdown::showFromArray('field', $options, ['value' => $value,
-            'used'  => $used
+            'used'  => $used,
         ]);
     }
 
     /**
      * Get translated value for a field in a particular language
      *
-     * @param integer $ID        dropdown item's id
+     * @param int $ID        dropdown item's id
      * @param string  $itemtype  dropdown itemtype
      * @param string  $field     the field to look for (default 'name')
      * @param string  $language  get translation for this language
@@ -537,7 +527,6 @@ TWIG, $twig_params);
      **/
     public static function getTranslatedValue($ID, $itemtype, $field = 'name', $language = '', $value = '')
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, CommonDropdown::class, true)) {
@@ -577,43 +566,46 @@ TWIG, $twig_params);
                         'itemtype'  => $itemtype,
                         'items_id'  => $ID,
                         'field'     => $field,
-                        'language'  => $language
-                    ]
+                        'language'  => $language,
+                    ],
                 ]);
                 // The field is already translated in this language
                 if (count($iterator)) {
-                     $current = $iterator->current();
-                     return $current['value'];
+                    $current = $iterator->current();
+                    if ($current['value'] !== null && $current['value'] !== "") {
+                        return $current['value'];
+                    }
                 }
             }
             // Get the value coming from the dropdown table
             $iterator = $DB->request([
                 'SELECT' => [$field],
                 'FROM'   => getTableForItemType($itemtype),
-                'WHERE'  => ['id' => $ID]
+                'WHERE'  => ['id' => $ID],
             ]);
             if (count($iterator)) {
                 $current = $iterator->current();
-                return $current[$field];
+                if ($current[$field] !== null && $current[$field] !== "") {
+                    return $current[$field];
+                }
             }
         }
 
-        return "";
+        return $value;
     }
 
     /**
      * Get the id of a translated string
      *
-     * @param integer $ID          item id
+     * @param int $ID          item id
      * @param string  $itemtype    item type
      * @param string  $field       the field for which the translation is needed
      * @param string  $language    the target language
      *
-     * @return integer the row id or 0 if not translation found
+     * @return int the row id or 0 if not translation found
      **/
     public static function getTranslationID($ID, $itemtype, $field, $language)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -623,9 +615,9 @@ TWIG, $twig_params);
                 'itemtype'  => $itemtype,
                 'items_id'  => $ID,
                 'language'  => $language,
-                'field'     => $field
+                'field'     => $field,
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
         return count($iterator) ? $iterator->current()['id'] : 0;
     }
@@ -634,14 +626,13 @@ TWIG, $twig_params);
      * Get translations for an item
      *
      * @param string  $itemtype  itemtype
-     * @param integer $items_id  item ID
+     * @param int $items_id  item ID
      * @param string  $field     the field for which the translation is needed
      *
      * @return array
      **/
     public static function getTranslationsForAnItem($itemtype, $items_id, $field)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iterator = $DB->request([
@@ -649,8 +640,8 @@ TWIG, $twig_params);
             'WHERE'  => [
                 'itemtype'  => $itemtype,
                 'items_id'  => $items_id,
-                'field'     => $field
-            ]
+                'field'     => $field,
+            ],
         ]);
         $data = [];
         foreach ($iterator as $tmp) {
@@ -664,7 +655,7 @@ TWIG, $twig_params);
      * Regenerate all completename translations for an item
      *
      * @param string  $itemtype    itemtype
-     * @param integer $items_id    item ID
+     * @param int $items_id    item ID
      *
      * @return void
      **/
@@ -681,7 +672,7 @@ TWIG, $twig_params);
      *
      * @param string $itemtype itemtype to check
      *
-     * @return boolean true if there's at least one translation, otherwise false
+     * @return bool true if there's at least one translation, otherwise false
      **/
     public static function hasItemtypeATranslation($itemtype)
     {
@@ -697,18 +688,17 @@ TWIG, $twig_params);
      **/
     public static function getAvailableTranslations($language)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $tab = [];
         $iterator = $DB->request([
             'SELECT'          => [
                 'itemtype',
-                'field'
+                'field',
             ],
             'DISTINCT'        => true,
             'FROM'            => self::getTable(),
-            'WHERE'           => ['language' => $language]
+            'WHERE'           => ['language' => $language],
         ]);
         foreach ($iterator as $data) {
             $tab[$data['itemtype']][$data['field']] = $data['field'];

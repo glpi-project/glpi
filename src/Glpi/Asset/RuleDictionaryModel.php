@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +36,7 @@ namespace Glpi\Asset;
 
 use Manufacturer;
 use RuleDictionnaryDropdown;
+use RuntimeException;
 use Toolbox;
 
 abstract class RuleDictionaryModel extends RuleDictionnaryDropdown
@@ -58,7 +59,7 @@ abstract class RuleDictionaryModel extends RuleDictionnaryDropdown
     {
         $definition = AssetDefinitionManager::getInstance()->getDefinition(static::$definition_system_name);
         if (!($definition instanceof AssetDefinition)) {
-            throw new \RuntimeException('Asset definition is expected to be defined in concrete class.');
+            throw new RuntimeException('Asset definition is expected to be defined in concrete class.');
         }
 
         return $definition;
@@ -97,12 +98,12 @@ abstract class RuleDictionaryModel extends RuleDictionnaryDropdown
     public static function getSearchURL($full = true)
     {
         return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     public static function getFormURL($full = true)
     {
         return Toolbox::getItemTypeFormURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 }

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,16 +41,16 @@
 /// Class SlaLevelCriteria
 class SlaLevelCriteria extends RuleCriteria
 {
-    public static $itemtype  = 'SlaLevel';
+    public static $itemtype = SlaLevel::class;
     public static $items_id  = 'slalevels_id';
     public $dohistory        = true;
 
 
     public function __construct($rule_type = 'SlaLevel')
     {
-       // Override in order not to use glpi_rules table.
+        // Override in order not to use glpi_rules table.
         if ($rule_type !== static::$itemtype) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     '%s is not expected to be used with a different rule type than %s',
                     static::class,
@@ -62,7 +62,7 @@ class SlaLevelCriteria extends RuleCriteria
 
     public function rawSearchOptions()
     {
-       // RuleCriteria search options requires value of rules_id field which does not exists here
+        // RuleCriteria search options requires value of rules_id field which does not exists here
         return [];
     }
 }

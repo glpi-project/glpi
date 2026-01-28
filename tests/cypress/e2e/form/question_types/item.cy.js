@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,8 +48,8 @@ describe('Item form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test item question");
@@ -59,7 +58,7 @@ describe('Item form question type', () => {
             cy.findByRole("option", { name: "New question" }).should('exist').as('question');
 
             // Change question type
-            cy.findByRole("combobox", { name: "Short answer" }).should('exist').select("Item");
+            cy.findByRole('option', {'name': 'New question'}).changeQuestionType('Item');
         });
     });
 
@@ -67,11 +66,14 @@ describe('Item form question type', () => {
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select an itemtype").click();
 
-        // Select the ticket itemtype
-        cy.findByRole("option", { name: "Tickets" }).should('exist').click();
+        // Change the itemtype to Ticket
+        cy.getDropdownByLabelText("Select an item").should('exist').then(() => {
+            // Select the ticket itemtype
+            cy.findByRole("option", { name: "Tickets" }).should('exist').click();
+        }).should('not.exist');
 
         // Wait for the items_id dropdown to be loaded
-        cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
+        cy.waitForNetworkIdle(150);
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select an item").click();
@@ -105,11 +107,14 @@ describe('Item form question type', () => {
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select a dropdown type").click();
 
-        // Select the ITIL category itemtype
-        cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+        // Change the itemtype to ITIL categories
+        cy.getDropdownByLabelText("Select a dropdown item").should('exist').then(() => {
+            // Select the ITIL categories itemtype
+            cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+        }).should('not.exist');
 
         // Wait for the items_id dropdown to be loaded
-        cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
+        cy.waitForNetworkIdle(150);
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select a dropdown item").click();
@@ -127,5 +132,47 @@ describe('Item form question type', () => {
 
         // Check if the default values are set
         cy.findByRole("combobox", { name: "Test ITIL category" }).should('exist');
+    });
+
+    describe('Item form question type default value with root entity', () => {
+        before(() => {
+            // We need to be in the root entity to be able to select it as default value
+            // So we set the Super-Admin profile to have access to all entities
+            // (we will reset it after the test)
+            cy.updateWithAPI('Profile_User', 6, { entities_id: 0 }); // Super-Admin
+        });
+
+        after(() => {
+            // Reset the Super-Admin profile to original value
+            cy.updateWithAPI('Profile_User', 6, { entities_id: 1 }); // Super-Admin
+        });
+
+        it('can define root entity as default value', () => {
+            // Change the itemtype to Entities
+            cy.getDropdownByLabelText("Select an itemtype").selectDropdownValue("Entities");
+
+            // Wait for the items_id dropdown to be loaded
+            cy.waitForNetworkIdle(150);
+
+            // Select the root entity
+            cy.getDropdownByLabelText("Select an item").selectDropdownValue('Root entity');
+
+            // Check if the default value is set correctly
+            cy.findByRole("combobox", { name: "Root entity" }).should('exist');
+
+            // Save the form
+            cy.saveFormEditorAndReload();
+
+            // Check if the default value is still set correctly after reloading the form editor
+            cy.findByRole("combobox", { name: "Root entity" }).should('exist');
+
+            // Go to preview page (remove the target="_blank" attribute to stay in the same window)
+            cy.findByRole("link", { name: "Preview" })
+                .invoke('attr', 'target', '_self')
+                .click();
+
+            // Check if the default values are set
+            cy.findByRole("combobox", { name: "Root entity" }).should('exist');
+        });
     });
 });

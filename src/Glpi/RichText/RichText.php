@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -41,6 +41,12 @@ use Html2Text\Html2Text;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
+use function Safe\getimagesize;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+
 final class RichText
 {
     /**
@@ -49,9 +55,12 @@ final class RichText
      * @since 10.0.0
      *
      * @param null|string   $content        HTML string to be made safe
-     * @param boolean       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool       $encode_output  Indicates whether the output should be encoded (encoding of HTML special chars)
      *
      * @return string
+     *
+     * @psalm-taint-escape html
+     * @psalm-taint-escape has_quotes
      */
     public static function getSafeHtml(?string $content, bool $encode_output = false): string
     {
@@ -80,10 +89,10 @@ final class RichText
      * @since 10.0.0
      *
      * @param string  $content                HTML string to be made safe
-     * @param boolean $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
-     * @param boolean $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
-     * @param boolean $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
-     * @param boolean $preserve_line_breaks   Indicates whether the line breaks should be preserved
+     * @param bool $keep_presentation      Indicates whether the presentation elements have to be replaced by plaintext equivalents
+     * @param bool $compact                Indicates whether the output should be compact (limited line length, no links URL, ...)
+     * @param bool $encode_output          Indicates whether the output should be encoded (encoding of HTML special chars)
+     * @param bool $preserve_line_breaks   Indicates whether the line breaks should be preserved
      *
      * @return string
      */
@@ -95,7 +104,6 @@ final class RichText
         bool $preserve_case = false,
         bool $preserve_line_breaks = false
     ): string {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $content = self::normalizeHtmlContent($content);
@@ -309,7 +317,6 @@ HTML;
      */
     private static function fixImagesPath(string $content): string
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         $patterns = [
@@ -318,16 +325,26 @@ HTML;
             "/ (href)='[^']*\/front\/document\.send\.php([^']+)' /",
 
             // src attribute, surrounding by " or '
-            '/ (src)="[^"]*\/front\/document\.send\.php([^"]+)" /',
-            "/ (src)='[^']*\/front\/document\.send\.php([^']+)' /",
+            '/ (src)="(?!data:)[^"]*\/front\/document\.send\.php([^"]+)" /',
+            "/ (src)='(?!data:)[^']*\/front\/document\.send\.php([^']+)' /",
         ];
 
         foreach ($patterns as $pattern) {
-            $content = preg_replace(
+            $result = preg_replace(
                 $pattern,
                 sprintf(' $1="%s/front/document.send.php$2" ', $CFG_GLPI["root_doc"]),
                 $content
             );
+            if ($result === null) {
+                $log_msg = sprintf(
+                    '`preg_replace()` with pattern `%s` failed: `%s`.',
+                    $pattern,
+                    preg_last_error_msg()
+                );
+                trigger_error($log_msg, E_USER_WARNING);
+                return $content;
+            }
+            $content = $result;
         }
 
         return $content;
@@ -403,7 +420,7 @@ HTML;
                             'h'   => $imgsize[1],
                             'thumbnail_w' => $width,
                             'thumbnail_h' => $height,
-                        ]
+                        ],
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
                 }
@@ -434,25 +451,25 @@ HTML;
                 'zoom'         => true,
             ],
             'rand'               => mt_rand(),
-            'gallery_item_class' => ''
+            'gallery_item_class' => '',
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }
         }
 
         $out = '';
-        $out .= "<div class='pswp-img{$p['rand']} {$p['gallery_item_class']}' itemscope itemtype='http://schema.org/ImageGallery'>";
+        $out .= "<div class='pswp-img" . htmlescape($p['rand']) . " " . htmlescape($p['gallery_item_class']) . "' itemscope itemtype='http://schema.org/ImageGallery'>";
         foreach ($imgs as $img) {
             if (!isset($img['thumbnail_src'])) {
                 $img['thumbnail_src'] = $img['src'];
             }
             $out .= "<figure itemprop='associatedMedia' itemscope itemtype='http://schema.org/ImageObject'>";
-            $out .= "<a href='{$img['src']}' itemprop='contentUrl' data-index='0'>";
-            $width_attr = isset($img['thumbnail_w']) ? "width='{$img['thumbnail_w']}'" : "";
-            $height_attr = isset($img['thumbnail_h']) ? "height='{$img['thumbnail_h']}'" : "";
+            $out .= "<a href='" . htmlescape($img['src']) . "' itemprop='contentUrl' data-index='0'>";
+            $width_attr = isset($img['thumbnail_w']) ? "width='" . ((int) $img['thumbnail_w']) . "'" : "";
+            $height_attr = isset($img['thumbnail_h']) ? "height='" . ((int) $img['thumbnail_h']) . "'" : "";
             $out .= "<img src='" . htmlescape($img['thumbnail_src']) . "' itemprop='thumbnail' loading='lazy' {$width_attr} {$height_attr}>";
             $out .= "</a>";
             $out .= "</figure>";
@@ -462,6 +479,13 @@ HTML;
         $items_json = json_encode($imgs);
         $close_json = json_encode($p['controls']['close'] ?? false);
         $zoom_json  = json_encode($p['controls']['zoom'] ?? false);
+
+        $next_title     = json_encode(__('Next (arrow right)'));
+        $prev_title     = json_encode(__('Previous (arrow left)'));
+        $close_title    = json_encode(__('Close (Esc)'));
+        $download_title = json_encode(__('Download'));
+        $zoom_title     = json_encode(__('Zoom in/out'));
+
         $js = <<<JAVASCRIPT
       (function($) {
          $('.pswp-img{$p['rand']}').on('click', 'figure', function(event) {
@@ -476,11 +500,11 @@ HTML;
                 close: {$close_json},
                 zoom: {$zoom_json},
 
-                arrowNextTitle: __('Next (arrow right)'),
-                arrowPrevTitle: __('Previous (arrow left)'),
-                closeTitle: __('Close (Esc)'),
-                downloadTitle: __('Download'),
-                zoomTitle: __('Zoom in/out'),
+                arrowNextTitle: {$next_title},
+                arrowPrevTitle: {$prev_title},
+                closeTitle: {$close_title},
+                downloadTitle: {$download_title},
+                zoomTitle: {$zoom_title},
             };
             const gallery = new PhotoSwipe(options);
             gallery.on(
@@ -577,7 +601,12 @@ JAVASCRIPT;
         }
 
         // Allow class and style attribute
+        $config = $config->allowAttribute('class', '*');
         $config = $config->allowAttribute('style', '*');
+        // Allow layout attribute for table tags
+        $config = $config->allowAttribute('bgcolor', ['table', 'tr', 'th', 'td']);
+        $config = $config->allowAttribute('border', ['table']);
+
 
         if (GLPI_ALLOW_IFRAME_IN_RICH_TEXT) {
             $config = $config->allowElement('iframe')->dropAttribute('srcdoc', '*');
@@ -594,7 +623,6 @@ JAVASCRIPT;
             'data-form-tag',
             'data-form-tag-value',
             'data-form-tag-provider',
-            'class',
         ];
         foreach ($rich_text_completion_attributes as $attribute) {
             $config = $config->allowAttribute($attribute, 'span');

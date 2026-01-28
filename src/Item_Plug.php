@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,7 +39,7 @@ class Item_Plug extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype';
     public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = 'Plug';
+    public static $itemtype_2 = Plug::class;
     public static $items_id_2 = 'plugs_id';
     public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
     public static $mustBeAttached_1      = false;
@@ -54,6 +54,7 @@ class Item_Plug extends CommonDBRelation
     {
         $nb = 0;
         if ($_SESSION['glpishow_count_on_tabs']) {
+            /** @var CommonDBTM $item */
             $nb = $item::class === Plug::class
                 ? countElementsInTable(self::getTable(), ['plugs_id' => $item->getID()])
                 : countElementsInTable(self::getTable(), ['itemtype' => $item::class, 'items_id' => $item->getID()]);
@@ -63,8 +64,10 @@ class Item_Plug extends CommonDBRelation
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
-        self::showItems($item);
-        return true;
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+        return self::showItems($item);
     }
 
     /**
@@ -72,11 +75,10 @@ class Item_Plug extends CommonDBRelation
      *
      * @param CommonDBTM $item
      *
-     * @return void
+     * @return bool
      */
-    public static function showItems(CommonDBTM $item)
+    public static function showItems(CommonDBTM $item): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $ID = $item->getID();
@@ -95,21 +97,21 @@ class Item_Plug extends CommonDBRelation
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 static::$itemtype_1 => $item::class,
-                static::$items_id_1 => $item->getID()
-            ]
+                static::$items_id_1 => $item->getID(),
+            ],
         ]);
 
         if ($canedit) {
             $rand = mt_rand();
             echo "\n<form id='form_device_add$rand' name='form_device_add$rand'
-               action='" . htmlescape(Toolbox::getItemTypeFormURL(__CLASS__)) . "' method='post'>\n";
-            echo "\t<input type='hidden' name='" . static::$items_id_1 . "' value='$ID'>\n";
-            echo "\t<input type='hidden' name='itemtype' value='" . $item::class . "'>\n";
+               action='" . htmlescape(Toolbox::getItemTypeFormURL(self::class)) . "' method='post'>\n";
+            echo "\t<input type='hidden' name='" . htmlescape(static::$items_id_1) . "' value='$ID'>\n";
+            echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
             echo "<label for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label></td><td>";
             Plug::dropdown([
                 'name'   => "plugs_id",
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
             echo "</td><td>";
             echo "<label for='number_plugs'>" . __s('Number');
@@ -119,7 +121,8 @@ class Item_Plug extends CommonDBRelation
                 [
                     'id'     => 'number_plugs',
                     'type'   => 'number',
-                    'min'    => 1
+                    'min'    => 1,
+                    'required' => true,
                 ]
             );
             echo "</td><td>";
@@ -136,7 +139,7 @@ class Item_Plug extends CommonDBRelation
                 'itemtype' => self::class,
                 'id' => $row['id'],
                 'plugs_id' => $plug->getLink(),
-                'number_plugs' => $row['number_plugs']
+                'number_plugs' => $row['number_plugs'],
             ];
         }
 
@@ -145,20 +148,69 @@ class Item_Plug extends CommonDBRelation
             'nofilter' => true,
             'columns' => [
                 'plugs_id' => __('Name'),
-                'number_plugs' => __('Number')
+                'number_plugs' => __('Number'),
             ],
             'formatters' => [
-                'plugs_id' => 'raw_html'
+                'plugs_id' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
-            'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
+
+        return true;
+    }
+
+    public function prepareInputForAdd($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        return $this->prepareInput($input);
+    }
+
+    /**
+     * Prepares input (for update and add)
+     *
+     * @param array $input Input data
+     *
+     * @return false|array
+     */
+    private function prepareInput(array $input): false|array
+    {
+        // Check plugs_id requirement
+        if (
+            $this->isNewItem()
+            && (!isset($input['plugs_id']) || $input['plugs_id'] <= 0)
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('A plug must be selected'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        // Check number_plugs requirement
+        if (
+            ($this->isNewItem() || isset($input['number_plugs']))
+            && (!isset($input['number_plugs']) || $input['number_plugs'] === '' || $input['number_plugs'] < 1)
+        ) {
+            Session::addMessageAfterRedirect(
+                __s('A number of plugs is required'),
+                true,
+                ERROR
+            );
+            return false;
+        }
+
+        return $input;
     }
 
     public function getForbiddenStandardMassiveAction()

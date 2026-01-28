@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Kernel\Kernel;
+
 if (PHP_SAPI != 'cli') {
     echo "This script must be run from command line";
     exit();
@@ -40,7 +42,7 @@ if (PHP_SAPI != 'cli') {
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new \Glpi\Kernel\Kernel();
+$kernel = new Kernel();
 $kernel->boot();
 
 $printers_id = false;
@@ -64,8 +66,8 @@ if ($printers_id !== false) {
 
     foreach ($period as $dt) {
         $total = random_int(10, 95);
-        $rvs = (int)round($total * random_int(70, 95) / 100);
-        $bws = (int)round($total * random_int(55, 80) / 100);
+        $rvs = (int) round($total * random_int(70, 95) / 100);
+        $bws = (int) round($total * random_int(55, 80) / 100);
         $colors = $total - $bws;
         $scans = random_int(20, 100);
 
@@ -82,7 +84,7 @@ if ($printers_id !== false) {
             'color_pages'    => $color_pages,
             'scanned'        => $scanned,
             'rv_pages'       => $rv_pages,
-            'printers_id'    => $printers_id
+            'printers_id'    => $printers_id,
         ];
         $metrics->add($input, [], false);
     }
@@ -114,7 +116,7 @@ if ($networkports_id !== false) {
             'ifoutbytes'      => $outbytes,
             'ifinerrors'      => $inerrors,
             'ifouterrors'     => $outerrors,
-            'networkports_id' => $networkports_id
+            'networkports_id' => $networkports_id,
         ];
         $metrics->add($input, [], false);
     }

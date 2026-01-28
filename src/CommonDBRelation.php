@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,50 +35,78 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
+use Glpi\Exception\ItemLinkException;
 
-/// Common DataBase Relation Table Manager Class
+use function Safe\preg_match;
+
+/**
+ * Common DataBase Relation Table Manager Class
+ */
 abstract class CommonDBRelation extends CommonDBConnexity
 {
-   // Item 1 information
-   // * definition
+    // Item 1 information
+    // * definition
+    /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
     public static $itemtype_1; // Type ref or field name (must start with itemtype)
+    /** @var ?string $items_id_1 */
     public static $items_id_1; // Field name
-   // * entity inheritance
+    /** @var bool If entity must be taken from item 1 */
     public static $take_entity_1          = true;
-   // * rights
+    // * rights
+    /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    /** @var bool If item 1 must be attached to the relation */
     public static $mustBeAttached_1       = true;
-   // * log
+    // * log
+    /** @var bool If historical logs must be done for item 1 */
     public static $logs_for_item_1        = true;
+    /** @var Log::HISTORY_* The historical log entry action type to use for add actions */
     public static $log_history_1_add      = Log::HISTORY_ADD_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for update actions */
     public static $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for delete actions */
     public static $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for lock actions */
     public static $log_history_1_lock     = Log::HISTORY_LOCK_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for unlock actions */
     public static $log_history_1_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
-   // Item 2 information
-   // * definition
+    // Item 2 information
+    // * definition
+    /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
     public static $itemtype_2; // Type ref or field name (must start with itemtype)
+    /** @var ?string $items_id_2 */
     public static $items_id_2; // Field name
-   // * entity inheritance
+    /** @var bool If entity must be taken from item 2 */
     public static $take_entity_2          = false;
-   // * rights
+    // * rights
+    /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
     public static $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    /** @var bool If item 2 must be attached to the relation */
     public static $mustBeAttached_2       = true;
-   // * log
+    // * log
+    /** @var bool If historical logs must be done for item 2 */
     public static $logs_for_item_2        = true;
+    /** @var Log::HISTORY_* The historical log entry action type to use for add actions */
     public static $log_history_2_add      = Log::HISTORY_ADD_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for update actions */
     public static $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for delete actions */
     public static $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for lock actions */
     public static $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
+    /** @var Log::HISTORY_* The historical log entry action type to use for unlock actions */
     public static $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
-   // Relation between items to check
-   /// If both items must be checked for rights (default is only one)
+    // Relation between items to check
+    /// If both items must be checked for rights (default is only one)
+    /** @var bool */
     public static $checkAlwaysBothItems   = false;
-   /// If both items must be in viewable each other entities
+    /// If both items must be in viewable each other entities
+    /** @var bool */
     public static $check_entity_coherency = true;
 
+    /** @var bool */
     public $no_form_page                  = true;
 
     /**
@@ -86,15 +114,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * Value is defined during logging process and unset after it.
      * @var int
      */
-    protected $_force_log_option;
+    protected $_force_log_option = 0;
 
     /**
-     * Get request cirteria to search for an item
+     * Get request criteria to search for an item
      *
      * @since 9.4
      *
      * @param string  $itemtype Item type
-     * @param integer $items_id Item ID
+     * @param int $items_id Item ID
      *
      * @return array|null
      **/
@@ -106,12 +134,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $fields     = [
             static::getIndexName(),
             static::$items_id_1 . ' AS items_id_1',
-            static::$items_id_2 . ' AS items_id_2'
+            static::$items_id_2 . ' AS items_id_2',
         ];
 
-       // Check item 1 type
+        // Check item 1 type
         $where1 = [
-            $table . '.' . static::$items_id_1  => $items_id
+            $table . '.' . static::$items_id_1  => $items_id,
         ];
 
         $request = false;
@@ -135,9 +163,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $fields[] = new QueryExpression('0 AS is_1');
         }
 
-       // Check item 2 type
+        // Check item 2 type
         $where2 = [
-            $table . '.' . static::$items_id_2 => $items_id
+            $table . '.' . static::$items_id_2 => $items_id,
         ];
         $request = false;
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
@@ -164,7 +192,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $criteria = [
                 'SELECT' => $fields,
                 'FROM'   => $table,
-                'WHERE'  => ['OR' => $conditions]
+                'WHERE'  => ['OR' => $conditions],
             ];
             return $criteria;
         }
@@ -175,8 +203,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $item            CommonDBTM object
-     * @param $relations_id    (default NULL)
+     * @param CommonDBTM   $item         CommonDBTM object
+     * @param int|null $relations_id (default NULL)
+     * @return CommonDBTM|false
      **/
     public static function getOpposite(CommonDBTM $item, &$relations_id = null)
     {
@@ -188,12 +217,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 0.84
      *
      * @param string       $itemtype        Type of the item to search for its opposite
-     * @param integer      $items_id        ID of the item to search for its opposite
-     * @param integer|null $relations_id
+     * @param int      $items_id        ID of the item to search for its opposite
+     * @param int|null $relations_id
+     * @return CommonDBTM|false
      **/
     public static function getOppositeByTypeAndID($itemtype, $items_id, &$relations_id = null)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if ($items_id < 0) {
@@ -254,7 +283,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $number
+     * @param int $number
      *
      * @return CommonDBTM|false
      **/
@@ -264,7 +293,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($number == 0) {
             $itemtype = static::$itemtype_1;
             $items_id = static::$items_id_1;
-        } else if ($number == 1) {
+        } elseif ($number == 1) {
             $itemtype = static::$itemtype_2;
             $items_id = static::$items_id_2;
         } else {
@@ -282,12 +311,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param CommonDBTM $item1 object 1
      * @param CommonDBTM $item2 object 2
      *
-     * @return boolean
+     * @return bool
      **/
     public function getFromDBForItems(CommonDBTM $item1, CommonDBTM $item2)
     {
 
-       // Check items ID
+        // Check items ID
         if (($item1->getID() < 0) || ($item2->getID() < 0)) {
             return false;
         }
@@ -296,35 +325,30 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $wheres[static::$items_id_1] = $item1->getID();
         $wheres[static::$items_id_2] = $item2->getID();
 
-       // Check item 1 type
+        // Check item 1 type
         if (preg_match('/^itemtype/', static::$itemtype_1)) {
             $wheres[static::$itemtype_1] = $item1->getType();
-        } else if (!is_a($item1, static::$itemtype_1)) {
+        } elseif (!is_a($item1, static::$itemtype_1)) {
             return false;
         }
 
-       // Check item 1 type
+        // Check item 1 type
         if (preg_match('/^itemtype/', static::$itemtype_2)) {
             $wheres[static::$itemtype_2] = $item2->getType();
-        } else if (!is_a($item2, static::$itemtype_2)) {
+        } elseif (!is_a($item2, static::$itemtype_2)) {
             return false;
         }
         return $this->getFromDBByCrit($wheres);
     }
 
 
-    /**
-     * Get search function for the class
-     *
-     * @return array of search option
-     **/
     public function rawSearchOptions()
     {
         $tab = [];
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -333,7 +357,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $itemtype1 = static::$itemtype_1;
@@ -345,7 +369,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 'linkfield'          => static::$items_id_1,
                 'name'               => call_user_func([$itemtype1, 'getTypeName']),
                 'datatype'           => 'text',
-                'massiveaction'      => false
+                'massiveaction'      => false,
             ];
         }
 
@@ -358,7 +382,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 'linkfield'          => static::$items_id_2,
                 'name'               => call_user_func([$itemtype2, 'getTypeName']),
                 'datatype'           => 'text',
-                'massiveaction'      => false
+                'massiveaction'      => false,
             ];
         }
 
@@ -373,7 +397,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param $input Array of data to be added
      *
-     * @return boolean
+     * @return bool
      **/
     public function isAttach2Valid(array &$input)
     {
@@ -388,7 +412,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param $input Array of data to be added
      *
-     * @return boolean
+     * @return bool
      **/
     public function isAttach1Valid(array &$input)
     {
@@ -399,10 +423,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $method
-     * @param $forceCheckBoth boolean force check both items(false by default)
+     * @param string $method
+     * @param bool   $forceCheckBoth force check both items(false by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public static function canRelation($method, $forceCheckBoth = false)
     {
@@ -420,14 +444,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
             static::$items_id_2
         );
 
-       /// Check only one if SAME RIGHT for both items and not force checkBoth
+        /// Check only one if SAME RIGHT for both items and not force checkBoth
         if (
             ((static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_1_Rights)
             && (static::HAVE_SAME_RIGHT_ON_ITEM == static::$checkItem_2_Rights))
             && !$forceCheckBoth
         ) {
             if ($can1) {
-               // Can view the second one ?
+                // Can view the second one ?
                 if (
                     !static::canConnexity(
                         $method,
@@ -439,8 +463,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     return false;
                 }
                 return true;
-            } else if ($can2) {
-               // Can view the first one ?
+            } elseif ($can2) {
+                // Can view the first one ?
                 if (
                     !static::canConnexity(
                         $method,
@@ -453,7 +477,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 }
                 return true;
             } else {
-               // No item have right
+                // No item have right
                 return false;
             }
         }
@@ -465,12 +489,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * @since 0.84
      *
-     * @param $method
-     * @param $methodNotItem
-     * @param $check_entity            (true by default)
-     * @param $forceCheckBoth boolean  force check both items (false by default)
+     * @param string $method
+     * @param string $methodNotItem
+     * @param bool   $check_entity     (true by default)
+     * @param bool   $forceCheckBoth   force check both items (false by default)
      *
-     * @return boolean
+     * @return bool
      **/
     public function canRelationItem($method, $methodNotItem, $check_entity = true, $forceCheckBoth = false)
     {
@@ -493,14 +517,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $item1
             );
             if ($OneWriteIsEnough) {
-                 $view1 = $this->canConnexityItem(
-                     $method,
-                     $methodNotItem,
-                     static::HAVE_VIEW_RIGHT_ON_ITEM,
-                     static::$itemtype_1,
-                     static::$items_id_1,
-                     $item1
-                 );
+                $view1 = $this->canConnexityItem(
+                    $method,
+                    $methodNotItem,
+                    static::HAVE_VIEW_RIGHT_ON_ITEM,
+                    static::$itemtype_1,
+                    static::$items_id_1,
+                    $item1
+                );
             }
         } catch (CommonDBConnexityItemNotFound $e) {
             if (static::$mustBeAttached_1 && !$this->isAttach1Valid($this->fields)) {
@@ -554,10 +578,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
             }
         }
 
-       // Check coherency of entities
+        // Check coherency of entities
         if ($check_entity && static::$check_entity_coherency) {
-           // If one of both extremity is not valid => not allowed !
-           // (default is only to check on create and update not for view and delete)
+            // If one of both extremity is not valid => not allowed !
+            // (default is only to check on create and update not for view and delete)
             if (
                 (!$item1 instanceof CommonDBTM)
                 || (!$item2 instanceof CommonDBTM)
@@ -590,10 +614,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return true;
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canCreate(): bool
     {
 
@@ -603,23 +623,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canView(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, READ))) {
             return false;
         }
-       // Always both checks for view
+        // Always both checks for view
         return static::canRelation('canView', true);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canUpdate(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, UPDATE))) {
@@ -628,10 +640,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public static function canDelete(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, DELETE))) {
@@ -640,10 +648,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.85
-     **/
     public static function canPurge(): bool
     {
         if ((static::$rightname) && (!Session::haveRight(static::$rightname, PURGE))) {
@@ -652,10 +656,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         return static::canRelation('canUpdate', static::$checkAlwaysBothItems);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canCreateItem(): bool
     {
         return $this->canRelationItem(
@@ -666,19 +666,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canViewItem(): bool
     {
         return $this->canRelationItem('canViewItem', 'canView', false, true);
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canUpdateItem(): bool
     {
 
@@ -690,10 +682,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 0.84
-     **/
     public function canDeleteItem(): bool
     {
 
@@ -705,10 +693,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         );
     }
 
-
-    /**
-     * @since 9.3.2
-     */
     public function canPurgeItem(): bool
     {
 
@@ -724,20 +708,20 @@ abstract class CommonDBRelation extends CommonDBConnexity
     public function addNeededInfoToInput($input)
     {
 
-       // is entity missing and forwarding on ?
+        // is entity missing and forwarding on ?
         if ($this->tryEntityForwarding() && !isset($input['entities_id'])) {
-           // Merge both arrays to ensure all the fields are defined for the following checks
+            // Merge both arrays to ensure all the fields are defined for the following checks
             $completeinput = array_merge($this->fields, $input);
 
             $itemToGetEntity = false;
-           // Set the item to allow parent::prepareinputforadd to get the right item ...
+            // Set the item to allow parent::prepareinputforadd to get the right item ...
             if (static::$take_entity_1) {
                 $itemToGetEntity = static::getItemFromArray(
                     static::$itemtype_1,
                     static::$items_id_1,
                     $completeinput
                 );
-            } else if (static::$take_entity_2) {
+            } elseif (static::$take_entity_2) {
                 $itemToGetEntity = static::getItemFromArray(
                     static::$itemtype_2,
                     static::$items_id_2,
@@ -745,15 +729,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 );
             }
 
-           // Set the item to allow parent::prepareinputforadd to get the right item ...
+            // Set the item to allow parent::prepareinputforadd to get the right item ...
             if (
                 ($itemToGetEntity instanceof CommonDBTM)
-                && $itemToGetEntity->isEntityForwardTo(get_called_class())
+                && $itemToGetEntity->isEntityForwardTo(static::class)
             ) {
                 $input['entities_id']  = $itemToGetEntity->getEntityID();
                 $input['is_recursive'] = intval($itemToGetEntity->isRecursive());
             } else {
-               // No entity link : set default values
+                // No entity link : set default values
                 $input['entities_id']  = Session::getActiveEntity();
                 $input['is_recursive'] = 0;
             }
@@ -780,12 +764,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
             return false;
         }
 
-       // True if item changed
+        // True if item changed
         if (
             !$this->checkAttachedItemChangesAllowed($input, [static::$itemtype_1,
                 static::$items_id_1,
                 static::$itemtype_2,
-                static::$items_id_2
+                static::$items_id_2,
             ])
         ) {
             return false;
@@ -813,7 +797,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
 
         return $item->getNameID(['forceid'    => true,
-            'additional' => true
+            'additional' => true,
         ]);
     }
 
@@ -836,7 +820,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
 
         return $item->getNameID(['forceid'    => true,
-            'additional' => true
+            'additional' => true,
         ]);
     }
 
@@ -861,7 +845,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes = [
-                    (isset($this->_force_log_option) ? $this->_force_log_option : 0),
+                    $this->_force_log_option,
                     '',
                     $this->getHistoryNameForItem1($item2, 'add'),
                 ];
@@ -930,7 +914,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             if ((!is_array($changes)) || (count($changes) != 3)) {
                 continue;
             }
-           /// TODO clean management of it
+            /// TODO clean management of it
             if (
                 $new1 && $new1->dohistory
                 && static::$logs_for_item_1
@@ -939,7 +923,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $new1->getID(),
                     $new1->getType(),
                     $changes,
-                    get_called_class() . '#' . $field,
+                    static::class . '#' . $field,
                     static::$log_history_1_update
                 );
             }
@@ -951,7 +935,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     $new2->getID(),
                     $new2->getType(),
                     $changes,
-                    get_called_class() . '#' . $field,
+                    static::class . '#' . $field,
                     static::$log_history_2_update
                 );
             }
@@ -1171,7 +1155,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 && static::$logs_for_item_1
             ) {
                 $changes = [
-                    '0',
+                    $this->_force_log_option,
                     $this->getHistoryNameForItem1($item2, 'delete'),
                     '',
                 ];
@@ -1213,6 +1197,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param HTMLTableSuperHeader $super     HTMLTableSuperHeader object (default NULL)
      * @param HTMLTableHeader      $father    HTMLTableHeader object (default NULL)
      * @param array                $options
+     * @return void
      **/
     public static function getHTMLTableHeader(
         $itemtype,
@@ -1222,8 +1207,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
         array $options = []
     ) {
 
-        if (isset($options[get_called_class() . '_side'])) {
-            $side = $options[get_called_class() . '_side'];
+        if (isset($options[static::class . '_side'])) {
+            $side = $options[static::class . '_side'];
         } else {
             $side = 0;
         }
@@ -1244,7 +1229,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             class_exists($oppositetype)
             && method_exists($oppositetype, 'getHTMLTableHeader')
         ) {
-            $oppositetype::getHTMLTableHeader(get_called_class(), $base, $super, $father, $options);
+            $oppositetype::getHTMLTableHeader(static::class, $base, $super, $father, $options);
         }
     }
 
@@ -1256,6 +1241,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param CommonDBTM    $item     CommonDBTM object (default NULL)
      * @param HTMLTableCell $father   HTMLTableCell object (default NULL)
      * @param array         $options
+     * @return void
      **/
     public static function getHTMLTableCellsForItem(
         ?HTMLTableRow $row = null,
@@ -1263,7 +1249,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         ?HTMLTableCell $father = null,
         array $options = []
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (empty($item)) {
@@ -1291,7 +1276,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         && method_exists($oppositetype, 'getHTMLTableCellsForItem')
                         && $relation->getFromDB($line[static::getIndexName()])
                     ) {
-                         $oppositetype::getHTMLTableCellsForItem($row, $relation, $father, $options);
+                        $oppositetype::getHTMLTableCellsForItem($row, $relation, $father, $options);
                     }
                 }
             }
@@ -1302,12 +1287,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
     /**
      * Affect a CommonDBRelation to a given item. By default, unaffect it
      *
-     * @param integer $id       the id of the CommonDBRelation to affect
-     * @param integer $peer     the number of the peer (ie.: 0 or 1)
-     * @param integer $items_id the id of the new item
+     * @param int $id       the id of the CommonDBRelation to affect
+     * @param int $peer     the number of the peer (ie.: 0 or 1)
+     * @param int $items_id the id of the new item
      * @param string  $itemtype the type of the new item
      *
-     * @return boolean : true on success
+     * @return bool : true on success
      **/
     public function affectRelation($id, $peer, $items_id = 0, $itemtype = '')
     {
@@ -1365,14 +1350,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 'remove' => _sx(
                     'button',
                     'Delete permanently'
-                )
+                ),
             ],
             'normalized'                    => ['add'    => ['add'],
-                'remove' => ['remove']
+                'remove' => ['remove'],
             ],
             'check_both_items_if_same_type' => false,
             'can_link_several_times'        => false,
-            'update_if_different'           => false
+            'update_if_different'           => false,
         ];
     }
 
@@ -1381,13 +1366,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * Display subForm of the massive action
      *
      * @param MassiveAction $ma           current massive action
-     * @param integer       $peer_number  the number of the concerned peer
+     * @param int       $peer_number  the number of the concerned peer
      *
      * @return void
      **/
-    public static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number)
-    {
-    }
+    public static function showRelationMassiveActionsSubForm(MassiveAction $ma, $peer_number) {}
 
 
     /**
@@ -1403,7 +1386,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     {
 
         $items = $ma->getItems();
-       // If direct itemtype, then, its easy to find !
+        // If direct itemtype, then, its easy to find !
         if (isset($items[static::$itemtype_1])) {
             return 2;
         }
@@ -1411,7 +1394,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             return 1;
         }
 
-       // Else, check if one of both peer is 'itemtype*'
+        // Else, check if one of both peer is 'itemtype*'
         if (preg_match('/^itemtype/', static::$itemtype_1)) {
             return 2;
         }
@@ -1419,7 +1402,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             return 1;
         }
 
-       // Else we cannot define !
+        // Else we cannot define !
         return 0;
     }
 
@@ -1430,82 +1413,77 @@ abstract class CommonDBRelation extends CommonDBConnexity
         $specificities = static::getRelationMassiveActionsSpecificities();
         $action        = $ma->getAction();
 
-       // First, get normalized action : add or remove
+        // First, get normalized action : add or remove
         if (in_array($action, $specificities['normalized']['add'])) {
             $normalized_action = 'add';
-        } else if (in_array($action, $specificities['normalized']['remove'])) {
+        } elseif (in_array($action, $specificities['normalized']['remove'])) {
             $normalized_action = 'remove';
         } else {
-           // If we cannot get normalized action, then, it's not for this method!
+            // If we cannot get normalized action, then, it's not for this method!
             return parent::showMassiveActionsSubForm($ma);
         }
 
-        switch ($normalized_action) {
-            case 'add':
-            case 'remove':
-               // Get the peer number. For Document_Item, it depends on the action's name
-                $peer_number = static::getRelationMassiveActionsPeerForSubForm($ma);
-                switch ($peer_number) {
-                    case 1:
-                        $peertype = static::$itemtype_1;
-                        $peers_id = static::$items_id_1;
-                        break;
-                    case 2:
-                        $peertype = static::$itemtype_2;
-                        $peers_id = static::$items_id_2;
-                        break;
-                    default:
-                        throw new \LogicException();
-                }
-                if (
-                    ($normalized_action == 'remove')
-                    && ($specificities['only_remove_all_at_once'])
-                ) {
-                   // If we just want to remove all the items, then just set hidden fields
-                    echo Html::hidden('peer_' . $peertype, ['value' => '']);
-                    echo Html::hidden('peer_' . $peers_id, ['value' => -1]);
-                } else {
-                   // Else, it depends if the peer is an itemtype or not
-                    $options = $specificities['select_items_options_' . $peer_number];
-                   // Do we allow to remove all the items at once ? Then, rename the default value !
-                    if (
-                        ($normalized_action == 'remove')
-                        && $specificities['can_remove_all_at_once']
-                    ) {
-                        $options['emptylabel'] = __('Remove all at once');
-                    }
-                    if (preg_match('/^itemtype/', $peertype)) {
-                        if (count($specificities['itemtypes']) > 0) {
-                            $options['itemtype_name'] = 'peer_' . $peertype;
-                            $options['items_id_name'] = 'peer_' . $peers_id;
-                            $options['itemtypes']     = $specificities['itemtypes'];
-                           // At least, if not forced by user, 'checkright' == true
-                            if (!isset($options['checkright'])) {
-                                $options['checkright']    = true;
-                            }
-                            Dropdown::showSelectItemFromItemtypes($options);
-                        }
-                    } else {
-                        $options['name'] = 'peer_' . $peers_id;
-                        if (isset($_POST['entity_restrict'])) {
-                            $options['entity'] = Session::getMatchingActiveEntities($_POST['entity_restrict']);
-                        }
-                        if ($normalized_action == 'remove') {
-                            $options['nochecklimit'] = true;
-                        }
-                        $dropdown_method = $specificities['dropdown_method_' . $peer_number];
-                        $peertype::$dropdown_method($options);
-                    }
-                }
-               // Allow any relation to display its own fields (NetworkPort_Vlan for tagged ...)
-                static::showRelationMassiveActionsSubForm($ma, $peer_number);
-                echo "<br><br>" . Html::submit(
-                    $specificities['button_labels'][$action],
-                    ['name' => 'massiveaction']
-                );
-                return true;
+        // Get the peer number. For Document_Item, it depends on the action's name
+        $peer_number = static::getRelationMassiveActionsPeerForSubForm($ma);
+        switch ($peer_number) {
+            case 1:
+                $peertype = static::$itemtype_1;
+                $peers_id = static::$items_id_1;
+                break;
+            case 2:
+                $peertype = static::$itemtype_2;
+                $peers_id = static::$items_id_2;
+                break;
+            default:
+                throw new LogicException();
         }
-        return parent::showMassiveActionsSubForm($ma);
+        if (
+            ($normalized_action == 'remove')
+            && ($specificities['only_remove_all_at_once'])
+        ) {
+            // If we just want to remove all the items, then just set hidden fields
+            echo Html::hidden('peer_' . $peertype, ['value' => '']);
+            echo Html::hidden('peer_' . $peers_id, ['value' => -1]);
+        } else {
+            // Else, it depends if the peer is an itemtype or not
+            $options = $specificities['select_items_options_' . $peer_number];
+            // Do we allow to remove all the items at once ? Then, rename the default value !
+            if (
+                ($normalized_action == 'remove')
+                && $specificities['can_remove_all_at_once']
+            ) {
+                $options['emptylabel'] = __('Remove all at once');
+            }
+            if (preg_match('/^itemtype/', $peertype)) {
+                if (count($specificities['itemtypes']) > 0) {
+                    $options['itemtype_name'] = 'peer_' . $peertype;
+                    $options['items_id_name'] = 'peer_' . $peers_id;
+                    $options['itemtypes']     = $specificities['itemtypes'];
+                    // At least, if not forced by user, 'checkright' == true
+                    if (!isset($options['checkright'])) {
+                        $options['checkright']    = true;
+                    }
+                    Dropdown::showSelectItemFromItemtypes($options);
+                }
+            } else {
+                $options['name'] = 'peer_' . $peers_id;
+                if (isset($_POST['entity_restrict'])) {
+                    $options['entity'] = Session::getMatchingActiveEntities($_POST['entity_restrict']);
+                }
+                if ($normalized_action == 'remove') {
+                    $options['nochecklimit'] = true;
+                }
+                $dropdown_method = $specificities['dropdown_method_' . $peer_number];
+                $peertype::$dropdown_method($options);
+            }
+        }
+        // Allow any relation to display its own fields (NetworkPort_Vlan for tagged ...)
+        static::showRelationMassiveActionsSubForm($ma, $peer_number);
+        echo "<br><br>" . Html::submit(
+            $specificities['button_labels'][$action],
+            ['name' => 'massiveaction']
+        );
+        return true;
     }
 
 
@@ -1517,7 +1495,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param string     $action  the name of the action
      * @param CommonDBTM $item    the item on which apply the massive action
-     * @param integer[]  $ids     ids of the item on which apply the action
+     * @param int[]  $ids     ids of the item on which apply the action
      * @param array      $input   input provided by the form ($_POST, $_GET ...)
      *
      * @return array containing the elements
@@ -1544,7 +1522,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
         CommonDBTM $item,
         array $ids
     ) {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $action        = $ma->getAction();
@@ -1552,20 +1529,20 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         $specificities = static::getRelationMassiveActionsSpecificities();
 
-       // First, get normalized action : add or remove
+        // First, get normalized action : add or remove
         if (in_array($action, $specificities['normalized']['add'])) {
             $normalized_action = 'add';
-        } else if (in_array($action, $specificities['normalized']['remove'])) {
+        } elseif (in_array($action, $specificities['normalized']['remove'])) {
             $normalized_action = 'remove';
         } else {
-           // If we cannot get normalized action, then, its not for this method !
+            // If we cannot get normalized action, then, its not for this method !
             parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
             return;
         }
 
         $link     = new static();
 
-       // Get the default 'input' entries from the relation
+        // Get the default 'input' entries from the relation
         $input2   = static::getRelationInputForProcessingOfMassiveActions(
             $action,
             $item,
@@ -1573,7 +1550,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $input
         );
 
-       // complete input2 with the right fields from input and define the peer with this information
+        // complete input2 with the right fields from input and define the peer with this information
         foreach ([static::$itemtype_1, static::$items_id_1] as $field) {
             if (isset($input['peer_' . $field])) {
                 $input2[$field] = $input['peer_' . $field];
@@ -1588,7 +1565,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             }
         }
 
-       // If the fields provided by showMassiveActionsSubForm are not valid then quit !
+        // If the fields provided by showMassiveActionsSubForm are not valid then quit !
         if (!isset($item_number)) {
             $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
             $ma->addMessage($link->getErrorMessage(ERROR_NOT_FOUND));
@@ -1611,10 +1588,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $input2[$itemtype] = $item->getType();
         }
 
-       // Get the peer from the $input2 and the name of its fields
+        // Get the peer from the $input2 and the name of its fields
         $peer = static::getItemFromArray($peertype, $peers_id, $input2, true, true, true);
 
-       // $peer not valid => not in DB or try to remove all at once !
+        // $peer not valid => not in DB or try to remove all at once !
         if (!($peer instanceof CommonDBTM) || $peer->isNewItem()) {
             if ((isset($input2[$peers_id])) && ($input2[$peers_id] > 0)) {
                 $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
@@ -1629,13 +1606,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 !$specificities['can_remove_all_at_once']
                 && !$specificities['only_remove_all_at_once']
             ) {
-                return false;
+                return;
             }
             $peer = false;
         }
 
-       // Make a link between $item_1, $item_2 and $item and $peer. Thus, we will be able to update
-       // $item without having to care about the number of the item
+        // Make a link between $item_1, $item_2 and $item and $peer. Thus, we will be able to update
+        // $item without having to care about the number of the item
         if ($item_number == 1) {
             $item_1 = &$item;
             $item_2 = &$peer;
@@ -1646,7 +1623,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         switch ($normalized_action) {
             case 'add':
-               // remove all at once only available for remove !
+                // remove all at once only available for remove !
                 if (!$peer) {
                     $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);
                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
@@ -1659,7 +1636,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         continue;
                     }
                     $input2[$items_id] = $item->getID();
-                   // If 'can_link_several_times', then, we add the elements !
+                    // If 'can_link_several_times', then, we add the elements !
                     if ($specificities['can_link_several_times']) {
                         if ($link->can(-1, CREATE, $input2)) {
                             if ($link->add($input2)) {
@@ -1677,7 +1654,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                         if (!$link->getFromDBForItems($item_1, $item_2)) {
                             if (
                                 ($specificities['check_both_items_if_same_type'])
-                                && ($item_1->getType() == $item_2->getType())
+                                && ($item_1 instanceof $item_2) //@phpstan-ignore instanceof.invalidExprType ($item_1 and $item_2 may be false, that's an error to manage properly)
                             ) {
                                 $link->getFromDBForItems($item_2, $item_1);
                             }
@@ -1700,12 +1677,12 @@ abstract class CommonDBRelation extends CommonDBConnexity
                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
                                 $ma->addMessage($link->getErrorMessage(ERROR_RIGHT));
                             }
-                           // if index defined, then cannot not add any other link due to index unicity
+                            // if index defined, then cannot not add any other link due to index unicity
                             unset($input2[static::getIndexName()]);
                         } else {
                             if ($link->can(-1, CREATE, $input2)) {
                                 if ($link->add($input2)) {
-                                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                                 } else {
                                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($link->getErrorMessage(ERROR_ON_ACTION));
@@ -1721,7 +1698,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
             case 'remove':
                 foreach ($ids as $key) {
-                   // First, get the query to find all occurences of the link item<=>key
+                    // First, get the query to find all occurences of the link item<=>key
                     if (!$peer) {
                         $criteria = static::getSQLCriteriaToSearchForItem($item->getType(), $key);
                     } else {
@@ -1733,7 +1710,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
                         $WHERE = [
                             static::$items_id_1  => $item_1->getID(),
-                            static::$items_id_2  => $item_2->getID()
+                            static::$items_id_2  => $item_2->getID(),
                         ];
                         if (preg_match('/^itemtype/', static::$itemtype_1)) {
                             $WHERE[static::$itemtype_1] = $item_1->getType();
@@ -1744,11 +1721,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
                         if (
                             ($specificities['check_both_items_if_same_type'])
-                            && ($item_1->getType() == $item_2->getType())
+                            && ($item_1 instanceof $item_2) //@phpstan-ignore instanceof.invalidExprType ($item_1 and $item_2 may be false, that's an error to manage properly)
                         ) {
                             $ORWHERE = [
-                                static::$items_id_1 = $item_2->getID(),
-                                static::$items_id_2 = $item_2->getID()
+                                static::$items_id_1 => $item_2->getID(),
+                                static::$items_id_2 => $item_2->getID(),
                             ];
                             if (preg_match('/^itemtype/', static::$itemtype_1)) {
                                 $ORWHERE[static::$itemtype_1] = $item_2->getType();
@@ -1759,15 +1736,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
                             $WHERE = [
                                 'OR' => [
                                     $WHERE,
-                                    $ORWHERE
-                                ]
+                                    $ORWHERE,
+                                ],
                             ];
                         }
 
                         $criteria = [
                             'SELECT' => static::getIndexName(),
                             'FROM'   => static::getTable(),
-                            'WHERE'  => $WHERE
+                            'WHERE'  => $WHERE,
                         ];
                     }
                     $request        = $DB->request($criteria);
@@ -1798,7 +1775,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
                     } else {
                         if ($noright > 0) {
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_NORIGHT);
-                        } else if ($ko > 0) {
+                        } elseif ($ko > 0) {
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                         }
                     }
@@ -1816,20 +1793,19 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @since 9.3.1
      *
      * @param CommonDBTM $item  Item instance
-     * @param boolean    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
+     * @param bool    $noent Flag to not compute entity information (see Document_Item::getListForItemParams)
      *
      * @return array
      */
     protected static function getListForItemParams(CommonDBTM $item, $noent = false)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         if (Session::isCron()) {
             $noent = true;
         }
 
-        $inverse = $item->getType() == static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
+        $inverse = $item::class === static::$itemtype_1 || static::$itemtype_1 === 'itemtype';
 
         $link_type  = static::$itemtype_1;
         $link_id    = static::$items_id_1;
@@ -1838,7 +1814,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($inverse === true) {
             $link_type  = static::$itemtype_2;
             if ($link_type == 'itemtype') {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     sprintf(
                         'Cannot use getListForItemParams() for a %s',
                         $item->getType()
@@ -1849,8 +1825,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $where_id   = static::$items_id_1;
         }
 
-        $link = new $link_type();
-        $link_table = getTableForItemType($link_type);
+        $link = getItemForItemtype($link_type);
+        $link_table = $link::getTable();
 
         $params = [
             'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],
@@ -1859,14 +1835,14 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 $link_table  => [
                     'FKEY'   => [
                         static::getTable()   => $link_id,
-                        $link_table          => 'id'
-                    ]
-                ]
+                        $link_table          => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                static::getTable() . '.' . $where_id => $item->fields['id']
+                static::getTable() . '.' . $where_id => $item->fields['id'],
             ],
-            'ORDER'     => $link_table . '.name'
+            'ORDER'     => $link_table . '.name',
         ];
 
         $rel_class = static::class;
@@ -1888,8 +1864,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $params['INNER JOIN']['glpi_entities'] = [
                 'FKEY'   => [
                     $link_table       => 'entities_id',
-                    'glpi_entities'   => 'id'
-                ]
+                    'glpi_entities'   => 'id',
+                ],
             ];
             $params['WHERE'] += getEntitiesRestrictCriteria($link_table, '', '', 'auto');
             $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
@@ -1899,20 +1875,21 @@ abstract class CommonDBRelation extends CommonDBConnexity
     }
 
     /**
-     * Get linked items list for specified item
+     * Get linked items list for specified item.
+     *
+     * The returned data contains the fields of the linked items, plus a reference to the linktable ($this) : 'linkid'.
      *
      * @since 9.3.1
      *
      * @param CommonDBTM $item Item instance
-     * @param integer    $start Start index
-     * @param integer    $limit Limit of results. If 0, no limit.
+     * @param int    $start Start index
+     * @param int    $limit Limit of results. If 0, no limit.
      * @param array      $order The order for the results where the first element is the column name that will be sorted and the second element is the direction of the sorting (ASC or DESC)
      *
      * @return DBmysqlIterator
      */
     public static function getListForItem(CommonDBTM $item, int $start = 0, int $limit = 0, array $order = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $params = static::getListForItemParams($item);
@@ -1920,7 +1897,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($limit > 0) {
             $params['LIMIT'] = $limit;
         }
-        if (!empty($order)) {
+        if ($order !== []) {
             $params['ORDER'] = $order;
         }
         return $DB->request($params);
@@ -1931,7 +1908,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id    Object id to restrict on
+     * @param int $items_id    Object id to restrict on
      * @param array   $extra_where Extra where clause
      *
      * @return array
@@ -1945,7 +1922,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             'WHERE'           => [
                 static::$items_id_1  => $items_id,
             ] + $extra_where,
-            'ORDER'           => static::$itemtype_2
+            'ORDER'           => static::$itemtype_2,
         ];
         return $params;
     }
@@ -1955,14 +1932,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id    Object id to restrict on
+     * @param int $items_id    Object id to restrict on
      * @param array   $extra_where Extra where clause
      *
      * @return DBmysqlIterator
      */
     public static function getDistinctTypes($items_id, $extra_where = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $params = static::getDistinctTypesParams($items_id, $extra_where);
@@ -1990,16 +1966,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id Object id to restrict on
+     * @param int $items_id Object id to restrict on
      * @param string  $itemtype Type for items to retrieve
-     * @param boolean $noent    Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
+     * @param bool $noent    Flag to not compute entity information (see Document_Item::getTypeItemsQueryParams)
      * @param array   $where    Inital WHERE clause. Defaults to []
      *
      * @return array
      */
     protected static function getTypeItemsQueryParams($items_id, $itemtype, $noent = false, $where = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $item = getItemForItemtype($itemtype);
@@ -2007,9 +1982,9 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
         if ($item instanceof CommonDevice) {
             $order_col = "designation";
-        } else if ($item instanceof Item_Devices) {
+        } elseif ($item instanceof Item_Devices) {
             $order_col = "itemtype";
-        } else if ($item instanceof Ticket || $item instanceof CommonITILValidation || $item instanceof Notepad) {
+        } elseif ($item instanceof Ticket || $item instanceof CommonITILValidation || $item instanceof Notepad) {
             $order_col = 'id';
         }
 
@@ -2025,11 +2000,11 @@ abstract class CommonDBRelation extends CommonDBConnexity
                 static::getTable() => [
                     'FKEY' => [
                         static::getTable()   => 'items_id',
-                        $item->getTable()    => 'id'
-                    ]
-                ]
+                        $item->getTable()    => 'id',
+                    ],
+                ],
             ],
-            'ORDER'     => $item->getTable() . '.' . $order_col
+            'ORDER'     => $item->getTable() . '.' . $order_col,
         ];
 
         if ($DB->fieldExists(static::getTable(), 'is_deleted')) {
@@ -2049,8 +2024,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $params['LEFT JOIN']['glpi_entities'] = [
                 'FKEY'   => [
                     $item->getTable() => 'entities_id',
-                    'glpi_entities'   => 'id'
-                ]
+                    'glpi_entities'   => 'id',
+                ],
             ];
             $params['WHERE'] += getEntitiesRestrictCriteria($item->getTable(), '', '', $item->maybeRecursive());
             $params['ORDER'] = ['glpi_entities.completename', $params['ORDER']];
@@ -2064,14 +2039,13 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @since 9.3.1
      *
-     * @param integer $items_id Object id to restrict on
+     * @param int $items_id Object id to restrict on
      * @param string  $itemtype Type for items to retrieve
      *
      * @return DBmysqlIterator
      */
     public static function getTypeItems($items_id, $itemtype)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $params = static::getTypeItemsQueryParams($items_id, $itemtype);
@@ -2085,11 +2059,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
      *
      * @param CommonDBTM $item CommonDBTM object
      *
-     * @return integer
+     * @return int
      */
     public static function countForItem(CommonDBTM $item)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $params = static::getListForItemParams($item);
@@ -2111,11 +2084,10 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param CommonDBTM $item              Item instance
      * @param array      $extra_types_where Extra WHERE clause on types
      *
-     * @return integer
+     * @return int
      **/
     public static function countForMainItem(CommonDBTM $item, $extra_types_where = [])
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $nb = 0;
@@ -2148,7 +2120,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         }
 
         if (isset(static::$itemtype_1) && isset(static::$itemtype_2) && preg_match('/^itemtype/', static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_2)) {
-            throw new \RuntimeException('Bad relation (' . $itemtype . ', ' . static::class . ', ' . static::$itemtype_1 . ', ' . static::$itemtype_2 . ')');
+            throw new RuntimeException('Bad relation (' . $itemtype . ', ' . static::class . ', ' . static::$itemtype_1 . ', ' . static::$itemtype_2 . ')');
         }
 
         if (isset(static::$itemtype_1) && preg_match('/^itemtype/', static::$itemtype_1)) {
@@ -2158,7 +2130,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
             return static::$items_id_2;
         }
 
-        throw new \RuntimeException('Cannot guess ');
+        throw new RuntimeException('Cannot guess ');
     }
 
     public function getForbiddenStandardMassiveAction()
@@ -2195,5 +2167,46 @@ abstract class CommonDBRelation extends CommonDBConnexity
             // Not a member of this relation
             return 0;
         }
+    }
+
+    public function check($ID, int $right, ?array &$input = null): void
+    {
+        $error_types = [];
+        $required_fields = [];
+        $must_check = $input !== null && $right == CREATE;
+
+        if ($must_check && static::$mustBeAttached_1 === true && (!isset($input[static::$items_id_1]) || empty($input[static::$items_id_1]))) {
+            $itemtype = static::$itemtype_1;
+            if (!preg_match('/^itemtype/', $itemtype)) {
+                $itemtype = static::$itemtype_1::getTypeName(1);
+            }
+            $error_types[] = $itemtype;
+            $required_fields[] = static::$items_id_1;
+        }
+        if ($must_check && static::$mustBeAttached_2 === true && (!isset($input[static::$items_id_2]) || empty($input[static::$items_id_2]))) {
+            $itemtype = static::$itemtype_2;
+            if (!preg_match('/^itemtype/', $itemtype)) {
+                $itemtype = static::$itemtype_2::getTypeName(1);
+            }
+            $error_types[] = $itemtype;
+            $required_fields[] = static::$items_id_2;
+        }
+
+        if (count($error_types) > 0) {
+            $message = sprintf(
+                __('Mandatory fields are not filled. Please correct: %s'),
+                implode(', ', $error_types)
+            );
+            Session::addMessageAfterRedirect(htmlescape($message), true, ERROR);
+
+            throw new ItemLinkException(
+                sprintf(
+                    'Post data must contain (greater than 0): %s',
+                    implode(', ', $required_fields),
+                )
+            );
+        }
+
+        parent::check($ID, $right, $input);
     }
 }

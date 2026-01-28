@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @copyright 2010-2022 by the FusionInventory Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
@@ -36,10 +36,12 @@
 
 namespace Glpi\Inventory\Asset;
 
+use Computer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use Monitor as GMonitor;
 use RuleImportAssetCollection;
+use RuleMatchedLog;
 
 class Monitor extends InventoryAsset
 {
@@ -49,7 +51,7 @@ class Monitor extends InventoryAsset
         $mapping = [
             'caption'      => 'name',
             'manufacturer' => 'manufacturers_id',
-            'description'  => 'comment'
+            'description'  => 'comment',
         ];
 
         foreach ($this->data as &$val) {
@@ -58,6 +60,7 @@ class Monitor extends InventoryAsset
                     $val->$dest = $val->$origin;
                 }
             }
+
             $val->is_dynamic = 1;
 
             if (!property_exists($val, 'name')) {
@@ -94,11 +97,10 @@ class Monitor extends InventoryAsset
     /**
      * Get existing entries from database
      *
-     * @return array
+     * @return array<int, array<string, mixed>>
      */
     protected function getExisting(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $db_existing = [];
@@ -107,16 +109,16 @@ class Monitor extends InventoryAsset
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_monitors.id',
-                $relation_table . '.id AS link_id'
+                $relation_table . '.id AS link_id',
             ],
             'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_monitors' => [
                     'FKEY' => [
                         'glpi_monitors' => 'id',
-                        $relation_table => 'items_id_peripheral'
-                    ]
-                ]
+                        $relation_table => 'items_id_peripheral',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype_peripheral'           => 'Monitor',
@@ -124,8 +126,8 @@ class Monitor extends InventoryAsset
                 'items_id_asset'                => $this->item->getID(),
                 'entities_id'                   => $this->entities_id,
                 $relation_table . '.is_dynamic' => 1,
-                'glpi_monitors.is_global'       => 0
-            ]
+                'glpi_monitors.is_global'       => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -146,16 +148,17 @@ class Monitor extends InventoryAsset
 
         foreach ($this->data as $key => $val) {
             $input = [
-                'itemtype'     => 'Monitor',
-                'name'         => $val->name,
-                'serial'       => $val->serial ?? '',
-                'entities_id'  => $entities_id
+                'itemtype'          => GMonitor::class,
+                'name'              => $val->name,
+                'serial'            => $val->serial ?? '',
+                'entities_id'       => $entities_id,
+                'model'             => $val->monitormodels_id ?? '',
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
             if (isset($data['found_inventories'])) {
                 $items_id = null;
-                $itemtype = 'Monitor';
+                $itemtype = GMonitor::class;
                 if ($data['found_inventories'][0] == 0) {
                     // add monitor
                     $val->entities_id = $entities_id;
@@ -169,18 +172,18 @@ class Monitor extends InventoryAsset
                 }
 
                 $monitors[] = $items_id;
-                $rulesmatched = new \RuleMatchedLog();
+                $rulesmatched = new RuleMatchedLog();
                 $agents_id = $this->agent->fields['id'];
                 if (empty($agents_id)) {
                     $agents_id = 0;
                 }
                 $inputrulelog = [
                     'date'      => date('Y-m-d H:i:s'),
-                    'rules_id'  => $data['rules_id'],
+                    'rules_id'  => $data['_ruleid'],
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -193,7 +196,7 @@ class Monitor extends InventoryAsset
                 $input = [
                     'itemtype_asset' => $this->item::class,
                     'items_id_asset' => $this->item->fields['id'],
-                    'itemtype_peripheral' => \Monitor::class,
+                    'itemtype_peripheral' => GMonitor::class,
                     'items_id_peripheral' => $monitors_id,
                     'is_dynamic'   => 1,
                 ];
@@ -212,15 +215,15 @@ class Monitor extends InventoryAsset
             }
 
             // Delete monitors links in DB
-            foreach ($db_monitors as $idtmp => $monits_id) {
+            foreach (array_keys($db_monitors) as $idtmp) {
                 (new Asset_PeripheralAsset())->delete(['id' => $idtmp], true);
             }
 
             foreach ($monitors as $key => $monitors_id) {
                 $input = [
-                    'itemtype_asset' => \Computer::class,
+                    'itemtype_asset' => Computer::class,
                     'items_id_asset' => $this->item->fields['id'],
-                    'itemtype_peripheral' => \Monitor::class,
+                    'itemtype_peripheral' => GMonitor::class,
                     'items_id_peripheral' => $monitors_id,
                     'is_dynamic'   => 1,
                 ];
@@ -231,7 +234,6 @@ class Monitor extends InventoryAsset
 
     public function checkConf(Conf $conf): bool
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         return $conf->import_monitor == 1 && in_array($this->item::class, $CFG_GLPI['peripheralhost_types']);
     }

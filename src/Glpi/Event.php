@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -39,16 +39,22 @@ use Ajax;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
-use DBConnection;
+use DbUtils;
 use Document;
+use Dropdown;
+use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\System\Log\LogViewer;
 use Html;
 use Infocom;
 use ITILSolution;
+use RuntimeException;
 use Session;
 use Toolbox;
+
+use function Safe\ob_get_clean;
+use function Safe\ob_start;
 
 /**
  * Event Class
@@ -76,33 +82,24 @@ class Event extends CommonDBTM
         return $menu;
     }
 
-    public function prepareInputForAdd($input)
+    public function add(array $input, $options = [], $history = true)
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (isset($input['level']) && ($input['level'] <= $CFG_GLPI["event_loglevel"])) {
-            return $input;
-        }
-        return false;
+        throw new RuntimeException(
+            \sprintf(
+                'Events must be added by calling the `%s::log()` method.',
+                static::class,
+            )
+        );
     }
 
-    public function post_addItem()
+    public function update(array $input, $history = true, $options = [])
     {
-       //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
-        if (isset($this->fields['level']) && $this->fields['level'] <= 3) {
-            $message_type = "";
-            if (isset($this->fields['type']) && $this->fields['type'] != 'system') {
-                $message_type = "[" . $this->fields['type'] . " " . $this->fields['id'] . "] ";
-            }
+        throw new RuntimeException('Events cannot be updated.');
+    }
 
-            $full_message = "[" . $this->fields['service'] . "] " .
-                         $message_type .
-                         $this->fields['level'] . ": " .
-                         $this->fields['message'] . "\n";
-
-            Toolbox::logInFile("event", $full_message);
-        }
+    public function delete(array $input, $force = false, $history = true)
+    {
+        throw new RuntimeException('Events cannot be deleted.');
     }
 
     /**
@@ -111,35 +108,60 @@ class Event extends CommonDBTM
      * Log the event $event on the glpi_event table with all the others args, if
      * $level is above or equal to setting from configuration.
      *
-     * @param $items_id
-     * @param $type
-     * @param $level
-     * @param $service
-     * @param $event
-     **/
+     * @param string|int $items_id
+     * @param string $type
+     * @param int $level
+     * @param string $service
+     * @param string $event
+     *
+     * @return void
+     */
     public static function log($items_id, $type, $level, $service, $event)
     {
-        $input = ['items_id' => intval($items_id),
+        global $CFG_GLPI, $DB;
+
+        if ($level >= $CFG_GLPI["event_loglevel"]) {
+            return;
+        }
+
+        $input = [
+            'items_id' => intval($items_id),
             'type'     => $type,
             'date'     => $_SESSION["glpi_currenttime"],
             'service'  => $service,
             'level'    => intval($level),
-            'message'  => $event
+            'message'  => $event,
         ];
-        $tmp = new self();
-        return $tmp->add($input);
+
+        $DB->insert(self::getTable(), $input);
+
+        $id = $DB->insertId();
+
+        //only log in file, important events (connections and critical events; TODO : we need to add a general option to filter this in 9.1)
+        if ($level <= 3) {
+            $message_type = "";
+            if ($type != 'system') {
+                $message_type = "[" . $type . " " . $id . "] ";
+            }
+
+            $full_message = "[" . $service . "] "
+                         . $message_type
+                         . $level . ": "
+                         . $event . "\n";
+
+            Toolbox::logInFile("event", $full_message);
+        }
     }
 
     /**
      * Clean old event - Call by cron
      *
-     * @param $day integer
+     * @param int $day
      *
-     * @return integer number of events deleted
+     * @return int number of events deleted
      **/
     public static function cleanOld($day)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $secs = $day * DAY_TIMESTAMP;
@@ -147,7 +169,7 @@ class Event extends CommonDBTM
         $DB->delete(
             'glpi_events',
             [
-                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs")
+                new QueryExpression("UNIX_TIMESTAMP(date) < UNIX_TIMESTAMP()-$secs"),
             ]
         );
         return $DB->affectedRows();
@@ -155,7 +177,9 @@ class Event extends CommonDBTM
 
     /**
      * Return arrays for function showEvent et lastEvent
-     **/
+     *
+     * @return array
+     */
     public static function logArray()
     {
 
@@ -172,7 +196,7 @@ class Event extends CommonDBTM
             'planning'    => __('Planning'),
             'reservation' => _n('Reservation', 'Reservations', Session::getPluralNumber()),
             'dropdown'    => _n('Dropdown', 'Dropdowns', Session::getPluralNumber()),
-            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber())
+            'rules'       => _n('Rule', 'Rules', Session::getPluralNumber()),
         ];
 
         $logService = [
@@ -198,22 +222,25 @@ class Event extends CommonDBTM
     }
 
     /**
-     * @param $type
-     * @param $items_id
+     * @param class-string<CommonDBTM> $type
+     * @param int $items_id
+     *
+     * @return void
      **/
     public static function displayItemLogID($type, $items_id)
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        $items_id = (int) $items_id;
+
         // If ID less than or equal to 0 (or Entity with ID less than 0 since Root Entity is 0)
-        if ($items_id < 0 || ($type !== \Entity::class && $items_id == 0)) {
+        if ($items_id < 0 || ($type !== Entity::class && $items_id == 0)) {
             echo "&nbsp;";//$item;
         } else {
             switch ($type) {
                 case "rules":
-                    echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/rule.generic.form.php?id=" .
-                     $items_id . "\">" . $items_id . "</a>";
+                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/rule.generic.form.php?id="
+                     . $items_id . "\">" . $items_id . "</a>";
                     break;
 
                 case "infocom":
@@ -231,20 +258,20 @@ class Event extends CommonDBTM
                     break;
 
                 case "reservationitem":
-                    echo "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/reservation.php?reservationitems_id=" .
-                     $items_id . "\">" . $items_id . "</a>";
+                    echo "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/reservation.php?reservationitems_id="
+                     . $items_id . "\">" . $items_id . "</a>";
                     break;
 
                 default:
                     $url  = '';
-                    if (!is_a($type, \CommonDBTM::class, true)) {
+                    if (!is_a($type, CommonDBTM::class, true)) {
                         $type = getSingular($type);
                     }
                     if ($item = getItemForItemtype($type)) {
                         $url  =  $item->getFormURLWithID($items_id);
                     }
                     if (!empty($url)) {
-                        echo "<a href=\"" . $url . "\">" . $items_id . "</a>";
+                        echo "<a href=\"" . \htmlescape($url) . "\">" . $items_id . "</a>";
                     } else {
                         echo $items_id;
                     }
@@ -260,43 +287,41 @@ class Event extends CommonDBTM
      *
      * @param string $user  name user to search on message (default '')
      * @param bool $display if false, return html
-     **/
+     *
+     * @return void|string
+     */
     public static function showForUser(string $user = "", bool $display = true)
     {
-        /**
-         * @var array $CFG_GLPI
-         * @var \DBmysql $DB
-         */
         global $CFG_GLPI, $DB;
 
-       // Show events from $result in table form
-        list($logItemtype, $logService) = self::logArray();
+        // Show events from $result in table form
+        [$logItemtype, $logService] = self::logArray();
 
-       // define default sorting
+        // define default sorting
         $usersearch = "";
         if (!empty($user)) {
             $usersearch = $user . " ";
         }
 
-       // Query Database
+        // Query Database
         $iterator = $DB->request([
             'FROM'   => 'glpi_events',
             'WHERE'  => ['message' => ['LIKE', $usersearch . '%']],
             'ORDER'  => 'date DESC',
-            'LIMIT'  => (int)$_SESSION['glpilist_limit']
+            'LIMIT'  => (int) $_SESSION['glpilist_limit'],
         ]);
 
-       // Number of results
+        // Number of results
         $number = count($iterator);
 
-       // No Events in database
+        // No Events in database
         if ($number < 1) {
             $twig_params = [
                 'class'        => 'table table-hover table-bordered',
                 'header_rows'  => [
-                    [__('No Event')]
+                    [__s('No Event')],
                 ],
-                'rows'         => []
+                'rows'         => [],
             ];
             $output = TemplateRenderer::getInstance()->render('components/table.html.twig', $twig_params);
             if ($display) {
@@ -313,25 +338,26 @@ class Event extends CommonDBTM
                 [
                     [
                         'colspan'   => 5,
-                        'content'   => "<a href=\"" . $CFG_GLPI["root_doc"] . "/front/event.php\">" .
-                     sprintf(__('Last %d events'), $_SESSION['glpilist_limit']) . "</a>"
-                    ]
+                        'content'   => "<a href=\"" . \htmlescape($CFG_GLPI["root_doc"]) . "/front/event.php\">"
+                            . \htmlescape(sprintf(__('Last %d events'), $_SESSION['glpilist_limit']))
+                            . "</a>",
+                    ],
                 ],
                 [
-                    __('Source'),
-                    __('Id'),
-                    _n('Date', 'Dates', 1),
+                    __s('Source'),
+                    __s('Id'),
+                    _sn('Date', 'Dates', 1),
                     [
-                        'content'   => __('Service'),
-                        'style'     => 'width: 10%'
+                        'content'   => __s('Service'),
+                        'style'     => 'width: 10%',
                     ],
                     [
-                        'content'   => __('Message'),
-                        'style'     => 'width: 50%'
+                        'content'   => __s('Message'),
+                        'style'     => 'width: 50%',
                     ],
-                ]
+                ],
             ],
-            'rows'   => []
+            'rows'   => [],
         ];
 
         foreach ($iterator as $data) {
@@ -345,7 +371,7 @@ class Event extends CommonDBTM
             if (isset($logItemtype[$type])) {
                 $itemtype = $logItemtype[$type];
             } else {
-                if (!is_a($type, \CommonDBTM::class, true)) {
+                if (!is_a($type, CommonDBTM::class, true)) {
                     $type = getSingular($type);
                 }
                 if ($item = getItemForItemtype($type)) {
@@ -353,7 +379,7 @@ class Event extends CommonDBTM
                 }
             }
 
-           // Capture the 'echo' output of the function
+            // Capture the 'echo' output of the function
             ob_start();
             self::displayItemLogID($type, $items_id);
             $item_log_id = ob_get_clean();
@@ -361,12 +387,12 @@ class Event extends CommonDBTM
             $twig_params['rows'][] = [
                 'class'  => 'tab_bg_2',
                 'values' => [
-                    $itemtype,
-                    $item_log_id,
-                    Html::convDateTime($date),
-                    $logService[$service] ?? '',
-                    $message
-                ]
+                    \htmlescape($itemtype),
+                    $item_log_id, // safe HTML returned by `displayItemLogID()`
+                    \htmlescape(Html::convDateTime($date)),
+                    \htmlescape($logService[$service] ?? ''),
+                    \htmlescape($message),
+                ],
             ];
         }
 
@@ -490,7 +516,6 @@ class Event extends CommonDBTM
      */
     private static function getUsedItemtypes(): array
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         // These values are not itemtypes
@@ -501,8 +526,8 @@ class Event extends CommonDBTM
             'DISTINCT' => 'true',
             'FROM'     => self::getTable(),
             'WHERE'    => [
-                'NOT' => ['type' => $blacklist]
-            ]
+                'NOT' => ['type' => $blacklist],
+            ],
         ]);
 
         return array_column(iterator_to_array($data), 'type');
@@ -515,20 +540,20 @@ class Event extends CommonDBTM
             if (empty($value)) {
                 $value = 0;
             }
-            return \Dropdown::showFromArray($name, self::logArray()[1], [
+            return Dropdown::showFromArray($name, self::logArray()[1], [
                 'value' => $value,
                 'display' => false,
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
             ]);
-        } else if ($field === 'type') {
+        } elseif ($field === 'type') {
             $value = $values['type'];
             if (empty($value)) {
                 $value = 0;
             }
-            return \Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
+            return Dropdown::showFromArray($name, self::getTypeValuesForDropdown(), [
                 'value' => $value,
                 'display' => false,
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
             ]);
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
@@ -539,11 +564,11 @@ class Event extends CommonDBTM
         if ($field === 'service') {
             $value = $values['service'];
             if (empty($value)) {
-                return NOT_AVAILABLE;
+                return \htmlescape(NOT_AVAILABLE);
             }
             $services = self::logArray()[1];
-            return $services[$value] ?? $value;
-        } else if ($field === 'items_id') {
+            return \htmlescape($services[$value] ?? $value);
+        } elseif ($field === 'items_id') {
             $type = $values['type'] ?? null;
             if (
                 ((int) $values['items_id']) > 0
@@ -557,11 +582,11 @@ class Event extends CommonDBTM
                 }
             }
             // Show the ID at least if it is valid (There may be a plugin that is disabled)
-            return ((int) $values['items_id']) > 0 ? $values['items_id'] : NOT_AVAILABLE;
-        } else if ($field === 'type') {
+            return \htmlescape(((int) $values['items_id']) > 0 ? $values['items_id'] : NOT_AVAILABLE);
+        } elseif ($field === 'type') {
             $value = $values['type'];
             if (empty($value)) {
-                return NOT_AVAILABLE;
+                return \htmlescape(NOT_AVAILABLE);
             }
 
             if (($itemtype = self::getItemtypeFromType($value)) !== null) {
@@ -573,7 +598,7 @@ class Event extends CommonDBTM
                 $icon = '';
             }
 
-            return '<i class="text-muted me-1 ' . $icon . '"></i><span>' . $display_value . '</span>';
+            return '<i class="text-muted me-1 ' . \htmlescape($icon) . '"></i><span>' . \htmlescape($display_value) . '</span>';
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
@@ -597,7 +622,7 @@ class Event extends CommonDBTM
             return $mapping[$type];
         }
 
-        $dbu = new \DbUtils();
+        $dbu = new DbUtils();
 
         // In many cases, `type` corresponds to a lowercase itemtype (e.g. `change`).
         $fallback_type = $dbu->fixItemtypeCase($type);

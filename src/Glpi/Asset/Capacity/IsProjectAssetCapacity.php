@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,9 +35,10 @@
 namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
-use Project;
+use Glpi\Asset\CapacityConfig;
 use Item_Project;
 use Override;
+use Project;
 
 class IsProjectAssetCapacity extends AbstractCapacity
 {
@@ -61,7 +61,7 @@ class IsProjectAssetCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_Project::class
+            Item_Project::class,
         ];
     }
 
@@ -80,7 +80,7 @@ class IsProjectAssetCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         // Allow our item to be linked to projects
         $this->registerToTypeConfig('project_asset_types', $classname);
@@ -88,7 +88,7 @@ class IsProjectAssetCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Item_Project::class, 95);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from project assets types
         $this->unregisterFromTypeConfig('project_asset_types', $classname);

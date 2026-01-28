@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -57,8 +57,8 @@ class Vlan extends CommonDropdown
                 'type'     => 'integer',
                 'min'      => 1,
                 'max'      => 4094,
-                'list'     => true
-            ]
+                'list'     => true,
+            ],
         ];
     }
 
@@ -73,7 +73,7 @@ class Vlan extends CommonDropdown
             'name'               => __('ID TAG'),
             'datatype'           => 'number',
             'min'                => 1,
-            'max'                => 4094
+            'max'                => 4094,
         ];
 
         return $tab;
@@ -91,11 +91,12 @@ class Vlan extends CommonDropdown
     }
 
     /**
-     * @param $itemtype
+     * @param class-string<CommonDBTM> $itemtype
      * @param HTMLTableBase $base
      * @param HTMLTableSuperHeader|null $super
      * @param HTMLTableHeader|null $father
      * @param array $options
+     * @return void
      * @since 0.84
      */
     public static function getHTMLTableHeader(
@@ -112,7 +113,7 @@ class Vlan extends CommonDropdown
         }
 
         if ($itemtype == 'NetworkPort_Vlan') {
-            $base->addHeader($column_name, self::getTypeName(), $super, $father);
+            $base->addHeader($column_name, htmlescape(self::getTypeName()), $super, $father);
         }
     }
 
@@ -121,6 +122,7 @@ class Vlan extends CommonDropdown
      * @param CommonDBTM|null $item object (default NULL)
      * @param HTMLTableCell|null $father object (default NULL)
      * @param array $options
+     * @return void
      * @since 0.84
      */
     public static function getHTMLTableCellsForItem(
@@ -140,6 +142,9 @@ class Vlan extends CommonDropdown
                 return;
             }
             $item = $father->getItem();
+            if ($item === false) {
+                return;
+            }
         }
 
         if ($item::class === NetworkPort_Vlan::class) {
@@ -157,10 +162,10 @@ class Vlan extends CommonDropdown
                         __('%1$s: %2$s'),
                         __('ID TAG'),
                         $vlan->fields['tag']
-                    )) . "<br>" .
-                    htmlescape(sprintf(
+                    )) . "<br>"
+                    . htmlescape(sprintf(
                         __('%1$s: %2$s'),
-                        __('Comments'),
+                        _n('Comment', 'Comments', Session::getPluralNumber()),
                         $vlan->fields['comment']
                     )),
                     ['display' => false]
@@ -175,7 +180,7 @@ class Vlan extends CommonDropdown
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
-         ->addStandardTab('NetworkPort_Vlan', $ong, $options);
+         ->addStandardTab(NetworkPort_Vlan::class, $ong, $options);
 
         return $ong;
     }

@@ -7,8 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,15 +33,15 @@
  */
 
 /**
- * @var \DBmysql $DB
- * @var \Migration $migration
+ * @var DBmysql $DB
+ * @var Migration $migration
  * @var array $ADDTODISPLAYPREF
  */
-
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Glpi\Inventory\Conf;
 
-$migration->addConfig(\Glpi\Inventory\Conf::getDefaults(), 'inventory');
+$migration->addConfig(Conf::getDefaults(), 'inventory');
 
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
@@ -109,7 +108,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'threads_networkdiscovery',
         'int NOT NULL DEFAULT 1',
         [
-            'comment' => 'Number of threads for Network Discovery'
+            'comment' => 'Number of threads for Network Discovery',
         ]
     );
     $migration->addField(
@@ -117,7 +116,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'threads_networkinventory',
         "int NOT NULL DEFAULT '1'",
         [
-            'comment' => 'Number of threads for Network Inventory'
+            'comment' => 'Number of threads for Network Inventory',
         ]
     );
     $migration->addField(
@@ -125,7 +124,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'timeout_networkdiscovery',
         "int NOT NULL DEFAULT '0'",
         [
-            'comment' => 'Network Discovery task timeout (disabled by default)'
+            'comment' => 'Network Discovery task timeout (disabled by default)',
         ]
     );
     $migration->addField(
@@ -133,7 +132,7 @@ if (!$DB->tableExists('glpi_agents')) {
         'timeout_networkinventory',
         "int NOT NULL DEFAULT '0'",
         [
-            'comment' => 'Network Inventory task timeout (disabled by default)'
+            'comment' => 'Network Inventory task timeout (disabled by default)',
         ]
     );
 }
@@ -192,7 +191,7 @@ if (!$DB->fieldExists('glpi_entities', 'transfers_id')) {
             'value'     => -2,
             // 0 value for root entity
             'update'    => '0',
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
     $migration->addKey('glpi_entities', 'transfers_id');
@@ -249,7 +248,7 @@ if (!$DB->fieldExists('glpi_networkequipments', 'uptime')) {
         'string',
         [
             'after' => 'cpu',
-            'value' => '0'
+            'value' => '0',
 
         ]
     );
@@ -326,7 +325,7 @@ $netport_fields = [
     'ifalias'            => "varchar(255) DEFAULT NULL",
     'portduplex'         => "varchar(255) DEFAULT NULL",
     'trunk'              => "tinyint NOT NULL DEFAULT '0'",
-    'lastup'             => "timestamp NULL DEFAULT NULL"
+    'lastup'             => "timestamp NULL DEFAULT NULL",
 ];
 foreach ($netport_fields as $netport_field => $definition) {
     if (!$DB->fieldExists('glpi_networkports', $netport_field)) {
@@ -439,14 +438,14 @@ if (!$DB->tableExists('glpi_networkporttypes') || countElementsInTable(NetworkPo
         if (false === $res) {
             $msg = "Error binding params in table " . NetworkPortType::getTable() . "\n";
             $msg .= print_r($row, true);
-            throw new \RuntimeException($msg);
+            throw new RuntimeException($msg);
         }
         $res = $stmt->execute();
         if (false === $res) {
             $msg = $stmt->error;
             $msg .= "\nError execution statement in table " . NetworkPortType::getTable() . "\n";
             $msg .= print_r($row, true);
-            throw new \RuntimeException($msg);
+            throw new RuntimeException($msg);
         }
     }
 }
@@ -531,7 +530,7 @@ if (!$DB->tableExists('glpi_printerlogs')) {
             $DB->delete(
                 'glpi_printerlogs',
                 [
-                    'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+                    'NOT' => ['id' => array_column($to_preserve_result, 'id')],
                 ]
             );
         }
@@ -611,7 +610,7 @@ if (!$DB->tableExists('glpi_networkportmetrics')) {
             $DB->delete(
                 'glpi_networkportmetrics',
                 [
-                    'NOT' => ['id' => array_column($to_preserve_result, 'id')]
+                    'NOT' => ['id' => array_column($to_preserve_result, 'id')],
                 ]
             );
         }
@@ -656,7 +655,7 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
             'autoupdatesystems_id',
             "int {$default_key_sign} NOT NULL DEFAULT '0'",
             [
-                'after' => 'agents_id'
+                'after' => 'agents_id',
             ]
         );
         $migration->addKey('glpi_refusedequipments', 'autoupdatesystems_id');
@@ -665,24 +664,19 @@ if (!$DB->tableExists('glpi_refusedequipments')) {
 
 $migration->addConfig(['purge_refusedequipment' => 0]);
 
-CronTask::Register(
+$migration->addCrontask(
     'Glpi\Inventory\Inventory',
     'cleantemp',
-    1 * DAY_TIMESTAMP,
-    [
-        'mode'  => CronTask::MODE_EXTERNAL,
-        'state' => CronTask::STATE_DISABLE
+    DAY_TIMESTAMP,
+    options: [
+        'state' => 0, // CronTask::STATE_DISABLE
     ]
 );
 
-CronTask::Register(
+$migration->addCrontask(
     'Glpi\Inventory\Inventory',
     'cleanorphans',
-    7 * DAY_TIMESTAMP,
-    [
-        'mode'  => CronTask::MODE_EXTERNAL,
-        'state' => CronTask::STATE_WAITING
-    ]
+    WEEK_TIMESTAMP,
 );
 
 if (!$DB->tableExists('glpi_usbvendors')) {
@@ -767,7 +761,7 @@ if (countElementsInTable('glpi_snmpcredentials') === 0) {
             [
                 'name'          => 'Public community v1',
                 'snmpversion'   => 1,
-                'community'     => 'public'
+                'community'     => 'public',
             ]
         )
     );
@@ -777,7 +771,7 @@ if (countElementsInTable('glpi_snmpcredentials') === 0) {
             [
                 'name'          => 'Public community v2c',
                 'snmpversion'   => 2,
-                'community'     => 'public'
+                'community'     => 'public',
             ]
         )
     );
@@ -830,7 +824,7 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
             [
                 'type' => new QueryParam(),
                 'name' => new QueryParam(),
-                'value' => new QueryParam()
+                'value' => new QueryParam(),
             ]
         )
     );
@@ -841,7 +835,7 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
             $value = $props['value'];
             $name  = $props['name'];
 
-           //defaults already present in database
+            //defaults already present in database
             if (
                 $type == Blacklist::IP && in_array($value, ['0.0.0.0', '127.0.0.1', ''])
                 || $type == Blacklist::MAC && $value == ''
@@ -852,14 +846,14 @@ if (countElementsInTable(Blacklist::getTable()) === 4) {
             if (false === $res) {
                 $msg = "Error binding params in table " . Blacklist::getTable() . "\n";
                 $msg .= "type: $type, value: $value";
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
             $res = $stmt->execute();
             if (false === $res) {
                 $msg = $stmt->error;
                 $msg .= "\nError execution statement in table " . Blacklist::getTable() . "\n";
                 $msg .= "type: $type, value: $value";
-                throw new \RuntimeException($msg);
+                throw new RuntimeException($msg);
             }
         }
     }

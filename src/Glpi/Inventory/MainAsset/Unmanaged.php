@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,16 +35,21 @@
 
 namespace Glpi\Inventory\MainAsset;
 
+use Agent;
+use CommonDBTM;
+use Entity;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use NetworkPortInstantiation;
 use RefusedEquipment;
 use RuleMatchedLog;
+use stdClass;
 use Transfer;
 
 class Unmanaged extends MainAsset
 {
-    private $management_ports = [];
+    /** @var array<string, object> */
+    private array $management_ports = [];
 
     protected $extra_data = [
         'hardware'        => null,
@@ -81,19 +86,19 @@ class Unmanaged extends MainAsset
     /**
      * Prepare network device information
      *
-     * @param \stdClass $val
+     * @param stdClass $val
      *
      * @return void
      */
-    protected function prepareForNetworkDevice(\stdClass $val): void
+    protected function prepareForNetworkDevice(stdClass $val): void
     {
         if (isset($this->extra_data['network_device'])) {
-            $device = (object)$this->extra_data['network_device'];
+            $device = (object) $this->extra_data['network_device'];
 
             $dev_mapping = [
                 'mac'       => 'mac',
                 'name'      => 'name',
-                'ips'       => 'ips'
+                'ips'       => 'ips',
             ];
 
             foreach ($dev_mapping as $origin => $dest) {
@@ -108,7 +113,7 @@ class Unmanaged extends MainAsset
 
             if (property_exists($device, 'ips')) {
                 $portkey = 'management';
-                $port = new \stdClass();
+                $port = new stdClass();
                 if (property_exists($device, 'mac')) {
                     $port->mac = $device->mac;
                 }
@@ -119,7 +124,7 @@ class Unmanaged extends MainAsset
                 $port->logical_number = 0;
                 $port->ipaddress = [];
 
-               //add internal port(s)
+                //add internal port(s)
                 foreach ($device->ips as $ip) {
                     if ($ip != '127.0.0.1' && $ip != '::1' && !in_array($ip, $port->ipaddress)) {
                         $port->ipaddress[] = $ip;
@@ -134,10 +139,12 @@ class Unmanaged extends MainAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer $items_id id of the item (0 if new)
-     * @param string  $itemtype Item type
-     * @param integer $rules_id Matched rule id, if any
-     * @param array $ports_id Matched port ids, if any
+     * @param int       $items_id id of the item (0 if new)
+     * @param class-string<CommonDBTM> $itemtype Item type
+     * @param int       $rules_id Matched rule id, if any
+     * @param int|int[] $ports_id Matched port ids, if any
+     *
+     * @return void
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
@@ -186,7 +193,7 @@ class Unmanaged extends MainAsset
                     $entities_id
                 );
                 //manage converted object
-                if (!empty($result)) {
+                if (!empty($result) && is_a($result['itemtype'], CommonDBTM::class, true)) {
                     $converted_object = new $result['itemtype']();
                     if ($converted_object->getFromDB($result['id'])) {
                         $this->item = $converted_object;
@@ -230,13 +237,13 @@ class Unmanaged extends MainAsset
         //check for any old agent to remove only if it an unmanaged
         //to prevent agentdeletion from another asset handle by another agent
         if ($need_to_add) {
-            $agent = new \Agent();
+            $agent = new Agent();
             $agent->deleteByCriteria([
                 'itemtype' => $this->item->getType(),
                 'items_id' => $items_id,
                 'NOT' => [
-                    'id' => $this->agent->fields['id']
-                ]
+                    'id' => $this->agent->fields['id'],
+                ],
             ]);
         }
 
@@ -250,7 +257,7 @@ class Unmanaged extends MainAsset
 
         if ($entities_id != $this->item->fields['entities_id']) {
             //asset entity has changed in rules; do transfer
-            $doTransfer = \Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
+            $doTransfer = Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
             $transfer = new Transfer();
             if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
                 $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
@@ -281,7 +288,7 @@ class Unmanaged extends MainAsset
             'items_id'  => $items_id,
             'itemtype'  => $itemtype,
             'agents_id' => $this->agent->fields['id'],
-            'method'    => $this->request_query ?? Request::INVENT_QUERY
+            'method'    => $this->request_query ?? Request::INVENT_QUERY,
         ];
         $rulesmatched->add($inputrulelog, [], false);
         $rulesmatched->cleanOlddata($items_id, $itemtype);
@@ -305,21 +312,17 @@ class Unmanaged extends MainAsset
         }
     }
 
-    public function handleLinks(?array $data = null)
-    {
-        if ($this->current_key !== null) {
-            $data = [$this->data[$this->current_key]];
-        } else {
-            $data = $this->data;
-        }
-        return parent::handleLinks();
-    }
-
+    /**
+     * @return array<string, object>
+     */
     public function getManagementPorts()
     {
         return $this->management_ports;
     }
 
+    /**
+     * @param array<string, object> $ports
+     */
     public function setManagementPorts(array $ports): Unmanaged
     {
         $this->management_ports = $ports;

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,28 +37,53 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\ConditionalVisiblity\ConditionnableInterface;
-use Glpi\Form\ConditionalVisiblity\ConditionnableTrait;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Features\CloneWithoutNameSuffix;
+use Glpi\Form\Clone\FormCloneHelper;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
+use RuntimeException;
+
+use function Safe\json_encode;
 
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface, ConditionnableInterface
+#[CloneWithoutNameSuffix]
+final class Comment extends CommonDBChild implements
+    BlockInterface,
+    ConditionableVisibilityInterface,
+    UsedAsCriteriaInterface
 {
-    use ConditionnableTrait;
+    use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'comment_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'comment_description';
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
     public $dohistory = true;
 
+    private ?Section $section = null;
+
     #[Override]
     public static function getTypeName($nb = 0)
     {
         return _n('Comment', 'Comments', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -80,6 +105,16 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
     {
         // Report logs to the parent form
         $this->logDeleteInParentForm();
+    }
+
+    #[Override]
+    public function cleanDBonPurge()
+    {
+        $this->deleteChildrenAndRelationsFromDb(
+            [
+                FormTranslation::class,
+            ]
+        );
     }
 
     #[Override]
@@ -105,7 +140,15 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
         return parent::prepareInputForUpdate($input);
     }
 
-    private function prepareInput($input): array
+    #[Override]
+    public function getCloneRelations(): array
+    {
+        return [
+            FormTranslation::class,
+        ];
+    }
+
+    private function prepareInput(array $input): array
     {
         // Set parent UUID
         if (
@@ -116,22 +159,83 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
             $input['forms_sections_uuid'] = $section->fields['uuid'];
         }
 
+        // Set horizontal rank to null if not set
+        if (isset($input['horizontal_rank']) && $input['horizontal_rank'] === "-1") {
+            $input['horizontal_rank'] = 'NULL';
+        }
+
         if (isset($input['_conditions'])) {
             $input['conditions'] = json_encode($input['_conditions']);
             unset($input['_conditions']);
         }
 
+        $input = $this->removeSavedConditionsIfAlwaysVisible($input);
+
         return $input;
     }
 
-    public function displayBlockForEditor(): void
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $key = sprintf('%s_%d', self::getType(), $this->getID());
+        $category_name = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_NAME,
+            name: __('Comment title'),
+            value: $this->fields['name'],
+            is_rich_text: false,
+            category: $category_name
+        );
+
+        $handlers[$key][] = new TranslationHandler(
+            item: $this,
+            key: self::TRANSLATION_KEY_DESCRIPTION,
+            name: __('Comment description'),
+            value: $this->fields['description'],
+            is_rich_text: true,
+            category: $category_name
+        );
+
+        return $handlers;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
+    }
+
+    #[Override]
+    public function getSupportedValueOperators(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return array_merge(
+            ...array_map(
+                fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                $this->getConditionHandlers($question_config)
+            )
+        );
+    }
+
+    #[Override]
+    public function displayBlockForEditor(bool $can_update, bool $allow_unauthenticated): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_comment.html.twig', [
             'form'       => $this->getForm(),
             'comment'    => $this,
-            'section'    => $this->getItem(),
-            'can_update' => $this->getForm()->canUpdate(),
+            'section'    => $this->getSection(),
+            'can_update' => $can_update,
         ]);
+    }
+
+    #[Override]
+    public function getUntitledLabel(): string
+    {
+        return __('Untitled comment');
     }
 
     /**
@@ -141,7 +245,34 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
      */
     public function getForm(): Form
     {
-        return $this->getItem()->getItem();
+        return $this->getSection()->getForm();
+    }
+
+    public function getSection(): Section
+    {
+        if ($this->section === null) {
+            $section = $this->getItem();
+
+            if (!($section instanceof Section)) {
+                throw new RuntimeException("Can't load parent section");
+            }
+
+            $this->section = $section;
+        }
+
+        return $this->section;
+    }
+
+    public function setSection(Section $section): void
+    {
+        $this->section = $section;
+    }
+
+    #[Override]
+    public function prepareInputForClone($input)
+    {
+        $input = parent::prepareInputForClone($input);
+        return FormCloneHelper::getInstance()->prepareCommentInputForClone($input);
     }
 
     /**
@@ -198,7 +329,7 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionna
                 continue;
             }
             $changes = $this->getHistoryChangeWhenUpdateField($field);
-            if ((!is_array($changes)) || (count($changes) != 3)) {
+            if (count($changes) != 3) {
                 continue;
             }
 

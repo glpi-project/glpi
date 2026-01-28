@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -52,7 +52,6 @@ class TicketTypeFilter extends AbstractFilter
 
     public static function canBeApplied(string $table): bool
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         return $DB->fieldExists($table, 'type');
@@ -64,7 +63,7 @@ class TicketTypeFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.type" => (int) $value
+                "$table.type" => (int) $value,
             ];
         }
 
@@ -80,7 +79,7 @@ class TicketTypeFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'type', $table),
                 'searchtype' => 'equals',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
         return $criteria;
@@ -95,7 +94,7 @@ class TicketTypeFilter extends AbstractFilter
             Ticket::class,
             [
                 'condition' => ['id' => -1],
-                'toadd'     => Ticket::getTypes()
+                'toadd'     => Ticket::getTypes(),
             ]
         );
     }

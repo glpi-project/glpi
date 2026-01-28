@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -32,6 +32,8 @@
  *
  * ---------------------------------------------------------------------
  */
+
+require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
@@ -58,10 +60,10 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $defaultfilter->check($_POST["id"], PURGE);
 
-    if ($defaultfilter->delete($_POST, 1)) {
+    if ($defaultfilter->delete($_POST, true)) {
         Event::log(
             $_POST["id"],
             "defaultfilters",
@@ -72,7 +74,7 @@ if (isset($_POST["add"])) {
         );
     }
     $defaultfilter->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $defaultfilter->check($_POST["id"], UPDATE);
 
     if ($defaultfilter->update($_POST)) {

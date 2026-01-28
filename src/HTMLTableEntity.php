@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -42,10 +42,13 @@
  **/
 abstract class HTMLTableEntity
 {
+    /** @var string */
     private $html_id    = '';
+    /** @var string[] */
     private $html_style = [];
+    /** @var string[] */
     private $html_class = [];
-
+    /** @var string|string[] */
     private $content;
 
     /**
@@ -57,7 +60,9 @@ abstract class HTMLTableEntity
      *    of direct display function (for instance: Dropdown::showNumber). A function
      *    call is an array containing two elements : 'function', the name the function
      *    and 'parameters', an array of the parameters given to the function.
-     **/
+     *
+     * @psalm-taint-sink html $content (content will be sent to output without being escaped)
+     */
     public function __construct($content)
     {
         $this->content = $content;
@@ -65,6 +70,8 @@ abstract class HTMLTableEntity
 
     /**
      * @param HTMLTableEntity $origin
+     *
+     * @return void
      */
     public function copyAttributsFrom(HTMLTableEntity $origin)
     {
@@ -74,8 +81,10 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param $html_id
-     **/
+     * @param string $html_id
+     *
+     * @return void
+     */
     public function setHTMLID($html_id)
     {
         $this->html_id = $html_id;
@@ -84,8 +93,10 @@ abstract class HTMLTableEntity
     /**
      * userfull ? function never called
      *
-     * @param array|string $html_style
-     **/
+     * @param string[]|string $html_style
+     *
+     * @return void
+     */
     public function setHTMLStyle($html_style)
     {
         if (is_array($html_style)) {
@@ -96,8 +107,10 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param array|string $html_class
-     **/
+     * @param string[]|string $html_class
+     *
+     * @return void
+     */
     public function setHTMLClass($html_class)
     {
         if (is_array($html_class)) {
@@ -109,7 +122,9 @@ abstract class HTMLTableEntity
 
     /**
      * @param array $options
-     **/
+     *
+     * @return void
+     */
     public function displayEntityAttributs(array $options = [])
     {
         $id = $options['id'] ?? $this->html_id;
@@ -143,30 +158,38 @@ abstract class HTMLTableEntity
     }
 
     /**
-     * @param $content
-     **/
+     * @param string|string[] $content
+     *
+     * @return void
+     *
+     * @psalm-taint-specialize (to report each unsafe usage as a distinct error)
+     * @psalm-taint-sink html $content (string will be added to HTML source)
+     */
     public function setContent($content)
     {
         $this->content = $content;
     }
 
+    /**
+     * @return void
+     */
     public function displayContent()
     {
         if (is_array($this->content)) {
             foreach ($this->content as $content) {
                 if (is_string($content)) {
-                   // Manage __RAND__ to be computed on display
-                    $content = str_replace('__RAND__', mt_rand(), $content);
+                    // Manage __RAND__ to be computed on display
+                    $content = str_replace('__RAND__', (string) mt_rand(), $content);
                     echo $content;
-                } else if (isset($content['function'])) {
+                } elseif (isset($content['function'])) {
                     $parameters = $content['parameters'] ?? [];
                     call_user_func_array($content['function'], $parameters);
                 }
             }
         } else {
             // Manage __RAND__ to be computed on display
-            $content = $this->content ?? '';
-            $content = str_replace('__RAND__', mt_rand(), $content);
+            $content = $this->content;
+            $content = str_replace('__RAND__', (string) mt_rand(), $content);
             echo $content;
         }
     }

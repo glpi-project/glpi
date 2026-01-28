@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+
 /// Collector Rules collection class
 class RuleMailCollectorCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_mailcollector';
     public $menu_option         = 'mailcollector';
@@ -54,6 +56,9 @@ class RuleMailCollectorCollection extends RuleCollection
         }
         if (isset($params['_users_id_requester'])) {
             $input['_users_id_requester'] = $params['_users_id_requester'];
+        }
+        if (isset($params['from'])) {
+            $input['from'] = $params['from'];
         }
 
         $fields = $this->getFieldsToLookFor();
@@ -74,6 +79,14 @@ class RuleMailCollectorCollection extends RuleCollection
                     $input[$key] = $value;
                 }
             }
+            $input['_headers'] = implode(
+                "\n",
+                array_map(
+                    fn($k, $v) => is_array($v) ? "$k: " . implode(', ', $v) : "$k: $v",
+                    array_keys($params['headers']),
+                    $params['headers']
+                )
+            );
         }
 
         // Add all user's groups
@@ -92,7 +105,7 @@ class RuleMailCollectorCollection extends RuleCollection
 
         // If the criteria is "user has only one time the profile xxx"
         if (in_array('unique_profile', $fields, true)) {
-           //Get all profiles
+            //Get all profiles
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
             foreach ($profiles as $profile) {
                 if (
@@ -115,7 +128,6 @@ class RuleMailCollectorCollection extends RuleCollection
             }
         }
 
-        // Store the number of profiles of which the user belongs to
         if (in_array('known_domain', $fields, true)) {
             if (preg_match("/@(.*)/", $input['from'], $results)) {
                 if (Entity::getEntityIDByDomain($results[1]) !== -1) {

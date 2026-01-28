@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,26 +35,28 @@
 
 namespace Glpi\Console\Command;
 
+use Glpi\System\Requirement\RequirementInterface;
+
 interface GlpiCommandInterface
 {
     /**
      * Defines whether or not mandatory requirements must be checked before running command.
      *
-     * @return boolean
+     * @return bool
      */
     public function mustCheckMandatoryRequirements(): bool;
 
     /**
      * Defines whether or not mandatory requirements must be checked before running command.
      *
-     * @return \Glpi\System\Requirement\RequirementInterface[]
+     * @return RequirementInterface[]
      */
     public function getSpecificMandatoryRequirements(): array;
 
     /**
      * Defines whether or not command requires an up-to-date database to be executed.
      *
-     * @return boolean
+     * @return bool
      */
     public function requiresUpToDateDb(): bool;
 }

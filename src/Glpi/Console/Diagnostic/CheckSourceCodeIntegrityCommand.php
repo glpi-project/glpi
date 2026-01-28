@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,15 +35,17 @@
 
 namespace Glpi\Console\Diagnostic;
 
+use Exception;
 use Glpi\Console\AbstractCommand;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
+use LogicException;
 use Symfony\Component\Console\Formatter\OutputFormatter;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Output\StreamOutput;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Toolbox;
 
@@ -60,7 +62,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
             // Ensure to have enough memory to not reach memory limit.
             $max_memory = 512;
             if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
-                ini_set('memory_limit', sprintf('%dM', $max_memory));
+                Toolbox::safeIniSet('memory_limit', sprintf('%dM', $max_memory));
             }
         }
     }
@@ -93,7 +95,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
 
         try {
             $summary = $checker->getSummary();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln('<error>' . sprintf(__('Failed to validate GLPI source code integrity. Error was: %s'), $e->getMessage()) . '</error>');
             return 1;
         }
@@ -123,10 +125,11 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
                 SourceCodeIntegrityChecker::STATUS_ALTERED => 'Altered',
                 SourceCodeIntegrityChecker::STATUS_MISSING => 'Missing',
                 SourceCodeIntegrityChecker::STATUS_ADDED => 'Added',
+                default => throw new LogicException("Unexpected status: $status"),
             };
             $table->addRow([
                 $file,
-                $status_label
+                $status_label,
             ]);
         }
         $table->render();
@@ -160,7 +163,7 @@ class CheckSourceCodeIntegrityCommand extends AbstractCommand
     {
         // If --allow-download missing, ask if it is OK
         if ($input->getOption('diff') && !$input->getOption('allow-download')) {
-            $helper = $this->getHelper('question');
+            $helper = new QuestionHelper();
             $question = new ConfirmationQuestion(
                 __('Generating the source code diff could require downloading the GLPI release archive. Do you want to allow this operation?'),
                 false

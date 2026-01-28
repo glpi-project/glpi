@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -51,5 +50,23 @@ describe('Page layout', () => {
         cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
 
         cy.get('header.navbar').injectAndCheckA11y();
+    });
+
+    it('See About info', () => {
+        const cannot_see = ['Self-Service', 'Observer', 'Technician', 'Hotliner', 'Admin'];
+        const can_see = ['Super-Admin'];
+
+        for (const profile of cannot_see) {
+            cy.changeProfile(profile);
+            cy.visit('/');
+            cy.findByRole('link', {name: 'User menu'}).click();
+            cy.findByRole('link', { name: /About/ }).should('not.exist');
+        }
+        for (const profile of can_see) {
+            cy.changeProfile(profile);
+            cy.visit('/');
+            cy.findByRole('link', {name: 'User menu'}).click();
+            cy.findByRole('link', {name: /About/}).should('exist');
+        }
     });
 });

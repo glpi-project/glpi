@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -44,17 +44,18 @@ $(document).ready(function() {
 
     // plugin actions (install, enable, etc)
     $(document).on('click', '.marketplace .modify_plugin', function() {
-        var button     = $(this);
-        var buttons    = button.closest('.buttons');
-        var li         = button.closest('li.plugin');
-        var icon       = button.children('i');
-        var installed  = button.closest('.marketplace').hasClass('installed');
-        var action     = button.data('action');
-        var plugin_key = li.data('key');
+        var button       = $(this);
+        var buttons      = button.closest('.buttons');
+        var li           = button.closest('li.plugin');
+        var icon         = button.children('i');
+        var installed    = button.closest('.marketplace').hasClass('installed');
+        var action       = button.data('action');
+        var plugin_key   = li.data('key');
+        var plugin_state = li.data('state');
 
         icon
             .removeClass()
-            .addClass('fas fa-spinner fa-spin');
+            .addClass('spinner-border');
 
         const executeAction = function () {
             if (action === 'download_plugin'
@@ -80,12 +81,15 @@ $(document).ready(function() {
             });
         };
 
-        if (action === 'download_plugin' || action === 'update_plugin') {
+        if (
+            (action === 'download_plugin' || action === 'update_plugin')
+            && (plugin_state === 'activated' || plugin_state === 'tobeconfigured')
+        ) {
             // Specific case for plugin code source replacement.
             // The plugin execution must be suspended first to ensure that its `setup.php` file is not loaded before
             // its new version is downloaded.
             $.post(ajax_url, {
-                'action': 'suspend_plugin',
+                'action': 'disable_plugin',
                 'key': plugin_key
             }).done(function() {
                 executeAction();
@@ -155,7 +159,7 @@ var filterPluginList = function(page, force) {
     }
 
     plugins_list
-        .append("<div class='loading-plugins'><i class='fas fa-spinner fa-pulse'></i></div>");
+        .append("<div class='loading-plugins'><div class='spinner-border'></div></div>");
     pagination.find('li.current').removeClass('current');
 
     var jqxhr = $.get(ajax_url, {
@@ -192,13 +196,13 @@ var refreshPlugins = function(page, force) {
     var icon = $('.marketplace:visible .refresh-plugin-list');
 
     icon
-        .removeClass('fa-sync-alt')
-        .addClass('fa-spinner fa-spin');
+        .removeClass('ti ti-refresh')
+        .addClass('spinner-border spinner-border-sm');
 
     $.when(filterPluginList(page, force)).then(function() {
         icon
-            .removeClass('fa-spinner fa-spin')
-            .addClass('fa-sync-alt');
+            .removeClass('spinner-border spinner-border-sm')
+            .addClass('ti ti-refresh');
         current_page = page;
 
         addTooltips();

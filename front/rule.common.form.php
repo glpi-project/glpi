@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * Following variables have to be defined before inclusion of this file:
  * @var RuleCollection $rulecollection
@@ -46,14 +48,8 @@ $rulecollection->checkGlobal(READ);
 if (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
-$ruleaction   = new RuleAction(get_class($rule));
 
-if (isset($_POST["add_action"])) {
-    $rulecollection->checkGlobal(CREATE);
-    $ruleaction->add($_POST);
-
-    Html::back();
-} else if (isset($_POST["update"])) {
+if (isset($_POST["update"])) {
     $rulecollection->checkGlobal(UPDATE);
     $rule->update($_POST);
 
@@ -66,22 +62,27 @@ if (isset($_POST["add_action"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["add"])) {
+} elseif (isset($_POST["add"])) {
     $rulecollection->checkGlobal(CREATE);
 
-    $newID = $rule->add($_POST);
-    Event::log(
-        $newID,
-        "rules",
-        4,
-        "setup",
-        sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
-    );
-    Html::redirect($rule->getFormURLWithID($newID));
-} else if (isset($_POST["purge"])) {
+    if (isset($_POST['profiles_id']) && isset($_POST['entities_id']) && isset($_POST['is_recursive'])) {
+        $entity = new Entity();
+        $entity->executeAddRule($_POST);
+    } else {
+        $newID = $rule->add($_POST);
+        Event::log(
+            $newID,
+            "rules",
+            4,
+            "setup",
+            sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $newID)
+        );
+        Html::redirect($rule->getFormURLWithID($newID));
+    }
+} elseif (isset($_POST["purge"])) {
     $rulecollection->checkGlobal(PURGE);
     $rulecollection->deleteRuleOrder($_POST["ranking"]);
-    $rule->delete($_POST, 1);
+    $rule->delete($_POST, true);
 
     Event::log(
         $_POST["id"],
@@ -96,5 +97,5 @@ if (isset($_POST["add_action"])) {
 
 $menus = ['admin', $rulecollection->menu_type, $rulecollection->menu_option];
 $rule::displayFullPageForItem($_GET["id"], $menus, [
-    'formoptions'  => " data-track-changes='true'"
+    'formoptions'  => " data-track-changes='true'",
 ]);

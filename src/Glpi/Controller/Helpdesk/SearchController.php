@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,25 +36,17 @@ namespace Glpi\Controller\Helpdesk;
 
 use Glpi\Controller\AbstractController;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\ServiceCatalog\HomeSearchManager;
 use Glpi\Form\ServiceCatalog\ItemRequest;
-use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use KnowbaseItem;
+use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Session;
 
 final class SearchController extends AbstractController
 {
-    private ServiceCatalogManager $service_catalog_manager;
-
-    public function __construct()
-    {
-        $this->service_catalog_manager = new ServiceCatalogManager();
-    }
-
     #[SecurityStrategy(Firewall::STRATEGY_HELPDESK_ACCESS)]
     #[Route(
         "/Helpdesk/Search",
@@ -63,33 +55,21 @@ final class SearchController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
         // Read parameters
         $filter = $request->query->getString('filter');
 
-        // Get forms
+        // Filter items
+        $manager = HomeSearchManager::getInstance();
         $items_request = new ItemRequest(
             access_parameters: new FormAccessParameters(
                 session_info: Session::getCurrentSessionInfo(),
             ),
-            filter: $filter
+            filter: $filter,
         );
-        $forms = $this->service_catalog_manager->getItems($items_request);
-
-        // Get FAQ entries
-        $query = KnowbaseItem::getListRequest([
-            'faq'                       => true,
-            'start'                     => 0,
-            'knowbaseitemcategories_id' => null,
-            'contains'                  => $filter,
-        ], 'search');
-        $faq_entries = $DB->request($query);
+        $items = $manager->getItems($items_request);
 
         return $this->render('pages/helpdesk/search.html.twig', [
-            'forms' => $forms,
-            'faq_entries' => $faq_entries,
+            'items_by_label' => $items,
         ]);
     }
 }

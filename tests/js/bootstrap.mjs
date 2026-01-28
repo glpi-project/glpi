@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2023 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,9 @@ await import('@tabler/core');
 await import('select2/dist/js/select2.full').then((select2) => {
     // Select2 exports a function that registers itself as a jQuery plugin
     select2.default();
+});
+await import('lodash').then((lodash) => {
+    window._ = lodash.default;
 });
 
 // Add a flag variable to know in other scripts if they are run in tests. Should not affect how they behave, just how functions/vars in non-modules are bound.

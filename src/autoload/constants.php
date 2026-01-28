@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,10 +33,14 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\define;
+use function Safe\preg_replace;
+use function Safe\sha1_file;
+
 define('GLPI_ROOT', dirname(__DIR__, 2));
 
 // Current version of GLPI
-define('GLPI_VERSION', '11.0.0-dev');
+define('GLPI_VERSION', '12.0.0-dev');
 
 $schema_file = sprintf('%s/install/mysql/glpi-empty.sql', GLPI_ROOT);
 define(
@@ -44,12 +48,15 @@ define(
     GLPI_VERSION . (is_readable($schema_file) ? '@' . sha1_file($schema_file) : '')
 );
 
-define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
-define('GLPI_MAX_PHP', '8.4'); // Must also be changed in top of public/index.php
-define('GLPI_YEAR', '2025');
+$version_file = sprintf('%s/version/%s', GLPI_ROOT, preg_replace('/^(\d+\.\d+\.\d+)(-.*)?$/', '$1', GLPI_VERSION));
+define(
+    "GLPI_FILES_VERSION",
+    GLPI_VERSION . (is_readable($version_file) ? '-' . hash_file('CRC32c', $version_file) : '')
+);
 
-//Define a global recipient address for email notifications
-//define('GLPI_FORCE_MAIL', 'me@localhost');
+define('GLPI_MIN_PHP', '8.2'); // Must also be changed in top of public/index.php
+define('GLPI_MAX_PHP', '8.5'); // Must also be changed in top of public/index.php
+define('GLPI_YEAR', '2026');
 
 // namespaces
 define('NS_GLPI', 'Glpi\\');
@@ -91,7 +98,6 @@ define("MANAGEMENT_GLOBAL", 1);
 //Mail send methods
 define("MAIL_MAIL", 0);
 define("MAIL_SMTP", 1);
-define("MAIL_SMTPS", 2);
 define("MAIL_SMTPSSL", 2);
 define("MAIL_SMTPTLS", 3);
 define("MAIL_SMTPOAUTH", 4);

@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -73,6 +73,10 @@ class NetworkEquipmentModelStencil extends Stencil
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         $stencil = Stencil::getStencilFromItem($item);
         if ($stencil != null) {
             $stencil->displayStencilEditor();
@@ -89,6 +93,7 @@ class NetworkEquipmentModelStencil extends Stencil
             $portInformation = self::getPortInformation($zone);
             $statusHtml = TemplateRenderer::getInstance()->render('stencil/parts/port/status.html.twig', [
                 'port' => $portInformation,
+                'with_text' => false,
             ]);
             $zoneLabel .= $statusHtml;
         }
@@ -112,6 +117,7 @@ class NetworkEquipmentModelStencil extends Stencil
     {
         $networkPort = new NetworkPort();
 
+        $port['ifstatus'] = -1;
         if (
             $networkPort->getFromDBByCrit([
                 'logical_number' => $port['number'],

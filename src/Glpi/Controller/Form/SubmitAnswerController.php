@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,18 +35,19 @@
 
 namespace Glpi\Controller\Form;
 
+use Glpi\Altcha\AltchaManager;
 use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Form\AccessControl\FormAccessControlManager;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
+use Psr\Log\LoggerInterface;
 use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -55,6 +56,10 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class SubmitAnswerController extends AbstractController
 {
+    use CanCheckAccessPolicies;
+
+    public function __construct(private LoggerInterface $logger) {}
+
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
         "/Form/SubmitAnswers",
@@ -63,15 +68,44 @@ final class SubmitAnswerController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
+        $is_unauthenticated_user = !Session::isAuthenticated();
+        if ($is_unauthenticated_user) {
+            $altcha = $request->request->getString('altcha');
+            if (!AltchaManager::getInstance()->verifySolution($altcha)) {
+                throw new BadRequestHttpException();
+            }
+        }
+
         $form = $this->loadSubmittedForm($request);
         $this->checkFormAccessPolicies($form, $request);
 
-        $answers = $this->saveSubmittedAnswers($form, $request);
-        $links = $answers->getLinksToCreatedItems();
+        try {
+            $answers = $this->saveSubmittedAnswers($form, $request);
+            $links = $answers->getLinksToCreatedItems();
 
-        return new JsonResponse([
-            'links_to_created_items' => $links,
-        ]);
+            if ($is_unauthenticated_user) {
+                AltchaManager::getInstance()->removeChallenge($altcha);
+            }
+
+            return new JsonResponse([
+                'links_to_created_items' => $links,
+            ]);
+        } catch (\Throwable $th) {
+            $this->logger->error(
+                sprintf('An error occured during the form `%s` submission.', $form->getName()),
+                ['exception' => $th]
+            );
+
+            $messages = [];
+            if (isset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR])) {
+                $messages = $_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR];
+                unset($_SESSION['MESSAGE_AFTER_REDIRECT'][ERROR]);
+            }
+
+            return new JsonResponse([
+                'errors' => $messages,
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 
     private function loadSubmittedForm(Request $request): Form
@@ -82,31 +116,11 @@ final class SubmitAnswerController extends AbstractController
         }
 
         $form = Form::getById($forms_id);
-        if (!$form) {
+        if (!$form instanceof Form) {
             throw new NotFoundHttpException();
         }
 
         return $form;
-    }
-
-    private function checkFormAccessPolicies(Form $form, Request $request)
-    {
-        $form_access_manager = FormAccessControlManager::getInstance();
-
-        if (Session::haveRight(Form::$rightname, READ)) {
-            // Form administrators can bypass restrictions while previewing forms.
-            $parameters = new FormAccessParameters(bypass_restriction: true);
-        } else {
-            // Load current user session info and URL parameters.
-            $parameters = new FormAccessParameters(
-                session_info: Session::getCurrentSessionInfo(),
-                url_parameters: $request->request->all(),
-            );
-        }
-
-        if (!$form_access_manager->canAnswerForm($form, $parameters)) {
-            throw new AccessDeniedHttpException();
-        }
     }
 
     private function saveSubmittedAnswers(
@@ -116,18 +130,31 @@ final class SubmitAnswerController extends AbstractController
         $post = $request->request->all();
         $provider = new EndUserInputNameProvider();
 
-        $answers = $provider->getAnswers($post);
-        $files = $provider->getFiles($post, $answers);
-        if (empty($answers)) {
+        $delegation = new DelegationData(
+            $request->request->getInt('delegation_users_id', 0) ?: null,
+            $request->request->getBoolean('delegation_use_notification', false) ?: null,
+            $request->request->getString('delegation_alternative_email', '') ?: null
+        );
+        $answers    = $provider->getAnswers($post);
+        $files      = $provider->getFiles($post, $answers);
+        if ($answers === []) {
             throw new BadRequestHttpException();
         }
 
         $handler = AnswersHandler::getInstance();
+
+        // Check if answers are valid
+        if (!$handler->validateAnswers($form, $answers)->isValid()) {
+            throw new BadRequestHttpException();
+        }
+
+        $answers = $handler->removeUnusedAnswers($form, $answers);
         $answers = $handler->saveAnswers(
             $form,
             $answers,
             Session::getLoginUserID(),
             $files,
+            $delegation
         );
 
         return $answers;

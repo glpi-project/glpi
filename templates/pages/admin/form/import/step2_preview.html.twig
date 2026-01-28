@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -43,6 +42,7 @@
     <form
         method="POST"
         action="{{ path('Form/Import/Execute') }}"
+        data-submit-once
     >
         <div class="card">
             <div class="card-header py-3 px-4">
@@ -53,17 +53,21 @@
                     <tr>
                         <th class="w-50 px-4">{{ __("Form name") }}</th>
                         <th class="w-25 px-4">{{ __("Status") }}</th>
-                        <th class="w-25 px-4">{{ _n('Action', 'Actions', 2) }}</th>
+                        <th class="w-25 px-4">{{ _n('Action', 'Actions', get_plural_number()) }}</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% macro render_row(form_id, form_name, status_icon, status_text, show_resolve_issues_action, show_remove_action) %}
+                    {% macro render_row(form_id, form_name, status_icon, messages, show_resolve_issues_action, show_remove_action) %}
                         <tr>
                             <td class="w-50 px-4 align-middle">{{ form_name }}</td>
                             <td class="w-50 px-4 align-middle">
                                 <div class="d-flex align-items-center">
                                     <i class="ti {{ status_icon }} me-2"></i>
-                                    <span>{{ status_text }}</span>
+                                    <div>
+                                        {% for message in messages %}
+                                            <span>{{ message }}</span>
+                                        {% endfor %}
+                                    </div>
                                 </div>
                             </td>
                             <td class="w-25 px-4 align-middle">
@@ -109,7 +113,7 @@
                             form_id,
                             form_name,
                             'ti-check text-success',
-                            __("Ready to be imported"),
+                            [__("Ready to be imported")],
                             false,
                             true
                         ) }}
@@ -119,8 +123,18 @@
                             form_id,
                             form_name,
                             'ti-x text-danger',
-                            __("Can't be imported"),
+                            [__("Can't be imported")],
                             true,
+                            true
+                        ) }}
+                    {% endfor %}
+                    {% for form_id, details in preview.getFormsWithFatalErrors() %}
+                        {{ _self.render_row(
+                            form_id,
+                            details.name,
+                            'ti-x text-danger',
+                            details.errors,
+                            false,
                             true
                         ) }}
                     {% endfor %}

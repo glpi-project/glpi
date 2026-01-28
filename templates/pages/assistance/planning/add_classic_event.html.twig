@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -42,7 +41,7 @@
 
 <div class="d-flex">
     <div class="col-12">
-        {% if display_dates %}
+        {% if display_dates and params.itemtype != 'PlanningExternalEventTemplate' %}
             {{ fields.datetimeField('plan[begin]', begin, __('Start date'), {
                 maybeempty: false,
                 canedit: true,
@@ -56,22 +55,28 @@
         {% endif %}
 
         {% set period_field %}
-            {% if params.rand_user %}
-                <span id="user_available{{ params.rand_user }}">
-                    {% do call('Planning::showCheckPlanning', [_post|merge({
-                        parent_itemtype: params.parent_itemtype|default(''),
-                        parent_items_id: params.parent_items_id|default(''),
-                        parent_fk_field: params.parent_fk_field|default(''),
-                    })]) %}
-                </span>
+            {% if params.rand_user is defined %}
+                <span id="user_available{{ params.rand_user }}"></span>
             {% endif %}
-            {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
-                min: 0,
-                max: 50 * constant('HOUR_TIMESTAMP'),
-                value: default_delay,
-                emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
-            }]) %}
-            <br>
+
+            {% if default_delay <= 180000 %}
+                {% do call('Dropdown::showTimeStamp', ['plan[_duration]', {
+                    min: 0,
+                    max: 50 * constant('HOUR_TIMESTAMP'),
+                    value: default_delay,
+                    emptylabel: display_dates ? __('Specify an end date') : constant('Dropdown::EMPTY_VALUE'),
+                    rand: rand,
+                }]) %}
+                <br>
+            {% else %}
+                {{ fields.hiddenField('plan[_duration]', default_delay) }}
+                {{ fields.htmlField(
+                    '',
+                    default_delay|formatted_duration,
+                    '',
+                    {no_label: true, full_width: true, mb: 0}
+                ) }}
+            {% endif %}
             <div id="date_end{{ rand }}"></div>
 
             {% if display_dates %}
@@ -84,15 +89,15 @@
                     </script>
                 {% endif %}
                 <script>
-                    {% set event_params = {
-                        duration: '__VALUE__',
-                        end: end,
-                        name: 'plan[end]',
-                        global_begin: config('planning_begin'),
-                        global_end: config('planning_end'),
-                    } %}
-                    $('#dropdown_plan[_duration]{{ rand }}').on('change', () => {
-                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', {{ event_params|json_encode|raw }});
+                    $('#dropdown_plan__duration_{{ rand }}').on('change', () => {
+                        const event_params = {
+                            duration: $('#dropdown_plan__duration_{{ rand }}').val(),
+                            end: '{{ end|e('js') }}',
+                            name: 'plan[end]',
+                            global_begin: '{{ config('planning_begin')|e('js') }}',
+                            global_end: '{{ config('planning_end')|e('js') }}',
+                        };
+                        $('#date_end{{ rand }}').load('{{ path('ajax/planningend.php')|e('js') }}', event_params);
                     });
                 </script>
             {% endif %}

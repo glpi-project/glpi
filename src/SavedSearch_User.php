@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,10 +37,10 @@ class SavedSearch_User extends CommonDBRelation
 {
     public $auto_message_on_action = false;
 
-    public static $itemtype_1          = 'SavedSearch';
+    public static $itemtype_1 = SavedSearch::class;
     public static $items_id_1          = 'savedsearches_id';
 
-    public static $itemtype_2          = 'User';
+    public static $itemtype_2 = User::class;
     public static $items_id_2          = 'users_id';
 
 
@@ -75,7 +75,7 @@ class SavedSearch_User extends CommonDBRelation
                     $options['name'],
                     [
                         '1'   => __('Yes'),
-                        '0'   => __('No')
+                        '0'   => __('No'),
                     ],
                     $options
                 );
@@ -92,25 +92,24 @@ class SavedSearch_User extends CommonDBRelation
      * Summary of getDefault
      * @param mixed $users_id id of the user
      * @param mixed $itemtype type of item
-     * @return array|boolean same output than SavedSearch::getParameters()
+     * @return array|bool same output than SavedSearch::getParameters()
      * @since 9.2
      */
     public static function getDefault($users_id, $itemtype)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $iter = $DB->request(['SELECT' => 'savedsearches_id',
             'FROM'   => 'glpi_savedsearches_users',
             'WHERE'  => ['users_id' => $users_id,
-                'itemtype' => $itemtype
-            ]
+                'itemtype' => $itemtype,
+            ],
         ]);
         if (count($iter)) {
             $row = $iter->current();
-           // Load default bookmark for this $itemtype
+            // Load default bookmark for this $itemtype
             $bookmark = new SavedSearch();
-           // Only get data for bookmarks
+            // Only get data for bookmarks
             return $bookmark->getParameters($row['savedsearches_id']);
         }
         return false;

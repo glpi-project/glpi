@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -33,25 +33,26 @@
  * ---------------------------------------------------------------------
  */
 
-/** @var \Glpi\Controller\LegacyFileLoadController $this */
-$this->setAjax();
+use Glpi\Exception\Http\AccessDeniedHttpException;
 
 // Send UTF8 Headers
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
+
+Session::checkRight("config", READ);
 
 $mailcollector = new MailCollector();
 
 if (isset($_REQUEST['action'])) {
     switch ($_REQUEST['action']) {
         case "getFoldersList":
-           // Load config if already exists
-           // Necessary if password is not updated
+            // Load config if already exists
+            // Necessary if password is not updated
             if (array_key_exists('id', $_REQUEST)) {
                 $mailcollector->getFromDB($_REQUEST['id']);
             }
 
-           // Update fields with input values
+            // Update fields with input values
             $input = $_REQUEST;
 
             if (isset($input["passwd"])) {
@@ -62,8 +63,15 @@ if (isset($_REQUEST['action'])) {
                 }
             }
 
-            if (isset($input['mail_server']) && !empty($input['mail_server'])) {
+            if (!empty($input['mail_server'])) {
                 $input["host"] = Toolbox::constructMailServerConfig($input);
+                // In some case (like oauth imap) provide password is not possible
+                // So, ask for password only if there is one stored in database
+                if (!isset($input['passwd']) && !empty($mailcollector->fields['passwd'])) {
+                    $exception = new AccessDeniedHttpException();
+                    $exception->setMessageToDisplay(__('Password is required to list mail folders.'));
+                    throw $exception;
+                }
             }
 
             if (!isset($input['errors'])) {

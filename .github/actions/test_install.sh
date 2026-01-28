@@ -23,12 +23,14 @@ bin/console database:check_schema_integrity --ansi --no-interaction --strict
 bin/console tools:check_database_keys --ansi --no-interaction --detect-useless-keys
 bin/console tools:check_database_schema_consistency --ansi --no-interaction
 
+# Check the OAuth keys are generated
+if [ ! -f ./tests/config/oauth.pem ] || [ ! -f ./tests/config/oauth.pub ]; then
+  echo "OAuth keys are missing" && exit 1;
+fi
+
 # Execute update
 ## Should do nothing.
 bin/console database:update --ansi --no-interaction | tee $LOG_FILE
 if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "database:update command FAILED" && exit 1;
 fi
-
-# Defines the base URL to match the default one used in web/e2e tests
-bin/console config:set url_base http://localhost:80

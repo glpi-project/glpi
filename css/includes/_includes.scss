@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -49,9 +49,12 @@ $is-dark: false !default;
 @import "components/form/form-editor";
 @import "components/form/form-renderer";
 @import "components/form/form-destination";
+@import "components/form/item-translations";
+@import "components/form/helpdesk-home-config-for-empty-entity";
 @import "components/fuzzy";
 @import "components/global-menu";
 @import "components/illustration-picker";
+@import "components/kb";
 @import "components/log_viewer";
 @import "components/browser_tree";
 @import "components/mini-tabs";
@@ -68,7 +71,9 @@ $is-dark: false !default;
 @import "components/tabs";
 @import "components/tinymce";
 @import "components/utils";
+@import "components/text-selection";
 @import "components/creator_badge";
+@import "components/process-chart";
 @import "components/itilobject/footer";
 @import "components/itilobject/layout";
 @import "components/itilobject/timeline";

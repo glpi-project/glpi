@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,29 +37,28 @@ namespace Glpi\DBAL;
 
 use AbstractQuery;
 use DBmysql;
+use RuntimeException;
 
 /**
  * UNION query class
  **/
 class QueryUnion extends AbstractQuery
 {
-    private $queries = [];
-    private $distinct = false;
+    private array $queries = [];
 
     /**
      * Create a sub query
      *
      * @param array $queries An array of queries to union. Either SubQuery objects
      *                          or an array of criteria to build them.
-     *                          You can also add later using @param boolean $distinct Include duplicates or not. Turning on may has
+     * @param bool $distinct Include duplicates or not. Turning on may has
      *                          huge cost on queries performances.
      * @param string $alias Union ALIAS. Defaults to null.
      * @see addQuery
      */
-    public function __construct(array $queries = [], $distinct = false, $alias = null)
+    public function __construct(array $queries = [], private $distinct = false, $alias = null)
     {
         parent::__construct($alias);
-        $this->distinct = $distinct;
 
         foreach ($queries as $query) {
             $this->addQuery($query);
@@ -71,6 +70,8 @@ class QueryUnion extends AbstractQuery
      *
      * @param QuerySubQuery|array $query Either a SubQuery object
      *                                   or an array of criteria to build it.
+     *
+     * @return void
      */
     public function addQuery($query)
     {
@@ -103,7 +104,7 @@ class QueryUnion extends AbstractQuery
         if (
             empty($union_queries)
         ) {
-            throw new \RuntimeException('Cannot build an empty union query');
+            throw new RuntimeException('Cannot build an empty union query');
         }
 
         $queries = [];
@@ -117,9 +118,7 @@ class QueryUnion extends AbstractQuery
         }
         $query = '(' . implode(" $keyword ", $queries) . ')';
 
-        $alias = $this->alias !== null
-            ? $this->alias
-            : 'union_' . md5($query);
+        $alias = $this->alias ?? 'union_' . md5($query);
         $query .= ' AS ' . DBmysql::quoteName($alias);
 
         return $query;

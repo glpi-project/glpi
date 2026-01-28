@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -37,7 +37,7 @@ class ITILValidationTemplate_Target extends CommonDBRelation
 {
     public $dohistory = true;
 
-    public static $itemtype_1 = 'ITILValidationTemplate';
+    public static $itemtype_1 = ITILValidationTemplate::class;
     public static $items_id_1 = 'itilvalidationtemplates_id';
     public static $take_entity_1 = false;
 
@@ -47,9 +47,14 @@ class ITILValidationTemplate_Target extends CommonDBRelation
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Validation template target', 'Validation template targets', $nb);
+        return _n('Approval template target', 'Approval template targets', $nb);
     }
 
+    /**
+     * @param int $itilvalidationtemplates_id
+     *
+     * @return array
+     */
     public static function getTargets($itilvalidationtemplates_id)
     {
         return (new self())->find([

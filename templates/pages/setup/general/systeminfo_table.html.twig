@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -44,26 +43,62 @@
    no_label: true
 }) }}
 
-{% macro sysinfo_section(label, content, raw = false) %}
+{% macro sysinfo_section(label, content, raw = false, raw_precontent = '') %}
    {% set rand = random() %}
    {% set cleaned_content = content|trim|u.wordwrap(128) %}
    <div class="accordion-item">
-      <h2 class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
+      <div class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sysinfo_section_{{ rand }}">{{ label }}</button>
-      </h2>
+      </div>
       <div id="sysinfo_section_{{ rand }}" class="accordion-collapse collapse" aria-labelledby="sysinfo_header_{{ rand }}" data-bs-parent="#sysinfo_accordion">
+         {{ raw_precontent|raw }}
          <pre class="section-content">{{ raw ? cleaned_content|raw : cleaned_content|e }}</pre>
       </div>
    </div>
 {% endmacro %}
 
+{% set status_mapping = {
+    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ALTERED')): 'M',
+    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_MISSING')): 'D',
+    (constant('Glpi\\System\\Diagnostic\\SourceCodeIntegrityChecker::STATUS_ADDED')): 'A',
+} %}
+
+{% set glpi_info_precontent %}
+    {% if not call('\\Glpi\\Toolbox\\VersionParser::isStableRelease', [constant('GLPI_VERSION')]) %}
+        <div class='alert alert-important alert-warning d-flex'>
+            <strong>⚠️  {{ __("This version is UNSTABLE and some SECURITY FIXES may not be included.") }} ⚠️</strong>
+        </div>
+    {% endif %}
+{% endset %}
+
 {% set glpi_info %}
 GLPI: {{ ver }} ({{ config('root_doc') }} => {{ constant('GLPI_ROOT') }})
 Installation mode: {{ constant('GLPI_INSTALL_MODE') }}
 Current language: {{ language }}
+Source Integrity: {% if code_integrity is null %}N/A{% elseif code_integrity is empty %}OK{% else %}{{ code_integrity|length }} files changed{% endif %}
+{%- if code_integrity is not empty -%}
+    {{- "\n" -}}
+    {%- for file, state in code_integrity[:25] -%}
+        {{ '  ' ~ status_mapping[state] ~ ': ' ~ file ~ "\n" -}}
+    {%- endfor -%}
+    {%- if code_integrity|length > 25 %}
+        {{- "  ...\n" -}}
+    {% endif -%}
+{%- endif -%}
 {% endset %}
 
-{% set setup_init_keys = ['max_execution_time', 'memory_limit', 'post_max_size', 'safe_mode', 'session.save_handler', 'upload_max_filesize', 'disable_functions'] %}
+{% set setup_init_keys = [
+    'disable_functions',
+    'max_execution_time',
+    'max_input_vars',
+    'memory_limit',
+    'post_max_size',
+    'session.cookie_secure',
+    'session.cookie_httponly',
+    'session.cookie_samesite',
+    'session.save_handler',
+    'upload_max_filesize',
+] %}
 {% set server_info %}
 Operating system: {{ call('php_uname') }}
 
@@ -95,17 +130,6 @@ Requirements:
    {%- endfor -%}
 {% endset %}
 
-{% set lib_info %}
-   {%- for dep in call('Config::getLibraries') -%}
-      {% set path = call('Config::getLibraryDir', [dep['check']]) %}
-      {%- if path -%}
-         {{ "\n" ~ dep['name'] }} version {{ dep['version'] }} in {{ path }}
-      {%- else -%}
-         {{ "\n" ~ dep['name'] }} not found
-      {%- endif -%}
-   {%- endfor -%}
-{% endset %}
-
 {% set locale_info %}
    {%- for file in locales_overrides -%}
       {{ "\n" ~ file }}
@@ -113,10 +137,9 @@ Requirements:
 {% endset %}
 
 <div class="accordion" id="sysinfo_accordion">
-   {{ _self.sysinfo_section('GLPI information', glpi_info) }}
+   {{ _self.sysinfo_section('GLPI information', glpi_info, false, glpi_info_precontent) }}
    {{ _self.sysinfo_section('Server', server_info, true) }}
    {{ _self.sysinfo_section('GLPI constants', constants_info, true) }}
-   {{ _self.sysinfo_section('Libraries', lib_info, true) }}
    {% for info_obj in system_info_objs %}
       {% set info = call([info_obj, 'getSystemInformation']) %}
       {% if info['label'] is not empty and info['content'] is not empty %}

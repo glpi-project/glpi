@@ -5,7 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -34,6 +34,7 @@
 /* eslint no-var: 0 */
 /* global FullCalendar, FullCalendarLocales */
 /* global glpi_ajax_dialog */
+/* global _ */
 
 var Reservations = function() {
     this.is_all      = true;
@@ -80,14 +81,6 @@ var Reservations = function() {
                 : my.currentv,
             height: function() {
                 var _newheight = $(window).height() - 272;
-                if ($('#debugajax').length > 0) {
-                    _newheight -= $('#debugajax').height();
-                }
-
-                if (my.is_tab) {
-                    // TODO .glpi_tabs not exists anymore
-                    _newheight = $('.glpi_tabs ').height() - 150;
-                }
 
                 //minimal size
                 var _minheight = 300;
@@ -175,7 +168,7 @@ var Reservations = function() {
                     }
 
                     element.find(".fc-title, .fc-list-item-title")
-                        .append(`&nbsp;<i class='${extProps.icon}' title='${icon_alt}'></i>`);
+                        .append(`&nbsp;<i class='${_.escape(extProps.icon)}' title='${_.escape(icon_alt)}'></i>`);
                 }
 
                 // detect ideal position
@@ -238,12 +231,13 @@ var Reservations = function() {
                         title: __("Add reservation"),
                         url: `${CFG_GLPI.root_doc}/ajax/reservations.php`,
                         params: {
-                            action: 'add_reservation_fromselect',
-                            id:     my.id,
-                            start:  info.start.toISOString(),
+                            action: 'add_edit_reservation_fromselect',
+                            id: 0,
+                            item:     [my.id],
+                            begin:  info.start.toISOString(),
                             end:    info.end.toISOString(),
                         },
-                        dialogclass: 'modal-lg',
+                        dialogclass: 'modal-xl',
                     });
                 }
 
@@ -263,8 +257,8 @@ var Reservations = function() {
 
                 glpi_ajax_dialog({
                     title: __("Edit reservation"),
-                    url: `${ajaxurl}&ajax=true`,
-                    dialogclass: 'modal-lg',
+                    url: `${ajaxurl}`,
+                    dialogclass: 'modal-xl',
                 });
             }
         });

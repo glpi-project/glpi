@@ -5,8 +5,7 @@
  #
  # http://glpi-project.org
  #
- # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
+ # @copyright 2015-2026 Teclib' and contributors.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -34,6 +33,7 @@
 {% extends "generic_show_form.html.twig" %}
 {% import 'components/form/fields_macros.html.twig' as fields %}
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+{% import 'components/alerts_macros.html.twig' as alerts %}
 {% set params  = params ?? [] %}
 {% set edit_mode = edit_mode|default(false) %}
 {% set no_header = not edit_mode %}
@@ -58,7 +58,7 @@
 
       {% if edit_mode %}
          {{ fields.textField('name', item.fields['name'], __('Name')) }}
-         {{ fields.textareaField('comments', item.fields['comments'], __('Comments')) }}
+         {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
          {% set displayed_last_update = item.fields['date_mod'] ? item.fields['date_mod']|formatted_datetime : __('Never') %}
          {{ fields.htmlField('date_mod', displayed_last_update, __('Last update')) }}
       {% endif %}
@@ -79,6 +79,7 @@
       } %}
 
       {{ fields.smallTitle(__('General')) }}
+      {{ alerts.alert('warning', '', __('Child locations will not be transferred with the parent to avoid visibility and hierarchy issues.')) }}
       {{ fields.dropdownArrayField('keep_history', item.fields['keep_history'], keep_options, __('Historical'), {
          readonly: not can_change_options,
       }) }}
@@ -89,7 +90,6 @@
       {{ fields.dropdownArrayField('keep_location', item.fields['keep_location'], location_options, 'Location'|itemtype_name(get_plural_number()), {
          readonly: not can_change_options,
       }) }}
-
       {{ fields.smallTitle(_n('Asset', 'Assets', get_plural_number())) }}
       {{ fields.dropdownArrayField('keep_networklink', item.fields['keep_networklink'], connection_options, 'NetworkPort'|itemtype_name(get_plural_number()), {
          readonly: not can_change_options,

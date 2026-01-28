@@ -5,8 +5,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -149,6 +148,40 @@ describe ('Form editor', () => {
         });
     });
 
+    it('can create an item question', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        cy.addQuestion("My question");
+        cy.findByRole('region', {'name': 'Question details'}).within(() => {
+            cy.findByRole('checkbox', {'name': 'Mandatory'})
+                .should('not.be.checked')
+                .check()
+            ;
+            cy.findByLabelText("Question description")
+                .awaitTinyMCE()
+                .type("My question description")
+            ;
+        });
+
+        // We catch the ajax request when Item question type is selected
+        cy.intercept(
+            {
+                method: 'POST',
+                url: '/Form/Condition/Editor/SupportedValueOperators',
+            }
+        ).as('itemQuestionQuery');
+
+        cy.getDropdownByLabelText("Question type")
+            .selectDropdownValue("Item");
+
+        cy.wait('@itemQuestionQuery').then((interception) => {
+            assert.equal(interception.response.statusCode, 200);
+        });
+
+        // Save form and reload page to force new data to be displayed.
+        cy.saveFormEditorAndReload();
+    });
+
     it('can duplicate a question', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
@@ -258,7 +291,7 @@ describe ('Form editor', () => {
         cy.saveFormEditorAndReload();
 
         // Validate values
-        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
         cy.get('@sections').should('have.length', 2);
         cy.get('@sections').eq(1).as('second_section');
         cy.get('@second_section')
@@ -283,6 +316,53 @@ describe ('Form editor', () => {
         cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
     });
 
+    it('can delete a non-empty section with confirmation modal', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // We must create at least one question before we can add a section
+        cy.addQuestion("First question");
+
+        // Create section
+        cy.addSection("Second section");
+
+        // Add a question in the section
+        cy.addQuestion("Second question");
+
+        // Delete first section
+        cy.findAllByRole('region', {'name': 'Section details'}).eq(0).within(() => {
+            cy.findByRole('button', {'name': "More actions"}).click();
+            cy.findByRole('button', {'name': "Delete section"}).click();
+        });
+
+        // The delete non-empty section modal should be displayed
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'})
+            .should('have.attr', 'data-cy-shown', 'true')
+            .within(() => {
+                // Check that the message contains the count of elements
+                cy.get('[data-glpi-form-editor-delete-section-message]')
+                    .should('contain', '1')
+                    .should('contain', 'question');
+                cy.findByRole('button', {'name': 'Delete section and all its elements'}).click();
+            });
+
+        cy.findByRole('dialog', {'name': 'Delete non-empty section'}).should('not.exist');
+
+        // Check that the section and its question have been deleted
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
+        cy.findByRole('region', {'name': 'Question details'})
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', 'Second question');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Check that the section and its question have been deleted
+        cy.findByRole('region', {'name': 'Section details'}).should('not.exist');
+        cy.findByRole('region', {'name': 'Question details'})
+            .findByRole('textbox', {'name': 'Question name'})
+            .should('have.value', 'Second question');
+    });
+
     it('can duplicate a section', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
@@ -298,6 +378,9 @@ describe ('Form editor', () => {
         cy.addQuestion("Second question");
         cy.addQuestion("Third question");
 
+        // Set question types to "Item" to test select2 duplication
+        cy.findAllByRole('option', {'name': 'New question'}).eq(-1).changeQuestionType('Item');
+
         // Duplicate second section
         cy.get('@sections').eq(1).as('second_section');
         cy.get('@second_section')
@@ -312,13 +395,34 @@ describe ('Form editor', () => {
         cy.findAllByRole('region', {'name': 'Section details'}).as('sections_details');
         cy.get('@sections_details').should('have.length', 3);
 
-        // Section 2 and 3 should be identical
-        [1, 2].forEach((section_index) => {
+        // Duplicate the third section (trying duplication of questions with lazy loaded select2)
+        cy.get('@sections').eq(2).as('third_section');
+        cy.get('@third_section')
+            .findByRole('button', {'name': "More actions"})
+            .click()
+        ;
+        cy.findByRole('button', {'name': "Duplicate section"}).click();
+
+        // There should now be 4 sections
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections_containers');
+        cy.findAllByRole('region', {'name': 'Section details'}).as('sections_details');
+        cy.get('@sections_details').should('have.length', 4);
+
+        // Check lazy loaded select2 in duplicated section
+        cy.get('@sections_containers').eq(-1).as('fourth_section');
+        cy.get('@fourth_section').findByRole('option', { 'name': 'Third question' }).within(() => {
+            cy.getDropdownByLabelText('Select an item').should('exist');
+            cy.findByRole('region', { 'name': 'Question details' }).click();
+            cy.getDropdownByLabelText('Question type').should('exist');
+        });
+
+        // Section 2, 3 and 4 should be identical
+        [1, 2, 3].forEach((section_index) => {
             cy.get('@sections_containers').eq(section_index).as('section_container');
             cy.get('@sections_details').eq(section_index).as('section_detail');
 
             // Validate section name
-            cy.get('@section_detail')
+            cy.get('@section_container')
                 .findByRole('textbox', {'name': 'Section name'})
                 .should('have.value', "Second section")
             ;
@@ -522,6 +626,95 @@ describe ('Form editor', () => {
         cy.findByRole('region', {'name': 'Question details'}).should('exist');
     });
 
+    it('can display correct element count in section badge', () => {
+        cy.createFormWithAPI().visitFormTab('Form');
+
+        // Add first question
+        cy.addQuestion("First question");
+
+        // Add a section
+        cy.addSection("Form section");
+
+        // Check badge is not visible when section is not collapsed
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
+        cy.get('@sections').each((section) => {
+            cy.wrap(section).find('[data-glpi-form-editor-section-block-badge]').should('not.be.visible');
+        });
+
+        // Collapse the section
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "1 element"
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '1 element');
+
+        // Uncollapse the section
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Focus the first question to display hidden actions
+        cy.get('@sections').eq(0)
+            .findByRole('option', {'name': 'New question'})
+            .click();
+
+        // Add a second question
+        cy.addQuestion("Second question");
+
+        // Add a comment
+        cy.findByRole('button', {'name': "Add a comment"}).click();
+        cy.focused().type("My comment");
+
+        // Collapse the section again
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "3 elements" (2 questions + 1 comment)
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '3 elements');
+
+        // Delete one of the questions
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).click(); // Focus question to display hidden actions
+        cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+
+        // Collapse the section again
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "2 elements" (1 question + 1 comment)
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '2 elements');
+
+        // Save and reload
+        cy.saveFormEditorAndReload();
+
+        // Collapse the section again
+        cy.get('@sections').eq(0)
+            .findByRole('button', {'name': "Collapse section"})
+            .click();
+
+        // Check that the badge shows "2 elements" (1 question + 1 comment)
+        cy.get('@sections').eq(0)
+            .find('[data-glpi-form-editor-section-block-badge]')
+            .should('be.visible')
+            .and('contain.text', '2 elements');
+    });
+
     it('can reorder sections', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
@@ -637,6 +830,10 @@ describe ('Form editor', () => {
         // Change question type
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
 
+        // TODO: find something better than wait here
+        // eslint-disable-next-line
+        cy.wait(500);
+
         // Save and reload
         cy.saveFormEditorAndReload();
 
@@ -708,7 +905,7 @@ describe ('Form editor', () => {
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Date and time');
 
         // Create sections
-        cy.findByRole('button', {'name': 'Add a new section'}).click();
+        cy.findByRole('button', {'name': 'Add a section'}).click();
 
         // Add a question to the new section
         cy.addQuestion("Third question");
@@ -768,6 +965,10 @@ describe ('Form editor', () => {
         });
         cy.getDropdownByLabelText("Question type").selectDropdownValue('Long answer');
 
+        // TODO: find something better than wait here
+        // eslint-disable-next-line
+        cy.wait(500);
+
         // Save and reload
         cy.saveFormEditorAndReload();
 
@@ -785,5 +986,167 @@ describe ('Form editor', () => {
         verifySection(2, '', [
             { name: 'Third question', description: 'Third question description', type: 'Long answer' }
         ]);
+    });
+
+    it('can change render layout', () => {
+        cy.createFormWithAPI().as('form_id').then((form_id) => {
+            // Add question to default section
+            cy.addQuestionToDefaultSectionWithAPI(
+                form_id,
+                'First question',
+                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                0
+            );
+
+            // Add second section with a question
+            cy.createWithAPI('Glpi\\Form\\Section', {
+                'name': 'Second section',
+                'rank': 1,
+                'forms_forms_id': form_id,
+            }).then((second_section_id) => {
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'name': 'Second question',
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'vertical_rank': 1,
+                    'forms_sections_id': second_section_id,
+                });
+            });
+
+            // Visit form tab
+            cy.get('@form_id').visitFormTab('Form');
+
+            // Validate default render layout
+            cy.getDropdownByLabelText('Render layout').hasDropdownValue('Section by section');
+
+            // Go to preview
+            cy.findByRole('link', { 'name': "Preview" })
+                .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+                .click()
+            ;
+
+            // Validate layout
+            cy.findByRole('heading', {'name': 'First section'}).should('exist');
+            cy.findByRole('heading', {'name': 'Second section'}).should('not.exist');
+            cy.findByRole('button', {'name': 'Continue'}).should('exist');
+            cy.findByRole('button', {'name': 'Submit'}).should('not.exist');
+
+            // Go back to form editor
+            cy.get('@form_id').visitFormTab('Form');
+
+            // Change render layout to "Single page"
+            cy.getDropdownByLabelText('Render layout').selectDropdownValue('Single page');
+
+            // Save form
+            cy.findByRole('button', {'name': 'Save'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
+
+            // Go to preview
+            cy.findByRole('link', { 'name': "Preview" })
+                .invoke('removeAttr', 'target') // Cypress can't handle tab changes
+                .click()
+            ;
+
+            // Validate layout
+            cy.findByRole('heading', {'name': 'First section'}).should('exist');
+            cy.findByRole('heading', {'name': 'Second section'}).should('exist');
+            cy.findByRole('button', {'name': 'Continue'}).should('not.exist');
+            cy.findByRole('button', {'name': 'Submit'}).should('exist');
+        });
+    });
+
+    it('can delete a question that has a validation constraint', () => {
+        cy.login();
+        cy.importForm('form-with-validation-2025-10-08.json').visitFormTab('Form');
+
+        // Focus question to display hiden actions
+        cy.findByRole('region', {'name': 'Question details'})
+            .as("question_details")
+        ;
+        cy.get("@question_details").click();
+
+        // Delete question
+        cy.get("@question_details").within(() => {
+            cy.findByRole('button', {'name': 'Delete'}).click();
+        });
+        cy.get("@question_details").should('not.exist');
+    });
+
+    /**
+     * This test aims to ensure that the form can be saved
+     * even if it contains a large number of elements.
+     * Issues have been encountered in the past due to PHP configuration
+     * (max_input_vars) and HTTP request size.
+     *
+     * The test does not go as far as verifying that all elements are properly saved
+     * as this would be too long and complicated to implement.
+     * Its sole objective is to ensure that the save operation succeeds.
+     */
+    it('can save a form with many inputs', () => {
+        cy.createFormWithAPI().then((form_id) => {
+            cy.getFormSections(form_id).then((sections) => {
+                const section_id = sections[0].id;
+                const questions = [];
+
+                for (let i = 0; i < 60; i++) {
+                    questions.push({
+                        'name': `Question ${i}`,
+                        'type': 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
+                        'vertical_rank': i,
+                        'forms_sections_id': section_id,
+                        'extra_data': {
+                            'itemtype': 'ITILCategory',
+                            'categories_filter': [],
+                            'root_items_id': 0,
+                            'subtree_depth': 0,
+                            'selectable_tree_root': true
+                        }
+                    });
+                }
+
+                cy.createWithAPI('Glpi\\Form\\Question', questions);
+            });
+
+            cy.wrap(form_id).visitFormTab('Form');
+        });
+
+        // Wait to find "Save" button to ensure that all question are loaded
+        cy.findByRole('button', {'name': 'Save', timeout: 30000}).should('exist').then(() => {
+            // There should be more than 1000 inputs in the form
+            cy.get('form').then(($form) => {
+                const formArray = $form.serializeArray();
+                // There should be more than 1000 inputs
+                expect(formArray.length).to.be.greaterThan(1000);
+            });
+
+            // Wait for pointer-events to be removed before checking for success
+            cy.get('form[data-glpi-form-editor-container]').should('not.have.css', 'pointer-events', 'none');
+
+            // Save form
+            cy.findByRole('button', {'name': 'Save'}).click();
+            cy.checkAndCloseAlert('Item successfully updated');
+        });
+    });
+
+    it('can change type to item', () => {
+        cy.login();
+        cy.importForm('form-with-text-question.json').visitFormTab('Form');
+
+        // Select the question
+        cy.findByRole('region', {'name': 'Question details'})
+            .as("question_details")
+        ;
+        cy.get("@question_details").click();
+
+        // Change the question type
+        cy.getDropdownByLabelText("Question type")
+            .selectDropdownValue('Item')
+        ;
+        cy.getDropdownByLabelText("Select an itemtype")
+            .should('be.visible')
+        ;
+
+        // Save the form
+        cy.findByRole('button', {'name': 'Save'}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
     });
 });

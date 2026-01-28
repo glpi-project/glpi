@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +35,12 @@
 
 namespace Glpi\Search\Output;
 
+use Dropdown;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\DataExport;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\BaseWriter;
+use PhpOffice\PhpSpreadsheet\Writer\IWriter;
 use Session;
 
 /**
@@ -47,7 +50,11 @@ use Session;
 abstract class Spreadsheet extends ExportSearchOutput
 {
     protected \PhpOffice\PhpSpreadsheet\Spreadsheet $spread;
-    protected BaseWriter $writer;
+    protected BaseWriter|IWriter $writer;
+    /**
+     * FIXME: remove in GLPI 12, seems not used
+     * @var int
+     */
     protected $count;
 
     public function __construct()
@@ -55,45 +62,8 @@ abstract class Spreadsheet extends ExportSearchOutput
         $this->spread = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
     }
 
-    public static function showEndLine(bool $is_header_line): string
-    {
-        //only to satisfy inheritance
-        return "\n";
-    }
-
-    public static function showBeginHeader(): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showHeader($rows, $cols, $fixed = 0): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showHeaderItem($value, &$num, $linkto = "", $issort = 0, $order = "", $options = ""): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showItem($value, &$num, $row, $extraparam = ''): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
-    public static function showFooter($title = "", $count = null): string
-    {
-        //only to satisfy inheritance
-        return '';
-    }
-
     public function displayData(array $data, array $params = [])
     {
-        /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
         if (
@@ -102,16 +72,6 @@ abstract class Spreadsheet extends ExportSearchOutput
             || $data['search']['as_map'] != 0
         ) {
             return false;
-        }
-
-        // Clear output buffers
-        $ob_config = ini_get('output_buffering');
-        $max_level = filter_var($ob_config, FILTER_VALIDATE_BOOLEAN) ? 1 : 0;
-        while (ob_get_level() > $max_level) {
-            ob_end_clean();
-        }
-        if (ob_get_level() > 0) {
-            ob_clean();
         }
 
         $spread = $this->getSpreasheet();
@@ -206,7 +166,7 @@ abstract class Spreadsheet extends ExportSearchOutput
 
             if ($line_num % 2 != 0) {
                 $worksheet->getStyle('A' . $line_num . ':' . $worksheet->getHighestColumn() . $line_num)->getFill()
-                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                    ->setFillType(Fill::FILL_SOLID)
                     ->getStartColor()->setARGB('FFDDDDDD');
             }
         }
@@ -216,7 +176,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         $writer->save('php://output');
     }
 
-    public function getWriter(): BaseWriter
+    public function getWriter(): BaseWriter|IWriter
     {
         return $this->writer;
     }
@@ -244,7 +204,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                 //If link was like '%NOT%' just use NOT. Otherwise, remove the link
                 if ($notpos > 0) {
                     $data['search']['criteria']['0']['link'] = 'NOT';
-                } else if (!$notpos) {
+                } elseif (!$notpos) {
                     unset($data['search']['criteria']['0']['link']);
                 }
             }
@@ -269,7 +229,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         $this->getTitle($newdata)
                     );
                 } else {
-                    if (strlen($criteria['value']) > 0) {
+                    if (((string) $criteria['value']) !== '') {
                         if (isset($criteria['link'])) {
                             $titlecontain = " " . $criteria['link'] . " ";
                         }
@@ -306,7 +266,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                                     );
                                 }
 
-                                $gdname = \Dropdown::getDropdownName(
+                                $gdname = Dropdown::getDropdownName(
                                     $searchopt[$criteria['field']]["table"],
                                     $criteria['value']
                                 );
@@ -396,8 +356,8 @@ abstract class Spreadsheet extends ExportSearchOutput
             }
         }
         if (
-            isset($data['search']['metacriteria']) &&
-            count($data['search']['metacriteria'])
+            isset($data['search']['metacriteria'])
+            && count($data['search']['metacriteria'])
         ) {
             $metanames = [];
             foreach ($data['search']['metacriteria'] as $metacriteria) {
@@ -409,7 +369,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                 }
 
                 $titlecontain2 = '';
-                if (strlen($metacriteria['value']) > 0) {
+                if (((string) $metacriteria['value']) !== '') {
                     if (isset($metacriteria['link'])) {
                         $titlecontain2 = sprintf(
                             __('%1$s %2$s'),
@@ -427,7 +387,7 @@ abstract class Spreadsheet extends ExportSearchOutput
                         )
                     );
 
-                    $gdname2 = \Dropdown::getDropdownName(
+                    $gdname2 = Dropdown::getDropdownName(
                         $searchopt[$metacriteria['field']]["table"],
                         $metacriteria['value']
                     );
@@ -549,7 +509,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         }
 
         if ($title === '') {
-            $itemtype = new $data['itemtype']();
+            $itemtype = $data['itemtype'];
             $title = sprintf(
                 __('All %1$s'),
                 $itemtype::getTypeName(Session::getPluralNumber())

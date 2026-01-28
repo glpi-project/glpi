@@ -7,7 +7,7 @@
  *
  * http://glpi-project.org
  *
- * @copyright 2015-2025 Teclib' and contributors.
+ * @copyright 2015-2026 Teclib' and contributors.
  * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,6 +35,8 @@
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\getimagesize;
+
 /**
  * Notepad class
  *
@@ -42,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Notepad extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'itemtype';
     public static $items_id        = 'items_id';
     public $dohistory              = false;
@@ -52,7 +54,7 @@ class Notepad extends CommonDBChild
 
     public static function getTypeName($nb = 0)
     {
-       //TRANS: Always plural
+        //TRANS: Always plural
         return _n('Note', 'Notes', $nb);
     }
 
@@ -115,7 +117,7 @@ class Notepad extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-        if (Session::haveRight($item::$rightname, READNOTE)) {
+        if (Session::haveRight($item::$rightname, READNOTE) && $item instanceof CommonDBTM) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::countForItem($item);
@@ -125,14 +127,12 @@ class Notepad extends CommonDBChild
         return '';
     }
 
-
-    /**
-     * @param $item            CommonGLPI object
-     * @param $tabnum          (default 1)
-     * @param $withtemplate    (default 0)
-     **/
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
+        if (!$item instanceof CommonDBTM) {
+            return false;
+        }
+
         static::showForItem($item, $withtemplate);
         return true;
     }
@@ -149,49 +149,51 @@ class Notepad extends CommonDBChild
         return countElementsInTable(
             'glpi_notepads',
             ['itemtype' => $item->getType(),
-                'items_id' => $item->getID()
+                'items_id' => $item->getID(),
             ]
         );
     }
 
 
     /**
-     * @param $item   CommonDBTM object
+     * @param $item CommonDBTM object
+     * @param ?class-string<CommonDBTM> $target
+     *
+     * @return array
      **/
     public static function getAllForItem(CommonDBTM $item, $target = null)
     {
-        /** @var \DBmysql $DB */
         global $DB;
 
         $data = [];
         $query = [
             'SELECT'    => [
                 'glpi_notepads.*',
-                'glpi_users.picture'
+                'glpi_users.picture',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 'glpi_users'   => [
                     'ON' => [
                         self::getTable()  => 'users_id_lastupdater',
-                        'glpi_users'      => 'id'
-                    ]
-                ]
+                        'glpi_users'      => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'  => $item->getType(),
-                'items_id'  => $item->getID()
+                'items_id'  => $item->getID(),
             ],
-            'ORDERBY'   => 'date_mod DESC'
+            'ORDERBY'   => 'date_mod DESC',
         ];
-        if (!is_null($target) && $target = 'Ticket') {
+        if ($target === Ticket::class) {
             $query['WHERE']['visible_from_ticket'] = true;
         }
         $iterator = $DB->request($query);
         $document_obj = new Document();
 
         foreach ($iterator as $note) {
-            $document_items = Document_Item::getItemsAssociatedTo(__CLASS__, $note['id']);
+            $document_items = Document_Item::getItemsAssociatedTo(self::class, $note['id']);
             foreach ($document_items as $document_item) {
                 if (!$document_obj->getFromDB($document_item->fields['documents_id'])) {
                     continue;
@@ -218,7 +220,9 @@ class Notepad extends CommonDBChild
         return $data;
     }
 
-
+    /**
+     * @return array
+     */
     public static function rawSearchOptionsToAdd()
     {
         $tab = [];
@@ -226,7 +230,7 @@ class Notepad extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'notepad',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -235,12 +239,13 @@ class Notepad extends CommonDBChild
             'field'              => 'content',
             'name'               => $name,
             'datatype'           => 'text',
+            'htmltext'           => true,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
             'splititems'         => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -250,10 +255,10 @@ class Notepad extends CommonDBChild
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -268,10 +273,10 @@ class Notepad extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => 'glpi_notepads',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -281,10 +286,10 @@ class Notepad extends CommonDBChild
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'forcegroupby'       => true,
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -300,10 +305,10 @@ class Notepad extends CommonDBChild
                 'beforejoin'         => [
                     'table'              => 'glpi_notepads',
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         return $tab;
@@ -312,9 +317,11 @@ class Notepad extends CommonDBChild
     /**
      * Show notepads for an item
      *
-     * @param $item                  CommonDBTM object
-     * @param $withtemplate integer  template or basic item (default 0)
-     **/
+     * @param CommonDBTM $item         CommonDBTM object
+     * @param int        $withtemplate template or basic item (default 0)
+     *
+     * @return bool
+     */
     public static function showForItem(CommonDBTM $item, $withtemplate = 0)
     {
         if (!Session::haveRight($item::$rightname, READNOTE)) {
