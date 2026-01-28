@@ -72,6 +72,7 @@ use ItemVirtualMachine;
 use Monitor;
 use NetworkPort;
 use NetworkPortType;
+use PDU;
 use Peripheral;
 use Plugin;
 use Printer;
@@ -97,6 +98,7 @@ use function Safe\simplexml_load_string;
  * @property int $import_antivirus
  * @property int $import_registry
  * @property int $import_process
+ * @property int $import_pdu
  * @property int $import_vm
  * @property int $import_monitor_on_partial_sn
  * @property int $import_unmanaged
@@ -615,6 +617,16 @@ class Conf extends CommonGLPI
 
             echo "</td>";
             echo "<td>";
+            echo "<label for='import_pdu'>";
+            echo PDU::createTabEntry(PDU::getTypeName(Session::getPluralNumber()), 0, PDU::getType());
+            echo "</label>";
+            echo "</td>";
+            echo "<td width='360'>";
+            Html::showCheckbox([
+                'name'      => 'import_pdu',
+                'id'        => 'import_pdu',
+                'checked'   => $config['import_pdu'],
+            ]);
             echo "</td>";
             echo "</tr>";
 
@@ -1273,6 +1285,7 @@ class Conf extends CommonGLPI
             'import_antivirus'               => 1,
             'import_registry'                => 1,
             'import_process'                 => 1,
+            'import_pdu'                     => 1,
             'import_vm'                      => 1,
             'import_monitor_on_partial_sn'   => 0,
             'import_unmanaged'               => 1,

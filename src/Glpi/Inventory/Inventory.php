@@ -73,6 +73,7 @@ use Glpi\Inventory\Asset\VirtualMachine;
 use Glpi\Inventory\Asset\Volume;
 use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
+use Glpi\Inventory\MainAsset\PDU;
 use Lockedfield;
 use Log;
 use RecursiveDirectoryIterator;
@@ -344,6 +345,7 @@ class Inventory
             }
             $contents = $this->raw_data->content;
             $all_props = get_object_vars($contents);
+
             unset($all_props['versionclient'], $all_props['versionprovider']); //already handled in extractMetadata
 
             $empty_props = [];
@@ -796,6 +798,9 @@ class Inventory
                     break;
                 case 'powersupplies':
                     $assettype = PowerSupply::class;
+                    break;
+                case 'pdu':
+                    $assettype = PDU::class;
                     break;
                 default:
                     if (method_exists($this, 'processExtraInventoryData')) {
