@@ -38,6 +38,7 @@ use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\SidePanel\CommentsRenderer;
+use Glpi\Knowbase\SidePanel\PermissionsRenderer;
 use Glpi\Knowbase\SidePanel\RendererInterface;
 use Glpi\Knowbase\SidePanel\RevisionsRenderer;
 use Glpi\Knowbase\SidePanel\ServiceCatalogRenderer;
@@ -84,6 +85,7 @@ final class SidePanelController extends AbstractController
             'comments'        => new CommentsRenderer(),
             'service-catalog' => new ServiceCatalogRenderer(),
             'revisions'       => new RevisionsRenderer(),
+            'permissions'     => new PermissionsRenderer(),
             default           => throw new BadRequestHttpException(),
         };
     }
