@@ -2135,12 +2135,23 @@ HTML;
         $itil_object = $this->getItem();
         $this->checkIsAnItilObject($itil_object);
 
+        // find validation_step name from $this->fields['itils_validationsteps_id']
+
+        $itil_validationstep = static::getValidationStepInstance();
+
+        if ($itil_validationstep && $itil_validationstep->getFromDB($this->fields['itils_validationsteps_id'])) {
+            $validationstep_id = $itil_validationstep->fields['validationsteps_id'];
+        }
+
         // update result not checked, there can be legit reasons to fails (e.g. ticket is closed)
-        $itil_object->update([
-            'id' => $itil_object->getID(),
-            'global_validation' => self::computeValidationStatus($itil_object),
-            '_from_itilvalidation' => true,
-        ]);
+        $itil_object->update(
+            [
+                'id' => $itil_object->getID(),
+                'global_validation' => self::computeValidationStatus($itil_object),
+                '_from_itilvalidation' => true,
+                '_validationsteps_id' => $validationstep_id ?? null,
+            ]
+        );
     }
 
     /**

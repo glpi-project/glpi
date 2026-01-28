@@ -3146,4 +3146,62 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
             ],
         ], $check_results);
     }
+
+    /**
+     * Test that a rule can use validation step id/name as a criterion.
+     */
+    public function testValidationStepNameCriteria(): void
+    {
+        // only run this test if the ITIL object has validations
+        if (is_null($this->getITILObjectInstance()->getValidationClassInstance())) {
+            return;
+        }
+
+        // --- arrange ---
+        $auth = $this->login();
+
+        // create validation steps with specific names
+        $validation_step = $this->createValidationStepTemplate(50);
+        $validation_step = $this->updateItem(\ValidationStep::class, $validation_step->getID(), ['name' => 'Financial Approval']);
+
+        // create rule that triggers when validation step name is "Financial Approval"
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setEntity(getItemByTypeName(Entity::class, '_test_root_entity', true));
+        $rule_builder->addCriteria('_validationsteps_id', Rule::PATTERN_IS, $validation_step->getID());
+        $rule_builder->addAction('assign', 'priority', 5);
+        $this->createRule($rule_builder);
+
+        // create ITIL object then add validation with Financial Approval step
+        $itil = $this->createItem($this->getITILObjectClass(), [
+            'name' => 'Test validation step criterion - match',
+            'content' => 'Test content',
+            'priority' => 3,
+            'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+        ]);
+
+        $validation_class = $itil::getValidationClassName();
+        $validation = $this->createItem(
+            $validation_class,
+            [
+                $itil::getForeignKeyField() => $itil->getID(),
+                'itemtype_target' => 'User',
+                'items_id_target' => $auth->user->getID(),
+                '_validationsteps_id' => $validation_step->getID(),
+                'status' => CommonITILValidation::WAITING,
+                'entities_id' => getItemByTypeName(Entity::class, '_test_root_entity', true),
+            ]
+        );
+
+        // --- act : update validation status to trigger rule evaluation ---
+        $this->updateItem($validation::class, $validation->getID(), [
+            'status' => CommonITILValidation::ACCEPTED,
+        ]);
+
+        // --- assert rule applied : priority changed to 5 ---
+        $itil->getFromDB($itil->getID());
+        $this->assertEquals(5, $itil->fields['priority'], 'Rule should have triggered and set priority to 5');
+    }
+
+
 }
