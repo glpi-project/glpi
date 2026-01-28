@@ -618,6 +618,7 @@ final class Search
             'SELECT' => [],
         ];
 
+        Profiler::getInstance()->start('Build search criteria', Profiler::CATEGORY_HLAPI);
         $criteria = array_merge_recursive($criteria, $this->getSearchCriteria());
 
         if ($count_only) {
@@ -668,7 +669,7 @@ final class Search
                 }
                 $criteria['SELECT'] = $count_select;
             }
-
+            Profiler::getInstance()->stop('Build search criteria');
             // request just to get the ids/union itemtypes
             $iterator = $this->db_read->request($criteria);
             $this->validateIterator($iterator);
@@ -692,14 +693,15 @@ final class Search
                     $records[$row['_itemtype']][$row['id']] = $row;
                 }
             } else {
+                Profiler::getInstance()->start('Organize search results', Profiler::CATEGORY_HLAPI);
+                $schema_itemtype = $this->context->getSchemaItemtype();
                 foreach ($iterator as $row) {
-                    if (!isset($records[$this->context->getSchemaItemtype()])) {
-                        $records[$this->context->getSchemaItemtype()] = [];
-                    }
-                    $records[$this->context->getSchemaItemtype()][$row['id']] = $row;
+                    $records[$schema_itemtype][$row['id']] = $row;
                 }
+                Profiler::getInstance()->stop('Organize search results');
             }
 
+            Profiler::getInstance()->start('Fetch full records for joined filters', Profiler::CATEGORY_HLAPI);
             if ($this->criteriaHasJoinFilter($criteria['WHERE'] ?? [])) {
                 // There was a filter on joined data, so the IDs we got are only the ones that match the filter.
                 // We want to get all related items in the result and not just the ones that match the filter.
@@ -730,6 +732,7 @@ final class Search
                     $records[$itemtype][$data['id']] = $data;
                 }
             }
+            Profiler::getInstance()->stop('Fetch full records for joined filters');
         } else {
             // Count only mode
             $row = $iterator->current();
