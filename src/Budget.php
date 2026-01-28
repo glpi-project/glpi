@@ -98,8 +98,12 @@ class Budget extends CommonDropdown
         if (!$withtemplate) {
             switch ($item->getType()) {
                 case __CLASS__:
+                    $count = 0;
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $count = self::countForBudget($item);
+                    }
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package')
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), $count, $item::getType(), 'ti ti-package')
                     ];
             }
         }
@@ -277,6 +281,35 @@ class Budget extends CommonDropdown
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
         return $tab;
+    }
+
+    /**
+     * Count the number of items associated with a budget
+     *
+     * This method counts all items linked to the budget through infocoms
+     * and cost tables, respecting entity restrictions and user permissions.
+     *
+     * @param Budget $item The budget item to count items for
+     * @return int The total number of items associated with the budget
+     */
+    public static function countForBudget(Budget $item): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Check if user can read the budget
+        if (!$item->can($item->fields['id'], READ)) {
+            return 0;
+        }
+
+        // Use the same criteria as showItems() but without pagination
+        $count_criteria = [
+            'FROM' => $item->getItemListCriteria(),
+            'COUNT' => 'cpt'
+        ];
+        
+        $result = $DB->request($count_criteria)->current();
+        return (int)($result['cpt'] ?? 0);
     }
 
     /**
