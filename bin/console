@@ -50,6 +50,12 @@ if (isset($_SERVER['argv'])) {
       $chunks[0] = preg_replace('/^--/', '', $chunks[0]);
       $options[$chunks[0]] = (isset($chunks[1]) ? $chunks[1] : true);
    }
+
+   // Alias of previous locales compile command
+   // FIXME: remove in a later GLPI version
+   if (count($_SERVER['argv']) > 1 && $_SERVER['argv'][1] === 'locales:compile') {
+       $_SERVER['argv'][1] = 'tools:locales:compile';
+   }
 }
 
 //Handle specific dependencies update command that cannot be made upon symfony console
@@ -67,10 +73,6 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   $exit_code = compileLocales();
-   if ($exit_code > 0) {
-      exit($exit_code);
-   }
 
    $npm_command = 'npm install --no-save';
    passthru($npm_command, $exit_code);
@@ -83,34 +85,12 @@ if (isset($_SERVER['argv']) && ['dependencies', 'install'] === array_slice($_SER
       exit($exit_code);
    }
 
-   exit($exit_code);
-}
-
-// Handle specific "locales:compile" command that cannot be made upon symfony console
-if (isset($_SERVER['argv']) && ($_SERVER['argv'][1] ?? '') === 'locales:compile') {
-   $exit_code = compileLocales();
-
-   exit($exit_code);
-}
-
-function compileLocales(): int
-{
-   chdir(dirname(__FILE__, 2));
-
-   $exit_code = 0;
-
-   $po_files = preg_grep('/\.po$/', scandir('./locales'));
-   echo "Compiling MO files...";
-   foreach ($po_files as $po_file) {
-      $mo_file = preg_replace('/\.po$/', '.mo', $po_file);
-      passthru("cd ./locales && msgfmt -f -o {$mo_file} {$po_file}", $exit_code);
-      if ($exit_code > 0) {
-         exit($exit_code);
-      }
+   passthru('bin/console tools:locales:compile --allow-superuser',  $exit_code);
+   if ($exit_code > 0) {
+      exit($exit_code);
    }
-   echo " Done.\n";
 
-   return $exit_code;
+   exit($exit_code);
 }
 
 // Check the resources state before trying to instanciate the Kernel.
