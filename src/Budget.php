@@ -290,10 +290,10 @@ class Budget extends CommonDropdown
      * This method counts all items linked to the budget through infocoms
      * and cost tables, respecting entity restrictions and user permissions.
      *
-     * @param Budget $item The budget item to count items for
+     * @param CommonGLPI $item The budget item to count items for
      * @return int The total number of items associated with the budget
      */
-    public static function countForBudget(Budget $item): int
+    public static function countForBudget(CommonGLPI $item): int
     {
         /** @var DBmysql $DB */
         global $DB;
