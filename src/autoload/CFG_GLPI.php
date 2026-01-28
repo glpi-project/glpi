@@ -464,6 +464,7 @@ $CFG_GLPI['globalsearch_types']           = [Computer::class, Contact::class, Co
 // New config options which can be missing during migration
 $CFG_GLPI['number_format']  = 0;
 $CFG_GLPI['decimal_number'] = 2;
+$CFG_GLPI['show_itilcategory_code'] = 1;
 
 // User Prefs fields which override $CFG_GLPI config
 $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
