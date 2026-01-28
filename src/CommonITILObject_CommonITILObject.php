@@ -70,8 +70,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
         $input = self::normalizeParentSonRelation($input);
 
-        // No multiple links
-        $links = static::getLinkedTo(static::$itemtype_1, $input[static::$items_id_1]);
+        // No multiple links (bypass rights check to find all existing links for unicity validation)
+        $links = static::getLinkedTo(static::$itemtype_1, $input[static::$items_id_1], true);
         if (count($links)) {
             foreach ($links as $link) {
                 // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed
