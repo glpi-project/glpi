@@ -237,14 +237,7 @@
                   const input_id = li.data('input-id');
                   const folder   = li.children('.folder-name').data('globalname');
 
-                  let _label = '';
-                  const _parents = li.parents('li').children('.folder-name');
-                  for (i = _parents.length -1 ; i >= 0; i--) {
-                      _label += $(_parents[i]).data('globalname') + '/';
-                  }
-                  _label += folder;
-
-                  $('#'+input_id).val(_label);
+                  $('#'+input_id).val(folder);
 
                   const modalEl = $('#'+input_id+'_modal')[0];
                   const modal = bootstrap.Modal.getInstance(modalEl);
