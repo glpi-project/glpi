@@ -81,6 +81,19 @@
 
 {% if canupdate and not (params['template_preview'] ?? false) %}
    {% set has_pending_link = (params['_link']['items_id_2'] ?? '')|length > 0 %}
+
+   {# Build used items list: current item + all already linked items #}
+   {% set used_items = {(item.getType()): [item.fields['id']]} %}
+   {% for linked in linked_itilobjects %}
+      {% set linked_type = linked['itemtype'] %}
+      {% set linked_id = linked['items_id'] %}
+      {% if used_items[linked_type] is defined %}
+         {% set used_items = used_items|merge({(linked_type): used_items[linked_type]|merge([linked_id])}) %}
+      {% else %}
+         {% set used_items = used_items|merge({(linked_type): [linked_id]}) %}
+      {% endif %}
+   {% endfor %}
+
    <div class="mt-2">
       <button class="btn btn-sm btn-ghost-secondary {{ has_pending_link ? 'd-none' : '' }}" type="button"
               data-bs-toggle="collapse" data-bs-target="#link_itilobject_dropdowns"
@@ -100,7 +113,7 @@
             'itemtypes': ['Ticket', 'Change', 'Problem'],
             'checkright': true,
             'entity_restrict': -1,
-            'used': {(item.getType()): [item.fields['id']]},
+            'used': used_items,
             'default_itemtype': params['_link']['itemtype_2'] ?? '',
             'default_items_id': params['_link']['items_id_2'] ?? ''
          }]) %}
