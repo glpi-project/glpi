@@ -307,7 +307,7 @@ class Budget extends CommonDropdown
             'FROM' => $item->getItemListCriteria(),
             'COUNT' => 'cpt'
         ];
-        
+
         $result = $DB->request($count_criteria)->current();
         return (int)($result['cpt'] ?? 0);
     }
