@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [11.0.5] unreleased
+## [11.0.5] 2026-01-28
 
 ### Added
 - New schemas for network port instantiations in High-Level API v2.2.
