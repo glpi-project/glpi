@@ -310,7 +310,14 @@ EOT;
                             foreach ($method_info['parameters'] ?? [] as $pk => $param) {
                                 if (array_key_exists('pattern', $param['schema'])) {
                                     foreach ($paths[$new_path][$method]['parameters'] as $existing_pk => $existing_param) {
-                                        if (($existing_param['name'] === $param['name']) && isset($existing_param['schema']['pattern']) && str_contains($existing_param['schema']['pattern'], '|')) {
+                                        if (
+                                            ($existing_param['name'] === $param['name'])
+                                            && isset($existing_param['schema']['pattern'])
+                                            && (
+                                                str_contains($existing_param['schema']['pattern'], '|')
+                                                || str_contains($param['schema']['pattern'], '|')
+                                            )
+                                        ) {
                                             $paths[$new_path][$method]['parameters'][$existing_pk]['schema']['pattern'] .= '|' . $param['schema']['pattern'];
                                         }
                                     }
