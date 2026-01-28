@@ -250,7 +250,7 @@ class BudgetTest extends DbTestCase
         // Simulate a budget that can't be read
         $budget_no_read = new \Budget();
         $budget_no_read->fields = ['id' => 999999]; // Non-existent budget
-        
+
         $count = \Budget::countForBudget($budget_no_read);
         $this->assertEquals(0, $count);
     }
