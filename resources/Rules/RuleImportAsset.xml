@@ -2242,7 +2242,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>69</ranking>
+        <ranking>72</ranking>
         <name>Pdu update (by name)</name>
         <description></description>
         <match>AND</match>
@@ -2255,7 +2255,7 @@
         <rulecriteria>
             <criteria>itemtype</criteria>
             <condition>0</condition>
-            <pattern>Pdu</pattern>
+            <pattern>PDU</pattern>
         </rulecriteria>
         <rulecriteria>
             <criteria>name</criteria>
@@ -2276,7 +2276,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>70</ranking>
+        <ranking>73</ranking>
         <name>Pdu import (by name)</name>
         <description></description>
         <match>AND</match>
@@ -2289,7 +2289,7 @@
         <rulecriteria>
             <criteria>itemtype</criteria>
             <condition>0</condition>
-            <pattern>Pdu</pattern>
+            <pattern>PDU</pattern>
         </rulecriteria>
         <rulecriteria>
             <criteria>name</criteria>
@@ -2305,7 +2305,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleImportAsset</sub_type>
-        <ranking>71</ranking>
+        <ranking>74</ranking>
         <name>Pdu import denied</name>
         <description></description>
         <match>AND</match>
@@ -2318,7 +2318,7 @@
         <rulecriteria>
             <criteria>itemtype</criteria>
             <condition>0</condition>
-            <pattern>Pdu</pattern>
+            <pattern>PDU</pattern>
         </rulecriteria>
         <ruleaction>
             <action_type>assign</action_type>
