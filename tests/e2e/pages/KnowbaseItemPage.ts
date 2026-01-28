@@ -47,6 +47,16 @@ export class KnowbaseItemPage extends GlpiPage
         );
     }
 
+    public async doToggleFaqStatus(): Promise<void>
+    {
+        const faq_toggle = this.getButton('Add to FAQ');
+        const response_promise = this.page.waitForResponse(
+            response => response.url().includes('/ToggleField')
+        );
+        await faq_toggle.click();
+        await response_promise;
+    }
+
     public getCommentByContent(content: string): Locator
     {
         return this.page.getByText(content).filter({

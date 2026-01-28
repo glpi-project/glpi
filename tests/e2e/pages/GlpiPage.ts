@@ -89,6 +89,7 @@ export class GlpiPage
         const simple_dropdown = this.page
             .getByRole('listbox')
             .getByRole('option', {'name': value, exact: exact})
+            .first()
         ;
         const dropdown_with_groups = this.page
             .getByRole('listbox')
@@ -381,6 +382,16 @@ export class GlpiPage
             .filter({
                 visible: true,
                 hasText: title,
+            })
+        ;
+    }
+
+    public getDialog(text: string): Locator
+    {
+        return this.page.getByRole('dialog')
+            .filter({
+                visible: true,
+                hasText: text,
             })
         ;
     }

@@ -37,19 +37,20 @@ namespace Glpi\Controller\Knowbase;
 use Glpi\Controller\AbstractController;
 use Glpi\Controller\CrudControllerTrait;
 use Glpi\Exception\Http\BadRequestHttpException;
-use KnowbaseItem_Comment;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class UpdateCommentController extends AbstractController
+use function Safe\json_decode;
+
+final class UpdateServiceCatalogController extends AbstractController
 {
     use CrudControllerTrait;
 
     #[Route(
-        "/Knowbase/Comment/{id}/Update",
-        name: "knowbase_comment_update",
+        "/Knowbase/{id}/UpdateServiceCatalog",
+        name: "knowbase_item_update_service_catalog",
         methods: ["POST"],
         requirements: [
             'id' => '\d+',
@@ -57,22 +58,23 @@ final class UpdateCommentController extends AbstractController
     )]
     public function __invoke(int $id, Request $request): Response
     {
-        // Get submitted comment
-        $content = $request->request->getString('content');
-        if (empty($content)) {
+        $data = json_decode($request->getContent(), true);
+
+        $allowed_keys = [
+            'id',
+            'show_in_service_catalog',
+            'description',
+            'forms_categories_id',
+            'is_pinned',
+        ];
+        ksort($data);
+        sort($allowed_keys);
+        if (array_keys($data) !== $allowed_keys) {
+            \Toolbox::logDebug(array_keys($data), $allowed_keys);
             throw new BadRequestHttpException();
         }
 
-        // Update item
-        $comment = $this->update(
-            KnowbaseItem_Comment::class,
-            $id,
-            ['comment' => $content],
-        );
-
-        return new JsonResponse([
-            'success' => true,
-            'comment' => $comment->fields['comment'],
-        ]);
+        $this->update(KnowbaseItem::class, $id, $data);
+        return new Response(); // OK
     }
 }

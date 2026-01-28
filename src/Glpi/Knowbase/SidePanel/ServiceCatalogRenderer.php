@@ -35,44 +35,31 @@
 namespace Glpi\Knowbase\SidePanel;
 
 use KnowbaseItem;
-use KnowbaseItem_Comment;
 use Override;
 
-final class CommentsRenderer implements RendererInterface
+final class ServiceCatalogRenderer implements RendererInterface
 {
     #[Override]
     public function canView(KnowbaseItem $item): bool
     {
-        return $item->canComment();
+        return $item->canUpdateItem();
     }
 
     #[Override]
     public function getTemplate(): string
     {
-        return "pages/tools/kb/sidepanel/comments.html.twig";
+        return "pages/tools/kb/sidepanel/service_catalog.html.twig";
     }
 
     #[Override]
     public function getParams(KnowbaseItem $item): array
     {
-        $comments = KnowbaseItem_Comment::getCommentsForKbItem(
-            kbitem_id: $item->getID(),
-            lang: null,
-            parent: null,
-            user_data_cache: $users_infos,
-        );
-
-        foreach ($comments as &$comment) {
-            $comment_item = new KnowbaseItem_Comment();
-            $comment_item->getFromResultSet($comment);
-            $comment['can_edit'] = $comment_item->canUpdateItem();
-            $comment['can_delete'] = $comment_item->canDeleteItem();
-        }
-
         return [
-            'id' => $item->getID(),
-            'comments' => $comments,
-            'users_infos' => $users_infos,
+            'id'                      => $item->getID(),
+            'show_in_service_catalog' => (bool) ($item->fields['show_in_service_catalog'] ?? false),
+            'description'             => $item->fields['description'] ?? '',
+            'forms_categories_id'     => $item->fields['forms_categories_id'] ?? 0,
+            'is_pinned'               => (bool) ($item->fields['is_pinned'] ?? false),
         ];
     }
 }
