@@ -32,8 +32,8 @@
 
 /* global glpi_toast_error */
 
-import { post } from "../Ajax.js";
-import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
+import { post } from "/js/modules/Ajax.js";
+import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
 
 export class GlpiKnowbaseArticleController
 {
