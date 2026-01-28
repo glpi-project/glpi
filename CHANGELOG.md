@@ -3,7 +3,7 @@
 The present file will list all changes made to the project; according to the
 [Keep a Changelog](http://keepachangelog.com/) project.
 
-## [10.0.23] unreleased
+## [10.0.23] 2026-01-28
 
 ### Added
 
