@@ -81,11 +81,11 @@ if (isset($_POST["add"])) {
     $_POST['id'] = $_POST['domainrecords_id'];
     unset($_POST['domainrecords_id']);
     if (!$_POST['id']) {
-        Session::addMessageAfterRedirect(
-            __s('A record is required'),
-            false,
-            ERROR
+        $message = sprintf(
+            __('Mandatory fields are not filled. Please correct: %s'),
+            _n('Record', 'Records', 1)
         );
+        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
         Html::back();
     }
     $record->check($_POST['id'], UPDATE, $_POST);
