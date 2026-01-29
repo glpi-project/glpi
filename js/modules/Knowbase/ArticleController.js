@@ -34,7 +34,6 @@
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
-import { KnowbaseEditor } from "/js/modules/KnowbaseEditor.js";
 
 export class GlpiKnowbaseArticleController
 {
@@ -188,9 +187,9 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
-     * Initialize the Tiptap editor if user can edit
+     * Initialize edit button listeners (editor is loaded lazily on first edit)
      */
-    async #initEditor()
+    #initEditor()
     {
         const can_edit = this.#container.dataset.glpiKbCanEdit === 'true';
         if (!can_edit) {
@@ -209,23 +208,9 @@ export class GlpiKnowbaseArticleController
         // Store original content for cancel functionality
         this.#original_content = editor_element.innerHTML;
 
-        // Initialize editor in readonly mode
-        this.#editor = new KnowbaseEditor(editor_element, {
-            content: this.#original_content,
-            readonly: true,
-            placeholder: __("Start writing..."),
-            onUpdate: () => {
-                // Content updated
-            }
-        });
-
-        // Toggle edit mode
-        edit_button.addEventListener('click', () => {
-            this.#editor.setEditable(true);
-            this.#editor.focus();
-            edit_button.classList.add('d-none');
-            save_button.classList.remove('d-none');
-            cancel_button.classList.remove('d-none');
+        // Toggle edit mode (lazy load editor on first click)
+        edit_button.addEventListener('click', async () => {
+            await this.#enableEditMode(editor_element, edit_button, save_button, cancel_button);
         });
 
         // Cancel editing
@@ -241,6 +226,33 @@ export class GlpiKnowbaseArticleController
         save_button.addEventListener('click', async () => {
             await this.#saveContent(edit_button, save_button, cancel_button);
         });
+    }
+
+    /**
+     * Enable edit mode, loading the editor lazily if needed
+     * @param {HTMLElement} editor_element
+     * @param {HTMLElement} edit_button
+     * @param {HTMLElement} save_button
+     * @param {HTMLElement} cancel_button
+     */
+    async #enableEditMode(editor_element, edit_button, save_button, cancel_button)
+    {
+        // Lazy load editor on first use
+        if (this.#editor === null) {
+            const { KnowbaseEditor } = await import('/js/modules/KnowbaseEditor.js');
+            this.#editor = new KnowbaseEditor(editor_element, {
+                content: this.#original_content,
+                readonly: false,
+                placeholder: __("Start writing..."),
+            });
+        } else {
+            this.#editor.setEditable(true);
+        }
+
+        this.#editor.focus();
+        edit_button.classList.add('d-none');
+        save_button.classList.remove('d-none');
+        cancel_button.classList.remove('d-none');
     }
 
     /**
