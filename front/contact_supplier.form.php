@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 /**
  * @since 0.84
@@ -45,15 +46,11 @@ use Glpi\Exception\Http\BadRequestHttpException;
 Session::checkCentralAccess();
 $contactsupplier = new Contact_Supplier();
 if (isset($_POST["add"])) {
-    if (!isset($_POST['suppliers_id']) || empty($_POST['suppliers_id'])) {
-        $message = sprintf(
-            __('Mandatory fields are not filled. Please correct: %s'),
-            _n('Supplier', 'Suppliers', 1)
-        );
-        Session::addMessageAfterRedirect(htmlescape($message), false, ERROR);
+    try {
+        $contactsupplier->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
         Html::back();
     }
-    $contactsupplier->check(-1, CREATE, $_POST);
 
     if (
         isset($_POST["contacts_id"]) && ($_POST["contacts_id"] > 0)
