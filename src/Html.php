@@ -811,7 +811,12 @@ TWIG,
 
         $tpl_vars['js_files'][] = ['path' => 'lib/base.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/webkit_fix.js'];
-        $tpl_vars['js_modules'][] = ['path' => 'build/vue/app.js'];
+        // Vue entrypoint needs no version param because the chunks already have the hash in the name
+        // The entrypoint itself should rarely change but devs could also always use HMR
+        if (FrontEnd::isViteDevServerRunning()) {
+            $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteDevServerClient(), 'options' => ['no_version' => true]];
+        }
+        $tpl_vars['js_modules'][] = ['path' => FrontEnd::getViteEntrypoint(), 'options' => ['no_version' => true]];
         $tpl_vars['js_files'][] = ['path' => 'js/common_ajax_controller.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
@@ -5746,6 +5751,12 @@ JS);
     final public static function getPrefixedUrl(string $url): string
     {
         global $CFG_GLPI;
+
+        // ignore if already an absolute URL
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
+            return $url;
+        }
+
         $prefix = $CFG_GLPI['root_doc'];
 
         // Prevent double `/` between prefix and path.

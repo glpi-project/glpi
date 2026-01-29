@@ -35,7 +35,12 @@
 
 namespace Glpi\Toolbox;
 
+use Glpi\Application\Environment;
+use function Safe\fclose;
+use function Safe\file_get_contents;
+use function Safe\fsockopen;
 use function Safe\gethostname;
+use function Safe\json_decode;
 
 class FrontEnd
 {
@@ -51,5 +56,43 @@ class FrontEnd
     {
         // using both gethostname() and GLPI_ROOT will provide a hardly predictable but stable token
         return sha1($version . gethostname() . GLPI_ROOT);
+    }
+
+    public static function isViteDevServerRunning(): bool
+    {
+        if (!Environment::get()->shouldEnableExtraDevAndDebugTools()) {
+            return false;
+        }
+        static $is_vite_running;
+
+        if (is_null($is_vite_running)) {
+            try {
+                $is_vite_running = @fsockopen(hostname: 'localhost', port: 5173, timeout: 0.1);
+                if ($is_vite_running) {
+                    fclose($is_vite_running);
+                }
+            } catch (\Exception) {
+                $is_vite_running = false;
+            }
+        }
+        return (bool) $is_vite_running;
+    }
+
+    public static function getViteDevServerClient(): string
+    {
+        return 'http://localhost:5173/@vite/client';
+    }
+
+    public static function getViteEntrypoint(): string
+    {
+        if (self::isViteDevServerRunning()) {
+            return 'http://localhost:5173/js/src/vue/app.js';
+        }
+        $manifest = json_decode(
+            file_get_contents(GLPI_ROOT . '/public/build/vue/.vite/manifest.json'),
+            true
+        );
+
+        return 'build/vue/' . $manifest['js/src/vue/app.js']['file'];
     }
 }
