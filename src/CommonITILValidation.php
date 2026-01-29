@@ -2127,7 +2127,7 @@ HTML;
         $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
         if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
             throw new RuntimeException('Failed to delete unused approval step.');
-        };
+        }
     }
 
     public function recomputeItilStatus(): void

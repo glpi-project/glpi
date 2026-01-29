@@ -85,7 +85,8 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
     /**
      * Get the ITIL Object class name that the tested Rule class is related to
-     * @return string
+     *
+     * @return class-string<\CommonITILObject>
      */
     protected function getITILObjectClass(): string
     {
@@ -109,7 +110,7 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
      *
      * This only works for classes in the global namespace.
      * @param string $other_type The simple name of the other class (No namespaces)
-     * @return string|null The link class name or null if the link class cannot be determined
+     * @return class-string|null The link class name or null if the link class cannot be determined
      */
     protected function getITILLinkClass(string $other_type): ?string
     {

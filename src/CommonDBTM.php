@@ -647,7 +647,10 @@ class CommonDBTM extends CommonGLPI
     }
 
     /**
-     * Get an empty item
+     * Get an empty item - defines item fields default values
+     *
+     * A fresh item (created with `new MyItem()`) has an empty fields property,
+     * This method populate the fields with defaults values defined here.
      *
      * @return bool true if succeed else false
      **/
@@ -1005,6 +1008,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Actions done when item is deleted from the database
      *
+     * Method called before item is really deleted from database.
+     * @see \CommonDBTM::deleteFromDB()
      * @return void
      **/
     public function cleanDBonPurge() {}
@@ -3249,7 +3254,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is the object may be deleted
+     * Item has an is_deleted field ?
      *
      * @return bool
      **/
@@ -3371,7 +3376,7 @@ class CommonDBTM extends CommonGLPI
 
 
     /**
-     * Is an object dynamic or not
+     * Item maybeDynamic and has is_dynamic field.
      *
      * @since 0.84
      *

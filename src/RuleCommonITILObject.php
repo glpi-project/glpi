@@ -914,7 +914,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_suppliers_id_assign']['appendtoarray']           = ['use_notification' => 1];
         $actions['_suppliers_id_assign']['appendtoarrayfield']      = 'suppliers_id';
 
-        // set a observer
+        // set an observer
         $actions['_users_id_observer']['name']                      = _n('Observer', 'Observers', 1);
         $actions['_users_id_observer']['type']                      = 'dropdown_users';
         $actions['_users_id_observer']['force_actions']             = ['assign', 'append'];
@@ -923,7 +923,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_users_id_observer']['appendtoarray']             = ['use_notification' => 1];
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
-        // set a observer group
+        // set an observer group
         $actions['_groups_id_observer']['table']                    = 'glpi_groups';
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
@@ -932,7 +932,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 
-        // set a observer by regexp
+        // set an observer by regexp
         $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
         $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Observer group', 'Observer groups', 1), __('by completename'));
         $actions['_groups_id_observer_by_completename']['type']               = 'dropdown';
