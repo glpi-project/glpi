@@ -65,6 +65,13 @@ class ProjectCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
+        if (
+            empty($input['cost'])
+            || ($input['cost'] === 'NULL')
+        ) {
+            $input['cost'] = 0;
+        }
+
         return parent::prepareInputForAdd($input);
     }
 
@@ -78,6 +85,13 @@ class ProjectCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
+        if (
+            empty($input['cost'])
+            || ($input['cost'] === 'NULL')
+        ) {
+            $input['cost'] = 0;
+        }
+        
         return parent::prepareInputForUpdate($input);
     }
 
