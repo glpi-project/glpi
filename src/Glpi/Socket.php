@@ -55,9 +55,9 @@ use Session;
 class Socket extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
-    public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
+    public static int $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
     // From CommonDBTM
     public bool $dohistory          = true;

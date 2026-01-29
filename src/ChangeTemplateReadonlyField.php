@@ -41,7 +41,7 @@
 class ChangeTemplateReadonlyField extends ITILTemplateReadonlyField
 {
     // From CommonDBChild
-    public static $itemtype = ChangeTemplate::class;
-    public static $items_id  = 'changetemplates_id';
+    public static string $itemtype = ChangeTemplate::class;
+    public static string $items_id  = 'changetemplates_id';
     public static $itiltype = Change::class;
 }

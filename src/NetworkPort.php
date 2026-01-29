@@ -56,11 +56,11 @@ use function Safe\strtotime;
 class NetworkPort extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype             = 'itemtype';
-    public static $items_id             = 'items_id';
+    public static string $itemtype             = 'itemtype';
+    public static string $items_id             = 'items_id';
     public bool $dohistory                   = true;
 
-    public static $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
     protected static array $forward_entity_to = ['NetworkName'];
 

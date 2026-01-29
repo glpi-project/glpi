@@ -38,8 +38,8 @@
  **/
 class Item_DeviceCamera extends Item_Devices
 {
-    public static $itemtype_2 = DeviceCamera::class;
-    public static $items_id_2 = 'devicecameras_id';
+    public static ?string $itemtype_2 = DeviceCamera::class;
+    public static ?string $items_id_2 = 'devicecameras_id';
 
     protected static bool $notable = false;
 

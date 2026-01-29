@@ -40,12 +40,12 @@ use Glpi\DBAL\QueryParam;
 
 class Right extends CommonDBChild
 {
-    public static $itemtype = Dashboard::class;
-    public static $items_id = 'dashboards_dashboards_id';
+    public static string $itemtype = Dashboard::class;
+    public static string $items_id = 'dashboards_dashboards_id';
 
     // prevent bad getFromDB when bootstraping tests suite
     // FIXME Should be true
-    public static $mustBeAttached = false;
+    public static bool $mustBeAttached = false;
 
     /**
      * Return rights for the provided dashboard

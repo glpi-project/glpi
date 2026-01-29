@@ -43,8 +43,8 @@ use Glpi\RichText\RichText;
  **/
 class DropdownTranslation extends CommonDBChild
 {
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
     public bool $dohistory       = true;
     public static string $rightname       = 'dropdown';
 

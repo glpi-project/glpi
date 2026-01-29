@@ -51,8 +51,8 @@ abstract class ItemTranslation extends CommonDBChild
 {
     public static string $rightname = 'config';
 
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
     #[Override]
     public function prepareInputForAdd($input): array

@@ -59,8 +59,8 @@ class NetworkPortInstantiation extends CommonDBChild
     public bool $auto_message_on_action   = false;
 
     // From CommonDBChild
-    public static $itemtype       = NetworkPort::class;
-    public static $items_id       = 'networkports_id';
+    public static string $itemtype       = NetworkPort::class;
+    public static string $items_id       = 'networkports_id';
     public bool $dohistory             = false;
 
     // Instantiation properties

@@ -39,13 +39,13 @@ use function Safe\preg_match;
 
 class PDU_Rack extends CommonDBRelation
 {
-    public static $itemtype_1 = Rack::class;
-    public static $items_id_1 = 'racks_id';
-    public static $itemtype_2 = PDU::class;
-    public static $items_id_2 = 'pdus_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
-    public static $mustBeAttached_1      = false;
-    public static $mustBeAttached_2      = false;
+    public static ?string $itemtype_1 = Rack::class;
+    public static ?string $items_id_1 = 'racks_id';
+    public static ?string $itemtype_2 = PDU::class;
+    public static ?string $items_id_2 = 'pdus_id';
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static bool $mustBeAttached_1      = false;
+    public static bool $mustBeAttached_2      = false;
 
     public const SIDE_LEFT   = 1;
     public const SIDE_RIGHT  = 2;

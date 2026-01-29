@@ -43,11 +43,11 @@ use Glpi\DBAL\QueryUnion;
 class Item_SoftwareLicense extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
 
-    public static $itemtype_2 = SoftwareLicense::class;
-    public static $items_id_2 = 'softwarelicenses_id';
+    public static ?string $itemtype_2 = SoftwareLicense::class;
+    public static ?string $items_id_2 = 'softwarelicenses_id';
 
 
     public function post_addItem()

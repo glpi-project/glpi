@@ -46,8 +46,8 @@ class CalendarSegment extends CommonDBChild
     public bool $dohistory       = true;
 
     // From CommonDBChild
-    public static $itemtype = Calendar::class;
-    public static $items_id = 'calendars_id';
+    public static string $itemtype = Calendar::class;
+    public static string $items_id = 'calendars_id';
 
     /**
      * @since 0.84

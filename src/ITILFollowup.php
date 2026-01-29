@@ -51,12 +51,12 @@ class ITILFollowup extends CommonDBChild
     public static string $rightname              = 'followup';
     private ?CommonITILObject $item = null;
 
-    public static $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
-    public static $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_add    = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_update = Log::HISTORY_LOG_SIMPLE_MESSAGE;
+    public static int $log_history_delete = Log::HISTORY_LOG_SIMPLE_MESSAGE;
 
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
 
     /**

@@ -47,8 +47,8 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     public bool $dohistory = true;
 
     // From CommonDBChild
-    public static $itemtype = Software::class;
-    public static $items_id  = 'softwares_id';
+    public static string $itemtype = Software::class;
+    public static string $items_id  = 'softwares_id';
 
     protected bool $displaylist = false;
 

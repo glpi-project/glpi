@@ -66,8 +66,8 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public bool $dohistory = true;
 
     // From CommonDBChild
-    public static $itemtype = Project::class;
-    public static $items_id     = 'projects_id';
+    public static string $itemtype = Project::class;
+    public static string $items_id     = 'projects_id';
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
     protected $team             = [];

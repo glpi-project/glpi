@@ -46,8 +46,8 @@ class NotificationTarget extends CommonDBChild
     /** @var string unused variable */
     public $prefix                      = '';
     // From CommonDBChild
-    public static $itemtype = Notification::class;
-    public static $items_id             = 'notifications_id';
+    public static string $itemtype = Notification::class;
+    public static string $items_id             = 'notifications_id';
     /**
      * @var string
      */

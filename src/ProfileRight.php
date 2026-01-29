@@ -45,8 +45,8 @@ use Glpi\DBAL\QuerySubQuery;
 class ProfileRight extends CommonDBChild
 {
     // From CommonDBChild:
-    public static $itemtype = Profile::class;
-    public static $items_id = 'profiles_id'; // Field name
+    public static string $itemtype = Profile::class;
+    public static string $items_id = 'profiles_id'; // Field name
     public bool $dohistory       = true;
 
     /**

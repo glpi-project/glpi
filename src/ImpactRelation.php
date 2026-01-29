@@ -39,10 +39,10 @@
 class ImpactRelation extends CommonDBRelation
 {
     // CommonDBRelation fields
-    public static $itemtype_1          = 'itemtype_source';
-    public static $items_id_1          = 'items_id_source';
-    public static $itemtype_2          = 'itemtype_impacted';
-    public static $items_id_2          = 'items_id_impacted';
+    public static ?string $itemtype_1          = 'itemtype_source';
+    public static ?string $items_id_1          = 'items_id_source';
+    public static ?string $itemtype_2          = 'itemtype_impacted';
+    public static ?string $items_id_2          = 'items_id_impacted';
 
     public function prepareInputForAdd($input)
     {

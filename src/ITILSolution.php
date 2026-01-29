@@ -45,8 +45,8 @@ class ITILSolution extends CommonDBChild
     public bool $dohistory                   = true;
     private ?CommonITILObject $item = null;
 
-    public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
-    public static $items_id = 'items_id'; // Field name
+    public static string $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent
+    public static string $items_id = 'items_id'; // Field name
 
     public static function getNameField()
     {

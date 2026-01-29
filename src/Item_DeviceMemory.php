@@ -43,8 +43,8 @@
  **/
 class Item_DeviceMemory extends Item_Devices
 {
-    public static $itemtype_2 = DeviceMemory::class;
-    public static $items_id_2 = 'devicememories_id';
+    public static ?string $itemtype_2 = DeviceMemory::class;
+    public static ?string $items_id_2 = 'devicememories_id';
 
     protected static bool $notable = false;
 
