@@ -3349,7 +3349,8 @@ HTML;
                         $show_itil_code = true;
                         if ($post['itemtype'] === ITILCategory::class) {
                             $show_itil_code = (bool) ($_SESSION['glpiis_ids_visible']
-                                ?? ($CFG_GLPI['is_ids_visible'] ?? 0));                        }
+                            ?? ($CFG_GLPI['is_ids_visible'] ?? 0));                        
+                        }
                         if ($show_itil_code && isset($data['code']) && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
                             $title     .= ' - ' . $data['code'];
