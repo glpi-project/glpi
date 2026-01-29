@@ -47,8 +47,8 @@ class DCRoom extends CommonDBTM implements DCBreadcrumbInterface
     use DCBreadcrumb;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected $usenotepad               = true;
+    public bool $dohistory                   = true;
+    protected bool $usenotepad               = true;
     public static string $rightname                   = 'datacenter';
 
     public static function getTypeName($nb = 0)

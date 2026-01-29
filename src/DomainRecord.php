@@ -50,7 +50,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
     // From CommonDBChild
     public static $itemtype = Domain::class;
     public static $items_id        = 'domains_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
     public static $mustBeAttached  = false;
 
     public static function getTypeName($nb = 0)

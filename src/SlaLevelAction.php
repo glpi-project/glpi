@@ -38,7 +38,7 @@ class SlaLevelAction extends RuleAction
 {
     public static $itemtype = SlaLevel::class;
     public static $items_id  = 'slalevels_id';
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public function __construct($rule_type = 'SlaLevel')
     {

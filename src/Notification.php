@@ -145,7 +145,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     public const VALIDATION_TARGET_SUBSTITUTES       = 41;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'notification';
 

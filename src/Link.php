@@ -47,7 +47,7 @@ use function Safe\preg_match;
 class Link extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname = 'link';
     /** @var string[] */

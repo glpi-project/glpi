@@ -101,7 +101,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @var self::TAB_HORIZONTAL|self::TAB_VERTICAL
      */
-    public string $taborientation          = 'horizontal';
+    public string $taborientation          = self::TAB_HORIZONTAL;
 
     /**
      * Rightname used to check rights to do actions on item.

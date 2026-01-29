@@ -39,12 +39,12 @@
 class UserEmail extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     // From CommonDBChild
     public static $itemtype = User::class;
     public static $items_id        = 'users_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
 
 
     public static function getTypeName($nb = 0)

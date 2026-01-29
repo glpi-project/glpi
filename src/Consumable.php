@@ -53,8 +53,8 @@ class Consumable extends CommonDBChild
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Infocom'];
-    public $no_form_page                = true;
+    protected static array $forward_entity_to = ['Infocom'];
+    public bool $no_form_page                = true;
 
     public static string $rightname                   = 'consumable';
 

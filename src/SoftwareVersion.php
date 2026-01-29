@@ -44,7 +44,7 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBChild
     public static $itemtype = Software::class;

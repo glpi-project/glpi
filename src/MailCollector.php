@@ -129,7 +129,7 @@ class MailCollector extends CommonDBTM
      */
     private $body_is_html   = false;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     public static string $rightname       = 'config';
 
@@ -141,11 +141,11 @@ class MailCollector extends CommonDBTM
     public const REQUESTER_FIELD_FROM = 0;
     public const REQUESTER_FIELD_REPLY_TO = 1;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'passwd',
     ];
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'errors',
         'last_collect_date',
     ];

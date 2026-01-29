@@ -45,7 +45,7 @@ class NotificationTemplateTranslation extends CommonDBChild
     public static $itemtype = NotificationTemplate::class;
     public static $items_id  = 'notificationtemplates_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
 
     #[Override]

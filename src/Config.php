@@ -83,12 +83,12 @@ class Config extends CommonDBTM
     protected bool $displaylist         = false;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
     public bool $showdebug              = true;
 
     public static string $rightname              = 'config';
 
-    public static $undisclosedFields      = [
+    public static array $undisclosedFields      = [
         'proxy_passwd',
         'smtp_passwd',
         'smtp_oauth_client_id',

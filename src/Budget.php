@@ -49,10 +49,10 @@ class Budget extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static string $rightname           = 'budget';
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
     public $can_be_translated = false;
 

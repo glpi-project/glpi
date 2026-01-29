@@ -49,10 +49,10 @@ class Supplier extends CommonDBTM
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory           = true;
+    public bool $dohistory           = true;
 
     public static string $rightname           = 'contact_enterprise';
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
 
     public static function getTypeName($nb = 0)
     {

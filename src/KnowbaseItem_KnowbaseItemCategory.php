@@ -48,7 +48,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'knowbase';
 

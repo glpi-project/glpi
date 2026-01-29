@@ -62,9 +62,9 @@ class IPAddress extends CommonDBChild
     // From CommonDBChild
     public static $itemtype       = 'itemtype';
     public static $items_id       = 'items_id';
-    public $dohistory             = false;
+    public bool $dohistory             = false;
 
-    public $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
+    public array $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];
 
     /**
      * Version of the address. Should be 4 or 6, or empty if not valid address

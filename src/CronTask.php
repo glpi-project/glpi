@@ -59,7 +59,7 @@ use function Safe\unlink;
 class CronTask extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     // Specific ones
     private static string $lockname = '';

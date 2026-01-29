@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class FieldUnicity extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
 
     public $can_be_translated  = false;
 

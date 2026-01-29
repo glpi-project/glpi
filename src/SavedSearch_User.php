@@ -35,7 +35,7 @@
 
 class SavedSearch_User extends CommonDBRelation
 {
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     public static $itemtype_1 = SavedSearch::class;
     public static $items_id_1          = 'savedsearches_id';

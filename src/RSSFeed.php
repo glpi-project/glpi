@@ -50,7 +50,7 @@ use function Safe\parse_url;
 class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname    = 'rssfeed_public';
 

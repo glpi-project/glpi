@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class AuthMail extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'config';
 

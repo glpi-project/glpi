@@ -60,7 +60,7 @@ class Socket extends CommonDBChild
     public static $checkParentRights  = self::DONT_CHECK_ITEM_RIGHTS;
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public static string $rightname          = 'cable_management';
     /** @var bool */
     public $can_be_translated  = false;

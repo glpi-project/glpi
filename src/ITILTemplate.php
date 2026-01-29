@@ -46,7 +46,7 @@ use function Safe\preg_replace;
 abstract class ITILTemplate extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory                 = true;
+    public bool $dohistory                 = true;
 
     public $display_dropdowntitle     = false;
 

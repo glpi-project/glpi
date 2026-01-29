@@ -47,7 +47,7 @@ class ITILFollowup extends CommonDBChild
     use ITILSubItemRights;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
     public static string $rightname              = 'followup';
     private ?CommonITILObject $item = null;
 

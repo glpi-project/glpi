@@ -42,7 +42,7 @@ use Glpi\ContentTemplates\TemplateManager;
 class ITILSolution extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     private ?CommonITILObject $item = null;
 
     public static $itemtype = 'itemtype'; // Class name or field name (start with itemtype) for link to Parent

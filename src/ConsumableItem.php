@@ -59,9 +59,9 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
     }
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Consumable', 'Infocom'];
-    public $dohistory                   = true;
-    protected $usenotepad               = true;
+    protected static array $forward_entity_to = ['Consumable', 'Infocom'];
+    public bool $dohistory                   = true;
+    protected bool $usenotepad               = true;
 
     public static string $rightname                   = 'consumable';
 

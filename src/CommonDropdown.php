@@ -45,7 +45,7 @@ abstract class CommonDropdown extends CommonDBTM
     use AssetImage;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * For delete operation (entity will overload this value)

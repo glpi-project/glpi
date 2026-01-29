@@ -46,7 +46,7 @@ class NetworkAlias extends FQDNLabel
     // From CommonDBChild
     public static $itemtype = NetworkName::class;
     public static $items_id           = 'networknames_id';
-    public $dohistory                 = true;
+    public bool $dohistory                 = true;
 
     public static $checkParentRights = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 

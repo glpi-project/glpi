@@ -42,7 +42,7 @@ class Printer_CartridgeInfo extends CommonDBChild
 {
     public static $itemtype = Printer::class;
     public static $items_id        = 'printers_id';
-    public $dohistory              = true;
+    public bool $dohistory              = true;
 
     public static function getTypeName($nb = 0)
     {

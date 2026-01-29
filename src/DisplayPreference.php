@@ -44,7 +44,7 @@ class DisplayPreference extends CommonDBTM
     public bool $get_item_to_display_tab = false;
 
     // From CommonDBTM
-    public $auto_message_on_action  = false;
+    public bool $auto_message_on_action  = false;
 
     protected bool $displaylist          = false;
 

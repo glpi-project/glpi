@@ -49,7 +49,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public static $items_id_2       = 'notificationtemplates_id';
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
-    public $no_form_page    = false;
+    public bool $no_form_page    = false;
     protected bool $displaylist  = false;
 
     public const MODE_MAIL      = 'mailing';

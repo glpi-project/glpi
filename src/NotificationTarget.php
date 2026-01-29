@@ -76,7 +76,7 @@ class NotificationTarget extends CommonDBChild
     public $tag_descriptions = [];
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * @var array<string, array{

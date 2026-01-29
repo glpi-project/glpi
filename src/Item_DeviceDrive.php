@@ -41,7 +41,7 @@ class Item_DeviceDrive extends Item_Devices
     public static $itemtype_2 = DeviceDrive::class;
     public static $items_id_2 = 'devicedrives_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
 
     public static function getSpecificities($specif = '')
