@@ -700,8 +700,8 @@ class NetworkPort extends CommonDBChild
             echo "</div>";
 
             echo "<div class='col-auto m-2'>";
-            echo "<label for='several'>" . __s('Add several ports') . "</label>";
-            echo "&nbsp;<input type='checkbox' name='several' id='several' value='1'></td>";
+            echo "<label class='form-check form-switch' for='several'>" . __s('Add several ports');
+            echo "<input type='checkbox' name='several' id='several' class='form-check-input' value='1'></label></td>";
             echo "</div>";
 
             echo "<div class='col-auto'>";
