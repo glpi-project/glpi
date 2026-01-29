@@ -211,40 +211,20 @@ class Certificate_Item extends CommonDBRelation
         $types_iterator = self::getDistinctTypes($instID, ['itemtype' => Certificate::getTypes(true)]);
 
         if ($canedit) {
-            $twig_params = [
-                'btn_label' => _x('button', 'Associate'),
-                'certificates_id' => $instID,
-                'dropdown_params' => [
-                    'items_id_name'   => 'items_id',
-                    'itemtypes'       => Certificate::getTypes(true),
-                    'entity_restrict' => ($certificate->fields['is_recursive']
-                        ? getSonsOf(
-                            'glpi_entities',
-                            $certificate->fields['entities_id']
-                        )
-                        : $certificate->fields['entities_id']),
-                    'checkright'      => true,
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => mt_rand(),
+                'link_itemtype' => self::class,
+                'source_itemtype' => $certificate::class,
+                'source_items_id' => $instID,
+                'link_types' => Certificate::getTypes(true),
+                'generic_target' => true,
+                'dropdown_options' => [
+                    'entity'      => $certificate->getEntityID(),
+                    'entity_sons' => $certificate->isRecursive(),
                 ],
-            ];
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                {% import 'components/form/fields_macros.html.twig' as fields %}
-                <div class="mb-3">
-                    <form method="post" name="certificates_form" action="{{ 'Certificate_Item'|itemtype_form_path }}">
-                        <input type="hidden" name="certificates_id" value="{{ certificates_id }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                        <div class="d-flex">
-                            {{ fields.dropdownItemsFromItemtypes('items_id', '', dropdown_params|merge({
-                                add_field_class: 'd-inline',
-                                no_label: true,
-                            })) }}
-                            <div>
-                                <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-TWIG, $twig_params);
+                'form_label' => '',
+                'add_button_label' => _x('button', 'Associate'),
+            ]);
         }
 
         $entries = [];
@@ -342,7 +322,6 @@ TWIG, $twig_params);
         }
 
         $canedit      = $item->canAddItem('Certificate');
-        $is_recursive = $item->isRecursive();
 
         $iterator = self::getListForItem($item);
 
@@ -355,41 +334,21 @@ TWIG, $twig_params);
         }
 
         if ($canedit && $withtemplate < 2) {
-            $twig_params = [
-                'btn_label' => _x('button', 'Associate'),
-                'item' => $item,
-                'is_recursive' => $is_recursive,
-                'dropdown_params' => [
-                    'entity' => $item->fields['entities_id'],
-                    'is_recursive' => $is_recursive,
-                    'used' => $used,
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => mt_rand(),
+                'link_itemtype' => self::class,
+                'generic_source' => true,
+                'source_itemtype' => $item::class,
+                'source_items_id' => $ID,
+                'target_itemtype' => Certificate::class,
+                'dropdown_options' => [
+                    'entity'      => $item->getEntityID(),
+                    'entity_sons' => $item->isRecursive(),
+                    'used'        => $used,
                 ],
-            ];
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                {% import 'components/form/fields_macros.html.twig' as fields %}
-                <div class="mb-3">
-                    <form method="post" name="certificates_form" action="{{ 'Certificate_Item'|itemtype_form_path }}">
-                        <input type="hidden" name="itemtype" value="{{ get_class(item) }}">
-                        <input type="hidden" name="items_id" value="{{ item.getID() }}">
-                        {% if get_class(item) is same as 'Ticket' %}
-                            <input type="hidden" name="tickets_id" value="{{ item.getID() }}">
-                        {% endif %}
-                        <input type="hidden" name="entities_id" value="{{ item.getEntityID() }}">
-                        <input type="hidden" name="is_recursive" value="{{ is_recursive ? 1 : 0 }}">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                        <div class="d-flex">
-                            {{ fields.dropdownField('Certificate', 'certificates_id', null, '', dropdown_params|merge({
-                                add_field_class: 'd-inline',
-                                no_label: true,
-                            })) }}
-                            <div>
-                                <button type="submit" name="add" class="btn btn-primary ms-3 mb-3">{{ btn_label }}</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-TWIG, $twig_params);
+                'add_button_label' => _x('button', 'Associate'),
+                'form_label' => '',
+            ]);
         }
 
         $used = [];

@@ -38,6 +38,7 @@ namespace Glpi\Asset;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
+use DBmysqlIterator;
 use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
@@ -292,7 +293,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
      * Print the form for computers or templates connections to printers, screens or peripherals
      *
      * @param CommonDBTM $asset        CommonDBTM object
-     * @param int    $withtemplate Template or basic item (default 0)
+     * @param int        $withtemplate Template or basic item (default 0)
      *
      * @return void
      **/
@@ -308,7 +309,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
         $used  = [];
         foreach ($CFG_GLPI['directconnect_types'] as $itemtype) {
             if ($itemtype::canView()) {
-                $iterator = self::getPeripheralAssets($asset, $itemtype);
+                $iterator = self::getUsedPeripherals($itemtype);
 
                 foreach ($iterator as $data) {
                     $data['assoc_itemtype'] = $itemtype;
@@ -327,52 +328,21 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 $entities = getSonsOf("glpi_entities", $asset->getEntityID());
             }
 
-            $dropdown_params = [
-                'itemtype'        => '__VALUE__',
-                'fromtype'        => $asset::class,
-                'value'           => 0,
-                'myname'          => 'items_id_peripheral',
-                'onlyglobal'      => (int) $withtemplate === 1 ? 1 : 0,
-                'entity_restrict' => $entities,
-                'used'            => $used,
-            ];
-
-            $twig_params = [
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
                 'rand' => mt_rand(),
-                'dropdown_params' => $dropdown_params,
-                'asset' => $asset,
-                'label' => __('Connect an item'),
-                'btn_label' => _x('button', 'Connect'),
-                'withtemplate' => (int) $withtemplate === 1 ? 1 : 0,
-            ];
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                {% import 'components/form/fields_macros.html.twig' as fields %}
-                <div class="mb-3">
-                    <form method="post" action="{{ 'Glpi\\\\Asset\\\\Asset_PeripheralAsset'|itemtype_form_path }}">
-                        {{ fields.hiddenField('items_id_asset', asset.getID()) }}
-                        {{ fields.hiddenField('itemtype_asset', asset.getType()) }}
-                        {{ fields.csrfField() }}
-                        {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
-                        {{ fields.dropdownItemTypes('itemtype_peripheral', 0, label, {
-                            types: config('directconnect_types'),
-                            checkright: true,
-                        }) }}
-                        <div id="show_items_id_peripheral{{ rand }}"></div>
-                        <script>
-                            $(() => {
-                                $('select[name="itemtype_peripheral"]').on('change', (e) => {
-                                    const params = Object.assign({{ dropdown_params|json_encode|raw }}, { itemtype: e.target.value });
-                                    $('#show_items_id_peripheral{{ rand }}').load(CFG_GLPI.root_doc + '/ajax/dropdownConnect.php', params);
-                                });
-                            });
-                        </script>
-                        <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
-                        </div>
-                    </form>
-                </div>
-TWIG, $twig_params);
+                'link_itemtype' => self::class,
+                'source_itemtype' => $asset::class,
+                'source_items_id' => $asset->getID(),
+                'link_types' => $CFG_GLPI['directconnect_types'],
+                'generic_target' => true,
+                'dropdown_options' => [
+                    'entity'      => $asset->getEntityID(),
+                    'entity_sons' => $asset->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => __('Connect an item'),
+                'add_button_label' => _x('button', 'Connect'),
+            ]);
         }
 
         $entries = [];
@@ -1021,13 +991,50 @@ TWIG, $twig_params);
     }
 
     /**
+     * Returns used peripherals.
+     *
+     * @param class-string<CommonDBTM> $itemtype Itemtype of the peripherals to retrieve.
+     *
+     * @return DBmysqlIterator
+    */
+    private static function getUsedPeripherals(string $itemtype): DBmysqlIterator
+    {
+        global $DB;
+
+        $peripheral = getItemForItemtype($itemtype);
+
+        return $DB->request([
+            'SELECT' => self::getTypeItemsQueryParams_Select($peripheral),
+            'FROM'   => $peripheral::getTable(),
+            'LEFT JOIN' => [
+                self::getTable() => [
+                    'FKEY' => [
+                        self::getTable()      => 'items_id_peripheral',
+                        $peripheral::getTable() => 'id',
+                        [
+                            'AND' => [
+                                self::getTable() . '.itemtype_peripheral' => $itemtype,
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                self::getTable() . '.is_deleted'     => 0,
+            ] + getEntitiesRestrictCriteria($peripheral::getTable()),
+            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
+        ]);
+    }
+
+    /**
      * Returns linked main assets data for given peripheral asset.
      *
-     * @param CommonDBTM $peripheral Peripheral asset.
-     * @param string     $itemtype   Itemtype of the main assets to retrieve.
-     * @return iterable
+     * @param CommonDBTM               $peripheral Peripheral asset.
+     * @param class-string<CommonDBTM> $itemtype   Itemtype of the main assets to retrieve.
+     *
+     * @return DBmysqlIterator
      */
-    private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): iterable
+    private static function getItemConnectionsForItemtype(CommonDBTM $peripheral, string $itemtype): DBmysqlIterator
     {
         global $DB;
 
