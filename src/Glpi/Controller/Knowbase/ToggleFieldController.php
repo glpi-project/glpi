@@ -51,7 +51,7 @@ final class ToggleFieldController extends AbstractController
     private const ALLOWED_FIELDS = ['is_faq'];
 
     #[Route(
-        "/Knowbase/KnowbaseItem/{id}/ToggleField",
+        "/Knowbase/{id}/ToggleField",
         name: "knowbase_toggle_field",
         requirements: [
             'id' => '\d+',

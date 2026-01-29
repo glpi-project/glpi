@@ -43,11 +43,11 @@ use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class ArticleSidePanelController extends AbstractController
+final class SidePanelController extends AbstractController
 {
     #[Route(
         "/Knowbase/{id}/SidePanel/{key}",
-        name: "knowbase_article_side_panel",
+        name: "knowbase_side_panel",
         requirements: [
             'id' => '\d+',
         ]

@@ -48,8 +48,8 @@ final class UpdateCommentController extends AbstractController
     use CrudControllerTrait;
 
     #[Route(
-        "/Knowbase/Comment/{id}/Update",
-        name: "knowbase_comment_update",
+        "/Knowbase/UpdateComment/{id}",
+        name: "knowbase_update_comment",
         methods: ["POST"],
         requirements: [
             'id' => '\d+',
