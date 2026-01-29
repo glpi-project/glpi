@@ -516,7 +516,7 @@ $CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  Item_S
     Item_DevicePowerSupply::class, Item_DeviceProcessor::class, Item_DeviceSensor::class, Item_DeviceSimcard::class, Item_DeviceSoundCard::class,
     DatabaseInstance::class, Item_RemoteManagement::class, Monitor::class, Domain_Item::class, Peripheral::class, Unmanaged::class, Database::class,
     Item_DeviceCamera::class, Item_DeviceCamera_ImageFormat::class, Item_DeviceCamera_ImageResolution::class,
-    Item_Environment::class, Item_Process::class,
+    Item_Environment::class, Item_Process::class, PDU::class, Plug::class,
 ];
 
 $CFG_GLPI['printer_types'] = ['Printer'];
