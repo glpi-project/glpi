@@ -39,10 +39,10 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
 {
     // From RuleCollection
 
-    public $stop_on_first_match = true;
-    public $can_replay_rules    = true;
-    public $menu_type           = 'dictionnary';
-    public $menu_option         = 'software';
+    public bool $stop_on_first_match = true;
+    public bool $can_replay_rules    = true;
+    public string $menu_type           = 'dictionnary';
+    public string $menu_option         = 'software';
 
     public static string $rightname           = 'rule_dictionnary_software';
 

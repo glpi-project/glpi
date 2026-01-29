@@ -64,7 +64,7 @@ trait InventoryNetworkPort
     /** @var object[]  */
     protected array $networks = [];
     /** @var class-string<CommonDBTM> */
-    protected $itemtype;
+    protected ?string $itemtype;
     private ?int $items_id;
 
     public function handle()
@@ -100,10 +100,6 @@ trait InventoryNetworkPort
     {
         if ($this instanceof MainAsset) {
             return $this->isPartial();
-        } else {
-            if (isset($this->main_asset) && method_exists($this->main_asset, 'isPartial')) {
-                return $this->main_asset->isPartial();
-            }
         }
 
         return false;

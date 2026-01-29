@@ -395,8 +395,7 @@ class Application extends BaseApplication
      */
     private function isLanguageValid($language)
     {
-        return is_array($this->config)
-         && array_key_exists('languages', $this->config)
+        return array_key_exists('languages', $this->config)
          && array_key_exists($language, $this->config['languages']);
     }
 

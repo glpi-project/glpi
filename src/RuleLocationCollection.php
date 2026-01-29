@@ -35,9 +35,9 @@
 
 class RuleLocationCollection extends RuleCollection
 {
-    public $stop_on_first_match = true;
+    public bool $stop_on_first_match = true;
     public static string $rightname    = 'rule_location';
-    public $menu_option         = 'location';
+    public string $menu_option         = 'location';
 
     public function getTitle()
     {

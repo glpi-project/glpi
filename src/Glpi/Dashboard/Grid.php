@@ -114,8 +114,7 @@ class Grid
     public static function loadAllDashboards(bool $force = true): bool
     {
         if (
-            !is_array(self::$all_dashboards)
-            || count(self::$all_dashboards) === 0
+            count(self::$all_dashboards) === 0
             || $force
         ) {
             self::$all_dashboards = Dashboard::getAll($force, !self::$embed, '');
@@ -128,8 +127,8 @@ class Grid
     /**
      * Init dashboards cards
      * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-     *  - if true: load all cards in seperate ajax request
-     *    pros: slow cards wont impact the others
+     *  - if true: load all cards in separate ajax request
+     *    pros: slow cards won't impact the others
      * - else: load all cards in a single ajax request
      *    pros: less strain for the server
      *

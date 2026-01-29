@@ -39,9 +39,9 @@ use function Safe\preg_match;
 class RuleMailCollectorCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = true;
+    public bool $stop_on_first_match = true;
     public static string $rightname           = 'rule_mailcollector';
-    public $menu_option         = 'mailcollector';
+    public string $menu_option         = 'mailcollector';
 
 
     public function getTitle()

@@ -137,13 +137,13 @@ class RacksPluginToCoreCommand extends AbstractCommand
      * Datacenter on which rooms will be created.
      *
      */
-    private int $datacenter_id;
+    private ?int $datacenter_id = null;
 
     /**
      * Room on which racks will be placed if no corresponding room found.
      *
      */
-    private int $fallback_room_id;
+    private ?int $fallback_room_id = null;
 
     /**
      * Imported elements mapping.

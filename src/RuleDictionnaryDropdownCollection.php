@@ -37,7 +37,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 {
     public static string $rightname = 'rule_dictionnary_dropdown';
 
-    public $menu_type = 'dictionnary';
+    public string $menu_type = 'dictionnary';
 
     // Specific ones
     /**
@@ -46,8 +46,8 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
      */
     public string $item_table = "";
 
-    public $stop_on_first_match = true;
-    public $can_replay_rules    = true;
+    public bool $stop_on_first_match = true;
+    public bool $can_replay_rules    = true;
 
     public function countTotalItemsForRulesReplay(array $params = []): int
     {

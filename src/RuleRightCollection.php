@@ -37,9 +37,9 @@
 class RuleRightCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = false;
+    public bool $stop_on_first_match = false;
     public static string $rightname           = 'rule_ldap';
-    public $menu_option         = 'right';
+    public string $menu_option         = 'right';
 
     // Specific ones
     /** @var array Array containing results : entity + right */
