@@ -80,15 +80,6 @@ class KnowbaseEditor {
      */
     #init() {
         const { Editor } = TiptapCore;
-        const StarterKit = TiptapStarterKit.default || TiptapStarterKit.StarterKit || TiptapStarterKit;
-        const Link = TiptapLink.default || TiptapLink.Link || TiptapLink;
-        const Image = TiptapImage.default || TiptapImage.Image || TiptapImage;
-        const Placeholder = TiptapPlaceholder.default || TiptapPlaceholder.Placeholder || TiptapPlaceholder;
-        const BubbleMenu = TiptapBubbleMenu.default || TiptapBubbleMenu.BubbleMenu || TiptapBubbleMenu;
-        const Table = TiptapTable.default || TiptapTable.Table || TiptapTable;
-        const TableRow = TiptapTableRow.default || TiptapTableRow.TableRow || TiptapTableRow;
-        const TableHeader = TiptapTableHeader.default || TiptapTableHeader.TableHeader || TiptapTableHeader;
-        const TableCell = TiptapTableCell.default || TiptapTableCell.TableCell || TiptapTableCell;
 
         this.#isEditable = !this.#options.readonly;
 
@@ -105,35 +96,35 @@ class KnowbaseEditor {
         const slashCommandsExt = SlashCommands;
 
         const extensions = [
-            StarterKit.configure({
+            TiptapStarterKit.configure({
                 heading: {
                     levels: [1, 2, 3, 4, 5, 6],
                 },
             }),
-            Link.configure({
+            TiptapLink.configure({
                 openOnClick: false,
                 HTMLAttributes: {
                     rel: 'noopener noreferrer',
                 },
             }),
-            Image.configure({
+            TiptapImage.configure({
                 inline: false,
                 allowBase64: false,
             }),
-            Placeholder.configure({
+            TiptapPlaceholder.configure({
                 placeholder: this.#options.placeholder,
             }),
-            BubbleMenu.configure({
+            TiptapBubbleMenu.configure({
                 element: this.#bubbleMenuElement,
                 placement: 'top',
                 offset: 8,
             }),
-            Table.configure({
+            TiptapTable.configure({
                 resizable: true,
             }),
-            TableRow,
-            TableHeader,
-            TableCell,
+            TiptapTableRow,
+            TiptapTableHeader,
+            TiptapTableCell,
         ];
 
         // Add SlashCommands extension if available
