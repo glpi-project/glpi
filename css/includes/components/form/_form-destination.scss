@@ -198,6 +198,29 @@
                 }
             }
 
+            [data-glpi-itildestination-field-slm-computed-strategy-config] {
+                >div {
+                    &:first-child {
+                        width: 30%;
+
+                        .select2-selection {
+                            border-top-right-radius: 0 !important;
+                            border-bottom-right-radius: 0 !important;
+                        }
+                    }
+
+                    &:last-child {
+                        margin-left: calc(-1 * var(--tblr-border-width));
+                        width: calc(70% + 1 * var(--tblr-border-width));
+
+                        .select2-selection {
+                            border-top-left-radius: 0 !important;
+                            border-bottom-left-radius: 0 !important;
+                        }
+                    }
+                }
+            }
+
             &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
                 &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
                     >div {
