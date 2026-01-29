@@ -2239,4 +2239,91 @@
             <value>1</value>
         </ruleaction>
     </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>72</ranking>
+        <name>Pdu update (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_pdu_update_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>PDU</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>10</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>73</ranking>
+        <name>Pdu import (by name)</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>a
+        <uuid>glpi_rule_import_asset_pdu_import_name</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>PDU</pattern>
+        </rulecriteria>
+        <rulecriteria>
+            <criteria>name</criteria>
+            <condition>8</condition>
+            <pattern>1</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_inventory</field>
+            <value>0</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleImportAsset</sub_type>
+        <ranking>74</ranking>
+        <name>Pdu import denied</name>
+        <description></description>
+        <match>AND</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_import_asset_pdu_import_denied</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>itemtype</criteria>
+            <condition>0</condition>
+            <pattern>PDU</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>_ignore_import</field>
+            <value>1</value>
+        </ruleaction>
+    </rule>
 </rules>

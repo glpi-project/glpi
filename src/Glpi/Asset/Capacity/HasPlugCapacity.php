@@ -36,7 +36,6 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\CapacityConfig;
-use Item_Plug;
 use Override;
 use Plug;
 use Session;
@@ -61,23 +60,21 @@ class HasPlugCapacity extends AbstractCapacity
 
     public function getCloneRelations(): array
     {
-        return [
-            Item_Plug::class,
-        ];
+        return [];
     }
 
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeerItem($classname, Item_Plug::class) > 0;
+            && $this->countAssetsLinkedToPeerItem($classname, Plug::class) > 0;
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
             __('%1$s plugs attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Item_Plug::class),
-            $this->countAssetsLinkedToPeerItem($classname, Item_Plug::class)
+            $this->countPeerItemsUsage($classname, Plug::class),
+            $this->countAssetsLinkedToPeerItem($classname, Plug::class)
         );
     }
 
@@ -85,7 +82,7 @@ class HasPlugCapacity extends AbstractCapacity
     {
         $this->registerToTypeConfig('plug_types', $classname);
 
-        CommonGLPI::registerStandardTab($classname, Item_Plug::class, 55);
+        CommonGLPI::registerStandardTab($classname, Plug::class, 55);
     }
 
     public function onCapacityDisabled(string $classname, CapacityConfig $config): void
@@ -94,10 +91,10 @@ class HasPlugCapacity extends AbstractCapacity
         $this->unregisterFromTypeConfig('plug_types', $classname);
 
         //Delete related items
-        $item_plug = new Item_Plug();
-        $item_plug->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
+        $plug = new Plug();
+        $plug->deleteByCriteria(['itemtype' => $classname], force: true, history: false);
 
         // Clean history related items
-        $this->deleteRelationLogs($classname, Item_Plug::class);
+        $this->deleteRelationLogs($classname, Plug::class);
     }
 }
