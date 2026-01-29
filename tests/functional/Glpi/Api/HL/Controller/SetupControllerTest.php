@@ -35,10 +35,15 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use AuthLDAP;
+use AuthLdapReplicate;
+use AuthMail;
 use Config;
+use Glpi\Api\HL\Controller\SetupController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use MailCollector;
+use SLM;
 
 class SetupControllerTest extends HLAPITestCase
 {
@@ -78,33 +83,80 @@ class SetupControllerTest extends HLAPITestCase
                 'entity' => $entity,
             ],
         ];
-        $this->api->call(new Request('GET', '/Setup'), function ($call) use ($dataset) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) use ($dataset) {
-                    $this->assertGreaterThanOrEqual(1, count($content));
-                    foreach ($content as $type) {
-                        $this->api->autoTestSearch('/Setup/' . $type['itemtype'], $dataset);
-                    }
-                });
-        });
+
+        $slm = $this->createItem(SLM::class, [
+            'name' => 'Default SLA for AutoSearch',
+            'entities_id' => $entity,
+        ]);
+
+        $types_20 = SetupController::getSetupEndpointTypes20();
+        $types_23 = SetupController::getSetupEndpointTypes23();
+
+        foreach ($types_20 as $type) {
+            $this->api->autoTestSearch('/Setup/' . $type, $dataset);
+        }
+        foreach ($types_23 as $type) {
+            if ($type === 'SLA' || $type === 'OLA') {
+                $dataset = array_map(static function ($item) use ($slm) {
+                    $item['slm'] = $slm->getID();
+                    $item['time'] = 2;
+                    $item['time_unit'] = 'hour';
+                    return $item;
+                }, $dataset);
+            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
+                continue;
+            } elseif ($type === 'FieldUnicity') {
+                $dataset = array_map(static function ($item) {
+                    $item['itemtype'] = 'Computer';
+                    $item['fields'] = 'serial';
+                    return $item;
+                }, $dataset);
+            } elseif ($type === 'EmailCollector') {
+                $dataset = array_map(static function ($item) {
+                    $item['host'] = '{imap.example.com:993/imap/ssl/novalidate-cert}';
+                    return $item;
+                }, $dataset);
+            }
+            $this->api->autoTestSearch('/Setup/' . $type, $dataset);
+        }
     }
 
     public function testAutoCRUD()
     {
         $this->login();
-        $this->api->call(new Request('GET', '/Setup'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertGreaterThanOrEqual(1, count($content));
-                    foreach ($content as $type) {
-                        $this->api->autoTestCRUD('/Setup/' . $type['itemtype']);
-                    }
-                });
-        });
+
+        $types_20 = SetupController::getSetupEndpointTypes20();
+        $types_23 = SetupController::getSetupEndpointTypes23();
+        $slm = $this->createItem(SLM::class, [
+            'name' => 'Default SLA for AutoCRUD',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        foreach ($types_20 as $type) {
+            $this->api->autoTestCRUD('/Setup/' . $type);
+        }
+        foreach ($types_23 as $type) {
+            $create_params = [];
+            if ($type === 'SLA' || $type === 'OLA') {
+                $create_params = [
+                    'slm' => $slm->getID(),
+                    'time' => 2,
+                    'time_unit' => 'hour',
+                ];
+            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
+                continue;
+            } elseif ($type === 'FieldUnicity') {
+                $create_params = [
+                    'itemtype' => 'Computer',
+                    'fields' => 'serial',
+                ];
+            } elseif ($type === 'EmailCollector') {
+                $create_params = [
+                    'host' => '{imap.example.com:993/imap/ssl/novalidate-cert}',
+                ];
+            }
+            $this->api->autoTestCRUD(endpoint: '/Setup/' . $type, create_params: $create_params);
+        }
     }
 
     public function testCRUDNoRights()
@@ -112,51 +164,79 @@ class SetupControllerTest extends HLAPITestCase
         $this->loginWeb();
         $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
 
-        $this->api->call(new Request('GET', '/Setup'), function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->isOK()
-                ->jsonContent(function ($content) {
-                    $this->assertGreaterThanOrEqual(1, count($content));
-                    foreach ($content as $type) {
-                        $create_request = new Request('POST', $type['href']);
-                        $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
-                        $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
-                        $new_location = null;
-                        $new_items_id = null;
-                        $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
-                            /** @var \HLAPICallAsserter $call */
-                            $call->response
-                                ->isOK()
-                                ->headers(function ($headers) use (&$new_location) {
-                                    $new_location = $headers['Location'];
-                                })
-                                ->jsonContent(function ($content) use (&$new_items_id) {
-                                    $new_items_id = $content['id'];
-                                });
-                        });
-                        if ($type['itemtype'] === 'LDAPDirectory') {
-                            $this->api->autoTestCRUDNoRights(
-                                endpoint: $type['href'],
-                                itemtype: AuthLDAP::class,
-                                items_id: (int) $new_items_id,
-                                deny_create: static function () {
-                                    $_SESSION['glpiactiveprofile'][AuthLDAP::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
-                                },
-                                deny_purge: static function () {
-                                    $_SESSION['glpiactiveprofile'][AuthLDAP::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
-                                },
-                            );
-                        } else {
-                            $this->api->autoTestCRUDNoRights(
-                                endpoint: $type['href'],
-                                itemtype: $type['itemtype'],
-                                items_id: (int) $new_items_id,
-                            );
-                        }
-                    }
-                });
-        });
+        $types_20 = SetupController::getSetupEndpointTypes20();
+        $types_23 = SetupController::getSetupEndpointTypes23();
+
+        $slm = $this->createItem(SLM::class, [
+            'name' => 'Default SLA for AutoCRUDNoRights',
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        foreach ([...$types_20, ...$types_23] as $type) {
+            $itemtype = $type;
+            $create_request = new Request('POST', '/Setup/' . $type);
+            $create_request->setParameter('name', 'testCRUDNoRights' . random_int(0, 10000));
+            $create_request->setParameter('entity', getItemByTypeName('Entity', '_test_root_entity', true));
+            if ($type === 'SLA' || $type === 'OLA') {
+                $create_request->setParameter('slm', $slm->getID());
+                $create_request->setParameter('time', 2);
+                $create_request->setParameter('time_unit', 'hour');
+            } elseif ($type === 'SLALevel' || $type === 'OLALevel') {
+                continue;
+            } elseif ($type === 'FieldUnicity') {
+                $create_request->setParameter('itemtype', 'Computer');
+                $create_request->setParameter('fields', 'serial');
+            } elseif ($type === 'EmailCollector') {
+                $itemtype = MailCollector::class;
+                $create_request->setParameter('host', '{imap.example.com:993/imap/ssl/novalidate-cert}');
+            } elseif ($type === 'EmailAuthServer') {
+                $itemtype = AuthMail::class;
+            } elseif ($type === 'LDAPDirectory') {
+                $itemtype = AuthLDAP::class;
+            } elseif ($type === 'LDAPDirectoryReplicate') {
+                $itemtype = AuthLdapReplicate::class;
+                $create_request->setParameter('ldap_directory', getItemByTypeName('AuthLDAP', '_local_ldap', true));
+            }
+            $new_location = null;
+            $new_items_id = null;
+            $this->login();
+            $this->api->call($create_request, function ($call) use (&$new_location, &$new_items_id) {
+                /** @var \HLAPICallAsserter $call */
+                $call->response
+                    ->isOK()
+                    ->headers(function ($headers) use (&$new_location) {
+                        $new_location = $headers['Location'];
+                    })
+                    ->jsonContent(function ($content) use (&$new_items_id) {
+                        $new_items_id = $content['id'];
+                    });
+            });
+            if (
+                $type === 'LDAPDirectory'
+                || $type === 'LDAPDirectoryReplicate'
+                || $type === 'EmailAuthServer'
+                || $type === 'FieldUnicity'
+                || $type === 'EmailCollector'
+            ) {
+                $this->api->autoTestCRUDNoRights(
+                    endpoint: '/Setup/' . $type,
+                    itemtype: $itemtype,
+                    items_id: (int) $new_items_id,
+                    deny_create: static function () use ($itemtype) {
+                        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                    deny_purge: static function () use ($itemtype) {
+                        $_SESSION['glpiactiveprofile'][$itemtype::$rightname] = ALLSTANDARDRIGHT & ~UPDATE;
+                    },
+                );
+            } else {
+                $this->api->autoTestCRUDNoRights(
+                    endpoint: '/Setup/' . $type,
+                    itemtype: $itemtype,
+                    items_id: (int) $new_items_id,
+                );
+            }
+        }
     }
 
     public function testCRUDConfigValues()

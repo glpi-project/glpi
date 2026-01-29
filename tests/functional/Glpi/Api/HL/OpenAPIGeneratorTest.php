@@ -96,6 +96,29 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         }
     }
 
+    private function getArrayDiffRecursive($array1, $array2, $path = '')
+    {
+        $differences = [];
+        foreach ($array1 as $key => $value) {
+            $current_path = $path === '' ? $key : $path . '.' . $key;
+            if (!array_key_exists($key, $array2)) {
+                $differences[] = "Key '$current_path' missing in second array";
+            } elseif (is_array($value) && is_array($array2[$key])) {
+                $nested_diffs = $this->getArrayDiffRecursive($value, $array2[$key], $current_path);
+                $differences = array_merge($differences, $nested_diffs);
+            } elseif ($value !== $array2[$key]) {
+                $differences[] = "Value for key '$current_path' differs";
+            }
+        }
+        foreach ($array2 as $key => $value) {
+            $current_path = $path === '' ? $key : $path . '.' . $key;
+            if (!array_key_exists($key, $array1)) {
+                $differences[] = "Key '$current_path' missing in first array";
+            }
+        }
+        return $differences;
+    }
+
     private function diffSchemaPaths($snapshot, $schema)
     {
         // Compare OpenAPI route paths and return differences
@@ -137,7 +160,8 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                     unset($schema_method['parameters'][$i]['description']);
                 }
                 if ($snapshot_method !== $schema_method) {
-                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema";
+                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema:\n" .
+                        implode("\n", $this->getArrayDiffRecursive($snapshot_method, $schema_method, "paths.$path.$method"));
                 }
             }
         }

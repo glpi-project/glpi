@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.6] unreleased
 
 ### Added
+- New endpoints/schemas for Email authentication servers, ldap replicates, email collectors, field unicity, and automatic actions in High-Level API v2.3.
 
 ### Changed
 
