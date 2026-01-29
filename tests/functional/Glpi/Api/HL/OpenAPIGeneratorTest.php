@@ -160,8 +160,8 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                     unset($schema_method['parameters'][$i]['description']);
                 }
                 if ($snapshot_method !== $schema_method) {
-                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema:\n" .
-                        implode("\n", $this->getArrayDiffRecursive($snapshot_method, $schema_method, "paths.$path.$method"));
+                    $differences[] = "Method '$method' for path '$path' differs between snapshot and schema:\n"
+                        . implode("\n", $this->getArrayDiffRecursive($snapshot_method, $schema_method, "paths.$path.$method"));
                 }
             }
         }
