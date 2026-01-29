@@ -206,6 +206,8 @@ class Log extends CommonDBTM
                                 (int)$values[$key],
                             ];
                         } else {
+                            // Fallback for text/invalid values: keep it as value-only history
+                            // to avoid inserting non-numeric data into glpi_logs.old_id/new_id.
                             $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                         }
                     }
