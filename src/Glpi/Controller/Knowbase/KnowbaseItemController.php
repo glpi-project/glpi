@@ -114,7 +114,7 @@ final class KnowbaseItemController extends AbstractController
             throw new NotFoundHttpException();
         }
 
-        if (!$kbitem->canUpdateItem()) {
+        if (!$kbitem->can($id, UPDATE, $input)) {
             throw new AccessDeniedHttpException();
         }
 

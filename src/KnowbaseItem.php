@@ -1054,8 +1054,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             'last_update_can_view_author' => $last_update_info->canViewAuthor(),
             'documents' => $documents,
             'documents_count' => count($documents),
-            'can_add_documents' => $this->canUpdateItem(),
-            'can_edit' => $this->canUpdateItem(),
+            'can_add_documents' => $this->can($this->fields['id'], UPDATE),
+            'can_edit' => $this->can($this->fields['id'], UPDATE),
             'edit_mode' => $options['edit_mode'],
             'actions' => $actions,
         ]);
