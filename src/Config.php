@@ -80,13 +80,13 @@ class Config extends CommonDBTM
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
     // From CommonGLPI
-    protected $displaylist         = false;
+    protected bool $displaylist         = false;
 
     // From CommonDBTM
     public $auto_message_on_action = false;
-    public $showdebug              = true;
+    public bool $showdebug              = true;
 
-    public static $rightname              = 'config';
+    public static string $rightname              = 'config';
 
     public static $undisclosedFields      = [
         'proxy_passwd',

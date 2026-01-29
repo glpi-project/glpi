@@ -49,7 +49,7 @@ class RuleMatchedLog extends CommonDBTM
      *
      * @var string
      */
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
     public static function getTypeName($nb = 0)
     {

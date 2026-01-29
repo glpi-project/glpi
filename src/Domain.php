@@ -49,7 +49,7 @@ class Domain extends CommonDBTM implements AssignableItemInterface
         post_updateItem as post_updateItemAssignableItem;
     }
 
-    public static $rightname = 'domain';
+    public static string $rightname = 'domain';
     protected static $forward_entity_to = ['DomainRecord'];
 
     /** @var bool */

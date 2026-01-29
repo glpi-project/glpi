@@ -55,7 +55,7 @@ class PDU extends CommonDBTM implements AssignableItemInterface, DCBreadcrumbInt
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public static string $rightname                   = 'datacenter';
 
     public function getCloneRelations(): array
     {

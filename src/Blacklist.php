@@ -50,7 +50,7 @@ class Blacklist extends CommonDropdown
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public $can_be_translated = false;
 

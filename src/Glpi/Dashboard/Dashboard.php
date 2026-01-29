@@ -63,7 +63,7 @@ class Dashboard extends CommonDBTM
 
     /** @var array */
     public static $all_dashboards = [];
-    public static $rightname = 'dashboard';
+    public static string $rightname = 'dashboard';
 
 
     public function __construct(string $dashboard_key = "")

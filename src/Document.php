@@ -71,7 +71,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
 
     protected static $forward_entity_to = ['Document_Item'];
 
-    public static $rightname                   = 'document';
+    public static string $rightname                   = 'document';
     /** @var string */
     public static $tag_prefix                  = '#';
     protected $usenotepad               = true;

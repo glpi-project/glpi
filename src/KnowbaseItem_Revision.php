@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class KnowbaseItem_Revision extends CommonDBTM
 {
-    public static $rightname   = 'knowbase';
+    public static string $rightname   = 'knowbase';
 
     public static function getTypeName($nb = 0)
     {

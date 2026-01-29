@@ -40,7 +40,7 @@ class RuleMailCollectorCollection extends RuleCollection
 {
     // From RuleCollection
     public $stop_on_first_match = true;
-    public static $rightname           = 'rule_mailcollector';
+    public static string $rightname           = 'rule_mailcollector';
     public $menu_option         = 'mailcollector';
 
 

@@ -41,7 +41,7 @@ use function Safe\json_encode;
 
 final class OAuthClient extends CommonDBTM
 {
-    public static $rightname = 'oauth_client';
+    public static string $rightname = 'oauth_client';
 
     public static $undisclosedFields = [
         'secret',

@@ -60,7 +60,7 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     public $dohistory                   = true;
     protected $usenotepad               = true;
 
-    public static $rightname                   = 'cartridge';
+    public static string $rightname                   = 'cartridge';
 
     public function getCloneRelations(): array
     {

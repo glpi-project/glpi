@@ -50,7 +50,7 @@ class SoftwareVersion extends CommonDBChild implements StateInterface
     public static $itemtype = Software::class;
     public static $items_id  = 'softwares_id';
 
-    protected $displaylist = false;
+    protected bool $displaylist = false;
 
 
     public static function getTypeName($nb = 0)

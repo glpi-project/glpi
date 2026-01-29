@@ -40,16 +40,16 @@ use Glpi\Search\SearchOption;
 class DisplayPreference extends CommonDBTM
 {
     // From CommonGLPI
-    public $taborientation          = 'horizontal';
-    public $get_item_to_display_tab = false;
+    public string $taborientation          = 'horizontal';
+    public bool $get_item_to_display_tab = false;
 
     // From CommonDBTM
     public $auto_message_on_action  = false;
 
-    protected $displaylist          = false;
+    protected bool $displaylist          = false;
 
 
-    public static $rightname = 'search_config';
+    public static string $rightname = 'search_config';
 
     public const PERSONAL = 1024;
     public const GENERAL  = 2048;

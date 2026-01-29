@@ -44,7 +44,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
     public $menu_type           = 'dictionnary';
     public $menu_option         = 'software';
 
-    public static $rightname           = 'rule_dictionnary_software';
+    public static string $rightname           = 'rule_dictionnary_software';
 
     public function getTitle()
     {

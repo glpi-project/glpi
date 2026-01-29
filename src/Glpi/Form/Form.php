@@ -105,7 +105,7 @@ final class Form extends CommonDBTM implements
     public const TRANSLATION_KEY_HEADER = 'form_header';
     public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
 
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
     public $dohistory = true;
 

@@ -54,7 +54,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
     /** @use Clonable<static> */
     use Clonable;
 
-    public static $rightname               = 'bookmark_public';
+    public static string $rightname               = 'bookmark_public';
 
     public const SEARCH = 1; //SEARCH SYSTEM bookmark
     public const URI    = 2;

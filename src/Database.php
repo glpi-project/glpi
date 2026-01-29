@@ -42,7 +42,7 @@ class Database extends CommonDBChild
 {
     // From CommonDBTM
     public $auto_message_on_action = true;
-    public static $rightname       = 'database';
+    public static string $rightname       = 'database';
     public static $mustBeAttached  = false;
 
     // From CommonDBChild

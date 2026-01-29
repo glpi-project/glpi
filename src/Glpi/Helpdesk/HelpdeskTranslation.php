@@ -47,7 +47,7 @@ use Override;
 
 final class HelpdeskTranslation extends ItemTranslation implements ProvideTranslationsInterface
 {
-    public static $rightname = 'form';
+    public static string $rightname = 'form';
 
     #[Override]
     public static function getTypeName($nb = 0)

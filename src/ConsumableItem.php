@@ -63,7 +63,7 @@ class ConsumableItem extends CommonDBTM implements AssignableItemInterface
     public $dohistory                   = true;
     protected $usenotepad               = true;
 
-    public static $rightname                   = 'consumable';
+    public static string $rightname                   = 'consumable';
 
     public function getCloneRelations(): array
     {

@@ -49,7 +49,7 @@ class Group extends CommonTreeDropdown
 
     public $dohistory       = true;
 
-    public static $rightname       = 'group';
+    public static string $rightname       = 'group';
 
     protected $usenotepad  = true;
 

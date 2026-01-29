@@ -79,7 +79,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
-    public static $rightname = 'device';
+    public static string $rightname = 'device';
 
     public function getCloneRelations(): array
     {

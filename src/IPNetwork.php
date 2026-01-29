@@ -49,7 +49,7 @@ class IPNetwork extends CommonImplicitTreeDropdown
 {
     public $dohistory = true;
 
-    public static $rightname = 'internet';
+    public static string $rightname = 'internet';
 
     /**
      * Data used during add/update process to handle CommonImplicitTreeDropdown ancestors/sons.

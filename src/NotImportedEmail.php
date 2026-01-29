@@ -38,7 +38,7 @@
  **/
 class NotImportedEmail extends CommonDBTM
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const MATCH_NO_RULE     = 0;
     public const USER_UNKNOWN      = 1;

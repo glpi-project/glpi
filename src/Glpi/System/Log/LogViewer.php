@@ -47,7 +47,7 @@ final class LogViewer extends CommonGLPI
      */
     private $log_parser;
 
-    public static $rightname = 'system_logs';
+    public static string $rightname = 'system_logs';
 
     public function __construct()
     {

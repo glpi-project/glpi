@@ -131,7 +131,7 @@ class AuthLDAP extends CommonDBTM
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * connection caching stuff

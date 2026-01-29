@@ -50,7 +50,7 @@ abstract class ITILTemplate extends CommonDropdown
 
     public $display_dropdowntitle     = false;
 
-    public static $rightname                 = 'itiltemplate';
+    public static string $rightname                 = 'itiltemplate';
 
     public $can_be_translated            = false;
 

@@ -56,7 +56,7 @@ class Enclosure extends CommonDBTM implements AssignableItemInterface, DCBreadcr
 
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname                   = 'datacenter';
+    public static string $rightname                   = 'datacenter';
 
     public function getCloneRelations(): array
     {

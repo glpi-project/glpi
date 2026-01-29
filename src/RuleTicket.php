@@ -36,7 +36,7 @@
 class RuleTicket extends RuleCommonITILObject
 {
     // From Rule
-    public static $rightname = 'rule_ticket';
+    public static string $rightname = 'rule_ticket';
 
     public function getTitle()
     {

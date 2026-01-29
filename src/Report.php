@@ -53,7 +53,7 @@ class Report extends CommonGLPI
 {
     /** @var bool */
     protected static $notable = false;
-    public static $rightname         = 'reports';
+    public static string $rightname         = 'reports';
 
     public static function getTypeName($nb = 0)
     {

@@ -64,7 +64,7 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     protected static $forward_entity_to = ['Infocom'];
 
-    public static $rightname                   = 'license';
+    public static string $rightname                   = 'license';
     protected $usenotepad               = true;
 
 

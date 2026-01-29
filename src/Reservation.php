@@ -48,7 +48,7 @@ class Reservation extends CommonDBChild
     public static $itemtype = ReservationItem::class;
     public static $items_id          = 'reservationitems_id';
 
-    public static $rightname                = 'reservation';
+    public static string $rightname                = 'reservation';
     public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public static function getTypeName($nb = 0)

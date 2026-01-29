@@ -43,7 +43,7 @@ class SNMPCredential extends CommonDBTM
 {
     // From CommonDBTM
     public $dohistory                   = true;
-    public static $rightname = 'snmpcredential';
+    public static string $rightname = 'snmpcredential';
 
     public static function getTypeName($nb = 0)
     {

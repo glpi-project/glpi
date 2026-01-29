@@ -54,7 +54,7 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     public $grouplinkclass       = 'Group_Problem';
     public $supplierlinkclass    = 'Problem_Supplier';
 
-    public static $rightname            = 'problem';
+    public static string $rightname            = 'problem';
     protected $usenotepad        = true;
 
 

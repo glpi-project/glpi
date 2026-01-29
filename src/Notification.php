@@ -147,7 +147,7 @@ class Notification extends CommonDBTM implements FilterableInterface
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'notification';
+    public static string $rightname = 'notification';
 
     // Filterable implementation
     public function getItemtypeToFilter(): string

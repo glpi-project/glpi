@@ -107,7 +107,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     public const HELPDESK_MY_HARDWARE  = 0;
     public const HELPDESK_ALL_HARDWARE = 1;
 
-    protected static $showTitleInNavigationHeader = true;
+    protected static bool $showTitleInNavigationHeader = true;
 
     public const MATRIX_FIELD         = '';
     public const URGENCY_MASK_FIELD   = '';

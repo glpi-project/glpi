@@ -44,7 +44,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 abstract class LevelAgreementLevel extends RuleTicket
 {
-    public static $rightname            = 'slm';
+    public static string $rightname            = 'slm';
 
     /**
      * LevelAgreement parent class.

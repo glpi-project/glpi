@@ -64,7 +64,7 @@ class Peripheral extends CommonDBTM implements AssignableItemInterface, DCBreadc
         'Item_OperatingSystem', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'peripheral';
+    public static string $rightname                   = 'peripheral';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array

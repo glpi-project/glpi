@@ -77,7 +77,7 @@ class Log extends CommonDBTM
     // Plugin must use value starting from
     public const HISTORY_PLUGIN             = 1000;
 
-    public static $rightname = 'logs';
+    public static string $rightname = 'logs';
 
     /** @var array  */
     public static array $queue = [];

@@ -36,7 +36,7 @@
 /// LDAP criteria class
 class RuleRightParameter extends CommonDropdown
 {
-    public static $rightname         = 'rule_ldap';
+    public static string $rightname         = 'rule_ldap';
 
     public $can_be_translated = false;
 

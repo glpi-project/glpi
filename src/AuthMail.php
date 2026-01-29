@@ -43,7 +43,7 @@ class AuthMail extends CommonDBTM
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static function getTypeName($nb = 0)
     {

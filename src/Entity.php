@@ -61,7 +61,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
     public $must_be_replace             = true;
     public $dohistory                   = true;
 
-    public static $rightname            = 'entity';
+    public static string $rightname            = 'entity';
     protected $usenotepad               = true;
 
     public const READHELPDESK       = 1024;

@@ -71,7 +71,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projecttasks_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
     protected $team             = [];
-    public static $rightname    = 'projecttask';
+    public static string $rightname    = 'projecttask';
     protected $usenotepad       = true;
 
     /** @var bool */

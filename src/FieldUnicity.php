@@ -45,7 +45,7 @@ class FieldUnicity extends CommonDropdown
 
     public $can_be_translated  = false;
 
-    public static $rightname          = 'config';
+    public static string $rightname          = 'config';
 
 
     public static function getTypeName($nb = 0)

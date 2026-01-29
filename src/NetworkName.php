@@ -62,7 +62,7 @@ class NetworkName extends FQDNLabel
 
     public static $mustBeAttached        = false;
 
-    public static $rightname                   = 'internet';
+    public static string $rightname                   = 'internet';
 
 
     public static function getTypeName($nb = 0)

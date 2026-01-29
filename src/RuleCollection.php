@@ -92,13 +92,13 @@ class RuleCollection extends CommonDBTM
     /** @var int */
     public $entity                                = 0;
 
-    public static $rightname                             = 'config';
+    public static string $rightname                             = 'config';
 
     /**
      * @var string Tab orientation : horizontal or vertical
      * @phpstan-var 'horizontal'|'vertical'
      */
-    public $taborientation = 'horizontal';
+    public string $taborientation = 'horizontal';
 
     public static function getTable($classname = null)
     {

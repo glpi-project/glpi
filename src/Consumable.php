@@ -56,7 +56,7 @@ class Consumable extends CommonDBChild
     protected static $forward_entity_to = ['Infocom'];
     public $no_form_page                = true;
 
-    public static $rightname                   = 'consumable';
+    public static string $rightname                   = 'consumable';
 
     // From CommonDBChild
     public static $itemtype = ConsumableItem::class;

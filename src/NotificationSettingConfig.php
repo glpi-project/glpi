@@ -44,8 +44,8 @@ class NotificationSettingConfig extends CommonDBTM
      * @var string
      */
     public $table           = 'glpi_configs';
-    protected $displaylist  = false;
-    public static $rightname       = 'config';
+    protected bool $displaylist  = false;
+    public static string $rightname       = 'config';
 
     #[Override]
     public function update(array $input, $history = true, $options = [])

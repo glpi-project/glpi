@@ -44,7 +44,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     public $menu_type           = 'dictionnary';
     public $menu_option         = 'printer';
 
-    public static $rightname           = 'rule_dictionnary_printer';
+    public static string $rightname           = 'rule_dictionnary_printer';
 
     public function getTitle()
     {

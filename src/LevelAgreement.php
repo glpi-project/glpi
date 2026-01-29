@@ -46,7 +46,7 @@ abstract class LevelAgreement extends CommonDBChild
 {
     // From CommonDBTM
     public $dohistory          = true;
-    public static $rightname       = 'slm';
+    public static string $rightname       = 'slm';
 
     // From CommonDBChild
     public static $itemtype = SLM::class;

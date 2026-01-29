@@ -66,7 +66,7 @@ class Controller extends CommonGLPI
     /** @var string */
     protected $plugin_key = "";
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
     /** @var ?PluginsApi */
     public static $api       = null;
 

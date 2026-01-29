@@ -54,7 +54,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public $grouplinkclass              = 'Change_Group';
     public $supplierlinkclass           = 'Change_Supplier';
 
-    public static $rightname            = 'change';
+    public static string $rightname            = 'change';
     protected $usenotepad               = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';

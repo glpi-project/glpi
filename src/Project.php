@@ -57,7 +57,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
-    public static $rightname                   = 'project';
+    public static string $rightname                   = 'project';
     protected $usenotepad               = true;
 
     public const READMY                        = 1;
