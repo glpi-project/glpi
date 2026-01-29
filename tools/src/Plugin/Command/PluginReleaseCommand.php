@@ -35,6 +35,7 @@
 namespace Glpi\Tools\Plugin\Command;
 
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -233,6 +234,17 @@ final class PluginReleaseCommand extends AbstractPluginCommand
                 unlink($src_subdir . '/package-lock.json');
             }
             $this->io->writeln("<info>Npm dependencies installed.</info>");
+        }
+
+        // Compile locales
+        if (is_dir($src_subdir . '/locales')) {
+            $input = new ArrayInput([
+                'command'  => 'tools:locales:compile',
+                '--directory' => $src_subdir,
+            ]);
+            $input->setInteractive(false);
+            $this->getApplication()->doRun($input, $this->output);
+            $this->io->writeln("<info>Locales compiled.</info>");
         }
 
         // Compress to bz2

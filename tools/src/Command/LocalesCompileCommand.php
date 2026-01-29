@@ -36,6 +36,7 @@ namespace Glpi\Tools\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\ExecutableFinder;
 use Symfony\Component\Process\Process;
@@ -53,12 +54,21 @@ final class LocalesCompileCommand extends AbstractCommand
         parent::configure();
         $this->setName('tools:locales:compile');
         $this->setDescription('Compile MO files from PO files.');
+        $this->addOption(
+            'directory',
+            'd',
+            InputOption::VALUE_REQUIRED,
+            'Source directory containing the locales folder with PO files.'
+        );
     }
 
     #[Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        if ($this->isPluginCommand()) {
+        $directory = $input->getOption('directory');
+        if ($directory !== null) {
+            $working_dir = $directory;
+        } elseif ($this->isPluginCommand()) {
             $working_dir = $this->getPluginDirectory();
         } else {
             $working_dir = dirname(__DIR__, 3); // glpi
