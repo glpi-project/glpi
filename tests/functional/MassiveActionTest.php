@@ -36,6 +36,7 @@ namespace tests\units;
 
 use CommonDBTM;
 use Contract;
+use Glpi\Search\SearchOption;
 use Glpi\Tests\DbTestCase;
 use Location;
 use MassiveAction;
@@ -144,6 +145,15 @@ class MassiveActionTest extends DbTestCase
         $this->assertCount($singlecount, $input['actions']);
     }
 
+    /**
+     * @param string $action_code   action choosen on form ('update', 'purge', ...)
+     * @param CommonDBTM $item
+     * @param array $ids            ids for items to update
+     * @param array $input
+     * @param int $ok               number of expected success
+     * @param int $ko               number of expected failures
+     * @param string $action_class
+     */
     protected function processMassiveActionsForOneItemtype(
         string $action_code,
         CommonDBTM $item,
@@ -152,7 +162,7 @@ class MassiveActionTest extends DbTestCase
         int $ok,
         int $ko,
         string $action_class = MassiveAction::class
-    ) {
+    ): void {
         $ma_ok = 0;
         $ma_ko = 0;
 
@@ -276,6 +286,121 @@ class MassiveActionTest extends DbTestCase
         }
 
         $_SESSION['glpiactiveentities'] = $old_session;
+    }
+
+    /**
+     * Ids of search Option of State related to visibility
+     * @see State::rawSearchOptions()
+     */
+    public static function stateVisibilitySearchOptionIdsProvider()
+    {
+        return array_map(fn($so_id) => [$so_id], range(21, 39));
+    }
+
+    /**
+     * Checks if a State can be (de)associated with an itemtype via massive action
+     */
+    #[DataProvider('stateVisibilitySearchOptionIdsProvider')]
+    public function testMassiveActionUpdateStateVisibility(int $search_option_id): void
+    {
+        // --- arrange
+        $this->login();
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        $_searchoption_definition = SearchOption::getOptionsForItemtype($state::class)[$search_option_id];
+        $tested_field = $_searchoption_definition['linkfield'] ?? $_searchoption_definition['field'];
+
+        // ensure visibility is set to No by default
+        $this->assertArrayHasKey($tested_field, $state->fields, "field $tested_field not found in State fields. Wrong search option probably.");
+        $this->assertEquals(0, $state->fields[$tested_field], "field $tested_field should be 0 to start test.");
+
+        // input submited in massive action form
+        $test_input = [
+            // 'id_field' => 'State:'.$search_option_id, // submited in form, no effect on test
+            'field' => $tested_field, // 'is_visible_phone',
+            $tested_field => 1,
+            'search_options' => ['State' => $search_option_id],
+        ];
+
+        // --- act
+        $this->processMassiveActionsForOneItemtype(
+            'update',
+            $state,
+            [$state->fields['id']],
+            $test_input,
+            1,
+            0
+        );
+
+        // -- assert
+        $state->getFromDB($state->getID());
+        $this->assertEquals(1, $state->fields[$tested_field]);
+    }
+
+    /**
+     * Checks if a State can be (de)associated with a custom asset itemtype via massive action
+     */
+    public function testMassiveActionUpdateStateVisibilityForCustomAsset(): void
+    {
+        // --- Arrange
+        $this->login();
+        $definition = $this->initAssetDefinition();
+        $custom_asset_classname = $definition->getAssetClassName();
+
+        $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
+
+        // Find the search option for this custom asset in State using definition (not id, it may change)
+        $search_options = SearchOption::getOptionsForItemtype($state::class);
+        $custom_asset_search_option = null;
+        $custom_asset_search_option_id = null;
+
+        foreach ($search_options as $so_id => $so_definition) {
+            if (isset($so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'])
+                && $so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] === $custom_asset_classname) {
+                $custom_asset_search_option = $so_definition;
+                $custom_asset_search_option_id = $so_id;
+                break;
+            }
+        }
+
+        assert($custom_asset_search_option !== null, "Search option not found for custom asset {$custom_asset_classname}");
+        $tested_field = $custom_asset_search_option['linkfield'] ?? $custom_asset_search_option['field'];
+
+        assert(isset($state->fields[$tested_field]), "field {$tested_field} not found in State fields");
+        assert($state->fields[$tested_field] == 0, "field {$tested_field} should be 0 to start test");
+
+        // input submitted in massive action form
+        $test_input = [
+            'field' => $tested_field,
+            $tested_field => 1,
+            'search_options' => ['State' => $custom_asset_search_option_id],
+        ];
+
+        // --- Act
+        $this->processMassiveActionsForOneItemtype(
+            'update',
+            $state,
+            [$state->fields['id']],
+            $test_input,
+            1,
+            0
+        );
+
+        // --- Assert
+        $state->getFromDB($state->getID());
+        $this->assertEquals(1, $state->fields[$tested_field]);
+
+        // Verify in DropdownVisibility table
+        $visibility = countElementsInTable(
+            \DropdownVisibility::getTable(),
+            [
+                'itemtype' => \State::class,
+                'items_id' => $state->getID(),
+                'visible_itemtype' => $custom_asset_classname,
+                'is_visible' => 1,
+            ]
+        );
+        $this->assertEquals(1, $visibility, "DropdownVisibility entry should exist for custom asset");
     }
 
     public static function addNoteProvider()
