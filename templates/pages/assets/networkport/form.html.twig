@@ -43,25 +43,61 @@
     {% set type_value = call('NetworkPort::displayRecursiveItems', [recursive_items, 'Link', false]) %}
     {{ fields.htmlField('', type_value, type_label) }}
 
-    {% if not params.several %}
-        {{ fields.numberField('logical_number', item.fields['logical_number'], _n('Port number', 'Port number', 1)) }}
-    {% else %}
-        {% set logical_num_field %}
-            <div class="d-flex">
-                {{ fields.numberField('from_logical_number', 0, null, {
-                    no_label: true,
-                    mb: ''
-                }) }}
-                <span class="mx-1 mt-2 text-nowrap">--></span>
-                {{ fields.numberField('to_logical_number', 0, null, {
-                    no_label: true,
-                    mb: ''
-                }) }}
-            </div>
-        {% endset %}
-        {{ fields.htmlField('', logical_num_field, _n('Port number', 'Port number', 1)) }}
-        <input type="hidden" name="several" value="yes">
+    {% if item.isNewID(item.getID()) %}
+        {{ fields.sliderField('_add_several', 0, __('Add several ports')) }}
+        <script>
+            (function() {
+                const checkbox = $('input[type="checkbox"][name="_add_several"]');
+                if (checkbox.length && !checkbox.data('handler-bound')) {
+                    checkbox.data('handler-bound', true);
+                    checkbox.on('change', function(e) {
+                        const chkbox = $(this);
+                        const form = chkbox.closest('form');
+                        
+                        if (chkbox.prop('checked')) {
+                            form.find('.single-port-field').addClass('d-none');
+                            form.find('.multiple-port-fields').removeClass('d-none');
+                            form.find('.network-name-section').addClass('d-none');
+                            form.find('.network-name-section input, .network-name-section select, .network-name-section textarea').prop('disabled', true);
+                            form.find('input[name="several"]').prop('disabled', false);
+                        } else {
+                            form.find('.single-port-field').removeClass('d-none');
+                            form.find('.multiple-port-fields').addClass('d-none');
+                            form.find('.network-name-section').removeClass('d-none');
+                            form.find('.network-name-section input, .network-name-section select, .network-name-section textarea').prop('disabled', false);
+                            form.find('input[name="several"]').prop('disabled', true);
+                        }
+                    });
+                }
+            })();
+        </script>
+        {{ fields.nullField() }}
     {% endif %}
+
+    {{ fields.numberField('logical_number', item.fields['logical_number'], _n('Port number', 'Port number', 1), {
+        'add_field_class': 'single-port-field'
+    }) }}
+    
+    {% set logical_num_field %}
+        <div class="d-flex">
+            {{ fields.numberField('from_logical_number', 0, null, {
+                no_label: true,
+                mb: '',
+                field_class: 'flex-grow-1'
+            }) }}
+            <span class="mx-1 mt-2 text-nowrap">--></span>
+            {{ fields.numberField('to_logical_number', 0, null, {
+                no_label: true,
+                mb: '',
+                field_class: 'flex-grow-1'
+            }) }}
+        </div>
+    {% endset %}
+    {{ fields.htmlField('', logical_num_field, _n('Port number', 'Port number', 1), {
+        'add_field_class': 'multiple-port-fields d-none',
+        'wrapper_class': ''
+    }) }}
+    <input type="hidden" name="several" value="yes" disabled>
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.textField('ifalias', item.fields['ifalias'], __('Alias')) }}
 
@@ -90,7 +126,7 @@
         {{ call([instantiation, 'showInstantiationForm'], [item, params, recursive_items]) }}
     {% endif %}
 
-    {% if not params.several %}
+    <div class="network-name-section">
         {{ call('NetworkName::showFormForNetworkPort', [item.getID()]) }}
-    {% endif %}
+    </div>
 {% endblock %}
