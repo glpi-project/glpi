@@ -908,13 +908,11 @@ class State extends CommonTreeDropdown
         ];
 
         // custom Assets
-        $custom_asset_search_id = 4000; // random choice, see @todo below
-        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions(only_active: true) as $definition) {
             $tab[] = [
-                'id'                 => $custom_asset_search_id++, // @todo I don't know what to put here...
+                'id'                 => 4000 + $definition->getID(),
                 'table'              => DropdownVisibility::getTable(),
                 'field'              => 'is_visible',
-                'linkfield'          => strtolower(str_replace('\'', '_', 'is_visible_' . $definition->getAssetClassName())),
                 'name'               => sprintf(
                     __('%1$s - %2$s'),
                     __('Visibility'),
