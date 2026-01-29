@@ -61,20 +61,18 @@ class Rule extends CommonDBTM
      * FIXME: should probably not be nullable
      * @var ?array
      */
-    public $actions               = [];
+    public ?array $actions               = [];
     /**
      * Criteria affected to this rule
      *
-     * @var array
      */
-    public $criterias             = [];
+    public array $criterias             = [];
 
     /**
      * preview context ?
      *
-     * @var bool
      */
-    protected $is_preview = false;
+    protected bool $is_preview = false;
 
     /**
      * Restrict matching to self::AND_MATCHING or self::OR_MATCHING: specify value to activate
@@ -82,8 +80,7 @@ class Rule extends CommonDBTM
      * @var self::*_MATCHING|false
      */
     public $restrict_matching     = false;
-    /** @var string */
-    protected $rules_id_field     = 'rules_id';
+    protected string $rules_id_field     = 'rules_id';
     /**
      * @var class-string<RuleAction>
      */
@@ -93,13 +90,10 @@ class Rule extends CommonDBTM
      */
     protected $rulecriteriaclass  = RuleCriteria::class;
 
-    /** @var bool */
-    public $specific_parameters   = false;
+    public bool $specific_parameters   = false;
 
-    /** @var array */
-    public $regex_results         = [];
-    /** @var array */
-    public $criterias_results     = [];
+    public array $regex_results         = [];
+    public array $criterias_results     = [];
 
     public static string $rightname             = 'config';
 

@@ -42,8 +42,7 @@ class DomainRecordType extends CommonDropdown
 {
     public static string $rightname = 'dropdown';
 
-    /** @var array */
-    public static $knowtypes = [
+    public static array $knowtypes = [
         [
             'id'        => 1,
             'name'      => 'A',

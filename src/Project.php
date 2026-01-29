@@ -64,7 +64,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     public const READALL                       = 1024;
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
-    protected $team                     = [];
+    protected array $team                     = [];
 
     public function getCloneRelations(): array
     {

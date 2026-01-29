@@ -61,25 +61,25 @@ class Planning extends CommonGLPI
     public static string $rightname = 'planning';
 
     /** @var string[]  */
-    public static $palette_bg = ['#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
+    public static array $palette_bg = ['#FFEEC4', '#D4EDFB', '#E1D0E1', '#CDD7A9', '#F8C8D2',
         '#D6CACA', '#D3D6ED', '#C8E5E3', '#FBD5BF', '#E9EBA2',
         '#E8E5E5', '#DBECDF', '#FCE7F2', '#E9D3D3', '#D2DBDC',
     ];
 
     /** @var string[]  */
-    public static $palette_fg = ['#57544D', '#59707E', '#5B3B5B', '#3A431A', '#58242F',
+    public static array $palette_fg = ['#57544D', '#59707E', '#5B3B5B', '#3A431A', '#58242F',
         '#3B2727', '#272D59', '#2E4645', '#6F4831', '#46481B',
         '#4E4E4E', '#274C30', '#6A535F', '#473232', '#454545',
     ];
 
     /** @var string[]  */
-    public static $palette_ev = ['#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
+    public static array $palette_ev = ['#E94A31', '#5174F2', '#51C9F2', '#FFCC29', '#20C646',
         '#364959', '#8C5344', '#FF8100', '#F600C4', '#0017FF',
         '#000000', '#FFFFFF', '#005800', '#925EFF',
     ];
 
     /** @var string[]  */
-    public static $directgroup_itemtype = ['PlanningExternalEvent', 'ProjectTask', 'TicketTask', 'ProblemTask', 'ChangeTask'];
+    public static array $directgroup_itemtype = ['PlanningExternalEvent', 'ProjectTask', 'TicketTask', 'ProblemTask', 'ChangeTask'];
 
     public const READMY    =    1;
     public const READGROUP = 1024;

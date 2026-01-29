@@ -61,25 +61,16 @@ use function Safe\preg_replace;
 
 class Grid
 {
-    /** @var int */
-    protected $cell_margin     = 3;
-    /** @var int */
-    protected $grid_cols       = 26;
-    /** @var int */
-    protected $grid_rows       = 24;
-    /** @var string */
-    protected $current         = "";
-    /** @var Dashboard|null */
-    protected $dashboard       = null;
-    /** @var array */
-    protected $items           = [];
-    /** @var string */
-    protected $context            = '';
+    protected int $cell_margin     = 3;
+    protected int $grid_cols       = 26;
+    protected int $grid_rows       = 24;
+    protected string $current         = "";
+    protected ?Dashboard $dashboard       = null;
+    protected array $items           = [];
+    protected string $context            = '';
 
-    /** @var bool */
-    public static $embed              = false;
-    /** @var array */
-    public static $all_dashboards     = [];
+    public static bool $embed              = false;
+    public static array $all_dashboards     = [];
 
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
     {

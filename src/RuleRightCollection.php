@@ -43,11 +43,11 @@ class RuleRightCollection extends RuleCollection
 
     // Specific ones
     /** @var array Array containing results : entity + right */
-    public $rules_entity_rights = [];
+    public array $rules_entity_rights = [];
     /** @var array Array containing results : only entity */
-    public $rules_entity        = [];
+    public array $rules_entity        = [];
     /** @var array Array containing results : only right */
-    public $rules_rights        = [];
+    public array $rules_rights        = [];
 
     public function getTitle()
     {

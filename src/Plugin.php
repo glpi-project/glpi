@@ -147,23 +147,22 @@ class Plugin extends CommonDBTM
     /**
      * Indicates whether plugins have been initialized.
      *
-     * @var bool
      */
-    private static $plugins_initialized = false;
+    private static bool $plugins_initialized = false;
 
     /**
      * Booted plugin list
      *
      * @var string[]
      */
-    private static $booted_plugins = [];
+    private static array $booted_plugins = [];
 
     /**
      * Activated plugin list
      *
      * @var string[]
      */
-    private static $activated_plugins = [];
+    private static array $activated_plugins = [];
 
 
     /**
@@ -171,14 +170,14 @@ class Plugin extends CommonDBTM
      *
      * @var string[]
      */
-    private static $autoloaded_plugins = [];
+    private static array $autoloaded_plugins = [];
 
     /**
      * Loaded plugin list
      *
      * @var string[]
      */
-    private static $loaded_plugins = [];
+    private static array $loaded_plugins = [];
 
     /**
      * Indicates whether the plugins execution is forced.
@@ -188,7 +187,6 @@ class Plugin extends CommonDBTM
     /**
      * Store additional infos for each plugins
      *
-     * @var array
      */
     private array $plugins_information = [];
 

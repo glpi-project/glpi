@@ -64,8 +64,7 @@ final class Profile
 
     private static ?self $current = null;
 
-    /** @var bool */
-    private $disabled = false;
+    private bool $disabled = false;
 
     public function __construct(string $id, ?string $parent_id)
     {

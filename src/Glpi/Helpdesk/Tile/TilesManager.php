@@ -46,7 +46,6 @@ final class TilesManager
 {
     /**
      * Singleton instance
-     * @var TilesManager|null
      */
     private static ?TilesManager $instance = null;
 

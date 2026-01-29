@@ -43,14 +43,8 @@
  **/
 class SLA extends LevelAgreement
 {
-    /**
-     * @var string
-     */
-    protected static $prefix            = 'sla';
-    /**
-     * @var string
-     */
-    protected static $prefixticket      = '';
+    protected static string $prefix            = 'sla';
+    protected static string $prefixticket      = '';
     protected static $levelclass        = SlaLevel::class;
     protected static $levelticketclass  = SlaLevel_Ticket::class;
     protected static array $forward_entity_to = [SlaLevel::class];

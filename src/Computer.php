@@ -70,9 +70,8 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     /**
      * Device container - format $device = array(ID,"device type","ID in device table","specificity value")
      *
-     * @var array
      */
-    public $devices                     = [];
+    public array $devices                     = [];
 
     public static string $rightname                   = 'computer';
     protected bool $usenotepad               = true;

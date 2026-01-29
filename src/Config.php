@@ -100,13 +100,12 @@ class Config extends CommonDBTM
     ];
 
     /** @var string[] */
-    public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+    public static array $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
-     * @var bool
      */
-    private static $loaded = false;
+    private static bool $loaded = false;
 
     public static function getTypeName($nb = 0)
     {

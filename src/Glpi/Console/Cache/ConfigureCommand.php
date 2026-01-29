@@ -63,9 +63,8 @@ class ConfigureCommand extends AbstractCommand implements ConfigurationCommandIn
 
     /**
      * Cache manager.
-     * @var CacheManager
      */
-    private $cache_manager;
+    private CacheManager $cache_manager;
 
     public function __construct()
     {

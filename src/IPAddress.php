@@ -68,10 +68,9 @@ class IPAddress extends CommonDBChild
 
     /**
      * Version of the address. Should be 4 or 6, or empty if not valid address
-     * @var int|string
      * @phpstan-var 4|6|''
      */
-    protected $version = '';
+    protected int|string $version = '';
 
     /**
      * Human-readable representation of the IP address.
@@ -79,9 +78,8 @@ class IPAddress extends CommonDBChild
      * Examples:
      * - 192.168.0.0
      * - 2001:db8:0:85a3\::ac1f:8001
-     * @var string
      */
-    protected $textual = '';
+    protected string $textual = '';
 
     /**
      * The binary representation of the IP address.
@@ -90,12 +88,12 @@ class IPAddress extends CommonDBChild
      * This is used for SQL requests.
      * @var string|int[]
      */
-    protected $binary  = [0, 0, 0, 0];
+    protected string|array $binary  = [0, 0, 0, 0];
 
     /**
      * @var bool Is the IPv4 address in dotted quoad format?
      */
-    protected $isDottedQuoadFormat = false;
+    protected bool $isDottedQuoadFormat = false;
 
     public static string $rightname  = 'internet';
 

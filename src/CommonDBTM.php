@@ -78,7 +78,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @var false|array<string,mixed>
      */
-    public $input = [];
+    public false|array $input = [];
 
     /**
      * Updated fields keys. Filled during update process.
@@ -98,7 +98,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Flag to determine whether changes must be logged into history.
      *
-     * @var bool
      */
     public bool $dohistory = false;
 
@@ -113,7 +112,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Flag to determine whether automatic messages must be generated on actions.
      *
-     * @var bool
      */
     public bool $auto_message_on_action = true;
 
@@ -121,7 +119,6 @@ class CommonDBTM extends CommonGLPI
      * Flag to determine whether a link to item form can be automatically generated via
      * self::getLink() method.
      *
-     * @var bool
      */
     public bool $no_form_page = false;
 
@@ -129,7 +126,6 @@ class CommonDBTM extends CommonGLPI
      * Flag to determine whether or not table name of item can be automatically generated via
      * self::getTable() method.
      *
-     * @var bool
      */
     protected static bool $notable = false;
 
@@ -154,11 +150,10 @@ class CommonDBTM extends CommonGLPI
     /**
      * Search option of item. Initialized on first call to self::getOptions() and used as cache.
      *
-     * @var array|false
      *
      * @TODO Should be removed and replaced by real cache usage.
      */
-    protected $searchopt = false;
+    protected array|false $searchopt = false;
 
     public string $taborientation = self::TAB_VERTICAL;
 
@@ -167,14 +162,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * List of linked item types from plugins on which entities information should be forwarded on update.
      *
-     * @var array
      */
     protected static array $plugins_forward_entity = [];
 
     /**
      * Flag to determine whether table name of item has a notepad.
      *
-     * @var bool
      */
     protected bool $usenotepad = false;
 
@@ -200,7 +193,6 @@ class CommonDBTM extends CommonGLPI
     /**
      * Current right that can be evaluated in "item_can" hook.
      * Variable is set prior to hook call then unset.
-     * @var ?int
      */
     public ?int $right;
 

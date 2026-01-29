@@ -74,8 +74,7 @@ class DBConnection extends CommonGLPI
      */
     public const PROPERTY_ALLOW_SIGNED_KEYS = 'allow_signed_keys';
 
-    /** @var bool */
-    protected static $notable = true;
+    protected static bool $notable = true;
 
 
     public static function getTypeName($nb = 0)

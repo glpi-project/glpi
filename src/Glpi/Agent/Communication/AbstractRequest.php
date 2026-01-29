@@ -114,23 +114,15 @@ abstract class AbstractRequest
     public const COMPRESS_BR   = 3;
     public const COMPRESS_DEFLATE = 4;
 
-    /** @var ?int */
     protected ?int $mode = null;
-    /** @var string */
     private string $deviceid;
     /** @var DOMDocument|array<string, mixed>|null */
     private DOMDocument|array|null $response = null;
-    /** @var ?int */
     private ?int $compression = null;
-    /** @var bool */
     private bool $error = false;
-    /** @var bool */
     protected bool $test_rules = false;
-    /** @var Common */
     protected Common $headers;
-    /** @var int */
     private int $http_response_code = 200;
-    /** @var string */
     protected string $query;
     protected bool $local = false;
 

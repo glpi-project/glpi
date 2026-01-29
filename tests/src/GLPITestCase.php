@@ -90,10 +90,7 @@ class GLPITestCase extends TestCase
     private ?array $config_copy = null;
     private array $superglobals_copy = [];
 
-    /**
-     * @var TestHandler
-     */
-    private $log_handler;
+    private TestHandler $log_handler;
 
     public function setUp(): void
     {

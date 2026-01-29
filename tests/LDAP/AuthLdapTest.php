@@ -53,10 +53,7 @@ use UserTitle;
 
 class AuthLdapTest extends DbTestCase
 {
-    /**
-     * @var AuthLDAP
-     */
-    private $ldap;
+    private AuthLDAP $ldap;
 
     /**
      * Prepare test data

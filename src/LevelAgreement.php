@@ -52,10 +52,8 @@ abstract class LevelAgreement extends CommonDBChild
     public static string $itemtype = SLM::class;
     public static string $items_id = 'slms_id';
 
-    /** @var string  */
-    protected static $prefix            = '';
-    /** @var string  */
-    protected static $prefixticket      = '';
+    protected static string $prefix            = '';
+    protected static string $prefixticket      = '';
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
     /** @var string|class-string<CommonDBTM> */

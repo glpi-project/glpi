@@ -136,23 +136,20 @@ class RacksPluginToCoreCommand extends AbstractCommand
     /**
      * Datacenter on which rooms will be created.
      *
-     * @var int
      */
-    private $datacenter_id;
+    private int $datacenter_id;
 
     /**
      * Room on which racks will be placed if no corresponding room found.
      *
-     * @var int
      */
-    private $fallback_room_id;
+    private int $fallback_room_id;
 
     /**
      * Imported elements mapping.
      *
-     * @var array
      */
-    private $elements_mapping;
+    private array $elements_mapping;
 
     protected function configure()
     {

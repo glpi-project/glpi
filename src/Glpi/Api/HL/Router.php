@@ -117,21 +117,18 @@ class Router
 
     /**
      * The request as it was received by the router (and after some very basic processing).
-     * @var ?Request
      * @internal Only intended to be used by tests
      */
     private ?Request $original_request = null;
 
     /**
      * The final state of the request after it was modified by the request middlewares.
-     * @var ?Request
      * @internal Only intended to be used by tests
      */
     private ?Request $final_request = null;
 
     /**
      * The last route that was matched and invoked.
-     * @var ?RoutePath
      * @internal Only intended to be used by tests
      */
     private ?RoutePath $last_invoked_route = null;

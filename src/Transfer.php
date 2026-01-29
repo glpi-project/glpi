@@ -75,7 +75,6 @@ final class Transfer extends CommonDBTM
 
     /**
      * Destination entity id
-     * @var int
      */
     public int $to                    = -1;
 

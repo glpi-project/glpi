@@ -55,34 +55,30 @@ class IPNetwork extends CommonImplicitTreeDropdown
      * Data used during add/update process to handle CommonImplicitTreeDropdown ancestors/sons.
      * @var ?array
      */
-    private $data_for_implicit_update;
+    private ?array $data_for_implicit_update = null;
 
     /**
      * Computed address.
      * Used for caching purpose.
-     * @var ?IPAddress
      */
-    private $address;
+    private ?IPAddress $address = null;
 
     /**
      * Computed netmask.
      * Used for caching purpose.
-     * @var ?IPNetmask
      */
-    private $netmask;
+    private ?IPNetmask $netmask = null;
     /**
      * Computed gateway.
      * Used for caching purpose.
-     * @var ?IPAddress
      */
-    private $gateway;
+    private ?IPAddress $gateway = null;
 
     /**
      * Indicates whether the IPAddress or the IPNetmask has been updated during add/update process.
      * Variable will be set during add/update process and unset after it.
-     * @var bool
      */
-    private $networkUpdate;
+    private bool $networkUpdate;
 
     public static function getTypeName($nb = 0)
     {

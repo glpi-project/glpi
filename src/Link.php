@@ -51,7 +51,7 @@ class Link extends CommonDBTM
 
     public static string $rightname = 'link';
     /** @var string[] */
-    public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
+    public static array $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',
         'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL',
     ];

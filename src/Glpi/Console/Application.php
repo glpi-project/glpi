@@ -95,16 +95,12 @@ class Application extends BaseApplication
 
     /**
      * Pointer to $CFG_GLPI.
-     * @var array
      */
-    private $config;
+    private array $config;
 
     private ?DBmysql $db = null;
 
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public function __construct(private Kernel $kernel)
     {

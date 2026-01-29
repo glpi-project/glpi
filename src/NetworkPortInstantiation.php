@@ -64,12 +64,9 @@ class NetworkPortInstantiation extends CommonDBChild
     public bool $dohistory             = false;
 
     // Instantiation properties
-    /** @var bool */
-    public $canHaveVLAN           = true;
-    /** @var bool */
-    public $canHaveVirtualPort    = true;
-    /** @var bool */
-    public $haveMAC               = true;
+    public bool $canHaveVLAN           = true;
+    public bool $canHaveVirtualPort    = true;
+    public bool $haveMAC               = true;
 
     public static function getIndexName()
     {

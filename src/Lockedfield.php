@@ -43,8 +43,7 @@ use Glpi\Search\SearchOption;
  **/
 class Lockedfield extends CommonDBTM
 {
-    /** @var CommonDBTM */
-    private $item;
+    private CommonDBTM $item;
 
     // From CommonDBTM
     public bool $dohistory                   = false;

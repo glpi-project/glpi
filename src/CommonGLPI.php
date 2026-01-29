@@ -78,21 +78,18 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Show the title of the item in the navigation header ?
      *
-     * @var bool
      */
     protected static bool $showTitleInNavigationHeader = false;
 
     /**
      * Display list on Navigation Header
      *
-     * @var bool
      */
     protected bool $displaylist          = true;
 
     /**
      * Show Debug
      *
-     * @var bool
      */
     public bool $showdebug               = false;
 
@@ -106,14 +103,12 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Rightname used to check rights to do actions on item.
      *
-     * @var string
      */
     public static string $rightname = '';
 
     /**
      * Need to get item to show tab
      *
-     * @var bool
      */
     public bool $get_item_to_display_tab = false;
 

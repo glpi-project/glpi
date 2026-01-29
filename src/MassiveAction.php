@@ -60,63 +60,53 @@ class MassiveAction
 
     /**
      * Massive actions input.
-     * @var array
      */
-    public $POST = [];
+    public array $POST = [];
 
     /**
      * Results of process.
-     * @var array
      */
-    public $results = [];
+    public array $results = [];
 
     /**
      * Current action key.
-     * @var string|null
      */
-    private $action;
+    private ?string $action = null;
 
     /**
      * Current action name.
-     * @var string|null
      */
     private ?string $action_name;
 
     /**
      * Class used to process current action.
-     * @var string
      */
-    private $processor;
+    private string $processor;
 
     /**
      * Items to process.
-     * @var array
      */
-    private $items = [];
+    private array $items = [];
 
     /**
      * Current process identifier.
-     * @var int|null
      */
-    private $identifier;
+    private ?int $identifier = null;
 
     /**
      * Total count of items in current process.
-     * @var int
      */
-    private $nb_items = 0;
+    private int $nb_items = 0;
 
     /**
      * Count of done items in current process.
-     * @var int
      */
-    private $nb_done = 0;
+    private int $nb_done = 0;
 
     /**
      * Items done in current process.
-     * @var array
      */
-    private $done = [];
+    private array $done = [];
 
     /**
      * Items remaining in current process.
@@ -125,26 +115,22 @@ class MassiveAction
 
     /**
      * Fields to remove after reload.
-     * @var array
      */
-    private $fields_to_remove_when_reload = [];
+    private array $fields_to_remove_when_reload = [];
 
     /**
      * Current process start time.
-     * @var float
      */
     private float $start_time;
 
     /**
      * Item used to check rights.
      * Variable is used for caching purpose.
-     * @var CommonDBTM|null
      */
     private ?CommonDBTM $check_item = null;
 
     /**
      * Redirect URL used after actions are processed.
-     * @var string
      */
     private string $redirect;
 

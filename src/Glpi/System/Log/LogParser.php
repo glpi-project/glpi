@@ -57,16 +57,14 @@ final class LogParser extends CommonGLPI
     /**
      * Log directory.
      *
-     * @var string
      */
-    private $directory;
+    private string $directory;
 
     /**
      * Known files cache.
      *
-     * @var array
      */
-    private $known_files;
+    private array $known_files;
 
     public function __construct(string $directory = GLPI_LOG_DIR)
     {

@@ -44,7 +44,6 @@ use Psr\Log\LogLevel;
 
 class DBmysqlIteratorTest extends DbTestCase
 {
-    /** @var \DBmysqlIterator */
     private \DBmysqlIterator $it;
 
     public function setUp(): void
