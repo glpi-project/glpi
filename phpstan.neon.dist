@@ -4,9 +4,10 @@ includes:
     - vendor/thecodingmachine/phpstan-safe-rule/phpstan-safe-rule.neon
     - .phpstan-baseline.php
     - .phpstan-baseline.missingType.iterableValue.php
+    - .phpstan-baseline.specific.php
 
 parameters:
-    level: 6
+    level: 8
     bootstrapFiles:
         - stubs/db_config_classes.php
         - stubs/glpi_constants.php
