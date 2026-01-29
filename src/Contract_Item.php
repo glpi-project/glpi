@@ -532,37 +532,20 @@ TWIG, $twig_params);
               || ($contract->fields['max_links_allowed'] > $totalnb))
             && ((int) $withtemplate !== 2)
         ) {
-            $twig_params = [
-                'contract' => $contract,
-                'contract_types' => array_merge($CFG_GLPI["contract_types"], [User::class]),
-                'entity_restrict' => $contract->fields['is_recursive']
-                    ? getSonsOf('glpi_entities', $contract->fields['entities_id'])
-                    : $contract->fields['entities_id'],
-                'used' => $used,
-                'btn_label' => _x('button', 'Add'),
-            ];
-            // language=Twig
-            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                {% import 'components/form/fields_macros.html.twig' as fields %}
-                <div class="mb-3">
-                    <form method="post" action="{{ 'Contract_Item'|itemtype_form_path }}">
-                        <div class="d-flex">
-                            <input type="hidden" name="contracts_id" value="{{ contract.getID() }}">
-                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
-                            {{ fields.dropdownItemsFromItemtypes('', null, {
-                                itemtypes: contract_types,
-                                entity_restrict: entity_restrict,
-                                checkright: true,
-                                used: used
-                            }) }}
-                            {% set btn %}
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
-                            {% endset %}
-                            {{ fields.htmlField('', btn, null) }}
-                        </div>
-                    </form>
-                </div>
-TWIG, $twig_params);
+            TemplateRenderer::getInstance()->display('components/form/link_existing_or_new.html.twig', [
+                'rand' => mt_rand(),
+                'link_itemtype' => self::class,
+                'source_itemtype' => $contract::class,
+                'source_items_id' => $instID,
+                'link_types' => array_merge($CFG_GLPI["contract_types"], [User::class]),
+                'generic_target' => true,
+                'dropdown_options' => [
+                    'entity'      => $contract->getEntityID(),
+                    'entity_sons' => $contract->isRecursive(),
+                    'used'        => $used,
+                ],
+                'form_label' => '',
+            ]);
         }
 
         $entries = [];

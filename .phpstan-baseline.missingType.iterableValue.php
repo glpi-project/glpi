@@ -10514,12 +10514,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset_PeripheralAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getItemConnectionsForItemtype\\(\\) return type has no value type specified in iterable type iterable\\.$#',
-	'identifier' => 'missingType.iterableValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset_PeripheralAsset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\Asset_PeripheralAsset\\:\\:getListForItemParams\\(\\) return type has no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
