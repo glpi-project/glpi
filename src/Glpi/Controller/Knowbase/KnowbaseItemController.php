@@ -41,10 +41,13 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\RichText\RichText;
 use KnowbaseItem;
 use Session;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
+
+use function Safe\json_decode;
 
 final class KnowbaseItemController extends AbstractController
 {
@@ -92,6 +95,58 @@ final class KnowbaseItemController extends AbstractController
         return new StreamedResponse(static function () use ($kbitem) {
             $kbitem->showFull();
         });
+    }
+
+    #[Route(
+        "/Knowbase/KnowbaseItem/{knowbaseitems_id}/Answer",
+        name: "knowbaseitem_update_answer",
+        methods: ["POST"],
+        requirements: [
+            'knowbaseitems_id' => '\d+',
+        ]
+    )]
+    public function updateAnswer(Request $request): JsonResponse
+    {
+        $id = (int) $request->get('knowbaseitems_id');
+
+        $kbitem = new KnowbaseItem();
+        if (!$kbitem->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        if (!$kbitem->can($id, UPDATE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        $data = json_decode($request->getContent(), true);
+        $answer = $data['answer'] ?? null;
+
+        if ($answer === null) {
+            return new JsonResponse([
+                'success' => false,
+                'message' => __('Missing answer content'),
+            ], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Sanitize HTML content to prevent XSS
+        $answer = RichText::getSafeHtml($answer);
+
+        $success = $kbitem->update([
+            'id' => $id,
+            'answer' => $answer,
+        ]);
+
+        if ($success) {
+            return new JsonResponse([
+                'success' => true,
+                'message' => __('Article saved successfully'),
+            ]);
+        }
+
+        return new JsonResponse([
+            'success' => false,
+            'message' => __('Failed to save the article'),
+        ], Response::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     #[Route(
