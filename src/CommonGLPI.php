@@ -99,7 +99,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Tab orientation : horizontal or vertical.
      *
-     * @var string
+     * @var self::TAB_HORIZONTAL|self::TAB_VERTICAL
      */
     public $taborientation          = 'horizontal';
 
@@ -116,6 +116,8 @@ class CommonGLPI implements CommonGLPIInterface
      * @var bool
      */
     public $get_item_to_display_tab = false;
+    public const TAB_HORIZONTAL = 'horizontal';
+    public const TAB_VERTICAL   = 'vertical';
 
     /**
      * List of tabs to add (registered by `self::registerStandardTab()`).
