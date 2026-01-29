@@ -31394,6 +31394,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/State.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Method State\\:\\:getSpecificMassiveActions\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/State.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method State\\:\\:getUniqueCloneName\\(\\) has parameter \\$input with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
@@ -31419,6 +31425,12 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method State\\:\\:prepareInputForClone\\(\\) return type has no value type specified in iterable type array\\.$#',
+	'identifier' => 'missingType.iterableValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/State.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method State\\:\\:processMassiveActionsForOneItemtype\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#',
 	'identifier' => 'missingType.iterableValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/State.php',
