@@ -3026,7 +3026,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
                                 if (
                                     empty($input[$key])
-                                    || preg_match('/<p>([\s| ]+)?<\/p>/', $input[$key]) !== 0 //check for empty '<p></p>' in rich text
+                                    || (is_string($input[$key]) && preg_match('/<p>([\s| ]+)?<\/p>/', $input[$key]) !== 0) //check for empty '<p></p>' in rich text
                                     || ($input[$key] == 'NULL')
                                     || (is_array($input[$key])
                                     && ($input[$key] === [0 => "0"]))
