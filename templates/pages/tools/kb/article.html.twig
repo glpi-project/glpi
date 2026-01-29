@@ -30,57 +30,87 @@
  # ---------------------------------------------------------------------
  #}
 
-<div class="d-flex mx-n2 my-n2" data-glpi-knowbase-article>
+<div class="d-flex mx-n2 my-n2"
+     data-glpi-knowbase-article
+     data-glpi-kb-item-id="{{ item_id }}"
+     data-glpi-kb-can-edit="{{ can_edit ? 'true' : 'false' }}">
     <article class="col-9 container ms-0 px-4 py-3 kb-article">
         <div class="d-flex align-items-center mb-3">
             <h1 class="fw-bold mb-0" data-testid="subject">{{ subject }}</h1>
-            <div class="dropdown ms-auto cursor-pointer d-flex align-items-center">
-                {% if edit_mode and actions|length > 0 %}
-                    <i
-                        class="ti ti-dots-vertical pointer-events-none"
-                        data-glpi-kb-dots
-                        data-bs-toggle="dropdown"
-                        aria-expanded="false"
-                        role="button"
-                        title="{{ __('More actions') }}"
-                    ></i>
-                    <ul class="dropdown-menu" data-bs-popper="none">
-                        {% for action in actions %}
-                            <li>
-                                <button
-                                    type="button"
-                                    class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
-                                    aria-label="{{ action.label }}"
-                                    data-glpi-kb-action="{{ action.type.value }}"
-                                    {% for key, param in action.params %}
-                                        data-glpi-kb-action-param-{{ key }}="{{ param }}"
-                                    {% endfor %}
-                                >
-                                    <i class="{{ action.icon }}"></i>
-                                    <span>{{ action.label }}</span>
-
-                                    {% if action.counter is not null %}
-                                        <span
-                                            class="badge glpi-badge ms-auto"
-                                            data-testid="{{ action.params.key }}-counter"
-                                            data-glpi-kb-action-counter="{{ action.params.key }}"
-                                        >{{ action.counter }}</span>
-                                    {% endif %}
-
-                                    {% if action.type.value == "TOGGLE_VALUE" %}
-                                        <label class="form-check form-switch ms-auto mb-0">
-                                            <input
-                                                type="checkbox"
-                                                class="form-check-input ms-0"
-                                                {{ action.params.checked ? 'checked' : '' }}
-                                            >
-                                        </label>
-                                    {% endif %}
-                                </button>
-                            </li>
-                        {% endfor %}
-                    </ul>
+            <div class="ms-auto d-flex align-items-center gap-2">
+                {# Edit/Save/Cancel buttons #}
+                {% if can_edit %}
+                    <div class="kb-editor-actions d-flex gap-2">
+                        <button type="button"
+                                class="btn btn-outline-secondary"
+                                data-action="toggle-edit"
+                                data-testid="edit-button">
+                            <i class="ti ti-edit me-1"></i>{{ __('Edit') }}
+                        </button>
+                        <button type="button"
+                                class="btn btn-primary d-none"
+                                data-action="save"
+                                data-testid="save-button">
+                            <i class="ti ti-device-floppy me-1"></i>{{ __('Save') }}
+                        </button>
+                        <button type="button"
+                                class="btn btn-outline-secondary d-none"
+                                data-action="cancel"
+                                data-testid="cancel-button">
+                            {{ __('Cancel') }}
+                        </button>
+                    </div>
                 {% endif %}
+
+                {# Actions dropdown #}
+                <div class="dropdown cursor-pointer d-flex align-items-center">
+                    {% if edit_mode and actions|length > 0 %}
+                        <i
+                            class="ti ti-dots-vertical pointer-events-none"
+                            data-glpi-kb-dots
+                            data-bs-toggle="dropdown"
+                            aria-expanded="false"
+                            role="button"
+                            title="{{ __('More actions') }}"
+                        ></i>
+                        <ul class="dropdown-menu" data-bs-popper="none">
+                            {% for action in actions %}
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
+                                        aria-label="{{ action.label }}"
+                                        data-glpi-kb-action="{{ action.type.value }}"
+                                        {% for key, param in action.params %}
+                                            data-glpi-kb-action-param-{{ key }}="{{ param }}"
+                                        {% endfor %}
+                                    >
+                                        <i class="{{ action.icon }}"></i>
+                                        <span>{{ action.label }}</span>
+
+                                        {% if action.counter is not null %}
+                                            <span
+                                                class="badge glpi-badge ms-auto"
+                                                data-testid="{{ action.params.key }}-counter"
+                                                data-glpi-kb-action-counter="{{ action.params.key }}"
+                                            >{{ action.counter }}</span>
+                                        {% endif %}
+
+                                        {% if action.type.value == "TOGGLE_VALUE" %}
+                                            <label class="form-check form-switch ms-auto mb-0">
+                                                <input
+                                                    type="checkbox"
+                                                    class="form-check-input ms-0"
+                                                    {{ action.params.checked ? 'checked' : '' }}
+                                                >
+                                            </label>
+                                        {% endif %}
+                                    </button>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
             </div>
         </div>
         <div class="text-muted d-flex align-items-center gap-3">
@@ -139,7 +169,10 @@
 
         <hr class="mt-4 mb-4">
 
-        <div class="rich_text_container" data-testid="content">
+        {# Tiptap editor container #}
+        <div id="kb-tiptap-editor"
+             class="rich_text_container"
+             data-testid="content">
             {{ answer|safe_html }}
         </div>
 
