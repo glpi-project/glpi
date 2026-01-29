@@ -206,10 +206,31 @@ jobs:
         run: |
           .github/actions/init_initialize-9.5-db.sh
           docker compose exec -T app .github/actions/test_update-from-9.5.sh
-      - name: "Functional tests"
+      - name: "Functional tests (phpunit)"
         if: "${{ success() || failure() }}"
         run: |
           docker compose exec -T app .github/actions/test_tests-functional.sh
+      - name: "Clone databases"
+        if: "${{ success() || failure() }}"
+        run: |
+          docker compose exec -T db bash -c '
+            if command -v mariadb &> /dev/null; then
+              DB_CLIENT="mariadb"
+              DB_DUMP="mariadb-dump"
+            else
+              DB_CLIENT="mysql"
+              DB_DUMP="mysqldump"
+            fi
+            for i in 2 3 4; do
+              $DB_CLIENT -u root -e "CREATE DATABASE glpi_$i CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+              $DB_DUMP -u root --single-transaction glpi | $DB_CLIENT -u root glpi_$i
+              echo "Database glpi_$i created and populated"
+            done
+          '
+      - name: "Functional tests (paratest)"
+        if: "${{ success() || failure() }}"
+        run: |
+          docker compose exec -T app .github/actions/test_tests-functional_parallel.sh
       - name: "Cache tests"
         if: "${{ success() || failure() }}"
         run: |

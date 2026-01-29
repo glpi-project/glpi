@@ -37,8 +37,10 @@ namespace tests\units\Glpi\Inventory\Asset;
 use Glpi\Inventory\Converter;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use SoftwareVersion;
 
+#[Group('single-thread')]
 class SoftwareTest extends AbstractInventoryAsset
 {
     public static function assetProvider(): array
