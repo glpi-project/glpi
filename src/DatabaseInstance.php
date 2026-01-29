@@ -51,10 +51,10 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname            = 'database';
-    protected $usenotepad               = true;
-    protected static $forward_entity_to = ['Database'];
+    protected bool $usenotepad               = true;
+    protected static array $forward_entity_to = ['Database'];
 
     public function getCloneRelations(): array
     {

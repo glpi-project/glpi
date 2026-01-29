@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class Database extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action = true;
+    public bool $auto_message_on_action = true;
     public static string $rightname       = 'database';
     public static $mustBeAttached  = false;
 

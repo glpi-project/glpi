@@ -41,7 +41,7 @@ class Item_DeviceCamera extends Item_Devices
     public static $itemtype_2 = DeviceCamera::class;
     public static $items_id_2 = 'devicecameras_id';
 
-    protected static $notable = false;
+    protected static bool $notable = false;
 
     public static function getSpecificities($specif = '')
     {

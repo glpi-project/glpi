@@ -46,8 +46,8 @@ use Glpi\Search\DefaultSearchRequestInterface;
 class Change extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
 
     // From CommonITIL
     public $userlinkclass               = 'Change_User';
@@ -55,7 +55,7 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     public $supplierlinkclass           = 'Change_Supplier';
 
     public static string $rightname            = 'change';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
     public const URGENCY_MASK_FIELD            = 'urgency_mask';

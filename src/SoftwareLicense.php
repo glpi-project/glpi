@@ -60,12 +60,12 @@ class SoftwareLicense extends CommonTreeDropdown implements AssignableItemInterf
 
     /// TODO move to CommonDBChild ?
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom'];
+    protected static array $forward_entity_to = ['Infocom'];
 
     public static string $rightname                   = 'license';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
 
     public function getCloneRelations(): array

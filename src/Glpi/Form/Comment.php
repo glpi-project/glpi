@@ -70,7 +70,7 @@ final class Comment extends CommonDBChild implements
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     private ?Section $section = null;
 

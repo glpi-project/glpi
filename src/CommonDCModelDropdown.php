@@ -44,7 +44,7 @@ abstract class CommonDCModelDropdown extends CommonDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $additional_fields_for_dictionnary = ['manufacturer'];
+    public array $additional_fields_for_dictionnary = ['manufacturer'];
 
 
     public static function getFieldLabel()

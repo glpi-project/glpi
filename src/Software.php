@@ -57,12 +57,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
+    protected static array $forward_entity_to = ['Infocom', 'ReservationItem', 'SoftwareVersion'];
 
     public static string $rightname                   = 'software';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {

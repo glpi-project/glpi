@@ -56,9 +56,9 @@ class CartridgeItem extends CommonDBTM implements AssignableItemInterface
     use Clonable;
 
     // From CommonDBTM
-    protected static $forward_entity_to = ['Cartridge', 'Infocom'];
-    public $dohistory                   = true;
-    protected $usenotepad               = true;
+    protected static array $forward_entity_to = ['Cartridge', 'Infocom'];
+    public bool $dohistory                   = true;
+    protected bool $usenotepad               = true;
 
     public static string $rightname                   = 'cartridge';
 

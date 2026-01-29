@@ -51,8 +51,8 @@ class RuleCriteria extends CommonDBChild
      */
     public static $itemtype        = Rule::class;
     public static $items_id        = 'rules_id';
-    public $dohistory              = true;
-    public $auto_message_on_action = false;
+    public bool $dohistory              = true;
+    public bool $auto_message_on_action = false;
 
 
 

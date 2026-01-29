@@ -21,7 +21,7 @@ The present file will list all changes made to the project; according to the
 
 #### Changes
 - `Session::haveRight()` now only returns a boolean
-- All `CommonGLPI` parameters now have a native PHP type
+- All `CommonGLPI`, `CommonDBTM` parameters now have a native PHP type
 
 #### Deprecated
 - `CommonITILSatisfaction::showSatisactionForm()`, use `CommonITILSatisfaction::showSatisfactionForm()` instead.

@@ -59,9 +59,9 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Item_Disk','ItemVirtualMachine',
+    protected static array $forward_entity_to = ['Item_Disk','ItemVirtualMachine',
         'Item_SoftwareVersion', 'Infocom',
         'NetworkPort', 'ReservationItem',
         'Item_OperatingSystem',
@@ -75,7 +75,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
     public $devices                     = [];
 
     public static string $rightname                   = 'computer';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {

@@ -59,8 +59,8 @@ use function Safe\strtotime;
 class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = [TicketValidation::class, TicketCost::class];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = [TicketValidation::class, TicketCost::class];
 
     // From CommonITIL
     public $userlinkclass               = Ticket_User::class;

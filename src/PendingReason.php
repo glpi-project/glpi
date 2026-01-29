@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
 class PendingReason extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBTM
     public $can_be_translated = true;

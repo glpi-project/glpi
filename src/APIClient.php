@@ -49,9 +49,9 @@ class APIClient extends CommonDBTM
     protected bool $displaylist = false;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'app_token',
     ];
 

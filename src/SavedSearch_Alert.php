@@ -47,7 +47,7 @@ class SavedSearch_Alert extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = SavedSearch::class;
     public static $items_id = 'savedsearches_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
     protected bool $displaylist  = false;
 
     public const OP_LESS     = 0;

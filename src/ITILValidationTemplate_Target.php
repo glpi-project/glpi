@@ -35,7 +35,7 @@
 
 class ITILValidationTemplate_Target extends CommonDBRelation
 {
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static $itemtype_1 = ITILValidationTemplate::class;
     public static $items_id_1 = 'itilvalidationtemplates_id';

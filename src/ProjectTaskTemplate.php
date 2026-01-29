@@ -40,7 +40,7 @@
 class ProjectTaskTemplate extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     /** @var bool */
     public $can_be_translated  = true;
 

@@ -53,7 +53,7 @@ class PassiveDCEquipment extends CommonDBTM implements AssignableItemInterface, 
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
     public static string $rightname = 'datacenter';
 
     public static function getTypeName($nb = 0)

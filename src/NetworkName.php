@@ -52,9 +52,9 @@ class NetworkName extends FQDNLabel
     // From CommonDBChild
     public static $itemtype              = 'itemtype';
     public static $items_id              = 'items_id';
-    public $dohistory                    = true;
+    public bool $dohistory                    = true;
 
-    protected static $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
+    protected static array $forward_entity_to  = ['IPAddress', 'NetworkAlias'];
 
     public static $canDeleteOnItemClean  = false;
 

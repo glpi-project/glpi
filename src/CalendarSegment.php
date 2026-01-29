@@ -43,7 +43,7 @@ use Glpi\DBAL\QueryFunction;
 class CalendarSegment extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
     // From CommonDBChild
     public static $itemtype = Calendar::class;

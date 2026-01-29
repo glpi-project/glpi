@@ -46,7 +46,7 @@ class KnowbaseItemTranslation extends CommonDBChild
 {
     public static $itemtype = KnowbaseItem::class;
     public static $items_id = 'knowbaseitems_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
     public static $logs_for_parent = false;
 
     public static string $rightname       = 'knowbase';

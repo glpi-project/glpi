@@ -48,7 +48,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
     }
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public $can_be_translated  = true;
 
 

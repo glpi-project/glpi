@@ -107,9 +107,9 @@ final class Form extends CommonDBTM implements
 
     public static string $rightname = 'form';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public $history_blacklist = [
+    public array $history_blacklist = [
         'date_mod',
     ];
 

@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Calendar_Holiday extends CommonDBRelation
 {
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     // From CommonDBRelation
     public static $itemtype_1 = Calendar::class;

@@ -129,7 +129,7 @@ class AuthLDAP extends CommonDBTM
     ];
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'config';
 
@@ -139,7 +139,7 @@ class AuthLDAP extends CommonDBTM
      */
     public static $conn_cache = [];
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'rootdn_passwd',
     ];
 

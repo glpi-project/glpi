@@ -57,7 +57,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     public static $take_entity_1         = false;
     // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
-    protected static $notable            = true;
+    protected static bool $notable            = true;
 
     public static $logs_for_item_2       = false;
     public static $take_entity_2         = true;
@@ -69,13 +69,13 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     public static $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
     // This var is defined by CommonDBRelation ...
-    public $no_form_page                 = false;
+    public bool $no_form_page                 = false;
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    protected static $forward_entity_to  = ['Infocom'];
+    protected static array $forward_entity_to  = ['Infocom'];
 
-    public static $undisclosedFields      = [];
+    public static array $undisclosedFields      = [];
 
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 

@@ -39,7 +39,7 @@
  */
 class FQDN extends CommonDropdown
 {
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'internet';
 

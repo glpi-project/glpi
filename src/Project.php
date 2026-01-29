@@ -55,10 +55,10 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ProjectCost', 'ProjectTask'];
     public static string $rightname                   = 'project';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public const READMY                        = 1;
     public const READALL                       = 1024;

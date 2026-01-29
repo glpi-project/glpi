@@ -56,12 +56,12 @@ use Glpi\Toolbox\ArrayPathAccessor;
 class NetworkPortInstantiation extends CommonDBChild
 {
     // From CommonDBTM
-    public $auto_message_on_action   = false;
+    public bool $auto_message_on_action   = false;
 
     // From CommonDBChild
     public static $itemtype       = NetworkPort::class;
     public static $items_id       = 'networkports_id';
-    public $dohistory             = false;
+    public bool $dohistory             = false;
 
     // Instantiation properties
     /** @var bool */

@@ -49,10 +49,10 @@ class Line extends CommonDBTM implements AssignableItemInterface, StateInterface
     use AssignableItem;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static string $rightname                   = 'line';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName($nb = 0)

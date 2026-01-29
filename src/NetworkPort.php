@@ -58,11 +58,11 @@ class NetworkPort extends CommonDBChild
     // From CommonDBChild
     public static $itemtype             = 'itemtype';
     public static $items_id             = 'items_id';
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     public static $checkParentRights    = CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM;
 
-    protected static $forward_entity_to = ['NetworkName'];
+    protected static array $forward_entity_to = ['NetworkName'];
 
     public static string $rightname                   = 'networking';
     protected bool $displaylist = false;

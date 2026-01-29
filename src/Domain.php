@@ -50,15 +50,15 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     }
 
     public static string $rightname = 'domain';
-    protected static $forward_entity_to = ['DomainRecord'];
+    protected static array $forward_entity_to = ['DomainRecord'];
 
     /** @var bool */
     public $can_be_translated = false;
 
-    public $dohistory        = true;
+    public bool $dohistory        = true;
     /** @var bool */
     protected $usenotepadrights = true;
-    protected $usenotepad       = true;
+    protected bool $usenotepad       = true;
     /** @var string */
     public static $tags             = '[DOMAIN_NAME]';
 

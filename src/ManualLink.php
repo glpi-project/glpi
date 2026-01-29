@@ -41,8 +41,8 @@ use Glpi\DBAL\QueryExpression;
  */
 class ManualLink extends CommonDBChild
 {
-    public $dohistory              = false;
-    public $auto_message_on_action = false; // Link in message can't work'
+    public bool $dohistory              = false;
+    public bool $auto_message_on_action = false; // Link in message can't work'
     protected bool $displaylist         = false;
     public static $logs_for_parent = true;
     public static $itemtype        = 'itemtype';

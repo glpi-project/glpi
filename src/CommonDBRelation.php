@@ -107,7 +107,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
     public static $check_entity_coherency = true;
 
     /** @var bool */
-    public $no_form_page                  = true;
+    public bool $no_form_page                  = true;
 
     /**
      * Search option number to use in parent item log.

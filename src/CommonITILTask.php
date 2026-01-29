@@ -57,7 +57,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
     use ITILSubItemRights;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
+    public bool $auto_message_on_action = false;
 
     public static string $rightname = 'task';
 

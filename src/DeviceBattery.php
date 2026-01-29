@@ -35,7 +35,7 @@
 
 class DeviceBattery extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceBattery', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {

@@ -47,7 +47,7 @@ use Glpi\DBAL\QueryFunction;
 /// @since 0.84
 class IPNetwork extends CommonImplicitTreeDropdown
 {
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     public static string $rightname = 'internet';
 

@@ -42,9 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
 class SLM extends CommonDBTM
 {
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['SLA', 'OLA'];
+    protected static array $forward_entity_to = ['SLA', 'OLA'];
 
     public static string $rightname                   = 'slm';
 

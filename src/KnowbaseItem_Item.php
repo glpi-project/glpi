@@ -52,7 +52,7 @@ class KnowbaseItem_Item extends CommonDBRelation
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
 
     public static function getTypeName($nb = 0)
     {

@@ -43,7 +43,7 @@ class ItemAntivirus extends CommonDBChild
     // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
 
 

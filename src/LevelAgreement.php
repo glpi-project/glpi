@@ -45,7 +45,7 @@ use function Safe\strtotime;
 abstract class LevelAgreement extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory          = true;
+    public bool $dohistory          = true;
     public static string $rightname       = 'slm';
 
     // From CommonDBChild

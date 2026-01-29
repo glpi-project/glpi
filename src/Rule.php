@@ -52,7 +52,7 @@ class Rule extends CommonDBTM
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory             = true;
+    public bool $dohistory             = true;
 
     // Specific ones
     /**

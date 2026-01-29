@@ -55,9 +55,9 @@ class Appliance extends CommonDBTM implements AssignableItemInterface, StateInte
     }
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
     public static string $rightname                   = 'appliance';
-    protected $usenotepad               = true;
+    protected bool $usenotepad               = true;
 
     public function getCloneRelations(): array
     {

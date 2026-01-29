@@ -53,7 +53,7 @@ class Cable extends CommonDBTM implements AssignableItemInterface, StateInterfac
     use Glpi\Features\State;
 
     // From CommonDBTM
-    public $dohistory         = true;
+    public bool $dohistory         = true;
     public static string $rightname         = 'cable_management';
 
     public static function getTypeName($nb = 0)
