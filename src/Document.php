@@ -484,6 +484,21 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return $out;
     }
 
+    public function getDownloadUrl(?CommonDBTM $linked_item = null): string
+    {
+        $params = [
+            'docid' => $this->fields['id'],
+        ];
+
+        if ($linked_item) {
+            $params['itemtype'] = $linked_item::class;
+            $params['items_id'] = $linked_item->getID();
+        }
+
+        $params = http_build_query($params);
+        return Html::getPrefixedUrl("/front/document.send.php?$params");
+    }
+
     /**
      * find a document with a file attached
      *
