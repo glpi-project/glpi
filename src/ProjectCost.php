@@ -91,7 +91,7 @@ class ProjectCost extends CommonDBChild
         ) {
             $input['cost'] = 0;
         }
-        
+
         return parent::prepareInputForUpdate($input);
     }
 
