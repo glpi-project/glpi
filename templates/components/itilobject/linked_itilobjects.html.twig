@@ -39,7 +39,7 @@
       <div class="list-group list-group-flush list-group-hoverable">
          {% for id, linked in linked_itilobjects %}
             {% set new_itilobject = get_item(linked['itemtype'], linked['items_id']) %}
-            {% set can_view_item = new_itilobject.canViewItem() %}
+            {% set can_view_item = new_itilobject.can(linked['items_id'], constant('READ')) %}
             <div class="list-group-item">
                <div class="row">
                   <div class="col-auto">
