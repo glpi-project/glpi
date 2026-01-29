@@ -130,7 +130,7 @@ export class GlpiKnowbaseArticleController
     {
         const value = toggle.checked;
         try {
-            await post(`Knowbase/KnowbaseItem/${id}/ToggleField`, {
+            await post(`Knowbase/${id}/ToggleField`, {
                 field: field,
                 value: value,
             });

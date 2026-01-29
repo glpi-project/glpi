@@ -140,7 +140,7 @@ export class GlpiKnowbaseCommentsPanelController
         data.append('content', textarea.value);
 
         const base_url = CFG_GLPI.root_doc;
-        const url = `${base_url}/Knowbase/Comment/${comment_id}/Update`;
+        const url = `${base_url}/Knowbase/UpdateComment/${comment_id}`;
         const response = await fetch(url, {
             method: "POST",
             body: data,
@@ -185,7 +185,7 @@ export class GlpiKnowbaseCommentsPanelController
 
         // Delete comment on the backend
         const base_url = CFG_GLPI.root_doc;
-        const url = `${base_url}/Knowbase/Comment/${comment_id}/Delete`;
+        const url = `${base_url}/Knowbase/DeleteComment/${comment_id}`;
         const response = await fetch(url, {
             method: "POST",
             headers: {

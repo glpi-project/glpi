@@ -46,8 +46,8 @@ use Symfony\Component\Routing\Attribute\Route;
 final class DeleteCommentController extends AbstractController
 {
     #[Route(
-        "/Knowbase/Comment/{id}/Delete",
-        name: "knowbase_comment_delete",
+        "/Knowbase/DeleteComment/{id}",
+        name: "knowbase_delete_comment",
         methods: ["POST"],
         requirements: [
             'id' => '\d+',
