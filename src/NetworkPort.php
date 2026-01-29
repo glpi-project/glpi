@@ -64,8 +64,8 @@ class NetworkPort extends CommonDBChild
 
     protected static $forward_entity_to = ['NetworkName'];
 
-    public static $rightname                   = 'networking';
-    protected $displaylist = false;
+    public static string $rightname                   = 'networking';
+    protected bool $displaylist = false;
 
     /**
      * Subset of input that will be used for NetworkPortInstantiation.

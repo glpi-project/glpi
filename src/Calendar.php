@@ -51,7 +51,7 @@ class Calendar extends CommonDropdown
 
     protected static $forward_entity_to = ['CalendarSegment'];
 
-    public static $rightname = 'calendar';
+    public static string $rightname = 'calendar';
 
 
     public function getCloneRelations(): array

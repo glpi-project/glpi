@@ -49,7 +49,7 @@ class Link extends CommonDBTM
     // From CommonDBTM
     public $dohistory                   = true;
 
-    public static $rightname = 'link';
+    public static string $rightname = 'link';
     /** @var string[] */
     public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',

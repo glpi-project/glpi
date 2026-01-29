@@ -101,7 +101,7 @@ class Rule extends CommonDBTM
     /** @var array */
     public $criterias_results     = [];
 
-    public static $rightname             = 'config';
+    public static string $rightname             = 'config';
 
     public const RULE_NOT_IN_CACHE       = -1;
     public const RULE_WILDCARD           = '*';

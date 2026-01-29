@@ -64,7 +64,7 @@ class NetworkEquipment extends CommonDBTM implements AssignableItemInterface, DC
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'networking';
+    public static string $rightname                   = 'networking';
     protected $usenotepad               = true;
 
     /** RELATIONS */

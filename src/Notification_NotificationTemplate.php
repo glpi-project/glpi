@@ -50,7 +50,7 @@ class Notification_NotificationTemplate extends CommonDBRelation
     public static $mustBeAttached_2 = false; // Mandatory to display creation form
 
     public $no_form_page    = false;
-    protected $displaylist  = false;
+    protected bool $displaylist  = false;
 
     public const MODE_MAIL      = 'mailing';
     public const MODE_AJAX      = 'ajax';

@@ -67,7 +67,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     public $grouplinkclass              = Group_Ticket::class;
     public $supplierlinkclass           = Supplier_Ticket::class;
 
-    public static $rightname                   = 'ticket';
+    public static string $rightname                   = 'ticket';
 
     /**
      * @var bool

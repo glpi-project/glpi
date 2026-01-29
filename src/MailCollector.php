@@ -131,7 +131,7 @@ class MailCollector extends CommonDBTM
 
     public $dohistory       = true;
 
-    public static $rightname       = 'config';
+    public static string $rightname       = 'config';
 
     // Destination folder
     public const REFUSED_FOLDER  = 'refused';

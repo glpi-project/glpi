@@ -41,7 +41,7 @@ use Glpi\DBAL\QueryFunction;
  */
 abstract class CommonDevice extends CommonDropdown
 {
-    public static $rightname          = 'device';
+    public static string $rightname          = 'device';
 
     public $can_be_translated  = false;
 

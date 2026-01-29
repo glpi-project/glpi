@@ -46,7 +46,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'itilvalidationtemplate';
+    public static string $rightname = 'itilvalidationtemplate';
 
     public $can_be_translated = true;
 

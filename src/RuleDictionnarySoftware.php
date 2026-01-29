@@ -45,7 +45,7 @@ class RuleDictionnarySoftware extends Rule
 {
     public $additional_fields_for_dictionnary = ['manufacturer'];
 
-    public static $rightname                         = 'rule_dictionnary_software';
+    public static string $rightname                         = 'rule_dictionnary_software';
 
 
     public function getTitle()

@@ -68,7 +68,7 @@ abstract class CommonDropdown extends CommonDBTM
      */
     public $can_be_translated = true;
 
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
     public static function getTypeName($nb = 0)
     {

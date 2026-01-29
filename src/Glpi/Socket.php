@@ -61,7 +61,7 @@ class Socket extends CommonDBChild
 
     // From CommonDBTM
     public $dohistory          = true;
-    public static $rightname          = 'cable_management';
+    public static string $rightname          = 'cable_management';
     /** @var bool */
     public $can_be_translated  = false;
 

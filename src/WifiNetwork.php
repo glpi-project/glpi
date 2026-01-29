@@ -39,7 +39,7 @@ class WifiNetwork extends CommonDropdown
 {
     public $dohistory          = true;
 
-    public static $rightname          = 'internet';
+    public static string $rightname          = 'internet';
 
     public $can_be_translated  = false;
 

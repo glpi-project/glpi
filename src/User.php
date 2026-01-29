@@ -91,7 +91,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const UPDATEAUTHENT       = 4096;
     public const IMPERSONATE         = 8192;
 
-    public static $rightname = 'user';
+    public static string $rightname = 'user';
 
     public static $undisclosedFields = [
         'password',

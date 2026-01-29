@@ -65,7 +65,7 @@ class Printer extends CommonDBTM implements AssignableItemInterface, StateInterf
         'Item_OperatingSystem', 'Item_Disk', 'Item_SoftwareVersion',
     ];
 
-    public static $rightname                   = 'printer';
+    public static string $rightname                   = 'printer';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array

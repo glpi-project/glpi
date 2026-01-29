@@ -43,7 +43,7 @@ use Override;
 
 final class CustomTile extends CommonDBTM implements TileInterface
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     #[Override]
     public function getWeight(): int

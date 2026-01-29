@@ -62,7 +62,7 @@ class Phone extends CommonDBTM implements AssignableItemInterface, StateInterfac
         'Item_OperatingSystem', 'Item_Disk',
     ];
 
-    public static $rightname                   = 'phone';
+    public static string $rightname                   = 'phone';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array

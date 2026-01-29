@@ -50,7 +50,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
     // From CommonDBTM
     public $dohistory = true;
 
-    public static $rightname = 'knowbase';
+    public static string $rightname = 'knowbase';
 
     public function canPurgeItem(): bool
     {

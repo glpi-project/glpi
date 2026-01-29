@@ -97,7 +97,7 @@ class IPAddress extends CommonDBChild
      */
     protected $isDottedQuoadFormat = false;
 
-    public static $rightname  = 'internet';
+    public static string $rightname  = 'internet';
 
     //////////////////////////////////////////////////////////////////////////////
     // CommonDBTM related methods

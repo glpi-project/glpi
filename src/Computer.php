@@ -74,7 +74,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
      */
     public $devices                     = [];
 
-    public static $rightname                   = 'computer';
+    public static string $rightname                   = 'computer';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array

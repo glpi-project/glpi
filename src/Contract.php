@@ -54,7 +54,7 @@ class Contract extends CommonDBTM implements StateInterface
     public $dohistory                   = true;
     protected static $forward_entity_to = ['ContractCost'];
 
-    public static $rightname                   = 'contract';
+    public static string $rightname                   = 'contract';
     protected $usenotepad               = true;
 
     public const RENEWAL_NEVER = 0;

@@ -94,7 +94,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
     public $dohistory             = true;
 
-    public static $rightname             = 'profile';
+    public static string $rightname             = 'profile';
 
     /**
      * Profile rights to update after profile update.

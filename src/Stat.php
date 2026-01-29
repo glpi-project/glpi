@@ -52,7 +52,7 @@ use function Safe\strtotime;
  **/
 class Stat extends CommonGLPI
 {
-    public static $rightname = 'statistic';
+    public static string $rightname = 'statistic';
 
     /**
      * @var array

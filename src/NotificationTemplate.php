@@ -62,7 +62,7 @@ class NotificationTemplate extends CommonDBTM
      */
     public $templates_by_languages = [];
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     #[Override]
     public function getCloneRelations(): array

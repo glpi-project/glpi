@@ -45,7 +45,7 @@ use function Safe\strtotime;
 
 class QueuedWebhook extends CommonDBChild
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public static $itemtype = Webhook::class;
     public static $items_id = 'webhooks_id';

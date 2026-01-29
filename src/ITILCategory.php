@@ -47,7 +47,7 @@ class ITILCategory extends CommonTreeDropdown
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'itilcategory';
+    public static string $rightname          = 'itilcategory';
 
     public function getAdditionalFields()
     {

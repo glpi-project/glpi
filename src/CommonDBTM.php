@@ -160,9 +160,9 @@ class CommonDBTM extends CommonGLPI
      */
     protected $searchopt = false;
 
-    public $taborientation = 'vertical';
+    public string $taborientation = 'vertical';
 
-    public $get_item_to_display_tab = true;
+    public bool $get_item_to_display_tab = true;
 
     /**
      * List of linked item types from plugins on which entities information should be forwarded on update.

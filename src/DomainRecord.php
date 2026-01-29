@@ -46,7 +46,7 @@ class DomainRecord extends CommonDBChild implements AssignableItemInterface
 
     public const DEFAULT_TTL = 3600;
 
-    public static $rightname              = 'domain';
+    public static string $rightname              = 'domain';
     // From CommonDBChild
     public static $itemtype = Domain::class;
     public static $items_id        = 'domains_id';

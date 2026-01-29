@@ -48,7 +48,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
     public $dohistory          = true;
     public $can_be_translated  = true;
 
-    public static $rightname          = 'itilfollowuptemplate';
+    public static string $rightname          = 'itilfollowuptemplate';
 
     public static function getTypeName($nb = 0)
     {

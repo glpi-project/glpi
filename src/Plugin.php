@@ -142,7 +142,7 @@ class Plugin extends CommonDBTM
      */
     private const PLUGIN_KEY_PATTERN = '/^[a-z0-9]+$/i';
 
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     /**
      * Indicates whether plugins have been initialized.

@@ -51,7 +51,7 @@ class Supplier extends CommonDBTM
     // From CommonDBTM
     public $dohistory           = true;
 
-    public static $rightname           = 'contact_enterprise';
+    public static string $rightname           = 'contact_enterprise';
     protected $usenotepad       = true;
 
     public static function getTypeName($nb = 0)

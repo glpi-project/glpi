@@ -66,7 +66,7 @@ class CronTask extends CommonDBTM
     private float $timer           = 0.0;
     private int $startlog        = 0;
     private int $volume          = 0;
-    public static $rightname        = 'config';
+    public static string $rightname        = 'config';
 
     /** The automatic action is disabled */
     public const STATE_DISABLE = 0;

@@ -50,7 +50,7 @@ class PlanningExternalEvent extends CommonDBTM implements CalDAVCompatibleItemIn
     use VobjectConverterTrait;
 
     public $dohistory = true;
-    public static $rightname = 'externalevent';
+    public static string $rightname = 'externalevent';
 
     public const MANAGE_BG_EVENTS =   1024;
 

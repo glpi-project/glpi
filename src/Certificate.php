@@ -57,7 +57,7 @@ class Certificate extends CommonDBTM implements AssignableItemInterface, StateIn
     }
 
     public $dohistory           = true;
-    public static $rightname           = "certificate";
+    public static string $rightname           = "certificate";
     protected $usenotepad       = true;
 
     public function getCloneRelations(): array

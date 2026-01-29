@@ -74,7 +74,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
 
-    public static $rightname   = 'knowbase';
+    public static string $rightname   = 'knowbase';
 
     public function getCloneRelations(): array
     {

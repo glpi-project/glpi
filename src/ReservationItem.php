@@ -49,14 +49,14 @@ class ReservationItem extends CommonDBChild
 
     public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-    public static $rightname                = 'reservation';
+    public static string $rightname                = 'reservation';
 
     public const RESERVEANITEM              = 1024;
 
-    public $get_item_to_display_tab  = false;
-    public $showdebug                = false;
+    public bool $get_item_to_display_tab  = false;
+    public bool $showdebug                = false;
 
-    public $taborientation           = 'horizontal';
+    public string $taborientation           = 'horizontal';
 
     public static function canView(): bool
     {

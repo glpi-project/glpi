@@ -64,7 +64,7 @@ class Reminder extends CommonDBVisible implements
     /** @var bool */
     public $can_be_translated           = true;
 
-    public static $rightname    = 'reminder_public';
+    public static string $rightname    = 'reminder_public';
 
     public const PERSONAL = 128;
 

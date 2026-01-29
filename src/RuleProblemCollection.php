@@ -36,7 +36,7 @@
 class RuleProblemCollection extends RuleCommonITILObjectCollection
 {
     // From RuleCollection
-    public static $rightname                        = 'rule_problem';
+    public static string $rightname                        = 'rule_problem';
     public $menu_option                             = 'problem';
 
     public function getTitle()

@@ -48,7 +48,7 @@ class ReminderTranslation extends CommonDBChild
     public $dohistory       = true;
     public static $logs_for_parent = false;
 
-    public static $rightname       = 'reminder_public';
+    public static string $rightname       = 'reminder_public';
 
     public static function getTypeName($nb = 0)
     {

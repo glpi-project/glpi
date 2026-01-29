@@ -51,7 +51,7 @@ class Budget extends CommonDropdown
     // From CommonDBTM
     public $dohistory           = true;
 
-    public static $rightname           = 'budget';
+    public static string $rightname           = 'budget';
     protected $usenotepad       = true;
 
     public $can_be_translated = false;

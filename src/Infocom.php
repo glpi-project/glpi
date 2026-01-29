@@ -54,7 +54,7 @@ class Infocom extends CommonDBChild
     public $dohistory              = true;
     public $auto_message_on_action = false; // Link in message can't work'
     public static $logs_for_parent = false;
-    public static $rightname              = 'infocom';
+    public static string $rightname              = 'infocom';
 
     //Option to automatically fill dates
     public const ON_STATUS_CHANGE   = 'STATUS';

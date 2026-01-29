@@ -63,7 +63,7 @@ class Monitor extends CommonDBTM implements AssignableItemInterface, DCBreadcrum
         'Item_SoftwareVersion',
     ];
 
-    public static $rightname            = 'monitor';
+    public static string $rightname            = 'monitor';
     protected $usenotepad               = true;
 
     public function getCloneRelations(): array
