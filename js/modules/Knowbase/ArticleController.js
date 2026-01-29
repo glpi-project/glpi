@@ -34,7 +34,7 @@
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "./ArticleSidePanelController.js";
-import { KnowbaseEditor } from "../KnowbaseEditor.js";
+import { KnowbaseEditor } from "/js/modules/KnowbaseEditor.js";
 
 export class GlpiKnowbaseArticleController
 {
