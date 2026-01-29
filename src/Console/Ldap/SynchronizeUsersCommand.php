@@ -85,7 +85,7 @@ class SynchronizeUsersCommand extends AbstractCommand
             'only-update-existing',
             'u',
             InputOption::VALUE_NONE,
-            __('Only update existing users (will not handle deleted users)')
+            __('Only update existing users')
         );
 
         $this->addOption(
