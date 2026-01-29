@@ -38,7 +38,6 @@
  */
 
 const { Extension } = TiptapCore;
-const Suggestion = TiptapSuggestion.default || TiptapSuggestion.Suggestion || TiptapSuggestion;
 
 /**
  * Available slash commands
@@ -319,7 +318,7 @@ const SlashCommands = Extension.create({
 
     addProseMirrorPlugins() {
         return [
-            Suggestion({
+            TiptapSuggestion({
                 editor: this.editor,
                 ...this.options.suggestion,
             }),
