@@ -49,7 +49,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
 
     // From CommonDBTM
     public bool $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $can_be_translated  = true;
 
 
     public static function getTypeName($nb = 0)

@@ -54,7 +54,7 @@ class Budget extends CommonDropdown
     public static string $rightname           = 'budget';
     protected bool $usenotepad       = true;
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     public function getCloneRelations(): array
     {

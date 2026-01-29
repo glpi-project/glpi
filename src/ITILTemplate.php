@@ -48,11 +48,11 @@ abstract class ITILTemplate extends CommonDropdown
     // From CommonDBTM
     public bool $dohistory                 = true;
 
-    public $display_dropdowntitle     = false;
+    public bool $display_dropdowntitle     = false;
 
     public static string $rightname                 = 'itiltemplate';
 
-    public $can_be_translated            = false;
+    public bool $can_be_translated            = false;
 
     // Specific fields
     /**

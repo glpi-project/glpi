@@ -63,9 +63,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     protected static array $forward_entity_to = [TicketValidation::class, TicketCost::class];
 
     // From CommonITIL
-    public $userlinkclass               = Ticket_User::class;
-    public $grouplinkclass              = Group_Ticket::class;
-    public $supplierlinkclass           = Supplier_Ticket::class;
+    public string $userlinkclass               = Ticket_User::class;
+    public string $grouplinkclass              = Group_Ticket::class;
+    public string $supplierlinkclass           = Supplier_Ticket::class;
 
     public static string $rightname                   = 'ticket';
 
