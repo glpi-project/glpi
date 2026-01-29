@@ -480,14 +480,15 @@ class GLPIDashboard {
             }).then(() => {
                 glpi_toast_info(__('Dashboard has been reset to default'));
                 if (window.reloadTab !== undefined) {
+                    window.glpi_close_all_dialogs();
                     window.reloadTab();
                 } else {
                     this.initFilters();
                     this.refreshDashboard();
+                    window.glpi_close_all_dialogs();
                 }
             }, () => {
                 glpi_toast_error(__('An error occurred while resetting the dashboard'));
-            }, () => {
                 glpi_close_all_dialogs();
             });
         });
