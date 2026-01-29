@@ -145,6 +145,19 @@ class Consumable extends CommonDBChild
             ]
         );
         if ($result) {
+
+            $this->getFromDB($input['id']);
+            Log::history(
+                $this->fields["consumableitems_id"],
+                ConsumableItem::class,
+                [
+                    0,
+                    '',
+                    sprintf(__('Return %1$s (%2$s) to stock'), $this->getPreAdditionalInfosForName(), $input['id']),
+                ],
+                static::class,
+                Log::HISTORY_UPDATE_SUBITEM
+            );
             return true;
         }
         return false;
@@ -190,6 +203,26 @@ class Consumable extends CommonDBChild
                 ]
             );
             if ($result) {
+                $item = getItemForItemtype($itemtype);
+                $item->getFromDB($items_id);
+                Log::history(
+                    $this->fields["consumableitems_id"],
+                    ConsumableItem::class,
+                    [
+                        0,
+                        '',
+                        sprintf(
+                            __('%1$s (%2$s) given to : %3$s (%4$s id %5$s)'),
+                            $this->getPreAdditionalInfosForName(),
+                            $ID,
+                            $item->fields['name'],
+                            __($itemtype),
+                            $item->fields['id']
+                        ),
+                    ],
+                    static::class,
+                    Log::HISTORY_UPDATE_SUBITEM
+                );
                 return true;
             }
         }
