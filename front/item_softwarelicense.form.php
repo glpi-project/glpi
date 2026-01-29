@@ -69,17 +69,15 @@ if (isset($_POST["add"])) {
         Html::back();
     }
 
-    if ($_POST['softwarelicenses_id'] > 0) {
-        if ($isl->add($_POST)) {
-            Event::log(
-                $_POST['softwarelicenses_id'],
-                "softwarelicense",
-                4,
-                "inventory",
-                //TRANS: %s is the user login
-                sprintf(__('%s associates an item and a license'), $_SESSION["glpiname"])
-            );
-        }
+    if ($isl->add($_POST)) {
+        Event::log(
+            $_POST['softwarelicenses_id'],
+            "softwarelicense",
+            4,
+            "inventory",
+            //TRANS: %s is the user login
+            sprintf(__('%s associates an item and a license'), $_SESSION["glpiname"])
+        );
     }
     Html::back();
 }
