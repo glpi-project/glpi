@@ -58,6 +58,7 @@ test('Can view and add comments', async ({ page, profile, api }) => {
     await expect(kb.getHeading('Comments')).not.toBeAttached();
     await page.getByTitle('More actions').click();
     await kb.getButton('Comments').click();
+    await expect(page.getByTestId('comments-counter')).toHaveText("1");
     await expect(kb.getHeading('Comments')).toBeVisible();
 
     // Existing comment should be shown
@@ -75,6 +76,7 @@ test('Can view and add comments', async ({ page, profile, api }) => {
     await expect(page.getByPlaceholder("Add a comment...")).toBeEmpty();
     await expect(page.getByText(/E2E worker account \d+\s+·\s+Now/)).toBeVisible();
     await expect(kb.getCommentByContent('My second comment')).toBeVisible();
+    await expect(page.getByTestId('comments-counter')).toHaveText("2");
 });
 
 test('Can edit a comment', async ({ page, profile, api }) => {
@@ -142,6 +144,7 @@ test('Can delete a comment', async ({ page, profile, api }) => {
     await kb.goto(id);
     await page.getByTitle('More actions').click();
     await kb.getButton('Comments').click();
+    await expect(page.getByTestId('comments-counter')).toHaveText("1");
     await expect(kb.getHeading('Comments')).toBeVisible();
 
     // Comment should be visible
@@ -163,4 +166,5 @@ test('Can delete a comment', async ({ page, profile, api }) => {
 
     // Comment should be removed
     await expect(comment).not.toBeAttached();
+    await expect(page.getByTestId('comments-counter')).toHaveText("0");
 });

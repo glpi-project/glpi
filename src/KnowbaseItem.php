@@ -975,6 +975,9 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'id' => $this->fields['id'],
                     'key' => 'comments',
                 ],
+                counter: countElementsInTable(KnowbaseItem_Comment::getTable(), [
+                    'knowbaseitems_id' => $this->fields['id'],
+                ]),
             );
         }
         if ($this->canUpdateItem()) {
