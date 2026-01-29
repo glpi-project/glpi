@@ -33,7 +33,7 @@
 /* global TiptapCore, TiptapStarterKit, TiptapLink, TiptapImage, TiptapPlaceholder, TiptapBubbleMenu */
 /* global TiptapTable, TiptapTableRow, TiptapTableHeader, TiptapTableCell */
 
-import { SlashCommands } from './SlashCommands.js';
+import { SlashCommands } from '/js/modules/SlashCommands.js';
 
 /**
  * Knowbase article editor based on Tiptap
