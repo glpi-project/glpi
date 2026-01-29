@@ -287,14 +287,14 @@ EOT,
                         'description' => 'IMAP connection string in the PHP format',
                         'example' => '{imap.example.com:993/imap/ssl}',
                         'x-field' => 'connect_string',
-                        'maxLength' => 255
+                        'maxLength' => 255,
                     ],
                     'domain' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-field' => 'host',
                         'description' => 'Email domain associated to this authentication server. Used to set user email addresses.',
                         'example' => 'example.com',
-                        'maxLength' => 255
+                        'maxLength' => 255,
                     ],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
                     'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
@@ -327,12 +327,12 @@ EOT,
                     'action_refuse' => [
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Whether to refuse the creation/modification of items that would violate the unicity constraint.',
-                        'default' => false
+                        'default' => false,
                     ],
                     'action_notify' => [
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Whether to send a notification when a unicity constraint is violated.',
-                        'default' => false
+                        'default' => false,
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                     'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -371,7 +371,7 @@ EOT,
                     ],
                     'state' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
-                        'enum' => [CronTask::STATE_DISABLE. CronTask::STATE_WAITING, CronTask::STATE_RUNNING],
+                        'enum' => [CronTask::STATE_DISABLE . CronTask::STATE_WAITING, CronTask::STATE_RUNNING],
                         'description' => <<<EOT
                         - 0: Disabled
                         - 1: Scheduled
@@ -422,7 +422,7 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-field' => 'lastrun',
                         'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
-                        'readOnly' => true
+                        'readOnly' => true,
                     ],
                     'comment' => ['type' => Doc\Schema::TYPE_STRING],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
@@ -442,10 +442,6 @@ EOT,
                     'automatic_action' => self::getDropdownTypeSchema(class: CronTask::class, full_schema: 'AutomaticAction') + [
                         'readOnly' => true,
                     ],
-//                    'previous' => self::getDropdownTypeSchema(class: CronTaskLog::class, full_schema: 'AutomaticActionLog') + [
-//                        'description' => 'The previous log entry for the same automatic action execution, if any. Typically points to the start log entry.',
-//                        'readOnly' => true,
-//                    ],
                     'previous' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
                         'description' => 'The previous log entry for the same automatic action execution, if any. Typically points to the start log entry.',
@@ -455,7 +451,7 @@ EOT,
                         'x-join' => [
                             'table' => CronTaskLog::getTable(),
                             'fkey' => CronTaskLog::getForeignKeyField(),
-                            'field' => 'id'
+                            'field' => 'id',
                         ],
                         'properties' => [
                             'id' => [
@@ -498,7 +494,7 @@ EOT,
                         'x-field' => 'content',
                         'maxLength' => 255,
                         'readOnly' => true,
-                    ]
+                    ],
                 ],
             ],
             'LDAPDirectoryReplicate' => [
@@ -546,7 +542,7 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-field' => 'passwd',
                         'writeOnly' => true,
-                        'maxLength' => 255
+                        'maxLength' => 255,
                     ],
                     'max_filesize' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -561,13 +557,13 @@ EOT,
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-field' => 'accepted',
                         'description' => 'Name of the folder where emails are moved if processing was successful',
-                        'maxLength' => 255
+                        'maxLength' => 255,
                     ],
                     'rejected_folder' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-field' => 'refused',
                         'description' => 'Name of the folder where emails are moved if processing failed',
-                        'maxLength' => 255
+                        'maxLength' => 255,
                     ],
                     'errors' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
