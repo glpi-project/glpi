@@ -7786,6 +7786,85 @@ HTML,
     }
 
     /**
+     * Check that timeline items with NULL document dates don't cause strtotime errors
+     * @return void
+     * @see https://github.com/glpi-project/glpi/issues/22134
+     */
+    public function testTimelineSortingWithNullDocumentDates(): void
+    {
+        $this->login();
+
+        $ticket_id = $this->createItem('Ticket', [
+            'name' => 'Test timeline with null document dates',
+            'content' => 'Testing bug #22134',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        // Create separate documents to avoid unicity constraint on (documents_id, itemtype, items_id, timeline_position)
+        $document1 = $this->createItem('Document', [
+            'name' => 'Test document 1 - null dates',
+            'entities_id' => 0,
+        ]);
+        $document2 = $this->createItem('Document', [
+            'name' => 'Test document 2 - partial null',
+            'entities_id' => 0,
+        ]);
+        $document3 = $this->createItem('Document', [
+            'name' => 'Test document 3 - valid dates',
+            'entities_id' => 0,
+        ]);
+
+        global $DB;
+
+        // Document with both dates NULL (bug #22134 scenario)
+        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+            'documents_id' => $document1->getID(),
+            'items_id' => $ticket_id,
+            'itemtype' => 'Ticket',
+            'entities_id' => 0,
+            'timeline_position' => 1,
+            'date_creation' => null,
+            'date' => null,
+        ]));
+
+        // Document with date_creation NULL but date valid (fallback scenario)
+        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+            'documents_id' => $document2->getID(),
+            'items_id' => $ticket_id,
+            'itemtype' => 'Ticket',
+            'entities_id' => 0,
+            'timeline_position' => 1,
+            'date_creation' => null,
+            'date' => '2024-01-15 10:00:00',
+        ]));
+
+        // Document with valid dates (regression check)
+        $this->assertNotFalse($DB->insert('glpi_documents_items', [
+            'documents_id' => $document3->getID(),
+            'items_id' => $ticket_id,
+            'itemtype' => 'Ticket',
+            'entities_id' => 0,
+            'timeline_position' => 1,
+            'date_creation' => '2024-01-20 14:00:00',
+            'date' => '2024-01-20 14:00:00',
+        ]));
+
+        $ticket = new Ticket();
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        // Should not throw "strtotime(): Argument #1 must be of type string, null given"
+        $timeline = $ticket->getTimelineItems();
+        $this->assertIsArray($timeline);
+
+        // Verify documents are in the timeline
+        $document_items = array_filter(
+            $timeline,
+            static fn($entry) => $entry['type'] === \Document_Item::class
+        );
+        $this->assertCount(3, $document_items);
+    }
+
+    /**
      * Data provider for the testCountActors function
      *
      * @return iterable
