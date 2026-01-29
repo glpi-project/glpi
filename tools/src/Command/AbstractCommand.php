@@ -102,7 +102,7 @@ abstract class AbstractCommand extends Command
     }
 
     /**
-     * Declare the command has supporting or not --plugin.
+     * Declare whether the command supports --plugin.
      * @return bool
      */
     protected function isPluginOptionAvailable(): bool
