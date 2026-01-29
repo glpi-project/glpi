@@ -374,7 +374,7 @@ class State extends CommonTreeDropdown
         }
 
         // Add custom asset definitions
-        foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions(only_active: true) as $definition) {
             $asset_class = $definition->getAssetClassName();
             $itemtype_options[$asset_class] = $definition->getFriendlyName() ?: $asset_class;
         }
@@ -404,25 +404,21 @@ class State extends CommonTreeDropdown
             case 'update_visibility':
                 $form_input = $ma->getInput();
 
-                $visible_itemtype_raw = $form_input['visible_itemtype'] ?? null;
+                $visible_itemtypes = $form_input['visible_itemtype'] ?? null;
                 $is_visible = isset($form_input['is_visible']) ? (int) $form_input['is_visible'] : null;
 
                 // On invalid input, skip all processing
-                if (!is_array($visible_itemtype_raw) || $is_visible === null) {
+                if (!is_array($visible_itemtypes) || $is_visible === null) {
                     foreach ($ids as $id) {
                         $ma->itemDone($item::class, $id, MassiveAction::NO_ACTION);
                     }
                     return;
                 }
 
-                $visible_itemtypes = is_array($visible_itemtype_raw)
-                    ? $visible_itemtype_raw
-                    : [$visible_itemtype_raw];
-
                 // Validate itemtypes against allowed types and skip processing for invalid ones
                 global $CFG_GLPI;
                 $allowed_itemtypes = $CFG_GLPI['state_types'] ?? [];
-                foreach (AssetDefinitionManager::getInstance()->getDefinitions() as $definition) {
+                foreach (AssetDefinitionManager::getInstance()->getDefinitions(only_active: true) as $definition) {
                     $allowed_itemtypes[] = $definition->getAssetClassName();
                 }
 
