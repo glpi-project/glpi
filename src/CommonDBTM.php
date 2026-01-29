@@ -530,8 +530,8 @@ class CommonDBTM extends CommonGLPI
      * Print the item generic form
      * Use a twig template to detect automatically fields and display them in a two column layout
      *
-     * @param int   $ID        ID of the item
-     * @param array $options   possible optional options:
+     * @param int                 $ID        ID of the item
+     * @param array<string,mixed> $options   possible optional options:
      *     - target for the Form
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
@@ -1275,8 +1275,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add an item in the database with all it's items.
      *
-     * @param array   $input   the _POST vars returned by the item form when press add
-     * @param array   $options with the insert options
+     * @param array<string,mixed> $input   the _POST vars returned by the item form when press add
+     * @param array<string,mixed> $options with the insert options
      *   - unicity_message : do not display message if item it a duplicate (default is yes)
      *   - disable_infocom_creation: do not automatically create infocom (default is false)
      * @param bool $history do history log ? (true by default)
@@ -1447,7 +1447,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the link to an item
      *
-     * @param array $options array of options
+     * @param array<string,mixed> $options array of options
      *    - comments    : boolean / display comments
      *    - complete    : boolean / display completename instead of name
      *    - additional  : boolean / display additionals information
@@ -1591,11 +1591,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Add needed information to $input (example entities_id)
      *
-     * @param array $input datas used to add the item
+     * @param array<string,mixed> $input data used to add the item
      *
-     * @since 0.84
-     *
-     * @return array the modified $input array
+     * @return array<string,mixed> the modified $input array
      **/
     public function addNeededInfoToInput($input)
     {
@@ -1631,11 +1629,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Update some elements of an item in the database.
      *
-     * @param array   $input   the _POST vars returned by the item form when press update
-     * @param bool $history do history log ? (default true)
-     * @param array   $options with the insert options
+     * @param array<string,mixed> $input   the _POST vars returned by the item form when press update
+     * @param bool                $history do history log ? (default true)
+     * @param array<string,mixed> $options with the insert options
      *
-     * @return bool true on success
+     * @return bool
      **/
     public function update(array $input, $history = true, $options = [])
     {
@@ -2107,12 +2105,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Delete an item in the database.
      *
-     * @param array   $input   the _POST vars returned by the item form when press delete
-     * @param bool $force   force deletion (default false)
-     * @param bool $history do history log ? (default true)
+     * @param array<string,mixed> $input   the _POST vars returned by the item form when press delete
+     * @param bool                $force   force deletion (default false)
+     * @param bool                $history do history log ? (default true)
      *
-     * @return bool true on success
-     **/
+     * @return bool
+     */
     public function delete(array $input, $force = false, $history = true)
     {
         global $DB;
@@ -2322,11 +2320,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Restore an item put in the trashbin in the database.
      *
-     * @param array   $input   the _POST vars returned by the item form when press restore
-     * @param bool $history do history log ? (default true)
+     * @param array<string,mixed> $input   the _POST vars returned by the item form when press restore
+     * @param bool                $history do history log ? (default true)
      *
-     * @return bool true on success
-     **/
+     * @return bool
+     */
     public function restore(array $input, $history = true)
     {
 
@@ -2791,7 +2789,7 @@ class CommonDBTM extends CommonGLPI
      * Display a 2 columns Footer for Form buttons
      * Close the form is user can edit
      *
-     * @param array $options array of possible options:
+     * @param array<string,mixed> $options array of possible options:
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *     - colspan for each column (default 2)
      *     - candel : set to false to hide "delete" button
@@ -2831,14 +2829,12 @@ class CommonDBTM extends CommonGLPI
     /**
      * Initialize item and check right before managing the edit form
      *
-     * @since 0.84
-     *
-     * @param int $ID      ID of the item/template
-     * @param array   $options Array of possible options:
+     * @param int                 $ID      ID of the item/template
+     * @param array<string,mixed> $options Array of possible options:
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *
      * @return int|void value of withtemplate option (throw an exception if not enough rights)
-     **/
+     */
     public function initForm($ID, array $options = [])
     {
 
@@ -2880,7 +2876,7 @@ class CommonDBTM extends CommonGLPI
      * Display a 2 columns Header 1 for ID, 1 for recursivity menu
      * Open the form is user can edit
      *
-     * @param array $options array of possible options:
+     * @param array<string,mixed> $options array of possible options:
      *     - target for the Form
      *     - withtemplate : 1 for newtemplate, 2 for newobject from template
      *     - colspan for each column (default 2)
@@ -3077,9 +3073,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Check right on an item with block
      *
-     * @param int $ID    ID of the item (-1 if new item)
-     * @param int $right Right to check
-     * @param ?array $input array of input data (used for adding item) (default NULL)
+     * @param int                  $ID    ID of the item (-1 if new item)
+     * @param int                  $right Right to check
+     * @param ?array<string,mixed> $input array of input data (used for adding item) (default NULL)
      *
      * @return void
      **/
@@ -3691,7 +3687,7 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get the name of the object
      *
-     * @param array $options array of options
+     * @param array{complete?: bool, additional?: bool} $options array of options
      *    - complete     : boolean / display completename instead of name
      *    - additional   : boolean / display additional information
      *
@@ -3779,7 +3775,7 @@ class CommonDBTM extends CommonGLPI
      *
      * @see CommonDBTM::getName
      *
-     * @param array $options array of options
+     * @param array{complete?: bool, additional?: bool, forceid?: bool} $options array of options
      *    - complete     : boolean / display completename instead of name
      *    - additional   : boolean / display additional information
      *    - forceid      : boolean  override config and display item's ID (false by default)
@@ -4183,7 +4179,7 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @param array $options @see Dropdown::show()
+     * @param array<string,mixed> $options @see Dropdown::show()
      *
      * @return string|false|int
      **/
@@ -4514,10 +4510,10 @@ class CommonDBTM extends CommonGLPI
      * Check field unicity before insert or update
      *
      * @param bool $add     true for insert, false for update (false by default)
-     * @param array   $options array
+     * @param array{unicity_error_message?: bool, add_event_on_duplicate?: bool, disable_unicity_check?: bool} $options array
      *
-     * @return bool true if item can be written in DB, false if not
-     **/
+     * @return bool
+     */
     public function checkUnicity($add = false, $options = [])
     {
         global $CFG_GLPI;
@@ -4757,19 +4753,17 @@ class CommonDBTM extends CommonGLPI
     /**
      * display a field using standard system
      *
-     * @since 0.83
-     *
-     * @param int|string|array $field_id_or_search_options id of the search option field
+     * @param int|string|array<string,mixed> $field_id_or_search_options id of the search option field
      *                                                             or field name
      *                                                             or search option array
      * @param mixed                $values                     value to display
-     * @param array                $options                    array of possible options:
+     * @param array<string,mixed>  $options                    array of possible options:
      * Parameters which could be used in options array :
      *    - comments : boolean / is the comments displayed near the value (default false)
      *    - any others options passed to specific display method
      *
      * @return mixed the value to display
-     **/
+     */
     public function getValueToDisplay($field_id_or_search_options, $values, $options = [])
     {
         global $CFG_GLPI;
@@ -4777,6 +4771,7 @@ class CommonDBTM extends CommonGLPI
         $param = [
             'comments' => false,
             'html'     => false,
+            'relative_dates' => false,
         ];
         foreach ($param as $key => $val) {
             if (!isset($options[$key])) {
@@ -4991,15 +4986,13 @@ class CommonDBTM extends CommonGLPI
     /**
      * display a specific field selection system
      *
-     * @since 0.83
-     *
-     * @param string       $field   name of the field
-     * @param string       $name    name of the select (if empty use linkfield) (default '')
-     * @param string|array $values  with the value to select or a Single value (default '')
-     * @param array        $options aArray of options
+     * @param string                     $field   name of the field
+     * @param string                     $name    name of the select (if empty use linkfield) (default '')
+     * @param string|array<string,mixed> $values  with the value to select or a Single value (default '')
+     * @param array<string,mixed>        $options aArray of options
      *
      * @return string the string to display
-     **/
+     */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         return '';
@@ -5009,22 +5002,20 @@ class CommonDBTM extends CommonGLPI
     /**
      * Select a field using standard system
      *
-     * @since 0.83
-     *
-     * @param int|string|array $field_id_or_search_options id of the search option field
+     * @param int|string|array<string,mixed> $field_id_or_search_options id of the search option field
      *                                                             or field name
      *                                                             or search option array
      * @param string               $name                       name of the select (if empty use linkfield)
      *                                                         (default '')
      * @param mixed                $values                     default value to display
      *                                                         (default '')
-     * @param array                $options                    array of possible options:
+     * @param array<string,mixed>  $options                    array of possible options:
      * Parameters which could be used in options array :
      *    - comments : boolean / is the comments displayed near the value (default false)
      *    - any others options passed to specific display method
      *
      * @return false|string the string to display
-     **/
+     */
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
         global $CFG_GLPI;
@@ -5480,14 +5471,14 @@ class CommonDBTM extends CommonGLPI
      *
      * @since 9.2
      *
-     * @param array $input   Input data
-     * @param array $options array with those keys
+     * @param array<string,mixed> $input   Input data
+     * @param array<string,mixed> $options array with those keys
      *                        - force_update (default false) update the content field of the object
      *                        - content_field (default content) the field who receive the main text
      *                                                          (with images)
      *                        - name (default filename) name of the HTML input containing files
      *                        - date  Date to set on document_items
-     * @return array the input param transformed
+     * @return array<string,mixed> the input param transformed
      **/
     public function addFiles(array $input, $options = [])
     {
@@ -5707,9 +5698,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Get autofill mark for/from templates
      *
-     * @param string $field   Field name
-     * @param array  $options Withtemplate parameter
-     * @param string $value   Optional value (if field to check is not part of current itemtype)
+     * @param string               $field   Field name
+     * @param array<string,mixed>  $options Withtemplate parameter
+     * @param string                $value  Optional value (if field to check is not part of current itemtype)
      *
      * @return string
      */
@@ -6517,7 +6508,7 @@ class CommonDBTM extends CommonGLPI
      *                             - null (use auto computed values, mainly
      *                             used for children of CommonDropdown that can
      *                             define their menus as object properties)
-     * @param array      $options  Display options
+     * @param array<string,mixed> $options  Display options
      *
      * @return void
      */

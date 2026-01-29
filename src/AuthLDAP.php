@@ -478,15 +478,6 @@ class AuthLDAP extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    /**
-     * Print the auth ldap form
-     *
-     * @param int $ID      ID of the item
-     * @param array   $options Options
-     *     - target for the form
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -551,6 +542,7 @@ class AuthLDAP extends CommonDBTM
                 </div>
 TWIG, $twig_params);
         }
+        return true;
     }
 
     /**
@@ -1190,6 +1182,7 @@ TWIG, ['authldaps_id' => $ID]);
      * @phpstan-return array{label: string, content: string}
      * @used-by templates/pages/setup/general/systeminfo_table.html.twig
      */
+
     public function getSystemInformation(): array
     {
         // No need to translate, this part always display in english (for copy/paste to forum)

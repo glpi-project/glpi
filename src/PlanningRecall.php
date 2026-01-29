@@ -263,7 +263,7 @@ class PlanningRecall extends CommonDBChild
      *
      * Mandatory options : itemtype, items_id
      *
-     * @param array $options array of possible options:
+     * @param array{itemtype?: string, items_id?: int, users_id?: int, value?: mixed, field?: string, rand?: int} $options array of possible options:
      *    - itemtype : string itemtype
      *    - items_id : integer id of the item
      *    - users_id : integer id of the user (if not set used login user)

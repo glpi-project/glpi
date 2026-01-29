@@ -1240,9 +1240,9 @@ TWIG, $avatar_params) . $username;
         $profile = Profile::getById($this->fields['profiles_id']);
         $entity  = Entity::getById($this->fields['entities_id']);
 
-        $username    = $user->getNameID(['forceid' => true, 'complete' => 1]);
-        $profilename = $profile->getNameID(['forceid' => true, 'complete' => 1]);
-        $entityname  = $entity->getNameID(['forceid' => true, 'complete' => 1]);
+        $username    = $user->getNameID(['forceid' => true, 'complete' => true]);
+        $profilename = $profile->getNameID(['forceid' => true, 'complete' => true]);
+        $entityname  = $entity->getNameID(['forceid' => true, 'complete' => true]);
 
         // Log on user
         if ($user->dohistory) {

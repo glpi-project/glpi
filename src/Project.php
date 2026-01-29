@@ -47,11 +47,6 @@ use Glpi\Plugin\Hooks;
 use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 
-/**
- * Project Class
- *
- * @since 0.85
- **/
 class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInterface, TeamworkInterface
 {
     use Kanban;
@@ -1365,16 +1360,6 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
         ]);
     }
 
-    /**
-     * Print the Project form
-     *
-     * @param int $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - withtemplate : 1 for newtemplate, 2 for newobject from template
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);

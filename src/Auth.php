@@ -1184,7 +1184,7 @@ class Auth extends CommonGLPI
     /**
      * Print all the authentication methods
      *
-     * @param array $options Possible options:
+     * @param array<string,mixed> $options Possible options:
      * - name : Name of the select (default is auths_id)
      * - value : Selected value (default 0)
      * - display : If true, the dropdown is displayed instead of returned (default true)
