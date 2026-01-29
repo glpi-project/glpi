@@ -106,16 +106,6 @@ class SavedSearch_Alert extends CommonDBChild
         return $ong;
     }
 
-    /**
-     * Print the form
-     *
-     * @param int $ID      integer ID of the item
-     * @param array   $options array
-     *     - target for the Form
-     *     - computers_id ID of the computer for add process
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $search = new SavedSearch();

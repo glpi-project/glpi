@@ -251,14 +251,6 @@ class ItemAntivirus extends CommonDBChild
         return $tab;
     }
 
-    /**
-     * Display form for antivirus
-     *
-     * @param int $ID      id of the antivirus
-     * @param array   $options
-     *
-     * @return bool TRUE if form is ok
-     **/
     public function showForm($ID, array $options = [])
     {
         if (isset($options['parent'])) {

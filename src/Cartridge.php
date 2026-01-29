@@ -1223,16 +1223,6 @@ TWIG, ['printer_id' => $printer->getID()]);
         ]);
     }
 
-    /**
-     * Show form for Cartridge
-     * @since 0.84
-     *
-     * @param int $ID       Id of the cartridge
-     * @param array   $options  Array of possible options:
-     *     - parent Object : the printers where the cartridge is used
-     *
-     * @return bool False if there was a rights issue. Otherwise, returns true.
-     */
     public function showForm($ID, array $options = [])
     {
         $printer = new Printer();

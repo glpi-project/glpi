@@ -403,12 +403,6 @@ abstract class CommonITILCost extends CommonDBChild
         return $result;
     }
 
-    /**
-     * Print the item cost form
-     *
-     * @param int $ID ID of the item
-     * @param array $options options used
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {

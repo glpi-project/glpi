@@ -1259,7 +1259,7 @@ TWIG, $twig_params);
     /**
      * Make a select box with all glpi items
      *
-     * @param array $options array of possible options:
+     * @param array<string,mixed> $options array of possible options:
      *    - name         : string / name of the select (default is users_id)
      *    - value
      *    - comments     : boolean / is the comments displayed near the dropdown (default true)

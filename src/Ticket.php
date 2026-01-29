@@ -5402,11 +5402,6 @@ JAVASCRIPT;
     }
 
 
-    /**
-     * Select a field using standard system
-     *
-     * @since 9.1
-     */
     public function getValueToSelect($field_id_or_search_options, $name = '', $values = '', $options = [])
     {
         if (isset($field_id_or_search_options['linkfield'])) {

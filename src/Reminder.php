@@ -521,14 +521,6 @@ class Reminder extends CommonDBVisible implements
         $this->trait_post_getEmpty();
     }
 
-    /**
-     * Print the reminder form
-     *
-     * @param int $ID ID of the item to print
-     * @param array $options   array of possible options:
-     *     - target filename : where to go when done.
-     *     - from_planning_ajax : set to disable planning form part
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);

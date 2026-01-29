@@ -173,9 +173,9 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Check right on an item.
      *
-     * @param int        $ID    ID of the item (-1 if new item)
-     * @param int        $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
-     * @param array|null $input array of input data (used for adding item)
+     * @param int                  $ID    ID of the item (-1 if new item)
+     * @param int                  $right Right to check : READ / UPDATE / DELETE / PURGE / CREATE / ...
+     * @param ?array<string,mixed> $input array of input data (used for adding item)
      *
      * @return bool
      */
@@ -326,8 +326,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Return all the tabs for the current object.
-     *
-     * @since 0.83
      *
      * @param array{withtemplate?: int} $options Options
      *     - withtemplate is a template view ?
@@ -664,10 +662,10 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Display standard tab contents.
      *
-     * @param CommonGLPI $item          Item on which the tab need to be displayed
-     * @param string|-1  $tab           Tab identifier (see `defineTabs()` return value)
-     * @param int    $withtemplate  Is a template object ? (default 0)
-     * @param array      $options       Additional options to pass
+     * @param CommonGLPI          $item          Item on which the tab need to be displayed
+     * @param string|int<-1,-1>   $tab           Tab identifier (see `defineTabs()` return value)
+     * @param int                 $withtemplate  Is a template object ? (default 0)
+     * @param array<string,mixed> $options       Additional options to pass
      *
      * @return bool
      *
@@ -942,9 +940,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Show tabs content.
      *
-     * @since 0.85
-     *
-     * @param array $options parameters to add to URLs and ajax
+     * @param array<string,mixed> $options parameters to add to URLs and ajax
      *     - withtemplate is a template view ?
      *
      * @return void
@@ -1057,7 +1053,7 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Show navigation header.
      *
-     * @param array $options parameters to add to URLs and ajax
+     * @param array<string,mixed> $options parameters to add to URLs and ajax
      *     - withtemplate is a template view ?
      *
      * @return void
@@ -1273,8 +1269,6 @@ class CommonGLPI implements CommonGLPIInterface
 
     /**
      * Display item with tabs.
-     *
-     * @since 0.85
      *
      * @param array{id?: positive-int, loaded?: bool, show_nav_header?: bool} $options Options
      *                       show_nav_header (default true): show navigation header (link to list of items)

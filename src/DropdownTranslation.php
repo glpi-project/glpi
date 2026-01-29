@@ -434,12 +434,6 @@ TWIG, $twig_params);
         ]);
     }
 
-    /**
-     * Display translation form
-     *
-     * @param int $ID       field (default -1)
-     * @param array   $options
-     */
     public function showForm($ID = -1, array $options = [])
     {
         if (!isset($options['parent']) || !($options['parent'] instanceof CommonDropdown)) {

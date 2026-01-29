@@ -595,16 +595,6 @@ class CronTask extends CommonDBTM
         }
     }
 
-    /**
-     * Print the contact form
-     *
-     * @param int $ID
-     * @param array   $options
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return bool
-     **/
     public function showForm($ID, array $options = [])
     {
         if (!Config::canView() || !$this->getFromDB($ID)) {

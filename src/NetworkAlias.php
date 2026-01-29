@@ -64,16 +64,6 @@ class NetworkAlias extends FQDNLabel
         return $ong;
     }
 
-    /**
-     * Print the network alias form
-     *
-     * @param int $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - withtemplate template or basic computer
-     *
-     * @return bool
-     **/
     public function showForm($ID, $options = [])
     {
 

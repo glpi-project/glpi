@@ -562,13 +562,6 @@ class RSSFeed extends CommonDBVisible implements ExtraVisibilityCriteria
         $this->fields["max_items"]    = 20;
     }
 
-    /**
-     * Print the rssfeed form
-     *
-     * @param int $ID Id of the item to print
-     * @param array $options Array of possible options:
-     *     - target filename : where to go when done.
-     **/
     public function showForm($ID, array $options = [])
     {
         // Test _rss cache directory. If permission trouble : unable to edit

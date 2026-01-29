@@ -194,12 +194,6 @@ TWIG, $twig_params);
         return true;
     }
 
-    /**
-     * Display translation form
-     *
-     * @param int $ID
-     * @param array   $options
-     */
     public function showForm($ID = -1, array $options = [])
     {
         if ($this->getID() > 0) {
