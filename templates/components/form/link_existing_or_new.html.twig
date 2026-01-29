@@ -35,15 +35,14 @@
 {% set rand = rand|default(random()) %}
 <div class="mb-3">
    <form id="{{ link_itemtype|lower ~ "_form" ~ rand }}" name="{{ link_itemtype|lower ~ "_form" ~ rand }}" method="post" action="{{ link_itemtype|itemtype_form_path }}">
-      <div class="row">
+      {{ form_label }}
       {% if generic_source ?? false %}
           {{ fields.hiddenField('itemtype', source_itemtype) }}
           {{ fields.hiddenField('items_id', source_items_id) }}
       {% else %}
           {{ fields.hiddenField(source_itemtype|itemtype_foreign_key, source_items_id) }}
       {% endif %}
-            {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
-            <div class="d-flex flex-wrap align-items-center gap-2">
+      <div class="d-flex">
       {% if generic_target ?? false %}
           {{ fields.dropdownItemsFromItemtypes('items_id', '', {
               itemtypes: link_types,
@@ -56,52 +55,54 @@
       {% else %}
           {% set primary_dropdown_itemtype = dropdown_options['itemtype']|default(target_itemtype) %}
           {% if link_types is defined and link_types is not empty %}
-                  {{ fields.dropdownArrayField('link', link_types|first, link_types, '', {
-                     no_label: true,
-                     mb: '',
-                     field_class: ''
-                  }) }}
-               {% endif %}
-
-               {{ fields.dropdownField(
-                  primary_dropdown_itemtype,
-                  primary_dropdown_itemtype|itemtype_foreign_key,
-                  '',
-                  dropdown_options['label'] ?? '',
-                  {
-                     no_label: dropdown_options['label'] is defined ? false : true,
-                     mb: '',
-                     field_class: '',
-                     rand: rand,
-                  }|merge(dropdown_options)
-               ) }}
-
-               {% if ajax_dropdown is defined %}
-                  {% do call('Ajax::updateItemOnSelectEvent', [
-                     ajax_dropdown['toobserve'],
-                     ajax_dropdown['toupdate']['id'],
-                     ajax_dropdown['url'],
-                     ajax_dropdown['params']
-                  ]) %}
-                  <div id="{{ ajax_dropdown['toupdate']['id'] }}" style="display: none;" class="d-flex align-items-center gap-2"></div>
-               {% endif %}
-
-               <button class="btn btn-primary" type="submit" name="add">
-                  <i class="ti ti-link"></i>
-                  <span>{{ _x('button', 'Add') }}</span>
-      {% endif %}
-               </button>
-
-         {% if create_link ?? false %}
-                  {% set target_form_path = (target_itemtype|itemtype_form_path ~ "?_" ~ source_itemtype|itemtype_foreign_key ~ "=" ~ source_items_id) %}
-                  {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
-                  <a href="{{ create_url }}" class="btn btn-primary">
-                     <i class="ti ti-plus"></i>
-                     <span>{{ button_label }}</span>
-                  </a>
-               {% endif %}
+            <div class="col-auto">
+               {{ fields.dropdownArrayField('link', link_types|first, link_types, '', {
+                  no_label: true,
+                  field_class: ''
+               }) }}
             </div>
+         {% endif %}
+         <div class="col-auto">
+            {{ fields.dropdownField(primary_dropdown_itemtype, primary_dropdown_itemtype|itemtype_foreign_key, '', '', {
+               no_label: true,
+               field_class: '',
+               rand: rand
+            }|merge(dropdown_options)) }}
+            {% if ajax_dropdown is defined %}
+               {% do call('Ajax::updateItemOnSelectEvent', [
+                  ajax_dropdown['toobserve'],
+                  ajax_dropdown['toupdate']['id'],
+                  ajax_dropdown['url'],
+                  ajax_dropdown['params'],
+               ]) %}
+            {% endif %}
+            {% if ajax_dropdown is defined %}
+               <span id="{{ ajax_dropdown['toupdate']['id'] }}">
+                  {{ fields.dropdownField(ajax_dropdown['toupdate']['itemtype'], (ajax_dropdown['toupdate']['itemtype'])|itemtype_foreign_key, '', '', {
+                     no_label: true,
+                     field_class: '',
+                     rand: rand
+                  }|merge(ajax_dropdown['toupdate']['params'])) }}
+               </span>
+            {% endif %}
          </div>
+      {% endif %}
+         <div class="col-auto">
+            <button class="btn btn-primary ms-1" type="submit" name="add">
+               <i class="{{ add_button_icon ?? 'ti ti-link' }}"></i>
+               <span>{{ add_button_label ?? _x('button', 'Add') }}</span>
+            </button>
+         </div>
+         {% if create_link ?? false %}
+         <div class="col-auto ms-4">
+               {% set target_form_path = (target_itemtype|itemtype_form_path ~ "?_" ~ source_itemtype|itemtype_foreign_key ~ "=" ~ source_items_id) %}
+               {% set create_url = create_link['url'] is defined ? create_link['url'] : target_form_path %}
+               <a href="{{ create_url }}" class="btn btn-primary">
+                  <i class="ti ti-plus"></i>
+                  <span>{{ button_label }}</span>
+               </a>
+         </div>
+         {% endif %}
       </div>
       {{ fields.csrfField() }}
    </form>
