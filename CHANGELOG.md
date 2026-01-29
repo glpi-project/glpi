@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 ## [12.0.0] unreleased
 
 ### Added
+- Sessions tab for OAuth Clients to display non-expired sessions associated with the client and allow revoking them.
 
 ### Changed
 
