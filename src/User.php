@@ -1251,7 +1251,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
                     if (
                         isset($input[$input_key])
                         && !str_starts_with($input_key, '_') // virtual field
-                        && $input[$input_key] != $this->getField($input_key)
+                        && $input[$input_key] != $this->fields[$input_key]
                     ) {
                         $ignored_fields[] = $input_key;
                     }
@@ -1275,7 +1275,7 @@ class User extends CommonDBTM implements TreeBrowseInterface
         if (
             isset($input["authtype"])
             && $input["authtype"] != Auth::DB_GLPI
-            && $input["authtype"] != $this->getField('authtype')
+            && $input["authtype"] != $this->fields['authtype']
         ) {
             $input["password"] = "";
         }
@@ -4656,7 +4656,7 @@ HTML;
     {
         global $CFG_GLPI, $DB;
 
-        $ID = $this->getField('id');
+        $ID = $this->fields['id'];
 
         $start       = intval($_GET["start"] ?? 0);
 

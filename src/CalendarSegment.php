@@ -371,7 +371,7 @@ class CalendarSegment extends CommonDBChild
     {
         global $DB;
 
-        $ID = $calendar->getField('id');
+        $ID = $calendar->getID();
         if (!$calendar->can($ID, READ)) {
             return;
         }

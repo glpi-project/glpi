@@ -74,7 +74,7 @@ class RuleMatchedLog extends CommonDBTM
             self::getTable(),
             [
                 'itemtype' => $item->getType(),
-                'items_id' => $item->getField('id'),
+                'items_id' => $item->fields['id'],
             ]
         );
     }

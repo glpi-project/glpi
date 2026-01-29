@@ -116,8 +116,8 @@ class Item_SoftwareVersionTest extends DbTestCase
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'name'                  => 'A name',
-            'is_template_item'      => $computer1->getField('is_template'),
-            'is_deleted_item'       => $computer1->getField('is_deleted'),
+            'is_template_item'      => $computer1->isTemplate(),
+            'is_deleted_item'       => $computer1->isDeleted(),
             'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
             'is_recursive'          => 0,
         ];
@@ -154,8 +154,8 @@ class Item_SoftwareVersionTest extends DbTestCase
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'name'                  => 'Another name',
-            'is_template_item'      => $computer1->getField('is_template'),
-            'is_deleted_item'       => $computer1->getField('is_deleted'),
+            'is_template_item'      => $computer1->isTemplate(),
+            'is_deleted_item'       => $computer1->isDeleted(),
         ];
 
         $this->assertSame($expected, $ins->prepareInputForUpdate($input));

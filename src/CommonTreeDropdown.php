@@ -266,8 +266,8 @@ abstract class CommonTreeDropdown extends CommonDropdown
             $currentNode = clone $this;
 
             if ($currentNode->getFromDB($ID)) {
-                $currentNodeCompleteName = $currentNode->getField("completename");
-                $nextNodeLevel           = ($currentNode->getField("level") + 1);
+                $currentNodeCompleteName = $currentNode->fields['completename'];
+                $nextNodeLevel           = ($currentNode->fields['level'] + 1);
             } else {
                 $nextNodeLevel = 1;
             }

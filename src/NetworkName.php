@@ -98,7 +98,7 @@ class NetworkName extends FQDNLabel
         $recursiveItems = $this->recursivelyGetItems();
         if (count($recursiveItems) !== 0) {
             $lastItem               = $recursiveItems[count($recursiveItems) - 1];
-            $options['entities_id'] = $lastItem->getField('entities_id');
+            $options['entities_id'] = $lastItem->fields['entities_id'];
         }
 
         $recursive_items_type_data = _n('Associated element', 'Associated elements', Session::getPluralNumber());
@@ -883,7 +883,7 @@ TWIG, $twig_params);
         if (
             ($item instanceof CommonDBTM)
             && $item->getID()
-            && $item->can($item->getField('id'), READ)
+            && $item->can($item->fields['id'], READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {

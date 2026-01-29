@@ -212,7 +212,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
     {
         global $DB;
 
-        $ID = $change->getField('id');
+        $ID = $change->getID();
         if (!$change->can($ID, READ)) {
             return;
         }
@@ -313,7 +313,7 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
     {
         global $DB;
 
-        $ID = $ticket->getField('id');
+        $ID = $ticket->getID();
         if (!$ticket->can($ID, READ)) {
             return;
         }

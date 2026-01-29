@@ -95,7 +95,7 @@ class Ticket_Contract extends CommonDBRelation
         /** @var class-string<Ticket|Contract> $linked_itemtype */
         $twig_params['linked_itemtype'] = $linked_itemtype;
 
-        $ID = $item->getField('id');
+        $ID = $item->fields['id'];
         $twig_params['id'] = $ID;
 
         if (!static::canView() || !$item->can($ID, READ)) {

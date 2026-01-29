@@ -204,7 +204,7 @@ class Infocom extends CommonDBChild
         return countElementsInTable(
             'glpi_infocoms',
             [
-                'suppliers_id' => $item->getField('id'),
+                'suppliers_id' => $item->getID(),
                 'NOT' => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
             ] + getEntitiesRestrictCriteria('glpi_infocoms', '', $_SESSION['glpiactiveentities'])
         );
@@ -1389,7 +1389,7 @@ HTML;
             return;
         }
 
-        $dev_ID   = $item->getField('id');
+        $dev_ID   = $item->getID();
         $ic       = new self();
 
         if (in_array($item->getType(), self::getExcludedTypes())) {

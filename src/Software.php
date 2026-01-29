@@ -927,7 +927,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     {
         global $DB;
 
-        $ID   = $this->getField('id');
+        $ID   = $this->fields['id'];
         $this->check($ID, UPDATE);
 
         $iterator = $DB->request([
@@ -1011,7 +1011,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     {
         global $DB;
 
-        $ID = $this->getField('id');
+        $ID = $this->fields['id'];
 
         $item = array_keys($item);
 
@@ -1079,7 +1079,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                         'glpi_softwareversions',
                         [
                             'softwares_id' => $ID,
-                            'entities_id'  => $this->getField('entities_id'),
+                            'entities_id'  => $this->fields['entities_id'],
                         ],
                         [
                             'id' => $from['id'],

@@ -795,7 +795,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
             /** @var ?CommonITILObject $item */
             if ($item = getItemForItemtype($options['item_itemtype'])) {
                 if ($item->getFromDB($options['item_items_id'])) {
-                    $this->fields['name']   = $item->getField('name');
+                    $this->fields['name']   = $item->fields['name'];
                     if (isset($options['_fup_to_kb'])) {
                         $fup = new ITILFollowup();
                         $fup->getFromDBByCrit([
@@ -803,11 +803,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                             'itemtype'     => $item::class,
                             'items_id'     => $item->getID(),
                         ]);
-                        $this->fields['answer'] = $fup->getField('content');
+                        $this->fields['answer'] = $fup->fields['content'];
                     } elseif (isset($options['_task_to_kb'])) {
                         $task = $item->getTaskClassInstance();
                         $task->getFromDB($options['_task_to_kb']);
-                        $this->fields['answer'] = $task->getField('content');
+                        $this->fields['answer'] = $task->fields['content'];
                     } elseif (isset($options['_sol_to_kb'])) {
                         $solution = new ITILSolution();
                         $solution->getFromDBByCrit([
@@ -817,12 +817,12 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                                 'NOT' => ['status'       => CommonITILValidation::REFUSED],
                             ],
                         ]);
-                        $this->fields['answer'] = $solution->getField('content');
+                        $this->fields['answer'] = $solution->fields['content'];
                     }
                     if ($item->isField('itilcategories_id')) {
                         $ic = new ITILCategory();
                         if (
-                            $ic->getFromDB($item->getField('itilcategories_id'))
+                            $ic->getFromDB($item->fields['itilcategories_id'])
                             && $ic->fields['knowbaseitemcategories_id'] > 0
                         ) {
                             $this->fields['knowbaseitemcategories_id'] = $ic->fields['knowbaseitemcategories_id'];
@@ -2149,7 +2149,7 @@ TWIG, $twig_params);
     protected function getShowVisibilityDropdownParams()
     {
         $params = parent::getShowVisibilityDropdownParams();
-        $params['right'] = ($this->getField('is_faq') ? 'faq' : 'knowbase');
+        $params['right'] = $this->fields['is_faq'] ? 'faq' : 'knowbase';
         $params['allusers'] = 1;
         return $params;
     }

@@ -583,7 +583,7 @@ class Consumable extends CommonDBChild
         global $DB;
 
         $itemtype = $user::class;
-        $items_id = $user->getField('id');
+        $items_id = $user->getID();
 
         $start       = (int) ($_GET["start"] ?? 0);
         $sort        = $_GET["sort"] ?? "";
@@ -842,7 +842,7 @@ class Consumable extends CommonDBChild
      **/
     public static function countForConsumableItem(ConsumableItem $item)
     {
-        return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getField('id')]);
+        return countElementsInTable(['glpi_consumables'], ['glpi_consumables.consumableitems_id' => $item->getID()]);
     }
 
     /**
@@ -854,7 +854,7 @@ class Consumable extends CommonDBChild
     {
         return countElementsInTable(['glpi_consumables'], [
             'glpi_consumables.itemtype' => 'User',
-            'glpi_consumables.items_id' => $item->getField('id'),
+            'glpi_consumables.items_id' => $item->getID(),
             'NOT' => ['glpi_consumables.date_out' => 'NULL'],
         ]);
     }

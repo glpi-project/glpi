@@ -1034,7 +1034,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         $cron_status = 0;
 
         if ($CFG_GLPI['show_count_on_tabs'] != -1) {
-            $lastdate = new DateTime($task->getField('lastrun'));
+            $lastdate = new DateTime($task->fields['lastrun']);
             $lastdate->sub(new DateInterval('P7D'));
 
             $iterator = $DB->request(['FROM'   => self::getTable(),
@@ -1122,16 +1122,16 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
             $search = new Search();
             //Do the same as self::getParameters() but getFromDB is useless
             $query_tab = [];
-            parse_str($this->getField('query'), $query_tab);
+            parse_str($this->fields['query'], $query_tab);
 
-            $params = class_exists($this->getField('itemtype')) ? $query_tab : null;
+            $params = class_exists($this->fields['itemtype']) ? $query_tab : null;
 
             if (!$params) {
                 throw new RuntimeException('Saved search #' . $this->getID() . ' seems to be broken!');
             } else {
                 $params['silent_validation'] = true;
                 $data                   = $search->prepareDatasForSearch(
-                    $this->getField('itemtype'),
+                    $this->fields['itemtype'],
                     $params
                 );
                 // force saved search ID to indicate to Search to save execution time

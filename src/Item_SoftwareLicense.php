@@ -180,9 +180,9 @@ class Item_SoftwareLicense extends CommonDBRelation
                             $number += SoftwareLicense_User::countForLicense($license_id);
 
                             if (
-                                $license->getField('number') != -1
-                                && $number >= $license->getField('number')
-                                && !$license->getField('allow_overquota')
+                                $license->fields['number'] != -1
+                                && $number >= $license->fields['number']
+                                && !$license->fields['allow_overquota']
                             ) {
                                 $can_add_user = false;
                                 break;
@@ -317,9 +317,9 @@ class Item_SoftwareLicense extends CommonDBRelation
                         if ($input['itemtype'] == User::class) {
                             $item_licence = new SoftwareLicense_User();
                             if (
-                                $license->getField('number') != -1
-                                && $number >= $license->getField('number')
-                                && !$license->getField('allow_overquota')
+                                $license->fields['number'] != -1
+                                && $number >= $license->fields['number']
+                                && !$license->fields['allow_overquota']
                             ) {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage(sprintf(__s('Maximum number of items reached for license "%s".'), htmlescape($license->getName())));
@@ -519,7 +519,7 @@ class Item_SoftwareLicense extends CommonDBRelation
     {
         global $DB;
 
-        $softwarelicense_id = $license->getField('id');
+        $softwarelicense_id = $license->getID();
         $license_table = SoftwareLicense::getTable();
         $item_license_table = self::getTable(self::class);
 
@@ -632,8 +632,8 @@ class Item_SoftwareLicense extends CommonDBRelation
         //and over-quota is not allowed, do not allow to add more assets
         if (
             $canedit
-            && ($license->getField('number') == -1 || $number < $license->getField('number')
-            || $license->getField('allow_overquota'))
+            && ($license->fields['number'] == -1 || $number < $license->fields['number']
+            || $license->fields['allow_overquota'])
         ) {
             echo "<form method='post' action='" . htmlescape(Item_SoftwareLicense::getFormURL()) . "'>";
             echo "<input type='hidden' name='softwarelicenses_id' value='$searchID'>";

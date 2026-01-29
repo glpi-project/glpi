@@ -114,7 +114,7 @@ final class KnowbaseItemController extends AbstractController
         if (empty($contains)) {
             if (in_array($itemtype, $CFG_GLPI['kb_types'], true) && $item = getItemForItemtype($itemtype)) {
                 if ($item->can($items_id, READ)) {
-                    $contains = $item->getField('name');
+                    $contains = $item->fields['name'];
                 }
             }
         }

@@ -1789,7 +1789,7 @@ class CommonDBTM extends CommonGLPI
                             if (
                                 Infocom::canApplyOn($this)
                                 && in_array('states_id', $this->updates)
-                                && ($this->getField('is_template') != NOT_AVAILABLE)
+                                && !$this->isTemplate()
                             ) {
                                 //Check if we have to automatically fill dates
                                 Infocom::manageDateOnStatusChange($this, false);
@@ -4499,7 +4499,7 @@ class CommonDBTM extends CommonGLPI
                 }
             }
             // Add information on item in trashbin
-            if ($item->isField('is_deleted') && $item->getField('is_deleted')) {
+            if ($item->isDeleted()) {
                 $double_text = sprintf(__s('%1$s - %2$s'), $double_text, __s('Item in the trashbin'));
             }
 
@@ -5700,7 +5700,7 @@ class CommonDBTM extends CommonGLPI
             $title = __s('You can define an autofill template');
         } elseif ($this->isTemplate()) {
             if ($value === null) {
-                $value = $this->getField($field);
+                $value = $this->fields[$field];
             }
             $len = Toolbox::strlen($value);
             if (

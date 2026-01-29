@@ -260,7 +260,7 @@ class Computer extends CommonDBTM implements AssignableItemInterface, DCBreadcru
                 foreach ($items_result as $data) {
                     $tID = $data['items_id_peripheral'];
                     $item->getFromDB($tID);
-                    if (!$item->getField('is_global')) {
+                    if (!$item->isGlobal()) {
                         $item_input = $changes;
                         $item_input['id'] = $item->getID();
                         //propage is_dynamic value if needed to prevent locked fields

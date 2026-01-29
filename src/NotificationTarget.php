@@ -396,8 +396,8 @@ class NotificationTarget extends CommonDBChild
     protected function computeFriendlyName()
     {
 
-        return $this->notification_targets_labels[$this->getField("type")]
-                                              [$this->getField("items_id")] ?? '';
+        return $this->notification_targets_labels[$this->fields["type"]]
+                                              [$this->fields["items_id"]] ?? '';
     }
 
     /**
@@ -484,7 +484,7 @@ class NotificationTarget extends CommonDBChild
             return false;
         }
 
-        if ($notification->getField('itemtype') != '') {
+        if ($notification->fields['itemtype'] != '') {
             $notifications_id = $notification->fields['id'];
             $canedit = $notification->can($notifications_id, UPDATE);
 
@@ -662,12 +662,12 @@ class NotificationTarget extends CommonDBChild
             $user = new User();
             if (
                 !$user->getFromDB($data['users_id'])
-                || ($user->getField('is_deleted') == 1)
-                || ($user->getField('is_active') == 0)
-                || (!is_null($user->getField('begin_date'))
-                  && ($user->getField('begin_date') > $_SESSION["glpi_currenttime"]))
-                || (!is_null($user->getField('end_date'))
-                  && ($user->getField('end_date') < $_SESSION["glpi_currenttime"]))
+                || ($user->isDeleted())
+                || (!$user->isActive())
+                || (!is_null($user->fields['begin_date'])
+                  && ($user->fields['begin_date'] > $_SESSION["glpi_currenttime"]))
+                || (!is_null($user->fields['end_date'])
+                  && ($user->fields['end_date'] < $_SESSION["glpi_currenttime"]))
             ) {
                 // unknown, deleted or disabled user
                 return;
@@ -697,9 +697,9 @@ class NotificationTarget extends CommonDBChild
             if (empty($username)) {
                 $username = formatUserName(
                     0,
-                    $user->getField('name'),
-                    $user->getField('realname'),
-                    $user->getField('firstname'),
+                    $user->fields['name'],
+                    $user->fields['realname'],
+                    $user->fields['firstname'],
                     force_config: true
                 );
             }
@@ -841,11 +841,11 @@ class NotificationTarget extends CommonDBChild
         $user = new User();
         if (
             $this->obj->isField('users_id')
-            && $user->getFromDB($this->obj->getField('users_id'))
+            && $user->getFromDB($this->obj->fields['users_id'])
         ) {
             $this->addToRecipientsList([
-                'language' => $user->getField('language'),
-                'users_id' => $user->getField('id'),
+                'language' => $user->fields['language'],
+                'users_id' => $user->fields['id'],
             ]);
         }
     }
@@ -1243,7 +1243,7 @@ class NotificationTarget extends CommonDBChild
                 return;
             }
 
-            $id[] = $this->obj->getField($field);
+            $id[] = $this->obj->fields[$field];
         } elseif ($this->target_object !== []) {
             foreach ($this->target_object as $target) {
                 if (!$target instanceof CommonDBTM) {
@@ -1885,8 +1885,8 @@ class NotificationTarget extends CommonDBChild
 
             $target = self::getInstanceByType(
                 $itemtype,
-                $item->getField('event'),
-                ['entities_id' => $item->getField('entities_id')]
+                $item->fields['event'],
+                ['entities_id' => $item->fields['entities_id']]
             );
             if ($target) {
                 return $target->showForNotification($item);

@@ -91,7 +91,7 @@ class NetworkAlias extends FQDNLabel
 
         $lastItem = $recursiveItems[count($recursiveItems) - 1];
 
-        $options['entities_id'] = $lastItem->getField('entities_id');
+        $options['entities_id'] = $lastItem->fields['entities_id'];
         $this->showFormHeader($options);
 
         echo "<tr class='tab_bg_1'><td>";
@@ -482,7 +482,7 @@ class NetworkAlias extends FQDNLabel
         if (
             ($item instanceof CommonDBTM)
             && $item->getID()
-            && $item->can($item->getField('id'), READ)
+            && $item->can($item->fields['id'], READ)
         ) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {

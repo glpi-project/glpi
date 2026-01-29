@@ -85,7 +85,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         $data['##change.urlvalidation##']
                      = $this->formatURL(
                          $options['additionnaloption']['usertype'],
-                         "change_" . $item->getField("id") . '_Change$main',
+                         "change_" . $item->fields["id"] . '_Change$main',
                          $anchor
                      );
         $data['##change.globalvalidation##']
@@ -97,13 +97,9 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         $data['##change.backoutplancontent##'] = $item->getField("backoutplancontent");
         $data['##change.checklistcontent##']   = $item->getField("checklistcontent");
 
-        // $data["##problem.impacts##"]  = $item->getField('impactcontent');
-        // $data["##problem.causes##"]   = $item->getField('causecontent');
-        // $data["##problem.symptoms##"] = $item->getField('symptomcontent');
-
         // Complex mode
         if (!$simple) {
-            $restrict = ['changes_id' => $item->getField('id')];
+            $restrict = ['changes_id' => $item->fields['id']];
             $tickets  = getAllDataFromTable('glpi_changes_tickets', $restrict);
 
             $data['tickets'] = [];
