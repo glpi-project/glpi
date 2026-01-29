@@ -36,7 +36,7 @@
 {% block title %}{{ __("History") }}{% endblock %}
 
 {% block content %}
-    <ul class="steps steps-vertical overflow-auto flex-grow-1 mx-n4 my-n4 px-4 py-4" data-glpi-revisions>
+    <ul class="steps steps-vertical overflow-auto flex-grow-1 my-n3 py-3" data-glpi-revisions>
         {% for revision in revisions %}
             {{ include('pages/tools/kb/sidepanel/revision_item.html.twig', {
                 id: id,
