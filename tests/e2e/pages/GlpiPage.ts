@@ -379,6 +379,16 @@ export class GlpiPage
         ;
     }
 
+    public getDialog(text: string): Locator
+    {
+        return this.page.getByRole('dialog')
+            .filter({
+                visible: true,
+                hasText: text,
+            })
+        ;
+    }
+
     public getEntityFromTree(name: string): Locator
     {
         return this.page.getByRole('gridcell', {

@@ -104,7 +104,7 @@ test('Can edit a comment', async ({ page, profile, api }) => {
     // Open the edit form via the dropdown menu
     const comment = page.getByTestId('comment').filter({ hasText: 'Original comment' });
     await comment.getByTitle('More actions').click();
-    await comment.getByText('Edit comment').click();
+    await kb.getButton('Edit comment').click();
 
     // Edit form should be visible with original content
     const textarea = comment.getByTestId('comment-edit-textarea');
@@ -121,4 +121,46 @@ test('Can edit a comment', async ({ page, profile, api }) => {
 
     // Edit form should be hidden
     await expect(textarea).toBeHidden();
+});
+
+test('Can delete a comment', async ({ page, profile, api }) => {
+    await profile.set(Profiles.SuperAdmin);
+    const kb = new KnowbaseItemPage(page);
+
+    // Create a KB item with a comment
+    const id = await api.createItem('KnowbaseItem', {
+        name: 'My kb entry for delete test',
+        entities_id: getWorkerEntityId(),
+        answer: "My answer",
+    });
+    await api.createItem('KnowbaseItem_Comment', {
+        knowbaseitems_id: id,
+        comment: "Comment to delete",
+    });
+
+    // Go to article and open comments panel
+    await kb.goto(id);
+    await page.getByTitle('More actions').click();
+    await kb.getButton('Comments').click();
+    await expect(kb.getHeading('Comments')).toBeVisible();
+
+    // Comment should be visible
+    const comment = page.getByTestId('comment').filter({ hasText: 'Comment to delete' });
+    await expect(comment).toBeVisible();
+
+    // Click delete button in the dropdown menu
+    await comment.getByTitle('More actions').click();
+    await kb.getButton('Delete comment').click();
+
+    // Confirmation modal should appear
+    const modal = kb.getDialog("Delete comment");;
+    await expect(modal).toBeVisible();
+    await expect(modal.getByText('Delete comment')).toBeVisible();
+    await expect(modal.getByText('Are you sure you want to delete this comment?')).toBeVisible();
+
+    // Confirm deletion
+    await modal.getByRole('button', { name: 'Delete' }).click();
+
+    // Comment should be removed
+    await expect(comment).not.toBeAttached();
 });
