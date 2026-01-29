@@ -149,7 +149,7 @@ class MassiveActionTest extends DbTestCase
      * @param string $action_code   action choosen on form ('update', 'purge', ...)
      * @param CommonDBTM $item
      * @param array $ids            ids for items to update
-     * @param array $input
+     * @param array<string, mixed>  $input submitted by user
      * @param int $ok               number of expected success
      * @param int $ko               number of expected failures
      * @param string $action_class
@@ -187,7 +187,7 @@ class MassiveActionTest extends DbTestCase
 
                 if ($res == MassiveAction::ACTION_OK) {
                     $ma_ok += $increment;
-                } else {
+                } elseif ($res == MassiveAction::ACTION_KO) {
                     $ma_ko += $increment;
                 }
             }
@@ -197,8 +197,8 @@ class MassiveActionTest extends DbTestCase
         $action_class::processMassiveActionsForOneItemtype($ma, $item, $ids);
 
         // Check expected number of success and failures
-        $this->assertSame($ok, $ma_ok);
-        $this->assertSame($ko, $ma_ko);
+        $this->assertSame($ko, $ma_ko, "$ko failures expected but $ma_ko found");
+        $this->assertSame($ok, $ma_ok, "$ok success expected but $ma_ok found");
     }
 
     public static function amendCommentProvider()
@@ -291,8 +291,9 @@ class MassiveActionTest extends DbTestCase
     /**
      * Ids of search Option of State related to visibility
      * @see State::rawSearchOptions()
+     * @return array<int,array<int>>
      */
-    public static function stateVisibilitySearchOptionIdsProvider()
+    public static function stateVisibilitySearchOptionIdsProvider(): array
     {
         return array_map(fn($so_id) => [$so_id], range(21, 39));
     }
@@ -308,33 +309,30 @@ class MassiveActionTest extends DbTestCase
         $state = $this->createItem(\State::class, $this->getMinimalCreationInput(\State::class));
 
         $_searchoption_definition = SearchOption::getOptionsForItemtype($state::class)[$search_option_id];
-        $tested_field = $_searchoption_definition['linkfield'] ?? $_searchoption_definition['field'];
-
-        // ensure visibility is set to No by default
-        $this->assertArrayHasKey($tested_field, $state->fields, "field $tested_field not found in State fields. Wrong search option probably.");
-        $this->assertEquals(0, $state->fields[$tested_field], "field $tested_field should be 0 to start test.");
+        $visible_itemtype = $_searchoption_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] ?? throw new \RuntimeException('Unexpected searchOption definition : visible_itemtype not found');
 
         // input submited in massive action form
-        $test_input = [
-            // 'id_field' => 'State:'.$search_option_id, // submited in form, no effect on test
-            'field' => $tested_field, // 'is_visible_phone',
-            $tested_field => 1,
+        $form_input = [
+            'visible_itemtype' => [$visible_itemtype],
+            'is_visible' => 1,
             'search_options' => ['State' => $search_option_id],
         ];
 
         // --- act
         $this->processMassiveActionsForOneItemtype(
-            'update',
+            'update_visibility',
             $state,
             [$state->fields['id']],
-            $test_input,
+            $form_input,
             1,
-            0
+            0,
+            \State::class
         );
 
         // -- assert
         $state->getFromDB($state->getID());
-        $this->assertEquals(1, $state->fields[$tested_field]);
+        $state_visible_field = 'is_visible_' . strtolower($visible_itemtype);
+        $this->assertEquals(1, $state->fields[$state_visible_field]);
     }
 
     /**
@@ -359,36 +357,36 @@ class MassiveActionTest extends DbTestCase
                 && $so_definition['joinparams']['condition']['NEWTABLE.visible_itemtype'] === $custom_asset_classname) {
                 $custom_asset_search_option = $so_definition;
                 $custom_asset_search_option_id = $so_id;
+                $visibility_field = 'is_visible_' . strtolower($custom_asset_classname);
                 break;
             }
         }
 
         assert($custom_asset_search_option !== null, "Search option not found for custom asset {$custom_asset_classname}");
-        $tested_field = $custom_asset_search_option['linkfield'] ?? $custom_asset_search_option['field'];
-
-        assert(isset($state->fields[$tested_field]), "field {$tested_field} not found in State fields");
-        assert($state->fields[$tested_field] == 0, "field {$tested_field} should be 0 to start test");
+        assert(isset($state->fields[$visibility_field]), "field '$visibility_field' not found in State fields");
+        assert($state->fields[$visibility_field] == 0, "field '$visibility_field' should be 0 to start test");
 
         // input submitted in massive action form
         $test_input = [
-            'field' => $tested_field,
-            $tested_field => 1,
+            'visible_itemtype' => [$custom_asset_classname],
+            'is_visible' => 1,
             'search_options' => ['State' => $custom_asset_search_option_id],
         ];
 
         // --- Act
         $this->processMassiveActionsForOneItemtype(
-            'update',
+            'update_visibility',
             $state,
             [$state->fields['id']],
             $test_input,
             1,
-            0
+            0,
+            \State::class,
         );
 
         // --- Assert
         $state->getFromDB($state->getID());
-        $this->assertEquals(1, $state->fields[$tested_field]);
+        $this->assertEquals(1, $state->fields[$visibility_field]);
 
         // Verify in DropdownVisibility table
         $visibility = countElementsInTable(
