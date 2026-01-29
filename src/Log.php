@@ -183,26 +183,31 @@ class Log extends CommonDBTM
                         $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
                         // other cases; link field -> get data from dropdown
-                        $changes = [$id_search_option,
-                            sprintf(
-                                __('%1$s (%2$s)'),
-                                Dropdown::getDropdownName(
-                                    $val2["table"],
-                                    $oldval
+                        // Fill old_id/new_id ONLY when both values are numeric IDs.
+                        if (is_numeric($oldval) && isset($values[$key]) && is_numeric($values[$key])) {
+                            $changes = [$id_search_option,
+                                sprintf(
+                                    __('%1$s (%2$s)'),
+                                    Dropdown::getDropdownName(
+                                        $val2["table"], 
+                                        (int)$oldval
+                                    ),
+                                    (int)$oldval
                                 ),
-                                $oldval
-                            ),
-                            sprintf(
-                                __('%1$s (%2$s)'),
-                                Dropdown::getDropdownName(
-                                    $val2["table"],
-                                    $values[$key]
+                                sprintf(
+                                    __('%1$s (%2$s)'),
+                                    Dropdown::getDropdownName(
+                                        $val2["table"], 
+                                        (int)$values[$key]
+                                    ),
+                                    (int)$values[$key]
                                 ),
-                                $values[$key]
-                            ),
-                            $oldval,
-                            (int) $values[$key],
-                        ];
+                                (int)$oldval,
+                                (int)$values[$key],
+                            ];
+                        } else {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                        }
                     }
                     break;
                 }
