@@ -45,13 +45,13 @@ class CommonDBRelationTest extends DbTestCase
     {
         /** both specific, both attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         //nothing in input
@@ -187,13 +187,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** both specific, first attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = false;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = false;
         };
 
         $exception_thrown = false;
@@ -224,13 +224,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** both specific, second attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = false;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = false;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         $exception_thrown = false;
@@ -261,13 +261,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** both specific, none attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = false;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = false;
 
-            public static $itemtype_2 = \Holiday::class;
-            public static $items_id_2 = 'holidays_id';
-            public static $mustBeAttached_2 = false;
+            public static ?string $itemtype_2 = \Holiday::class;
+            public static ?string $items_id_2 = 'holidays_id';
+            public static bool $mustBeAttached_2 = false;
         };
 
         //nothing in input is OK
@@ -291,13 +291,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** first only specific, all attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = 'itemtype';
-            public static $items_id_2 = 'items_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = 'itemtype';
+            public static ?string $items_id_2 = 'items_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         $exception_thrown = false;
@@ -328,13 +328,13 @@ class CommonDBRelationTest extends DbTestCase
 
         /** first only specific, second suffixed, all attached */
         $instance = new class extends CommonDBRelation {
-            public static $itemtype_1 = \Calendar::class;
-            public static $items_id_1 = 'calendars_id';
-            public static $mustBeAttached_1 = true;
+            public static ?string $itemtype_1 = \Calendar::class;
+            public static ?string $items_id_1 = 'calendars_id';
+            public static bool $mustBeAttached_1 = true;
 
-            public static $itemtype_2 = 'itemtype_peripheral';
-            public static $items_id_2 = 'items_id';
-            public static $mustBeAttached_2 = true;
+            public static ?string $itemtype_2 = 'itemtype_peripheral';
+            public static ?string $items_id_2 = 'items_id';
+            public static bool $mustBeAttached_2 = true;
         };
 
         $exception_thrown = false;

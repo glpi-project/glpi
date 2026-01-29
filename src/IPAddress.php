@@ -60,8 +60,8 @@ use function Safe\preg_match;
 class IPAddress extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype       = 'itemtype';
-    public static $items_id       = 'items_id';
+    public static string $itemtype       = 'itemtype';
+    public static string $items_id       = 'items_id';
     public bool $dohistory             = false;
 
     public array $history_blacklist     = ['binary_0', 'binary_1', 'binary_2', 'binary_3'];

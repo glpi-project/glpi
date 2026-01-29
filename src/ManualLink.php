@@ -44,9 +44,9 @@ class ManualLink extends CommonDBChild
     public bool $dohistory              = false;
     public bool $auto_message_on_action = false; // Link in message can't work'
     protected bool $displaylist         = false;
-    public static $logs_for_parent = true;
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
+    public static bool $logs_for_parent = true;
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
 
     public static function getTypeName($nb = 0)
     {

@@ -41,8 +41,8 @@
 class TicketCost extends CommonITILCost
 {
     // From CommonDBChild
-    public static $itemtype = Ticket::class;
-    public static $items_id  = 'tickets_id';
+    public static string $itemtype = Ticket::class;
+    public static string $items_id  = 'tickets_id';
 
     public static string $rightname        = 'ticketcost';
 

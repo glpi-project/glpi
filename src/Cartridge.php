@@ -56,12 +56,12 @@ class Cartridge extends CommonDBRelation
 
     public static string $rightname = 'cartridge';
 
-    public static $itemtype_1 = CartridgeItem::class;
-    public static $items_id_1 = 'cartridgeitems_id';
+    public static ?string $itemtype_1 = CartridgeItem::class;
+    public static ?string $items_id_1 = 'cartridgeitems_id';
 
-    public static $itemtype_2 = Printer::class;
-    public static $items_id_2 = 'printers_id';
-    public static $mustBeAttached_2 = false;
+    public static ?string $itemtype_2 = Printer::class;
+    public static ?string $items_id_2 = 'printers_id';
+    public static bool $mustBeAttached_2 = false;
 
     public function getCloneRelations(): array
     {

@@ -41,13 +41,13 @@ use Glpi\Application\View\TemplateRenderer;
 class Certificate_Item extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Certificate::class;
-    public static $items_id_1    = 'certificates_id';
-    public static $take_entity_1 = false;
+    public static ?string $itemtype_1 = Certificate::class;
+    public static ?string $items_id_1    = 'certificates_id';
+    public static bool $take_entity_1 = false;
 
-    public static $itemtype_2    = 'itemtype';
-    public static $items_id_2    = 'items_id';
-    public static $take_entity_2 = true;
+    public static ?string $itemtype_2    = 'itemtype';
+    public static ?string $items_id_2    = 'items_id';
+    public static bool $take_entity_2 = true;
 
     /**
      * @since 9.2

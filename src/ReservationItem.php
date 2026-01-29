@@ -44,10 +44,10 @@ use Glpi\RichText\RichText;
 class ReservationItem extends CommonDBChild
 {
     /// From CommonDBChild
-    public static $itemtype          = 'itemtype';
-    public static $items_id          = 'items_id';
+    public static string $itemtype          = 'itemtype';
+    public static string $items_id          = 'items_id';
 
-    public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static int $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public static string $rightname                = 'reservation';
 

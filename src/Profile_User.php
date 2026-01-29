@@ -45,15 +45,15 @@ class Profile_User extends CommonDBRelation
     public bool $auto_message_on_action               = false;
 
     // From CommonDBRelation
-    public static $itemtype_1                    = User::class;
-    public static $items_id_1                    = 'users_id';
+    public static ?string $itemtype_1                    = User::class;
+    public static ?string $items_id_1                    = 'users_id';
 
-    public static $itemtype_2                    = Profile::class;
-    public static $items_id_2                    = 'profiles_id';
-    public static $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_2                    = Profile::class;
+    public static ?string $items_id_2                    = 'profiles_id';
+    public static int $checkItem_2_Rights            = self::DONT_CHECK_ITEM_RIGHTS;
 
     // Manage Entity properties forwarding
-    public static $disableAutoEntityForwarding   = true;
+    public static bool $disableAutoEntityForwarding   = true;
 
     /**
      * @since 0.84

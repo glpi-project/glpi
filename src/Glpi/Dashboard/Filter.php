@@ -58,8 +58,8 @@ use Session;
  **/
 class Filter extends CommonDBChild
 {
-    public static $itemtype = Dashboard::class;
-    public static $items_id = 'dashboards_dashboards_id';
+    public static string $itemtype = Dashboard::class;
+    public static string $items_id = 'dashboards_dashboards_id';
 
     /**
      * Return IDs of filters that can be applied to given table.

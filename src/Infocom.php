@@ -49,11 +49,11 @@ use function Safe\strtotime;
 class Infocom extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype        = 'itemtype';
-    public static $items_id        = 'items_id';
+    public static string $itemtype        = 'itemtype';
+    public static string $items_id        = 'items_id';
     public bool $dohistory              = true;
     public bool $auto_message_on_action = false; // Link in message can't work'
-    public static $logs_for_parent = false;
+    public static bool $logs_for_parent = false;
     public static string $rightname              = 'infocom';
 
     //Option to automatically fill dates

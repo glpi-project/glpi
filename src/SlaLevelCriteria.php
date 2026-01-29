@@ -41,8 +41,8 @@
 /// Class SlaLevelCriteria
 class SlaLevelCriteria extends RuleCriteria
 {
-    public static $itemtype = SlaLevel::class;
-    public static $items_id  = 'slalevels_id';
+    public static string $itemtype = SlaLevel::class;
+    public static string $items_id  = 'slalevels_id';
     public bool $dohistory        = true;
 
 

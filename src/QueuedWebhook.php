@@ -47,8 +47,8 @@ class QueuedWebhook extends CommonDBChild
 {
     public static string $rightname = 'config';
 
-    public static $itemtype = Webhook::class;
-    public static $items_id = 'webhooks_id';
+    public static string $itemtype = Webhook::class;
+    public static string $items_id = 'webhooks_id';
 
     public static function getTypeName($nb = 0)
     {

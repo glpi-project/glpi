@@ -59,8 +59,8 @@ class Consumable extends CommonDBChild
     public static string $rightname                   = 'consumable';
 
     // From CommonDBChild
-    public static $itemtype = ConsumableItem::class;
-    public static $items_id             = 'consumableitems_id';
+    public static string $itemtype = ConsumableItem::class;
+    public static string $items_id             = 'consumableitems_id';
 
     public function getCloneRelations(): array
     {
