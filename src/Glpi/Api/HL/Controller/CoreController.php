@@ -53,6 +53,7 @@ use Glpi\System\Status\StatusChecker;
 use Glpi\Toolbox\MarkdownRenderer;
 use Html;
 use JsonException;
+use Laminas\I18n\Translator\TextDomain;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Profile;
 use ProfileRight;
@@ -61,7 +62,10 @@ use Throwable;
 use Transfer;
 use User;
 
+use function Safe\fclose;
 use function Safe\file_get_contents;
+use function Safe\fopen;
+use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\strtotime;
 
@@ -800,5 +804,75 @@ HTML;
         };
         $select_tree($entitiestree);
         return new JSONResponse($entitiestree);
+    }
+
+    #[Route(path: '/locales', methods: ['GET'], tags: ['Localization'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\Route(
+        description: 'Get the localization strings',
+        parameters: [
+            new Doc\Parameter(
+                name: 'domain',
+                schema: new Doc\Schema(
+                    type: Doc\Schema::TYPE_STRING
+                ),
+                location: Doc\Parameter::LOCATION_QUERY,
+            ),
+        ]
+    )]
+    public function getLocales(Request $request): Response
+    {
+        global $TRANSLATE, $CFG_GLPI;
+
+        $messages = $TRANSLATE->getAllMessages($_GET['domain']);
+        if (!($messages instanceof TextDomain)) {
+            // No TextDomain found means that there is no translations for given domain.
+            // It is mostly related to plugins that does not provide any translations.
+            $default_response = [
+                '' => [
+                    'language'     => $TRANSLATE->getLocale(),
+                    'plural-forms' => 'nplurals=2; plural=(n != 1);',
+                ],
+            ];
+            return new JSONResponse($default_response);
+        }
+
+        // Extract headers from main po file
+        $po_file = GLPI_ROOT . '/locales/' . preg_replace(
+            '/\.mo$/',
+            '.po',
+            $CFG_GLPI['languages'][$_SESSION['glpilanguage']][1]
+        );
+        $po_file_handle = fopen(
+            $po_file,
+            'rb'
+        );
+
+        $in_headers = false;
+        $headers = [];
+        $header_keys = ['language', 'plural-forms'];
+        while (false !== ($line = fgets($po_file_handle))) {
+            if (preg_match('/^msgid\s+""\s*$/', $line)) {
+                $in_headers = true;
+                continue;
+            }
+            if ($in_headers && preg_match('/^msgid\s+".*"\s*$/', $line)) {
+                break; // new msgid = end of headers parsing
+            }
+            $header = [];
+            if ($in_headers && preg_match('/^"(?P<name>[a-z-]+):\s*(?P<value>.*)\\\n"\s*$/i', $line, $header)) {
+                $header_name = strtolower($header['name']);
+                $header_value = $header['value'];
+                if (in_array($header_name, $header_keys)) {
+                    $headers[$header_name] = $header_value;
+                }
+            }
+        }
+        fclose($po_file_handle);
+
+        // Output messages and headers
+        $messages[''] = $headers;
+        $messages->ksort();
+        return new JSONResponse((array) $messages);
     }
 }
