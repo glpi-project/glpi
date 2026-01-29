@@ -54,7 +54,7 @@
                         {{ date_creation|relative_datetime }}
                     </span>
                 </div>
-                {% set has_actions = can_edit %}
+                {% set has_actions = can_edit or can_delete %}
                 {% if has_actions %}
                     <div class="dropdown ms-2">
                         <button
@@ -70,9 +70,27 @@
                         <ul class="dropdown-menu dropdown-menu-end">
                             {% if can_edit %}
                                 <li>
-                                    <button type="button" class="dropdown-item" data-glpi-comment-edit>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item"
+                                        data-glpi-comment-edit
+                                        aria-label="{{ __('Edit comment') }}"
+                                    >
                                         <i class="ti ti-edit me-2"></i>
                                         <span>{{ __('Edit comment') }}</span>
+                                    </button>
+                                </li>
+                            {% endif %}
+                            {% if can_delete %}
+                                <li>
+                                    <button
+                                        type="button"
+                                        class="dropdown-item text-danger"
+                                        data-glpi-comment-delete
+                                        aria-label="{{ __('Delete comment') }}"
+                                    >
+                                        <i class="ti ti-trash me-2"></i>
+                                        <span>{{ __('Delete comment') }}</span>
                                     </button>
                                 </li>
                             {% endif %}
