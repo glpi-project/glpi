@@ -240,7 +240,6 @@ $empty_data_builder = new class {
             'time_offset' => '0',
             'use_flat_dropdowntree' => '0',
             'use_flat_dropdowntree_on_search_result' => '1',
-            'show_itilcategory_code' => '1',
             'use_autoname_by_entity' => '1',
             'softwarecategories_id_ondelete' => '1',
             'x509_email_field' => '',
