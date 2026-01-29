@@ -92,7 +92,14 @@
          field_options
       ) }}
    {% endif %}
-
+   {% if not is_user %}
+      {{ fields.dropdownYesNo(
+         'show_itilcategory_code',
+         config['show_itilcategory_code']|default(1),
+         __('Hide the ITIL category code in the dropdown menus.'),
+         field_options
+      ) }}
+   {% endif %}
    {% if not is_user or config('show_count_on_tabs') != -1 %}
       {% set count_options = {
          0: __('No'),

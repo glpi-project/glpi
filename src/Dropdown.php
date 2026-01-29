@@ -3346,11 +3346,14 @@ HTML;
                             $outputval = $data['alias'];
                             $title     = $data['alias'];
                         }
-                        if (isset($data['code']) && !empty($data['code'])) {
+                        $show_itil_code = true;
+                        if ($post['itemtype'] === ITILCategory::class) {
+                            $show_itil_code = (bool) ($CFG_GLPI['show_itilcategory_code'] ?? 1);
+                        }
+                        if ($show_itil_code && isset($data['code']) && !empty($data['code'])) {
                             $outputval .= ' - ' . $data['code'];
                             $title     .= ' - ' . $data['code'];
                         }
-
                         $selection_text = $title;
 
                         if (isset($data["comment"])) {
