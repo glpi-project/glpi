@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 Session::checkRight("software", UPDATE);
 
@@ -62,6 +63,12 @@ if (isset($_POST['itemtype']) && $_POST['itemtype'] == 'User') {
 }
 
 if (isset($_POST["add"])) {
+    try {
+        $isl->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
+        Html::back();
+    }
+
     if ($_POST['softwarelicenses_id'] > 0) {
         if ($isl->add($_POST)) {
             Event::log(
