@@ -213,10 +213,33 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                         switch ($action->fields['field']) {
                             case 'users_id_validate_requester_supervisor':
                                 $output['_add_validation'][] = 'requester_supervisor';
+
+                                if (empty($input['_users_id_requester'])) {
+                                    break;
+                                }
+
+                                $users_ids = array_map('intval', $input['_users_id_requester']);
+                                $manager_groups_ids = Group_User::getManagedGroupsIdsForUsers($users_ids);
+
+                                // add these manager groups ids to output['_groups_id_requester']
+                                if (!isset($output['_groups_id_requester'])) {
+                                    $output['_groups_id_requester'] = [];
+                                }
+                                $output['_groups_id_requester'] = array_merge($manager_groups_ids, $output['_groups_id_requester']);
+
                                 break;
 
                             case 'users_id_validate_assign_supervisor':
                                 $output['_add_validation'][] = 'assign_supervisor';
+                                //
+                                $users_ids = array_map('intval', $input['_users_id_assign']);
+                                $manager_groups_ids = Group_User::getManagedGroupsIdsForUsers($users_ids);
+
+                                // add these manager groups ids to output['_groups_id_requester']
+                                if (!isset($output['_groups_id_assign'])) {
+                                    $output['_groups_id_assign'] = [];
+                                }
+                                $output['_groups_id_assign'] = array_merge($manager_groups_ids, $output['_groups_id_assign']);
                                 break;
 
                             case 'groups_id_validate':
