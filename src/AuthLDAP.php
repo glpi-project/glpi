@@ -1182,7 +1182,6 @@ TWIG, ['authldaps_id' => $ID]);
      * @phpstan-return array{label: string, content: string}
      * @used-by templates/pages/setup/general/systeminfo_table.html.twig
      */
-
     public function getSystemInformation(): array
     {
         // No need to translate, this part always display in english (for copy/paste to forum)
