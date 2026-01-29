@@ -50,9 +50,9 @@ class Change extends CommonITILObject implements DefaultSearchRequestInterface
     protected static array $forward_entity_to = ['ChangeValidation', 'ChangeCost'];
 
     // From CommonITIL
-    public $userlinkclass               = 'Change_User';
-    public $grouplinkclass              = 'Change_Group';
-    public $supplierlinkclass           = 'Change_Supplier';
+    public string $userlinkclass               = 'Change_User';
+    public string $grouplinkclass              = 'Change_Group';
+    public string $supplierlinkclass           = 'Change_Supplier';
 
     public static string $rightname            = 'change';
     protected bool $usenotepad               = true;

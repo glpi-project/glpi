@@ -52,7 +52,7 @@ class Blacklist extends CommonDropdown
 
     public static string $rightname = 'config';
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     /**
      * Loaded blacklists.

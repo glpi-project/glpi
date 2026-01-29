@@ -45,28 +45,28 @@ abstract class CommonDBVisible extends CommonDBTM
      * Keys are ID, values are DB fields values.
      * @var array
      */
-    protected $entities = [];
+    protected array $entities = [];
 
     /**
      * Groups for whom item is visible.
      * Keys are ID, values are DB fields values.
      * @var array
      */
-    protected $groups = [];
+    protected array $groups = [];
 
     /**
      * Profiles for whom item is visible.
      * Keys are ID, values are DB fields values.
      * @var array
      */
-    protected $profiles = [];
+    protected array $profiles = [];
 
     /**
      * Users for whom item is visible.
      * Keys are ID, values are DB fields values.
      * @var array
      */
-    protected $users = [];
+    protected array $users = [];
 
     /**
      * Is the login user have access to item based on visibility configuration

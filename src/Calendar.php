@@ -47,7 +47,7 @@ class Calendar extends CommonDropdown
 
     // From CommonDBTM
     public bool $dohistory                   = true;
-    public $can_be_translated           = false;
+    public bool $can_be_translated           = false;
 
     protected static array $forward_entity_to = ['CalendarSegment'];
 

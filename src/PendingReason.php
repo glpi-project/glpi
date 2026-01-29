@@ -44,7 +44,7 @@ class PendingReason extends CommonDropdown
     public bool $dohistory = true;
 
     // From CommonDBTM
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
     // Rights managment
     public static string $rightname = 'pendingreason';

@@ -46,7 +46,7 @@ class State extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $can_be_translated       = true;
+    public bool $can_be_translated       = true;
 
     public static string $rightname               = 'state';
 

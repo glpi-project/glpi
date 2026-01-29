@@ -38,7 +38,7 @@ class RuleRightParameter extends CommonDropdown
 {
     public static string $rightname         = 'rule_ldap';
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
 
     /**

@@ -52,21 +52,21 @@ abstract class CommonDropdown extends CommonDBTM
      *
      * @var bool
      */
-    public $must_be_replace = false;
+    public bool $must_be_replace = false;
 
     /**
      * Menu & navigation
      *
      * @var bool
      */
-    public $display_dropdowntitle  = true;
+    public bool $display_dropdowntitle  = true;
 
     /**
      * Flag to determine whether dropdown can be translated.
      *
      * @var bool
      */
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
     public static string $rightname = 'dropdown';
 

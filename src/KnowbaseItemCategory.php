@@ -38,7 +38,7 @@ class KnowbaseItemCategory extends CommonTreeDropdown
 {
     // From CommonDBTM
     public bool $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $can_be_translated  = true;
 
     public static string $rightname          = 'knowbasecategory';
 

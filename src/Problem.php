@@ -50,9 +50,9 @@ class Problem extends CommonITILObject implements DefaultSearchRequestInterface
     protected static array $forward_entity_to = ['ProblemCost'];
 
     // From CommonITIL
-    public $userlinkclass        = 'Problem_User';
-    public $grouplinkclass       = 'Group_Problem';
-    public $supplierlinkclass    = 'Problem_Supplier';
+    public string $userlinkclass        = 'Problem_User';
+    public string $grouplinkclass       = 'Group_Problem';
+    public string $supplierlinkclass    = 'Problem_Supplier';
 
     public static string $rightname            = 'problem';
     protected bool $usenotepad        = true;

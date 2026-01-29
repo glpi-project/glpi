@@ -43,7 +43,7 @@ abstract class CommonDevice extends CommonDropdown
 {
     public static string $rightname          = 'device';
 
-    public $can_be_translated  = false;
+    public bool $can_be_translated  = false;
 
     // From CommonDBTM
     public bool $dohistory           = true;
