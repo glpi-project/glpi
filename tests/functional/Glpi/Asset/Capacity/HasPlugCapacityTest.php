@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Asset\Capacity;
 
+use Computer;
 use Entity;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
@@ -41,7 +42,6 @@ use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\HasPlugCapacity;
 use Glpi\Tests\DbTestCase;
 use Glpi\Tests\Glpi\Asset\CapacityUsageTestTrait;
-use Item_Plug;
 use Log;
 use Plug;
 
@@ -99,9 +99,9 @@ class HasPlugCapacityTest extends DbTestCase
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
             $this->login(); // must be logged in to get tabs list
             if ($has_capacity) {
-                $this->assertArrayHasKey('Item_Plug$1', $item->defineAllTabs());
+                $this->assertArrayHasKey('Plug$1', $item->defineAllTabs());
             } else {
-                $this->assertArrayNotHasKey('Item_Plug$1', $item->defineAllTabs());
+                $this->assertArrayNotHasKey('Plug$1', $item->defineAllTabs());
             }
         }
     }
@@ -155,21 +155,21 @@ class HasPlugCapacityTest extends DbTestCase
         );
 
         $plug_item_1 = $this->createItem(
-            Item_Plug::class,
+            Plug::class,
             [
                 'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
-                'plugs_id' => $plug_1->getID(),
-                'number_plugs' => 1,
+                'mainitemtype' => $plug_1::class,
+                'mainitems_id' => $plug_1->getID(),
             ]
         );
         $plug_item_2 = $this->createItem(
-            Item_Plug::class,
+            Plug::class,
             [
                 'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
-                'plugs_id' => $plug_2->getID(),
-                'number_plugs' => 1,
+                'mainitemtype' => $plug_2::class,
+                'mainitems_id' => $plug_2->getID(),
             ]
         );
 
@@ -181,21 +181,21 @@ class HasPlugCapacityTest extends DbTestCase
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
-        $this->assertInstanceOf(Item_Plug::class, Item_Plug::getById($plug_item_1->getID()));
+        $this->assertInstanceOf(Plug::class, Plug::getById($plug_item_1->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_1_logs_criteria)); //create + add plug
-        $this->assertInstanceOf(Item_Plug::class, Item_Plug::getById($plug_item_2->getID()));
+        $this->assertInstanceOf(Plug::class, Plug::getById($plug_item_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria)); //create + add plug
         $this->assertContains($classname_1, $CFG_GLPI['plug_types']);
         $this->assertContains($classname_2, $CFG_GLPI['plug_types']);
 
         // Disable capacity and check that relations have been cleaned, and class is unregistered from global config
         $this->assertTrue($definition_1->update(['id' => $definition_1->getID(), 'capacities' => []]));
-        $this->assertFalse(Item_Plug::getById($plug_item_1->getID()));
+        $this->assertFalse(Plug::getById($plug_item_1->getID()));
         $this->assertEquals(0, countElementsInTable(Log::getTable(), $item_1_logs_criteria));
         $this->assertNotContains($classname_1, $CFG_GLPI['plug_types']);
 
         // Ensure relations, logs and global registration are preserved for other definition
-        $this->assertInstanceOf(Item_Plug::class, Item_Plug::getById($plug_item_2->getID()));
+        $this->assertInstanceOf(Plug::class, Plug::getById($plug_item_2->getID()));
         $this->assertEquals(2, countElementsInTable(Log::getTable(), $item_2_logs_criteria));
         $this->assertContains($classname_2, $CFG_GLPI['plug_types']);
     }
@@ -216,31 +216,32 @@ class HasPlugCapacityTest extends DbTestCase
             ]
         );
 
+        $computer = $this->createItem(
+            Computer::class,
+            [
+                'name'        => 'Test Computer',
+                'entities_id' => $entity,
+            ]
+        );
+
         $plug = $this->createItem(
             Plug::class,
             [
-                'name' => __FUNCTION__,
+                'itemtype'     => Computer::class,
+                'items_id'     => $computer->getID(),
+                'mainitemtype'     => $class,
+                'mainitems_id'     => $asset->getID(),
             ]
         );
 
-        $this->createItem(
-            Item_Plug::class,
-            [
-                'itemtype'     => $class,
-                'items_id'     => $asset->getID(),
-                'plugs_id'     => $plug->getID(),
-                'number_plugs' => 3,
-            ]
-        );
-
-        $this->assertGreaterThan(0, $clone_id = $asset->clone());
+        $this->assertGreaterThan(0, $plug->clone());
         $this->assertCount(
-            1,
-            getAllDataFromTable(Item_Plug::getTable(), [
-                'itemtype'     => $class,
-                'items_id'     => $clone_id,
-                'plugs_id'     => $plug->getID(),
-                'number_plugs' => 3,
+            2,
+            getAllDataFromTable(Plug::getTable(), [
+                'itemtype'     => Computer::class,
+                'items_id'     => $computer->getID(),
+                'mainitemtype'     => $class,
+                'mainitems_id'     => $asset->getID(),
             ])
         );
     }
@@ -249,9 +250,6 @@ class HasPlugCapacityTest extends DbTestCase
     {
         yield [
             'target_classname'   => Plug::class,
-            'target_fields'      => [],
-            'relation_classname' => Item_Plug::class,
-            'relation_fields'    => ['number_plugs' => 1],
         ];
     }
 
@@ -260,9 +258,6 @@ class HasPlugCapacityTest extends DbTestCase
         yield [
             'target_classname'   => Plug::class,
             'expected'           => '%d plugs attached to %d assets',
-            'target_fields'      => [],
-            'relation_classname' => Item_Plug::class,
-            'relation_fields'    => ['number_plugs' => 1],
         ];
     }
 }
