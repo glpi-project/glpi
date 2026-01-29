@@ -51,7 +51,7 @@ class Unmanaged extends MainAsset
     /** @var array<string, object> */
     private array $management_ports = [];
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware'        => null,
         'network_device'  => null,
     ];

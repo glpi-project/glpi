@@ -90,7 +90,7 @@ abstract class AbstractConfigureCommand extends AbstractCommand
      */
     public const ERROR_DB_CONFIG_FILE_NOT_SAVED = 4;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {

@@ -43,7 +43,7 @@ use stdClass;
 
 class Itemtype extends MainAsset
 {
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware' => null,
         'bios' => null,
         'users' => null,

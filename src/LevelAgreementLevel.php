@@ -51,7 +51,7 @@ abstract class LevelAgreementLevel extends RuleTicket
      * Have to be redefined by concrete class.
      * @var class-string<LevelAgreement>
      */
-    protected static $parentclass;
+    protected static string $parentclass;
     /**
      * LevelAgreement parent class foreign key.
      * Have to be redefined by concrete class.

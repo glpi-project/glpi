@@ -73,7 +73,7 @@ abstract class MainAsset extends InventoryAsset
 {
     use InventoryNetworkPort;
 
-    protected $extra_data = [
+    protected array $extra_data = [
         'hardware'     => null,
         'bios'         => null,
         'users'        => null,

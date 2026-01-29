@@ -37,7 +37,7 @@ class RuleTicketCollection extends RuleCommonITILObjectCollection
 {
     // From RuleCollection
     public static string $rightname    = 'rule_ticket';
-    public $menu_option         = 'ticket';
+    public string $menu_option         = 'ticket';
 
     public function getTitle()
     {

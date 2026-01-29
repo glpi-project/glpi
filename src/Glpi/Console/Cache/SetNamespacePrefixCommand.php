@@ -55,7 +55,7 @@ class SetNamespacePrefixCommand extends AbstractCommand implements Configuration
      */
     public const ERROR_UNABLE_TO_WRITE_CONFIG = 1;
 
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     /**
      * Cache manager.

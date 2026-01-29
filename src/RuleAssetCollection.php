@@ -36,9 +36,9 @@
 class RuleAssetCollection extends RuleCollection
 {
     // From RuleCollection
-    public $stop_on_first_match = false;
+    public bool $stop_on_first_match = false;
     public static string $rightname           = 'rule_asset';
-    public $menu_option         = 'ruleasset';
+    public string $menu_option         = 'ruleasset';
 
     public function getTitle()
     {

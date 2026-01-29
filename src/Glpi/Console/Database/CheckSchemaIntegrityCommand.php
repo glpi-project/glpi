@@ -89,9 +89,9 @@ class CheckSchemaIntegrityCommand extends AbstractCommand
      */
     public const ERROR_NO_TABLES_FOUND = 7;
 
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {

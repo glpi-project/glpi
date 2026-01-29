@@ -446,7 +446,7 @@ class ProjectTask extends CommonDBChild implements CalDAVCompatibleItemInterface
     public function getTeamCount()
     {
         $nb = 0;
-        if (is_array($this->team) && count($this->team)) {
+        if (count($this->team)) {
             foreach ($this->team as $val) {
                 $nb += count($val);
             }

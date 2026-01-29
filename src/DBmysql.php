@@ -80,7 +80,7 @@ class DBmysql
     /**
      * The database handler
      */
-    protected mysqli $dbh;
+    protected ?mysqli $dbh = null;
 
     /**
      * Slave management

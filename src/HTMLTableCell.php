@@ -39,7 +39,7 @@
 class HTMLTableCell extends HTMLTableEntity
 {
     private HTMLTableRow $row;
-    private HTMLTableHeader $header;
+    private ?HTMLTableHeader $header = null;
     private ?HTMLTableCell $father = null;
     /** @var array<string, array<self>> */
     private array $sons = [];

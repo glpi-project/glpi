@@ -70,7 +70,7 @@ class RuleCollection extends CommonDBTM
      *
      */
     public bool $can_replay_rules                      = false;
-    public SingletonRuleList $RuleList                              = null;
+    public ?SingletonRuleList $RuleList = null;
     /**
      * Menu type
      *

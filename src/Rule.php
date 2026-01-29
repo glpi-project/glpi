@@ -79,16 +79,16 @@ class Rule extends CommonDBTM
      *
      * @var self::*_MATCHING|false
      */
-    public $restrict_matching     = false;
+    public string|int|bool $restrict_matching     = false;
     protected string $rules_id_field     = 'rules_id';
     /**
      * @var class-string<RuleAction>
      */
-    protected $ruleactionclass    = RuleAction::class;
+    protected string $ruleactionclass    = RuleAction::class;
     /**
      * @var class-string<RuleCriteria>
      */
-    protected $rulecriteriaclass  = RuleCriteria::class;
+    protected string $rulecriteriaclass  = RuleCriteria::class;
 
     public bool $specific_parameters   = false;
 

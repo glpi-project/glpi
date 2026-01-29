@@ -39,8 +39,8 @@
  */
 class NetworkPortLocal extends NetworkPortInstantiation
 {
-    public $canHaveVLAN = false;
-    public $haveMAC     = false;
+    public bool $canHaveVLAN = false;
+    public bool $haveMAC     = false;
 
     public static function getTypeName($nb = 0)
     {

@@ -45,7 +45,7 @@ use function Safe\json_encode;
 
 class CheckStatusCommand extends AbstractCommand
 {
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     protected function configure()
     {

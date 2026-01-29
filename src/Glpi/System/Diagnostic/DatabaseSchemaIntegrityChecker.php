@@ -132,7 +132,7 @@ class DatabaseSchemaIntegrityChecker
      * GLPI database version.
      *
      */
-    private string $db_version;
+    private ?string $db_version = null;
 
     /**
      * @param DBmysql $db                                 DB instance.
