@@ -41,10 +41,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class OAuthController extends AbstractController
+final class AccessTokenController extends AbstractController
 {
     #[Route(
-        "/OAuth/AccessToken/{access_token}/Revoke",
+        "/OAuth/AccessToken/Revoke/{access_token}",
         name: "oauth_revoke_access_token",
         requirements: [
             'access_token' => '\w+',

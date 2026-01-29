@@ -141,7 +141,7 @@ final class OAuthClient extends CommonDBTM
                 'scopes'     => implode(', ', json_decode($token['scopes'], true) ?? []),
             ];
             if ($show_actions) {
-                $entry['actions'] = '<button type="button" name="revoke_oauth_token" class="btn btn-danger btn-sm">' . __('Revoke') . '</button>';
+                $entry['actions'] = '<button type="button" name="revoke_oauth_token" class="btn btn-danger btn-sm">' . __s('Revoke') . '</button>';
             }
             $entries[] = $entry;
         }
@@ -178,7 +178,7 @@ final class OAuthClient extends CommonDBTM
                                 const token_identifier = button.closest('tr').getAttribute('data-id');
                                 $.ajax({
                                     method: "POST",
-                                    url: "/OAuth/AccessToken/" + token_identifier + "/Revoke"
+                                    url: CFG_GLPI.root_doc + "/OAuth/AccessToken/Revoke/" + token_identifier
                                 }).then(() => {
                                     // Remove the row from the table
                                     const row = button.closest('tr');
