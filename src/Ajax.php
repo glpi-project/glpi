@@ -491,11 +491,11 @@ HTML;
                if ($(this).attr('data-show-all-tabs') === 'true') {
                   loadAllTabs();
                   // show all tabs by adding active and show classes to all tabs
-                  $('#$tabdiv_id').parent().find('.tab-pane').addClass('active show').removeClass('fade');
+                  $('#$tabdiv_id').parent().find('[data-glpi-tab-content].tab-pane').addClass('active show').removeClass('fade');
                } else {
                   // Remove active and show classes from all tabs except the one that is clicked
                   let clicked_tab = $(this).attr('data-bs-target');
-                  $('#$tabdiv_id').parent().find('.tab-pane:not(' + clicked_tab + ')').removeClass('active show');
+                  $('#$tabdiv_id').parent().find('[data-glpi-tab-content].tab-pane:not(' + clicked_tab + ')').removeClass('active show');
                   loadTabContents($(this), false, !first_load);
                }
             });
