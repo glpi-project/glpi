@@ -60,142 +60,123 @@ class DBmysql
      *
      * @var string|string[]
      */
-    public $dbhost             = "";
+    public string|array $dbhost             = "";
     /**
      * Database User
      *
-     * @var string
      */
-    public $dbuser             = "";
+    public string $dbuser             = "";
     /**
      * Database Password
      *
-     * @var string
      */
-    public $dbpassword         = "";
+    public string $dbpassword         = "";
     /**
      * Default Database
      *
-     * @var string
      */
-    public $dbdefault          = "";
+    public string $dbdefault          = "";
 
     /**
      * The database handler
-     * @var mysqli
      */
-    protected $dbh;
+    protected mysqli $dbh;
 
     /**
      * Slave management
      *
-     * @var bool
      */
-    public $slave              = false;
+    public bool $slave              = false;
 
     /**
      * Defines if connection must use SSL.
      *
-     * @var bool
      */
-    public $dbssl              = false;
+    public bool $dbssl              = false;
 
     /**
      * The path name to the key file (used in case of SSL connection).
      *
      * @see mysqli::ssl_set()
-     * @var string|null
      */
-    public $dbsslkey           = null;
+    public ?string $dbsslkey           = null;
 
     /**
      * The path name to the certificate file (used in case of SSL connection).
      *
      * @see mysqli::ssl_set()
-     * @var string|null
      */
-    public $dbsslcert          = null;
+    public ?string $dbsslcert          = null;
 
     /**
      * The path name to the certificate authority file (used in case of SSL connection).
      *
      * @see mysqli::ssl_set()
-     * @var string|null
      */
-    public $dbsslca            = null;
+    public ?string $dbsslca            = null;
 
     /**
      * The pathname to a directory that contains trusted SSL CA certificates in PEM format
      * (used in case of SSL connection).
      *
      * @see mysqli::ssl_set()
-     * @var string|null
      */
-    public $dbsslcapath        = null;
+    public ?string $dbsslcapath        = null;
 
     /**
      * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
      *
      * @see mysqli::ssl_set()
-     * @var string|null
      */
-    public $dbsslcacipher      = null;
+    public ?string $dbsslcacipher      = null;
 
     /**
      * Determine if timezones should be used for timestamp fields.
      * Defaults to false to keep backward compatibility with old DB.
      *
-     * @var bool
      */
-    public $use_timezones = false;
+    public bool $use_timezones = false;
 
     /**
      * Determine if warnings related to MySQL deprecations should be logged too.
      * Defaults to false as this option should only on development/test environment.
      *
-     * @var bool
      */
-    public $log_deprecation_warnings = false;
+    public bool $log_deprecation_warnings = false;
 
     /**
      * Determine if utf8mb4 should be used for DB connection and tables altering operations.
      * Defaults to false to keep backward compatibility with old DB.
      *
-     * @var bool
      */
-    public $use_utf8mb4 = false;
+    public bool $use_utf8mb4 = false;
 
     /**
      * Determine if datetime fields usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
-     * @var bool
      */
-    public $allow_datetime = true;
+    public bool $allow_datetime = true;
 
     /**
      * Determine if signed integers in primary/foreign keys usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
-     * @var bool
      */
-    public $allow_signed_keys = true;
+    public bool $allow_signed_keys = true;
 
 
     /** Is it a first connection ?
      * Indicates if the first connection attempt is successful or not
      * if first attempt fail -> display a warning which indicates that glpi is in readonly
      *
-     * @var bool
      */
-    public $first_connection   = true;
+    public bool $first_connection   = true;
     // Is connected to the DB ?
-    /** @var bool */
-    public $connected          = false;
+    public bool $connected          = false;
 
     //to calculate execution time
-    /** @var bool|float */
-    public $execution_time          = false;
+    public bool|float $execution_time          = false;
 
     private bool $cache_disabled = false;
 
@@ -206,18 +187,16 @@ class DBmysql
     /**
      * Cached list fo tables.
      *
-     * @var array
      * @see self::tableExists()
      */
-    private $table_cache = [];
+    private array $table_cache = [];
 
     /**
      * Cached list of fields.
      *
-     * @var array
      * @see self::listFields()
      */
-    private $field_cache = [];
+    private array $field_cache = [];
 
     private int $transaction_level = 0;
 

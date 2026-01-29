@@ -79,13 +79,11 @@ abstract class CommonDBConnexity extends CommonDBTM
     public const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
     public const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
-    /** @var bool */
     public static bool $canDeleteOnItemClean          = true;
 
     /**
      * Disable auto forwarding information about entities?
      *
-     * @var bool
      */
     public static bool $disableAutoEntityForwarding   = false;
 

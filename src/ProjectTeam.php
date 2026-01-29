@@ -60,7 +60,7 @@ class ProjectTeam extends CommonDBRelation
     public static int $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
 
     /** @var class-string<CommonDBTM>[] */
-    public static $available_types     = [User::class, Group::class, Supplier::class, Contact::class];
+    public static array $available_types     = [User::class, Group::class, Supplier::class, Contact::class];
 
 
     /**

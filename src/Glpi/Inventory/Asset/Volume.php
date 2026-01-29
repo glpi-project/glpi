@@ -42,7 +42,6 @@ use stdClass;
 
 class Volume extends InventoryAsset
 {
-    /** @var Conf */
     private Conf $conf;
 
     public function prepare(): array

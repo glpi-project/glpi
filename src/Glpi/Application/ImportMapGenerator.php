@@ -49,30 +49,18 @@ use function Safe\preg_replace;
  */
 class ImportMapGenerator
 {
-    /**
-     * @var ImportMapGenerator|null
-     */
-    private static $instance = null;
+    private static ?ImportMapGenerator $instance = null;
 
-    /**
-     * @var string
-     */
-    private $root_doc;
+    private string $root_doc;
 
-    /**
-     * @var string
-     */
-    private $glpi_root;
+    private string $glpi_root;
 
-    /**
-     * @var CacheInterface|null
-     */
-    private $cache;
+    private ?CacheInterface $cache = null;
 
     /**
      * @var array<string, array<string>> Dictionary of plugin module paths by plugin key
      */
-    private $registered_plugin_modules = [];
+    private array $registered_plugin_modules = [];
 
     /**
      * @param string $root_doc Root document URL path

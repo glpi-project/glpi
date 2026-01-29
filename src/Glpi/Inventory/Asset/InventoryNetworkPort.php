@@ -58,13 +58,11 @@ use Unmanaged;
 trait InventoryNetworkPort
 {
     /** @var object[]  */
-    protected $ports = [];
-    /** @var mysqli_stmt */
-    protected $ipnetwork_stmt;
-    /** @var mysqli_stmt */
-    protected $idevice_stmt;
+    protected array $ports = [];
+    protected mysqli_stmt $ipnetwork_stmt;
+    protected mysqli_stmt $idevice_stmt;
     /** @var object[]  */
-    protected $networks = [];
+    protected array $networks = [];
     /** @var class-string<CommonDBTM> */
     protected $itemtype;
     private ?int $items_id;

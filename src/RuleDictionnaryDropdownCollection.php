@@ -43,9 +43,8 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
     /**
      * Dropdown table
      *
-     * @var string
      */
-    public $item_table = "";
+    public string $item_table = "";
 
     public $stop_on_first_match = true;
     public $can_replay_rules    = true;

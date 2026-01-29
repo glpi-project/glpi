@@ -63,15 +63,12 @@ class Agent extends CommonDBTM
     /** @var string */
     public const ACTION_INVENTORY = 'inventory';
 
-    /** @var bool */
     public bool $dohistory = true;
 
-    /** @var string */
     public static string $rightname = 'agent';
     //static $rightname = 'inventory';
 
-    /** @var bool */
-    private static $found_address = false;
+    private static bool $found_address = false;
 
     public array $history_blacklist = ['last_contact'];
 

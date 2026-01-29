@@ -52,15 +52,12 @@ class Domain extends CommonDBTM implements AssignableItemInterface
     public static string $rightname = 'domain';
     protected static array $forward_entity_to = ['DomainRecord'];
 
-    /** @var bool */
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
     public bool $dohistory        = true;
-    /** @var bool */
-    protected $usenotepadrights = true;
+    protected bool $usenotepadrights = true;
     protected bool $usenotepad       = true;
-    /** @var string */
-    public static $tags             = '[DOMAIN_NAME]';
+    public static string $tags             = '[DOMAIN_NAME]';
 
     public function getCloneRelations(): array
     {

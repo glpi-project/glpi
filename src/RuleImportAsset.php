@@ -61,14 +61,10 @@ class RuleImportAsset extends Rule
 
     public static string $rightname         = 'rule_import';
 
-    /** @var int */
-    private $found_criteria = 0;
-    /** @var array */
-    private $complex_criteria = [];
-    /** @var bool */
-    private $only_these_criteria = false;
-    /** @var bool */
-    private $link_criteria_port = false;
+    private int $found_criteria = 0;
+    private array $complex_criteria = [];
+    private bool $only_these_criteria = false;
+    private bool $link_criteria_port = false;
 
     public function getTitle()
     {

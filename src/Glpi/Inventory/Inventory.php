@@ -106,37 +106,26 @@ class Inventory
     public const FULL_MODE = 0;
     public const INCR_MODE = 1;
 
-    /** @var int */
-    protected $mode;
-    /** @var ?stdClass */
-    protected $raw_data = null;
+    protected int $mode;
+    protected ?stdClass $raw_data = null;
     /** @var array<string, object> */
-    protected $data = [];
+    protected array $data = [];
     /** @var array<string, mixed> */
-    private $metadata = [];
+    private array $metadata = [];
     /** @var string[] */
-    private $errors = [];
-    /** @var CommonDBTM */
-    protected $item;
-    /** @var Agent */
-    private $agent;
+    private array $errors = [];
+    protected CommonDBTM $item;
+    private Agent $agent;
     /** @var array<string, InventoryAsset[]> */
-    protected $assets = [];
-    /** @var Conf */
-    protected $conf;
+    protected array $assets = [];
+    protected Conf $conf;
     /** @var array<string, array<stirng, mixed>> */
-    private $benchs = [];
-    /** @var string|false */
-    private $inventory_tmpfile = false;
-    /** @var ?string */
-    private $inventory_content;
-    /** @var int */
-    private $inventory_format;
-    /** @var ?MainAsset */
-    private $mainasset;
-    /** @var string */
-    private $request_query;
-    /** @var bool */
+    private array $benchs = [];
+    private string|false $inventory_tmpfile = false;
+    private ?string $inventory_content = null;
+    private int $inventory_format;
+    private ?MainAsset $mainasset = null;
+    private string $request_query;
     private bool $is_discovery = false;
 
     /**

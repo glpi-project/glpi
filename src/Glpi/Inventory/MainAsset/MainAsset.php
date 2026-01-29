@@ -79,34 +79,26 @@ abstract class MainAsset extends InventoryAsset
         'users'        => null,
         NetworkCard::class => null,
     ];
-    /** @var mixed */
-    protected $raw_data;
-    /** @var stdClass */
-    protected $hardware;
-    /** @var ?int */
-    protected $states_id_default;
-    /** @var stdClass */
-    private $current_data;
+    protected mixed $raw_data;
+    protected stdClass $hardware;
+    protected ?int $states_id_default = null;
+    private stdClass $current_data;
     /** @var array<string, InventoryAsset[]> */
-    protected $assets = [];
-    /** @var Conf */
-    protected $conf;
+    protected array $assets = [];
+    protected Conf $conf;
     /** @var RefusedEquipment[] */
-    protected $refused = [];
+    protected array $refused = [];
     /** @var CommonDBTM[] */
-    protected $inventoried = [];
-    /** @var bool */
-    protected $partial = false;
-    /** @var bool */
+    protected array $inventoried = [];
+    protected bool $partial = false;
     protected bool $is_discovery = false;
-    /** @var int */
-    protected $current_key;
+    protected int $current_key;
 
     /** @var array<string,mixed> */
-    protected $ruleentity_data = [];
+    protected array $ruleentity_data = [];
 
     /** @var array<string,mixed> */
-    protected $rulelocation_data = [];
+    protected array $rulelocation_data = [];
 
     /** @var array<string,mixed> */
     protected array $rulematchedlog_input = [];

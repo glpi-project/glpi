@@ -135,9 +135,8 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * connection caching stuff
-     * @var array
      */
-    public static $conn_cache = [];
+    public static array $conn_cache = [];
 
     public static array $undisclosedFields = [
         'rootdn_passwd',
@@ -145,12 +144,10 @@ class AuthLDAP extends CommonDBTM
 
     /**
      * Message of last error occurred during connection.
-     * @var ?string
      */
     private static ?string $last_error = null;
     /**
      * Numero of last error occurred during connection.
-     * @var ?int
      */
     private static ?int $last_errno = null;
 

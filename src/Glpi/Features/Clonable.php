@@ -51,9 +51,8 @@ trait Clonable
      * Cache used to keep track of the last clone index
      * Usefull when cloning an item multiple time to avoid iterating on the sql
      * results multiple time while looking for an available unique name
-     * @var null|int
      */
-    protected $last_clone_index = null;
+    protected ?int $last_clone_index = null;
 
     /**
      * Get relations class to clone along with current element.

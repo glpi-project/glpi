@@ -61,9 +61,8 @@ class DbTestCase extends GLPITestCase
 {
     /**
      * Indicates whether the custom assets autoloader is registered.
-     * @var bool
      */
-    private $is_asset_autoloader_registered = false;
+    private bool $is_asset_autoloader_registered = false;
 
     public function setUp(): void
     {

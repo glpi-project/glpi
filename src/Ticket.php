@@ -69,10 +69,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
     public static string $rightname                   = 'ticket';
 
-    /**
-     * @var bool
-     */
-    protected $userentity_oncreate      = true;
+    protected bool $userentity_oncreate      = true;
 
     public const MATRIX_FIELD                  = 'priority_matrix';
     public const URGENCY_MASK_FIELD            = 'urgency_mask';
@@ -82,14 +79,12 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     // Specific ones
     /**
      * Hardware datas used by getFromDBwithData
-     * @var array
      */
-    public $hardwaredatas = [];
+    public array $hardwaredatas = [];
     /**
      * Is a hardware found in getHardwareData / getFromDBwithData : hardware link to the job
-     * @var int
      */
-    public $computerfound = 0;
+    public int $computerfound = 0;
 
     // Request type
     public const INCIDENT_TYPE = 1;

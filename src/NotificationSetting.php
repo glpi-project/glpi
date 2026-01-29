@@ -43,10 +43,7 @@ abstract class NotificationSetting extends CommonDBTM
     public const ATTACH_ALL_DOCUMENTS     = 1;    // All documents
     public const ATTACH_FROM_TRIGGER_ONLY = 2;    // Only documents related to the item that triggers the event
 
-    /**
-     * @var string
-     */
-    public $table           = 'glpi_configs';
+    public string $table           = 'glpi_configs';
     protected bool $displaylist  = false;
     public static string $rightname       = 'config';
 

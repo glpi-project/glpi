@@ -48,31 +48,25 @@ class DBmysqlIterator implements SeekableIterator, Countable
 {
     /**
      * DBmysql object
-     * @var ?DBmysql
      */
-    private $conn;
+    private ?DBmysql $conn = null;
     // Current SQL query
-    /** @var ?string */
-    private $sql;
+    private ?string $sql = null;
     // Current result
-    /** @var mysqli_result|bool  */
-    private $res = false;
+    private mysqli_result|bool $res = false;
 
     /**
      * Total number of rows.
-     * @var int
      */
-    private $count;
+    private int $count;
 
     /**
      * Current row value.
-     * @var mixed
      */
-    private $row;
+    private mixed $row;
 
     /**
      * Current pointer position.
-     * @var int
      */
     private ?int $position = null;
 

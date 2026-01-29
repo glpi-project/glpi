@@ -51,8 +51,7 @@ use function Safe\mktime;
  **/
 class Report extends CommonGLPI
 {
-    /** @var bool */
-    protected static $notable = false;
+    protected static bool $notable = false;
     public static string $rightname         = 'reports';
 
     public static function getTypeName($nb = 0)

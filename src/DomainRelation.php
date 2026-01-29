@@ -41,8 +41,7 @@ class DomainRelation extends CommonDropdown
     public bool $dohistory                   = true;
     public static string $rightname                   = 'dropdown';
 
-    /** @var array */
-    public static $knowrelations = [
+    public static array $knowrelations = [
         [
             'id'        => self::BELONGS,
             'name'      => 'Belongs',

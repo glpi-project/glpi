@@ -57,24 +57,20 @@ abstract class ITILTemplate extends CommonDropdown
     // Specific fields
     /**
      * Mandatory Fields
-     * @var array
      */
-    public $mandatory  = [];
+    public array $mandatory  = [];
     /**
      * Hidden fields
-     * @var array
      */
-    public $hidden     = [];
+    public array $hidden     = [];
     /**
      * Predefined fields
-     * @var array
      */
-    public $predefined = [];
+    public array $predefined = [];
     /**
      * Readonly fields
-     * @var array
      */
-    public $readonly   = [];
+    public array $readonly   = [];
     /// Related ITIL type
 
     /**

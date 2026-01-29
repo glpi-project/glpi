@@ -52,7 +52,6 @@ class InventoryTestCase extends DbTestCase
      */
     protected const INVENTORY_ARCHIVE_PATH = GLPI_TMP_DIR . '/to_inventory.zip';
 
-    /** @var int */
     protected int $nblogs;
 
     public function setUp(): void

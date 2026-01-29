@@ -55,12 +55,12 @@ class NotificationTemplate extends CommonDBTM
     /**
      * @var string Signature to add to the template
      */
-    public $signature = '';
+    public string $signature = '';
 
     /**
      * @var array<string, array{subject: string, content_html:string, content_text:string}> Store templates for each language
      */
-    public $templates_by_languages = [];
+    public array $templates_by_languages = [];
 
     public static string $rightname = 'config';
 

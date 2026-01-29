@@ -40,7 +40,7 @@ class HTMLTableSubHeader extends HTMLTableHeader implements HTMLCompositeTableIn
 {
     // The headers of each column
     /** @var HTMLTableSuperHeader The headers of each column */
-    private $header;
+    private HTMLTableSuperHeader $header;
     public $numberOfSubHeaders;
 
     /**

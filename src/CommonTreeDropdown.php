@@ -43,7 +43,6 @@ use Glpi\DBAL\QueryExpression;
  **/
 abstract class CommonTreeDropdown extends CommonDropdown
 {
-    /** @var bool $can_be_translated */
     public bool $can_be_translated = false;
 
 

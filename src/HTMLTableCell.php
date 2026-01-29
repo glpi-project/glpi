@@ -38,23 +38,17 @@
  **/
 class HTMLTableCell extends HTMLTableEntity
 {
-    /** @var HTMLTableRow */
-    private $row;
-    /** @var HTMLTableHeader */
-    private $header;
-    /** @var ?HTMLTableCell */
-    private $father;
+    private HTMLTableRow $row;
+    private HTMLTableHeader $header;
+    private ?HTMLTableCell $father = null;
     /** @var array<string, array<self>> */
-    private $sons = [];
-    /** @var ?CommonDBTM */
-    private $item;
-    /** @var ?int */
-    private $numberOfLines;
-    /** @var ?int */
-    private $start;
+    private array $sons = [];
+    private ?CommonDBTM $item = null;
+    private ?int $numberOfLines = null;
+    private ?int $start = null;
 
     /** @var array|false List of rows that have specific attributs */
-    private $attributForTheRow = false;
+    private array|false $attributForTheRow = false;
 
     /**
      * @param HTMLTableRow    $row

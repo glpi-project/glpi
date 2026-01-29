@@ -48,7 +48,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
     public static ?string $itemtype_1; // Type ref or field name (must start with itemtype)
-    /** @var ?string $items_id_1 */
     public static ?string $items_id_1; // Field name
     /** @var bool If entity must be taken from item 1 */
     public static bool $take_entity_1          = true;
@@ -75,7 +74,6 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
     public static ?string $itemtype_2; // Type ref or field name (must start with itemtype)
-    /** @var ?string $items_id_2 */
     public static ?string $items_id_2; // Field name
     /** @var bool If entity must be taken from item 2 */
     public static bool $take_entity_2          = false;
@@ -100,19 +98,15 @@ abstract class CommonDBRelation extends CommonDBConnexity
 
     // Relation between items to check
     /// If both items must be checked for rights (default is only one)
-    /** @var bool */
     public static bool $checkAlwaysBothItems   = false;
     /// If both items must be in viewable each other entities
-    /** @var bool */
     public static bool $check_entity_coherency = true;
 
-    /** @var bool */
     public bool $no_form_page                  = true;
 
     /**
      * Search option number to use in parent item log.
      * Value is defined during logging process and unset after it.
-     * @var int
      */
     protected int $_force_log_option = 0;
 
