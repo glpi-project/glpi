@@ -50,6 +50,7 @@ phpstan.neon
 /resources/.illustrations_translations.php
 /.dump/
 /tests/js/coverage/
+.DS_Store
 
 # Playwright
 /tests/e2e/results/
