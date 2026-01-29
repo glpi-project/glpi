@@ -38,8 +38,8 @@ use Glpi\Dashboard\Grid;
 use Glpi\Debug\Profiler;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-
 use Glpi\Exception\Http\UnprocessableEntityHttpException;
+
 use function Safe\json_decode;
 use function Safe\json_encode;
 
