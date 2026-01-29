@@ -39,6 +39,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use KnowbaseItem;
 use KnowbaseItem_Revision;
+use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -63,7 +64,7 @@ final class RevertRevisionController extends AbstractController
         }
 
         // Check permissions
-        if (!$kb->canUpdateItem()) {
+        if (!KnowbaseItem::canUpdate() || !$kb->canUpdateItem()) {
             throw new AccessDeniedHttpException();
         }
 
@@ -81,9 +82,10 @@ final class RevertRevisionController extends AbstractController
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
+        Session::addMessageAfterRedirect(__("Article restored successfully."));
+
         return new JsonResponse([
             'success' => true,
-            'message' => __("Article restored successfully."),
         ]);
     }
 }

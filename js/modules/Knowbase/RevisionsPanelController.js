@@ -110,7 +110,6 @@ export class GlpiKnowbaseRevisionsPanelController
                 return;
             }
 
-            glpi_toast_info(data.message);
             window.location.reload();
         } catch {
             glpi_toast_error(__("An unexpected error occurred."));
