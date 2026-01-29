@@ -36,6 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Error\ErrorHandler;
 use Glpi\Plugin\Hooks;
@@ -1707,6 +1708,22 @@ final class Transfer extends CommonDBTM
 
         $iterator = $DB->request($criteria);
 
+        // find if version is used by other items
+        $criteria = [
+            'COUNT'  => 'cpt',
+            'FROM'   => Item_SoftwareVersion::getTable(),
+            'WHERE'  => [
+                'itemtype'             => new QueryParam(),
+                'items_id'             => new QueryParam(),
+                'softwareversions_id'  => new QueryParam(),
+            ],
+        ];
+
+        $it = new DBmysqlIterator(null);
+        $it->buildQuery($criteria);
+        $query = $it->getSql();
+        $stmt = $DB->prepare($query);
+
         foreach ($iterator as $data) {
             if ($this->options['keep_software']) {
                 $newversID = $this->copySingleVersion($data['softwareversions_id']);
@@ -1715,15 +1732,24 @@ final class Transfer extends CommonDBTM
                     ($newversID > 0)
                     && ($newversID != $data['softwareversions_id'])
                 ) {
-                    $DB->update(
-                        'glpi_items_softwareversions',
-                        [
-                            'softwareversions_id' => $newversID,
-                        ],
-                        [
-                            'id' => $data['id'],
-                        ]
-                    );
+                    $stmt->bind_param('sii', $itemtype, $ID, $newversID);
+                    $stmt->execute();
+                    $result = $stmt->get_result();
+                    $row = $result->fetch_assoc();
+
+                    if ($row['cpt'] > 0) {
+                        $DB->delete(Item_SoftwareVersion::getTable(), ['id' => $data['id']]);
+                    } else {
+                        $DB->update(
+                            Item_SoftwareVersion::getTable(),
+                            [
+                                'softwareversions_id' => $newversID,
+                            ],
+                            [
+                                'id' => $data['id'],
+                            ]
+                        );
+                    }
                 }
             } else { // Do not keep
                 // Delete inst software for item
@@ -3851,7 +3877,10 @@ final class Transfer extends CommonDBTM
             $edit_form = false;
         }
 
-        $options['target'] = URL::sanitizeURL($options['target']);
+        $options = [
+            'target' => URL::sanitizeURL($options['target']),
+            'canedit' => Session::haveRight("transfer", READ),
+        ];
 
         $this->initForm($ID, $options);
         TemplateRenderer::getInstance()->display('pages/admin/transfer.html.twig', [

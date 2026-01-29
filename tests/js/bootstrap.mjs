@@ -170,9 +170,25 @@ class AjaxMock {
             }
         }
         if (result !== undefined) {
+            if (settings.async === false) {
+                if (resolve_type === 'success' && settings.success) {
+                    settings.success(result);
+                } else if (resolve_type !== 'success' && settings.error) {
+                    settings.error(result);
+                }
+                return Promise.resolve();
+            }
             if (resolve_type === 'success') {
+                if (settings.success) {
+                    settings.success(result);
+                    return Promise.resolve();
+                }
                 result = Promise.resolve(result);
             } else {
+                if (settings.error) {
+                    settings.error(result);
+                    return Promise.resolve();
+                }
                 result = Promise.reject(result);
             }
             return result;
@@ -180,7 +196,7 @@ class AjaxMock {
             /* eslint-disable no-console */
             console.dir({
                 request_data: settings.data,
-                responses: window.AjaxMock.response_stack
+                responses: JSON.stringify(window.AjaxMock.response_stack)
             });
             throw `No mock response found for ${url}`;
         }

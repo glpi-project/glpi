@@ -868,4 +868,172 @@ final class TicketTaskTest extends CommonITILTaskTestCase
         $this->assertEquals(1, $data['data']['totalcount']);
         $this->assertEquals('ticket title', $data['data']['rows'][0]['Ticket_1'][0]['name']);
     }
+
+    /**
+     * Test that tickets can be linked to project tasks from closed projects
+     */
+    public function testLinkToClosedProjectTask()
+    {
+        $this->login();
+
+        // Create a project state marked as finished
+        $projectstate = $this->createItem('ProjectState', [
+            'name' => 'Closed State',
+            'is_finished' => 1,
+        ]);
+
+        // Create a closed project
+        $project = $this->createItem('Project', [
+            'name' => 'Closed Project',
+            'entities_id' => 0,
+            'projectstates_id' => $projectstate->getID(),
+        ]);
+
+        // Create a task in the closed project
+        $task = $this->createItem('ProjectTask', [
+            'name' => 'Task in closed project',
+            'projects_id' => $project->getID(),
+            'entities_id' => 0,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Test ticket',
+            'content' => 'Test content',
+            'entities_id' => 0,
+        ]);
+
+        // Test that we can link the ticket to the task from the closed project
+        $link = $this->createItem('ProjectTask_Ticket', [
+            'projecttasks_id' => $task->getID(),
+            'tickets_id' => $ticket->getID(),
+        ]);
+
+        $this->assertGreaterThan(0, $link->getID());
+
+        // Verify the link exists
+        $this->assertTrue($link->getFromDB($link->getID()));
+        $this->assertEquals($task->getID(), $link->fields['projecttasks_id']);
+        $this->assertEquals($ticket->getID(), $link->fields['tickets_id']);
+    }
+
+    /**
+     * Test that only tasks from selected project are shown
+     */
+    public function testProjectTaskFilteringByProject()
+    {
+        $this->login();
+
+        // Create two projects
+        $project1 = $this->createItem('Project', [
+            'name' => 'Project 1',
+            'entities_id' => 0,
+        ]);
+
+        $project2 = $this->createItem('Project', [
+            'name' => 'Project 2',
+            'entities_id' => 0,
+        ]);
+
+        // Create tasks in each project
+        $task1 = $this->createItem('ProjectTask', [
+            'name' => 'Task in project 1',
+            'projects_id' => $project1->getID(),
+            'entities_id' => 0,
+        ]);
+
+        $task2 = $this->createItem('ProjectTask', [
+            'name' => 'Task in project 2',
+            'projects_id' => $project2->getID(),
+            'entities_id' => 0,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Test ticket',
+            'content' => 'Test content',
+            'entities_id' => 0,
+        ]);
+
+        // Link ticket to task1
+        $link1 = $this->createItem('ProjectTask_Ticket', [
+            'projecttasks_id' => $task1->getID(),
+            'tickets_id' => $ticket->getID(),
+        ]);
+
+        $this->assertGreaterThan(0, $link1->getID());
+
+        // Link ticket to task2
+        $link2 = $this->createItem('ProjectTask_Ticket', [
+            'projecttasks_id' => $task2->getID(),
+            'tickets_id' => $ticket->getID(),
+        ]);
+
+        $this->assertGreaterThan(0, $link2->getID());
+
+        // Verify both links exist by checking we can retrieve them
+        $this->assertTrue($link1->getFromDB($link1->getID()));
+        $this->assertTrue($link2->getFromDB($link2->getID()));
+
+        // Verify the links point to different projects
+        $this->assertEquals($task1->getID(), $link1->fields['projecttasks_id']);
+        $this->assertEquals($task2->getID(), $link2->fields['projecttasks_id']);
+        $this->assertEquals($ticket->getID(), $link1->fields['tickets_id']);
+        $this->assertEquals($ticket->getID(), $link2->fields['tickets_id']);
+    }
+
+    /**
+     * Test that already linked tasks are excluded from dropdown
+     */
+    public function testExcludeAlreadyLinkedProjectTasks()
+    {
+        $this->login();
+
+        // Create a project
+        $project = $this->createItem('Project', [
+            'name' => 'Test Project',
+            'entities_id' => 0,
+        ]);
+
+        // Create two tasks
+        $task1 = $this->createItem('ProjectTask', [
+            'name' => 'Task 1',
+            'projects_id' => $project->getID(),
+            'entities_id' => 0,
+        ]);
+
+        $task2 = $this->createItem('ProjectTask', [
+            'name' => 'Task 2',
+            'projects_id' => $project->getID(),
+            'entities_id' => 0,
+        ]);
+
+        // Create a ticket
+        $ticket = $this->createItem('Ticket', [
+            'name' => 'Test ticket',
+            'content' => 'Test content',
+            'entities_id' => 0,
+        ]);
+
+        // Link ticket to task1
+        $link = $this->createItem('ProjectTask_Ticket', [
+            'projecttasks_id' => $task1->getID(),
+            'tickets_id' => $ticket->getID(),
+        ]);
+
+        // Verify the link was created
+        $this->assertGreaterThan(0, $link->getID());
+        $this->assertTrue($link->getFromDB($link->getID()));
+        $this->assertEquals($task1->getID(), $link->fields['projecttasks_id']);
+        $this->assertEquals($ticket->getID(), $link->fields['tickets_id']);
+
+        // Verify that task2 is not linked
+        $link_test = new \ProjectTask_Ticket();
+        $this->assertFalse(
+            $link_test->getFromDBByCrit([
+                'projecttasks_id' => $task2->getID(),
+                'tickets_id' => $ticket->getID(),
+            ])
+        );
+    }
 }

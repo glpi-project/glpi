@@ -124,16 +124,6 @@ class Budget extends CommonDropdown
         return true;
     }
 
-    /**
-     * Print the contact form
-     *
-     * @param int $ID      Integer ID of the item
-     * @param array  $options  Array of possible options:
-     *     - target for the Form
-     *     - withtemplate : template or basic item
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     **/
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/management/budget.html.twig', [

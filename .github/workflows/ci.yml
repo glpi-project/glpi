@@ -352,6 +352,8 @@ jobs:
           grep -v '\*\*\* Test logger' tests/e2e/glpi_files/_log/php-errors.log > /tmp/php-errors-filtered.log || true
           if [[ $(wc -l < /tmp/php-errors-filtered.log) -ge 1 ]]; then
             echo "PHP errors detected in log file"
+            echo "==============================="
+            cat /tmp/php-errors-filtered.log
             exit 1
           fi
       - uses: actions/upload-artifact@v6
@@ -360,13 +362,6 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - name: "Upload GLPI logs"
-        if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
-        with:
-          name: glpi-playwright-logs
-          path: tests/e2e/glpi_files/_log
-          retention-days: 7
       - name: "Upload output"
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v6

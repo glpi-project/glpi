@@ -138,6 +138,11 @@ class LexerTest extends GLPITestCase
                 'is_deleted==0',
                 [[5, 'is_deleted'], [6, '=='], [7, '0']],
             ],
+            // No-value filter not at end of query
+            [
+                'name=empty=;id==10',
+                [[5, 'name'], [6, '=empty='], [8, ''], [1, ';'], [5, 'id'], [6, '=='], [7, '10']],
+            ],
         ];
     }
 

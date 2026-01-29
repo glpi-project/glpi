@@ -258,7 +258,8 @@ final class EntityField extends AbstractConfigField implements DestinationFieldC
         // Try to load entity
         $entity = Entity::getById($entity_id);
         if (!$entity) {
-            return $fallback;
+            $config[EntityFieldConfig::SPECIFIC_ENTITY_ID] = 0;
+            return new DynamicExportDataField($config, []);
         }
 
         // Insert entity name and requirement

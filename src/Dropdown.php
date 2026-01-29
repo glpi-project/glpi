@@ -2992,9 +2992,14 @@ HTML;
                         $where = array_merge($where, $value['WHERE']);
                     } elseif (!is_numeric($key) && !in_array($key, ['AND', 'OR', 'NOT']) && !str_contains($key, '.')) {
                         // Ensure condition contains table name to prevent ambiguity with fields from `glpi_entities` table
-                        $where[] = ["$table.$key" => $value];
-                    } else {
+                        $where["$table.$key"] = $value;
+                    } elseif (is_numeric($key) || in_array($key, ['AND', 'OR', 'NOT'])) {
+                        // Prevent overriding criteria groups sharing the same key
                         $where[] = [$key => $value];
+                    } else {
+                        // Keep the criteria key at the rrot level to be able to override defaults.
+                        // e.g. to override the default `is_template` / `is_deleted` filtering.
+                        $where[$key] = $value;
                     }
                 }
             }

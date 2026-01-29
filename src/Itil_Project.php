@@ -266,6 +266,17 @@ TWIG, $twig_params);
         $selfTable = self::getTable();
         $projectTable = Project::getTable();
 
+        // Get finished project states to filter them out from dropdown
+        $finished_states_it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => ProjectState::getTable(),
+            'WHERE'  => ['is_finished' => 1],
+        ]);
+        $finished_states_ids = [];
+        foreach ($finished_states_it as $state) {
+            $finished_states_ids[] = $state['id'];
+        }
+
         $iterator = $DB->request([
             'SELECT'          => [
                 "$selfTable.id AS linkid",
@@ -297,12 +308,20 @@ TWIG, $twig_params);
         }
 
         if ($canedit && !$itil->isSolved(true)) {
+            $project_conditions = [
+                'glpi_projects.is_template' => 0,
+            ];
+            if (count($finished_states_ids)) {
+                $project_conditions['glpi_projects.projectstates_id'] = ['NOT IN', $finished_states_ids];
+            }
+
             $twig_params = [
                 'btn_msg' => _x('button', 'Add'),
                 'used' => $used,
                 'itemtype' => $itil::class,
                 'items_id' => $ID,
                 'entities_id' => $itil->getEntityID(),
+                'project_conditions' => $project_conditions,
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -318,7 +337,8 @@ TWIG, $twig_params);
                                         add_field_class: 'd-inline',
                                         no_label: true,
                                         used: used,
-                                        entity: entities_id
+                                        entity: entities_id,
+                                        condition: project_conditions
                                     }) }}
                                 </div>
                                 <div class="col-auto">

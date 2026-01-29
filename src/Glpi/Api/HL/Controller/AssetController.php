@@ -35,13 +35,19 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use Appliance;
+use ApplianceType;
 use AutoUpdateSystem;
 use Cable;
 use Cartridge;
 use CartridgeItem;
 use CartridgeItem_PrinterModel;
+use Certificate;
+use CertificateType;
 use CommonDBTM;
 use Computer;
+use ComputerModel;
+use ComputerType;
 use Consumable;
 use ConsumableItem;
 use Datacenter;
@@ -62,14 +68,35 @@ use Glpi\SocketModel;
 use Group_Item;
 use GuzzleHttp\Psr7\Utils;
 use Infocom;
+use Item_DeviceNetworkCard;
+use Item_OperatingSystem;
 use Item_Rack;
+use Item_SoftwareVersion;
 use Location;
 use Manufacturer;
 use Monitor;
+use MonitorModel;
+use MonitorType;
 use Network;
 use NetworkEquipment;
+use NetworkEquipmentModel;
+use NetworkEquipmentType;
 use NetworkPort;
+use NetworkPortAggregate;
+use NetworkPortAlias;
+use NetworkPortDialup;
+use NetworkPortEthernet;
+use NetworkPortFiberchannel;
+use NetworkPortFiberchannelType;
+use NetworkPortLocal;
+use NetworkPortWifi;
 use OperatingSystem;
+use OperatingSystemArchitecture;
+use OperatingSystemEdition;
+use OperatingSystemKernel;
+use OperatingSystemKernelVersion;
+use OperatingSystemServicePack;
+use OperatingSystemVersion;
 use PassiveDCEquipment;
 use PassiveDCEquipmentModel;
 use PassiveDCEquipmentType;
@@ -77,16 +104,27 @@ use PDU;
 use PDUModel;
 use PDUType;
 use Peripheral;
+use PeripheralModel;
+use PeripheralType;
+use Phone;
+use PhoneModel;
+use PhoneType;
+use Printer;
 use PrinterModel;
+use PrinterType;
 use Rack;
 use RackModel;
 use RackType;
 use RuntimeException;
 use Software;
 use SoftwareCategory;
+use SoftwareLicense;
+use SoftwareLicenseType;
 use SoftwareVersion;
 use State;
+use Unmanaged;
 use User;
+use WifiNetwork;
 
 use function Safe\json_decode;
 use function Safe\json_encode;
@@ -103,6 +141,29 @@ use function Safe\json_encode;
         new Doc\Parameter(
             name: 'id',
             schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
+            description: 'The ID of the Asset',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_itemtype',
+            schema: new Doc\Schema(Doc\Schema::TYPE_STRING),
+            description: 'Asset type',
+            location: Doc\Parameter::LOCATION_PATH,
+        ),
+        new Doc\Parameter(
+            name: 'asset_id',
+            schema: new Doc\Schema(Doc\Schema::TYPE_INTEGER),
             description: 'The ID of the Asset',
             location: Doc\Parameter::LOCATION_PATH,
         ),
@@ -114,7 +175,6 @@ final class AssetController extends AbstractController
 
     public static function getRawKnownSchemas(): array
     {
-        global $CFG_GLPI;
         $schemas = [];
 
         $fn_get_assignable_restriction = static function (string $itemtype) {
@@ -128,21 +188,6 @@ final class AssetController extends AbstractController
             }
             throw new RuntimeException("Itemtype $itemtype is not an AssignableItem");
         };
-
-        $schemas['_BaseAsset'] = [
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
 
         $schemas['PrinterModel'] = [
             'x-version-introduced' => '2.0',
@@ -198,6 +243,110 @@ final class AssetController extends AbstractController
                 ],
                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        //TODO the OS dropdowns will be defined in the DropdownController after the related PR is merged
+        $schemas['OperatingSystemArchitecture'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemArchitecture::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemVersion'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemEdition'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemEdition::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemServicePack'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemServicePack::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemKernel'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemKernel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OperatingSystemKernelVersion'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => OperatingSystemKernelVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'kernel' => self::getDropdownTypeSchema(class: OperatingSystemKernel::class, full_schema: 'OperatingSystemKernel'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
@@ -356,6 +505,25 @@ final class AssetController extends AbstractController
                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                 'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'itemtype' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'readOnly' => true,
+                ],
+                'items_id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-version-introduced' => '2.2.0',
+                    'readOnly' => true,
+                ],
+                'instantiation_type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'enum' => [
+                        'NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortAggregate', 'NetworkPortAlias',
+                        'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel',
+                    ],
+                ],
                 'logical_number' => ['type' => Doc\Schema::TYPE_INTEGER],
                 'mac' => ['type' => Doc\Schema::TYPE_STRING],
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
@@ -402,164 +570,477 @@ final class AssetController extends AbstractController
             ],
         ];
 
-        $asset_types = self::getAssetTypes();
-
-        foreach ($asset_types as $asset_type) {
-            if (!is_subclass_of($asset_type, CommonDBTM::class)) {
-                continue;
-            }
-            // Replace namespace separator with underscore
-            $schema_name = str_replace('\\', '_', $asset_type);
-            $schemas[$schema_name] = $schemas['_BaseAsset'];
-            $schemas[$schema_name]['x-version-introduced'] = '2.0';
-            $schemas[$schema_name]['x-itemtype'] = $asset_type;
-
-            // Need instance since some fields are not static even if they aren't related to instances
-            $asset = new $asset_type();
-
-            if (in_array($asset_type, $CFG_GLPI['state_types'], true)) {
-                $schemas[$schema_name]['properties']['status'] = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
-            }
-
-            if (in_array($asset_type, $CFG_GLPI['location_types'], true)) {
-                $schemas[$schema_name]['properties']['location'] = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
-            }
-
-            if ($asset->isEntityAssign()) {
-                $schemas[$schema_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
-                // Add completename field
-                $schemas[$schema_name]['properties']['entity']['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
-                $schemas[$schema_name]['properties']['is_recursive'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-            }
-
-            $type_class = $asset->getTypeClass();
-            if ($type_class !== null) {
-                $schemas[$schema_name]['properties']['type'] = self::getDropdownTypeSchema(class: $type_class);
-            }
-            if ($asset->isField('manufacturers_id')) {
-                $schemas[$schema_name]['properties']['manufacturer'] = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
-            }
-            $model_class = $asset->getModelClass();
-            if ($model_class !== null) {
-                $schemas[$schema_name]['properties']['model'] = self::getDropdownTypeSchema(class: $model_class);
-            }
-
-            if (in_array($asset_type, $CFG_GLPI['assignable_types'], true)) {
-                $schemas[$schema_name]['properties']['user'] = self::getDropdownTypeSchema(
-                    class: User::class,
-                    field: 'users_id',
-                    full_schema: 'User'
-                );
-                $schemas[$schema_name]['properties']['user_tech'] = self::getDropdownTypeSchema(
-                    class: User::class,
-                    field: 'users_id_tech',
-                    full_schema: 'User'
-                );
-                $schemas[$schema_name]['properties']['group'] = [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups', // The table with the desired data
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                            'ref-join' => [
-                                'table' => 'glpi_groups_items',
-                                'fkey' => 'id',
-                                'field' => 'items_id',
-                                'condition' => [
-                                    'itemtype' => $asset_type,
-                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ],
-                            ],
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+        $fn_get_group_property = (static fn(string $asset_type) => [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-full-schema' => 'Group',
+                'x-join' => [
+                    'table' => 'glpi_groups', // The table with the desired data
+                    'fkey' => 'groups_id',
+                    'field' => 'id',
+                    'ref-join' => [
+                        'table' => 'glpi_groups_items',
+                        'fkey' => 'id',
+                        'field' => 'items_id',
+                        'condition' => [
+                            'itemtype' => $asset_type,
+                            'type' => Group_Item::GROUP_TYPE_NORMAL,
                         ],
                     ],
-                ];
-                $schemas[$schema_name]['properties']['group_tech'] = [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups', // The table with the desired data
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                            'ref-join' => [
-                                'table' => 'glpi_groups_items',
-                                'fkey' => 'id',
-                                'field' => 'items_id',
-                                'condition' => [
-                                    'itemtype' => $asset_type,
-                                    'type' => Group_Item::GROUP_TYPE_TECH,
-                                ],
-                            ],
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ]);
+        $fn_get_group_tech_property = (static fn(string $asset_type) => [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-full-schema' => 'Group',
+                'x-join' => [
+                    'table' => 'glpi_groups', // The table with the desired data
+                    'fkey' => 'groups_id',
+                    'field' => 'id',
+                    'ref-join' => [
+                        'table' => 'glpi_groups_items',
+                        'fkey' => 'id',
+                        'field' => 'items_id',
+                        'condition' => [
+                            'itemtype' => $asset_type,
+                            'type' => Group_Item::GROUP_TYPE_TECH,
                         ],
                     ],
-                ];
-                $schemas[$schema_name]['x-rights-conditions'] = [
-                    'read' => static fn() => $fn_get_assignable_restriction($asset_type),
-                ];
-            }
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ]);
+        $state_property = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
+        $location_property = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
+        $entity_property = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
+        $entity_property['properties']['completename'] = ['type' => Doc\Schema::TYPE_STRING];
+        $manufacturer_property = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
+        $user_property = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
+        $user_tech_property = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
+        $network_property = self::getDropdownTypeSchema(class: Network::class);
+        $autoupdatesystem_property = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
 
-            if ($asset->isField('contact')) {
-                $schemas[$schema_name]['properties']['contact'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('contact_num')) {
-                $schemas[$schema_name]['properties']['contact_num'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('serial')) {
-                $schemas[$schema_name]['properties']['serial'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('otherserial')) {
-                $schemas[$schema_name]['properties']['otherserial'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($asset->isField('networks_id')) {
-                $schemas[$schema_name]['properties']['network'] = self::getDropdownTypeSchema(Network::class);
-            }
-
-            if ($asset->isField('uuid')) {
-                $schemas[$schema_name]['properties']['uuid'] = [
+        $schemas['Computer'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Computer::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Computer::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: ComputerType::class),
+                'model' => self::getDropdownTypeSchema(class: ComputerModel::class),
+                'group' => $fn_get_group_property(Computer::class),
+                'group_tech' => $fn_get_group_tech_property(Computer::class),
+                'uuid' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'pattern' => Doc\Schema::PATTERN_UUIDV4,
                     'readOnly' => true,
-                ];
-            }
-            if ($asset->isField('autoupdatesystems_id')) {
-                $schemas[$schema_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(AutoUpdateSystem::class);
-            }
-
-            if ($asset->maybeDeleted()) {
-                $schemas[$schema_name]['properties']['is_deleted'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-            }
-        }
-
-        // Post v2 additions to general assets
-        $schemas['SoftwareLicense']['properties']['completename'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_STRING,
-            'readOnly' => true,
+                ],
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
         ];
-        $schemas['SoftwareLicense']['properties']['level'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'readOnly' => true,
+
+        $schemas['Monitor'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Monitor::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Monitor::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: MonitorType::class),
+                'model' => self::getDropdownTypeSchema(class: MonitorModel::class),
+                'group' => $fn_get_group_property(Monitor::class),
+                'group_tech' => $fn_get_group_tech_property(Monitor::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['NetworkEquipment'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkEquipment::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(NetworkEquipment::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: NetworkEquipmentType::class),
+                'model' => self::getDropdownTypeSchema(class: NetworkEquipmentModel::class),
+                'group' => $fn_get_group_property(NetworkEquipment::class),
+                'group_tech' => $fn_get_group_tech_property(NetworkEquipment::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Peripheral'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Peripheral::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Peripheral::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: PeripheralType::class),
+                'model' => self::getDropdownTypeSchema(class: PeripheralModel::class),
+                'group' => $fn_get_group_property(Peripheral::class),
+                'group_tech' => $fn_get_group_tech_property(Peripheral::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Phone'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Phone::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Phone::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: PhoneType::class),
+                'model' => self::getDropdownTypeSchema(class: PhoneModel::class),
+                'group' => $fn_get_group_property(Phone::class),
+                'group_tech' => $fn_get_group_tech_property(Phone::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Printer'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Printer::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Printer::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: PrinterType::class),
+                'model' => self::getDropdownTypeSchema(class: PrinterModel::class),
+                'group' => $fn_get_group_property(Printer::class),
+                'group_tech' => $fn_get_group_tech_property(Printer::class),
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                    'readOnly' => true,
+                ],
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['SoftwareLicense'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => SoftwareLicense::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(SoftwareLicense::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class),
+                'group' => $fn_get_group_property(SoftwareLicense::class),
+                'group_tech' => $fn_get_group_tech_property(SoftwareLicense::class),
+                'completename' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'readOnly' => true,
+                ],
+                'level' => [
+                    'x-version-introduced' => '2.1.0',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'readOnly' => true,
+                ],
+            ],
+        ];
+
+        $schemas['Certificate'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Certificate::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Certificate::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: CertificateType::class),
+                'group' => $fn_get_group_property(Certificate::class),
+                'group_tech' => $fn_get_group_tech_property(Certificate::class),
+            ],
+        ];
+
+        $schemas['Unmanaged'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Unmanaged::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Unmanaged::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'group' => $fn_get_group_property(Unmanaged::class),
+                'group_tech' => $fn_get_group_tech_property(Unmanaged::class),
+                'network' => $network_property,
+                'autoupdatesystem' => $autoupdatesystem_property,
+            ],
+        ];
+
+        $schemas['Appliance'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Appliance::class,
+            'x-version-introduced' => '2.0',
+            'x-rights-conditions' => [
+                'read' => static fn() => $fn_get_assignable_restriction(Appliance::class),
+            ],
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'status' => $state_property,
+                'entity' => $entity_property,
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'manufacturer' => $manufacturer_property,
+                'user' => $user_property,
+                'user_tech' => $user_tech_property,
+                'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'location' => $location_property,
+                'type' => self::getDropdownTypeSchema(class: ApplianceType::class),
+                'group' => $fn_get_group_property(Appliance::class),
+                'group_tech' => $fn_get_group_tech_property(Appliance::class),
+            ],
         ];
 
         // Additional asset schemas
@@ -871,6 +1352,61 @@ final class AssetController extends AbstractController
                 'operating_system' => self::getDropdownTypeSchema(class: OperatingSystem::class, full_schema: 'OperatingSystem'),
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['OSInstallation'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_OperatingSystem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'operatingsystem' => self::getDropdownTypeSchema(class: OperatingSystem::class, full_schema: 'OperatingSystem'),
+                'version' => self::getDropdownTypeSchema(class: OperatingSystemVersion::class, full_schema: 'OperatingSystemVersion'),
+                'edition' => self::getDropdownTypeSchema(class: OperatingSystemEdition::class, full_schema: 'OperatingSystemEdition'),
+                'servicepack' => self::getDropdownTypeSchema(class: OperatingSystemServicePack::class, full_schema: 'OperatingSystemServicePack'),
+                'architecture' => self::getDropdownTypeSchema(class: OperatingSystemArchitecture::class, full_schema: 'OperatingSystemArchitecture'),
+                'kernel_version' => self::getDropdownTypeSchema(class: OperatingSystemKernelVersion::class, full_schema: 'OperatingSystemKernelVersion'),
+                'license_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'licenseid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'company' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'owner' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'hostid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'date_install' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                    'x-field' => 'install_date',
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+            ],
+        ];
+
+        $schemas['SoftwareInstallation'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_SoftwareVersion::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'softwareversion' => self::getDropdownTypeSchema(class: SoftwareVersion::class, full_schema: 'SoftwareVersion'),
+                'date_install' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             ],
         ];
 
@@ -1427,6 +1963,187 @@ final class AssetController extends AbstractController
             ],
         ];
 
+        $schemas['NetworkPortEthernet'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortEthernet::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
+                'type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'T', 'SX', 'LX'],
+                    'description' => <<<EOT
+                        Type of Ethernet port.
+                        - '': Not specified
+                        - 'T': Twisted Pair (RJ-45)
+                        - 'SX': Multimode fiber
+                        - 'LX': Single mode fiber
+EOT,
+                ],
+                'speed' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Speed of the Ethernet port in Mbps',
+                    'default' => 10,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortWifi'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortWifi::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
+                'wifinetwork' => self::getDropdownTypeSchema(class: WifiNetwork::class, full_schema: 'WifiNetwork'),
+                'version' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'a', 'b', 'a/b', 'a/b/g', 'a/b/g/n', 'a/b/g/n/y', 'ac', 'ax', 'be', 'bn'],
+                    'description' => <<<EOT
+                        Wi-Fi version.
+                        - '': Not specified
+                        - 'a': 802.11a
+                        - 'b': 802.11b
+                        - 'a/b': 802.11a/b
+                        - 'a/b/g': 802.11a/b/g
+                        - 'a/b/g/n': 802.11a/b/g/n
+                        - 'a/b/g/n/y': 802.11a/b/g/n/y
+                        - 'ac': 802.11ac (Wi-Fi 5)
+                        - 'ax': 802.11ax (Wi-Fi 6)
+                        - 'be': 802.11be (Wi-Fi 7)
+                        - 'bn': 802.11bn (Wi-Fi 8)
+EOT,
+                ],
+                'mode' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => ['', 'ad-hoc', 'managed', 'master', 'repeater', 'secondary', 'monitor', 'auto'],
+                    'description' => <<<EOT
+                        Wi-Fi mode.
+                        - '': Not specified
+                        - 'ad-hoc': Ad-Hoc mode
+                        - 'managed': Managed mode
+                        - 'master': Master mode
+                        - 'repeater': Repeater mode
+                        - 'secondary': Secondary mode
+                        - 'monitor': Monitor mode
+                        - 'auto': Automatic mode
+EOT,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortAggregate'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortAggregate::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_port_list' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-field' => 'networkports_id_list',
+                    'description' => 'JSON-encoded array of Network Port IDs that are part of this aggregate port',
+                ],
+                //TODO add network_ports property that uses something like JSON_TABLE to properly join the related ports. May need changes to the search code to support it.
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortAlias'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortAlias::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'aliased_network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, field: 'networkports_id_alias', full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortDialup'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortDialup::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortLocal'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortLocal::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortFiberchannel'] = [
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => NetworkPortFiberchannel::class,
+            'x-version-introduced' => '2.2',
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'network_port' => self::getDropdownTypeSchema(class: NetworkPort::class, full_schema: 'NetworkPort'),
+                'network_card' => self::getDropdownTypeSchema(class: Item_DeviceNetworkCard::class, name_field: 'serial', full_schema: 'NetworkCardItem'),
+                'type' => self::getDropdownTypeSchema(class: NetworkPortFiberchannelType::class, full_schema: 'NetworkPortFiberchannelType'),
+                'wwn' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 50],
+                'speed' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Speed of the Fiber Channel port in Mbps',
+                    'default' => 10,
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         $schemas['CommonAsset'] = self::getGlobalAssetSchema($schemas);
 
         return $schemas;
@@ -1446,6 +2163,32 @@ final class AssetController extends AbstractController
             $types = ['Computer', 'Monitor', 'NetworkEquipment',
                 'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
                 'Certificate', 'Unmanaged', 'Appliance',
+            ];
+            /**
+             * @var class-string<CommonDBTM> $type
+             */
+            foreach ($types as $type) {
+                $assets[$type] = $type::getTypeName(1);
+            }
+        }
+        return $types_only ? array_keys($assets) : $assets;
+    }
+
+    /**
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
+     * @return array<class-string<CommonDBTM>, string>
+     */
+    public static function getAssetInfocomTypes(bool $types_only = true): array
+    {
+        static $assets = null;
+
+        if ($assets === null) {
+            $assets = [];
+            $types = [
+                'Cartridge', 'CartridgeItem', 'Consumable', 'ConsumableItem',
+                'Computer', 'Monitor', 'NetworkEquipment',
+                'Peripheral', 'Phone', 'Printer', 'Software', 'SoftwareLicense',
+                'Certificate', 'Appliance', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable',
             ];
             /**
              * @var class-string<CommonDBTM> $type
@@ -1578,7 +2321,7 @@ final class AssetController extends AbstractController
     }
 
     #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
@@ -1607,6 +2350,108 @@ final class AssetController extends AbstractController
         }
         $results = reset($results);
         return $result->withBody(Utils::streamFor(json_encode($results)));
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'Infocom',
+        description: 'Create the financial and administration information for a specific asset'
+    )]
+    public function createItemInfocom(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $management_controller = new ManagementController();
+        $infocom_schema = $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request));
+        unset($infocom_schema['properties']['itemtype']['readOnly']);
+        unset($infocom_schema['properties']['items_id']['readOnly']);
+        return ResourceAccessor::createBySchema(
+            $infocom_schema,
+            $request->getParameters(),
+            [self::class, 'getItemInfocom'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'id' => $request->getAttribute('id'),
+                ],
+                'id' => 'noop',
+            ]
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Infocom',
+        description: 'Update the financial and administration information for a specific asset'
+    )]
+    public function updateItemInfocom(Request $request): Response
+    {
+        global $DB;
+
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        $management_controller = new ManagementController();
+        return ResourceAccessor::updateBySchema(
+            $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}/Infocom', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getAssetInfocomTypes'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Infocom',
+        description: 'Delete the financial and administration information for a specific asset',
+    )]
+    public function deleteItemInfocom(Request $request): Response
+    {
+        global $DB;
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('id'));
+        $it = $DB->request([
+            'SELECT' => ['id'],
+            'FROM'   => 'glpi_infocoms',
+            'WHERE'  => [
+                'itemtype' => $request->getAttribute('itemtype'),
+                'items_id' => $request->getAttribute('id'),
+            ],
+        ]);
+        if (!count($it)) {
+            return self::getNotFoundErrorResponse();
+        }
+        $infocom_id = $it->current()['id'];
+        $request->setAttribute('id', $infocom_id);
+        $management_controller = new ManagementController();
+        return ResourceAccessor::deleteBySchema(
+            $management_controller->getKnownSchema('Infocom', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters()
+        );
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
@@ -2309,5 +3154,169 @@ final class AssetController extends AbstractController
     public function deleteSoftwareVersion(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareVersion', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation', methods: ['POST'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'OSInstallation',
+        description: 'Add an operating system to an asset'
+    )]
+    public function createItemOSInstallation(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getOSInstallation'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation', methods: ['GET'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: 'OSInstallation',
+        description: 'List or search operating systems installed on an asset'
+    )]
+    public function searchItemOSInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: 'OSInstallation',
+        description: 'Get an existing operating system installation by the installation ID'
+    )]
+    public function getOSInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['PATCH'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'OSInstallation',
+        description: 'Update an existing operating system installation by the installation ID'
+    )]
+    public function updateOSInstallation(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/OSInstallation/{id}', methods: ['DELETE'])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'OSInstallation',
+        description: 'Delete an operating system installation by the installation ID',
+    )]
+    public function deleteOSInstallation(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('OSInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Add a software version to an asset'
+    )]
+    public function createItemSoftwareVersion(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getSoftwareInstallation'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'List or search software installed on an asset'
+    )]
+    public function searchItemSoftware(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Get an existing software installation by the installation ID'
+    )]
+    public function getSoftwareInstallation(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Update an existing software installation by the installation ID'
+    )]
+    public function updateSoftwareInstallation(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/SoftwareInstallation/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: 'SoftwareInstallation',
+        description: 'Delete a software installation by the installation ID',
+    )]
+    public function deleteSoftwareInstallation(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

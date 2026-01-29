@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use DatabaseInstance;
 use Document;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Features\AssignableItemInterface;
@@ -46,7 +47,7 @@ class ManagementControllerTest extends HLAPITestCase
     {
         $management_types = [
             'Budget', 'Cluster', 'Contact', 'Contract', 'Database',
-            'DataCenter', 'Document', 'Domain', 'Line', 'Supplier',
+            'DataCenter', 'Document', 'Domain', 'Line', 'Supplier', 'DatabaseInstance',
         ];
 
         foreach ($management_types as $m_name) {
@@ -103,7 +104,7 @@ class ManagementControllerTest extends HLAPITestCase
     {
         $management_types = ManagementController::getManagementTypes(false);
         foreach ($management_types as $m_class => $m) {
-            if (!is_subclass_of($m_class, AssignableItemInterface::class)) {
+            if (!is_subclass_of($m_class, AssignableItemInterface::class) || $m_class === DatabaseInstance::class) {
                 continue;
             }
             $this->api->autoTestAssignableItemRights('/Management/' . $m['schema_name'], $m_class);

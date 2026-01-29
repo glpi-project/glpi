@@ -37,6 +37,11 @@ namespace Glpi\Api\HL\Controller;
 
 use Calendar;
 use Change;
+use Change_Change;
+use Change_Item;
+use Change_Problem;
+use Change_Ticket;
+use ChangeSatisfaction;
 use ChangeTask;
 use ChangeTemplate;
 use ChangeValidation;
@@ -58,6 +63,8 @@ use Glpi\Http\Response;
 use Glpi\Team\Team;
 use Group;
 use InvalidArgumentException;
+use Item_Problem;
+use Item_Ticket;
 use ITILCategory;
 use ITILFollowup;
 use ITILSolution;
@@ -69,15 +76,21 @@ use PlanningEventCategory;
 use PlanningExternalEvent;
 use PlanningExternalEventTemplate;
 use Problem;
+use Problem_Problem;
+use Problem_Ticket;
 use ProblemTask;
+use ProblemTemplate;
 use RecurrentChange;
 use RequestType;
 use Session;
 use SLA;
 use SlaLevel;
+use SolutionType;
 use TaskCategory;
 use Ticket;
+use Ticket_Ticket;
 use TicketRecurrent;
+use TicketSatisfaction;
 use TicketTask;
 use TicketTemplate;
 use TicketValidation;
@@ -111,35 +124,6 @@ final class ITILController extends AbstractController
     {
         $schemas = [];
 
-        $schemas[ITILCategory::class] = [
-            'x-version-introduced' => '2.0',
-            'x-itemtype' => ITILCategory::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'completename' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
-                ],
-                'level' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                ],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'parent' => self::getDropdownTypeSchema(class: ITILCategory::class, full_schema: 'ITILCategory'),
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-
         $common_itiltemplate_properties = [
             'id' => [
                 'type' => Doc\Schema::TYPE_INTEGER,
@@ -153,19 +137,19 @@ final class ITILController extends AbstractController
         ];
         $schemas['TicketTemplate'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => 'TicketTemplate',
+            'x-itemtype' => TicketTemplate::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
         $schemas['ChangeTemplate'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => 'ChangeTemplate',
+            'x-itemtype' => ChangeTemplate::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
         $schemas['ProblemTemplate'] = [
             'x-version-introduced' => '2.0',
-            'x-itemtype' => 'ProblemTemplate',
+            'x-itemtype' => ProblemTemplate::class,
             'type' => Doc\Schema::TYPE_OBJECT,
             'properties' => $common_itiltemplate_properties,
         ];
@@ -537,6 +521,7 @@ final class ITILController extends AbstractController
                         // The x-mapper property indicates this property is calculated.
                         // The mapper callable gets the value of the x-mapped-from field (id in this case) and returns the name.
                         'x-mapper' => static fn($v) => $itil_type::getStatus($v),
+                        'readOnly' => true,
                     ],
                 ],
             ];
@@ -698,62 +683,6 @@ final class ITILController extends AbstractController
         $schemas['ProblemTask']['x-itemtype'] = ProblemTask::class;
         $schemas['ProblemTask']['properties'][Problem::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
-        $schemas['TaskCategory'] = [
-            'x-version-introduced' => '2.0',
-            'x-itemtype' => TaskCategory::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'completename' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'readOnly' => true,
-                ],
-                'parent' => self::getDropdownTypeSchema(class: TaskCategory::class, full_schema: 'TaskCategory') + ['x-version-introduced' => '2.1.0'],
-                'level' => [
-                    'x-version-introduced' => '2.1.0',
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'readOnly' => true,
-                ],
-            ],
-        ];
-
-        $schemas['RequestType'] = [
-            'x-version-introduced' => '2.0',
-            'x-itemtype' => RequestType::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'is_helpdesk_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_followup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_mail_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_mailfollowup_default' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_visible_ticket' => [
-                    'type' => Doc\Schema::TYPE_BOOLEAN,
-                    'x-field' => 'is_ticketheader',
-                ],
-                'is_visible_followup' => [
-                    'type' => Doc\Schema::TYPE_BOOLEAN,
-                    'x-field' => 'is_itilfollowup',
-                ],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-
         $schemas['Followup'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => ITILFollowup::class,
@@ -830,6 +759,7 @@ final class ITILController extends AbstractController
                 ],
                 'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
                 'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'type' => self::getDropdownTypeSchema(class: SolutionType::class, full_schema: 'SolutionType') + ['x-version-introduced' => '2.2.0'],
                 'content' => [
                     'type' => Doc\Schema::TYPE_STRING,
                     'format' => Doc\Schema::FORMAT_STRING_HTML,
@@ -858,6 +788,7 @@ final class ITILController extends AbstractController
                 'approval_followup' => [
                     'x-version-introduced' => '2.1.0',
                     'type' => Doc\Schema::TYPE_OBJECT,
+                    'x-full-schema' => 'Followup',
                     'x-field' => ITILFollowup::getForeignKeyField(),
                     'x-itemtype' => ITILFollowup::class,
                     'x-join' => [
@@ -1090,28 +1021,6 @@ final class ITILController extends AbstractController
             ],
         ];
 
-        $schemas['EventCategory'] = [
-            'x-version-introduced' => '2.0',
-            'x-itemtype' => PlanningEventCategory::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'description' => PlanningEventCategory::getTypeName(1),
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'color' => [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'pattern' => Doc\Schema::PATTERN_COLOR_HEX,
-                ],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-
         $schemas['ExternalEvent'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => PlanningExternalEvent::class,
@@ -1155,6 +1064,306 @@ final class ITILController extends AbstractController
                 ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['TicketSatisfaction'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => TicketSatisfaction::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'type' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2],
+                    'description' => <<<EOT
+                        The type of satisfaction survey.
+                        - 1: Internal
+                        - 2: External
+EOT,
+                ],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_answered' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'rating' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'satisfaction',
+                    'description' => 'The rating given in the satisfaction survey. The maximum value depends on the entity configuration.',
+                    'minimum' => 1,
+                ],
+                'rating_scaled_5' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'x-field' => 'satisfaction_scaled_to_5',
+                    'description' => 'The rating scaled to a 5-point scale.',
+                    'minimum' => 1,
+                    'maximum' => 5,
+                ],
+                'comment' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'The comment provided in the satisfaction survey. May be required depending on the given rating and the entity configuration.',
+                ],
+            ],
+        ];
+
+        $schemas['ChangeSatisfaction'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => ChangeSatisfaction::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'type' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2],
+                    'description' => <<<EOT
+                        The type of satisfaction survey.
+                        - 1: Internal
+                        - 2: External
+EOT,
+                ],
+                'date_begin' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'date_answered' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                ],
+                'rating' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'satisfaction',
+                    'description' => 'The rating given in the satisfaction survey. The maximum value depends on the entity configuration.',
+                    'minimum' => 1,
+                ],
+                'rating_scaled_5' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'x-field' => 'satisfaction_scaled_to_5',
+                    'description' => 'The rating scaled to a 5-point scale.',
+                    'minimum' => 1,
+                    'maximum' => 5,
+                ],
+                'comment' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'The comment provided in the satisfaction survey. May be required depending on the given rating and the entity configuration.',
+                ],
+            ],
+        ];
+
+        $schemas['Change_Change'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Change_Change::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change_1' => self::getDropdownTypeSchema(class: Change::class, field: 'changes_id_1', full_schema: 'Change'),
+                'change_2' => self::getDropdownTypeSchema(class: Change::class, field: 'changes_id_2', full_schema: 'Change'),
+                'link' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2, 3, 4],
+                    'description' => <<<EOT
+                        The type of link between the two changes.
+                        - 1: Linked to
+                        - 2: Duplicate of
+                        - 3: Child of
+                        - 4: Parent of
+EOT,
+                ],
+            ],
+        ];
+
+        $schemas['Change_Ticket'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Change_Ticket::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'link' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2, 3, 4],
+                    'description' => <<<EOT
+                        The type of link between the change and the ticket.
+                        - 1: Linked to
+                        - 2: Duplicate of
+                        - 3: Child of
+                        - 4: Parent of
+EOT,
+                ],
+            ],
+        ];
+
+        $schemas['Change_Problem'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Change_Problem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'problem' => self::getDropdownTypeSchema(class: Problem::class, full_schema: 'Problem'),
+                'link' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2, 3, 4],
+                    'description' => <<<EOT
+                        The type of link between the change and the ticket.
+                        - 1: Linked to
+                        - 2: Duplicate of
+                        - 3: Child of
+                        - 4: Parent of
+EOT,
+                ],
+            ],
+        ];
+
+        $schemas['Problem_Ticket'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Problem_Ticket::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'problem' => self::getDropdownTypeSchema(class: Problem::class, full_schema: 'Problem'),
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'link' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2, 3, 4],
+                    'description' => <<<EOT
+                        The type of link between the change and the ticket.
+                        - 1: Linked to
+                        - 2: Duplicate of
+                        - 3: Child of
+                        - 4: Parent of
+EOT,
+                ],
+            ],
+        ];
+
+        $schemas['Problem_Problem'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Problem_Problem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'problem_1' => self::getDropdownTypeSchema(class: Problem::class, field: 'problems_id_1', full_schema: 'Problem'),
+                'problem_2' => self::getDropdownTypeSchema(class: Problem::class, field: 'problems_id_2', full_schema: 'Problem'),
+                'link' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2, 3, 4],
+                    'description' => <<<EOT
+                        The type of link between the two problems.
+                        - 1: Linked to
+                        - 2: Duplicate of
+                        - 3: Child of
+                        - 4: Parent of
+EOT,
+                ],
+            ],
+        ];
+
+        $schemas['Ticket_Ticket'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Ticket_Ticket::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'ticket_1' => self::getDropdownTypeSchema(class: Ticket::class, field: 'tickets_id_1', full_schema: 'Ticket'),
+                'ticket_2' => self::getDropdownTypeSchema(class: Ticket::class, field: 'tickets_id_2', full_schema: 'Ticket'),
+                'link' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'enum' => [1, 2, 3, 4],
+                    'description' => <<<EOT
+                        The type of link between the two tickets.
+                        - 1: Linked to
+                        - 2: Duplicate of
+                        - 3: Child of
+                        - 4: Parent of
+EOT,
+                ],
+            ],
+        ];
+
+        $schemas['Change_Item'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Change_Item::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'change' => self::getDropdownTypeSchema(class: Change::class, full_schema: 'Change'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+            ],
+        ];
+
+        $schemas['Problem_Item'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_Problem::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'problem' => self::getDropdownTypeSchema(class: Problem::class, full_schema: 'Problem'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+            ],
+        ];
+
+        $schemas['Ticket_Item'] = [
+            'x-version-introduced' => '2.2',
+            'x-itemtype' => Item_Ticket::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'ticket' => self::getDropdownTypeSchema(class: Ticket::class, full_schema: 'Ticket'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
             ],
         ];
 

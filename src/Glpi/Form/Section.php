@@ -150,6 +150,32 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
+    public function post_addItem()
+    {
+        parent::post_addItem();
+
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+    }
+
+    #[Override]
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+
+        // Handle file uploads for description field
+        $this->input = $this->addFiles($this->input, [
+            'name'          => 'description',
+            'content_field' => 'description',
+            'force_update'  => true,
+        ]);
+    }
+
+    #[Override]
     public function listTranslationsHandlers(): array
     {
         $form = $this->getItem();

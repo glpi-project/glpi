@@ -1036,7 +1036,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
         $this->doInventory($xml_source, true);
 
         $list = $os->find();
-        $this->assertCount(1, $list);
+        $this->assertCount(2, $list);
 
         //check that OS is linked to computer, and is now dynamic
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -1089,7 +1089,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
 
         //We now have 2 operating systems
         $list = $os->find();
-        $this->assertCount(2, $list);
+        $this->assertCount(3, $list);
 
         //but still only one linked to computer
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -1158,7 +1158,7 @@ class OperatingSystemTest extends AbstractInventoryAsset
 
         //check found OS
         $list = $os->find();
-        $this->assertCount(1, $list);
+        $this->assertCount(2, $list);
 
         //check found item_OS
         $list = $cos->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);

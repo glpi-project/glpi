@@ -203,7 +203,7 @@ class Rule extends CommonDBTM
      *
      * @since 0.85
      *
-     * @param array $options array of parameters
+     * @param array<string,mixed> $options array of parameters
      *
      * @return int|string|false
      **/
@@ -874,14 +874,6 @@ class Rule extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    /**
-     * @param  string $field
-     * @param  string $name              (default '')
-     * @param  string|array $values            (default '')
-     * @param  array $options
-     *
-     * @return string
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
@@ -975,9 +967,7 @@ class Rule extends CommonDBTM
     /**
      * Display a dropdown with all the rule matching
      *
-     * @since 0.84 new proto
-     *
-     * @param array $options array of parameters
+     * @param array<string,mixed> $options array of parameters
      *
      * @return int|string
      **/
@@ -1304,9 +1294,7 @@ TWIG, $twig_params);
     /**
      * Display the dropdown of the criteria for the rule
      *
-     * @since 0.84 new proto
-     *
-     * @param array $options array of options : may be readonly
+     * @param array<string,mixed> $options array of options : may be readonly
      *
      * @return int|string the initial value (first)
      **/
@@ -1349,7 +1337,7 @@ TWIG, $twig_params);
     /**
      * Display the dropdown of the actions for the rule
      *
-     * @param array $options already used actions
+     * @param array<string,mixed> $options already used actions
      *
      * @return int|string the initial value (first non used)
      **/
@@ -2845,7 +2833,7 @@ TWIG, $twig_params);
     /**
      * Dropdown rules for a defined sub_type of rule
      *
-     * @param array $options array of possible options:
+     * @param array<string,mixed> $options array of possible options:
      *    - name : string / name of the select (default is depending on itemtype)
      *    - sub_type : integer / sub_type of rule
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)

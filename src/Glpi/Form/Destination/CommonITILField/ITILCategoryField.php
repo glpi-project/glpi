@@ -224,7 +224,8 @@ final class ITILCategoryField extends AbstractConfigField implements Destination
         // Try to load category
         $category = ITILCategory::getById($category_id);
         if (!$category) {
-            return $fallback;
+            $config[ITILCategoryFieldConfig::SPECIFIC_ITILCATEGORY_ID] = 0;
+            return new DynamicExportDataField($config, []);
         }
 
         // Insert category name and requirement

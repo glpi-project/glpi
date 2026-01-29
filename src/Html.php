@@ -3336,6 +3336,15 @@ JS;
                             editor.save();
                             submitparentForm($('#$id'));
                         });
+
+                        editor.on('init', function(e) {
+                            $(editor.container).siblings('.fileupload').find('input[data-form-data]')
+                                .filter((_index, el) => $(el).data('blueimp-fileupload') === undefined)
+                                .each((_index, el) => {
+                                    const fileupload_config = fileupload_configs[el.id];
+                                    setupFileUpload(fileupload_config);
+                                });
+                        });
                     }
                 }, {$language_opts});
 
@@ -4790,6 +4799,7 @@ HTML;
      *    - only_uploaded_files boolean  show only the uploaded files block, i.e. no title, no dropzone
      *                                   (should be false when upload has to be enable only from rich text editor)
      *    - required            boolean  display a required mark
+     *    - init                boolean  init the fileupload (default true)
      *
      * @return void|string   the html if display parameter is false
      **/
@@ -4815,6 +4825,7 @@ HTML;
         $p['editor_id']           = null;
         $p['only_uploaded_files'] = false;
         $p['required']            = false;
+        $p['init']                = true;
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -4877,104 +4888,42 @@ HTML;
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>"
                 . "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
-        $progressall_js = "
-        progressall: function(event, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            $('#progress{$rand_id}').show();
-            $('#progress{$rand_id} .uploadbar')
-                .text(progress + '%')
-                .css('width', progress + '%')
-                .show();
-        },
-        ";
 
-        $display .= Html::scriptBlock("
-      $(function() {
-         var fileindex{$rand_id} = 0;
-         $('#fileupload{$rand_id}').fileupload({
-            dataType: 'json',
-            pasteZone: " . ($p['pasteZone'] !== false
-                           ? "$('#" . jsescape($p['pasteZone']) . "')"
-                           : "false") . ",
-            dropZone:  " . ($p['dropZone'] !== false
-                           ? "$('#" . jsescape($p['dropZone']) . "')"
-                           : "false") . ",
-            acceptFileTypes: " . ($p['onlyimages']
-                                    ? "/(\.|\/)(gif|jpe?g|png)$/i"
-                                 : DocumentType::getUploadableFilePattern()) . ",
-            maxFileSize: {$max_file_size},
-            maxChunkSize: {$max_chunk_size},
-            add: function (e, data) {
-               // disable submit button during upload
-               $(this).closest('form').find(':submit').prop('disabled', true);
-               // randomize filename
-               for (var i = 0; i < data.files.length; i++) {
-                  data.files[i].uploadName = uniqid('', true) + data.files[i].name;
-               }
-               // call default handler
-               $.blueimp.fileupload.prototype.options.add.call(this, e, data);
-            },
-            done: function (event, data) {
-               handleUploadedFile(
-                  data.files, // files as blob
-                  data.result._uploader_{$name}, // response from '/ajax/fileupload.php'
-                  \"{$name}\",
-                  $('#" . jsescape($p['filecontainer']) . "'),
-                  '" . jsescape($p['editor_id']) . "'
-               );
-               // enable submit button after upload
-               $(this).closest('form').find(':submit').prop('disabled', false);
-               // remove required
-                $('#fileupload{$rand_id}').removeAttr('required');
-            },
-            fail: function (e, data) {
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-               const err = 'responseText' in data.jqXHR && data.jqXHR.responseText.length > 0
-                  ? data.jqXHR.responseText
-                  : data.jqXHR.statusText;
-               alert(err);
-            },
-            processfail: function (e, data) {
-                // enable submit button after upload
-                $(this).closest('form').find(':submit').prop('disabled', false);
-               $.each(
-                  data.files,
-                  function(index, file) {
-                     if (file.error) {
-                        $('#progress{$rand_id}').show();
-                        $('#progress{$rand_id} .uploadbar')
-                           .text(file.error)
-                           .css('width', '100%')
-                           .show();
+        $pasteZone = $p['pasteZone'] !== false
+            ? "$('#" . jsescape($p['pasteZone']) . "')"
+            : "false";
+        $dropZone = $p['dropZone'] !== false
+            ? "$('#" . jsescape($p['dropZone']) . "')"
+            : "false";
+        $acceptFileTypes = $p['onlyimages']
+            ? "/(\.|\/)(gif|jpe?g|png)$/i"
+            : DocumentType::getUploadableFilePattern();
+        $messages = json_encode([
+            'acceptFileTypes' => __('Filetype not allowed'),
+            'maxFileSize'     => __('File is too big'),
+        ]);
 
-                        // Remove failed image from TinyMCE editor to prevent base64 data in DB
-                        const editor_id = '" . jsescape($p['editor_id']) . "';
-                        if (editor_id && typeof tinyMCE !== 'undefined') {
-                            const editor = tinyMCE.get(editor_id);
-                            if (editor) {
-                                const uploaded_image = uploaded_images.find((entry) => entry.filename === file.name);
-                                if (uploaded_image) {
-                                    const img = editor.dom.select('img[data-upload_id=\"' + uploaded_image.upload_id + '\"]');
-                                    if (img.length > 0) {
-                                        editor.dom.remove(img);
-                                    }
-                                    uploaded_images = uploaded_images.filter((entry) => entry.upload_id !== uploaded_image.upload_id);
-                                }
-                            }
-                        }
-                        return;
-                     }
-                  }
-               );
-            },
-            messages: {
-              acceptFileTypes: '" . jsescape(__('Filetype not allowed')) . "',
-              maxFileSize: '" . jsescape(__('File is too big')) . "',
-            },
-            $progressall_js
-         });
-      });");
+        $js = <<<JS
+            fileupload_configs['fileupload{$rand_id}'] = {
+                field_id       : 'fileupload{$rand_id}',
+                pasteZone      : {$pasteZone},
+                dropZone       : {$dropZone},
+                acceptFileTypes: {$acceptFileTypes},
+                maxFileSize    : {$max_file_size},
+                maxChunkSize   : {$max_chunk_size},
+                name           : '{$name}',
+                filecontainer  : '{$p['filecontainer']}',
+                editor_id      : '{$p['editor_id']}',
+                rand_id        : {$rand_id},
+                messages       : {$messages},
+            };
+JS;
+
+        if ($p['init']) {
+            $js .= "setupFileUpload(fileupload_configs['fileupload{$rand_id}']);";
+        }
+
+        $display .= Html::scriptBlock($js);
 
         $display .= "</div>"; // .fileupload
 

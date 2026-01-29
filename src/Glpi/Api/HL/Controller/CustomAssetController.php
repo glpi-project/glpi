@@ -285,11 +285,13 @@ final class CustomAssetController extends AbstractController
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_front',
                         'x-mapper' => static fn($v) => Toolbox::getPictureUrl($v, true) ?? '',
+                        'readOnly' => true,
                     ],
                     'picture_rear' => [
                         'type' => Doc\Schema::TYPE_STRING,
                         'x-mapped-from' => 'picture_back',
                         'x-mapper' => static fn($v) => Toolbox::getPictureUrl($v, true) ?? '',
+                        'readOnly' => true,
                     ],
                     'pictures' => [
                         'type' => Doc\Schema::TYPE_ARRAY,
@@ -300,6 +302,7 @@ final class CustomAssetController extends AbstractController
                                 $pictures = importArrayFromDB($v);
                                 return array_map(static fn($picture) => Toolbox::getPictureUrl($picture, true) ?? '', $pictures);
                             },
+                            'readOnly' => true,
                         ],
                     ],
                     'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],

@@ -46,6 +46,7 @@ use function Safe\json_encode;
 use function Safe\preg_match;
 use function Safe\preg_match_all;
 use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 final class RichText
 {
@@ -362,9 +363,9 @@ HTML;
      */
     private static function loadImagesLazy(string $content): string
     {
-        return preg_replace(
-            '/<img([\w\W]+?)\/+>/',
-            '<img$1 loading="lazy">',
+        return preg_replace_callback(
+            '/<img([^>]+?)\s*\/?>/i',
+            fn($matches) => '<img' . $matches[1] . ' loading="lazy">',
             $content
         );
     }

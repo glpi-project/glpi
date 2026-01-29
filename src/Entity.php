@@ -34,8 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
 use Glpi\Features\Clonable;
@@ -408,14 +406,6 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         }
 
         $input = $this->handleConfigStrategyFields($input);
-
-        $result = $DB->request([
-            'SELECT' => [
-                new QueryExpression(QueryFunction::max('id') . '+1', 'newID'),
-            ],
-            'FROM'   => static::getTable(),
-        ])->current();
-        $input['id'] = $result['newID'];
 
         $input['max_closedate'] = $_SESSION["glpi_currenttime"];
 
@@ -3155,7 +3145,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface, Pro
         return null;
     }
 
-    private static function getEntityTree(int $entities_id_root): array
+    public static function getEntityTree(int $entities_id_root): array
     {
         global $DB;
 

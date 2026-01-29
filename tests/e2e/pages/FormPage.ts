@@ -38,6 +38,7 @@ export class FormPage extends GlpiPage
     public readonly editor_active_checkbox: Locator;
     public readonly editor_save_button: Locator;
     public readonly editor_save_success_alert: Locator;
+    public readonly editor_form_header: Locator;
 
     public constructor(page: Page)
     {
@@ -46,13 +47,80 @@ export class FormPage extends GlpiPage
         // Define locators
         this.editor_active_checkbox    = this.getCheckbox("Active");
         this.editor_save_button        = this.getButton("Save");
-        this.editor_save_success_alert = page.getByRole('alert');
+        this.editor_save_success_alert = page.getByRole('alert').filter({ hasText: 'Item successfully updated' });
+        this.editor_form_header        = this.getRichTextByLabel("Form description");
     }
 
     public async goto(id: number): Promise<void>
     {
         const tab = "Glpi\\Form\\Form$main";
         await this.page.goto(`/front/form/form.form.php?id=${id}&forcetab=${tab}`);
+    }
+
+    public async addSection(name: string): Promise<Locator>
+    {
+        await this.getButton("Add a section").click();
+
+        // eslint-disable-next-line playwright/no-raw-locators
+        const focusedInput = this.page.locator('[title="Section name"]:focus');
+        await focusedInput.waitFor({ state: 'visible', timeout: 5000 });
+
+        const sectionIndex = await focusedInput.evaluate((input) => {
+            const section = input.closest('section[aria-label="Form section"]');
+            if (!section) {
+                throw new Error('Section container not found');
+            }
+            const allSections = Array.from(document.querySelectorAll('section[aria-label="Form section"]'));
+            return allSections.indexOf(section);
+        });
+
+        await focusedInput.fill(name);
+
+        return this.getRegion('Form section').nth(sectionIndex);
+    }
+
+    public async addQuestion(name: string): Promise<Locator>
+    {
+        await this.getButton("Add a question").click();
+
+        // eslint-disable-next-line playwright/no-raw-locators
+        const focusedInput = this.page.getByRole('textbox', { name: 'Question name' }).and(this.page.locator(':focus'));
+        await focusedInput.waitFor({ state: 'visible', timeout: 5000 });
+
+        const questionIndex = await focusedInput.evaluate((input) => {
+            const question = input.closest('section[aria-label="Question details"]');
+            if (!question) {
+                throw new Error('Question container not found');
+            }
+            const allQuestions = Array.from(document.querySelectorAll('section[aria-label="Question details"]'));
+            return allQuestions.indexOf(question);
+        });
+
+        await focusedInput.fill(name);
+
+        return this.getRegion('Question details').nth(questionIndex);
+    }
+
+    public async addComment(name: string): Promise<Locator>
+    {
+        await this.getButton("Add a comment").click();
+
+        // eslint-disable-next-line playwright/no-raw-locators
+        const focusedInput = this.page.getByRole('textbox', { name: 'Comment title' }).and(this.page.locator(':focus'));
+        await focusedInput.waitFor({ state: 'visible', timeout: 5000 });
+
+        const commentIndex = await focusedInput.evaluate((input) => {
+            const comment = input.closest('section[aria-label="Comment details"]');
+            if (!comment) {
+                throw new Error('Comment container not found');
+            }
+            const allComments = Array.from(document.querySelectorAll('section[aria-label="Comment details"]'));
+            return allComments.indexOf(comment);
+        });
+
+        await focusedInput.fill(name);
+
+        return this.getRegion('Comment details').nth(commentIndex);
     }
 
     public async doSetActive(): Promise<void>
@@ -64,9 +132,6 @@ export class FormPage extends GlpiPage
     {
         await this.editor_save_button.click();
         await expect(this.editor_save_success_alert).toBeVisible();
-        await expect(this.editor_save_success_alert).toContainText(
-            'Item successfully updated'
-        );
     }
 
     public async doInitVisibilityConditionsDropdown(
@@ -215,8 +280,50 @@ export class FormPage extends GlpiPage
         return this.page.getByTestId('visibility-condition');
     }
 
+    public getLastSection(): Locator
+    {
+        return this.getRegion("Form section").last();
+    }
+
     public getLastQuestion(): Locator
     {
         return this.getRegion("Question details").last();
+    }
+
+    public getLastComment(): Locator
+    {
+        return this.getRegion("Comment details").last();
+    }
+
+    public async getFormHeader(): Promise<Locator>
+    {
+        // Initialize rich text if not done yet
+        await this.initRichTextByLabel("Form description");
+        return this.editor_form_header;
+    }
+
+    public async getSectionDescription(section: Locator): Promise<Locator>
+    {
+        // Initialize rich text if not done yet
+        await this.initRichTextByLabel("Section description", section);
+        return this.getRichTextByLabel("Section description", section);
+    }
+
+    public async getQuestionDescription(question: Locator): Promise<Locator>
+    {
+        // Ensure question is focused
+        await question.getByTitle('Question name').click();
+
+        // Initialize rich text if not done yet
+        await this.initRichTextByLabel("Question description", question);
+
+        return this.getRichTextByLabel("Question description", question);
+    }
+
+    public async getCommentDescription(comment: Locator): Promise<Locator>
+    {
+        // Initialize rich text if not done yet
+        await this.initRichTextByLabel("Comment description", comment);
+        return this.getRichTextByLabel("Comment description", comment);
     }
 }

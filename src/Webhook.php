@@ -34,6 +34,7 @@
  */
 
 use Glpi\Api\HL\Controller\AbstractController;
+use Glpi\Api\HL\Controller\AdministrationController;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\ITILController;
@@ -47,6 +48,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Error\ErrorHandler;
+use Glpi\Event;
 use Glpi\Features\Clonable;
 use Glpi\Http\Request;
 use Glpi\Search\FilterableInterface;
@@ -401,6 +403,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
                         Document_Item::class => ['parent' => Document::class],
                     ],
                 ],
+                AdministrationController::class => [
+                    'main' => [Event::class],
+                ],
             ];
 
             /**
@@ -468,6 +473,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             array_keys($supported[ITILController::class]['subtypes'])
         );
         $values[__('Management')] = array_keys($supported[ManagementController::class]['main']);
+        $values[__('Administration')] = array_keys($supported[AdministrationController::class]['main']);
 
         // Move leaf values to the keys and make the value the ::getTypeName
         foreach ($values as $category => $itemtypes) {
@@ -710,6 +716,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             CustomAssetController::class => '/Assets/Custom/',
             ITILController::class => '/Assistance/',
             ManagementController::class => '/Management/',
+            AdministrationController::class => '/Administration/',
             default => '/_404/' // Nonsense path to trigger a 404
         };
 
@@ -798,13 +805,19 @@ class Webhook extends CommonDBTM implements FilterableInterface
             $queries_count = $data['data']['totalcount'];
         }
 
-        return [
+        $no_preview = [Event::class];
+        $has_preview = !in_array($item->fields['itemtype'], $no_preview, true);
+
+        $tabs = [
             1 => self::createTabEntry(__('Security'), 0, $item::getType(), 'ti ti-shield-lock'),
             2 => self::createTabEntry(__('Payload editor'), 0, $item::getType(), 'ti ti-code-dots'),
             3 => self::createTabEntry(_n('Custom header', 'Custom headers', Session::getPluralNumber()), $headers_count, $item::getType(), 'ti ti-code-plus'),
             4 => self::createTabEntry(_n('Query log', 'Queries log', Session::getPluralNumber()), $queries_count, $item::getType(), 'ti ti-mail-forward'),
-            5 => self::createTabEntry(__('Preview'), 0, $item::getType(), 'ti ti-eye-exclamation'),
         ];
+        if ($has_preview) {
+            $tabs[5] = self::createTabEntry(__('Preview'), 0, $item::getType(), 'ti ti-eye-exclamation');
+        }
+        return $tabs;
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
@@ -1074,6 +1087,13 @@ class Webhook extends CommonDBTM implements FilterableInterface
     public static function validateCRAChallenge(string $url, string $body, string $secret): array
     {
         global $CFG_GLPI;
+
+        if (!Toolbox::isUrlSafe($url)) {
+            return [
+                'status' => false,
+                'message' => sprintf(__('URL "%s" is not allowed by your administrator.'), $url),
+            ];
+        }
 
         $challenge_response = [];
         $options = [

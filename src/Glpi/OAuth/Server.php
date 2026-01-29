@@ -217,11 +217,11 @@ final class Server
 
         return false;
     }
-    public static function generateKeys(): void
+    public static function generateKeys(): bool
     {
         if (self::checkKeys()) {
             // Keys are already generated
-            return;
+            return false;
         }
 
         // Partial data: unsure how to proceed, let the user review the files.
@@ -242,6 +242,7 @@ final class Server
         try {
             // Generate keys
             self::doGenerateKeys();
+            return true;
         } catch (Throwable $e) {
             // Make sure we don't save any partially generated data
             self::deleteKeys();

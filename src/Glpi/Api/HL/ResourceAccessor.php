@@ -134,9 +134,7 @@ final class ResourceAccessor
             return $is_dropdown_identifier || !$is_join;
         }, ARRAY_FILTER_USE_BOTH);
         foreach ($writable_props as $prop_name => $prop) {
-            $base_prop_name = strstr($prop_name, '.', true) ?: $prop_name;
-            $is_join = isset($joins[$base_prop_name]);
-            $is_dropdown_identifier = $is_join && preg_match('/^(\w+)\.id$/', $prop_name);
+            $is_dropdown_identifier = preg_match('/^(\w+)\.id$/', $prop_name);
             if ($is_dropdown_identifier) {
                 // This is a dropdown identifier, we need to get the id from the request
                 $prop_name = strstr($prop_name, '.', true);
@@ -319,7 +317,9 @@ final class ResourceAccessor
         }
         // Shortcut implementation using the search functionality with an injected RSQL filter and returning the first result.
         // This shouldn't have much if any unneeded overhead as the filter would be mapped to a SQL condition.
-        $request_params['filter'] = $field . '==' . $request_attrs[$field];
+        $filters = $request_params['filter'] ?? '';
+        $filters .= ';' . $field . '==' . $request_attrs[$field];
+        $request_params['filter'] = $filters;
         $request_params['limit'] = 1;
         unset($request_params['start']);
         try {

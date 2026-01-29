@@ -289,17 +289,21 @@ class Update
         }
 
         // Create default forms
-        $progress_indicator?->setProgressBarMessage(__('Creating default forms…'));
+        $progress_indicator?->setProgressBarMessage(__('Creating default forms and helpdesk tiles if needed…'));
         $helpdesk_data_manager = new DefaultDataManager();
-        $helpdesk_data_manager->initializeDataIfNeeded();
+        $has_initialized_forms = $helpdesk_data_manager->initializeDataIfNeeded();
         $progress_indicator?->advance($init_form_weight);
-        $progress_indicator?->addMessage(MessageType::Success, __('Default forms created.'));
+        if ($has_initialized_forms) {
+            $progress_indicator?->addMessage(MessageType::Success, __('Default forms and helpdesk tiles created.'));
+        }
 
         // Initalize rules
-        $progress_indicator?->setProgressBarMessage(__('Initializing default rules…'));
-        RulesManager::initializeRules();
+        $progress_indicator?->setProgressBarMessage(__('Initializing default rules if needed…'));
+        $has_initialized_rules = RulesManager::initializeRules();
         $progress_indicator?->advance($init_rules_weight);
-        $progress_indicator?->addMessage(MessageType::Success, __('Default rules initialized.'));
+        if ($has_initialized_rules) {
+            $progress_indicator?->addMessage(MessageType::Success, __('Default rules initialized.'));
+        }
 
         $progress_indicator?->setProgressBarMessage(__('Checking the database structure…'));
         if (($myisam_count = $DB->getMyIsamTables()->count()) > 0) {
@@ -383,7 +387,7 @@ class Update
 
         $progress_indicator?->advance($post_update_weight);
 
-        $progress_indicator?->setProgressBarMessage(__('Generating security keys…'));
+        $progress_indicator?->setProgressBarMessage(__('Generating security keys if needed…'));
 
         //generate security key if missing, and update db
         $glpikey = new GLPIKey();
@@ -398,10 +402,12 @@ class Update
         }
 
         //generate keys, if needed
-        Server::generateKeys();
+        $has_generated_keys = Server::generateKeys();
 
         $progress_indicator?->advance($generate_keys_weight);
-        $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
+        if ($has_generated_keys) {
+            $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
+        }
 
         if (
             (Config::getConfigurationValue('core', 'plugins_execution_mode') ?? null) === Plugin::EXECUTION_MODE_SUSPENDED_BY_UPDATE

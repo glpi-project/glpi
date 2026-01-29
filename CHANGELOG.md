@@ -102,9 +102,43 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Inventory\Asset\Software::getCompareKey()`
 
 
-## [11.0.5] unreleased
+## [11.0.6] unreleased
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [11.0.5] 2026-01-28
+
+### Added
+- New schemas for network port instantiations in High-Level API v2.2.
+- Endpoints for creating, updating and deleting Infocom (Financial and administrative information) for items in the High-Level API v2.2.
+- New endpoints/schema for notes in High-Level API v2.2.
+- New EventLog schema, endpoints, and webhook support in the High-Level API v2.2.
+- `active_profile.rights` property for the `Session` schema in High-Level API v2.2 to indicate the rights of the user's current profile.
+- New schemas/endpoints for Operating system installations on assets in the High-Level API v2.2.
+- New schemas/endpoints for software installations on assets in the High-Level API v2.2.
+- New schema/endpoints for DatabaseInstance in the High-Level API v2.2.
+- Several new properties for the User schema, and the timezone property for user preferences in the High-Level API v2.2.
+- New schemas/endpoints for user titles, user categories and approval substitutes in the High-Level API v2.2.
+- New schemas/endpoints for over 20 dropdown itemtypes in High-Level API v2.2.
+- Added `user`, `group`, `code`, `is_helpdesk_visible`, `ticket_incident_template`, `ticket_request_template`, `change_template`, `problem_template`, `is_incident_visible`,`is_request_visible`,`is_change_visible`,`is_problem_visible`, and `knowbase_category` properties for the ITILCategory schema in High-Level API v2.2.
+- Added `is_helpdesk_visible`, `date_creation` and `date_mod` properties for the TaskCategory schema in High-Level API v2.2.
 
 ### Changed
 - High-Level API performance improvements for both REST and GraphQL requests (3.3-10x performance uplift on average)
@@ -878,7 +912,28 @@ The present file will list all changes made to the project; according to the
 - Usage of the `$link` and `$name` parameters in `Auth::getMethodName()`.
 
 
-## [10.0.23] unreleased
+## [10.0.24] unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### API changes
+
+#### Added
+
+#### Changes
+
+#### Deprecated
+
+#### Removed
+
+
+## [10.0.23] 2026-01-28
 
 ### Added
 

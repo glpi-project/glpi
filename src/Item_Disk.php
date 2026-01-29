@@ -114,17 +114,6 @@ class Item_Disk extends CommonDBChild
         return $ong;
     }
 
-    /**
-     * Print the version form
-     *
-     * @param int $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - itemtype type of the item for add process
-     *     - items_id ID of the item for add process
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $itemtype = null;
@@ -636,16 +625,6 @@ TWIG, $twig_params);
         );
     }
 
-    /**
-     * List specifics value for selection
-     *
-     * @param string       $field   Name of the field
-     * @param string       $name    Name of the select (if empty use linkfield) (default '')
-     * @param string|array $values  Value(s) to select (default '')
-     * @param array        $options Array of options
-     *
-     * @return string the string to display
-     */
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
         if (!is_array($values)) {

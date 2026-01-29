@@ -66,6 +66,52 @@ abstract class ItemTranslation extends CommonDBChild
         return $this->prepapreInput($input);
     }
 
+    #[Override]
+    public function post_addItem()
+    {
+        parent::post_addItem();
+        $this->processRichTextFileUploads();
+    }
+
+    #[Override]
+    public function post_updateItem($history = true)
+    {
+        parent::post_updateItem($history);
+        $this->processRichTextFileUploads();
+    }
+
+    /**
+     * Process file uploads from TinyMCE rich text editor.
+     *
+     * When a translation contains rich text with embedded images (from TinyMCE),
+     * those images are temporarily stored and referenced by tags. This method
+     * converts them to proper GLPI documents and updates the translation content
+     * with the final document references.
+     *
+     * The addFiles() method expects specific input keys:
+     * - '_<name>': Array of uploaded file paths
+     * - '_tag_<name>': Array of corresponding HTML tags
+     * - '_prefix_<name>': Array of file prefixes
+     *
+     * Since translations are stored in JSON format with CLDR plural keys ('one', 'few', 'many', etc.),
+     * we use 'one' (singular) as the primary content field.
+     */
+    private function processRichTextFileUploads(): void
+    {
+        $language = new CldrLanguage($this->fields['language']);
+        $category_index = $language->getPluralKey(1);
+
+        $translations = json_decode($this->fields['translations'], true);
+        $translations = $this->addFiles($translations, [
+            'name'          => $category_index,
+            'content_field' => $category_index,
+        ]);
+
+        $translations = [$category_index => $translations[$category_index] ?? ''];
+        $this->fields['translations'] = json_encode($translations);
+        $this->updateInDB(['translations']);
+    }
+
     /**
      * @param array $input
      *

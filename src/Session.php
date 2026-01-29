@@ -128,6 +128,7 @@ class Session
             // Restart GLPI session : complete destroy to prevent lost datas
             $tosave = ['glpi_plugins', 'glpicookietest', 'phpCAS', 'glpicsrftokens',
                 'glpiskipMaintenance',
+                'glpi_remote_user',
             ];
             $save   = [];
             foreach ($tosave as $t) {
@@ -966,29 +967,24 @@ class Session
     {
         global $CFG_GLPI;
 
-        // Extract accepted languages from headers
-        // Accept-Language: fr-FR, fr;q=0.9, en;q=0.8, de;q=0.7, *;q=0.5
-        $accepted_languages = [];
-        $values = explode(',', $_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '');
-        foreach ($values as $value) {
-            $parts = explode(';q=', trim($value));
-            $language = str_replace('-', '_', $parts[0]);
-            $qfactor  = $parts[1] ?? 1; //q-factor defaults to 1
-            $accepted_languages[$language] = $qfactor;
-        }
-        arsort($accepted_languages); // sort by qfactor
+        if (!empty($_SERVER['HTTP_ACCEPT_LANGUAGE'])) {
+            // Use Symfony Request to parse Accept-Language header
+            // Will normalizes language tags (pl-PL -> pl_PL)
+            $request = Request::createFromGlobals();
+            $accepted_languages = $request->getLanguages();
 
-        foreach (array_keys($accepted_languages) as $language) {
-            // Direct match with locale key (e.g., 'pl_PL')
-            if (array_key_exists($language, $CFG_GLPI['languages'])) {
-                return $language;
-            }
+            foreach ($accepted_languages as $language) {
+                // Direct match with locale key (e.g., 'pl_PL')
+                if (array_key_exists($language, $CFG_GLPI['languages'])) {
+                    return $language;
+                }
 
-            // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
-            if (isset($CFG_GLPI['main_languages'][$language])) {
-                $main_lang = $CFG_GLPI['main_languages'][$language];
-                if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
-                    return $main_lang;
+                // Fallback using main_languages mapping (e.g., 'pl' -> 'pl_PL')
+                if (isset($CFG_GLPI['main_languages'][$language])) {
+                    $main_lang = $CFG_GLPI['main_languages'][$language];
+                    if (array_key_exists($main_lang, $CFG_GLPI['languages'])) {
+                        return $main_lang;
+                    }
                 }
             }
         }
@@ -1092,7 +1088,7 @@ class Session
      **/
     public static function checkValidSessionId()
     {
-        global $DB;
+        global $CFG_GLPI, $DB;
 
         if (
             !isset($_SESSION['valid_id'])
@@ -1107,6 +1103,17 @@ class Session
 
         if (!is_numeric($user_id) || $profile_id === null || $entity_id === null) {
             throw new SessionExpiredException();
+        }
+
+        // Check if remote user changed (SSO case)
+        if (array_key_exists('glpi_remote_user', $_SESSION)) {
+            $ssovariable = Dropdown::getDropdownName(
+                'glpi_ssovariables',
+                $CFG_GLPI["ssovariables_id"]
+            );
+            if (!array_key_exists($ssovariable, $_SERVER) || $_SERVER[$ssovariable] !== $_SESSION['glpi_remote_user']) {
+                throw new SessionExpiredException();
+            }
         }
 
         $user_table = User::getTable();

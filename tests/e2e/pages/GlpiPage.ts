@@ -148,11 +148,6 @@ export class GlpiPage
         await this.getButton(entity_name).click();
     }
 
-    public async doFocusNote(index: number): Promise<void>
-    {
-        await this.notes.nth(index).click();
-    }
-
     public async doAddNote(content: string): Promise<void>
     {
         await this.add_note_button.click();
@@ -164,9 +159,6 @@ export class GlpiPage
         index: number,
         content: string,
     ): Promise<void> {
-        // Select the target note
-        await this.doFocusNote(index);
-
         // Update content
         await this.getButton("Edit").click();
         await this.note_content_input.fill(content);
@@ -177,21 +169,13 @@ export class GlpiPage
         index: number,
         file: string,
     ): Promise<void> {
-        // Select the target note
-        await this.doFocusNote(index);
-
         // Add file to note
         await this.getButton("Edit").click();
         await this.doAddFileToUploadArea(file, this.page.getByRole('dialog'));
         await this.getButton("Update").click();
     }
 
-    public async doDeleteNote(
-        index: number,
-    ): Promise<void> {
-        // Select the target note
-        await this.doFocusNote(index);
-
+    public async doDeleteNote(): Promise<void> {
         // Prepare to confirm delete dialog
         this.page.once('dialog', dialog => dialog.accept());
 
@@ -264,16 +248,26 @@ export class GlpiPage
      * TinyMCE's container is the div right after the textarea.
      * The interactive element is the body of the iframe.
      */
-    public getRichTextByLabel(label: string): Locator
+    public getRichTextByLabel(label: string, base?: Locator): Locator
     {
         // eslint-disable-next-line playwright/no-raw-locators
-        return this.page
+        return (base ?? this.page)
             .getByLabel(label)
             .locator('+ div')
             .locator('iframe:visible')
             .contentFrame()
             .locator('body')
         ;
+    }
+
+    /**
+     * Initialize a rich text editor by clicking on it, then return its body locator.
+     */
+    public async initRichTextByLabel(label: string, base?: Locator): Promise<Locator>
+    {
+        // eslint-disable-next-line playwright/no-raw-locators
+        await (base ?? this.page).getByLabel(label).locator('+ div').click();
+        return this.getRichTextByLabel(label, base);
     }
 
     /**

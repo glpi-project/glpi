@@ -39,6 +39,8 @@ use Glpi\Form\Destination\CommonITILField\SLATTOField;
 use Glpi\Form\Destination\CommonITILField\SLATTOFieldConfig;
 use Glpi\Form\Destination\CommonITILField\SLMFieldStrategy;
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\QuestionTypeDateTime;
+use Glpi\Form\QuestionType\QuestionTypeDateTimeExtraDataConfig;
 use Glpi\Tests\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -153,10 +155,114 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
         );
     }
 
+    public function testSpecificDateAnswer(): void
+    {
+        $this->login('normal');
+
+        $this->setCurrentTime('2026-01-01 10:00:00');
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->checkSLATTOFieldConfiguration(
+            form: $form,
+            config: new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
+                question_id: $this->getQuestionId($form, 'Date Question')
+            ),
+            answers: [
+                $this->getQuestionId($form, 'Date Question') => '2026-01-02',
+            ],
+            expected_tto_date: '2026-01-02 00:00:00'
+        );
+    }
+
+    public function testSpecificDateTimeAnswer(): void
+    {
+        $this->login('normal');
+
+        $this->setCurrentTime('2026-01-01 10:00:00');
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->checkSLATTOFieldConfiguration(
+            form: $form,
+            config: new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::SPECIFIC_DATE_ANSWER,
+                question_id: $this->getQuestionId($form, 'Date and Time Question')
+            ),
+            answers: [
+                $this->getQuestionId($form, 'Date and Time Question') => '2026-01-02 12:34:56',
+            ],
+            expected_tto_date: '2026-01-02 12:34:56'
+        );
+    }
+
+    public function testComputedDateFromFormSubmission(): void
+    {
+        $this->login('normal');
+
+        $this->setCurrentTime('2026-01-01 10:00:00');
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->checkSLATTOFieldConfiguration(
+            form: $form,
+            config: new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_FORM_SUBMISSION,
+                time_offset: 2,
+                time_definition: 'day'
+            ),
+            expected_tto_date: '2026-01-03 10:00:00'
+        );
+    }
+
+    public function testComputedDateFromSpecificDateAnswer(): void
+    {
+        $this->login('normal');
+
+        $this->setCurrentTime('2026-01-01 10:00:00');
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->checkSLATTOFieldConfiguration(
+            form: $form,
+            config: new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
+                question_id: $this->getQuestionId($form, 'Date Question'),
+                time_offset: 3,
+                time_definition: 'day'
+            ),
+            answers: [
+                $this->getQuestionId($form, 'Date Question') => '2026-01-05',
+            ],
+            expected_tto_date: '2026-01-08 00:00:00'
+        );
+    }
+
+    public function testComputedDateFromSpecificDateTimeAnswer(): void
+    {
+        $this->login('normal');
+
+        $this->setCurrentTime('2026-01-01 10:00:00');
+
+        $form = $this->createAndGetFormWithTicketDestination();
+        $this->checkSLATTOFieldConfiguration(
+            form: $form,
+            config: new SLATTOFieldConfig(
+                strategy: SLMFieldStrategy::COMPUTED_DATE_FROM_SPECIFIC_DATE_ANSWER,
+                question_id: $this->getQuestionId($form, 'Date and Time Question'),
+                time_offset: 4,
+                time_definition: 'day'
+            ),
+            answers: [
+                $this->getQuestionId($form, 'Date and Time Question') => '2026-01-05 15:30:00',
+            ],
+            expected_tto_date: '2026-01-09 15:30:00'
+        );
+    }
+
     private function checkSLATTOFieldConfiguration(
         Form $form,
         SLATTOFieldConfig $config,
-        int $expected_slas_tto_id
+        array $answers = [],
+        int $expected_slas_tto_id = 0,
+        ?string $expected_tto_date = null,
     ): Ticket {
         // Insert config
         $destinations = $form->getDestinations();
@@ -173,7 +279,7 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
         $answers_handler = AnswersHandler::getInstance();
         $answers = $answers_handler->saveAnswers(
             $form,
-            [],
+            $answers,
             getItemByTypeName(\User::class, TU_USER, true)
         );
 
@@ -185,6 +291,11 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
         // Check sla_id_tto field
         $this->assertEquals($expected_slas_tto_id, $ticket->fields['slas_id_tto']);
 
+        // Check time_to_own field
+        if ($expected_tto_date !== null) {
+            $this->assertEquals($expected_tto_date, $ticket->fields['time_to_own']);
+        }
+
         // Return the created ticket to be able to check other fields
         return $ticket;
     }
@@ -192,6 +303,22 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
     private function createAndGetFormWithTicketDestination(): Form
     {
         $builder = new FormBuilder();
+        $builder->addQuestion(
+            name: 'Date Question',
+            type: QuestionTypeDateTime::class,
+            extra_data: json_encode(new QuestionTypeDateTimeExtraDataConfig(
+                is_date_enabled: true,
+                is_time_enabled: false
+            ))
+        );
+        $builder->addQuestion(
+            name: 'Date and Time Question',
+            type: QuestionTypeDateTime::class,
+            extra_data: json_encode(new QuestionTypeDateTimeExtraDataConfig(
+                is_date_enabled: true,
+                is_time_enabled: true
+            ))
+        );
         return $this->createForm($builder);
     }
 

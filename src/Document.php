@@ -1402,7 +1402,7 @@ class Document extends CommonDBTM implements TreeBrowseInterface
      *    - used : array / Already used items ID: not to display in dropdown (default empty)
      *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
      *
-     * @param array $options Array of possible options
+     * @param array<string,mixed> $options Array of possible options
      *
      * @return int|string|void
      *    integer if option display=true (random part of elements id)

@@ -52,6 +52,7 @@ use ITILSolution;
 use RuntimeException;
 use Session;
 use Toolbox;
+use Webhook;
 
 use function Safe\ob_get_clean;
 use function Safe\ob_start;
@@ -109,10 +110,10 @@ class Event extends CommonDBTM
      * $level is above or equal to setting from configuration.
      *
      * @param string|int $items_id
-     * @param string $type
-     * @param int $level
-     * @param string $service
-     * @param string $event
+     * @param string     $type
+     * @param int        $level @see \CommonDBTM::getLogDefaultLevel() documentation
+     * @param string     $service
+     * @param string     $event
      *
      * @return void
      */
@@ -120,7 +121,7 @@ class Event extends CommonDBTM
     {
         global $CFG_GLPI, $DB;
 
-        if ($level >= $CFG_GLPI["event_loglevel"]) {
+        if ($CFG_GLPI["event_loglevel"] < $level) {
             return;
         }
 
@@ -151,6 +152,9 @@ class Event extends CommonDBTM
 
             Toolbox::logInFile("event", $full_message);
         }
+        $added = new self();
+        $added->getFromDB($id);
+        Webhook::raise('new', $added);
     }
 
     /**

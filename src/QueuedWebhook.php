@@ -178,7 +178,7 @@ class QueuedWebhook extends CommonDBChild
             'timeout' => 5,
         ];
         if (in_array(Webhook::class, $CFG_GLPI['proxy_exclusions'])) {
-            $options['proxy_excluded'] = true;
+            $guzzle_options['proxy_excluded'] = true;
         }
 
         $webhook = new Webhook();
@@ -195,32 +195,49 @@ class QueuedWebhook extends CommonDBChild
             }
         }
 
+        $client = Toolbox::getGuzzleClient($guzzle_options);
+
+        $process_request = true;
+
         $bearer_token = null;
         if ($webhook->fields['use_oauth']) {
-            // Send OAuth Client Credentials
-            $client = Toolbox::getGuzzleClient($guzzle_options);
-            try {
-                $response = $client->request('POST', $webhook->fields['oauth_url'], [
-                    RequestOptions::FORM_PARAMS => [
-                        'grant_type' => 'client_credentials',
-                        'client_id' => $webhook->fields['clientid'],
-                        'client_secret' => $webhook->fields['clientsecret'],
-                        'scope' => '',
-                    ],
-                ]);
-                $response = json_decode((string) $response->getBody(), true);
-                if (isset($response['access_token'])) {
-                    $bearer_token = $response['access_token'];
+            $oauth_url   = (string) $webhook->fields['oauth_url'];
+            $oauth_error = null;
+
+            if (Toolbox::isUrlSafe($oauth_url)) {
+                // Send OAuth Client Credentials
+                try {
+                    $oauth_response = $client->request('POST', $oauth_url, [
+                        RequestOptions::FORM_PARAMS => [
+                            'grant_type' => 'client_credentials',
+                            'client_id' => $webhook->fields['clientid'],
+                            'client_secret' => $webhook->fields['clientsecret'],
+                            'scope' => '',
+                        ],
+                    ]);
+                    $oauth_response = json_decode((string) $oauth_response->getBody(), true);
+
+                    if (array_key_exists('access_token', $oauth_response)) {
+                        $bearer_token = $oauth_response['access_token'];
+                    } else {
+                        $oauth_error = 'Unable to retrieve bearer token from response.';
+                    }
+                } catch (GuzzleException $e) {
+                    $oauth_error = $e->getMessage();
                 }
-            } catch (GuzzleException $e) {
+            } else {
+                $oauth_error = sprintf('Oauth server URL `%s` is unsafe.', $oauth_url);
+            }
+
+            if ($oauth_error !== null) {
+                $process_request = false;
                 Toolbox::logInFile(
                     "webhook",
-                    "OAuth authentication error for webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $e->getMessage()
+                    "OAuth authentication error for webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $oauth_error
                 );
             }
         }
 
-        $client = Toolbox::getGuzzleClient($guzzle_options);
         $headers = json_decode($queued_webhook->fields['headers'], true);
         // Remove headers with empty values
         $headers = array_filter($headers, static fn($value) => !empty($value));
@@ -228,22 +245,36 @@ class QueuedWebhook extends CommonDBChild
             $headers['Authorization'] = 'Bearer ' . $bearer_token;
         }
 
-        try {
-            $response = $client->request($queued_webhook->fields['http_method'], $queued_webhook->fields['url'], [
-                RequestOptions::HEADERS => $headers,
-                RequestOptions::BODY => $queued_webhook->fields['body'],
-            ]);
-        } catch (GuzzleException $e) {
-            Toolbox::logInFile(
-                "webhook",
-                "Error sending webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $e->getMessage()
-            );
-            if ($e instanceof RequestException) {
-                $response = $e->getResponse();
+        $response = null;
+        if ($process_request) {
+            $request_url   = (string) $queued_webhook->fields['url'];
+            $request_error = null;
+
+            if (Toolbox::isUrlSafe($request_url)) {
+                try {
+                    $response = $client->request($queued_webhook->fields['http_method'], $request_url, [
+                        RequestOptions::HEADERS => $headers,
+                        RequestOptions::BODY => $queued_webhook->fields['body'],
+                    ]);
+                } catch (GuzzleException $e) {
+                    if ($e instanceof RequestException) {
+                        $response = $e->getResponse();
+                    }
+
+                    $request_error = $e->getMessage();
+                }
             } else {
-                $response = null;
+                $request_error = sprintf('Webhook target URL `%s` is unsafe.', $request_url);
+            }
+
+            if ($request_error !== null) {
+                Toolbox::logInFile(
+                    "webhook",
+                    "Error sending webhook {$webhook->fields['name']} ({$webhook->getID()}): " . $request_error
+                );
             }
         }
+
         $input = [
             'id' => $ID,
             'sent_try' => $queued_webhook->fields['sent_try'] + 1,

@@ -679,4 +679,41 @@ HTML,
 
         $this->assertSame($expected_result, $richtext->isRichTextHtmlContent($content));
     }
+
+
+    public static function getEnhancedHtmlProvider(): iterable
+    {
+        yield [
+            'content'                => '<p>Some text without images.</p>',
+            'expected_result'        => '<p>Some text without images.</p>',
+        ];
+
+        yield [
+            'content'                => '<p>Image should be lazy loaded: <img src="/path/to/image.jpg" alt="an image" /></p>',
+            'expected_result'        => '<p>Image should be lazy loaded: <img src="/path/to/image.jpg" alt="an image" loading="lazy"></p>',
+        ];
+
+        yield [
+            'content'                => '<p>Multiple images: <img src="/img1.jpg" /><img src="/img2.jpg" /></p>',
+            'expected_result'        => '<p>Multiple images: <img src="/img1.jpg" loading="lazy"><img src="/img2.jpg" loading="lazy"></p>',
+        ];
+
+        yield [
+            'content'                => '<p>Image with VML tags:<!-- [if gte vml 1]><v:shape id="Image_x0020_4" o:spid="_x0000_i1027" type="#_x0000_t75" alt="Logo" style="width:71.5pt;height:71.5pt"><v:imagedata src="/img3.jpg" o:href="cid:image003.jpg@01DC8574.422C43D0"/></v:shape><![endif]--><!-- [if !vml]--><img src="/img4.jpg" o:title="an image" /><!-- [endif]--></p>',
+            'expected_result'        => '<p>Image with VML tags:<img src="/img4.jpg" loading="lazy"></p>',
+        ];
+    }
+
+    #[DataProvider('getEnhancedHtmlProvider')]
+    public function testGetEnhancedHtml(string $content, string $expected_result)
+    {
+        $richtext = new RichText();
+
+        $result = $richtext->getEnhancedHtml($content);
+
+        $this->assertEquals(
+            $expected_result,
+            $result,
+        );
+    }
 }

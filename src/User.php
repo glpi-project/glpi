@@ -2800,16 +2800,6 @@ HTML;
         return $toolbar;
     }
 
-    /**
-     * Print the user form.
-     *
-     * @param int $ID    ID of the user
-     * @param array $options Options
-     *     - string   target        Form target
-     *     - boolean  withtemplate  Template or basic item
-     *
-     * @return bool true if user found, false otherwise
-     */
     public function showForm($ID, array $options = [])
     {
         global $DB;

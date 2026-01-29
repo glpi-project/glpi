@@ -2144,7 +2144,7 @@ TWIG, $twig_params);
     /**
      * Get dropdown parameters from showVisibility method
      *
-     * @return array
+     * @return array{type: string, right: string, entity?: int, is_recursive?: bool, allusers: int}
      */
     protected function getShowVisibilityDropdownParams()
     {

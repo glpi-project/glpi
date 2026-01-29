@@ -1378,7 +1378,7 @@ class Contract extends CommonDBTM implements StateInterface
      * Print a select with contracts
      *
      * Print a select named $name with contracts options and selected value $value
-     * @param array $options
+     * @param array<string,mixed> $options
      *    - name          : string / name of the select (default is contracts_id)
      *    - value         : integer / preselected value (default 0)
      *    - entity        : integer or array / restrict to a defined entity or array of entities

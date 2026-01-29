@@ -104,17 +104,6 @@ class Socket extends CommonDBChild
         return $ong;
     }
 
-    /**
-     * Print the version form
-     *
-     * @param int $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - itemtype type of the item for add process
-     *     - items_id ID of the item for add process
-     *
-     * @return bool true if displayed  false if item not found or not right to display
-     **/
     public function showForm($ID, array $options = [])
     {
         $itemtype = null;
@@ -462,16 +451,6 @@ class Socket extends CommonDBChild
         return $tab;
     }
 
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param array $options   array
-     *
-     * @return string
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 

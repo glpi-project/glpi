@@ -184,6 +184,12 @@ export default [
             ...playwright.configs['flat/recommended'].rules,
             "playwright/no-force-option": "error",
             "playwright/no-raw-locators": "error",
+            "playwright/expect-expect": [
+                "warn",
+                {
+                    "assertFunctionPatterns": ["^expect.*", "^assert.*"]
+                }
+            ]
         },
     }
 ];

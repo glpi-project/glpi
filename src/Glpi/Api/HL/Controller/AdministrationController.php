@@ -44,6 +44,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Event;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -54,7 +55,10 @@ use Profile;
 use Session;
 use Toolbox;
 use User;
+use UserCategory;
 use UserEmail;
+use UserTitle;
+use ValidatorSubstitute;
 
 /**
  * @phpstan-type EmailData = array{id: int, email: string, is_default: int, _links: array{'self': array{href: non-empty-string}}}
@@ -66,6 +70,8 @@ final class AdministrationController extends AbstractController
 
     public static function getRawKnownSchemas(): array
     {
+        global $DB;
+
         $schemas = [
             'User' => [
                 'x-version-introduced' => '2.0',
@@ -191,6 +197,7 @@ final class AdministrationController extends AbstractController
                             }
                             return $CFG_GLPI["root_doc"] . '/pics/picture.png';
                         },
+                        'readOnly' => true,
                     ],
                     'date_password_change' => [
                         'x-version-introduced' => '2.1.0',
@@ -226,6 +233,55 @@ EOD,
                     'default_entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity') + [
                         'x-version-introduced' => '2.1.0',
                         'description' => 'Default entity',
+                    ],
+                    'date_creation' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.2.0',
+                    ],
+                    'date_mod' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.2.0',
+                    ],
+                    'date_sync' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                        'x-version-introduced' => '2.2.0',
+                    ],
+                    'title' => self::getDropdownTypeSchema(class: UserTitle::class, full_schema: 'UserTitle') + ['x-version-introduced' => '2.2.0'],
+                    'category' => self::getDropdownTypeSchema(class: UserCategory::class, full_schema: 'UserCategory') + ['x-version-introduced' => '2.2.0'],
+                    'registration_number' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.2.0',
+                    ],
+                    'begin_date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.2.0',
+                        'description' => 'Valid since',
+                    ],
+                    'end_date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.2.0',
+                        'description' => 'Valid until',
+                    ],
+                    'nickname' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-version-introduced' => '2.2.0',
+                        'maxLength' => 50,
+                    ],
+                    'substitution_start_date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.2.0',
+                    ],
+                    'substitution_end_date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'x-version-introduced' => '2.2.0',
                     ],
                 ],
             ],
@@ -379,6 +435,105 @@ EOD,
                         'type' => Doc\Schema::TYPE_BOOLEAN,
                         'description' => 'Is dynamic',
                     ],
+                ],
+            ],
+            'EventLog' => [
+                'x-version-introduced' => '2.2.0',
+                'x-itemtype' => Event::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'items_id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'type' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                    ],
+                    'date' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE_TIME,
+                        'readOnly' => true,
+                    ],
+                    'service' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                    ],
+                    'level' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'readOnly' => true,
+                        'enum' => [1, 2, 3, 4, 5],
+                        'description' => <<<EOT
+                        Log level:
+                        - 1: Critical (login errors only)
+                        - 2: Severe
+                        - 3: Important (successful logins)
+                        - 4: Notice (add, delete, update actions)
+                        - 5: Other
+EOT,
+                    ],
+                    'message' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
+            'UserCategory' => [
+                'x-version-introduced' => '2.2.0',
+                'x-itemtype' => UserCategory::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'UserTitle' => [
+                'x-version-introduced' => '2.2.0',
+                'x-itemtype' => UserTitle::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'ApprovalSubstitute' => [
+                'x-version-introduced' => '2.2.0',
+                'x-itemtype' => ValidatorSubstitute::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-rights-conditions' => [
+                    'read' => static fn() => ['WHERE' => ['users_id' => Session::getLoginUserID()]],
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                        'readOnly' => true,
+                    ],
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'substitute' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_substitute', full_schema: 'User'),
                 ],
             ],
         ];
@@ -711,6 +866,12 @@ EOT,
                 'search_pagination_on_top' => [
                     'type' => Doc\Schema::TYPE_BOOLEAN,
                     'description' => 'Show search pagination above results',
+                ],
+                'timezone' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-version-introduced' => '2.2.0',
+                    'enum' => array_keys($DB->getTimezones()),
+                    'maxLength' => 50,
                 ],
             ],
         ];
@@ -1261,5 +1422,89 @@ EOT,
     {
         $users_id = ResourceAccessor::getIDForOtherUniqueFieldBySchema($this->getKnownSchema('User', $this->getAPIVersion($request)), 'username', $request->getAttribute('username'));
         return ResourceAccessor::updateBySchema($this->getKnownSchema('UserPreferences', $this->getAPIVersion($request)), ['id' => $users_id], $request->getParameters());
+    }
+
+    #[Route(path: '/EventLog', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(schema_name: 'EventLog')]
+    public function searchEventLogs(Request $request): Response
+    {
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('EventLog', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/EventLog/{id}', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(schema_name: 'EventLog')]
+    public function getEventLogByID(Request $request): Response
+    {
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('EventLog', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => 'UserCategory|UserTitle|ApprovalSubstitute',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+    )]
+    public function search22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => 'UserCategory|UserTitle|ApprovalSubstitute',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+    )]
+    public function getItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => 'UserCategory|UserTitle|ApprovalSubstitute',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+    )]
+    public function createItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem22']);
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'UserCategory|UserTitle',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+    )]
+    public function updateItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'UserCategory|UserTitle|ApprovalSubstitute',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.2')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+    )]
+    public function deleteItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

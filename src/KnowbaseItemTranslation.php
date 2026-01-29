@@ -239,12 +239,6 @@ TWIG, $twig_params);
         return true;
     }
 
-    /**
-     * Display translation form
-     *
-     * @param int $ID
-     * @param array   $options
-     */
     public function showForm($ID = -1, array $options = [])
     {
         if (($ID <= 0 && !isset($options['parent'])) || !($options['parent'] instanceof CommonDBTM)) {

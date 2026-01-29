@@ -1,5 +1,6 @@
 Follow GLPI’s latest coding standards and best practices: naming, indentation, comments, and PER Coding Style 3.0 compliance.
 Use the GLPI framework whenever possible.
+Use the snake_case variable naming convention.
 Do not use deprecated code.
 Do not use PHP features older than version 8.2.
 Do not use GLPI code or APIs older than version 11.0.

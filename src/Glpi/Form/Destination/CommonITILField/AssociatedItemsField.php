@@ -332,8 +332,13 @@ final class AssociatedItemsField extends AbstractConfigField implements Destinat
                     $requirement = DataRequirementSpecification::fromItem($item);
                     $requirements[] = $requirement;
                     $items[$itemtype][$i] = $requirement->name;
+                } else {
+                    // Remove deleted items from the export
+                    unset($items[$itemtype][$i]);
                 }
             }
+            // Re-index the array after removing elements
+            $items[$itemtype] = array_values($items[$itemtype]);
         }
 
         $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS] = $items;

@@ -74,6 +74,7 @@ class AssetParameters extends AbstractParameters
             new AttributeParameter("model", _n('Model', 'Models', 1)),
             new AttributeParameter("type", _n('Type', 'Types', 1)),
             new AttributeParameter("state", __('Status')),
+            new AttributeParameter("comment", __('Comments')),
             new ObjectParameter(new EntityParameters()),
         ];
     }
@@ -90,6 +91,7 @@ class AssetParameters extends AbstractParameters
             'model'    => '',
             'type'     => '',
             'state'    => '',
+            'comment'  => $fields['comment'],
         ];
 
         // Add model if asset has a model

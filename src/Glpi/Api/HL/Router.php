@@ -45,10 +45,13 @@ use Glpi\Api\HL\Controller\ComponentController;
 use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Controller\CRUDControllerTrait;
 use Glpi\Api\HL\Controller\CustomAssetController;
+use Glpi\Api\HL\Controller\DashboardController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
+use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
+use Glpi\Api\HL\Controller\NotepadController;
 use Glpi\Api\HL\Controller\ProjectController;
 use Glpi\Api\HL\Controller\ReportController;
 use Glpi\Api\HL\Controller\RuleController;
@@ -90,7 +93,7 @@ use function Safe\preg_match;
 class Router
 {
     /** @var string */
-    public const API_VERSION = '2.1.0';
+    public const API_VERSION = '2.2.0';
 
     /**
      * @var AbstractController[]
@@ -170,6 +173,11 @@ EOT;
                 'version' => '2.1.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.1',
             ],
+            [
+                'api_version' => '2',
+                'version' => '2.2.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
+            ],
         ];
     }
 
@@ -238,6 +246,9 @@ EOT;
             self::$instance->registerController(new RuleController());
             self::$instance->registerController(new ToolController());
             self::$instance->registerController(new SetupController());
+            self::$instance->registerController(new NotepadController());
+            self::$instance->registerController(new DashboardController());
+            self::$instance->registerController(new KnowbaseController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {

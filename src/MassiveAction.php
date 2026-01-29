@@ -794,9 +794,9 @@ class MassiveAction
             }
         }
 
-        // Remove icons for outputs that doesn't expect html
+        // Remove icons and unescape text for outputs that doesn't expect html
         if ($items_id === null || isAPI()) {
-            $actions = array_map(fn($action) => strip_tags($action), $actions);
+            $actions = array_map(fn($action) => htmlspecialchars_decode(strip_tags($action)), $actions);
         }
 
         return $actions;
@@ -1344,12 +1344,12 @@ class MassiveAction
 
         switch ($action) {
             case 'delete':
-                $deleted_count = 0;
+                $deleted_ids = [];
                 foreach ($ids as $id) {
                     if ($item->can($id, DELETE)) {
                         if ($item->delete(["id" => $id])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                            $deleted_count++;
+                            $deleted_ids[] = $id;
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1361,24 +1361,16 @@ class MassiveAction
                 }
 
                 // Log event for successful delete actions (grouped)
-                if ($deleted_count > 0) {
-                    Event::log(
-                        0,
-                        strtolower($item->getType()),
-                        4,
-                        "massiveaction",
-                        sprintf(__('%1$s deletes %2$d items by massive action'), $_SESSION["glpiname"], $deleted_count)
-                    );
-                }
+                self::logMassiveActionEvent($item, 'deletes', $deleted_ids);
                 break;
 
             case 'restore':
-                $restored_count = 0;
+                $restored_ids = [];
                 foreach ($ids as $id) {
                     if ($item->can($id, DELETE)) {
                         if ($item->restore(["id" => $id])) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                            $restored_count++;
+                            $restored_ids[] = $id;
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1388,23 +1380,14 @@ class MassiveAction
                         $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
-
                 // Log event for successful restore actions (grouped)
-                if ($restored_count > 0) {
-                    Event::log(
-                        0,
-                        strtolower($item->getType()),
-                        4,
-                        "massiveaction",
-                        sprintf(__('%1$s restores %2$d items by massive action'), $_SESSION["glpiname"], $restored_count)
-                    );
-                }
+                self::logMassiveActionEvent($item, 'restores', $restored_ids);
                 break;
 
             case 'purge_item_but_devices':
             case 'purge_but_item_linked':
             case 'purge':
-                $purged_count = 0;
+                $purged_ids = [];
                 foreach ($ids as $id) {
                     if ($item->can($id, PURGE)) {
                         $force = true;
@@ -1443,7 +1426,7 @@ class MassiveAction
                         }
                         if ($item->delete($delete_array, $force)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                            $purged_count++;
+                            $purged_ids[] = $id;
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -1455,20 +1438,9 @@ class MassiveAction
                 }
 
                 // Log event for successful purge actions (grouped)
-                if ($purged_count > 0) {
-                    $is_force_purge = $action === 'purge';
-                    $purge_message = $is_force_purge
-                        ? sprintf(__('%1$s purges %2$d items by massive action'), $_SESSION["glpiname"], $purged_count)
-                        : sprintf(__('%1$s deletes %2$d items by massive action'), $_SESSION["glpiname"], $purged_count);
-
-                    Event::log(
-                        0,
-                        strtolower($item->getType()),
-                        4,
-                        "massiveaction",
-                        $purge_message
-                    );
-                }
+                $is_force_purge = $action === 'purge';
+                $action = $is_force_purge ? 'purges' : 'deletes';
+                self::logMassiveActionEvent($item, $action, $purged_ids);
                 break;
 
             case 'update':
@@ -1870,5 +1842,64 @@ class MassiveAction
     public function isFromSingleItem(): bool
     {
         return $this->from_single_item;
+    }
+
+    /**
+     * Log massive action events with item IDs
+     *
+     * @param CommonDBTM $item         Item instance
+     * @param string     $action       Action verb (deletes, restores, purges)
+     * @param int[]      $ids          Array of item IDs processed
+     * @return void
+     */
+    private static function logMassiveActionEvent(CommonDBTM $item, string $action, array $ids): void
+    {
+        $count = count($ids);
+        if ($count <= 0) {
+            return;
+        }
+
+        if ($count === 1) {
+            // For single item, show ID in element column and simplified message
+            $translation_key = match ($action) {
+                'deletes' => __('%1$s deletes item %2$s by massive action'),
+                'purges' => __('%1$s purges item %2$s by massive action'),
+                'restores' => __('%1$s restores item %2$s by massive action'),
+                default => __('%1$s %2$s item %3$s by massive action'),
+            };
+            $message = sprintf(
+                $translation_key,
+                $_SESSION["glpiname"],
+                $item->getTypeName(1)
+            );
+            Event::log(
+                $ids[0],
+                strtolower($item->getType()),
+                4,
+                "massiveaction",
+                $message
+            );
+        } else {
+            // For multiple items, use the generic count message with IDs
+            $translation_key = match ($action) {
+                'deletes' => __('%1$s deletes %2$d items by massive action: %3$s'),
+                'purges' => __('%1$s purges %2$d items by massive action: %3$s'),
+                'restores' => __('%1$s restores %2$d items by massive action: %3$s'),
+                default => __('%1$s %2$s %3$d items by massive action: %4$s'),
+            };
+            $message = sprintf(
+                $translation_key,
+                $_SESSION["glpiname"],
+                $count,
+                implode(', ', $ids)
+            );
+            Event::log(
+                0,
+                strtolower($item->getType()),
+                4,
+                "massiveaction",
+                $message
+            );
+        }
     }
 }

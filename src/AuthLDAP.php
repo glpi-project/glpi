@@ -436,15 +436,6 @@ class AuthLDAP extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-    /**
-     * Print the auth ldap form
-     *
-     * @param int $ID      ID of the item
-     * @param array   $options Options
-     *     - target for the form
-     *
-     * @return void|bool (display) Returns false if there is a rights error.
-     */
     public function showForm($ID, array $options = [])
     {
         if (!Config::canUpdate()) {
@@ -509,6 +500,7 @@ class AuthLDAP extends CommonDBTM
                 </div>
 TWIG, $twig_params);
         }
+        return true;
     }
 
     /**
@@ -2008,7 +2000,7 @@ TWIG, $twig_params);
                 ) {
                     // Only manage deleted user if ALL (because of entity visibility in delegated mode)
 
-                    if ($user['auths_id'] === $options['authldaps_id']) {
+                    if ($user['auths_id'] === (int) $options['authldaps_id']) {
                         if ((int) $user['is_deleted_ldap'] === 0) {
                             // If user is marked as coming from LDAP, but is not present in it anymore
                             User::manageDeletedUserInLdap($user['id']);
