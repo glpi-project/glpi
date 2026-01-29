@@ -105,7 +105,7 @@ var glpi_html_dialog = function({
     const data_bs_focus = !bs_focus ? 'data-bs-focus="false"' : '';
 
     var modal = `<div class="modal fade ${modalclass}" id="${id}" role="dialog" ${data_bs_focus}>
-         <div class="modal-dialog ${dialogclass}">
+         <div class="modal-dialog modal-dialog-scrollable ${dialogclass}">
             <div class="modal-content">
                <div class="modal-header">
                   <h4 class="modal-title">${title}</h4>
