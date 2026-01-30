@@ -676,29 +676,13 @@ class Item_OperatingSystem extends CommonDBRelation
         return $input;
     }
 
-    public function prepareInputForUpdate($input)
+    public function post_updateItem($history = 1)
     {
         // Check if all OS fields are empty
-        if ($this->areAllFieldsEmpty($input)) {
-            // Get current record data for deletion
-            $this->getFromDB($input['id']);
-            $itemtype = $this->fields['itemtype'];
-            $items_id = $this->fields['items_id'];
-
+        if ($this->areAllFieldsEmpty($this->fields)) {
             // Delete the record instead of updating to empty
-            if ($this->delete(['id' => $input['id']], true)) {
-                Session::addMessageAfterRedirect(
-                    __s("Operating system unlinked successfully."),
-                    false,
-                    INFO
-                );
-            }
-
-            // Return false to prevent update, controller will handle redirect
-            return false;
+            parent::delete(['id' => $this->fields['id']], true);
         }
-
-        return $input;
     }
 
     /**
