@@ -53,7 +53,7 @@
                     checkbox.on('change', function(e) {
                         const chkbox = $(this);
                         const form = chkbox.closest('form');
-                        
+
                         if (chkbox.prop('checked')) {
                             form.find('.single-port-field').addClass('d-none');
                             form.find('.multiple-port-fields').removeClass('d-none');
@@ -77,7 +77,7 @@
     {{ fields.numberField('logical_number', item.fields['logical_number'], _n('Port number', 'Port number', 1), {
         'add_field_class': 'single-port-field'
     }) }}
-    
+
     {% set logical_num_field %}
         <div class="d-flex">
             {{ fields.numberField('from_logical_number', 0, null, {
