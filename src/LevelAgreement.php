@@ -45,17 +45,15 @@ use function Safe\strtotime;
 abstract class LevelAgreement extends CommonDBChild
 {
     // From CommonDBTM
-    public $dohistory          = true;
-    public static $rightname       = 'slm';
+    public bool $dohistory          = true;
+    public static string $rightname       = 'slm';
 
     // From CommonDBChild
-    public static $itemtype = SLM::class;
-    public static $items_id = 'slms_id';
+    public static string $itemtype = SLM::class;
+    public static string $items_id = 'slms_id';
 
-    /** @var string  */
-    protected static $prefix            = '';
-    /** @var string  */
-    protected static $prefixticket      = '';
+    protected static string $prefix            = '';
+    protected static string $prefixticket      = '';
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
     /** @var string|class-string<CommonDBTM> */

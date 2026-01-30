@@ -41,7 +41,7 @@ use Plugin;
 final class Palette
 {
     /** @var string[] */
-    private $colors = [];
+    private array $colors = [];
 
     private const DEFAULT = "tab10";
     private const PALETTES = [

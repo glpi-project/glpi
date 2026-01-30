@@ -41,10 +41,10 @@
 class Supplier_Ticket extends CommonITILActor
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Ticket::class;
-    public static $items_id_1 = 'tickets_id';
-    public static $itemtype_2 = Supplier::class;
-    public static $items_id_2 = 'suppliers_id';
+    public static ?string $itemtype_1 = Ticket::class;
+    public static ?string $items_id_1 = 'tickets_id';
+    public static ?string $itemtype_2 = Supplier::class;
+    public static ?string $items_id_2 = 'suppliers_id';
 
 
     /**

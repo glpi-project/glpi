@@ -63,12 +63,10 @@ use function Safe\session_write_close;
  */
 class Controller extends CommonGLPI
 {
-    /** @var string */
-    protected $plugin_key = "";
+    protected string $plugin_key = "";
 
-    public static $rightname = 'config';
-    /** @var ?PluginsApi */
-    public static $api       = null;
+    public static string $rightname = 'config';
+    public static ?PluginsApi $api       = null;
 
     /**
      * Prompt to replace the classic plugins page with the Marketplace

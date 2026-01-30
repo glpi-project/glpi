@@ -47,11 +47,11 @@ class Group extends CommonTreeDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $dohistory       = true;
+    public bool $dohistory       = true;
 
-    public static $rightname       = 'group';
+    public static string $rightname       = 'group';
 
-    protected $usenotepad  = true;
+    protected bool $usenotepad  = true;
 
 
     public function getCloneRelations(): array

@@ -57,25 +57,21 @@ class GLPIMailer
 {
     /**
      * Transport instance.
-     * @var TransportInterface
      */
     private TransportInterface $transport;
 
     /**
      * Email instance.
-     * @var Email
      */
     private Email $email;
 
     /**
      * Errors that may have occurred during email sending.
-     * @var string|null
      */
     private ?string $error = null;
 
     /**
      * Debug log.
-     * @var string|null
      */
     private ?string $debug = null;
 

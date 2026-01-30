@@ -44,19 +44,19 @@ use Glpi\RichText\RichText;
 class ReservationItem extends CommonDBChild
 {
     /// From CommonDBChild
-    public static $itemtype          = 'itemtype';
-    public static $items_id          = 'items_id';
+    public static string $itemtype          = 'itemtype';
+    public static string $items_id          = 'items_id';
 
-    public static $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static int $checkParentRights = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-    public static $rightname                = 'reservation';
+    public static string $rightname                = 'reservation';
 
     public const RESERVEANITEM              = 1024;
 
-    public $get_item_to_display_tab  = false;
-    public $showdebug                = false;
+    public bool $get_item_to_display_tab  = false;
+    public bool $showdebug                = false;
 
-    public $taborientation           = 'horizontal';
+    public string $taborientation           = 'horizontal';
 
     public static function canView(): bool
     {

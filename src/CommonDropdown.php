@@ -45,30 +45,27 @@ abstract class CommonDropdown extends CommonDBTM
     use AssetImage;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
     /**
      * For delete operation (entity will overload this value)
      *
-     * @var bool
      */
-    public $must_be_replace = false;
+    public bool $must_be_replace = false;
 
     /**
      * Menu & navigation
      *
-     * @var bool
      */
-    public $display_dropdowntitle  = true;
+    public bool $display_dropdowntitle  = true;
 
     /**
      * Flag to determine whether dropdown can be translated.
      *
-     * @var bool
      */
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
-    public static $rightname = 'dropdown';
+    public static string $rightname = 'dropdown';
 
     public static function getTypeName($nb = 0)
     {

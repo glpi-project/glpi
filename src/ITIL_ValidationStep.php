@@ -36,10 +36,10 @@ use Glpi\Application\View\TemplateRenderer;
 
 abstract class ITIL_ValidationStep extends CommonDBChild
 {
-    public $dohistory              = false;
+    public bool $dohistory              = false;
 
-    public static $itemtype = 'itemtype';
-    public static $items_id = 'items_id';
+    public static string $itemtype = 'itemtype';
+    public static string $items_id = 'items_id';
 
     /**
      * Related validation class name.

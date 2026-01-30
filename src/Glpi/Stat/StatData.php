@@ -42,18 +42,12 @@ use Stat;
  */
 abstract class StatData
 {
-    /** @var array */
-    protected $labels;
-    /** @var array */
-    protected $series;
-    /** @var int */
-    protected $total;
-    /** @var string */
-    protected $csv_link;
-    /** @var array */
-    protected $options;
-    /** @var array */
-    protected $params;
+    protected array $labels;
+    protected array $series;
+    protected int $total;
+    protected string $csv_link;
+    protected array $options;
+    protected array $params;
 
     public function __construct(array $params = [])
     {

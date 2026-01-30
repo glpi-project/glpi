@@ -51,13 +51,10 @@ use Unmanaged;
  */
 class Request extends AbstractRequest
 {
-    /** @var Inventory */
     private Inventory $inventory;
 
-    /** @var bool */
     private bool $is_discovery = false;
 
-    /** @var string */
     private string $network_inventory_mode;
     private Conf $conf;
 

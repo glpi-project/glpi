@@ -48,7 +48,6 @@ final class QuestionTypesManager
 {
     /**
      * Singleton instance
-     * @var QuestionTypesManager|null
      */
     private static ?QuestionTypesManager $instance = null;
 

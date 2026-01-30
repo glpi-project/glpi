@@ -64,7 +64,6 @@ final class AnswersHandler
 {
     /**
      * Singleton instance
-     * @var AnswersHandler|null
      */
     protected static ?AnswersHandler $instance = null;
 

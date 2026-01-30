@@ -44,11 +44,11 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    public static $rightname = 'itilvalidationtemplate';
+    public static string $rightname = 'itilvalidationtemplate';
 
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
     public static function getTypeName($nb = 0)
     {

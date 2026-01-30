@@ -43,14 +43,14 @@ use Glpi\DBAL\QueryFunction;
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
     /** @var array<int, int> */
-    public $private_profiles = [];
+    public array $private_profiles = [];
 
     /**
      * Profiles with acces to the "central" interface
      * Loaded if the source item's entity is using anonymization
      * @var array<int, int>
      */
-    public $central_profiles = [];
+    public array $central_profiles = [];
 
     public function __construct($entity = null, $event = '', $object = null, $options = [])
     {

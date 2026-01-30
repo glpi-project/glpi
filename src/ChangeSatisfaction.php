@@ -35,7 +35,7 @@
 
 class ChangeSatisfaction extends CommonITILSatisfaction
 {
-    public static $rightname = 'change';
+    public static string $rightname = 'change';
 
     public static function getConfigSufix(): string
     {

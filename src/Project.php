@@ -55,16 +55,16 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     use Teamwork;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
-    public static $rightname                   = 'project';
-    protected $usenotepad               = true;
+    public bool $dohistory                   = true;
+    protected static array $forward_entity_to = ['ProjectCost', 'ProjectTask'];
+    public static string $rightname                   = 'project';
+    protected bool $usenotepad               = true;
 
     public const READMY                        = 1;
     public const READALL                       = 1024;
 
     /** @var array<class-string<CommonDBTM>, array<array{id: int, projects_id: int, itemtype: class-string<CommonDBTM>, items_id: int, display_name?: string}>> */
-    protected $team                     = [];
+    protected array $team                     = [];
 
     public function getCloneRelations(): array
     {
@@ -479,7 +479,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria, KanbanInter
     public function getTeamCount()
     {
         $nb = 0;
-        if (is_array($this->team) && count($this->team)) {
+        if (count($this->team)) {
             foreach ($this->team as $val) {
                 $nb += count($val);
             }

@@ -81,7 +81,6 @@ class Session
     private const IDOR_MAX_TOKENS = 2500;
 
     /**
-     * @var bool $bypass_right_checks
      * @internal
      */
     private static bool $bypass_right_checks = false;

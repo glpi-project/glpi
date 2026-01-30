@@ -45,16 +45,14 @@ abstract class AbstractParameterType implements ParameterTypeInterface
     /**
      * The parameter key that need to be used to retrieve its value in a template.
      *
-     * @var string
      */
-    protected $key;
+    protected string $key;
 
     /**
      * The parameter label, to be displayed in the client side autocompletion.
      *
-     * @var string
      */
-    protected $label;
+    protected string $label;
 
     /**
      * @param string  $key     Key to access this value

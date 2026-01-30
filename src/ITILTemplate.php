@@ -46,35 +46,31 @@ use function Safe\preg_replace;
 abstract class ITILTemplate extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory                 = true;
+    public bool $dohistory                 = true;
 
-    public $display_dropdowntitle     = false;
+    public bool $display_dropdowntitle     = false;
 
-    public static $rightname                 = 'itiltemplate';
+    public static string $rightname                 = 'itiltemplate';
 
-    public $can_be_translated            = false;
+    public bool $can_be_translated            = false;
 
     // Specific fields
     /**
      * Mandatory Fields
-     * @var array
      */
-    public $mandatory  = [];
+    public array $mandatory  = [];
     /**
      * Hidden fields
-     * @var array
      */
-    public $hidden     = [];
+    public array $hidden     = [];
     /**
      * Predefined fields
-     * @var array
      */
-    public $predefined = [];
+    public array $predefined = [];
     /**
      * Readonly fields
-     * @var array
      */
-    public $readonly   = [];
+    public array $readonly   = [];
     /// Related ITIL type
 
     /**

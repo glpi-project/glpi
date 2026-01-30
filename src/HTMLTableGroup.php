@@ -38,16 +38,13 @@
  **/
 class HTMLTableGroup extends HTMLTableBase
 {
-    /** @var string */
-    private $name;
-    /** @var string */
-    private $content;
+    private string $name;
+    private string $content;
     /** @var ?HTMLTableHeader[] */
-    private $ordered_headers;
-    /** @var HTMLTableMain */
-    private $table;
+    private ?array $ordered_headers = null;
+    private HTMLTableMain $table;
     /** @var HTMLTableRow[] */
-    private $rows = [];
+    private array $rows = [];
 
     /**
      * @param HTMLTableMain $table

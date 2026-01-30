@@ -102,7 +102,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
      */
     public const ERROR_UPDATE_FAILED = 5;
 
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     #[Override]
     public function getSpecificMandatoryRequirements(): array

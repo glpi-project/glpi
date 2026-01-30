@@ -46,9 +46,8 @@ class LogsWriteAccess extends AbstractRequirement
     /**
      * Logger.
      *
-     * @var LoggerInterface
      */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      *

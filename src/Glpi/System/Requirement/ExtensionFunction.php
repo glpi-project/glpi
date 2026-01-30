@@ -43,9 +43,8 @@ class ExtensionFunction extends Extension
     /**
      * Required function name.
      *
-     * @var string
      */
-    private $function_name;
+    private string $function_name;
 
     /**
      * @param string $name           Extension name.

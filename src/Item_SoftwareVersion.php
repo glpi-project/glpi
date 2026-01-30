@@ -39,17 +39,17 @@ use Glpi\DBAL\QueryUnion;
 class Item_SoftwareVersion extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = 'itemtype';
-    public static $items_id_1 = 'items_id';
-    public static $itemtype_2 = SoftwareVersion::class;
-    public static $items_id_2 = 'softwareversions_id';
+    public static ?string $itemtype_1 = 'itemtype';
+    public static ?string $items_id_1 = 'items_id';
+    public static ?string $itemtype_2 = SoftwareVersion::class;
+    public static ?string $items_id_2 = 'softwareversions_id';
 
 
-    public static $log_history_1_add    = Log::HISTORY_INSTALL_SOFTWARE;
-    public static $log_history_1_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
+    public static int $log_history_1_add    = Log::HISTORY_INSTALL_SOFTWARE;
+    public static int $log_history_1_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
-    public static $log_history_2_add    = Log::HISTORY_INSTALL_SOFTWARE;
-    public static $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
+    public static int $log_history_2_add    = Log::HISTORY_INSTALL_SOFTWARE;
+    public static int $log_history_2_delete = Log::HISTORY_UNINSTALL_SOFTWARE;
 
 
     public static function getTypeName($nb = 0)

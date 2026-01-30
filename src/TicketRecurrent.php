@@ -43,7 +43,7 @@ class TicketRecurrent extends CommonITILRecurrent
     /**
      * @var string Right managements
      */
-    public static $rightname = 'ticketrecurrent';
+    public static string $rightname = 'ticketrecurrent';
 
     public static function getTypeName($nb = 0)
     {

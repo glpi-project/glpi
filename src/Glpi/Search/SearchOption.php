@@ -79,7 +79,6 @@ final class SearchOption implements ArrayAccess
      * @var array{id: int, name: string, field: string, table: string}
      */
     private array $search_opt_array;
-    /** @var array */
     private static array $search_options_cache = [];
 
     public function __construct(array $search_opt_array)

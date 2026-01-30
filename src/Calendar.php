@@ -46,12 +46,12 @@ class Calendar extends CommonDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory                   = true;
-    public $can_be_translated           = false;
+    public bool $dohistory                   = true;
+    public bool $can_be_translated           = false;
 
-    protected static $forward_entity_to = ['CalendarSegment'];
+    protected static array $forward_entity_to = ['CalendarSegment'];
 
-    public static $rightname = 'calendar';
+    public static string $rightname = 'calendar';
 
 
     public function getCloneRelations(): array

@@ -42,7 +42,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DisableMaintenanceModeCommand extends AbstractCommand
 {
-    protected $requires_db_up_to_date = false;
+    protected bool $requires_db_up_to_date = false;
 
     protected function configure()
     {

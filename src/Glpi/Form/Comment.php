@@ -67,10 +67,10 @@ final class Comment extends CommonDBChild implements
     public const TRANSLATION_KEY_NAME = 'comment_name';
     public const TRANSLATION_KEY_DESCRIPTION = 'comment_description';
 
-    public static $itemtype = Section::class;
-    public static $items_id = 'forms_sections_id';
+    public static string $itemtype = Section::class;
+    public static string $items_id = 'forms_sections_id';
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     private ?Section $section = null;
 

@@ -41,7 +41,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class GenerateHooksDocumentationCommand extends AbstractCommand
 {
-    protected $requires_db = false;
+    protected bool $requires_db = false;
 
     protected function configure()
     {

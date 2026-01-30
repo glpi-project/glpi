@@ -57,18 +57,14 @@ class RuleImportAsset extends Rule
     public const LINK_RESULT_CREATE            = 1;
     public const LINK_RESULT_LINK              = 2;
 
-    public $restrict_matching = Rule::AND_MATCHING;
+    public string|int|bool $restrict_matching = Rule::AND_MATCHING;
 
-    public static $rightname         = 'rule_import';
+    public static string $rightname         = 'rule_import';
 
-    /** @var int */
-    private $found_criteria = 0;
-    /** @var array */
-    private $complex_criteria = [];
-    /** @var bool */
-    private $only_these_criteria = false;
-    /** @var bool */
-    private $link_criteria_port = false;
+    private int $found_criteria = 0;
+    private array $complex_criteria = [];
+    private bool $only_these_criteria = false;
+    private bool $link_criteria_port = false;
 
     public function getTitle()
     {
@@ -463,7 +459,7 @@ class RuleImportAsset extends Rule
         }
 
         // No complex criteria
-        if (empty($this->complex_criteria) || $this->found_criteria === 0) {
+        if ($this->complex_criteria === [] || $this->found_criteria === 0) {
             return true;
         }
 

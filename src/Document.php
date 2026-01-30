@@ -67,14 +67,13 @@ class Document extends CommonDBTM implements TreeBrowseInterface
     use ParentStatus;
 
     // From CommonDBTM
-    public $dohistory                   = true;
+    public bool $dohistory                   = true;
 
-    protected static $forward_entity_to = ['Document_Item'];
+    protected static array $forward_entity_to = ['Document_Item'];
 
-    public static $rightname                   = 'document';
-    /** @var string */
-    public static $tag_prefix                  = '#';
-    protected $usenotepad               = true;
+    public static string $rightname                   = 'document';
+    public static string $tag_prefix                  = '#';
+    protected bool $usenotepad               = true;
 
 
     public static function getTypeName($nb = 0)
