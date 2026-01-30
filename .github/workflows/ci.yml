@@ -131,10 +131,10 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.5", "db-image": "mariadb:11.8"},
-                  {"php-version": "8.2", "db-image": "mariadb:10.6"},
-                  {"php-version": "8.5", "db-image": "mysql:8.4"},
-                  {"php-version": "8.5", "db-image": "mysql:8.0"}
+                  {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": "0"},
+                  {"php-version": "8.2", "db-image": "mariadb:10.6", "run-js-tests": "0"},
+                  {"php-version": "8.5", "db-image": "mysql:8.4", "run-js-tests": "0"},
+                  {"php-version": "8.5", "db-image": "mysql:8.0", "run-js-tests": "1"}
                 ]
               }
             '
@@ -142,8 +142,8 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.5", "db-image": "mariadb:11.8"},
-                  {"php-version": "8.2", "db-image": "mysql:8.4"}
+                  {"php-version": "8.5", "db-image": "mariadb:11.8", "run-js-tests": "1"},
+                  {"php-version": "8.2", "db-image": "mysql:8.4", "run-js-tests": "0"}
                 ]
               }
             '
@@ -225,7 +225,7 @@ jobs:
           .github/actions/init_initialize-imap-fixtures.sh
           docker compose exec -T app .github/actions/test_tests-imap.sh
       - name: "Javascript tests"
-        if: "${{ success() || failure() }}"
+        if: "${{ matrix.run-js-tests == '1' && (success() || failure()) }}"
         run: |
           docker compose exec -T app .github/actions/test_javascript.sh
 
