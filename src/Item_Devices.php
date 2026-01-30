@@ -93,15 +93,17 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     protected function computeFriendlyName()
     {
         $itemtype = static::$itemtype_2;
-        if (
-            !empty($this->fields[static::$itemtype_1])
-            && $item = getItemForItemtype($this->fields[static::$itemtype_1])
-            && $item->getFromDB($this->fields[static::$items_id_1])
-        ) {
+        $item = false;
+        if (!empty($this->fields[static::$itemtype_1])) {
+            $item  = getItemForItemtype($this->fields[static::$itemtype_1]);
+        }
+
+        if ($item !== false && $item->getFromDB($this->fields[static::$items_id_1])) {
             $name = sprintf(__('%1$s of item "%2$s"'), $itemtype::getTypeName(1), $item->getName());
         } else {
             $name = $itemtype::getTypeName(1);
         }
+
         return $name;
     }
 
