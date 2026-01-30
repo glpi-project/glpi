@@ -331,6 +331,11 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        $input = $this->prepareInput($input);
+        if ($input === false) {
+            return false;
+        }
+
         if (isset($input["rootdn_passwd"])) {
             if (empty($input["rootdn_passwd"])) {
                 unset($input["rootdn_passwd"]);
@@ -3901,8 +3906,47 @@ TWIG, $twig_params);
         parent::post_addItem();
     }
 
+    /**
+     * @param array $input
+     * @param string $mode
+     *
+     * @return array|false
+     */
+    public function prepareInput(array $input, $mode = 'add') {
+        $missing_fields = [];
+        if (($mode === 'add' || array_key_exists('name', $input)) && empty($input['name'])) {
+            $missing_fields[] = __('Name');
+        }
+        if (($mode === 'add' || array_key_exists('host', $input)) && empty($input['host'])) {
+            $missing_fields[] = __('Server');
+        }
+        if (($mode === 'add' || array_key_exists('port', $input)) && empty($input['port'])) {
+            $missing_fields[] = __('Port');
+        }
+        if (!empty($missing_fields)) {
+            Session::addMessageAfterRedirect(
+                htmlescape(
+                    sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        implode(', ', $missing_fields)
+                    )
+                ),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return $input;
+    }
+
     public function prepareInputForAdd($input)
     {
+        $input = $this->prepareInput($input);
+        if ($input === false) {
+            return false;
+        }
+
         if (empty($input['can_support_pagesize'] ?? '')) {
             $input['can_support_pagesize'] = 0;
         }
