@@ -4537,7 +4537,7 @@ JAVASCRIPT;
                         $row['values'][] = implode('<br>', $requesters);
 
                         $associated_elements = [];
-                        if (!empty($job->hardwaredatas)) {
+                        if ($job->hardwaredatas !== []) {
                             foreach ($job->hardwaredatas as $hardwaredatas) {
                                 if ($hardwaredatas->canView()) {
                                     $associated_elements[] = htmlescape($hardwaredatas->getTypeName()) . " - " . "<span class='b'>" . $hardwaredatas->getLink() . "</span>";
@@ -4935,7 +4935,7 @@ JAVASCRIPT;
             echo "</td>";
 
             echo "<td>";
-            if (!empty($job->hardwaredatas)) {
+            if ($job->hardwaredatas !== []) {
                 foreach ($job->hardwaredatas as $hardwaredatas) {
                     if ($hardwaredatas->canView()) {
                         echo htmlescape($hardwaredatas->getTypeName()) . " - ";

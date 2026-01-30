@@ -468,7 +468,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function showForm($ID, array $options = [])
     {
-        if (empty($this->fields) && $ID > 0) {
+        if ($this->fields === [] && $ID > 0) {
             $this->getFromDB($ID);
         }
         // If this form is used to edit a saved search from the search screen

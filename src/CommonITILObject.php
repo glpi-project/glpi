@@ -1926,7 +1926,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function checkRequiredFieldsFilled(): bool
     {
-        if (empty($this->fields) && $this->input === false) {
+        if ($this->fields === [] && $this->input === false) {
             return false;
         }
         $result = $this->handleTemplateFields($this->fields, false);

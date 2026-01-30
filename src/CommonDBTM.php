@@ -194,7 +194,7 @@ class CommonDBTM extends CommonGLPI
      * Current right that can be evaluated in "item_can" hook.
      * Variable is set prior to hook call then unset.
      */
-    public ?int $right;
+    public ?int $right = null;
 
     /** @var array<class-string, array<string,mixed>> */
     private static array $search_options_cache = [];

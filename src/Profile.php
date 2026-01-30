@@ -612,7 +612,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function cleanProfile()
     {
         if (isset($this->fields['interface']) && $this->fields["interface"] === "helpdesk") {
-            foreach ($this->fields as $key => $val) {
+            foreach (array_keys($this->fields) as $key) {
                 if (
                     !in_array($key, self::$common_fields, true)
                     && !in_array($key, self::$helpdesk_rights, true)
