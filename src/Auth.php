@@ -817,7 +817,7 @@ class Auth extends CommonGLPI
                 //if LDAP enabled too, get user's infos from LDAP
                 if ((!isset($this->user->fields['authtype']) || $this->user->fields['authtype'] === self::LDAP) && Toolbox::canUseLdap()) {
                     //User has already authenticated, at least once: its ldap server is filled
-                    if ($this->user->fields["auths_id"]> 0) {
+                    if ($this->user->fields["auths_id"] > 0) {
                         $authldap = new AuthLDAP();
                         //If ldap server is enabled
                         if (
