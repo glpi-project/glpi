@@ -63,9 +63,9 @@ trait InventoryNetworkPort
     protected mysqli_stmt $idevice_stmt;
     /** @var object[]  */
     protected array $networks = [];
-    /** @var class-string<CommonDBTM> */
-    protected ?string $itemtype;
-    private ?int $items_id;
+    /** @var ?class-string<CommonDBTM> */
+    protected ?string $port_itemtype;
+    private ?int $port_items_id;
 
     public function handle()
     {
@@ -119,8 +119,8 @@ trait InventoryNetworkPort
             return;
         }
 
-        $this->itemtype = $itemtype ?? $this->item->getType();
-        $this->items_id = $items_id ?? $this->item->fields['id'];
+        $this->port_itemtype = $itemtype ?? $this->item->getType();
+        $this->port_items_id = $items_id ?? $this->item->fields['id'];
 
         if (!$this->isMainPartial()) {
             $this->cleanUnmanageds();
@@ -135,8 +135,8 @@ trait InventoryNetworkPort
             $this->handleAggregations();
         }
 
-        $this->itemtype = null;
-        $this->items_id = null;
+        $this->port_itemtype = null;
+        $this->port_items_id = null;
     }
 
     /**
@@ -178,8 +178,8 @@ trait InventoryNetworkPort
                     $unmanageds_id = $row->items_id;
                     $input = [
                         'logical_number'  => $port->logical_number,
-                        'itemtype'        => $this->itemtype,
-                        'items_id'        => $this->items_id,
+                        'itemtype'        => $this->port_itemtype,
+                        'items_id'        => $this->port_items_id,
                         'is_dynamic'      => 1,
                         'name'            => $port->name,
                     ];
@@ -283,8 +283,8 @@ trait InventoryNetworkPort
             $input,
             [
                 'entities_id'  => $this->entities_id,
-                'items_id'     => $this->items_id,
-                'itemtype'     => $this->itemtype,
+                'items_id'     => $this->port_items_id,
+                'itemtype'     => $this->port_itemtype,
                 'is_dynamic'   => 1,
             ]
         );
@@ -366,8 +366,8 @@ trait InventoryNetworkPort
             'SELECT' => array_merge(['id', 'name', 'mac', 'instantiation_type'], $np_dyn_props),
             'FROM'   => 'glpi_networkports',
             'WHERE'  => [
-                'items_id'     => $this->items_id,
-                'itemtype'     => $this->itemtype,
+                'items_id'     => $this->port_items_id,
+                'itemtype'     => $this->port_itemtype,
             ],
         ]);
         foreach ($iterator as $row) {
@@ -617,8 +617,8 @@ trait InventoryNetworkPort
             $stmt = $this->idevice_stmt;
             $stmt->bind_param(
                 'sss',
-                $this->itemtype,
-                $this->items_id,
+                $this->port_itemtype,
+                $this->port_items_id,
                 $data->mac
             );
             $DB->executeStatement($stmt);
@@ -689,8 +689,8 @@ trait InventoryNetworkPort
                 //remove all port management ports
                 $networkport = new NetworkPort();
                 $networkport->deleteByCriteria([
-                    "itemtype"           => $this->itemtype,
-                    "items_id"           => $this->items_id,
+                    "itemtype"           => $this->port_itemtype,
+                    "items_id"           => $this->port_items_id,
                     "instantiation_type" => NetworkPortAggregate::getType(),
                     "name"               => "Management",
                 ], true);

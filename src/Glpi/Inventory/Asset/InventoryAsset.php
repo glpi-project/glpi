@@ -59,6 +59,7 @@ abstract class InventoryAsset
     /** @var array<int,object> */
     protected array $data = [];
     protected CommonDBTM $item;
+    /** @var ?class-string<CommonDBTM> */
     protected ?string $itemtype = null;
     /** @var array<string,?object> */
     protected array $extra_data = [];
