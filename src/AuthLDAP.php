@@ -3921,9 +3921,6 @@ TWIG, $twig_params);
         if (($mode === 'add' || array_key_exists('host', $input)) && empty(trim($input['host']))) {
             $missing_fields[] = __('Server');
         }
-        if (($mode === 'add' || array_key_exists('port', $input)) && empty(trim($input['port']))) {
-            $input['port'] = 389;
-        }
         if (!empty($missing_fields)) {
             Session::addMessageAfterRedirect(
                 htmlescape(
@@ -3936,6 +3933,10 @@ TWIG, $twig_params);
                 ERROR
             );
             return false;
+        }
+
+        if (($mode === 'add' || array_key_exists('port', $input)) && ((int) $input["port"] == 0)) {
+            $input['port'] = 389;
         }
 
         return $input;
