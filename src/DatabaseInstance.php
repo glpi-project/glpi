@@ -544,6 +544,11 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
         ]);
     }
 
+    /**
+     * @param MassiveAction $ma
+     * @param CommonDBTM    $item
+     * @param int[]         $ids
+     */
     public static function processMassiveActionsForOneItemtype(MassiveAction $ma, CommonDBTM $item, array $ids)
     {
         switch ($ma->getAction()) {
