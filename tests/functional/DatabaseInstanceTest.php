@@ -228,9 +228,9 @@ class DatabaseInstanceTest extends DbTestCase
         $this->assertIsInt($db_instance_id);
 
         // Verify initially not linked
-        $this->boolean($db_instance->getFromDB($db_instance_id))->isTrue();
-        $this->integer($db_instance->fields['items_id'])->isIdenticalTo(0);
-        $this->string($db_instance->fields['itemtype'])->isEmpty();
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assetEquals($db_instance->fields['items_id'], 0);
+        $this->assertEmpty($db_instance->fields['itemtype']);
 
         // Perform the link (update)
         // This simulates the action performed by the form added in showInstances
@@ -239,12 +239,12 @@ class DatabaseInstanceTest extends DbTestCase
             'items_id' => $computer_id,
             'itemtype' => Computer::class,
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
 
         // Verify they are linked
-        $this->boolean($db_instance->getFromDB($db_instance_id))->isTrue();
-        $this->integer($db_instance->fields['items_id'])->isIdenticalTo($computer_id);
-        $this->string($db_instance->fields['itemtype'])->isIdenticalTo(Computer::class);
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], $computer_id);
+        $this->assertInstanceOf(Computer::class, $db_instance->fields['itemtype']);
     }
 
     public function testDissociateDatabaseInstanceFromComputer()
@@ -271,9 +271,9 @@ class DatabaseInstanceTest extends DbTestCase
         $this->assertIsInt($db_instance_id);
 
         // Verify initially linked
-        $this->boolean($db_instance->getFromDB($db_instance_id))->isTrue();
-        $this->integer($db_instance->fields['items_id'])->isIdenticalTo($computer_id);
-        $this->string($db_instance->fields['itemtype'])->isIdenticalTo(Computer::class);
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], $computer_id);
+        $this->assertInstanceOf(Computer::class, $db_instance->fields['itemtype']);
 
         // Perform the dissociation (update to 0/empty)
         // This mimics the logic inside processMassiveActionsForOneItemtype 'dissociate' case
@@ -282,11 +282,11 @@ class DatabaseInstanceTest extends DbTestCase
             'items_id' => 0,
             'itemtype' => '',
         ]);
-        $this->boolean($success)->isTrue();
+        $this->assertTrue($success);
 
         // Verify they are not linked
-        $this->boolean($db_instance->getFromDB($db_instance_id))->isTrue();
-        $this->integer($db_instance->fields['items_id'])->isIdenticalTo(0);
-        $this->string($db_instance->fields['itemtype'])->isEmpty();
+        $this->assertTrue($db_instance->getFromDB($db_instance_id));
+        $this->assertEquals($db_instance->fields['items_id'], 0);
+        $this->assertEmpty($db_instance->fields['itemtype']);
     }
 }
