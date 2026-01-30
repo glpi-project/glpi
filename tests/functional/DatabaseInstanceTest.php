@@ -238,7 +238,7 @@ class DatabaseInstanceTest extends DbTestCase
         $success = $db_instance->update([
             'id' => $db_instance_id,
             'items_id' => $computer_id,
-            'itemtype' => Computer::class
+            'itemtype' => \Computer::class,
         ]);
         $this->boolean($success)->isTrue();
 
@@ -267,7 +267,7 @@ class DatabaseInstanceTest extends DbTestCase
             'is_active' => 1,
             'entities_id' => 0,
             'items_id' => $computer_id,
-            'itemtype' => Computer::class
+            'itemtype' => \Computer::class,
         ]);
         $this->assertIsInt($db_instance_id);
 
@@ -281,7 +281,7 @@ class DatabaseInstanceTest extends DbTestCase
         $success = $db_instance->update([
             'id' => $db_instance_id,
             'items_id' => 0,
-            'itemtype' => ''
+            'itemtype' => '',
         ]);
         $this->boolean($success)->isTrue();
 
