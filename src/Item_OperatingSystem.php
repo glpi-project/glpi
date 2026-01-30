@@ -711,7 +711,7 @@ class Item_OperatingSystem extends CommonDBRelation
         foreach ($fields_to_check as $field) {
             if (
                 isset($input[$field])
-                && $input[$field] !== ''
+                && trim($input[$field]) !== ''
                 && $input[$field] !== 0
                 && $input[$field] !== '0'
             ) {
