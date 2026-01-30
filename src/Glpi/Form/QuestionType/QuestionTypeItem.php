@@ -408,7 +408,7 @@ class QuestionTypeItem extends AbstractQuestionType implements
         }
 
         // If the object is a user, use getFriendlyName()
-        if ($item instanceof \User) {
+        if ($item instanceof User) {
             return $item->getFriendlyName();
         }
 
