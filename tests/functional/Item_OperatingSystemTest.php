@@ -357,16 +357,15 @@ class Item_OperatingSystemTest extends DbTestCase
     {
         $this->login();
         $computer = getItemByTypeName('Computer', '_test_pc01');
+        $objects  = $this->createDdObjects();
+        $ios      = new Item_OperatingSystem();
 
-        $objects = $this->createDdObjects();
-        $ios = new Item_OperatingSystem();
-
-        // First add a valid OS
+        // First add a valid OS record
         $input = [
-            'itemtype'    => $computer->getType(),
-            'items_id'    => $computer->getID(),
-            'entities_id' => $_SESSION['glpiactive_entity'],
-            'operatingsystems_id' => $objects['']->getID(),
+            'itemtype'                        => $computer->getType(),
+            'items_id'                        => $computer->getID(),
+            'entities_id'                     => $_SESSION['glpiactive_entity'],
+            'operatingsystems_id'             => $objects['']->getID(),
             'operatingsystemarchitectures_id' => $objects['Architecture']->getID(),
         ];
 
@@ -384,9 +383,9 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Attempt to update with empty values
         $result = $ios->update([
-            'id' => $id,
-            'operatingsystems_id' => '',
-            'operatingsystemarchitectures_id' => '',
+            'id'             => $id,
+            'operatingsystems_id' => 0,
+            'operatingsystemarchitectures_id' => 0,
         ]);
 
         // Update must be rejected
@@ -397,23 +396,19 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Consume the session message so tearDown doesn't fail
         $this->hasSessionMessages(ERROR, [
-            __s("Cannot update operating system with empty values."),
+            "Cannot update operating system with empty values.",
         ]);
 
-        // Record must still exist
+        // Verify data integrity - record must still exist and be unchanged
         $this->assertTrue(
             $ios->getFromDB($id),
-            "OS record should still exist",
+            "OS record should still exist."
         );
-
-        // Data must be unchanged
+        
+        // Asserting against real DB columns
         $this->assertSame(
-            $original['name'],
-            $ios->fields['name'],
-        );
-        $this->assertSame(
-            $original['version'],
-            $ios->fields['version'],
+            $original['operatingsystems_id'],
+            $ios->fields['operatingsystems_id']
         );
     }
 }
