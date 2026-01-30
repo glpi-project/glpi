@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Exception\Http\BadRequestHttpException;
+use Glpi\Exception\ItemLinkException;
 
 Session::checkCentralAccess();
 
@@ -52,7 +53,12 @@ if (isset($_POST['update'])) {
     }
     Html::redirect($url);
 } elseif (isset($_POST['add'])) {
-    $iapp->check(-1, CREATE, $_POST);
+    try {
+        $iapp->check(-1, CREATE, $_POST);
+    } catch (ItemLinkException $e) {
+        Html::back();
+    }
+
     $iapp->add($_POST);
     Html::back();
 } elseif (isset($_POST['purge'])) {
