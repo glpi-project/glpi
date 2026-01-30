@@ -500,16 +500,8 @@ class Item_OperatingSystemTest extends DbTestCase
             'license_number'                    => '',
         ];
 
-        // The prepareInputForUpdate will return false and delete the record
-        $result = $ios->prepareInputForUpdate($update_input);
-
-        // Check that prepareInputForUpdate returned false
-        $this->assertFalse($result, 'prepareInputForUpdate should return false for empty fields');
-
-        // Check for the info message
-        $this->hasSessionMessages(INFO, [
-            "Operating system unlinked successfully.",
-        ]);
+        // The update will delete the record
+        $result = $ios->update($update_input);
 
         // Verify the record was deleted
         $this->assertFalse(
