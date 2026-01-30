@@ -336,7 +336,7 @@ $CFG_GLPI['contract_types']               = [
     Peripheral::class, Phone::class, Printer::class, Project::class, Line::class,
     Software::class, SoftwareLicense::class, Certificate::class,
     DCRoom::class, Rack::class, Enclosure::class, Cluster::class, PDU::class, Appliance::class, Domain::class,
-    DatabaseInstance::class,
+    DatabaseInstance::class, PassiveDCEquipment::class
 ];
 
 $CFG_GLPI['device_types']                 = [DeviceMotherboard::class, DeviceFirmware::class, DeviceProcessor::class,
