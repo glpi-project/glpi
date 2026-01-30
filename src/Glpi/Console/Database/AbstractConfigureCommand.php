@@ -266,12 +266,12 @@ abstract class AbstractConfigureCommand extends AbstractCommand
             // Instanciate DB to be able to compute boolean properties flags.
             $db = new class ($db_hostport, $db_user, $db_pass, $db_name) extends DBmysql {
                 /**
-                 * @param string $dbhost
+                 * @param string|array $dbhost
                  * @param string $dbuser
                  * @param string $dbpassword
                  * @param string $dbdefault
                  */
-                public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
+                public function __construct(array|string $dbhost, string $dbuser, string $dbpassword, string $dbdefault)
                 {
                     $this->dbhost     = $dbhost;
                     $this->dbuser     = $dbuser;
@@ -344,15 +344,15 @@ abstract class AbstractConfigureCommand extends AbstractCommand
              * @param bool $allow_signed_keys
              */
             public function __construct(
-                $dbhost,
-                $dbuser,
-                $dbpassword,
-                $dbdefault,
-                $use_timezones,
-                $log_deprecation_warnings,
-                $use_utf8mb4,
-                $allow_datetime,
-                $allow_signed_keys
+                string|array $dbhost,
+                string $dbuser,
+                string $dbpassword,
+                string $dbdefault,
+                bool $use_timezones,
+                bool $log_deprecation_warnings,
+                bool $use_utf8mb4,
+                bool $allow_datetime,
+                bool $allow_signed_keys
             ) {
                 $this->dbhost     = $dbhost;
                 $this->dbuser     = $dbuser;
