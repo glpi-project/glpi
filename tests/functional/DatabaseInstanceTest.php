@@ -229,7 +229,7 @@ class DatabaseInstanceTest extends DbTestCase
 
         // Verify initially not linked
         $this->assertTrue($db_instance->getFromDB($db_instance_id));
-        $this->assetEquals($db_instance->fields['items_id'], 0);
+        $this->assertEquals($db_instance->fields['items_id'], 0);
         $this->assertEmpty($db_instance->fields['itemtype']);
 
         // Perform the link (update)
