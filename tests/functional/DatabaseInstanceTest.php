@@ -34,14 +34,13 @@
 
 namespace tests\units;
 
-use DatabaseInstance;
 use Computer;
-use Session;
+use DatabaseInstance;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Tests\DbTestCase;
-use Glpi\Tests\GLPITestCase;
+use Session;
 use Toolbox;
 
 class DatabaseInstanceTest extends DbTestCase
@@ -121,7 +120,7 @@ class DatabaseInstanceTest extends DbTestCase
     public function testGetInventoryAgent(): void
     {
         $computer = $this->createItem(
-            \Computer::class,
+            Computer::class,
             [
                 'name'        => 'test computer',
                 'entities_id' => 0,
@@ -131,7 +130,7 @@ class DatabaseInstanceTest extends DbTestCase
             DatabaseInstance::class,
             [
                 'name'     => 'test database',
-                'itemtype' => \Computer::class,
+                'itemtype' => Computer::class,
                 'items_id' => $computer->fields['id'],
             ]
         );
@@ -168,7 +167,7 @@ class DatabaseInstanceTest extends DbTestCase
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
                 'agenttypes_id' => $agenttype_id,
-                'itemtype'     => \Computer::class,
+                'itemtype'     => Computer::class,
                 'items_id'     => $computer->fields['id'],
                 'last_contact' => date('Y-m-d H:i:s', strtotime('last hour')),
             ]
@@ -179,7 +178,7 @@ class DatabaseInstanceTest extends DbTestCase
             [
                 'deviceid'     => sprintf('device_%08x', rand()),
                 'agenttypes_id' => $agenttype_id,
-                'itemtype'     => \Computer::class,
+                'itemtype'     => Computer::class,
                 'items_id'     => $computer->fields['id'],
                 'last_contact' => date('Y-m-d H:i:s', strtotime('yesterday')),
             ]
@@ -207,12 +206,12 @@ class DatabaseInstanceTest extends DbTestCase
         $this->assertEquals($computer_agent->fields, $db_agent->fields);
     }
 
-    public function testLinkDatabaseInstanceToComputer(): void
+    public function testLinkDatabaseInstanceToComputer()
     {
         $this->login();
 
         // Create a Computer
-        $computer = new \Computer();
+        $computer = new Computer();
         $computer_id = $computer->add([
             'name' => 'Test Computer for DB Link',
             'entities_id' => 0,
@@ -220,7 +219,7 @@ class DatabaseInstanceTest extends DbTestCase
         $this->assertIsInt($computer_id);
 
         // Create a DatabaseInstance (unlinked)
-        $db_instance = new \DatabaseInstance();
+        $db_instance = new DatabaseInstance();
         $db_instance_id = $db_instance->add([
             'name' => 'Test DB Instance Unlinked',
             'is_active' => 1,
@@ -238,7 +237,7 @@ class DatabaseInstanceTest extends DbTestCase
         $success = $db_instance->update([
             'id' => $db_instance_id,
             'items_id' => $computer_id,
-            'itemtype' => \Computer::class,
+            'itemtype' => Computer::class,
         ]);
         $this->boolean($success)->isTrue();
 
@@ -248,12 +247,12 @@ class DatabaseInstanceTest extends DbTestCase
         $this->string($db_instance->fields['itemtype'])->isIdenticalTo(Computer::class);
     }
 
-    public function testDissociateDatabaseInstanceFromComputer(): void
+    public function testDissociateDatabaseInstanceFromComputer()
     {
         $this->login();
 
         // Create a Computer
-        $computer = new \Computer();
+        $computer = new Computer();
         $computer_id = $computer->add([
             'name' => 'Test Computer for DB Dissociate',
             'entities_id' => 0,
@@ -261,13 +260,13 @@ class DatabaseInstanceTest extends DbTestCase
         $this->assertIsInt($computer_id);
 
         // Create a DatabaseInstance linked to the computer
-        $db_instance = new \DatabaseInstance();
+        $db_instance = new DatabaseInstance();
         $db_instance_id = $db_instance->add([
             'name' => 'Test DB Instance Linked',
             'is_active' => 1,
             'entities_id' => 0,
             'items_id' => $computer_id,
-            'itemtype' => \Computer::class,
+            'itemtype' => Computer::class,
         ]);
         $this->assertIsInt($db_instance_id);
 
