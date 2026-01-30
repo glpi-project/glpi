@@ -338,7 +338,7 @@ class Item_OperatingSystemTest extends DbTestCase
 
         $this->assertFalse(
             $ios->add($input),
-            "Should not be able to add an OS with all empty fields",
+            "Should not be able to add an OS with all empty fields.",
         );
 
         // Check for the error message
@@ -349,7 +349,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
-            "Count should remain 0 after failed add",
+            "Count should remain 0 after failed add.",
         );
     }
 
@@ -384,15 +384,15 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Attempt to update with empty values
         $result = $ios->update([
-            'id'      => $id,
-            'name'    => '',
-            'version' => '',
+            'id' => $id,
+            'operatingsystems_id' => '',
+            'operatingsystemarchitectures_id' => '',
         ]);
 
         // Update must be rejected
         $this->assertFalse(
             $result,
-            "Updating OS to empty values should be rejected",
+            "Updating OS to empty values should be rejected.",
         );
 
         // Consume the session message so tearDown doesn't fail
