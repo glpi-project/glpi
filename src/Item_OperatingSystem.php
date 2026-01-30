@@ -680,11 +680,13 @@ class Item_OperatingSystem extends CommonDBRelation
     {
         // Check if all OS fields are empty
         if ($this->areAllFieldsEmpty($input)) {
+            // Get current record data
+            $this->getFromDB($input['id']);
             // Delete the record instead of updating to empty
             $this->delete(['id' => $input['id']], true);
             // Redirect back to the item form
-            $item = getItemForItemtype($input['itemtype']);
-            Html::redirect($item->getFormURLWithID($input['items_id']));
+            $item = getItemForItemtype($this->fields['itemtype']);
+            Html::redirect($item->getFormURLWithID($this->fields['items_id']));
             return false;
         }
 

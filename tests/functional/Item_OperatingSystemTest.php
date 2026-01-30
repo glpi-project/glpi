@@ -314,4 +314,198 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->setEntity('_test_child_2', true);
         $this->assertTrue($ios->can($ios->getID(), READ));
     }
+
+    public function testPreventEmptyOSAdd()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $ios = new Item_OperatingSystem();
+
+        // Test adding an OS with all empty fields - should fail
+        $input = [
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => 0,
+            'operatingsystemarchitectures_id'   => 0,
+            'operatingsystemversions_id'        => 0,
+            'operatingsystemkernelversions_id'  => 0,
+            'operatingsystemeditions_id'        => 0,
+            'operatingsystemservicepacks_id'    => 0,
+            'licenseid'                         => '',
+            'license_number'                    => '',
+        ];
+
+        $this->assertFalse(
+            $ios->add($input),
+            'Should not be able to add an OS with all empty fields'
+        );
+
+        $this->assertSame(
+            0,
+            Item_OperatingSystem::countForItem($computer),
+            'Count should remain 0 after failed add'
+        );
+    }
+
+    public function testPreventEmptyOSAddWithOnlyZeroValues()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $ios = new Item_OperatingSystem();
+
+        // Test adding an OS with only zero values - should fail
+        $input = [
+            'itemtype'    => $computer->getType(),
+            'items_id'    => $computer->getID(),
+        ];
+
+        $this->assertFalse(
+            $ios->add($input),
+            'Should not be able to add an OS with no fields set'
+        );
+
+        $this->assertSame(
+            0,
+            Item_OperatingSystem::countForItem($computer),
+            'Count should remain 0 after failed add'
+        );
+    }
+
+    public function testAllowOSAddWithAtLeastOneField()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $objects = $this->createDdObjects();
+        $ios = new Item_OperatingSystem();
+
+        // Test adding an OS with at least one field set - should succeed
+        $input = [
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystemarchitectures_id'   => 0,
+            'operatingsystemversions_id'        => 0,
+            'operatingsystemkernelversions_id'  => 0,
+            'operatingsystemeditions_id'        => 0,
+            'operatingsystemservicepacks_id'    => 0,
+            'licenseid'                         => '',
+            'license_number'                    => '',
+        ];
+
+        $this->assertGreaterThan(
+            0,
+            $ios->add($input),
+            'Should be able to add an OS with at least one field set'
+        );
+
+        $this->assertSame(
+            1,
+            Item_OperatingSystem::countForItem($computer),
+            'Count should be 1 after successful add'
+        );
+
+        // Clean up
+        $ios->delete(['id' => $ios->getID()], true);
+    }
+
+    public function testAllowOSAddWithLicenseNumber()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $ios = new Item_OperatingSystem();
+
+        // Test adding an OS with only license_number set - should succeed
+        $input = [
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => 0,
+            'license_number'                    => 'ABC123',
+        ];
+
+        $this->assertGreaterThan(
+            0,
+            $ios->add($input),
+            'Should be able to add an OS with only license_number set'
+        );
+
+        $this->assertSame(
+            1,
+            Item_OperatingSystem::countForItem($computer),
+            'Count should be 1 after successful add'
+        );
+
+        // Clean up
+        $ios->delete(['id' => $ios->getID()], true);
+    }
+
+    public function testUpdateOSToEmptyDeletesRecord()
+    {
+        $this->login();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+
+        $objects = $this->createDdObjects();
+        $ios = new Item_OperatingSystem();
+
+        // First add a valid OS
+        $input = [
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
+        ];
+
+        $id = $ios->add($input);
+        $this->assertGreaterThan(0, $id);
+        $this->assertSame(
+            1,
+            Item_OperatingSystem::countForItem($computer),
+            'Count should be 1 after add'
+        );
+
+        // Now update to all empty fields - this should delete the record
+        // We need to check that the record is deleted
+        $ios_id = $ios->getID();
+
+        // Store original state
+        $this->assertTrue($ios->getFromDB($ios_id));
+
+        // Update to empty (this will call prepareInputForUpdate which deletes the record)
+        // Since prepareInputForUpdate calls delete() and redirects, we can't test it directly via update()
+        // Instead we'll test the prepareInputForUpdate method behavior
+        $update_input = [
+            'id'                                => $ios_id,
+            'itemtype'                          => $computer->getType(),
+            'items_id'                          => $computer->getID(),
+            'operatingsystems_id'               => 0,
+            'operatingsystemarchitectures_id'   => 0,
+            'operatingsystemversions_id'        => 0,
+            'operatingsystemkernelversions_id'  => 0,
+            'operatingsystemeditions_id'        => 0,
+            'operatingsystemservicepacks_id'    => 0,
+            'licenseid'                         => '',
+            'license_number'                    => '',
+        ];
+
+        // The prepareInputForUpdate will return false and delete the record
+        $result = $ios->prepareInputForUpdate($update_input);
+
+        // Check that prepareInputForUpdate returned false
+        $this->assertFalse($result, 'prepareInputForUpdate should return false for empty fields');
+
+        // Verify the record was deleted
+        $this->assertFalse(
+            $ios->getFromDB($ios_id),
+            'Record should be deleted after updating to all empty fields'
+        );
+
+        $this->assertSame(
+            0,
+            Item_OperatingSystem::countForItem($computer),
+            'Count should be 0 after deletion'
+        );
+    }
 }
