@@ -37,8 +37,10 @@ namespace tests\units\Glpi\Inventory;
 use Glpi\Inventory\Conf;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Psr\Log\LogLevel;
 
+#[Group('single-thread')]
 class ConfTest extends GLPITestCase
 {
     public function testKnownInventoryExtensions()

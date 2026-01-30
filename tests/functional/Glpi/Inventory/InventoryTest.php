@@ -47,10 +47,12 @@ use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use RuleImportAsset;
 use UserEmail;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
+#[Group('single-thread')]
 class InventoryTest extends InventoryTestCase
 {
     private function checkComputer1($computers_id)

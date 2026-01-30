@@ -39,6 +39,7 @@ use Glpi\Event;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 class AdministrationControllerTest extends HLAPITestCase
 {
@@ -304,6 +305,7 @@ class AdministrationControllerTest extends HLAPITestCase
         ]);
     }
 
+    #[Group('single-thread')]
     public function testGetMyPicture()
     {
         $this->login();
@@ -336,6 +338,7 @@ class AdministrationControllerTest extends HLAPITestCase
         });
     }
 
+    #[Group('single-thread')]
     public function testGetUserPictureByID()
     {
         $this->login();
@@ -361,6 +364,7 @@ class AdministrationControllerTest extends HLAPITestCase
         });
     }
 
+    #[Group('single-thread')]
     public function testGetUserPictureByUsername()
     {
         $this->login();

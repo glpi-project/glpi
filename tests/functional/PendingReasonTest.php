@@ -49,6 +49,7 @@ use NotificationTemplateTranslation;
 use PendingReason;
 use PendingReason_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use Problem;
 use ProblemTask;
 use SolutionTemplate;
@@ -1539,6 +1540,7 @@ class PendingReasonTest extends DbTestCase
         $this->assertFalse($pending_item, 'PendingReason_Item should be deleted when status is changed by a rule');
     }
 
+    #[Group('single-thread')]
     public function testPendingReasonWarningMessage(): void
     {
         $this->login();

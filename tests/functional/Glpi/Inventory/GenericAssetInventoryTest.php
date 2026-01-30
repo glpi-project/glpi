@@ -43,7 +43,9 @@ use Glpi\Asset\Capacity\HasVolumesCapacity;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Request;
 use Glpi\Tests\InventoryTestCase;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group('single-thread')]
 class GenericAssetInventoryTest extends InventoryTestCase
 {
     /**

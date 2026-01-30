@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-vendor/bin/phpunit $@
+vendor/bin/phpunit --group "single-thread" $@
