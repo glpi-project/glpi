@@ -189,24 +189,6 @@ final class AssetController extends AbstractController
             throw new RuntimeException("Itemtype $itemtype is not an AssignableItem");
         };
 
-        $schemas['PrinterModel'] = [
-            'x-version-introduced' => '2.0',
-            'x-itemtype' => PrinterModel::class,
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'name' => ['type' => Doc\Schema::TYPE_STRING],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'product_number' => ['type' => Doc\Schema::TYPE_STRING],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-            ],
-        ];
-
         $schemas['SoftwareCategory'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => SoftwareCategory::class,
@@ -248,7 +230,6 @@ final class AssetController extends AbstractController
             ],
         ];
 
-        //TODO the OS dropdowns will be defined in the DropdownController after the related PR is merged
         $schemas['OperatingSystemArchitecture'] = [
             'x-version-introduced' => '2.2',
             'x-itemtype' => OperatingSystemArchitecture::class,
@@ -667,8 +648,8 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: ComputerType::class),
-                'model' => self::getDropdownTypeSchema(class: ComputerModel::class),
+                'type' => self::getDropdownTypeSchema(class: ComputerType::class, full_schema: 'ComputerType'),
+                'model' => self::getDropdownTypeSchema(class: ComputerModel::class, full_schema: 'ComputerModel'),
                 'group' => $fn_get_group_property(Computer::class),
                 'group_tech' => $fn_get_group_tech_property(Computer::class),
                 'uuid' => [
@@ -710,8 +691,8 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: MonitorType::class),
-                'model' => self::getDropdownTypeSchema(class: MonitorModel::class),
+                'type' => self::getDropdownTypeSchema(class: MonitorType::class, full_schema: 'MonitorType'),
+                'model' => self::getDropdownTypeSchema(class: MonitorModel::class, full_schema: 'MonitorModel'),
                 'group' => $fn_get_group_property(Monitor::class),
                 'group_tech' => $fn_get_group_tech_property(Monitor::class),
                 'uuid' => [
@@ -752,8 +733,8 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: NetworkEquipmentType::class),
-                'model' => self::getDropdownTypeSchema(class: NetworkEquipmentModel::class),
+                'type' => self::getDropdownTypeSchema(class: NetworkEquipmentType::class, full_schema: 'NetworkEquipmentType'),
+                'model' => self::getDropdownTypeSchema(class: NetworkEquipmentModel::class, full_schema: 'NetworkEquipmentModel'),
                 'group' => $fn_get_group_property(NetworkEquipment::class),
                 'group_tech' => $fn_get_group_tech_property(NetworkEquipment::class),
                 'uuid' => [
@@ -795,8 +776,8 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: PeripheralType::class),
-                'model' => self::getDropdownTypeSchema(class: PeripheralModel::class),
+                'type' => self::getDropdownTypeSchema(class: PeripheralType::class, full_schema: 'PeripheralType'),
+                'model' => self::getDropdownTypeSchema(class: PeripheralModel::class, full_schema: 'PeripheralModel'),
                 'group' => $fn_get_group_property(Peripheral::class),
                 'group_tech' => $fn_get_group_tech_property(Peripheral::class),
                 'uuid' => [
@@ -837,8 +818,8 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: PhoneType::class),
-                'model' => self::getDropdownTypeSchema(class: PhoneModel::class),
+                'type' => self::getDropdownTypeSchema(class: PhoneType::class, full_schema: 'PhoneType'),
+                'model' => self::getDropdownTypeSchema(class: PhoneModel::class, full_schema: 'PhoneModel'),
                 'group' => $fn_get_group_property(Phone::class),
                 'group_tech' => $fn_get_group_tech_property(Phone::class),
                 'uuid' => [
@@ -879,8 +860,8 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: PrinterType::class),
-                'model' => self::getDropdownTypeSchema(class: PrinterModel::class),
+                'type' => self::getDropdownTypeSchema(class: PrinterType::class, full_schema: 'PrinterType'),
+                'model' => self::getDropdownTypeSchema(class: PrinterModel::class, full_schema: 'PrinterModel'),
                 'group' => $fn_get_group_property(Printer::class),
                 'group_tech' => $fn_get_group_tech_property(Printer::class),
                 'uuid' => [
@@ -922,7 +903,7 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class),
+                'type' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class, full_schema: 'LicenseType'),
                 'group' => $fn_get_group_property(SoftwareLicense::class),
                 'group_tech' => $fn_get_group_tech_property(SoftwareLicense::class),
                 'completename' => [
@@ -967,7 +948,7 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: CertificateType::class),
+                'type' => self::getDropdownTypeSchema(class: CertificateType::class, full_schema: 'CertificateType'),
                 'group' => $fn_get_group_property(Certificate::class),
                 'group_tech' => $fn_get_group_tech_property(Certificate::class),
             ],
@@ -1037,7 +1018,7 @@ final class AssetController extends AbstractController
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'location' => $location_property,
-                'type' => self::getDropdownTypeSchema(class: ApplianceType::class),
+                'type' => self::getDropdownTypeSchema(class: ApplianceType::class, full_schema: 'ApplianceType'),
                 'group' => $fn_get_group_property(Appliance::class),
                 'group_tech' => $fn_get_group_tech_property(Appliance::class),
             ],
@@ -1594,7 +1575,7 @@ final class AssetController extends AbstractController
                 'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
                 'serial' => ['type' => Doc\Schema::TYPE_STRING],
                 'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
-                'model' => self::getDropdownTypeSchema(EnclosureModel::class),
+                'model' => self::getDropdownTypeSchema(EnclosureModel::class, full_schema: 'EnclosureModel'),
                 'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
                 'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
                 'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),

@@ -6,6 +6,7 @@ The present file will list all changes made to the project; according to the
 ## [11.0.6] unreleased
 
 ### Added
+- New schemas/endpoints for over 25 types and models in High-Level API v2.3.
 
 ### Changed
 

@@ -144,6 +144,42 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         return $differences;
     }
 
+    /**
+     * @param array $snapshot
+     * @param array $schema
+     * @return string[] Array of differences (example: Key 'foo.bar.baz' missing in snapshot, value for key 'foo.bar.qux' differs)
+     */
+    private function getArrayDiffRecursive(array $snapshot, array $schema): array
+    {
+        $differences = [];
+        $all_keys = array_unique(array_merge(array_keys($snapshot), array_keys($schema)));
+
+        foreach ($all_keys as $key) {
+            $in_snapshot = array_key_exists($key, $snapshot);
+            $in_schema = array_key_exists($key, $schema);
+
+            if (!$in_snapshot) {
+                $differences[] = "Key '$key' missing in snapshot";
+            } elseif (!$in_schema) {
+                $differences[] = "Key '$key' missing in schema";
+            } else {
+                $snapshot_value = $snapshot[$key];
+                $schema_value = $schema[$key];
+
+                if (is_array($snapshot_value) && is_array($schema_value)) {
+                    $nested_diffs = $this->getArrayDiffRecursive($snapshot_value, $schema_value);
+                    foreach ($nested_diffs as $diff) {
+                        $differences[] = "$key.$diff";
+                    }
+                } elseif ($snapshot_value !== $schema_value) {
+                    $differences[] = "Value for key '$key' differs between snapshot and schema";
+                }
+            }
+        }
+
+        return $differences;
+    }
+
     private function diffSchemaProperties($snapshot_props, $schema_props, $parent_path = '')
     {
         $differences = [];
@@ -167,7 +203,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         foreach ($common_props as $prop_name) {
             $snapshot_prop = $snapshot_props[$prop_name];
             $schema_prop = $schema_props[$prop_name];
-            unset($snapshot_prop['description'], $schema_prop['description']);
+            unset($snapshot_prop['description'], $schema_prop['description'], $snapshot_prop['x-full-schema'], $schema_prop['x-full-schema']);
 
             if (in_array($parent_path . $prop_name, ['Dashboard.context', 'DashboardCard.widget', 'UserPreferences.timezone'], true)) {
                 // May differ between production and test env. ignore.
@@ -190,7 +226,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                 );
                 $differences = array_merge($differences, $nested_diffs);
             } elseif ($snapshot_prop != $schema_prop) {
-                $differences[] = "Property '$parent_path$prop_name' differs between snapshot and schema";
+                $differences[] = "Property '$parent_path$prop_name' differs between snapshot and schema\n" . implode("\n\t", $this->getArrayDiffRecursive($snapshot_prop, $schema_prop));
             }
         }
 
@@ -232,6 +268,8 @@ class OpenAPIGeneratorTest extends HLAPITestCase
                 $differences = array_merge($differences, $prop_diffs);
             }
             unset($snapshot_schema['properties'], $schema_schema['properties']);
+            sort($snapshot_schema);
+            sort($schema_schema);
             if ($snapshot_schema !== $schema_schema) {
                 $differences[] = "Component schema '$schema_name' differs between snapshot and schema";
             }
