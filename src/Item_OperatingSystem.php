@@ -704,7 +704,7 @@ class Item_OperatingSystem extends CommonDBRelation
     /**
      * Check if all relevant OS fields are empty
      *
-     * @param array $input Input data
+     * @param array<string, mixed> $input Input data
      *
      * @return bool True if all fields are empty
      */
