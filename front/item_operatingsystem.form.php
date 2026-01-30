@@ -44,14 +44,14 @@ $ios = new Item_OperatingSystem();
 if (isset($_POST['update'])) {
     $ios->check($_POST['id'], UPDATE);
     //update existing OS
-    $result = $ios->update($_POST);
+    $ios->update($_POST);
 
     $item = getItemForItemtype($_POST['itemtype']);
     $url = $item->getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
 } elseif (isset($_POST['add'])) {
     $ios->check(-1, CREATE, $_POST);
-    $result = $ios->add($_POST);
+    $ios->add($_POST);
 
     $item = getItemForItemtype($_POST['itemtype']);
     $url = $item->getFormURLWithID($_POST['items_id']);
