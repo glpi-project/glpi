@@ -680,13 +680,21 @@ class Item_OperatingSystem extends CommonDBRelation
     {
         // Check if all OS fields are empty
         if ($this->areAllFieldsEmpty($input)) {
-            // Get current record data
+            // Get current record data for deletion
             $this->getFromDB($input['id']);
+            $itemtype = $this->fields['itemtype'];
+            $items_id = $this->fields['items_id'];
+
             // Delete the record instead of updating to empty
-            $this->delete(['id' => $input['id']], true);
-            // Redirect back to the item form
-            $item = getItemForItemtype($this->fields['itemtype']);
-            Html::redirect($item->getFormURLWithID($this->fields['items_id']));
+            if ($this->delete(['id' => $input['id']], true)) {
+                Session::addMessageAfterRedirect(
+                    __('Operating system unlinked successfully.'),
+                    false,
+                    INFO
+                );
+            }
+
+            // Return false to prevent update, controller will handle redirect
             return false;
         }
 
@@ -719,8 +727,8 @@ class Item_OperatingSystem extends CommonDBRelation
         foreach ($fields_to_check as $field) {
             if (
                 isset($input[$field])
-                && !empty($input[$field])
-                && $input[$field] != 0
+                && $input[$field] !== ''
+                && $input[$field] !== 0
                 && $input[$field] !== '0'
             ) {
                 return false;

@@ -44,7 +44,7 @@ $ios = new Item_OperatingSystem();
 if (isset($_POST['update'])) {
     $ios->check($_POST['id'], UPDATE);
     //update existing OS
-    $ios->update($_POST);
+    $result = $ios->update($_POST);
 
     $item = getItemForItemtype($_POST['itemtype']);
     $url = $item->getFormURLWithID($_POST['items_id']);
