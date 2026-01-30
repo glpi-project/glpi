@@ -74,12 +74,34 @@ class DBConnection extends CommonGLPI
      */
     public const PROPERTY_ALLOW_SIGNED_KEYS = 'allow_signed_keys';
 
+    /**
+     * For slave connection.
+     */
+    public const PROPERTY_SLAVE = 'slave';
+
     protected static bool $notable = true;
 
 
     public static function getTypeName($nb = 0)
     {
         return _n('SQL replica', 'SQL replicas', $nb);
+    }
+
+    public static function getPropertyType(string $name): string
+    {
+        switch ($name) {
+            case 'dbhost':
+                return 'string|array';
+            case self::PROPERTY_USE_TIMEZONES:
+            case self::PROPERTY_LOG_DEPRECATION_WARNINGS:
+            case self::PROPERTY_USE_UTF8MB4:
+            case self::PROPERTY_ALLOW_DATETIME:
+            case self::PROPERTY_ALLOW_SIGNED_KEYS:
+            case self::PROPERTY_SLAVE:
+                return 'bool';
+            default:
+                return 'string';
+        }
     }
 
     private static function createConfigFile(
@@ -104,70 +126,40 @@ class DBConnection extends CommonGLPI
         }
 
         $properties = [
-            'dbhost'     => [
-                'type' => 'string|array',
-                'value' => $host,
-            ],
-            'dbuser'     => [
-                'type' => 'string',
-                'value' => $user,
-            ],
-            'dbpassword' => [
-                'type' => 'string',
-                'value' => rawurlencode($password),
-            ],
-            'dbdefault'  => [
-                'type' => 'string',
-                'value' => $dbname,
-            ],
+            'dbhost'     => $host,
+            'dbuser'     => $user,
+            'dbpassword' => rawurlencode($password),
+            'dbdefault'  => $dbname,
         ];
         if ($slave) {
-            $properties['slave'] = [
-                'type' => 'bool',
-                'value' => true,
-            ];
+            $properties[self::PROPERTY_SLAVE] = true;
         }
         if ($use_timezones) {
-            $properties[self::PROPERTY_USE_TIMEZONES] = [
-                'type' => 'bool',
-                'value' => true,
-            ];
+            $properties[self::PROPERTY_USE_TIMEZONES] = true;
         }
         if ($log_deprecation_warnings) {
-            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = [
-                'type' => 'bool',
-                'value' => true,
-            ];
+            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
         }
         if ($use_utf8mb4) {
-            $properties[self::PROPERTY_USE_UTF8MB4] = [
-                'type' => 'bool',
-                'value' => true,
-            ];
+            $properties[self::PROPERTY_USE_UTF8MB4] = true;
         }
         if (!$allow_datetime) {
-            $properties[self::PROPERTY_ALLOW_DATETIME] = [
-                'type' => 'bool',
-                'value' => false,
-            ];
+            $properties[self::PROPERTY_ALLOW_DATETIME] = false;
         }
         if (!$allow_signed_keys) {
-            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = [
-                'type' => 'bool',
-                'value' => false,
-            ];
+            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
         }
 
         $config_str = '<?php' . "\n" . 'class ' . $classname . ' extends DBmysql {' . "\n";
-        foreach ($properties as $name => $specs) {
+        foreach ($properties as $name => $value) {
             /**
              * Result will be printed in a file, no risk of XSS.
              *
              * @psalm-taint-escape html
              */
-            $exported_value = call_user_func_array('var_export', [$specs['value'], true]);
+            $exported_value = call_user_func_array('var_export', [$value, true]);
 
-            $config_str .= sprintf('   public %s $%s = %s;', $specs['type'], $name, $exported_value) . "\n";
+            $config_str .= sprintf('   public %s $%s = %s;', self::getPropertyType($name), $name, $exported_value) . "\n";
         }
         $config_str .= '}' . "\n";
 
@@ -287,7 +279,7 @@ class DBConnection extends CommonGLPI
                     // Property declaration is not located in config file, we have to add it.
                     $ending_bracket_pos = mb_strrpos($config_str, '}');
                     $config_str = mb_substr($config_str, 0, $ending_bracket_pos)
-                    . sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n"
+                    . sprintf('   public %s $%s = %s;', self::getPropertyType($name), $name, var_export($value, true)) . "\n"
                     . mb_substr($config_str, $ending_bracket_pos);
                 }
             }
