@@ -711,6 +711,9 @@ class Item_OperatingSystem extends CommonDBRelation
             'operatingsystemeditions_id',
             'license_number',
             'licenseid',
+            'company',
+            'owner',
+            'hostid',
         ];
 
         foreach ($fields_to_check as $field) {
