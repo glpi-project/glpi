@@ -244,7 +244,7 @@ class DatabaseInstanceTest extends DbTestCase
         // Verify they are linked
         $this->assertTrue($db_instance->getFromDB($db_instance_id));
         $this->assertEquals($db_instance->fields['items_id'], $computer_id);
-        $this->assertInstanceOf(Computer::class, $db_instance->fields['itemtype']);
+        $this->assertEquals($db_instance->fields['itemtype'], 'Computer');
     }
 
     public function testDissociateDatabaseInstanceFromComputer()
@@ -273,7 +273,7 @@ class DatabaseInstanceTest extends DbTestCase
         // Verify initially linked
         $this->assertTrue($db_instance->getFromDB($db_instance_id));
         $this->assertEquals($db_instance->fields['items_id'], $computer_id);
-        $this->assertInstanceOf(Computer::class, $db_instance->fields['itemtype']);
+        $this->assertEquals($db_instance->fields['itemtype'], 'Computer');
 
         // Perform the dissociation (update to 0/empty)
         // This mimics the logic inside processMassiveActionsForOneItemtype 'dissociate' case
