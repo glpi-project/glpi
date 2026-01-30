@@ -72,6 +72,8 @@ use Ticket;
 use Ticket_Contract;
 use Ticket_User;
 use TicketSatisfaction;
+use TicketTemplate;
+use TicketTemplateMandatoryField;
 use TicketValidation;
 use User;
 
@@ -1034,7 +1036,7 @@ class TicketTest extends DbTestCase
         $this->assertFalse($tasktemplate->isNewItem());
 
         // 3 - create a ticket template with the task templates in predefined fields
-        $itiltemplate    = new \TicketTemplate();
+        $itiltemplate    = new TicketTemplate();
         $itiltemplate_id = $itiltemplate->add([
             'name' => 'my ticket template',
         ]);
@@ -9762,6 +9764,94 @@ HTML,
         } else {
             $this->assertFalse($result);
             $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Description']);
+        }
+    }
+
+    /**
+     * Test that validates the fix for TypeError when mandatory fields receive array input.
+     */
+    public static function mandatoryFieldsWithArrayInputProvider(): iterable
+    {
+        yield 'actor field with array value should not trigger TypeError' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => 'Valid content',
+                '_users_id_requester' => ['_actors_350' => 350],
+            ],
+            'mandatory_field' => '_users_id_requester',
+            'should_succeed' => true,
+        ];
+
+        yield 'content as empty paragraph with spaces should be rejected' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p>   </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => false,
+        ];
+
+        yield 'content as empty paragraph with nbsp should be rejected' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p> </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => false,
+        ];
+
+        yield 'content with actual text should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p>Real content here</p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+    }
+
+    #[DataProvider('mandatoryFieldsWithArrayInputProvider')]
+    public function testMandatoryFieldsWithArrayInput(array $input, string $mandatory_field, bool $should_succeed): void
+    {
+        $this->login();
+
+        $template = $this->createItem(TicketTemplate::class, [
+            'name' => 'Test template with mandatory field: ' . $mandatory_field,
+        ]);
+
+        $search_option_id = match ($mandatory_field) {
+            'content' => (new Ticket())->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
+            '_users_id_requester' => 4,
+            '_groups_id_requester' => 71,
+            '_users_id_assign' => 5,
+            '_groups_id_assign' => 8,
+            '_users_id_observer' => 66,
+            default => 0,
+        };
+
+        $this->createItem(TicketTemplateMandatoryField::class, [
+            'tickettemplates_id' => $template->getID(),
+            'num' => $search_option_id,
+        ]);
+
+        $input[Ticket::getTemplateFormFieldName()] = $template->getID();
+
+        $ticket = new Ticket();
+        $result = $ticket->add($input);
+
+        if ($should_succeed) {
+            $this->assertGreaterThan(0, $result, 'Ticket creation should succeed');
+        } else {
+            $this->assertFalse($result, 'Ticket creation should fail due to mandatory field validation');
+            if ($mandatory_field === 'content') {
+                $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled. Please correct: Description']);
+            } else {
+                $this->hasSessionMessages(ERROR, ['Mandatory fields are not filled']);
+            }
         }
     }
 
