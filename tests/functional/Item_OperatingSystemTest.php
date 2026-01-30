@@ -343,13 +343,13 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check for the error message
         $this->hasSessionMessages(ERROR, [
-            'Cannot add an empty operating system. At least one field must be filled.',
+            "Cannot add an empty operating system. At least one field must be filled.",
         ]);
 
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
-            'Count should remain 0 after failed add'
+            "Count should remain 0 after failed add"
         );
     }
 
@@ -373,13 +373,13 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check for the error message
         $this->hasSessionMessages(ERROR, [
-            'Cannot add an empty operating system. At least one field must be filled.',
+            "Cannot add an empty operating system. At least one field must be filled.",
         ]);
 
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
-            'Count should remain 0 after failed add'
+            "Count should remain 0 after failed add"
         );
     }
 
@@ -408,13 +408,13 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $ios->add($input),
-            'Should be able to add an OS with at least one field set'
+            "Should be able to add an OS with at least one field set"
         );
 
         $this->assertSame(
             1,
             Item_OperatingSystem::countForItem($computer),
-            'Count should be 1 after successful add'
+            "Count should be 1 after successful add"
         );
 
         // Clean up
@@ -439,13 +439,13 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $ios->add($input),
-            'Should be able to add an OS with only license_number set'
+            "Should be able to add an OS with only license_number set"
         );
 
         $this->assertSame(
             1,
             Item_OperatingSystem::countForItem($computer),
-            'Count should be 1 after successful add'
+            "Count should be 1 after successful add"
         );
 
         // Clean up
@@ -508,19 +508,19 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check for the info message
         $this->hasSessionMessages(INFO, [
-            'Operating system unlinked successfully.',
+            "Operating system unlinked successfully.",
         ]);
 
         // Verify the record was deleted
         $this->assertFalse(
             $ios->getFromDB($ios_id),
-            'Record should be deleted after updating to all empty fields'
+            "Record should be deleted after updating to all empty fields"
         );
 
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
-            'Count should be 0 after deletion'
+            "Count should be 0 after deletion"
         );
     }
 }
