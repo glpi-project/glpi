@@ -3912,7 +3912,8 @@ TWIG, $twig_params);
      *
      * @return array|false
      */
-    public function prepareInput(array $input, $mode = 'add') {
+    public function prepareInput(array $input, $mode = 'add')
+    {
         $missing_fields = [];
         if (($mode === 'add' || array_key_exists('name', $input)) && empty($input['name'])) {
             $missing_fields[] = __('Name');
