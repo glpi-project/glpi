@@ -462,7 +462,7 @@ class DatabaseInstance extends CommonDBTM implements AssignableItemInterface, St
                     'name'      => 'id',
                     'condition' => [
                         'is_deleted' => 0,
-                        'items_id'   => 0
+                        'items_id'   => 0,
                     ],
                     'entity'    => $item->getEntityID(),
                 ]
