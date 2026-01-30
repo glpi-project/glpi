@@ -31,6 +31,7 @@
  #}
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 <form action="{{ target }}" method="post">
     <div class="d-flex">
@@ -63,6 +64,6 @@
     <div class="d-flex flex-row-reverse">
         <input type="hidden" name="authldaps_id" value="{{ authldaps_id }}">
         {{ fields.csrfField() }}
-        <button type="submit" name="add_replicate" class="btn btn-primary">{{ _x('button', 'Add') }}</button>
+        {{ inputs.submit('add_replicate', __('Add'), 'btn-primary', {icon: 'ti ti-plus'}) }}
     </div>
 </form>
