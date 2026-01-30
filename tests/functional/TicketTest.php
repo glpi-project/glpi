@@ -1036,7 +1036,7 @@ class TicketTest extends DbTestCase
         $this->assertFalse($tasktemplate->isNewItem());
 
         // 3 - create a ticket template with the task templates in predefined fields
-        $itiltemplate    = new \TicketTemplate();
+        $itiltemplate    = new TicketTemplate();
         $itiltemplate_id = $itiltemplate->add([
             'name' => 'my ticket template',
         ]);
@@ -9744,7 +9744,7 @@ HTML,
             'name' => 'Test template with mandatory field: ' . $mandatory_field,
         ]);
 
-        $search_option_id = match($mandatory_field) {
+        $search_option_id = match ($mandatory_field) {
             'content' => (new Ticket())->getSearchOptionIDByField('field', 'content', 'glpi_tickets'),
             '_users_id_requester' => 4,
             '_groups_id_requester' => 71,
