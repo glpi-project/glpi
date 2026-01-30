@@ -51,7 +51,7 @@ if (isset($_POST['update'])) {
     Html::redirect($url);
 } elseif (isset($_POST['add'])) {
     $ios->check(-1, CREATE, $_POST);
-    $ios->add($_POST);
+    $result = $ios->add($_POST);
 
     $item = getItemForItemtype($_POST['itemtype']);
     $url = $item->getFormURLWithID($_POST['items_id']);

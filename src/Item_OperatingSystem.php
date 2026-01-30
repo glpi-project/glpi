@@ -662,7 +662,67 @@ class Item_OperatingSystem extends CommonDBRelation
         $item->getFromDB($input['items_id']);
         $input['entities_id'] = $item->fields['entities_id'];
         $input['is_recursive'] = $item->fields['is_recursive'];
+
+        // Check if all OS fields are empty
+        if ($this->areAllFieldsEmpty($input)) {
+            Session::addMessageAfterRedirect(
+                __('Cannot add an empty operating system. At least one field must be filled.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // Check if all OS fields are empty
+        if ($this->areAllFieldsEmpty($input)) {
+            // Delete the record instead of updating to empty
+            $this->delete(['id' => $input['id']], true);
+            // Redirect back to the item form
+            $item = getItemForItemtype($input['itemtype']);
+            Html::redirect($item->getFormURLWithID($input['items_id']));
+            return false;
+        }
+
+        return $input;
+    }
+
+    /**
+     * Check if all relevant OS fields are empty
+     *
+     * @param array $input Input data
+     *
+     * @return bool True if all fields are empty
+     */
+    private function areAllFieldsEmpty(array $input): bool
+    {
+        $fields_to_check = [
+            'operatingsystems_id',
+            'operatingsystemversions_id',
+            'operatingsystemservicepacks_id',
+            'operatingsystemarchitectures_id',
+            'operatingsystemkernelversions_id',
+            'operatingsystemeditions_id',
+            'license_number',
+            'licenseid',
+        ];
+
+        foreach ($fields_to_check as $field) {
+            if (
+                isset($input[$field])
+                && !empty($input[$field])
+                && $input[$field] != 0
+                && $input[$field] !== '0'
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
