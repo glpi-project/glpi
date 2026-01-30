@@ -459,7 +459,7 @@ class RuleImportAsset extends Rule
         }
 
         // No complex criteria
-        if (empty($this->complex_criteria) || $this->found_criteria === 0) {
+        if ($this->complex_criteria === [] || $this->found_criteria === 0) {
             return true;
         }
 

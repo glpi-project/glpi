@@ -487,7 +487,7 @@ class NotificationTarget extends CommonDBChild
                 Notification::GROUP_TYPE,
             ];
             $all_exclusion_targets = [];
-            foreach ($this->notification_targets as $key => $val) {
+            foreach (array_keys($this->notification_targets) as $key) {
                 [$type, $id] = explode('_', $key);
                 $label = $this->notification_targets_labels[$type][$id];
                 if (in_array((int) $type, $allowed_exclusion_types, true)) {
