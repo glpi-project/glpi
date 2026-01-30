@@ -483,9 +483,7 @@ class Item_OperatingSystemTest extends DbTestCase
         // Store original state
         $this->assertTrue($ios->getFromDB($ios_id));
 
-        // Update to empty (this will call prepareInputForUpdate which deletes the record)
-        // Since prepareInputForUpdate calls delete() and redirects, we can't test it directly via update()
-        // Instead we'll test the prepareInputForUpdate method behavior
+        // Update to empty (this will call post_updateItem which deletes the record)
         $update_input = [
             'id'                                => $ios_id,
             'itemtype'                          => $computer->getType(),
