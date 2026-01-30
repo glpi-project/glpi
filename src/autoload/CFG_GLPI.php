@@ -337,7 +337,7 @@ $CFG_GLPI['contract_types']               = [
     Computer::class, Monitor::class, NetworkEquipment::class,
     Peripheral::class, Phone::class, Printer::class, Project::class, Line::class,
     Software::class, SoftwareLicense::class, Certificate::class,
-    DCRoom::class, Rack::class, Enclosure::class, Cluster::class, PDU::class, Appliance::class, Domain::class,
+    DCRoom::class, Rack::class, Enclosure::class, Cluster::class, PDU::class, PassiveDCEquipment::class, Appliance::class, Domain::class,
     DatabaseInstance::class,
 ];
 
