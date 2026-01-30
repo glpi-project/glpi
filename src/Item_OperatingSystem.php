@@ -676,13 +676,19 @@ class Item_OperatingSystem extends CommonDBRelation
         return $input;
     }
 
-    public function post_updateItem($history = 1)
+    public function prepareInputForUpdate($input)
     {
         // Check if all OS fields are empty
-        if ($this->areAllFieldsEmpty($this->fields)) {
-            // Delete the record instead of updating to empty
-            parent::delete(['id' => $this->fields['id']], true);
+        if ($this->areAllFieldsEmpty($input)) {
+            Session::addMessageAfterRedirect(
+                __s("Cannot update operating system with empty values."),
+                false,
+                ERROR
+            );
+            return false;
         }
+
+        return $input;
     }
 
     /**
