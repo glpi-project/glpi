@@ -464,8 +464,8 @@ class Item_OperatingSystemTest extends DbTestCase
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => $objects['']->getID(),
-            'operatingsystemarchitectures_id'   => $objects['OperatingSystemArchitecture']->getID(),
+            'operatingsystems_id'               => $objects['']->getID(), // Correct reference for the OS
+            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(), // Use 'Architecture' key
         ];
 
         $id = $ios->add($input);
