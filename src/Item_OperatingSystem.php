@@ -666,7 +666,7 @@ class Item_OperatingSystem extends CommonDBRelation
         // Check if all OS fields are empty
         if ($this->areAllFieldsEmpty($input)) {
             Session::addMessageAfterRedirect(
-                __('Cannot add an empty operating system. At least one field must be filled.'),
+                __("Cannot add an empty operating system. At least one field must be filled."),
                 false,
                 ERROR
             );
@@ -688,7 +688,7 @@ class Item_OperatingSystem extends CommonDBRelation
             // Delete the record instead of updating to empty
             if ($this->delete(['id' => $input['id']], true)) {
                 Session::addMessageAfterRedirect(
-                    __('Operating system unlinked successfully.'),
+                    __("Operating system unlinked successfully."),
                     false,
                     INFO
                 );
