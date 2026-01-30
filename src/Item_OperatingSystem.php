@@ -662,7 +662,80 @@ class Item_OperatingSystem extends CommonDBRelation
         $item->getFromDB($input['items_id']);
         $input['entities_id'] = $item->fields['entities_id'];
         $input['is_recursive'] = $item->fields['is_recursive'];
+
+        // Check if all OS fields are empty
+        if ($this->areAllFieldsEmpty($input)) {
+            Session::addMessageAfterRedirect(
+                __('Cannot add an empty operating system. At least one field must be filled.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         return $input;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        // Check if all OS fields are empty
+        if ($this->areAllFieldsEmpty($input)) {
+            // Get current record data for deletion
+            $this->getFromDB($input['id']);
+            $itemtype = $this->fields['itemtype'];
+            $items_id = $this->fields['items_id'];
+
+            // Delete the record instead of updating to empty
+            if ($this->delete(['id' => $input['id']], true)) {
+                Session::addMessageAfterRedirect(
+                    __('Operating system unlinked successfully.'),
+                    false,
+                    INFO
+                );
+            }
+
+            // Return false to prevent update, controller will handle redirect
+            return false;
+        }
+
+        return $input;
+    }
+
+    /**
+     * Check if all relevant OS fields are empty
+     *
+     * @param array $input Input data
+     *
+     * @return bool True if all fields are empty
+     */
+    private function areAllFieldsEmpty(array $input): bool
+    {
+        $fields_to_check = [
+            'operatingsystems_id',
+            'operatingsystemversions_id',
+            'operatingsystemservicepacks_id',
+            'operatingsystemarchitectures_id',
+            'operatingsystemkernelversions_id',
+            'operatingsystemeditions_id',
+            'license_number',
+            'licenseid',
+            'company',
+            'owner',
+            'hostid',
+        ];
+
+        foreach ($fields_to_check as $field) {
+            if (
+                isset($input[$field])
+                && $input[$field] !== ''
+                && $input[$field] !== 0
+                && $input[$field] !== '0'
+            ) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
 
