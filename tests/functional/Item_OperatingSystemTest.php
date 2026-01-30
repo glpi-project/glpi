@@ -395,7 +395,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => $objects['OperatingSystem']->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
             'operatingsystemarchitectures_id'   => 0,
             'operatingsystemversions_id'        => 0,
             'operatingsystemkernelversions_id'  => 0,
@@ -464,7 +464,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => $objects['OperatingSystem']->getID(),
+            'operatingsystems_id'               => $objects['']->getID(),
             'operatingsystemarchitectures_id'   => $objects['OperatingSystemArchitecture']->getID(),
         ];
 
