@@ -3915,14 +3915,14 @@ TWIG, $twig_params);
     public function prepareInput(array $input, $mode = 'add')
     {
         $missing_fields = [];
-        if (($mode === 'add' || array_key_exists('name', $input)) && empty($input['name'])) {
+        if (($mode === 'add' || array_key_exists('name', $input)) && empty(trim($input['name']))) {
             $missing_fields[] = __('Name');
         }
-        if (($mode === 'add' || array_key_exists('host', $input)) && empty($input['host'])) {
+        if (($mode === 'add' || array_key_exists('host', $input)) && empty(trim($input['host']))) {
             $missing_fields[] = __('Server');
         }
-        if (($mode === 'add' || array_key_exists('port', $input)) && empty($input['port'])) {
-            $missing_fields[] = _n('Port', 'Ports', 1);
+        if (($mode === 'add' || array_key_exists('port', $input)) && empty(trim($input['port']))) {
+            $input['port'] = 389;
         }
         if (!empty($missing_fields)) {
             Session::addMessageAfterRedirect(
