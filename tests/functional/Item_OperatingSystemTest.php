@@ -397,7 +397,7 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Consume the session message so tearDown doesn't fail
         $this->hasSessionMessages(ERROR, [
-            __s("Cannot update operating system with empty values.")
+            __s("Cannot update operating system with empty values."),
         ]);
 
         // Record must still exist
