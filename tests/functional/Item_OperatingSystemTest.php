@@ -341,6 +341,11 @@ class Item_OperatingSystemTest extends DbTestCase
             'Should not be able to add an OS with all empty fields'
         );
 
+        // Check for the error message
+        $this->hasSessionMessages(ERROR, [
+            'Cannot add an empty operating system. At least one field must be filled.'
+        ]);
+
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
@@ -366,6 +371,11 @@ class Item_OperatingSystemTest extends DbTestCase
             'Should not be able to add an OS with no fields set'
         );
 
+        // Check for the error message
+        $this->hasSessionMessages(ERROR, [
+            'Cannot add an empty operating system. At least one field must be filled.'
+        ]);
+
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
@@ -385,7 +395,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => $objects['']->getID(),
+            'operatingsystems_id'               => $objects['OperatingSystem']->getID(),
             'operatingsystemarchitectures_id'   => 0,
             'operatingsystemversions_id'        => 0,
             'operatingsystemkernelversions_id'  => 0,
@@ -454,8 +464,8 @@ class Item_OperatingSystemTest extends DbTestCase
         $input = [
             'itemtype'                          => $computer->getType(),
             'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => $objects['']->getID(),
-            'operatingsystemarchitectures_id'   => $objects['Architecture']->getID(),
+            'operatingsystems_id'               => $objects['OperatingSystem']->getID(),
+            'operatingsystemarchitectures_id'   => $objects['OperatingSystemArchitecture']->getID(),
         ];
 
         $id = $ios->add($input);
@@ -495,6 +505,11 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check that prepareInputForUpdate returned false
         $this->assertFalse($result, 'prepareInputForUpdate should return false for empty fields');
+
+        // Check for the info message
+        $this->hasSessionMessages(INFO, [
+            'Operating system unlinked successfully.'
+        ]);
 
         // Verify the record was deleted
         $this->assertFalse(
