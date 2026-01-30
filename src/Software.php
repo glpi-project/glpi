@@ -670,7 +670,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         // Start the input group wrapper
         echo "<div class='input-group'>";
-        
+
         $rand = Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
 
         $paramsselsoft = [
