@@ -192,8 +192,8 @@
                     <div class="modal fade" id="kb-add-document-modal" tabindex="-1">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <div class="modal-header border-0 pb-0">
-                                    <ul class="nav nav-underline flex-fill mb-0" role="tablist">
+                                <div class="modal-header border-0 pb-0 pt-3">
+                                    <ul class="nav nav-underline kb-modal-nav flex-fill mb-0" role="tablist">
                                         <li class="nav-item" role="presentation">
                                             <button class="nav-link active" id="kb-modal-upload-tab" data-bs-toggle="tab" data-bs-target="#kb-modal-upload-pane" type="button" role="tab" aria-controls="kb-modal-upload-pane" aria-selected="true">
                                                 <i class="ti ti-upload me-1"></i>{{ __('Upload a file') }}
@@ -211,7 +211,7 @@
                                     <div class="tab-content">
                                         <div class="tab-pane fade show active" id="kb-modal-upload-pane" role="tabpanel" aria-labelledby="kb-modal-upload-tab">
                                             <div class="text-center text-muted py-4">
-                                                <i class="ti ti-cloud-upload fs-1 mb-3 d-block"></i>
+                                                <i class="ti ti-cloud-upload fs-1 mb-3 d-inline-block"></i>
                                                 <p>{{ __('Document upload coming soon...') }}</p>
                                                 <a href="{{ 'KnowbaseItem'|itemtype_form_path }}?id={{ item_id }}&amp;forcetab=Document_Item$1"
                                                    class="btn btn-primary">
@@ -221,7 +221,7 @@
                                         </div>
                                         <div class="tab-pane fade" id="kb-modal-link-pane" role="tabpanel" aria-labelledby="kb-modal-link-tab">
                                             <div class="text-center text-muted py-4">
-                                                <i class="ti ti-file-symlink fs-1 mb-3 d-block"></i>
+                                                <i class="ti ti-file-symlink fs-1 mb-3 d-inline-block"></i>
                                                 <p>{{ __('Link existing documents coming soon...') }}</p>
                                                 <a href="{{ 'Document'|itemtype_search_path }}"
                                                    class="btn btn-primary">
