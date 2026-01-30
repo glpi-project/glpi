@@ -3921,7 +3921,7 @@ TWIG, $twig_params);
             $missing_fields[] = __('Server');
         }
         if (($mode === 'add' || array_key_exists('port', $input)) && empty($input['port'])) {
-            $missing_fields[] = __('Port');
+            $missing_fields[] = _n('Port', 'Ports', 1);
         }
         if (!empty($missing_fields)) {
             Session::addMessageAfterRedirect(
