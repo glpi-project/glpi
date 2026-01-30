@@ -65,6 +65,12 @@ class ProjectCost extends CommonDBChild
             $input['end_date'] = $input['begin_date'];
         }
 
+        if (
+            empty($input['cost'])
+        ) {
+            $input['cost'] = 0;
+        }
+
         return parent::prepareInputForAdd($input);
     }
 
@@ -76,6 +82,12 @@ class ProjectCost extends CommonDBChild
             || ($input['end_date'] < $input['begin_date'])
         ) {
             $input['end_date'] = $input['begin_date'];
+        }
+
+        if (
+            empty($input['cost'])
+        ) {
+            $input['cost'] = 0;
         }
 
         return parent::prepareInputForUpdate($input);
@@ -251,8 +263,8 @@ class ProjectCost extends CommonDBChild
         echo "</td>";
         echo "<td>" . _sn('Cost', 'Costs', 1) . "</td>";
         echo "<td>";
-        echo "<input type='text' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
-             size='14'>";
+        echo "<input type='number' name='cost' value='" . htmlescape(Html::formatNumber($this->fields["cost"], true)) . "'
+             min='0' max='" . constant('PHP_INT_MAX') . "' step='0.0001' size='14'>";
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __s('Begin date') . "</td>";
