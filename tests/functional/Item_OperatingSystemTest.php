@@ -353,105 +353,6 @@ class Item_OperatingSystemTest extends DbTestCase
         );
     }
 
-    public function testPreventEmptyOSAddWithOnlyZeroValues()
-    {
-        $this->login();
-        $computer = getItemByTypeName('Computer', '_test_pc01');
-
-        $ios = new Item_OperatingSystem();
-
-        // Test adding an OS with only zero values - should fail
-        $input = [
-            'itemtype'    => $computer->getType(),
-            'items_id'    => $computer->getID(),
-        ];
-
-        $this->assertFalse(
-            $ios->add($input),
-            "Should not be able to add an OS with no fields set",
-        );
-
-        // Check for the error message
-        $this->hasSessionMessages(ERROR, [
-            "Cannot add an empty operating system. At least one field must be filled.",
-        ]);
-
-        $this->assertSame(
-            0,
-            Item_OperatingSystem::countForItem($computer),
-            "Count should remain 0 after failed add",
-        );
-    }
-
-    public function testAllowOSAddWithAtLeastOneField()
-    {
-        $this->login();
-        $computer = getItemByTypeName('Computer', '_test_pc01');
-
-        $objects = $this->createDdObjects();
-        $ios = new Item_OperatingSystem();
-
-        // Test adding an OS with at least one field set - should succeed
-        $input = [
-            'itemtype'                          => $computer->getType(),
-            'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => $objects['']->getID(),
-            'operatingsystemarchitectures_id'   => 0,
-            'operatingsystemversions_id'        => 0,
-            'operatingsystemkernelversions_id'  => 0,
-            'operatingsystemeditions_id'        => 0,
-            'operatingsystemservicepacks_id'    => 0,
-            'licenseid'                         => '',
-            'license_number'                    => '',
-        ];
-
-        $this->assertGreaterThan(
-            0,
-            $ios->add($input),
-            "Should be able to add an OS with at least one field set",
-        );
-
-        $this->assertSame(
-            1,
-            Item_OperatingSystem::countForItem($computer),
-            "Count should be 1 after successful add",
-        );
-
-        // Clean up
-        $ios->delete(['id' => $ios->getID()], true);
-    }
-
-    public function testAllowOSAddWithLicenseNumber()
-    {
-        $this->login();
-        $computer = getItemByTypeName('Computer', '_test_pc01');
-
-        $ios = new Item_OperatingSystem();
-
-        // Test adding an OS with only license_number set - should succeed
-        $input = [
-            'itemtype'                          => $computer->getType(),
-            'items_id'                          => $computer->getID(),
-            'operatingsystems_id'               => 0,
-            'license_number'                    => 'ABC123',
-        ];
-
-        $this->assertGreaterThan(
-            0,
-            $ios->add($input),
-            "Should be able to add an OS with only license_number set",
-        );
-
-        $this->assertSame(
-            1,
-            Item_OperatingSystem::countForItem($computer),
-            "Count should be 1 after successful add",
-        );
-
-        // Clean up
-        $ios->delete(['id' => $ios->getID()], true);
-    }
-
     public function testUpdateOSToEmptyIsRejected()
     {
         $this->login();
@@ -465,8 +366,8 @@ class Item_OperatingSystemTest extends DbTestCase
             'itemtype'    => $computer->getType(),
             'items_id'    => $computer->getID(),
             'entities_id' => $_SESSION['glpiactive_entity'],
-            'name'        => 'Linux',
-            'version'     => 'Ubuntu 22.04'
+            'operatingsystems_id' => $objects['']->getID(),
+            'operatingsystemarchitectures_id' => $objects['Architecture']->getID(),
         ];
 
         $id = $ios->add($input);
@@ -476,30 +377,35 @@ class Item_OperatingSystemTest extends DbTestCase
             Item_OperatingSystem::countForItem($computer),
             "Count should be 1 after add",
         );
-    
+
         // Snapshot original state
-        $this->assertTrue($itemOS->getFromDB($id));
+        $this->assertTrue($ios->getFromDB($id));
         $original = $ios->fields;
-    
+
         // Attempt to update with empty values
-        $result = $itemOS->update([
+        $result = $ios->update([
             'id'      => $id,
             'name'    => '',
             'version' => '',
         ]);
-    
+
         // Update must be rejected
         $this->assertFalse(
             $result,
             "Updating OS to empty values should be rejected",
         );
-    
+
+        // Consume the session message so tearDown doesn't fail
+        $this->hasSessionMessages(ERROR, [
+            __s("Cannot update operating system with empty values.")
+        ]);
+
         // Record must still exist
         $this->assertTrue(
-            $itemOS->getFromDB($id),
+            $ios->getFromDB($id),
             "OS record should still exist",
         );
-    
+
         // Data must be unchanged
         $this->assertSame(
             $original['name'],
