@@ -3907,10 +3907,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * @param array $input
+     * @param array<string, mixed> $input
      * @param string $mode
      *
-     * @return array|false
+     * @return array<string, mixed>|false
      */
     public function prepareInput(array $input, $mode = 'add')
     {
