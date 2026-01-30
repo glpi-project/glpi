@@ -115,38 +115,65 @@ class DBConnection extends CommonGLPI
     ): bool {
 
         $properties = [
-            'dbhost'     => $host,
-            'dbuser'     => $user,
-            'dbpassword' => rawurlencode($password),
-            'dbdefault'  => $dbname,
+            'dbhost'     => [
+                'type' => 'string|array',
+                'value' => $host
+            ],
+            'dbuser'     => [
+                'type' => 'string',
+                'value' => $user
+            ],
+            'dbpassword' => [
+                'type' => 'string',
+                'value' => rawurlencode($password)
+            ],
+            'dbdefault'  => [
+                'type' => 'string',
+                'value' => $dbname
+            ],
         ];
         if ($use_timezones) {
-            $properties[self::PROPERTY_USE_TIMEZONES] = true;
+            $properties[self::PROPERTY_USE_TIMEZONES] = [
+                'type' => 'bool',
+                'value' => true
+            ];
         }
         if ($log_deprecation_warnings) {
-            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
+            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = [
+                'type' => 'bool',
+                'value' => true
+            ];
         }
         if ($use_utf8mb4) {
-            $properties[self::PROPERTY_USE_UTF8MB4] = true;
+            $properties[self::PROPERTY_USE_UTF8MB4] = [
+                'type' => 'bool',
+                'value' => true
+            ];
         }
         if (!$allow_datetime) {
-            $properties[self::PROPERTY_ALLOW_DATETIME] = false;
+            $properties[self::PROPERTY_ALLOW_DATETIME] = [
+                'type' => 'bool',
+                'value' => false
+            ];
         }
         if (!$allow_signed_keys) {
-            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
+            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = [
+                'type' => 'bool',
+                'value' => false
+            ];
         }
 
         $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
-        foreach ($properties as $name => $value) {
+        foreach ($properties as $name => $specs) {
 
             /**
              * Result will be printed in a file, no risk of XSS.
              *
              * @psalm-taint-escape html
              */
-            $exported_value = call_user_func_array('var_export', [$value, true]);
+            $exported_value = call_user_func_array('var_export', [$specs['value'], true]);
 
-            $config_str .= sprintf('   public $%s = %s;', $name, $exported_value) . "\n";
+            $config_str .= sprintf('   public %s $%s = %s;', $specs['type'], $name, $exported_value) . "\n";
         }
         $config_str .= '}' . "\n";
 
