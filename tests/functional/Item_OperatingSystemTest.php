@@ -343,7 +343,7 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check for the error message
         $this->hasSessionMessages(ERROR, [
-            'Cannot add an empty operating system. At least one field must be filled.'
+            'Cannot add an empty operating system. At least one field must be filled.',
         ]);
 
         $this->assertSame(
@@ -373,7 +373,7 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check for the error message
         $this->hasSessionMessages(ERROR, [
-            'Cannot add an empty operating system. At least one field must be filled.'
+            'Cannot add an empty operating system. At least one field must be filled.',
         ]);
 
         $this->assertSame(
@@ -508,7 +508,7 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // Check for the info message
         $this->hasSessionMessages(INFO, [
-            'Operating system unlinked successfully.'
+            'Operating system unlinked successfully.',
         ]);
 
         // Verify the record was deleted
