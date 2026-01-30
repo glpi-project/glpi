@@ -404,7 +404,7 @@ class Item_OperatingSystemTest extends DbTestCase
             $ios->getFromDB($id),
             "OS record should still exist."
         );
-        
+
         // Asserting against real DB columns
         $this->assertSame(
             $original['operatingsystems_id'],
