@@ -331,11 +331,6 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        $input = $this->prepareInput($input);
-        if ($input === false) {
-            return false;
-        }
-
         if (isset($input["rootdn_passwd"])) {
             if (empty($input["rootdn_passwd"])) {
                 unset($input["rootdn_passwd"]);
@@ -3906,28 +3901,8 @@ TWIG, $twig_params);
         parent::post_addItem();
     }
 
-    /**
-     * @param array<string, mixed> $input
-     * @param string $mode
-     *
-     * @return array<string, mixed>|false
-     */
-    public function prepareInput(array $input, $mode = 'add')
-    {
-        if (($mode === 'add' || array_key_exists('port', $input)) && empty($input["port"])) {
-            $input['port'] = 389;
-        }
-
-        return $input;
-    }
-
     public function prepareInputForAdd($input)
     {
-        $input = $this->prepareInput($input);
-        if ($input === false) {
-            return false;
-        }
-
         if (empty($input['can_support_pagesize'] ?? '')) {
             $input['can_support_pagesize'] = 0;
         }
