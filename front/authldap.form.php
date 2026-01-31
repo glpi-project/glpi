@@ -50,11 +50,13 @@ if (isset($_POST["update"])) {
     Html::back();
 } elseif (isset($_POST["add"])) {
     if ($newID = $config_ldap->add($_POST)) {
-        if (AuthLDAP::testLDAPConnection($newID)) {
-            Session::addMessageAfterRedirect(__s('Test successful'));
-        } else {
-            Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
-            GLPINetwork::addErrorMessageAfterRedirect();
+        if (isset($_POST["host"]) && trim($_POST["host"]) != "") {
+            if (AuthLDAP::testLDAPConnection($newID)) {
+                Session::addMessageAfterRedirect(__s('Test successful'));
+            } else {
+                Session::addMessageAfterRedirect(__s('Test failed'), false, ERROR);
+                GLPINetwork::addErrorMessageAfterRedirect();
+            }
         }
         Html::redirect($CFG_GLPI["root_doc"] . "/front/authldap.php?next=extauth_ldap&id=" . $newID);
     }
