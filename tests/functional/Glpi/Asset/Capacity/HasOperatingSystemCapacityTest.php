@@ -390,10 +390,15 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         $capacity = new $capacity_class();
         $this->assertFalse($capacity->isUsed($class));
 
+        // An OS capacity is used only if a meaningful OS exists
+        $os = $this->createItem('OperatingSystem', [
+            'name' => 'Test OS',
+        ]);
+
         $input = [
             'itemtype' => $asset::getType(),
             'items_id' => $asset->getID(),
-            'license_number' => '012345',
+            'operatingsystems_id' => $os->getID(),
         ];
         $this->createItem($target_classname, $input);
 
@@ -421,10 +426,15 @@ class HasOperatingSystemCapacityTest extends DbTestCase
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
+        // An OS capacity is used only if a meaningful OS exists
+        $os = $this->createItem('OperatingSystem', [
+            'name' => 'Test OS',
+        ]);
+
         $this->createItem($target_classname, [
             'itemtype' => $class,
             'items_id' => $asset->getID(),
-            'license_number' => '012345',
+            'operatingsystems_id' => $os->getID(),
         ]);
 
         $this->assertEquals(
