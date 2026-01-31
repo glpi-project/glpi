@@ -338,7 +338,6 @@ class Item_OperatingSystemTest extends DbTestCase
 
         // GLPI currently allows empty OS records
         $this->assertFalse(
-            0,
             $ios->add($input),
             "Should not be able to add an OS with all empty fields.",
         );
@@ -351,7 +350,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertSame(
             0,
             Item_OperatingSystem::countForItem($computer),
-            "Count should remain 0 after failed add.",
+            "No OS should be linked after failed add."
         );
     }
 
