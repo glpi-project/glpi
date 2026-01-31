@@ -44,7 +44,7 @@
             label_class: 'col-4',
             input_class: 'col-8',
         }) }}
-        {{ fields.numberField('port', '', _n('Port', 'Ports', 1), {
+        {{ fields.numberField('port', 389, _n('Port', 'Ports', 1), {
             min: 1,
             max: 65535,
             field_class: 'col-3',
