@@ -726,8 +726,8 @@ class Item_OperatingSystem extends CommonDBRelation
             $value = $input[$field];
 
             if (
-                (is_int($value) && $value > 0)
-                || (is_string($value) && trim($value) !== '')
+                (is_numeric($value) && (int)$value > 0)
+                || (is_string($value) && trim($value) !== '' && !is_numeric($value))
             ) {
                 return false;
             }
