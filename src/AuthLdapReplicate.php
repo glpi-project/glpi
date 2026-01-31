@@ -74,9 +74,6 @@ class AuthLdapReplicate extends CommonDBTM
             );
             return false;
         }
-        if (isset($input["port"]) && ((int) $input["port"] == 0)) {
-            $input["port"] = 389;
-        }
         return $input;
     }
 
