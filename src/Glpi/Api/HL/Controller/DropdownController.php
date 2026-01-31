@@ -50,6 +50,7 @@ use DocumentCategory;
 use DocumentType;
 use DropdownVisibility;
 use Entity;
+use Filesystem;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
@@ -935,6 +936,24 @@ EOT,
                     'maximum' => 100,
                     'default' => 100,
                 ],
+            ],
+        ];
+
+        $schemas['Filesystem'] = [
+            //TODO add to endpoint list for 2.3 (probably best to wait for previous dropdown PR to be merged)
+            'x-version-introduced' => '2.3.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Filesystem::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
             ],
         ];
 
