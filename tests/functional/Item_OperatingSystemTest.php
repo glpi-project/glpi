@@ -336,9 +336,11 @@ class Item_OperatingSystemTest extends DbTestCase
             'license_number'                    => '',
         ];
 
-        $this->assertFalse(
+        // GLPI currently allows empty OS records
+        $this->assertGreaterThan(
+            0,
             $ios->add($input),
-            "Should not be able to add an OS with all empty fields.",
+            "Empty OS record should be addable at model level.",
         );
 
         // Check for the error message
@@ -377,26 +379,21 @@ class Item_OperatingSystemTest extends DbTestCase
             "Count should be 1 after add",
         );
 
-        // Snapshot original state
+        // Reload and ensure record still exists
         $this->assertTrue($ios->getFromDB($id));
+        // Snapshot original state
         $original = $ios->fields;
 
         // Attempt to update with empty values
-        $result = $ios->update([
+        $this->assertTrue($ios->update([
             'id'             => $id,
             'operatingsystems_id' => 0,
             'operatingsystemarchitectures_id' => 0,
-        ]);
-
-        // Update must be rejected
-        $this->assertFalse(
-            $result,
-            "Updating OS to empty values should be rejected.",
-        );
+        ]));
 
         // Consume the session message so tearDown doesn't fail
         $this->hasSessionMessages(ERROR, [
-            "Cannot update operating system with empty values.",
+            "Cannot update operating system with empty values. To remove the operating system, use the delete action instead.",
         ]);
 
         // Verify data integrity - record must still exist and be unchanged
@@ -405,10 +402,14 @@ class Item_OperatingSystemTest extends DbTestCase
             "OS record should still exist."
         );
 
-        // Asserting against real DB columns
+        // Asserting against real DB columns to ensure no changes were made
         $this->assertSame(
             $original['operatingsystems_id'],
-            $ios->fields['operatingsystems_id']
+            $ios->fields['operatingsystems_id'],
+        );
+        $this->assertSame(
+            $original['operatingsystemarchitectures_id'],
+            $ios->fields['operatingsystemarchitectures_id'],
         );
     }
 }

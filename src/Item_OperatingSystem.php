@@ -681,7 +681,7 @@ class Item_OperatingSystem extends CommonDBRelation
         // Check if all OS fields are empty
         if ($this->areAllFieldsEmpty($input)) {
             Session::addMessageAfterRedirect(
-                __s("Cannot update operating system with empty values."),
+                __s("Cannot update operating system with empty values. To remove the operating system, use the delete action instead."),
                 false,
                 ERROR
             );
@@ -717,7 +717,8 @@ class Item_OperatingSystem extends CommonDBRelation
         foreach ($fields_to_check as $field) {
             if (
                 isset($input[$field])
-                && trim($input[$field]) !== ''
+                && (is_string($input[$field]) 
+                && trim($input[$field]) !== '')
                 && $input[$field] !== 0
                 && $input[$field] !== '0'
             ) {
