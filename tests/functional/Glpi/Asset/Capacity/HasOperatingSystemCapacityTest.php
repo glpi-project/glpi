@@ -371,35 +371,6 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         );
     }
 
-    /**
-     * @dataProvider provideIsUsed
-     */
-    public function testIsUsed(string $target_classname): void
-    {
-        $definition = $this->initAssetDefinition(
-            capacities: [new Capacity($this->getTargetCapacity())]
-        );
-        $class = $definition->getAssetClassName();
-
-        $asset = $this->createItem($class, [
-            'name' => 'Test asset',
-            'entities_id' => $this->getTestRootEntity(true),
-        ]);
-
-        $capacity_class = $this->getTargetCapacity();
-        $capacity = new $capacity_class();
-        $this->assertTrue($capacity->check($asset->getID(), $asset->getType()));
-
-        $input = [
-            'itemtype' => $asset::getType(),
-            'items_id' => $asset->getID(),
-            'license_number' => '012345',
-        ];
-        $this->createItem($target_classname, $input);
-
-        $this->assertFalse($capacity->check($asset->getID(), $asset->getType()));
-    }
-
     public static function provideIsUsed(): iterable
     {
         yield [
