@@ -337,10 +337,10 @@ class Item_OperatingSystemTest extends DbTestCase
         ];
 
         // GLPI currently allows empty OS records
-        $this->assertGreaterThan(
+        $this->assertFalse(
             0,
             $ios->add($input),
-            "Empty OS record should be addable at model level.",
+            "Should not be able to add an OS with all empty fields.",
         );
 
         // Check for the error message
@@ -376,7 +376,7 @@ class Item_OperatingSystemTest extends DbTestCase
         $this->assertSame(
             1,
             Item_OperatingSystem::countForItem($computer),
-            "Count should be 1 after add",
+            "Count should be 1 after add.",
         );
 
         // Reload and ensure record still exists
@@ -385,11 +385,17 @@ class Item_OperatingSystemTest extends DbTestCase
         $original = $ios->fields;
 
         // Attempt to update with empty values
-        $this->assertTrue($ios->update([
+        $result = $ios->update([
             'id'             => $id,
             'operatingsystems_id' => 0,
             'operatingsystemarchitectures_id' => 0,
-        ]));
+        ]);
+
+        // Update must be rejected
+        $this->assertFalse(
+            $result,
+            "Updating OS to empty values should be rejected.",
+        );
 
         // Consume the session message so tearDown doesn't fail
         $this->hasSessionMessages(ERROR, [

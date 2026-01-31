@@ -679,13 +679,17 @@ class Item_OperatingSystem extends CommonDBRelation
     public function prepareInputForUpdate($input)
     {
         // Check if all OS fields are empty
-        if ($this->areAllFieldsEmpty($input)) {
-            Session::addMessageAfterRedirect(
-                __s("Cannot update operating system with empty values. To remove the operating system, use the delete action instead."),
-                false,
-                ERROR
-            );
-            return false;
+        if (isset($input['id']) && $this->getFromDB($input['id'])) {
+            $merged = array_merge($this->fields, $input);
+
+            if ($this->areAllFieldsEmpty($merged)) {
+                Session::addMessageAfterRedirect(
+                    __s("Cannot update operating system with empty values. To remove the operating system, use the delete action instead."),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
         }
 
         return $input;
@@ -715,12 +719,15 @@ class Item_OperatingSystem extends CommonDBRelation
         ];
 
         foreach ($fields_to_check as $field) {
+            if (!array_key_exists($field, $input)) {
+                continue;
+            }
+
+            $value = $input[$field];
+
             if (
-                isset($input[$field])
-                && (is_string($input[$field]) 
-                && trim($input[$field]) !== '')
-                && $input[$field] !== 0
-                && $input[$field] !== '0'
+                (is_int($value) && $value > 0)
+                || (is_string($value) && trim($value) !== '')
             ) {
                 return false;
             }
