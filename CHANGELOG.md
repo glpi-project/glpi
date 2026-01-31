@@ -7,6 +7,7 @@ The present file will list all changes made to the project; according to the
 
 ### Added
 - New schemas/endpoints for over 25 types and models in High-Level API v2.3.
+- New schemas/endpoints for antivirus, virtual machine, connections, remote management, and many more types related to assets in High-Level API v2.3.
 
 ### Changed
 
