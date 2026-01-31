@@ -3914,27 +3914,6 @@ TWIG, $twig_params);
      */
     public function prepareInput(array $input, $mode = 'add')
     {
-        $missing_fields = [];
-        if (($mode === 'add' || array_key_exists('name', $input)) && empty(trim($input['name']))) {
-            $missing_fields[] = __('Name');
-        }
-        if (($mode === 'add' || array_key_exists('host', $input)) && empty(trim($input['host']))) {
-            $missing_fields[] = __('Server');
-        }
-        if (!empty($missing_fields)) {
-            Session::addMessageAfterRedirect(
-                htmlescape(
-                    sprintf(
-                        __('Mandatory fields are not filled. Please correct: %s'),
-                        implode(', ', $missing_fields)
-                    )
-                ),
-                false,
-                ERROR
-            );
-            return false;
-        }
-
         if (($mode === 'add' || array_key_exists('port', $input)) && ((int) $input["port"] == 0)) {
             $input['port'] = 389;
         }
