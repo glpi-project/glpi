@@ -218,7 +218,7 @@ class AuthLDAP extends CommonDBTM
 
     public function post_getEmpty()
     {
-        $this->fields['port']                        = '389';
+        $this->fields['port']                        = 389;
         $this->fields['condition']                   = '';
         $this->fields['login_field']                 = 'uid';
         $this->fields['sync_field']                  = null;
@@ -261,7 +261,7 @@ class AuthLDAP extends CommonDBTM
     {
         switch ($type) {
             case 'AD':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']
                  = '(&(objectClass=user)(objectCategory=person)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))';
                 $this->fields['login_field']               = 'samaccountname';
@@ -286,14 +286,14 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = '';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['begin_date_field']          = 'whenCreated';
                 $this->fields['end_date_field']            = 'accountExpires';
                 break;
             case 'OpenLDAP':
-                $this->fields['port']                      = "389";
+                $this->fields['port']                      = 389;
                 $this->fields['condition']                 = '(objectClass=inetOrgPerson)';
                 $this->fields['login_field']               = 'uid';
                 $this->fields['sync_field']                = 'entryuuid';
@@ -316,7 +316,7 @@ class AuthLDAP extends CommonDBTM
                 $this->fields['title_field']               = 'title';
                 $this->fields['use_dn']                    = 1;
                 $this->fields['can_support_pagesize']      = 1;
-                $this->fields['pagesize']                  = '1000';
+                $this->fields['pagesize']                  = 1000;
                 $this->fields['picture_field']             = 'jpegphoto';
                 $this->fields['responsible_field']         = 'manager';
                 $this->fields['category_field']            = 'businesscategory';

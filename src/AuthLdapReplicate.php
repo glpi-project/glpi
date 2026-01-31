@@ -61,8 +61,18 @@ class AuthLdapReplicate extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
-        if (isset($input["port"]) && ((int) $input["port"] == 0)) {
-            $input["port"] = 389;
+        if (isset($input["host"]) && ((string) trim($input["host"]) === '')) {
+            Session::addMessageAfterRedirect(
+                htmlescape(
+                    sprintf(
+                        __('Mandatory fields are not filled. Please correct: %s'),
+                        __('Server')
+                    )
+                ),
+                false,
+                ERROR
+            );
+            return false;
         }
         return $input;
     }
