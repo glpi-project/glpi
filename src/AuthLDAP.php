@@ -3914,7 +3914,7 @@ TWIG, $twig_params);
      */
     public function prepareInput(array $input, $mode = 'add')
     {
-        if (($mode === 'add' || array_key_exists('port', $input)) && ((int) $input["port"] == 0)) {
+        if (($mode === 'add' || array_key_exists('port', $input)) && empty($input["port"])) {
             $input['port'] = 389;
         }
 
