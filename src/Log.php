@@ -179,38 +179,50 @@ class Log extends CommonDBTM
                     // Linkfield or standard field not massive action enable
                     $id_search_option = $key2; // Give ID of the $SEARCHOPTION
 
+                    // Only consider link/dropdown handling when the search option
+                    // effectively targets the parent item table or the current item table.
+                    $parent_table = getTableForItemType($real_type);
+                    if (($val2['table'] !== $parent_table) && ($val2['table'] !== $item->getTable())) {
+                        // If the option is actually a plain text/string field, keep it as text
+                        if (isset($val2['datatype']) && in_array($val2['datatype'], ['text', 'string'], true)) {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                        }
+                        continue;
+                    }
+
                     if ($val2['table'] == $item->getTable()) {
                         $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                     } else {
-                        // other cases; link field -> get data from dropdown
-                        // Fill old_id/new_id ONLY when both values are numeric IDs.
-                        if (is_numeric($oldval) && isset($values[$key]) && is_numeric($values[$key])) {
+                        if (isset($val2['datatype']) && in_array($val2['datatype'], ['text', 'string'], true)) {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                            break;
+                        }
+
+                        if (!is_numeric($oldval) || !is_numeric($values[$key] ?? null)) {
+                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
+                        } else {
+                            // Both numeric — safe to use dropdown/id representation
                             $changes = [$id_search_option,
                                 sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
-                                        $val2["table"], 
-                                        (int)$oldval
+                                        $val2["table"],
+                                        $oldval
                                     ),
-                                    (int)$oldval
+                                    $oldval
                                 ),
                                 sprintf(
                                     __('%1$s (%2$s)'),
                                     Dropdown::getDropdownName(
-                                        $val2["table"], 
-                                        (int)$values[$key]
+                                        $val2["table"],
+                                        $values[$key]
                                     ),
-                                    (int)$values[$key]
+                                    $values[$key]
                                 ),
-                                (int)$oldval,
-                                (int)$values[$key],
+                                $oldval,
+                                (int) $values[$key],
                             ];
-                        } else {
-                            // Fallback for text/invalid values: keep it as value-only history
-                            // to avoid inserting non-numeric data into glpi_logs.old_id/new_id.
-                            $changes = [$id_search_option, $oldval ?? '', $values[$key] ?? ''];
                         }
-                    }
                     break;
                 }
             }
