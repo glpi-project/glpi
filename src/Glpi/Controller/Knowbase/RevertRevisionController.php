@@ -64,7 +64,7 @@ final class RevertRevisionController extends AbstractController
         }
 
         // Check permissions
-        if (!KnowbaseItem::canUpdate() || !$kb->canUpdateItem()) {
+        if (!$kb->can($id, READ)) {
             throw new AccessDeniedHttpException();
         }
 
@@ -82,7 +82,7 @@ final class RevertRevisionController extends AbstractController
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
 
-        Session::addMessageAfterRedirect(__("Article restored successfully."));
+        Session::addMessageAfterRedirect(__s("Article restored successfully."));
 
         return new JsonResponse([
             'success' => true,
