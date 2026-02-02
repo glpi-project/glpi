@@ -366,7 +366,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
-    public static function getAllLinkedTo(string $itemtype, int $items_id, bool $bypass_right_checks = false): array
+    public static function getAllLinkedTo(string $itemtype, int $items_id, $bypass_right_checks = false): array
     {
         $link_classes = self::getAllLinkClasses();
         $links = [];
