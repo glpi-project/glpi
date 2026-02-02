@@ -94,8 +94,8 @@ class Auth extends CommonGLPI
 
     /** @var resource|bool LDAP connection descriptor */
     public $ldap_connection;
-    /** @var bool Store user LDAP dn */
-    public bool $user_dn = false;
+    /** @var string|false Store user LDAP dn */
+    public string|false $user_dn = false;
 
     public const DB_GLPI  = 1;
     public const MAIL     = 2;
