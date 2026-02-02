@@ -380,8 +380,10 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
         if (!$bypass_right_checks) {
             $links = array_filter($links, static function (array $link): bool {
-                /** @var class-string<CommonITILObject> $linked_itemtype */
                 $linked_itemtype = $link['itemtype'];
+                if (!is_a($linked_itemtype, CommonITILObject::class, true)) {
+                    return false;
+                }
                 $linked_item = new $linked_itemtype();
                 return $linked_item->can($link['items_id'], READ);
             });
