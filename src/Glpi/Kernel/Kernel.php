@@ -90,8 +90,14 @@ final class Kernel extends BaseKernel
      */
     public static function getCacheRootDir(): string
     {
+        $suffix = "";
+        $test_token = getenv('TEST_TOKEN');
+        if ($test_token !== false && $test_token !== '') {
+            $suffix = '-' . $test_token;
+        }
+
         // FIXME: Inject it as a DI parameter when corresponding services will be instanciated from the DI system.
-        return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '-' . Environment::get()->value;
+        return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '-' . Environment::get()->value . $suffix;
     }
 
     #[Override()]
