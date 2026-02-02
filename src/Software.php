@@ -727,7 +727,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         }
 
         foreach ($software_without_versions as $software_name => $_) {
-            $values[$software_name] = [];
+            $values[$software_name] = ['' => __('No version available')];
         }
 
         return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
@@ -813,7 +813,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         }
 
         foreach ($software_without_licenses as $software_name => $_) {
-            $values[$software_name] = [];
+            $values[$software_name] = ['' => __('No license available')];
         }
 
         return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
