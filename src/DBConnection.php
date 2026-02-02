@@ -99,8 +99,12 @@ class DBConnection extends CommonGLPI
             case self::PROPERTY_ALLOW_SIGNED_KEYS:
             case self::PROPERTY_SLAVE:
                 return 'bool';
-            default:
+            case 'dbuser':
+            case 'dbpassword':
+            case 'dbdefault':
                 return 'string';
+            default:
+                return '';
         }
     }
 
@@ -159,7 +163,8 @@ class DBConnection extends CommonGLPI
              */
             $exported_value = call_user_func_array('var_export', [$value, true]);
 
-            $config_str .= sprintf('   public %s $%s = %s;', self::getPropertyType($name), $name, $exported_value) . "\n";
+            $property_type = self::getPropertyType($name);
+            $config_str .= sprintf('   public %s$%s = %s;', empty($property_type) ? '' : $property_type . ' ', $name, $exported_value) . "\n";
         }
         $config_str .= '}' . "\n";
 
@@ -277,9 +282,11 @@ class DBConnection extends CommonGLPI
                     $config_str = str_replace($matches['line'], $updated_line, $config_str);
                 } else {
                     // Property declaration is not located in config file, we have to add it.
+                    $property_type = self::getPropertyType($name);
+
                     $ending_bracket_pos = mb_strrpos($config_str, '}');
                     $config_str = mb_substr($config_str, 0, $ending_bracket_pos)
-                    . sprintf('   public %s $%s = %s;', self::getPropertyType($name), $name, var_export($value, true)) . "\n"
+                    . sprintf('   public %s$%s = %s;', empty($property_type) ? '' : $property_type . ' ', $name, var_export($value, true)) . "\n"
                     . mb_substr($config_str, $ending_bracket_pos);
                 }
             }
