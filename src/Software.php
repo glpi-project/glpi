@@ -732,10 +732,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $option_tooltips[$software_name] = ['__optgroup_label' => __('No version available')];
         }
 
-        return Dropdown::showFromArray($myname, $values, [
+        $rand = Dropdown::showFromArray($myname, $values, [
             'display_emptychoice' => true,
             'option_tooltips' => $option_tooltips,
         ]);
+
+        return $rand;
     }
 
     /**
@@ -823,10 +825,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $option_tooltips[$software_name] = ['__optgroup_label' => __('No license available')];
         }
 
-        return Dropdown::showFromArray($myname, $values, [
+        $rand = Dropdown::showFromArray($myname, $values, [
             'display_emptychoice' => true,
             'option_tooltips' => $option_tooltips,
         ]);
+
+        return $rand;
     }
 
     /**
