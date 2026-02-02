@@ -39,6 +39,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Knowbase\SidePanel\CommentsRenderer;
 use Glpi\Knowbase\SidePanel\RendererInterface;
+use Glpi\Knowbase\SidePanel\ServiceCatalogRenderer;
 use KnowbaseItem;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -79,8 +80,9 @@ final class SidePanelController extends AbstractController
     private function getRendererForKey(string $key): RendererInterface
     {
         return match ($key) {
-            'comments' => new CommentsRenderer(),
-            default    => throw new BadRequestHttpException(),
+            'comments'        => new CommentsRenderer(),
+            'service-catalog' => new ServiceCatalogRenderer(),
+            default           => throw new BadRequestHttpException(),
         };
     }
 }
