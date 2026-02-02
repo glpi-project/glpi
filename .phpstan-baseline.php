@@ -3194,6 +3194,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Variable \\$status might not be defined\\.$#',
+	'identifier' => 'variable.undefined',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$instance of static method Database\\:\\:showForInstance\\(\\) expects DatabaseInstance, CommonGLPI given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
