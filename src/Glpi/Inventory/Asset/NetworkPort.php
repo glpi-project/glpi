@@ -831,7 +831,7 @@ class NetworkPort extends InventoryAsset
     }
 
     /**
-     * @param ?string $itemtype
+     * @param ?class-string<CommonDBTM> $itemtype
      * @param ?int $items_id
      *
      * @return void

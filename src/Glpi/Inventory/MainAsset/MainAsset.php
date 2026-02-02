@@ -105,8 +105,7 @@ abstract class MainAsset extends InventoryAsset
 
     public function __construct(CommonDBTM $item, $data)
     {
-        $namespaced = explode('\\', static::class);
-        $this->itemtype = array_pop($namespaced);
+        $this->itemtype = $item::class;
         $this->item = $item;
         //store raw data for reference
         $this->raw_data = $data;

@@ -80,7 +80,7 @@ class DBmysql
     /**
      * The database handler
      */
-    protected ?mysqli $dbh = null;
+    protected mysqli $dbh;
 
     /**
      * Slave management
@@ -933,7 +933,7 @@ class DBmysql
      */
     public function close()
     {
-        if ($this->connected && $this->dbh) {
+        if ($this->connected && isset($this->dbh)) {
             return $this->dbh->close();
         }
         return false;

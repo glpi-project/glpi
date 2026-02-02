@@ -1435,19 +1435,17 @@ class RacksPluginToCoreCommand extends AbstractCommand
                 'vis_rows'       => 10,
             ];
 
-            if (
-                !($room_id = $room->getFromDBByCrit($room_fields))
-                && !($room_id = $room->add($room_fields))
-            ) {
+            if ($room->getFromDBByCrit($room_fields)) {
+                $room_id = $room->fields['id'];
+            } elseif (!($room_id = $room->add($room_fields))) {
                 $this->outputImportError(__('Unable to create default room.'));
-
                 $room_id = 0;
             }
 
             $this->fallback_room_id = $room_id;
         }
 
-        return $this->fallback_room_id;
+        return $this->fallback_room_id ?? 0;
     }
 
     /**

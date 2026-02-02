@@ -1521,7 +1521,7 @@ TWIG, $twig_params);
         //Store rule type being processed (for plugins)
         $params['rule_itemtype']    = static::getRuleClassName();
 
-        if (count($this->RuleList->list)) {
+        if ($this->RuleList !== null && count($this->RuleList->list)) {
             foreach ($this->RuleList->list as $rule) {
                 if ($p['condition'] && !($rule->fields['condition'] & $p['condition'])) {
                     // Rule is loaded in the cache but is not relevant for the current condition
@@ -1618,7 +1618,7 @@ TWIG, $twig_params);
 
         $output["_no_rule_matches"] = true;
 
-        if (count($this->RuleList->list)) {
+        if ($this->RuleList !== null && count($this->RuleList->list)) {
             foreach ($this->RuleList->list as $rule) {
                 // If the rule is active, process it
                 if ($rule->fields["is_active"]) {

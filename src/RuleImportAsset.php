@@ -936,7 +936,7 @@ class RuleImportAsset extends Rule
             $inputrulelog['method'] = 'inventory'; //$class->getMethod();
         }
 
-        if (count($this->actions)) {
+        if ($this->actions !== null && count($this->actions)) {
             foreach ($this->actions as $action) {
                 if ($action->fields["value"] == self::RULE_ACTION_DENIED) {
                     $output['action'] = self::LINK_RESULT_DENIED;

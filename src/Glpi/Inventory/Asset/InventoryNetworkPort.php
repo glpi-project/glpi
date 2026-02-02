@@ -108,8 +108,8 @@ trait InventoryNetworkPort
     /**
      * Manage network ports
      *
-     * @param string  $itemtype Item type, will take current item per default
-     * @param int $items_id Item ID, will take current item per default
+     * @param ?class-string<CommonDBTM> $itemtype Item type, will take current item per default
+     * @param ?int $items_id Item ID, will take current item per default
      *
      * @return void
      */
@@ -119,7 +119,7 @@ trait InventoryNetworkPort
             return;
         }
 
-        $this->port_itemtype = $itemtype ?? $this->item->getType();
+        $this->port_itemtype = $itemtype ?? $this->item::class;
         $this->port_items_id = $items_id ?? $this->item->fields['id'];
 
         if (!$this->isMainPartial()) {

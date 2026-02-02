@@ -125,7 +125,7 @@ class Inventory
     private ?string $inventory_content = null;
     private int $inventory_format;
     private ?MainAsset $mainasset = null;
-    private ?string $request_query = null;
+    private string $request_query = Request::INVENT_QUERY;
     private bool $is_discovery = false;
 
     /**

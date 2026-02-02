@@ -39,8 +39,8 @@
 class HTMLTableCell extends HTMLTableEntity
 {
     private HTMLTableRow $row;
-    private ?HTMLTableHeader $header = null;
-    private ?HTMLTableCell $father = null;
+    private HTMLTableHeader $header;
+    private ?HTMLTableCell $father;
     /** @var array<string, array<self>> */
     private array $sons = [];
     private ?CommonDBTM $item = null;
@@ -81,23 +81,10 @@ class HTMLTableCell extends HTMLTableEntity
             }
 
             if ($this->father->header != $this->header->getFather()) {
-                if (
-                    ($this->father->header instanceof HTMLTableHeader)
-                    && ($this->header->getFather() instanceof HTMLTableHeader)
-                ) {
+                if ($this->header->getFather() instanceof HTMLTableHeader) {
                     throw new HTMLTableCellFatherCoherentHeader($this->header->getFather()->getName()
                                                             . ' != '
                                                             . $this->father->header->getName());
-                }
-
-                if ($this->father->header instanceof HTMLTableHeader) {
-                    throw new HTMLTableCellFatherCoherentHeader('NULL != '
-                                                            . $this->father->header->getName());
-                }
-
-                if ($this->header->getFather() instanceof HTMLTableHeader) {
-                    throw new HTMLTableCellFatherCoherentHeader($this->header->getFather()->getName()
-                                                            . ' != NULL');
                 }
 
                 throw new HTMLTableCellFatherCoherentHeader('NULL != NULL');
