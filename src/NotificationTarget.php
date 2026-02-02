@@ -213,17 +213,22 @@ class NotificationTarget extends CommonDBChild
      */
     public function getFromDBForTarget($notifications_id, $type, $ID)
     {
+        $targets = $this->find([
+            'notifications_id' => $notifications_id,
+            'items_id'         => $ID,
+            'type'             => $type,
+        ]);
 
-        if (
-            $this->getFromDBByCrit([
-                static::getTable() . '.notifications_id'   => $notifications_id,
-                static::getTable() . '.items_id'           => $ID,
-                static::getTable() . '.type'               => $type,
-            ])
-        ) {
-            return true;
+        if (count($targets) === 0) {
+            return false;
         }
-        return false;
+
+        $target = array_shift($targets);
+        foreach ($targets as $duplicated_target) {
+            $this->delete(['id' => $duplicated_target['id']]);
+        }
+        $this->getFromDB($target['id']);
+        return true;
     }
 
     /**

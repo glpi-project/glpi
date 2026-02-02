@@ -677,4 +677,56 @@ class NotificationTargetTest extends DbTestCase
             $this->assertSame($has_admin_target, array_key_exists('1_1', $notification_target->notification_targets));
         }
     }
+
+    public function testUpdateTargetsWithDuplicates()
+    {
+        $this->login();
+
+        $notification = $this->createItem(Notification::class, [
+            'name'         => 'Test notification',
+            'itemtype'     => \Ticket::class,
+            'event'        => 'new',
+            'is_active'    => 1,
+            'entities_id'  => 0,
+        ]);
+
+        $this->createItems(NotificationTarget::class, [
+            [
+                'notifications_id' => $notification->getID(),
+                'type'             => Notification::USER_TYPE,
+                'items_id'         => 3,
+            ],
+            [
+                'notifications_id' => $notification->getID(),
+                'type'             => Notification::USER_TYPE,
+                'items_id'         => 3,
+            ],
+        ]);
+
+        $targets = getAllDataFromTable(
+            NotificationTarget::getTable(),
+            [
+                'notifications_id' => $notification->getID(),
+                'type'             => Notification::USER_TYPE,
+                'items_id'         => 3,
+            ]
+        );
+        $this->assertCount(2, $targets);
+
+        NotificationTarget::updateTargets([
+            'itemtype'         => \Ticket::class,
+            'notifications_id' => $notification->getID(),
+            '_targets'         => [],
+        ]);
+
+        $targets = getAllDataFromTable(
+            NotificationTarget::getTable(),
+            [
+                'notifications_id' => $notification->getID(),
+                'type'             => Notification::USER_TYPE,
+                'items_id'         => 3,
+            ]
+        );
+        $this->assertCount(0, $targets);
+    }
 }
