@@ -756,7 +756,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             $entity_restrict,
             true
         );
-        
+
         $license_where = getEntitiesRestrictCriteria(
             'glpi_softwarelicenses',
             'entities_id',
