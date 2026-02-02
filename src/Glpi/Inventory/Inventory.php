@@ -193,6 +193,7 @@ class Inventory
             //convert legacy format
             $data = json_decode($converter->convert($contentdata));
         } else {
+            $this->inventory_format = Request::JSON_MODE;
             $contentdata = json_encode($data, JSON_PRETTY_PRINT);
         }
 

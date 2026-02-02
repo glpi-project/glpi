@@ -211,7 +211,7 @@ trait InventoryNetworkPort
                 continue;
             }
 
-            if ($this->ipnetwork_stmt == null) {
+            if (!isset($this->ipnetwork_stmt)) {
                 $criteria = [
                     'COUNT'  => 'cnt',
                     'FROM'   => IPNetwork::getTable(),
@@ -597,7 +597,7 @@ trait InventoryNetworkPort
         }
 
         if (property_exists($data, 'mac')) {
-            if ($this->idevice_stmt == null) {
+            if (!isset($this->idevice_stmt)) {
                 $criteria = [
                     'SELECT' => 'id',
                     'FROM'   => Item_DeviceNetworkCard::getTable(),

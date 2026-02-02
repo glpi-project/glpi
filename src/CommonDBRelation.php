@@ -47,8 +47,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // Item 1 information
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
-    public static ?string $itemtype_1; // Type ref or field name (must start with itemtype)
-    public static ?string $items_id_1; // Field name
+    public static ?string $itemtype_1 = null; // Type ref or field name (must start with itemtype)
+    public static ?string $items_id_1 = null; // Field name
     /** @var bool If entity must be taken from item 1 */
     public static bool $take_entity_1          = true;
     // * rights
@@ -73,8 +73,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // Item 2 information
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
-    public static ?string $itemtype_2; // Type ref or field name (must start with itemtype)
-    public static ?string $items_id_2; // Field name
+    public static ?string $itemtype_2 = null; // Type ref or field name (must start with itemtype)
+    public static ?string $items_id_2 = null; // Field name
     /** @var bool If entity must be taken from item 2 */
     public static bool $take_entity_2          = false;
     // * rights

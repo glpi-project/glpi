@@ -63,7 +63,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
     /**
      * Current row value.
      */
-    private mixed $row;
+    private mixed $row = null;
 
     /**
      * Current pointer position.
