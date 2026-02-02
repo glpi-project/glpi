@@ -7998,10 +7998,7 @@ abstract class CommonITILObject extends CommonDBTM
         // documents associated to followups
         if (
             $bypass_rights ||
-            (
-                $user === null &&
-                ITILFollowup::canView()
-            ) ||
+            ITILFollowup::canView() ||
             (
                 $user !== null &&
                 $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
@@ -8042,10 +8039,7 @@ abstract class CommonITILObject extends CommonDBTM
         // documents associated to solutions
         if (
             $bypass_rights ||
-            (
-                $user === null &&
-                ITILSolution::canView()
-            ) ||
+            ITILSolution::canView() ||
             (
                 $user !== null &&
                 $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
@@ -8075,10 +8069,7 @@ abstract class CommonITILObject extends CommonDBTM
             class_exists($validation_class) &&
             (
                 $bypass_rights ||
-                (
-                    $user === null &&
-                    $validation_class::canView()
-                ) ||
+                $validation_class::canView() ||
                 (
                     $user !== null &&
                     $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
@@ -8105,10 +8096,7 @@ abstract class CommonITILObject extends CommonDBTM
         // documents associated to tasks
         if (
             $bypass_rights ||
-            (
-                $user === null &&
-                $task_class::canView()
-            ) ||
+            $task_class::canView() ||
             (
                 $user !== null &&
                 $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
