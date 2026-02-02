@@ -658,32 +658,68 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public static function dropdownSoftwareToInstall($myname, $entity_restrict)
     {
-        global $CFG_GLPI;
+        global $DB;
 
-        // Make a select box
         $where = getEntitiesRestrictCriteria(
             'glpi_softwares',
             'entities_id',
             $entity_restrict,
             true
         );
-        $rand = Dropdown::show('Software', ['condition' => ['WHERE' => $where]]);
 
-        $paramsselsoft = [
-            'softwares_id' => '__VALUE__',
-            'myname'       => $myname,
-        ];
+        $iterator = $DB->request([
+            'SELECT'    => [
+                'glpi_softwares.id AS software_id',
+                'glpi_softwares.name AS software_name',
+                'glpi_softwareversions.id AS version_id',
+                'glpi_softwareversions.name AS version_name',
+                'glpi_states.name AS state_name',
+            ],
+            'FROM'      => 'glpi_softwares',
+            'INNER JOIN' => [
+                'glpi_softwareversions' => [
+                    'ON' => [
+                        'glpi_softwareversions' => 'softwares_id',
+                        'glpi_softwares'        => 'id',
+                    ],
+                ],
+            ],
+            'LEFT JOIN' => [
+                'glpi_states' => [
+                    'ON' => [
+                        'glpi_softwareversions' => 'states_id',
+                        'glpi_states'           => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'     => [
+                'glpi_softwares.is_deleted'   => 0,
+                'glpi_softwares.is_template'  => 0,
+            ] + $where,
+            'ORDERBY'   => ['glpi_softwares.name', 'glpi_softwareversions.name'],
+        ]);
 
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_softwares_id$rand",
-            "show_" . $myname . $rand,
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownInstallVersion.php",
-            $paramsselsoft
-        );
+        $values = [];
+        foreach ($iterator as $data) {
+            $software_name = $data['software_name'];
+            $version_id = $data['version_id'];
+            $version_name = $data['version_name'];
 
-        echo "<span id='show_" . htmlescape($myname . $rand) . "'>&nbsp;</span>\n";
+            $version_display = $version_name;
+            if (empty($version_display) || $_SESSION['glpiis_ids_visible']) {
+                $version_display = sprintf(__('%1$s (%2$s)'), $version_display, $version_id);
+            }
+            if (!empty($data['state_name'])) {
+                $version_display = sprintf(__('%1$s - %2$s'), $version_display, $data['state_name']);
+            }
 
-        return $rand;
+            if (!isset($values[$software_name])) {
+                $values[$software_name] = [];
+            }
+            $values[$software_name][$version_id] = $version_display;
+        }
+
+        return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
     }
 
     /**
@@ -696,16 +732,17 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict)
     {
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         $iterator = $DB->request([
-            'SELECT'          => [
-                'glpi_softwares.id',
-                'glpi_softwares.name',
+            'SELECT'    => [
+                'glpi_softwares.id AS software_id',
+                'glpi_softwares.name AS software_name',
+                'glpi_softwarelicenses.id AS license_id',
+                'glpi_softwarelicenses.name AS license_name',
             ],
-            'DISTINCT'        => true,
-            'FROM'            => 'glpi_softwares',
-            'INNER JOIN'      => [
+            'FROM'      => 'glpi_softwares',
+            'INNER JOIN' => [
                 'glpi_softwarelicenses' => [
                     'ON' => [
                         'glpi_softwarelicenses' => 'softwares_id',
@@ -713,35 +750,31 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                     ],
                 ],
             ],
-            'WHERE'           => [
-                'glpi_softwares.is_deleted'    => 0,
+            'WHERE'     => [
+                'glpi_softwares.is_deleted'   => 0,
                 'glpi_softwares.is_template'  => 0,
             ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', $entity_restrict, true),
-            'ORDERBY'         => 'glpi_softwares.name',
+            'ORDERBY'   => ['glpi_softwares.name', 'glpi_softwarelicenses.name'],
         ]);
 
         $values = [];
         foreach ($iterator as $data) {
-            $softwares_id          = $data["id"];
-            $values[$softwares_id] = $data["name"];
+            $software_name = $data['software_name'];
+            $license_id = $data['license_id'];
+            $license_name = $data['license_name'];
+
+            $license_display = $license_name;
+            if (empty($license_display) || $_SESSION['glpiis_ids_visible']) {
+                $license_display = sprintf(__('%1$s (%2$s)'), $license_display, $license_id);
+            }
+
+            if (!isset($values[$software_name])) {
+                $values[$software_name] = [];
+            }
+            $values[$software_name][$license_id] = $license_display;
         }
-        $rand = Dropdown::showFromArray('softwares_id', $values, ['display_emptychoice' => true]);
 
-        $paramsselsoft = ['softwares_id'    => '__VALUE__',
-            'entity_restrict' => $entity_restrict,
-            'myname'          => $myname,
-        ];
-
-        Ajax::updateItemOnSelectEvent(
-            "dropdown_softwares_id$rand",
-            "show_" . $myname . $rand,
-            $CFG_GLPI["root_doc"] . "/ajax/dropdownSoftwareLicense.php",
-            $paramsselsoft
-        );
-
-        echo "<span id='show_" . htmlescape($myname . $rand) . "'>&nbsp;</span>\n";
-
-        return $rand;
+        return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
     }
 
     /**
