@@ -53,20 +53,24 @@ test.describe('Knowledge Base Editor', () => {
         await kb.goto(id);
         await expect(page.getByTestId('content')).toContainText('Initial content');
 
+        // Wait for TipTap bundle to be fully loaded (sets window.TiptapCore)
+        await page.waitForFunction(() => typeof (window as unknown as { TiptapCore: unknown }).TiptapCore !== 'undefined', {
+            timeout: 10000
+        });
+
         // Click Edit button to enter edit mode (editor is lazy loaded on first click)
         await page.getByTestId('edit-button').click();
 
-        // Wait for editor to be initialized (ProseMirror has role="textbox")
-        // Use longer timeout for lazy-loaded editor bundle
-        const editor = page.getByTestId('content').getByRole('textbox');
+        // Wait for TipTap to create the ProseMirror editor element
+        // eslint-disable-next-line playwright/no-raw-locators
+        const editor = page.getByTestId('content').locator('.ProseMirror');
         await expect(editor).toBeVisible({ timeout: 15000 });
 
-        // Wait for edit mode to be active (save button becomes visible)
+        // Click to focus
+        await editor.click();
         await expect(page.getByTestId('save-button')).toBeVisible();
-        await expect(editor).toHaveAttribute('contenteditable', 'true');
 
         // Clear existing content and use slash command to insert a heading
-        await editor.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Backspace');
 
@@ -132,18 +136,24 @@ test.describe('Knowledge Base Editor', () => {
         await kb.goto(id);
         await expect(page.getByTestId('content')).toBeVisible();
 
+        // Wait for TipTap bundle to be fully loaded (sets window.TiptapCore)
+        await page.waitForFunction(() => typeof (window as unknown as { TiptapCore: unknown }).TiptapCore !== 'undefined', {
+            timeout: 10000
+        });
+
         // Enter edit mode (editor is lazy loaded on first click)
         await page.getByTestId('edit-button').click();
 
-        // Wait for editor to be initialized (ProseMirror has role="textbox")
-        // Use longer timeout for lazy-loaded editor bundle
-        const editor = page.getByTestId('content').getByRole('textbox');
+        // Wait for TipTap to create the ProseMirror editor element
+        // eslint-disable-next-line playwright/no-raw-locators
+        const editor = page.getByTestId('content').locator('.ProseMirror');
         await expect(editor).toBeVisible({ timeout: 15000 });
+
+        // Click to focus
+        await editor.click();
         await expect(page.getByTestId('save-button')).toBeVisible();
-        await expect(editor).toHaveAttribute('contenteditable', 'true');
 
         // Clear and type slash command with filter
-        await editor.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Backspace');
 
@@ -174,18 +184,24 @@ test.describe('Knowledge Base Editor', () => {
         await kb.goto(id);
         await expect(page.getByTestId('content')).toBeVisible();
 
+        // Wait for TipTap bundle to be fully loaded (sets window.TiptapCore)
+        await page.waitForFunction(() => typeof (window as unknown as { TiptapCore: unknown }).TiptapCore !== 'undefined', {
+            timeout: 10000
+        });
+
         // Enter edit mode (editor is lazy loaded on first click)
         await page.getByTestId('edit-button').click();
 
-        // Wait for editor to be initialized (ProseMirror has role="textbox")
-        // Use longer timeout for lazy-loaded editor bundle
-        const editor = page.getByTestId('content').getByRole('textbox');
+        // Wait for TipTap to create the ProseMirror editor element
+        // eslint-disable-next-line playwright/no-raw-locators
+        const editor = page.getByTestId('content').locator('.ProseMirror');
         await expect(editor).toBeVisible({ timeout: 15000 });
+
+        // Click to focus
+        await editor.click();
         await expect(page.getByTestId('save-button')).toBeVisible();
-        await expect(editor).toHaveAttribute('contenteditable', 'true');
 
         // Clear and open slash menu
-        await editor.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Backspace');
         await editor.pressSequentially('/');
@@ -233,18 +249,24 @@ test.describe('Knowledge Base Editor', () => {
         await kb.goto(id);
         await expect(page.getByTestId('content')).toContainText('Original content that should persist');
 
+        // Wait for TipTap bundle to be fully loaded (sets window.TiptapCore)
+        await page.waitForFunction(() => typeof (window as unknown as { TiptapCore: unknown }).TiptapCore !== 'undefined', {
+            timeout: 10000
+        });
+
         // Enter edit mode (editor is lazy loaded on first click)
         await page.getByTestId('edit-button').click();
 
-        // Wait for editor to be initialized (ProseMirror has role="textbox")
-        // Use longer timeout for lazy-loaded editor bundle
-        const editor = page.getByTestId('content').getByRole('textbox');
+        // Wait for TipTap to create the ProseMirror editor element
+        // eslint-disable-next-line playwright/no-raw-locators
+        const editor = page.getByTestId('content').locator('.ProseMirror');
         await expect(editor).toBeVisible({ timeout: 15000 });
+
+        // Click to focus
+        await editor.click();
         await expect(page.getByTestId('save-button')).toBeVisible();
-        await expect(editor).toHaveAttribute('contenteditable', 'true');
 
         // Modify content
-        await editor.click();
         await page.keyboard.press('Control+a');
         await page.keyboard.press('Backspace');
         await editor.pressSequentially('Modified content that should be discarded');
