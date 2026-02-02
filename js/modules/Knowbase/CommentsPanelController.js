@@ -43,6 +43,7 @@ const comment_edit_form_selector = "[data-glpi-comment-edit-form]";
 const comment_edit_textarea_selector = "[data-glpi-comment-edit-textarea]";
 const comment_edit_cancel_selector = "[data-glpi-comment-edit-cancel]";
 const comment_edit_submit_selector = "[data-glpi-comment-edit-submit]";
+const comments_empty_selector = "[data-glpi-comments-empty]";
 
 export class GlpiKnowbaseCommentsPanelController
 {
@@ -201,6 +202,7 @@ export class GlpiKnowbaseCommentsPanelController
         // Delete comment on the client
         comment_card.remove();
         this.#updateCounter(-1);
+        this.#showEmptyStateIfNoComments();
     }
 
     #toggleSubmitButtonVisibility(textarea)
@@ -250,6 +252,7 @@ export class GlpiKnowbaseCommentsPanelController
         const html = await response.text();
         this.#getCommentsDiv().insertAdjacentHTML('beforeend', html);
         this.#updateCounter(1);
+        this.#hideEmptyState();
 
         // Clear input/UI
         this.#getContentTextarea().value = "";
@@ -295,5 +298,24 @@ export class GlpiKnowbaseCommentsPanelController
             const current = parseInt(counter.textContent, 10) || 0;
             counter.textContent = Math.max(0, current + delta);
         }
+    }
+
+    #getEmptyState()
+    {
+        return this.#container.querySelector(comments_empty_selector);
+    }
+
+    #hideEmptyState()
+    {
+        const empty = this.#getEmptyState();
+        empty.classList.add('d-none');
+    }
+
+    #showEmptyStateIfNoComments()
+    {
+        const empty = this.#getEmptyState();
+        const comments = this.#getCommentsDiv();
+        const has_comments = comments.querySelectorAll('[data-testid="comment"]').length > 0;
+        empty.classList.toggle('d-none', has_comments);
     }
 }
