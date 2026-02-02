@@ -10159,4 +10159,37 @@ HTML,
             );
         }
     }
+    public function testUpdateActorsDisabledOrDeleted(): void
+    {
+        $this->login();
+        $user = new User();
+        $user->add([
+            'name' => $this->getUniqueString(),
+            'is_active' => 0,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket for disabled user',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user->getID(),
+        ]);
+
+        $this->checkActors($ticket, []);
+
+        $user->add([
+            'name' => $this->getUniqueString(),
+            'is_deleted' => 1,
+        ]);
+
+        $ticket = $this->createItem(Ticket::class, [
+            'name'        => 'Ticket for deleted user',
+            'content'     => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user->getID(),
+        ]);
+
+        $this->checkActors($ticket, []);
+    }
+
 }

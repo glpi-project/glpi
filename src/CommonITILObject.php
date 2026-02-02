@@ -9359,6 +9359,8 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             'observer',
         ];
 
+        $user_class = new User();
+
         foreach ($actor_types as $actor_type) {
             $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
 
@@ -9585,7 +9587,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     break; // As actor is found, do not continue to list existings
                 }
 
-                if ($found === false) {
+                if ($found === false
+                    && $user_class->getFromDBByCrit([
+                        'id'         => $actor['items_id'],
+                        'is_active'  => 1,
+                        'is_deleted' => 0,
+                    ])
+                ) {
                     $added[] = $actor;
                 }
             }
