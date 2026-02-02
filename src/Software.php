@@ -698,15 +698,15 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         ]);
 
         $values = [];
+        $option_tooltips = [];
         $software_without_versions = [];
 
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
-            $software_id = $data['software_id'];
             $version_id = $data['version_id'];
 
             if ($version_id === null) {
-                $software_without_versions[$software_name] = $software_id;
+                $software_without_versions[$software_name] = true;
                 continue;
             }
 
@@ -727,11 +727,15 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             unset($software_without_versions[$software_name]);
         }
 
-        foreach ($software_without_versions as $software_name => $software_id) {
-            $values[-$software_id] = '<b>' . htmlescape($software_name) . '</b>';
+        foreach ($software_without_versions as $software_name => $_) {
+            $values[$software_name] = [];
+            $option_tooltips[$software_name] = ['__optgroup_label' => __('No version available')];
         }
 
-        return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
+        return Dropdown::showFromArray($myname, $values, [
+            'display_emptychoice' => true,
+            'option_tooltips' => $option_tooltips,
+        ]);
     }
 
     /**
@@ -788,15 +792,15 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         ]);
 
         $values = [];
+        $option_tooltips = [];
         $software_without_licenses = [];
 
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
-            $software_id = $data['software_id'];
             $license_id = $data['license_id'];
 
             if ($license_id === null) {
-                $software_without_licenses[$software_name] = $software_id;
+                $software_without_licenses[$software_name] = true;
                 continue;
             }
 
@@ -814,11 +818,15 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             unset($software_without_licenses[$software_name]);
         }
 
-        foreach ($software_without_licenses as $software_name => $software_id) {
-            $values[-$software_id] = '<b>' . htmlescape($software_name) . '</b>';
+        foreach ($software_without_licenses as $software_name => $_) {
+            $values[$software_name] = [];
+            $option_tooltips[$software_name] = ['__optgroup_label' => __('No license available')];
         }
 
-        return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
+        return Dropdown::showFromArray($myname, $values, [
+            'display_emptychoice' => true,
+            'option_tooltips' => $option_tooltips,
+        ]);
     }
 
     /**
