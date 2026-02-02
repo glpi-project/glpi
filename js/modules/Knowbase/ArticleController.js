@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global glpi_toast_error */
+/* global glpi_toast_error, glpi_confirm_danger */
 
 import { post } from "/js/modules/Ajax.js";
 import { GlpiKnowbaseArticleSidePanelController } from "/js/modules/Knowbase/ArticleSidePanelController.js";
@@ -58,6 +58,12 @@ export class GlpiKnowbaseArticleController
             side_panel_container,
         );
         this.#initEventListeners();
+
+        // Enable dots menu once listeners are ready
+        const dots = this.#container.querySelector('[data-glpi-kb-dots]');
+        if (dots) {
+            dots.classList.remove('pointer-events-none');
+        }
     }
 
     #initEventListeners()
@@ -102,6 +108,9 @@ export class GlpiKnowbaseArticleController
                 }
                 break;
             }
+            case 'DELETE_ARTICLE':
+                this.#deleteItem(params.id);
+                break;
         }
     }
 
@@ -137,5 +146,24 @@ export class GlpiKnowbaseArticleController
         } catch {
             toggle.checked = !value;
         }
+    }
+
+    /**
+     * @param {number} id
+     */
+    async #deleteItem(id)
+    {
+        const confirmed = await glpi_confirm_danger({
+            title: __('Delete article'),
+            message: __('Are you sure you want to delete this article?'),
+            confirm_label: __('Delete'),
+        });
+        if (!confirmed) {
+            return;
+        }
+
+        const response = await post(`Knowbase/KnowbaseItem/${id}/Delete`, {});
+        const body = await response.json();
+        window.location.href = body.redirect;
     }
 }
