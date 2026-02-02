@@ -1066,6 +1066,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $input = parent::prepareInputForUpdate($input);
+        if (is_array($input) && array_key_exists('_skip_rules', $input)) {
+            unset($input['_skip_rules']);
+        }
         return $input;
     }
 
