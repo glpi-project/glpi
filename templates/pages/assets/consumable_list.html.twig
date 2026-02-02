@@ -78,12 +78,13 @@
                                 ) }}
 
                                 {% set add_several %}
-                                    <input
+                                    <button
                                         type="submit"
                                         name="add_several"
-                                        value="{{ _x('button', 'Add consumables') }}"
                                         class='btn btn-primary'
-                                    />
+                                    >
+                                        <i class='ti ti-plus'></i><span>{{ _x('button', 'Add consumables') }}</span>
+                                    </button>
                                 {% endset %}
 
                                 {{ fields.htmlField(
