@@ -9284,60 +9284,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/AddCommentController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$input of method CommonDBTM\\:\\:delete\\(\\) expects array\\<string, mixed\\>, array\\<string, mixed\\>\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/DeleteCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\ToggleFieldController\\:\\:update\\(\\) should return CommonDBTM but returns CommonDBTM\\|false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/ToggleFieldController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method can\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method getFromDB\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Cannot call method update\\(\\) on CommonDBTM\\|false\\.$#',
-	'identifier' => 'method.nonObject',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Controller\\\\Knowbase\\\\UpdateCommentController\\:\\:update\\(\\) should return CommonDBTM but returns CommonDBTM\\|false\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Controller/Knowbase/UpdateCommentController.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\$status of class Symfony\\\\Component\\\\HttpFoundation\\\\Response constructor expects int, bool\\|int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,

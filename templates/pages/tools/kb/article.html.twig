@@ -37,7 +37,8 @@
             <div class="dropdown ms-auto cursor-pointer d-flex align-items-center">
                 {% if edit_mode and actions|length > 0 %}
                     <i
-                        class="ti ti-dots-vertical"
+                        class="ti ti-dots-vertical pointer-events-none"
+                        data-glpi-kb-dots
                         data-bs-toggle="dropdown"
                         aria-expanded="false"
                         role="button"
@@ -48,7 +49,7 @@
                             <li>
                                 <button
                                     type="button"
-                                    class="dropdown-item"
+                                    class="dropdown-item {{ action.is_danger ? "text-danger" : "" }}"
                                     aria-label="{{ action.label }}"
                                     data-glpi-kb-action="{{ action.type.value }}"
                                     {% for key, param in action.params %}
