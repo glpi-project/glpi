@@ -146,6 +146,7 @@ test('Can delete a comment', async ({ page, profile, api }) => {
     await kb.getButton('Comments').click();
     await expect(page.getByTestId('comments-counter')).toHaveText("1");
     await expect(kb.getHeading('Comments')).toBeVisible();
+    await expect(page.getByText('No comments yet.')).toBeHidden();
 
     // Comment should be visible
     const comment = page.getByTestId('comment').filter({ hasText: 'Comment to delete' });
@@ -167,4 +168,5 @@ test('Can delete a comment', async ({ page, profile, api }) => {
     // Comment should be removed
     await expect(comment).not.toBeAttached();
     await expect(page.getByTestId('comments-counter')).toHaveText("0");
+    await expect(page.getByText('No comments yet.')).toBeVisible();
 });
