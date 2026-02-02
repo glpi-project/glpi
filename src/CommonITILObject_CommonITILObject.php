@@ -362,10 +362,11 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @param string $itemtype Itemtype of the ITIL Object (Ticket, Change, or Problem)
      * @param int $items_id ID of the ITIL Object
+     * @param bool $bypass_right_checks If true, skip READ rights verification (default: false - checks rights)
      *
      * @return array Array of linked ITIL Objects  array(id=>linktype)
      **/
-    public static function getAllLinkedTo(string $itemtype, int $items_id): array
+    public static function getAllLinkedTo(string $itemtype, int $items_id, bool $bypass_right_checks = false): array
     {
         $link_classes = self::getAllLinkClasses();
         $links = [];
@@ -375,6 +376,15 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             if ($link_class::$itemtype_1 === $itemtype || $link_class::$itemtype_2 === $itemtype) {
                 $links = array_merge($links, $link_class::getLinkedTo($itemtype, $items_id));
             }
+        }
+
+        if (!$bypass_right_checks) {
+            $links = array_filter($links, static function (array $link): bool {
+                /** @var class-string<CommonITILObject> $linked_itemtype */
+                $linked_itemtype = $link['itemtype'];
+                $linked_item = new $linked_itemtype();
+                return $linked_item->can($link['items_id'], READ);
+            });
         }
 
         ksort($links);
@@ -499,12 +509,13 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @param string $itemtype
      * @param int $items_id
+     * @param bool $bypass_right_checks If true, skip READ rights verification (default: false - checks rights)
      *
      * @return int
      */
-    public static function countAllLinks(string $itemtype, int $items_id): int
+    public static function countAllLinks(string $itemtype, int $items_id, bool $bypass_right_checks = false): int
     {
-        $links = static::getAllLinkedTo($itemtype, $items_id);
+        $links = static::getAllLinkedTo($itemtype, $items_id, $bypass_right_checks);
         return count($links);
     }
 
