@@ -58,11 +58,19 @@
                                     <i class="{{ action.icon }}"></i>
                                     <span>{{ action.label }}</span>
 
+                                    {% if action.counter is not null %}
+                                        <span
+                                            class="badge glpi-badge ms-auto"
+                                            data-testid="{{ action.params.key }}-counter"
+                                            data-glpi-kb-action-counter="{{ action.params.key }}"
+                                        >{{ action.counter }}</span>
+                                    {% endif %}
+
                                     {% if action.type.value == "TOGGLE_VALUE" %}
                                         <label class="form-check form-switch ms-auto mb-0">
                                             <input
                                                 type="checkbox"
-                                                class="form-check-input"
+                                                class="form-check-input ms-0"
                                                 {{ action.params.checked ? 'checked' : '' }}
                                             >
                                         </label>
