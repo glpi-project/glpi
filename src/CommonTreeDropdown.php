@@ -563,7 +563,7 @@ abstract class CommonTreeDropdown extends CommonDropdown
                                 {% endif %}
                             </div>
                             <div class="d-flex flex-row-reverse pe-2">
-                                <button type="submit" name="add" class="btn btn-primary">{{ btn_label }}</button>
+                                <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                             </div>
                         </div>
                     </form>
