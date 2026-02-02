@@ -47,6 +47,8 @@ use DomainRelation;
 use Dropdown;
 use Entity;
 use Exception;
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity\IsInventoriableCapacity;
 use Glpi\Inventory\Asset\Controller;
 use Glpi\Inventory\Asset\Firmware;
 use Glpi\Inventory\Asset\InventoryAsset;
@@ -1186,5 +1188,31 @@ abstract class MainAsset extends InventoryAsset
     {
         $this->is_discovery = $disco;
         return $this;
+    }
+
+    /**
+     * Can type be inventoried from SNMP?
+     *
+     * @parma class-string<CommonDBTM> $itemtype
+     *
+     * @return bool
+     */
+    public function isSnmpInventoriable(string $itemtype): bool
+    {
+        if (in_array($itemtype, [\NetworkEquipment::class, \Printer::class, \Unmanaged::class])) {
+            return true;
+        }
+
+        //check for generic asset which can be inventoried as NetworkEquipment or Printer
+        $definition = AssetDefinitionManager::getInstance()->getDefinition($itemtype);
+        if ($definition && $definition->hasCapacityEnabled(new IsInventoriableCapacity())) {
+            $asset_classname = $definition->getAssetClassName();
+            if ($asset_classname === GenericNetworkAsset::class || $asset_classname === GenericPrinterAsset::class) {
+                return true;
+            }
+        }
+
+        //we get an itemtype that cannot be inventoried from SNMP (like Computer, Phone, GenericAsset, ...)
+        return false;
     }
 }
