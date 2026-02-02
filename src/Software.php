@@ -746,7 +746,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      * @param string $myname select name
      * @param int|array<int> $entity_restrict restrict to a defined entity
      *
-     * @return int random part of elements id
+     * @return int|string random part of elements id
      **/
     public static function dropdownLicenseToInstall($myname, $entity_restrict): int|string
     {
