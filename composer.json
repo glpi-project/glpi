@@ -107,6 +107,7 @@
     },
     "require-dev": {
         "ext-xml": "*",
+        "brianium/paratest": "^7.8",
         "friendsofphp/php-cs-fixer": "^3.92",
         "friendsoftwig/twigcs": "^6.6",
         "glpi-project/phpstan-glpi": "^1.1",

@@ -44,7 +44,9 @@ use Glpi\Inventory\MainAsset\GenericNetworkAsset;
 use Glpi\Inventory\Request;
 use Glpi\Tests\InventoryTestCase;
 use NetworkEquipment;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group('single-thread')]
 class GenericNetworkAssetInventoryTest extends InventoryTestCase
 {
     /**

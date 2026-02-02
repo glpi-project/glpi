@@ -41,7 +41,9 @@ use Glpi\Inventory\Inventory;
 use Glpi\Inventory\Request;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group('single-thread')]
 class ComputerTest extends AbstractInventoryAsset
 {
     public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';

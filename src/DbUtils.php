@@ -1702,7 +1702,7 @@ final class DbUtils
         }
 
         if (((string) $realname) !== '') {
-            $formatted = $realname;
+            $formatted = (string) $realname;
 
             if (((string) $firstname) !== '') {
                 if ($order == User::FIRSTNAME_BEFORE) {

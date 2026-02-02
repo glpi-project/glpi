@@ -3024,12 +3024,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                     }
                                 }
 
+                                $value = $input[$key];
+
                                 if (
-                                    empty($input[$key])
-                                    || preg_match('/<p>([\s| ]+)?<\/p>/', $input[$key]) !== 0 //check for empty '<p></p>' in rich text
-                                    || ($input[$key] == 'NULL')
-                                    || (is_array($input[$key])
-                                    && ($input[$key] === [0 => "0"]))
+                                    empty($value)
+                                    || $value === 'NULL'
+                                    || (is_string($value) && preg_replace('/<p>([\s| ]+)?<\/p>/', '', $value) === '') //check for empty '<p></p>' in rich text
+                                    || (is_array($value) && $value === [0 => "0"])
                                 ) {
                                     $mandatory_missing[$key] = $fieldsname[$val];
                                 }
