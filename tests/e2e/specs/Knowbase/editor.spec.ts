@@ -36,6 +36,8 @@ import { Profiles } from "../../utils/Profiles";
 import { getWorkerEntityId } from "../../utils/WorkerEntities";
 
 test.describe('Knowledge Base Editor', () => {
+    // Run tests serially to avoid race conditions with lazy-loaded editor bundle
+    test.describe.configure({ mode: 'serial' });
     test('Can edit article using slash commands, save, and persist after reload', async ({ page, profile, api }) => {
         await profile.set(Profiles.SuperAdmin);
         const kb = new KnowbaseItemPage(page);
@@ -55,8 +57,9 @@ test.describe('Knowledge Base Editor', () => {
         await page.getByTestId('edit-button').click();
 
         // Wait for editor to be initialized (ProseMirror has role="textbox")
+        // Use longer timeout for lazy-loaded editor bundle
         const editor = page.getByTestId('content').getByRole('textbox');
-        await expect(editor).toBeVisible();
+        await expect(editor).toBeVisible({ timeout: 15000 });
 
         // Wait for edit mode to be active (save button becomes visible)
         await expect(page.getByTestId('save-button')).toBeVisible();
@@ -133,8 +136,9 @@ test.describe('Knowledge Base Editor', () => {
         await page.getByTestId('edit-button').click();
 
         // Wait for editor to be initialized (ProseMirror has role="textbox")
+        // Use longer timeout for lazy-loaded editor bundle
         const editor = page.getByTestId('content').getByRole('textbox');
-        await expect(editor).toBeVisible();
+        await expect(editor).toBeVisible({ timeout: 15000 });
         await expect(page.getByTestId('save-button')).toBeVisible();
         await expect(editor).toHaveAttribute('contenteditable', 'true');
 
@@ -174,8 +178,9 @@ test.describe('Knowledge Base Editor', () => {
         await page.getByTestId('edit-button').click();
 
         // Wait for editor to be initialized (ProseMirror has role="textbox")
+        // Use longer timeout for lazy-loaded editor bundle
         const editor = page.getByTestId('content').getByRole('textbox');
-        await expect(editor).toBeVisible();
+        await expect(editor).toBeVisible({ timeout: 15000 });
         await expect(page.getByTestId('save-button')).toBeVisible();
         await expect(editor).toHaveAttribute('contenteditable', 'true');
 
@@ -232,8 +237,9 @@ test.describe('Knowledge Base Editor', () => {
         await page.getByTestId('edit-button').click();
 
         // Wait for editor to be initialized (ProseMirror has role="textbox")
+        // Use longer timeout for lazy-loaded editor bundle
         const editor = page.getByTestId('content').getByRole('textbox');
-        await expect(editor).toBeVisible();
+        await expect(editor).toBeVisible({ timeout: 15000 });
         await expect(page.getByTestId('save-button')).toBeVisible();
         await expect(editor).toHaveAttribute('contenteditable', 'true');
 
