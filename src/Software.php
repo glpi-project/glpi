@@ -702,10 +702,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
+            $software_id = $data['software_id'];
             $version_id = $data['version_id'];
 
             if ($version_id === null) {
-                $software_without_versions[$software_name] = true;
+                $software_without_versions[$software_name] = $software_id;
                 continue;
             }
 
@@ -726,8 +727,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             unset($software_without_versions[$software_name]);
         }
 
-        foreach ($software_without_versions as $software_name => $_) {
-            $values[$software_name] = [0 => __('No version available')];
+        foreach ($software_without_versions as $software_name => $software_id) {
+            $values[-$software_id] = '<b>' . $software_name . '</b>';
         }
 
         return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
@@ -791,10 +792,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
+            $software_id = $data['software_id'];
             $license_id = $data['license_id'];
 
             if ($license_id === null) {
-                $software_without_licenses[$software_name] = true;
+                $software_without_licenses[$software_name] = $software_id;
                 continue;
             }
 
@@ -812,8 +814,8 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             unset($software_without_licenses[$software_name]);
         }
 
-        foreach ($software_without_licenses as $software_name => $_) {
-            $values[$software_name] = [0 => __('No license available')];
+        foreach ($software_without_licenses as $software_name => $software_id) {
+            $values[-$software_id] = '<b>' . $software_name . '</b>';
         }
 
         return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
