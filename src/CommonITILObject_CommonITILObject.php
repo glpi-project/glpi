@@ -513,7 +513,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
      *
      * @return int
      */
-    public static function countAllLinks(string $itemtype, int $items_id, bool $bypass_right_checks = false): int
+    public static function countAllLinks(string $itemtype, int $items_id, $bypass_right_checks = false): int
     {
         $links = static::getAllLinkedTo($itemtype, $items_id, $bypass_right_checks);
         return count($links);
