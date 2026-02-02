@@ -2774,7 +2774,7 @@ class APIRestTest extends TestCase
                 'url' => 'getMassiveActionParameters/Computer/Item_SoftwareVersion:add',
                 'status' => 200,
                 'response' => [
-                    ["name" => "softwares_id", "type" => "dropdown"],
+                    ["name" => "peer_softwareversions_id", "type" => "dropdown"],
                 ],
             ],
             [
