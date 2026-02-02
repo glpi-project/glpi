@@ -59,7 +59,7 @@ class Itemtype extends MainAsset
     {
         $namespaced = explode('\\', static::class);
         if ($item = getItemForItemtype(array_pop($namespaced))) {
-           $this->itemtype = $item::class;
+            $this->itemtype = $item::class;
         }
         //store raw data for reference
         $this->raw_data = $data;
