@@ -3369,11 +3369,10 @@ class Plugin extends CommonDBTM
     final public function getPluginsUpdatableAlert(): string
     {
 
-        $updates = MarketplaceController::getAllUpdates();
         return TemplateRenderer::getInstance()->render(
             'pages/admin/plugins/updatable_alert.html.twig',
             [
-                'count' => count($updates),
+                'count' => MarketplaceController::countUpdatablePlugins()
             ]
         );
     }

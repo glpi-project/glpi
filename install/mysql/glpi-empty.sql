@@ -5540,6 +5540,7 @@ CREATE TABLE `glpi_plugins` (
   `author` varchar(255) DEFAULT NULL,
   `homepage` varchar(255) DEFAULT NULL,
   `license` varchar(255) DEFAULT NULL,
+  `highest_available_version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`directory`),
   KEY `name` (`name`),

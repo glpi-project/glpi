@@ -647,8 +647,8 @@ class Central extends CommonGLPI
             }
 
             // Check for available plugin updates
-            $updates = Controller::getAllUpdates();
-            if (($count = count($updates)) > 0) {
+            $count = Controller::countUpdatablePlugins();
+            if ($count > 0) {
                 $messages['warnings'][] = sprintf(
                     _n('You have %d plugin to update', 'You have %d plugins to update', $count),
                     $count
