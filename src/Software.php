@@ -656,7 +656,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return int random part of elements id
      **/
-    public static function dropdownSoftwareToInstall($myname, $entity_restrict)
+    public static function dropdownSoftwareToInstall($myname, $entity_restrict): int
     {
         global $DB;
 
@@ -748,7 +748,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
      *
      * @return int random part of elements id
      **/
-    public static function dropdownLicenseToInstall($myname, $entity_restrict)
+    public static function dropdownLicenseToInstall($myname, $entity_restrict): int
     {
         global $DB;
 
