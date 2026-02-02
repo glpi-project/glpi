@@ -39,7 +39,7 @@
             {{ fields.csrfField() }}
             <button type="submit" name="action" value="resume_all_execution" class="btn btn-sm btn-primary me-1">
                 <i class="ti ti-player-play-filled"></i>
-                <span>{{ __('Resume execution of all active plugins') }}</span>
+                {{ __('Resume execution of all active plugins') }}
             </button>
         </form>
     </div>
@@ -49,7 +49,7 @@
             {{ fields.csrfField() }}
             <button type="submit" name="action" value="suspend_all_execution" class="btn btn-primary me-1">
                 <i class="ti ti-player-pause-filled"></i>
-                <span>{{ __('Suspend execution of all plugins') }}</span>
+                {{ __('Suspend execution of all plugins') }}
             </button>
         </form>
     </div>
