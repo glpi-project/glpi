@@ -3533,7 +3533,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->isField('states_id') && $this->getType() != 'State') {
             $name = Dropdown::getDropdownName('glpi_states', $this->fields['states_id']);
-            if (strlen($name) > 0) {
+            if ((string) $name !== '') {
                 $toadd[] = [
                     'name'  => __s('Status'),
                     'value' => htmlescape($name),
@@ -3543,7 +3543,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->isField('locations_id') && $this->getType() != 'Location') {
             $name = Dropdown::getDropdownName("glpi_locations", $this->fields['locations_id']);
-            if (strlen($name) > 0) {
+            if ((string) $name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(Location::getTypeName(1)),
                     'value' => htmlescape($name),
@@ -3553,7 +3553,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->isField('users_id')) {
             $name = getUserName($this->fields['users_id']);
-            if (strlen($name) > 0) {
+            if ((string) $name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(User::getTypeName(1)),
                     'value' => htmlescape($name),
@@ -3568,7 +3568,7 @@ class CommonDBTM extends CommonGLPI
             }
             foreach ($groups as $group) {
                 $name = Dropdown::getDropdownName("glpi_groups", $group);
-                if (strlen($name) > 0) {
+                if ((string) $name !== '') {
                     $toadd[] = [
                         'name'  => htmlescape(Group::getTypeName(1)),
                         'value' => htmlescape($name),
@@ -3579,7 +3579,7 @@ class CommonDBTM extends CommonGLPI
 
         if ($this->isField('users_id_tech')) {
             $name = getUserName($this->fields['users_id_tech']);
-            if (strlen($name) > 0) {
+            if ((string) $name !== '') {
                 $toadd[] = [
                     'name'  => htmlescape(__('Technician in charge')),
                     'value' => htmlescape($name),
