@@ -35,20 +35,34 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use ApplianceType;
 use AutoUpdateSystem;
 use Blacklist;
 use BlacklistedMailContent;
+use BudgetType;
 use BusinessCriticity;
 use CableStrand;
 use CableType;
 use Calendar;
+use CartridgeItemType;
+use CertificateType;
 use ChangeTemplate;
+use ClusterType;
 use CommonDBTM;
+use ComputerModel;
+use ComputerType;
+use ConsumableItemType;
+use ContactType;
+use ContractType;
 use DatabaseInstanceCategory;
 use DatabaseInstanceType;
+use DeviceHardDriveType;
 use DocumentCategory;
 use DocumentType;
+use DomainRecordType;
+use DomainType;
 use DropdownVisibility;
+use EnclosureModel;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -64,20 +78,37 @@ use ITILCategory;
 use ITILFollowupTemplate;
 use ITILValidationTemplate;
 use KnowbaseItemCategory;
+use LineType;
 use Location;
 use Manufacturer;
+use MonitorModel;
+use MonitorType;
+use NetworkEquipmentModel;
+use NetworkEquipmentType;
 use NetworkPortFiberchannelType;
+use NetworkPortType;
 use PCIVendor;
+use PeripheralModel;
+use PeripheralType;
+use PhoneModel;
+use PhoneType;
 use Planning;
 use PlanningEventCategory;
+use PrinterModel;
+use PrinterType;
 use ProblemTemplate;
+use ProjectTaskType;
+use ProjectType;
 use RequestType;
+use SoftwareLicenseType;
 use SolutionTemplate;
 use SolutionType;
 use State;
+use SupplierType;
 use TaskCategory;
 use TaskTemplate;
 use TicketTemplate;
+use Toolbox;
 use USBVendor;
 use User;
 use ValidationStep;
@@ -938,6 +969,872 @@ EOT,
             ],
         ];
 
+        $schemas['ComputerModel'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ComputerModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'rack_units' => [
+                    'x-field' => 'required_units',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'minimum' => 1,
+                    'default' => 1,
+                ],
+                'depth' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'default' => 1,
+                    'enum' => [0.25, 0.33, 0.5, 1],
+                ],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ComputerType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ComputerType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['MonitorModel'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => MonitorModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'rack_units' => [
+                    'x-field' => 'required_units',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'minimum' => 1,
+                    'default' => 1,
+                ],
+                'depth' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'default' => 1,
+                    'enum' => [0.25, 0.33, 0.5, 1],
+                ],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['MonitorType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => MonitorType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkEquipmentModel'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => NetworkEquipmentModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'rack_units' => [
+                    'x-field' => 'required_units',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'minimum' => 1,
+                    'default' => 1,
+                ],
+                'depth' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'default' => 1,
+                    'enum' => [0.25, 0.33, 0.5, 1],
+                ],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkEquipmentType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => NetworkEquipmentType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PeripheralModel'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PeripheralModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'rack_units' => [
+                    'x-field' => 'required_units',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'minimum' => 1,
+                    'default' => 1,
+                ],
+                'depth' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'default' => 1,
+                    'enum' => [0.25, 0.33, 0.5, 1],
+                ],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PeripheralType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PeripheralType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PhoneModel'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PhoneModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'picture_front' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PhoneType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PhoneType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PrinterModel'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => PrinterModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING],
+                'picture_front' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'x-version-introduced' => '2.3.0',
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PrinterType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => PrinterType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['EnclosureModel'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => EnclosureModel::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'product_number' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'weight' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'rack_units' => [
+                    'x-field' => 'required_units',
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'minimum' => 1,
+                    'default' => 1,
+                ],
+                'depth' => [
+                    'type' => Doc\Schema::TYPE_NUMBER,
+                    'format' => Doc\Schema::FORMAT_NUMBER_FLOAT,
+                    'default' => 1,
+                    'enum' => [0.25, 0.33, 0.5, 1],
+                ],
+                'power_connections' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'power_consumption' => ['type' => Doc\Schema::TYPE_INTEGER, 'minimum' => 0, 'default' => 0],
+                'is_half_rack' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'picture_front' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_front',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'picture_rear' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'x-mapped-from' => 'picture_rear',
+                    'x-mapper' => static function ($v) {
+                        if (empty($v)) {
+                            return null;
+                        }
+                        return Toolbox::getPictureUrl($v);
+                    },
+                    'readOnly' => true,
+                ],
+                'pictures' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'pictures',
+                        'x-mapper' => static function ($v) {
+                            $pictures = is_array($v) ? $v : importArrayFromDB($v);
+                            return array_map(static fn($picture) => Toolbox::getPictureUrl($picture) ?? '', $pictures);
+                        },
+                        'readOnly' => true,
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ApplianceType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ApplianceType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'external_id' => ['type' => Doc\Schema::TYPE_STRING, 'x-field' => 'externalidentifier', 'maxLength' => 255],
+            ],
+        ];
+
+        $schemas['BudgetType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => BudgetType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['CartridgeItemType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => CartridgeItemType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['CertificateType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => CertificateType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ClusterType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ClusterType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ContactType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ContactType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ContractType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ContractType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ConsumableItemType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ConsumableItemType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['DomainRecordType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => DomainRecordType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'fields' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'JSON encoded array of field definitions. Each field definition is an array containing at least a "key" and "label" string. Optional properties include "placeholder" (string), "quote_value" (boolean), and "is_fqdn" (boolean).',
+                ],
+            ],
+        ];
+
+        $schemas['DomainType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => DomainType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+            ],
+        ];
+
+        $schemas['LineType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => LineType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['NetworkPortType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => NetworkPortType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'iftype' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'x-field' => 'value_decimal',
+                    'description' => 'The interface type as defined by IANA. See https://www.iana.org/assignments/smi-numbers/smi-numbers.xhtml.',
+                    'required' => true,
+                ],
+                'is_importable' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'instantiation_type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [
+                        'NetworkPortEthernet', 'NetworkPortWifi', 'NetworkPortAggregate', 'NetworkPortAlias',
+                        'NetworkPortDialup', 'NetworkPortLocal', 'NetworkPortFiberchannel',
+                    ],
+                ],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ProjectTaskType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ProjectTaskType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['ProjectType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => ProjectType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['LicenseType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => SoftwareLicenseType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'parent' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class, full_schema: 'LicenseType'),
+                'level' => ['type' => Doc\Schema::TYPE_INTEGER, 'readOnly' => true],
+                'completename' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['SupplierType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => SupplierType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['HardDriveType'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => DeviceHardDriveType::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -983,6 +1880,36 @@ EOT,
                 'ValidationTemplate' => ITILValidationTemplate::getTypeName(1),
                 'SolutionType' => SolutionType::getTypeName(1),
                 'ApprovalStep' => ValidationStep::getTypeName(1),
+                'ComputerModel' => ComputerModel::getTypeName(1),
+                'ComputerType' => ComputerType::getTypeName(1),
+                'MonitorModel' => MonitorModel::getTypeName(1),
+                'MonitorType' => MonitorType::getTypeName(1),
+                'NetworkEquipmentModel' => NetworkEquipmentModel::getTypeName(1),
+                'NetworkEquipmentType' => NetworkEquipmentType::getTypeName(1),
+                'PeripheralModel' => PeripheralModel::getTypeName(1),
+                'PeripheralType' => PeripheralType::getTypeName(1),
+                'PhoneModel' => PhoneModel::getTypeName(1),
+                'PhoneType' => PhoneType::getTypeName(1),
+                'PrinterModel' => PrinterModel::getTypeName(1),
+                'PrinterType' => PrinterType::getTypeName(1),
+                'EnclosureModel' => EnclosureModel::getTypeName(1),
+                'ApplianceType' => ApplianceType::getTypeName(1),
+                'BudgetType' => BudgetType::getTypeName(1),
+                'CartridgeItemType' => CartridgeItemType::getTypeName(1),
+                'CertificateType' => CertificateType::getTypeName(1),
+                'ClusterType' => ClusterType::getTypeName(1),
+                'ContactType' => ContactType::getTypeName(1),
+                'ContractType' => ContractType::getTypeName(1),
+                'ConsumableItemType' => ConsumableItemType::getTypeName(1),
+                'DomainRecordType' => DomainRecordType::getTypeName(1),
+                'DomainType' => DomainType::getTypeName(1),
+                'LineType' => LineType::getTypeName(1),
+                'NetworkPortType' => NetworkPortType::getTypeName(1),
+                'ProjectTaskType' => ProjectTaskType::getTypeName(1),
+                'ProjectType' => ProjectType::getTypeName(1),
+                'LicenseType' => SoftwareLicenseType::getTypeName(1),
+                'SupplierType' => SupplierType::getTypeName(1),
+                'HardDriveType' => DeviceHardDriveType::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
@@ -1009,6 +1936,20 @@ EOT,
             'BusinessCriticity', 'DocumentCategory', 'DocumentType', 'VirtualMachineType', 'VirtualMachineModel',
             'VirtualMachineState', 'CableType', 'CableStrand', 'AutoUpdateSystem', 'FollowupTemplate',
             'TaskTemplate', 'SolutionTemplate', 'ValidationTemplate', 'SolutionType', 'ApprovalStep',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getDropdownEndpointTypes23(): array
+    {
+        return [
+            'ComputerModel', 'ComputerType', 'MonitorModel', 'MonitorType', 'NetworkEquipmentModel', 'NetworkEquipmentType',
+            'PeripheralModel', 'PeripheralType', 'PhoneModel', 'PhoneType', 'PrinterModel', 'PrinterType', 'EnclosureModel',
+            'ApplianceType', 'BudgetType', 'CartridgeItemType', 'CertificateType', 'ClusterType', 'ContactType',
+            'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
+            'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType',
         ];
     }
 
@@ -1191,6 +2132,79 @@ EOT,
         description: 'Delete a dropdown of a specific type',
     )]
     public function deleteItem22(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes23'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search dropdowns of a specific type'
+    )]
+    public function search23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes23'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing dropdown of a specific type'
+    )]
+    public function getItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes23'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a dropdown of a specific type'
+    )]
+    public function createItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem23']);
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing dropdown of a specific type'
+    )]
+    public function updateItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getDropdownEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a dropdown of a specific type',
+    )]
+    public function deleteItem23(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());

@@ -41,6 +41,7 @@ use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Holiday;
 use Location;
+use NetworkPortType;
 use PCIVendor;
 use Session;
 use USBVendor;
@@ -78,6 +79,7 @@ class DropdownControllerTest extends HLAPITestCase
                 'date_begin' => '2024-01-01 10:00:00',
                 'date_end' => '2024-12-31 18:00:00',
                 'min_required_approval_percent' => 100,
+                'iftype' => 9999,
             ],
             [
                 'name' => 'testAutoSearch_2',
@@ -86,6 +88,7 @@ class DropdownControllerTest extends HLAPITestCase
                 'date_begin' => '2024-01-01 10:00:00',
                 'date_end' => '2024-12-31 18:00:00',
                 'min_required_approval_percent' => 100,
+                'iftype' => 9999,
             ],
             [
                 'name' => 'testAutoSearch_3',
@@ -94,6 +97,7 @@ class DropdownControllerTest extends HLAPITestCase
                 'date_begin' => '2024-01-01 10:00:00',
                 'date_end' => '2024-12-31 18:00:00',
                 'min_required_approval_percent' => 100,
+                'iftype' => 9999,
             ],
         ];
         $this->api->call(new Request('GET', '/Dropdowns'), function ($call) use ($dataset) {
@@ -127,6 +131,8 @@ class DropdownControllerTest extends HLAPITestCase
                             $params['vendorid'] = 'TST';
                         } elseif ($dropdown['itemtype'] === ValidationStep::class) {
                             $params['min_required_approval_percent'] = 100;
+                        } elseif ($dropdown['itemtype'] === NetworkPortType::class) {
+                            $params['iftype'] = 9999;
                         }
                         $this->api->autoTestCRUD($dropdown['href'], $params);
                     }
@@ -156,6 +162,8 @@ class DropdownControllerTest extends HLAPITestCase
                             $create_request->setParameter('vendorid', 'TST');
                         } elseif ($dropdown['itemtype'] === ValidationStep::class) {
                             $create_request->setParameter('min_required_approval_percent', 100);
+                        } elseif ($dropdown['itemtype'] === NetworkPortType::class) {
+                            $create_request->setParameter('iftype', 9999);
                         }
                         $new_location = null;
                         $new_items_id = null;

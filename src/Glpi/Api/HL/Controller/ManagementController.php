@@ -37,12 +37,16 @@ namespace Glpi\Api\HL\Controller;
 
 use AutoUpdateSystem;
 use Budget;
+use BudgetType;
 use BusinessCriticity;
 use Cluster;
+use ClusterType;
 use CommonDBTM;
 use CommonITILObject;
 use Contact;
+use ContactType;
 use Contract;
+use ContractType;
 use Database;
 use DatabaseInstance;
 use DatabaseInstanceCategory;
@@ -51,6 +55,7 @@ use Datacenter;
 use Document;
 use Document_Item;
 use Domain;
+use DomainType;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -62,13 +67,14 @@ use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group_Item;
 use Line;
+use LineType;
 use Location;
-use LogicException;
 use Manufacturer;
-use Network;
 use SoftwareLicense;
+use SoftwareLicenseType;
 use State;
 use Supplier;
+use SupplierType;
 use User;
 
 #[Route(path: '/Management', tags: ['Management'])]
@@ -173,9 +179,7 @@ final class ManagementController extends AbstractController
     protected static function getRawKnownSchemas(): array
     {
         global $CFG_GLPI;
-        $schemas = [];
 
-        $management_types = self::getManagementTypes(false);
         $fn_get_assignable_restriction = static function (string $itemtype) {
             if (method_exists($itemtype, 'getAssignableVisiblityCriteria')) {
                 $criteria = $itemtype::getAssignableVisiblityCriteria('_');
@@ -187,20 +191,70 @@ final class ManagementController extends AbstractController
             }
             return true;
         };
-
-        foreach ($management_types as $m_class => $m_data) {
-            if (!\is_a($m_class, CommonDBTM::class, true)) {
-                throw new LogicException();
-            }
-            if ($m_class === DatabaseInstanceType::class) {
-                continue;
-            }
-
-            $m_name = $m_data['schema_name'];
-            $schemas[$m_name] = [
-                'x-version-introduced' => $m_data['version_introduced'],
-                'x-itemtype' => $m_class,
+        $fn_get_group_property = (static fn(string $itemtype) => [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
                 'type' => Doc\Schema::TYPE_OBJECT,
+                'x-full-schema' => 'Group',
+                'x-join' => [
+                    'table' => 'glpi_groups', // The table with the desired data
+                    'fkey' => 'groups_id',
+                    'field' => 'id',
+                    'ref-join' => [
+                        'table' => 'glpi_groups_items',
+                        'fkey' => 'id',
+                        'field' => 'items_id',
+                        'condition' => [
+                            'itemtype' => $itemtype,
+                            'type' => Group_Item::GROUP_TYPE_NORMAL,
+                        ],
+                    ],
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ]);
+        $fn_get_group_tech_property = (static fn(string $itemtype) => [
+            'type' => Doc\Schema::TYPE_ARRAY,
+            'items' => [
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-full-schema' => 'Group',
+                'x-join' => [
+                    'table' => 'glpi_groups', // The table with the desired data
+                    'fkey' => 'groups_id',
+                    'field' => 'id',
+                    'ref-join' => [
+                        'table' => 'glpi_groups_items',
+                        'fkey' => 'id',
+                        'field' => 'items_id',
+                        'condition' => [
+                            'itemtype' => $itemtype,
+                            'type' => Group_Item::GROUP_TYPE_TECH,
+                        ],
+                    ],
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'description' => 'ID',
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+        ]);
+
+        $schemas = [
+            'Budget' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Budget::class,
                 'properties' => [
                     'id' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -208,173 +262,344 @@ final class ManagementController extends AbstractController
                         'readOnly' => true,
                     ],
                     'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'type' => self::getDropdownTypeSchema(class: BudgetType::class, full_schema: 'BudgetType'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'value' => [
+                        'type' => Doc\Schema::TYPE_NUMBER,
+                    ],
+                    'date_begin' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE,
+                        'x-field' => 'begin_date',
+                    ],
+                    'date_end' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'format' => Doc\Schema::FORMAT_STRING_DATE,
+                        'x-field' => 'end_date',
+                    ],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
-            ];
-
-            if (method_exists($m_class, 'getAssignableVisiblityCriteria')) {
-                $schemas[$m_name]['x-rights-conditions'] = [
-                    'read' => static fn() => $fn_get_assignable_restriction($m_class),
-                ];
-            }
-
-            // Need instance since some fields are not static even if they aren't related to instances
-            $item = new $m_class();
-
-            if ($item->isField('comment')) {
-                $schemas[$m_name]['properties']['comment'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-
-            if (in_array($m_class, $CFG_GLPI['state_types'], true)) {
-                $schemas[$m_name]['properties']['status'] = self::getDropdownTypeSchema(class: State::class, full_schema: 'State');
-            }
-
-            if (in_array($m_class, $CFG_GLPI['location_types'], true)) {
-                $schemas[$m_name]['properties']['location'] = self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location');
-            }
-
-            if ($item->isEntityAssign()) {
-                $schemas[$m_name]['properties']['entity'] = self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity');
-            }
-            $schemas[$m_name]['properties']['date_creation'] = ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME];
-            $schemas[$m_name]['properties']['date_mod'] = ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME];
-
-            $type_class = $item->getTypeClass();
-            if ($type_class !== null) {
-                $schemas[$m_name]['properties']['type'] = self::getDropdownTypeSchema($type_class);
-            }
-            if ($item->isField('manufacturers_id')) {
-                $schemas[$m_name]['properties']['manufacturer'] = self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer');
-            }
-            $model_class = $item->getModelClass();
-            if ($model_class !== null) {
-                $schemas[$m_name]['properties']['model'] = self::getDropdownTypeSchema($model_class);
-            }
-            $env_class = $m_class . 'Environment';
-            if (class_exists($env_class)) {
-                $schemas[$m_name]['properties']['environment'] = self::getDropdownTypeSchema($env_class);
-            }
-
-            if (in_array($m_class, $CFG_GLPI['assignable_types'], true)) {
-                $schemas[$m_name]['properties']['user_tech'] = self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User');
-
-                $schemas[$m_name]['properties']['group_tech'] = [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups', // The table with the desired data
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                            'ref-join' => [
-                                'table' => 'glpi_groups_items',
+            ],
+            'Cluster' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Cluster::class,
+                'x-rights-conditions' => [
+                    'read' => static fn() => $fn_get_assignable_restriction(Cluster::class),
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'status' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: ClusterType::class, full_schema: 'ClusterType'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'group_tech' => $fn_get_group_tech_property(Cluster::class),
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'group' => $fn_get_group_property(Cluster::class),
+                    'uuid' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'pattern' => Doc\Schema::PATTERN_UUIDV4,
+                        'readOnly' => true,
+                    ],
+                    'autoupdatesystem' => self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
+            'Contact' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Contact::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: ContactType::class, full_schema: 'ContactType'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
+            'Contract' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Contract::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'status' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: ContractType::class, full_schema: 'ContractType'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
+            'Database' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Database::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'instance' => self::getDropdownTypeSchema(class: DatabaseInstance::class, full_schema: 'DatabaseInstance') + [
+                        'x-version-introduced' => '2.2',
+                    ],
+                ],
+            ],
+            'DatabaseInstance' => [
+                'x-version-introduced' => '2.2',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => DatabaseInstance::class,
+                'x-rights-conditions' => [
+                    'read' => static fn() => $fn_get_assignable_restriction(DatabaseInstance::class),
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'version' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'port' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 10], // Why is this a string instead of integer?
+                    'path' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'type' => self::getDropdownTypeSchema(class: DatabaseInstanceType::class, full_schema: 'DatabaseInstanceType'),
+                    'category' => self::getDropdownTypeSchema(class: DatabaseInstanceCategory::class, full_schema: 'DatabaseInstanceCategory'),
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
+                    'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'is_onbackup' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_lastboot' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_lastbackup' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'database' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_OBJECT,
+                            'x-full-schema' => 'Database',
+                            'x-join' => [
+                                'table' => Database::getTable(), // The table with the desired data
                                 'fkey' => 'id',
-                                'field' => 'items_id',
-                                'condition' => [
-                                    'itemtype' => $m_class,
-                                    'type' => Group_Item::GROUP_TYPE_TECH,
+                                'field' => DatabaseInstance::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                            'properties' => [
+                                'id' => [
+                                    'type' => Doc\Schema::TYPE_INTEGER,
+                                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                    'readOnly' => true,
                                 ],
+                                'name' => ['type' => Doc\Schema::TYPE_STRING],
                             ],
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
                         ],
                     ],
-                ];
-
-                $schemas[$m_name]['properties']['user'] = self::getDropdownTypeSchema(class: User::class, full_schema: 'User');
-
-                $schemas[$m_name]['properties']['group'] = [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Group',
-                        'x-join' => [
-                            'table' => 'glpi_groups', // The table with the desired data
-                            'fkey' => 'groups_id',
-                            'field' => 'id',
-                            'ref-join' => [
-                                'table' => 'glpi_groups_items',
-                                'fkey' => 'id',
-                                'field' => 'items_id',
-                                'condition' => [
-                                    'itemtype' => $m_class,
-                                    'type' => Group_Item::GROUP_TYPE_NORMAL,
-                                ],
-                            ],
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'description' => 'ID',
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
+                ],
+            ],
+            'DataCenter' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Datacenter::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
                     ],
-                ];
-            }
-
-            if ($item->isField('contact')) {
-                $schemas[$m_name]['properties']['contact'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($item->isField('contact_num')) {
-                $schemas[$m_name]['properties']['contact_num'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($item->isField('serial')) {
-                $schemas[$m_name]['properties']['serial'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($item->isField('otherserial')) {
-                $schemas[$m_name]['properties']['otherserial'] = ['type' => Doc\Schema::TYPE_STRING];
-            }
-            if ($item->isField('networks_id')) {
-                $schemas[$m_name]['properties']['network'] = self::getDropdownTypeSchema(Network::class);
-            }
-
-            if ($item->isField('uuid')) {
-                $schemas[$m_name]['properties']['uuid'] = [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'pattern' => Doc\Schema::PATTERN_UUIDV4,
-                    'readOnly' => true,
-                ];
-            }
-            if ($item->isField('autoupdatesystems_id')) {
-                $schemas[$m_name]['properties']['autoupdatesystem'] = self::getDropdownTypeSchema(class: AutoUpdateSystem::class, full_schema: 'AutoUpdateSystem');
-            }
-
-            if ($item->maybeDeleted()) {
-                $schemas[$m_name]['properties']['is_deleted'] = ['type' => Doc\Schema::TYPE_BOOLEAN];
-            }
-
-            if ($m_class === Budget::class) {
-                $schemas[$m_name]['properties']['value'] = ['type' => Doc\Schema::TYPE_NUMBER];
-                $schemas[$m_name]['properties']['date_begin'] = [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                    'x-field' => 'begin_date',
-                ];
-                $schemas[$m_name]['properties']['date_end'] = [
-                    'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE,
-                    'x-field' => 'end_date',
-                ];
-            }
-        }
-
-        $schemas['Document']['properties']['filename'] = ['type' => Doc\Schema::TYPE_STRING];
-        $schemas['Document']['properties']['filepath'] = [
-            'type' => Doc\Schema::TYPE_STRING,
-            'x-mapped-from' => 'id',
-            'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
-            'readOnly' => true,
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
+            'Document' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Document::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'filename' => ['type' => Doc\Schema::TYPE_STRING],
+                    'filepath' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-mapped-from' => 'id',
+                        'x-mapper' => static fn($v) => $CFG_GLPI["root_doc"] . "/front/document.send.php?docid=" . $v,
+                        'readOnly' => true,
+                    ],
+                    'mime' => ['type' => Doc\Schema::TYPE_STRING],
+                    'sha1sum' => ['type' => Doc\Schema::TYPE_STRING],
+                ],
+            ],
+            'Domain' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Domain::class,
+                'x-rights-conditions' => [
+                    'read' => static fn() => $fn_get_assignable_restriction(Domain::class),
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: DomainType::class, full_schema: 'DomainType'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'group_tech' => $fn_get_group_tech_property(Domain::class),
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'group' => $fn_get_group_property(Domain::class),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
+            'License' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => SoftwareLicense::class,
+                'x-rights-conditions' => [
+                    'read' => static fn() => $fn_get_assignable_restriction(SoftwareLicense::class),
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'status' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-version-introduced' => '2.1.0', 'readOnly' => true,],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: SoftwareLicenseType::class, full_schema: 'LicenseType'),
+                    'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'group_tech' => $fn_get_group_tech_property(SoftwareLicense::class),
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'group' => $fn_get_group_property(SoftwareLicense::class),
+                    'contact' => ['type' => Doc\Schema::TYPE_STRING],
+                    'contact_num' => ['type' => Doc\Schema::TYPE_STRING],
+                    'serial' => ['type' => Doc\Schema::TYPE_STRING],
+                    'otherserial' => ['type' => Doc\Schema::TYPE_STRING],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'completename' => [
+                        'x-version-introduced' => '2.1.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'readOnly' => true,
+                    ],
+                    'level' => [
+                        'x-version-introduced' => '2.1.0',
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'readOnly' => true,
+                    ],
+                ],
+            ],
+            'Line' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Line::class,
+                'x-rights-conditions' => [
+                    'read' => static fn() => $fn_get_assignable_restriction(Line::class),
+                ],
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'status' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
+                    'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: LineType::class, full_schema: 'LineType'),
+                    'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                    'group_tech' => $fn_get_group_tech_property(Line::class),
+                    'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                    'group' => $fn_get_group_property(Line::class),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
+            'Supplier' => [
+                'x-version-introduced' => '2.0',
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'x-itemtype' => Supplier::class,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'type' => self::getDropdownTypeSchema(class: SupplierType::class, full_schema: 'SupplierType'),
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                ],
+            ],
         ];
-        $schemas['Document']['properties']['mime'] = ['type' => Doc\Schema::TYPE_STRING];
-        $schemas['Document']['properties']['sha1sum'] = ['type' => Doc\Schema::TYPE_STRING];
+
         $schemas['Document_Item'] = [
             'x-version-introduced' => '2.0',
             'type' => Doc\Schema::TYPE_OBJECT,
@@ -427,23 +652,6 @@ final class ManagementController extends AbstractController
                         EOT,
                 ],
             ],
-        ];
-
-        // Post v2 additions
-        $schemas['License']['properties']['is_recursive'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_BOOLEAN,
-            'readOnly' => true,
-        ];
-        $schemas['License']['properties']['completename'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_STRING,
-            'readOnly' => true,
-        ];
-        $schemas['License']['properties']['level'] = [
-            'x-version-introduced' => '2.1.0',
-            'type' => Doc\Schema::TYPE_INTEGER,
-            'readOnly' => true,
         ];
 
         $schemas['Infocom'] = [
@@ -542,67 +750,6 @@ final class ManagementController extends AbstractController
                 ],
                 'business_criticity' => self::getDropdownTypeSchema(BusinessCriticity::class),
             ],
-        ];
-
-        $schemas['DatabaseInstance'] = [
-            'type' => Doc\Schema::TYPE_OBJECT,
-            'x-itemtype' => DatabaseInstance::class,
-            'x-version-introduced' => '2.2',
-            'properties' => [
-                'id' => [
-                    'type' => Doc\Schema::TYPE_INTEGER,
-                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                    'readOnly' => true,
-                ],
-                'entity' => self::getDropdownTypeSchema(Entity::class, full_schema: 'Entity'),
-                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
-                'comment' => ['type' => Doc\Schema::TYPE_STRING],
-                'version' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
-                'port' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 10], // Why is this a string instead of integer?
-                'path' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
-                'type' => self::getDropdownTypeSchema(class: DatabaseInstanceType::class, full_schema: 'DatabaseInstanceType'),
-                'category' => self::getDropdownTypeSchema(class: DatabaseInstanceCategory::class, full_schema: 'DatabaseInstanceCategory'),
-                'location' => self::getDropdownTypeSchema(class: Location::class, full_schema: 'Location'),
-                'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
-                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
-                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
-                'state' => self::getDropdownTypeSchema(class: State::class, full_schema: 'State'),
-                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
-                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
-                'is_onbackup' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
-                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_lastboot' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'date_lastbackup' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
-                'database' => [
-                    'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => [
-                        'type' => Doc\Schema::TYPE_OBJECT,
-                        'x-full-schema' => 'Database',
-                        'x-join' => [
-                            'table' => Database::getTable(), // The table with the desired data
-                            'fkey' => 'id',
-                            'field' => DatabaseInstance::getForeignKeyField(),
-                            'primary-property' => 'id',
-                        ],
-                        'properties' => [
-                            'id' => [
-                                'type' => Doc\Schema::TYPE_INTEGER,
-                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
-                                'readOnly' => true,
-                            ],
-                            'name' => ['type' => Doc\Schema::TYPE_STRING],
-                        ],
-                    ],
-                ],
-            ],
-        ];
-        $schemas['Database']['properties']['instance'] = self::getDropdownTypeSchema(class: DatabaseInstance::class, full_schema: 'DatabaseInstance') + [
-            'x-version-introduced' => '2.2',
         ];
 
         return $schemas;
