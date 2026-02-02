@@ -108,13 +108,13 @@ class Item_Plug extends CommonDBRelation
             echo "\t<input type='hidden' name='" . htmlescape(static::$items_id_1) . "' value='$ID'>\n";
             echo "\t<input type='hidden' name='itemtype' value='" . htmlescape($item::class) . "'>\n";
             echo "<table class='tab_cadre_fixe'><tr class='tab_bg_1'><td>";
-            echo "<label for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label></td><td>";
+            echo "<label class='col-form-label' for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label></td><td>";
             Plug::dropdown([
                 'name'   => "plugs_id",
                 'rand'   => $rand,
             ]);
             echo "</td><td>";
-            echo "<label for='number_plugs'>" . __s('Number');
+            echo "<label class='col-form-label' for='number_plugs'>" . __s('Number');
             echo "</td><td>";
             echo Html::input(
                 'number_plugs',
