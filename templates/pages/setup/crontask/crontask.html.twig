@@ -150,7 +150,10 @@
                               </div>
                            {% elseif can_execute and launch %}
                               {# ID and CSRF token fields are defined in components/form/buttons.html.twig #}
-                              <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">{{ __('Execute') }}</button>
+                              <button class="btn btn-primary" type="submit" name="execute" value="{{ item.fields['name'] }}">
+                                 <i class="ti ti-player-play me-1"></i>
+                                 {{ __('Execute') }}
+                              </button>
                            {% endif %}
 
                            {% if can_execute and item.fields['state'] == constant('CronTask::STATE_RUNNING') %}
