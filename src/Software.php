@@ -699,7 +699,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $values = [];
         $software_without_versions = [];
-        
+
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
             $version_id = $data['version_id'];
@@ -722,11 +722,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 $values[$software_name] = [];
             }
             $values[$software_name][$version_id] = $version_display;
-            
+
             unset($software_without_versions[$software_name]);
         }
 
-        foreach ($software_without_versions as $software_name => $unused) {
+        foreach ($software_without_versions as $software_name => $_) {
             $values[$software_name] = [];
         }
 
@@ -788,7 +788,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
 
         $values = [];
         $software_without_licenses = [];
-        
+
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
             $license_id = $data['license_id'];
@@ -808,11 +808,11 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 $values[$software_name] = [];
             }
             $values[$software_name][$license_id] = $license_display;
-            
+
             unset($software_without_licenses[$software_name]);
         }
 
-        foreach ($software_without_licenses as $software_name => $unused) {
+        foreach ($software_without_licenses as $software_name => $_) {
             $values[$software_name] = [];
         }
 
