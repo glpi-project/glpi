@@ -43,5 +43,6 @@ final readonly class EditorAction
         public EditorActionType $type,
         public array $params = [],
         public ?int $counter = null,
+        public bool $is_danger = false,
     ) {}
 }

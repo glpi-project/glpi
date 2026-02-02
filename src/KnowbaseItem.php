@@ -124,6 +124,11 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         return Session::haveRightsOr(self::$rightname, [UPDATE, self::KNOWBASEADMIN]);
     }
 
+    public static function canDelete(): bool
+    {
+        return Session::haveRightsOr(self::$rightname, [DELETE, self::KNOWBASEADMIN]);
+    }
+
     public static function canView(): bool
     {
         global $CFG_GLPI;
@@ -990,6 +995,17 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'field' => 'is_faq',
                     'checked' => $this->fields['is_faq'],
                 ],
+            );
+        }
+        if ($this->canDeleteItem()) {
+            $actions[] = new EditorAction(
+                label: __("Delete article"),
+                icon: "ti ti-trash",
+                type: EditorActionType::DELETE_ARTICLE,
+                params: [
+                    'id' => $this->fields['id'],
+                ],
+                is_danger: true,
             );
         }
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [

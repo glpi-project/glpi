@@ -45,7 +45,7 @@ trait CrudControllerTrait
     private function update(string $class, int $id, array $input): CommonDBTM
     {
         $item = getItemForItemtype($class);
-        if (!$item->getFromDB($id)) {
+        if (!$item || !$item->getFromDB($id)) {
             throw new NotFoundHttpException();
         }
 
@@ -54,10 +54,27 @@ trait CrudControllerTrait
             throw new AccessDeniedHttpException();
         }
 
-        if (!$item->update($input)) {
+        if ($input === null || !$item->update($input)) {
             throw new RuntimeException("Failed to update item");
         }
 
         return $item;
+    }
+
+    private function delete(string $class, int $id): void
+    {
+        $item = getItemForItemtype($class);
+        if (!$item || !$item->getFromDB($id)) {
+            throw new NotFoundHttpException();
+        }
+
+        $input = ['id' => $id];
+        if (!$item->can($id, DELETE, $input)) {
+            throw new AccessDeniedHttpException();
+        }
+
+        if ($input === null || !$item->delete($input)) {
+            throw new RuntimeException("Failed to delete item");
+        }
     }
 }
