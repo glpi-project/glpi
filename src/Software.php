@@ -676,15 +676,13 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 'glpi_states.name AS state_name',
             ],
             'FROM'      => 'glpi_softwares',
-            'INNER JOIN' => [
+            'LEFT JOIN' => [
                 'glpi_softwareversions' => [
                     'ON' => [
                         'glpi_softwareversions' => 'softwares_id',
                         'glpi_softwares'        => 'id',
                     ],
                 ],
-            ],
-            'LEFT JOIN' => [
                 'glpi_states' => [
                     'ON' => [
                         'glpi_softwareversions' => 'states_id',
@@ -700,11 +698,18 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
         ]);
 
         $values = [];
+        $software_without_versions = [];
+        
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
             $version_id = $data['version_id'];
-            $version_name = $data['version_name'];
 
+            if ($version_id === null) {
+                $software_without_versions[$software_name] = true;
+                continue;
+            }
+
+            $version_name = $data['version_name'];
             $version_display = $version_name;
             if (empty($version_display) || $_SESSION['glpiis_ids_visible']) {
                 $version_display = sprintf(__('%1$s (%2$s)'), $version_display, $version_id);
@@ -717,6 +722,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 $values[$software_name] = [];
             }
             $values[$software_name][$version_id] = $version_display;
+            
+            unset($software_without_versions[$software_name]);
+        }
+
+        foreach ($software_without_versions as $software_name => $unused) {
+            $values[$software_name] = [];
         }
 
         return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
@@ -734,6 +745,20 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
     {
         global $DB;
 
+        $software_where = getEntitiesRestrictCriteria(
+            'glpi_softwares',
+            'entities_id',
+            $entity_restrict,
+            true
+        );
+        
+        $license_where = getEntitiesRestrictCriteria(
+            'glpi_softwarelicenses',
+            'entities_id',
+            $entity_restrict,
+            true
+        );
+
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_softwares.id AS software_id',
@@ -742,7 +767,7 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 'glpi_softwarelicenses.name AS license_name',
             ],
             'FROM'      => 'glpi_softwares',
-            'INNER JOIN' => [
+            'LEFT JOIN' => [
                 'glpi_softwarelicenses' => [
                     'ON' => [
                         'glpi_softwarelicenses' => 'softwares_id',
@@ -753,16 +778,27 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
             'WHERE'     => [
                 'glpi_softwares.is_deleted'   => 0,
                 'glpi_softwares.is_template'  => 0,
-            ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', $entity_restrict, true),
+                'OR' => [
+                    ['glpi_softwarelicenses.id' => null],
+                    $license_where,
+                ],
+            ] + $software_where,
             'ORDERBY'   => ['glpi_softwares.name', 'glpi_softwarelicenses.name'],
         ]);
 
         $values = [];
+        $software_without_licenses = [];
+        
         foreach ($iterator as $data) {
             $software_name = $data['software_name'];
             $license_id = $data['license_id'];
-            $license_name = $data['license_name'];
 
+            if ($license_id === null) {
+                $software_without_licenses[$software_name] = true;
+                continue;
+            }
+
+            $license_name = $data['license_name'];
             $license_display = $license_name;
             if (empty($license_display) || $_SESSION['glpiis_ids_visible']) {
                 $license_display = sprintf(__('%1$s (%2$s)'), $license_display, $license_id);
@@ -772,6 +808,12 @@ class Software extends CommonDBTM implements TreeBrowseInterface, AssignableItem
                 $values[$software_name] = [];
             }
             $values[$software_name][$license_id] = $license_display;
+            
+            unset($software_without_licenses[$software_name]);
+        }
+
+        foreach ($software_without_licenses as $software_name => $unused) {
+            $values[$software_name] = [];
         }
 
         return Dropdown::showFromArray($myname, $values, ['display_emptychoice' => true]);
