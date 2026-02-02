@@ -35,6 +35,7 @@
 namespace Glpi\Api\HL\GraphQL;
 
 use Glpi\Api\HL\OpenAPIGenerator;
+use Glpi\Debug\Profiler;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
@@ -53,7 +54,9 @@ final class SchemaGenerator
             'name' => 'Query',
             'fields' => []
         ];
+        Profiler::getInstance()->start('OpenAPI Component Schemas Retrieval', Profiler::CATEGORY_HLAPI);
         $component_schemas = OpenAPIGenerator::getComponentSchemas($this->api_version);
+        Profiler::getInstance()->stop('OpenAPI Component Schemas Retrieval');
         foreach ($component_schemas as $schema_name => $schema) {
             $query_type_config['fields'][$schema_name] = [
                 'type' => Type::listOf(function () use ($schema_name) {
