@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use Glpi\Tests\DbTestCase;
+use SingletonRuleList;
 
 /* Test for inc/rulesoftwarecategorycollection.class.php */
 
@@ -103,7 +104,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $rule->update(['id' => $myrule['id'], 'is_active' => 1]);
 
         //Force reload of the rules list
-        $categoryCollection->RuleList = new \stdClass();
+        $categoryCollection->RuleList = new SingletonRuleList();
         $categoryCollection->RuleList->load = true;
 
         //Run the rules engine a second time with the rule enabled
@@ -138,7 +139,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $action   = new \RuleAction();
 
         //Force reload of the rules list
-        $categoryCollection->RuleList = new \stdClass();
+        $categoryCollection->RuleList = new SingletonRuleList();
         $categoryCollection->RuleList->load = true;
 
         //Create a software category
@@ -203,7 +204,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         $action   = new \RuleAction();
 
         //Force reload of the rules list
-        $categoryCollection->RuleList = new \stdClass();
+        $categoryCollection->RuleList = new SingletonRuleList();
         $categoryCollection->RuleList->load = true;
 
         $rules_id = $rule->add(['name'        => 'Ignore import',
@@ -253,7 +254,7 @@ class RuleSoftwareCategoryCollectionTest extends DbTestCase
         );
 
         //Force reload of the rules list
-        $categoryCollection->RuleList = new \stdClass();
+        $categoryCollection->RuleList = new SingletonRuleList();
         $categoryCollection->RuleList->load = true;
 
         $input = ['name'             => 'fusioninventory-agent',
