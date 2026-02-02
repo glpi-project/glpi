@@ -308,8 +308,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$prop        = ['e'];
    public \$version     = 9.4;
 }
@@ -326,14 +326,14 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$prop        = array (
   0 => 'a',
   1 => 'b',
 );
    public \$version     = 10.2;
-   public bool \$use_utf8mb4 = false;
+   public \$use_utf8mb4 = false;
    public \$test = 'foobar';
 }
 PHP,
@@ -345,17 +345,17 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
 PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string|array \$dbhost      = 'slave.domain.org';
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbhost      = 'slave.domain.org';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
 PHP,
@@ -371,10 +371,10 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'barfoo';
-   public bool \$use_utf8mb4 = false;
+   public \$use_utf8mb4 = false;
    public \$version = 10.2;
    public \$prop = array (
   0 => 'a',
@@ -385,11 +385,11 @@ PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string|array \$dbhost      = 'slave.domain.org';
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbhost      = 'slave.domain.org';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'barfoo';
-   public bool \$use_utf8mb4 = false;
+   public \$use_utf8mb4 = false;
    public \$version = 10.2;
    public \$prop = array (
   0 => 'a',
@@ -405,17 +405,17 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
 PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
-   public string|array \$dbhost      = 'slave.domain.org';
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbhost      = 'slave.domain.org';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
 PHP,
@@ -429,8 +429,8 @@ PHP,
                     'config_db.php' => <<<PHP
 <?php
 class DB extends DBmysql {
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'barfoo';
    public \$version = 10.2;
 }
@@ -438,9 +438,9 @@ PHP,
                     'config_db_slave.php' => <<<PHP
 <?php
 class DBSlave extends DBmysql {
-   public string|array \$dbhost      = 'slave.domain.org';
-   public string \$dbuser      = 'glpi';
-   public string \$dbdefault   = 'glpi';
+   public \$dbhost      = 'slave.domain.org';
+   public \$dbuser      = 'glpi';
+   public \$dbdefault   = 'glpi';
    public \$test        = 'foobar';
 }
 PHP,

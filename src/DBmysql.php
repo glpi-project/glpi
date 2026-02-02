@@ -60,22 +60,25 @@ class DBmysql
      *
      * @var string|string[]
      */
-    public string|array $dbhost             = "";
+    public $dbhost             = "";
     /**
      * Database User
      *
+     * @var string
      */
-    public string $dbuser             = "";
+    public $dbuser             = "";
     /**
      * Database Password
      *
+     * @var string
      */
-    public string $dbpassword         = "";
+    public $dbpassword         = "";
     /**
      * Default Database
      *
+     * @var string
      */
-    public string $dbdefault          = "";
+    public $dbdefault          = "";
 
     /**
      * The database handler
@@ -85,91 +88,104 @@ class DBmysql
     /**
      * Slave management
      *
+     * @var bool
      */
-    public bool $slave              = false;
+    public $slave              = false;
 
     /**
      * Defines if connection must use SSL.
      *
+     * @var bool
      */
-    public bool $dbssl              = false;
+    public $dbssl              = false;
 
     /**
      * The path name to the key file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
      */
-    public ?string $dbsslkey           = null;
+    public $dbsslkey           = null;
 
     /**
      * The path name to the certificate file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
      */
-    public ?string $dbsslcert          = null;
+    public $dbsslcert          = null;
 
     /**
      * The path name to the certificate authority file (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
      */
-    public ?string $dbsslca            = null;
+    public $dbsslca            = null;
 
     /**
      * The pathname to a directory that contains trusted SSL CA certificates in PEM format
      * (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
      */
-    public ?string $dbsslcapath        = null;
+    public $dbsslcapath        = null;
 
     /**
      * A list of allowable ciphers to use for SSL encryption (used in case of SSL connection).
      *
+     * @var string
      * @see mysqli::ssl_set()
      */
-    public ?string $dbsslcacipher      = null;
+    public $dbsslcacipher      = null;
 
     /**
      * Determine if timezones should be used for timestamp fields.
      * Defaults to false to keep backward compatibility with old DB.
      *
+     * @var bool
      */
-    public bool $use_timezones = false;
+    public $use_timezones = false;
 
     /**
      * Determine if warnings related to MySQL deprecations should be logged too.
      * Defaults to false as this option should only on development/test environment.
      *
+     * @var bool
      */
-    public bool $log_deprecation_warnings = false;
+    public $log_deprecation_warnings = false;
 
     /**
      * Determine if utf8mb4 should be used for DB connection and tables altering operations.
      * Defaults to false to keep backward compatibility with old DB.
      *
+     * @var bool
      */
-    public bool $use_utf8mb4 = false;
+    public $use_utf8mb4 = false;
 
     /**
      * Determine if datetime fields usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
+     * @var bool
      */
-    public bool $allow_datetime = true;
+    public $allow_datetime = true;
 
     /**
      * Determine if signed integers in primary/foreign keys usage should be allowed for tables creation/altering operations.
      * Defaults to true to keep backward compatibility with old DB.
      *
+     * @var bool
      */
-    public bool $allow_signed_keys = true;
+    public $allow_signed_keys = true;
 
 
     /** Is it a first connection ?
      * Indicates if the first connection attempt is successful or not
      * if first attempt fail -> display a warning which indicates that glpi is in readonly
      *
+     * @var bool
      */
     public bool $first_connection   = true;
     // Is connected to the DB ?
