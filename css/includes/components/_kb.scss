@@ -71,4 +71,9 @@
 .kb-modal-nav {
     gap: 0.5rem;
     border-bottom: 1px solid var(--tblr-border-color);
+
+    .nav-link:hover,
+    .nav-link:focus {
+        background-color: transparent;
+    }
 }
