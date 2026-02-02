@@ -9812,6 +9812,56 @@ HTML,
             'mandatory_field' => 'content',
             'should_succeed' => true,
         ];
+
+        yield 'content with text followed by empty paragraph should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p>Real content here</p><p> </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with empty paragraph followed by text should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p> </p><p>Real content here</p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with multiple empty paragraphs should be rejected' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p> </p><p> </p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => false,
+        ];
+
+        yield 'content with image only should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<img src="image.jpg" />',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
+
+        yield 'content with image inside paragraph should succeed' => [
+            'input' => [
+                Ticket::getTemplateFormFieldName() => 1,
+                'name' => 'Test ticket',
+                'content' => '<p><img src="image.jpg" /></p>',
+            ],
+            'mandatory_field' => 'content',
+            'should_succeed' => true,
+        ];
     }
 
     #[DataProvider('mandatoryFieldsWithArrayInputProvider')]
