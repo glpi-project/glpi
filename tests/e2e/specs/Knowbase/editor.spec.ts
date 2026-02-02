@@ -51,12 +51,12 @@ test.describe('Knowledge Base Editor', () => {
         await kb.goto(id);
         await expect(page.getByTestId('content')).toContainText('Initial content');
 
+        // Click Edit button to enter edit mode (editor is lazy loaded on first click)
+        await page.getByTestId('edit-button').click();
+
         // Wait for editor to be initialized (ProseMirror has role="textbox")
         const editor = page.getByTestId('content').getByRole('textbox');
         await expect(editor).toBeVisible();
-
-        // Click Edit button to enter edit mode
-        await page.getByTestId('edit-button').click();
 
         // Wait for edit mode to be active (save button becomes visible)
         await expect(page.getByTestId('save-button')).toBeVisible();
@@ -125,13 +125,16 @@ test.describe('Knowledge Base Editor', () => {
             answer: '<p>Content</p>',
         });
 
-        // Go to article and wait for editor initialization
+        // Go to article
         await kb.goto(id);
+        await expect(page.getByTestId('content')).toBeVisible();
+
+        // Enter edit mode (editor is lazy loaded on first click)
+        await page.getByTestId('edit-button').click();
+
+        // Wait for editor to be initialized (ProseMirror has role="textbox")
         const editor = page.getByTestId('content').getByRole('textbox');
         await expect(editor).toBeVisible();
-
-        // Enter edit mode
-        await page.getByTestId('edit-button').click();
         await expect(page.getByTestId('save-button')).toBeVisible();
         await expect(editor).toHaveAttribute('contenteditable', 'true');
 
@@ -163,13 +166,16 @@ test.describe('Knowledge Base Editor', () => {
             answer: '<p>Content</p>',
         });
 
-        // Go to article and wait for editor initialization
+        // Go to article
         await kb.goto(id);
+        await expect(page.getByTestId('content')).toBeVisible();
+
+        // Enter edit mode (editor is lazy loaded on first click)
+        await page.getByTestId('edit-button').click();
+
+        // Wait for editor to be initialized (ProseMirror has role="textbox")
         const editor = page.getByTestId('content').getByRole('textbox');
         await expect(editor).toBeVisible();
-
-        // Enter edit mode
-        await page.getByTestId('edit-button').click();
         await expect(page.getByTestId('save-button')).toBeVisible();
         await expect(editor).toHaveAttribute('contenteditable', 'true');
 
@@ -222,12 +228,12 @@ test.describe('Knowledge Base Editor', () => {
         await kb.goto(id);
         await expect(page.getByTestId('content')).toContainText('Original content that should persist');
 
-        // Wait for editor initialization
+        // Enter edit mode (editor is lazy loaded on first click)
+        await page.getByTestId('edit-button').click();
+
+        // Wait for editor to be initialized (ProseMirror has role="textbox")
         const editor = page.getByTestId('content').getByRole('textbox');
         await expect(editor).toBeVisible();
-
-        // Enter edit mode
-        await page.getByTestId('edit-button').click();
         await expect(page.getByTestId('save-button')).toBeVisible();
         await expect(editor).toHaveAttribute('contenteditable', 'true');
 
