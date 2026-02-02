@@ -39,7 +39,9 @@ use Glpi\Inventory\Converter;
 use Glpi\Inventory\Inventory;
 use Glpi\Tests\AbstractInventoryAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group('single-thread')]
 class NetworkEquipmentTest extends AbstractInventoryAsset
 {
     public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';

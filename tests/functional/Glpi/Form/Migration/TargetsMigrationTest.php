@@ -124,6 +124,13 @@ final class TargetsMigrationTest extends DbTestCase
 
         parent::setUpBeforeClass();
 
+        // Clean up data in case execution was stopped before tearDownAfterClass
+        // could run.
+        $tables = $DB->listTables('glpi\_plugin\_formcreator\_%');
+        foreach ($tables as $table) {
+            $DB->dropTable($table['TABLE_NAME']);
+        }
+
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/glpi-formcreator-migration-data.sql', GLPI_ROOT));
         foreach ($queries as $query) {
             $DB->doQuery($query);

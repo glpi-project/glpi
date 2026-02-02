@@ -44,6 +44,7 @@ use Glpi\Tests\DbTestCase;
 use LogicException;
 use Migration;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
 class MigrationTest extends DbTestCase
 {
@@ -274,6 +275,7 @@ class MigrationTest extends DbTestCase
         ], $migration->getMockedQueries());
     }
 
+    #[Group('single-thread')]
     public function testBackupNonExistantTables()
     {
         $migration = $this->getMigrationMock(db_options: [
