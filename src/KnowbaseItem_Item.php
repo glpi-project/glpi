@@ -62,16 +62,17 @@ class KnowbaseItem_Item extends CommonDBRelation
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
         if (static::canView() && $item instanceof CommonDBTM) {
+            // Do not display tab for KnowbaseItem (handled in main article view)
+            if ($item::class === KnowbaseItem::class) {
+                return '';
+            }
+
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
                 $nb = self::getCountForItem($item);
             }
 
-            if ($item::class === KnowbaseItem::class) {
-                $type_name = _n('Associated element', 'Associated elements', $nb);
-            } else {
-                $type_name = __('Knowledge base');
-            }
+            $type_name = __('Knowledge base');
 
             return self::createTabEntry($type_name, $nb, $item::class);
         }

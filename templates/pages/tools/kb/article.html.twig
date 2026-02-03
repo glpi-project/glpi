@@ -135,6 +135,16 @@
                 </a>
             </div>
             {% endif %}
+
+            {# Related items count #}
+            {% if related_items_count > 0 %}
+            <div class="d-flex align-items-center">
+                <i class="ti ti-link me-1 fs-3"></i>
+                <a href="#kb-documents" class="text-muted" data-testid="related-items-count">
+                    {{ _n("%s related item", "%s related items", related_items_count)|format(related_items_count) }}
+                </a>
+            </div>
+            {% endif %}
         </div>
 
         <hr class="mt-4 mb-4">
@@ -143,8 +153,8 @@
             {{ answer|safe_html }}
         </div>
 
-        {# Documents section #}
-        {% if documents|length > 0 or can_add_documents %}
+        {# Documents and Related Items section #}
+        {% if documents|length > 0 or can_add_documents or related_items|length > 0 or can_link_items %}
         <div id="kb-documents" class="kb-documents-footer mt-5 pt-4 border-top">
             {# Tab navigation #}
             <ul class="nav nav-underline mb-3" role="tablist">
@@ -154,13 +164,12 @@
                         <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ documents_count }}</span>
                     </button>
                 </li>
-                {# Related items tab - placeholder for future implementation #}
-                {# <li class="nav-item" role="presentation">
+                <li class="nav-item" role="presentation">
                     <button class="nav-link" id="kb-items-tab-btn" data-bs-toggle="tab" data-bs-target="#kb-items-tab" type="button" role="tab">
                         <i class="ti ti-link me-1"></i>{{ __('Related items') }}
-                        <span class="badge bg-secondary bg-opacity-25 text-body ms-1">0</span>
+                        <span class="badge bg-secondary bg-opacity-25 text-body ms-1">{{ related_items_count }}</span>
                     </button>
-                </li> #}
+                </li>
             </ul>
 
             {# Tab content #}
@@ -230,6 +239,52 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# Related Items Tab Pane #}
+                <div class="tab-pane fade" id="kb-items-tab" role="tabpanel">
+                    {% if related_items|length > 0 %}
+                    <div class="d-flex flex-wrap gap-2 mb-2">
+                        {% for item in related_items %}
+                        <a href="{{ item.link_url }}"
+                           class="kb-related-item-badge badge bg-light text-dark d-flex align-items-center gap-2 text-decoration-none"
+                           title="{{ item.type_name }}: {{ item.name }}"
+                           data-testid="related-item-chip">
+                            <i class="{{ item.icon_class }} {{ item.color_class }}"></i>
+                            <span>{{ item.name }}</span>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    {% if can_link_items %}
+                    <button type="button" class="btn btn-sm btn-outline-primary mt-2"
+                            data-bs-toggle="modal" data-bs-target="#kb-link-item-modal">
+                        <i class="ti ti-link me-1"></i>{{ __('Link to another item') }}
+                    </button>
+
+                    {# Modal placeholder #}
+                    <div class="modal fade" id="kb-link-item-modal" tabindex="-1" aria-labelledby="kb-link-item-modal-title">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="kb-link-item-modal-title">
+                                        <i class="ti ti-link me-2"></i>{{ __('Link to another item') }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
+                                </div>
+                                <div class="modal-body text-center text-muted py-5">
+                                    <i class="ti ti-link fs-1 mb-2"></i>
+                                    <p>{{ __('Item linking coming soon...') }}</p>
+                                    <a href="{{ 'KnowbaseItem'|itemtype_form_path }}?id={{ item_id }}&amp;forcetab=KnowbaseItem_Item$1"
+                                       class="btn btn-primary">
+                                        {{ __('Use existing Associated elements tab') }}
+                                    </a>
                                 </div>
                             </div>
                         </div>
