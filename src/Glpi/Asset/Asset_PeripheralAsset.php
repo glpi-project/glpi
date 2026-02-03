@@ -499,7 +499,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                         {{ fields.csrfField() }}
                         {{ withtemplate ? fields.hiddenField('_no_history', 1) }}
                         <div class="d-flex flex-row-reverse">
-                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i> <span>{{ btn_label }}</span></button>
+                            <button type="submit" name="add" class="btn btn-primary"><i class="ti ti-plus"></i><span>{{ btn_label }}</span></button>
                         </div>
                     </form>
                 </div>
