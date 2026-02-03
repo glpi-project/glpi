@@ -514,7 +514,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         } elseif (
                             $actor_obj instanceof User
                             && $existing_actor['items_id'] == 0
-                            && strlen($existing_actor['alternative_email']) > 0
+                            && (string) $existing_actor['alternative_email'] !== ''
                         ) {
                             // direct mail actor
                             $fn_add_actor($existing_actor['itemtype'], $existing_actor['items_id'], $existing_actor + [
@@ -3024,12 +3024,13 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                     }
                                 }
 
+                                $value = $input[$key];
+
                                 if (
-                                    empty($input[$key])
-                                    || preg_match('/<p>([\s| ]+)?<\/p>/', $input[$key]) !== 0 //check for empty '<p></p>' in rich text
-                                    || ($input[$key] == 'NULL')
-                                    || (is_array($input[$key])
-                                    && ($input[$key] === [0 => "0"]))
+                                    empty($value)
+                                    || $value === 'NULL'
+                                    || (is_string($value) && preg_replace('/<p>([\s| ]+)?<\/p>/', '', $value) === '') //check for empty '<p></p>' in rich text
+                                    || (is_array($value) && $value === [0 => "0"])
                                 ) {
                                     $mandatory_missing[$key] = $fieldsname[$val];
                                 }
@@ -7923,7 +7924,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $log->post_getFromDB();
 
                 $content = $log_row['change'];
-                if (strlen($log_row['field']) > 0) {
+                if ((string) $log_row['field'] !== '') {
                     $content = sprintf(__s("%s: %s"), htmlescape($log_row['field']), $content);
                 }
                 $content = "<i class='ti ti-history me-1' title='" . __s("Log entry") . "' data-bs-toggle='tooltip'></i>" . $content;

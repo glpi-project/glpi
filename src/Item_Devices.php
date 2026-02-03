@@ -93,13 +93,17 @@ class Item_Devices extends CommonDBRelation implements StateInterface
     protected function computeFriendlyName()
     {
         $itemtype = static::$itemtype_2;
+        $item = false;
         if (!empty($this->fields[static::$itemtype_1])) {
-            $item = getItemForItemtype($this->fields[static::$itemtype_1]);
-            $item->getFromDB($this->fields[static::$items_id_1]);
+            $item  = getItemForItemtype($this->fields[static::$itemtype_1]);
+        }
+
+        if ($item !== false && $item->getFromDB($this->fields[static::$items_id_1])) {
             $name = sprintf(__('%1$s of item "%2$s"'), $itemtype::getTypeName(1), $item->getName());
         } else {
             $name = $itemtype::getTypeName(1);
         }
+
         return $name;
     }
 
@@ -1527,7 +1531,7 @@ class Item_Devices extends CommonDBRelation implements StateInterface
             $specificities['label'] = $attributs['long name'];
             $specificities['protected'] = isset($attributs['protected']) && $attributs['protected'];
 
-            if (isset($attributs['tooltip']) && strlen($attributs['tooltip']) > 0) {
+            if (isset($attributs['tooltip']) && (string) $attributs['tooltip'] !== '') {
                 $tooltip = $attributs['tooltip'];
             } else {
                 $tooltip = null;

@@ -235,6 +235,16 @@ class DBmysql
      */
     public function __construct($choice = null)
     {
+        // Handle separate DB instances per worker for unit tests (when enabled)
+        // First runner will use the existing `glpi` database
+        // Second runner will use `glpi_2`
+        // Third runner will use `glpi_3`
+        // And so on...
+        $test_token = getenv('TEST_TOKEN');
+        if ($test_token !== false && $test_token !== '' && $test_token > 1) {
+            $this->dbdefault = $this->dbdefault . '_' . $test_token;
+        }
+
         $this->connect($choice);
     }
 
@@ -2031,7 +2041,7 @@ class DBmysql
         $output = "";
 
         for ($i = 0; $i < $linecount; $i++) {
-            if (($i != ($linecount - 1)) || (strlen($lines[$i]) > 0)) {
+            if (($i != ($linecount - 1)) || ($lines[$i] !== '')) {
                 if (isset($lines[$i][0])) {
                     if ($lines[$i][0] != "#" && !str_starts_with($lines[$i], "--")) {
                         $output .= $lines[$i] . "\n";

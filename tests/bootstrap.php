@@ -50,12 +50,6 @@ define('FIXTURE_DIR', __DIR__ . "/../tests/fixtures");
 require_once dirname(__DIR__) . '/src/Glpi/Application/ResourcesChecker.php';
 (new ResourcesChecker(dirname(__DIR__)))->checkResources();
 
-// Make sure cached content like twig template is cleared before running the tests.
-// It seems calling $cache_manager->resetAllCaches(); mess up with the kernel
-// leading to some issues. It is safer to use the console directly as it goes
-// throught another process.
-exec(sprintf("php %s cache:clear --env='testing'", realpath(GLPI_ROOT . '/bin/console')));
-
 global $GLPI_CACHE;
 
 require_once dirname(__DIR__) . '/vendor/autoload.php';

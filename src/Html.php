@@ -1272,7 +1272,7 @@ TWIG,
             ],
         ];
 
-        if ($can_read_dashboard && strlen($default_asset_dashboard) > 0) {
+        if ($can_read_dashboard && $default_asset_dashboard !== '') {
             $menu['assets']['default_dashboard'] = '/front/dashboard_assets.php';
         }
 
@@ -1287,7 +1287,7 @@ TWIG,
             ],
         ];
 
-        if ($can_read_dashboard && strlen($default_asset_helpdesk) > 0) {
+        if ($can_read_dashboard && $default_asset_helpdesk !== '') {
             $menu['helpdesk']['default_dashboard'] = '/front/dashboard_helpdesk.php';
         }
 
@@ -6299,7 +6299,7 @@ JS);
         // retrieve menu
         foreach ($_SESSION['glpimenu'] as $firstlvl) {
             if (isset($firstlvl['default'])) {
-                if (strlen($firstlvl['title']) > 0) {
+                if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default']),
                         'title' => $firstlvl['title'],
@@ -6308,7 +6308,7 @@ JS);
             }
 
             if (isset($firstlvl['default_dashboard'])) {
-                if (strlen($firstlvl['title']) > 0) {
+                if ((string) $firstlvl['title'] !== '') {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default_dashboard']),
                         'title' => $firstlvl['title'] . " > " . __('Dashboard'),
@@ -6318,7 +6318,7 @@ JS);
 
             if (isset($firstlvl['content'])) {
                 foreach ($firstlvl['content'] as $menu) {
-                    if (isset($menu['title']) && strlen($menu['title']) > 0) {
+                    if (isset($menu['title']) && (string) $menu['title'] !== '') {
                         $fuzzy_entries[] = [
                             'url'   => self::getPrefixedUrl($menu['page']),
                             'title' => $firstlvl['title'] . " > " . $menu['title'],
@@ -6326,7 +6326,7 @@ JS);
 
                         if (isset($menu['options'])) {
                             foreach ($menu['options'] as $submenu) {
-                                if (isset($submenu['title']) && strlen($submenu['title']) > 0) {
+                                if (isset($submenu['title']) && (string) $submenu['title'] !== '') {
                                     $fuzzy_entries[] = [
                                         'url'   => self::getPrefixedUrl($submenu['page']),
                                         'title' => $firstlvl['title'] . " > "

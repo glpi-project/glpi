@@ -37,7 +37,9 @@ namespace tests\units\Glpi\Inventory;
 use Glpi\Inventory\Request;
 use Glpi\Tests\GLPITestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 
+#[Group('single-thread')]
 class RequestTest extends GLPITestCase
 {
     public function testConstructor()

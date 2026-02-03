@@ -43,8 +43,8 @@ use function Safe\preg_match;
 if (preg_match('~^css/glpi(\.scss)?$~', $_GET['file'] ?? '') === 1) {
     // Ensure to have enough memory to not reach memory limit.
     $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
-    if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
-        Toolbox::safeIniSet('memory_limit', sprintf('%dM', $max_memory));
+    if (Toolbox::getMemoryLimit() < $max_memory) {
+        Toolbox::safeIniSet('memory_limit', $max_memory);
     }
 }
 

@@ -1066,6 +1066,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $input = parent::prepareInputForUpdate($input);
+        if (is_array($input) && array_key_exists('_skip_rules', $input)) {
+            unset($input['_skip_rules']);
+        }
         return $input;
     }
 
@@ -1686,7 +1689,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             isset($this->input["_followup"])
             && is_array($this->input["_followup"])
             && isset($this->input["_followup"]['content'])
-            && (strlen($this->input["_followup"]['content']) > 0)
+            && ((string) $this->input["_followup"]['content'] !== '')
         ) {
             $fup  = new ITILFollowup();
             $type = "new";
