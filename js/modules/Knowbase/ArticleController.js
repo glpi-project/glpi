@@ -154,8 +154,8 @@ export class GlpiKnowbaseArticleController
             case 'DELETE_ARTICLE':
                 this.#deleteItem(params.id);
                 break;
-            case 'LOAD_MODAL':
-                this.#loadModal(params.id, params.key, params.title);
+            case 'OPEN_MODAL':
+                this.#openModal(params.id, params.key, params.title);
                 break;
         }
     }
@@ -215,15 +215,17 @@ export class GlpiKnowbaseArticleController
     }
 
     /**
-     * Load content in a modal dialog
-     * @param {string} id - KnowbaseItem ID
-     * @param {string} key - Content key (e.g., 'permissions')
-     * @param {string} title - Modal title
+     * @param {number} id
+     * @param {string} key
+     * @param {string} title
      */
-    #loadModal(id, key, title)
+    #openModal(id, key, title)
     {
+        const base_url = CFG_GLPI.root_doc;
+        const url = `${base_url}/Knowbase/${id}/${key}`;
+
         glpi_ajax_dialog({
-            url: `${CFG_GLPI.root_doc}/Knowbase/${id}/SidePanel/${key}`,
+            url: url,
             title: title || '',
             dialogclass: 'modal-lg',
         });
