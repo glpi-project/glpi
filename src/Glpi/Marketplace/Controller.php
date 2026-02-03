@@ -465,7 +465,7 @@ class Controller extends CommonGLPI
                 if ($plugins->getFromDBbyDir($plugin_key)) {
                     $plugins->update([
                         'id'                        => $plugins->fields['id'],
-                        'highest_available_version' => $version
+                        'highest_available_version' => $version,
                     ]);
                 }
             }
