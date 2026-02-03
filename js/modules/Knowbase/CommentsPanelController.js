@@ -186,7 +186,7 @@ export class GlpiKnowbaseCommentsPanelController
 
         // Delete comment on the backend
         const base_url = CFG_GLPI.root_doc;
-        const url = `${base_url}/Knowbase/DeleteComment/${comment_id}`;
+        const url = `${base_url}/Knowbase/PurgeComment/${comment_id}`;
         const response = await fetch(url, {
             method: "POST",
             headers: {

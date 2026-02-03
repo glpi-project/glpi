@@ -40,13 +40,13 @@ use KnowbaseItem_Comment;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteCommentController extends AbstractController
+final class PurgeCommentController extends AbstractController
 {
     use CrudControllerTrait;
 
     #[Route(
-        "/Knowbase/DeleteComment/{id}",
-        name: "knowbase_delete_comment",
+        "/Knowbase/PurgeComment/{id}",
+        name: "knowbase_purge_comment",
         methods: ["POST"],
         requirements: [
             'id' => '\d+',
@@ -54,7 +54,7 @@ final class DeleteCommentController extends AbstractController
     )]
     public function __invoke(int $id): Response
     {
-        $this->delete(KnowbaseItem_Comment::class, $id);
+        $this->purge(KnowbaseItem_Comment::class, $id);
         return new Response(); // OK
     }
 }

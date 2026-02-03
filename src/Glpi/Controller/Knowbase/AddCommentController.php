@@ -89,7 +89,7 @@ final class AddCommentController extends AbstractController
             'date_creation' => $comment->fields['date_creation'],
             'comment'       => $comment->fields['comment'],
             'can_edit'      => true,
-            'can_delete'    => true,
+            'can_purge'     => true,
         ]);
     }
 }
