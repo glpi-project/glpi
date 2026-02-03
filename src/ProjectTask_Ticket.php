@@ -46,11 +46,11 @@ use Glpi\DBAL\QueryFunction;
 class ProjectTask_Ticket extends CommonDBRelation
 {
     // From CommonDBRelation
-    public static $itemtype_1 = ProjectTask::class;
-    public static $items_id_1   = 'projecttasks_id';
+    public static ?string $itemtype_1 = ProjectTask::class;
+    public static ?string $items_id_1   = 'projecttasks_id';
 
-    public static $itemtype_2 = Ticket::class;
-    public static $items_id_2   = 'tickets_id';
+    public static ?string $itemtype_2 = Ticket::class;
+    public static ?string $items_id_2   = 'tickets_id';
 
     public function getForbiddenStandardMassiveAction()
     {

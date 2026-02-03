@@ -43,9 +43,8 @@ class ExtensionConstant extends AbstractRequirement
     /**
      * Required constant name.
      *
-     * @var string
      */
-    private $name;
+    private string $name;
 
     /**
      * @param string $title Constant title.

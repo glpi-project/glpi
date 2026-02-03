@@ -38,11 +38,11 @@ use Glpi\Application\View\TemplateRenderer;
 class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Problem::class;
-    public static $items_id_1   = 'problems_id';
+    public static ?string $itemtype_1 = Problem::class;
+    public static ?string $items_id_1   = 'problems_id';
 
-    public static $itemtype_2 = Ticket::class;
-    public static $items_id_2   = 'tickets_id';
+    public static ?string $itemtype_2 = Ticket::class;
+    public static ?string $items_id_2   = 'tickets_id';
 
     public static function getTypeName($nb = 0)
     {

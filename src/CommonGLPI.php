@@ -78,44 +78,42 @@ class CommonGLPI implements CommonGLPIInterface
     /**
      * Show the title of the item in the navigation header ?
      *
-     * @var bool
      */
-    protected static $showTitleInNavigationHeader = false;
+    protected static bool $showTitleInNavigationHeader = false;
 
     /**
      * Display list on Navigation Header
      *
-     * @var bool
      */
-    protected $displaylist          = true;
+    protected bool $displaylist          = true;
 
     /**
      * Show Debug
      *
-     * @var bool
      */
-    public $showdebug               = false;
+    public bool $showdebug               = false;
 
     /**
      * Tab orientation : horizontal or vertical.
      *
-     * @var string
+     * @var self::TAB_HORIZONTAL|self::TAB_VERTICAL
      */
-    public $taborientation          = 'horizontal';
+    public string $taborientation          = self::TAB_HORIZONTAL;
 
     /**
      * Rightname used to check rights to do actions on item.
      *
-     * @var string
      */
-    public static $rightname = '';
+    public static string $rightname = '';
 
     /**
      * Need to get item to show tab
      *
-     * @var bool
      */
-    public $get_item_to_display_tab = false;
+    public bool $get_item_to_display_tab = false;
+
+    public const TAB_HORIZONTAL = 'horizontal';
+    public const TAB_VERTICAL   = 'vertical';
 
     /**
      * List of tabs to add (registered by `self::registerStandardTab()`).
@@ -129,7 +127,7 @@ class CommonGLPI implements CommonGLPIInterface
      *
      * @var array<class-string<CommonGLPI>, array<class-string<CommonGLPI>, int>>
      */
-    private static $othertabs = [];
+    private static array $othertabs = [];
 
     public function __construct() {}
 

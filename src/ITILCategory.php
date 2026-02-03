@@ -44,10 +44,10 @@ class ITILCategory extends CommonTreeDropdown
     use Clonable;
 
     // From CommonDBTM
-    public $dohistory          = true;
-    public $can_be_translated  = true;
+    public bool $dohistory          = true;
+    public bool $can_be_translated  = true;
 
-    public static $rightname          = 'itilcategory';
+    public static string $rightname          = 'itilcategory';
 
     public function getAdditionalFields()
     {

@@ -53,52 +53,44 @@ class RuleCollection extends CommonDBTM
     /**
      * Rule type
      *
-     * @var string
      */
-    public $sub_type;
+    public string $sub_type;
     /**
      * Process collection stop on first matched rule
      *
-     * @var bool
      */
-    public $stop_on_first_match                   = false;
+    public bool $stop_on_first_match                   = false;
     /**
      * Processing several rules : use result of the previous one to computer the current one
      *
-     * @var bool
      */
-    public $use_output_rule_process_as_next_input = false;
+    public bool $use_output_rule_process_as_next_input = false;
     /**
      * Rule collection can be replay (for dictionary)
      *
-     * @var bool
      */
-    public $can_replay_rules                      = false;
-    /** @var SingletonRuleList $RuleList */
-    public $RuleList                              = null;
+    public bool $can_replay_rules                      = false;
+    public ?SingletonRuleList $RuleList = null;
     /**
      * Menu type
      *
-     * @var string
      */
-    public $menu_type                             = "rule";
+    public string $menu_type                             = "rule";
     /**
      * Menu option
      *
-     * @var string
      */
-    public $menu_option                           = "";
+    public string $menu_option                           = "";
 
-    /** @var int */
-    public $entity                                = 0;
+    public int $entity                                = 0;
 
-    public static $rightname                             = 'config';
+    public static string $rightname                             = 'config';
 
     /**
      * @var string Tab orientation : horizontal or vertical
      * @phpstan-var 'horizontal'|'vertical'
      */
-    public $taborientation = 'horizontal';
+    public string $taborientation = 'horizontal';
 
     public static function getTable($classname = null)
     {
@@ -1529,7 +1521,7 @@ TWIG, $twig_params);
         //Store rule type being processed (for plugins)
         $params['rule_itemtype']    = static::getRuleClassName();
 
-        if (count($this->RuleList->list)) {
+        if ($this->RuleList !== null && count($this->RuleList->list)) {
             foreach ($this->RuleList->list as $rule) {
                 if ($p['condition'] && !($rule->fields['condition'] & $p['condition'])) {
                     // Rule is loaded in the cache but is not relevant for the current condition
@@ -1626,7 +1618,7 @@ TWIG, $twig_params);
 
         $output["_no_rule_matches"] = true;
 
-        if (count($this->RuleList->list)) {
+        if ($this->RuleList !== null && count($this->RuleList->list)) {
             foreach ($this->RuleList->list as $rule) {
                 // If the rule is active, process it
                 if ($rule->fields["is_active"]) {

@@ -41,12 +41,12 @@
 class Item_TicketRecurrent extends CommonItilObject_Item
 {
     // From CommonDBRelation
-    public static $itemtype_1 = TicketRecurrent::class;
-    public static $items_id_1          = 'ticketrecurrents_id';
+    public static ?string $itemtype_1 = TicketRecurrent::class;
+    public static ?string $items_id_1          = 'ticketrecurrents_id';
 
-    public static $itemtype_2          = 'itemtype';
-    public static $items_id_2          = 'items_id';
-    public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
+    public static ?string $itemtype_2          = 'itemtype';
+    public static ?string $items_id_2          = 'items_id';
+    public static int $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
     public static function getTypeName($nb = 0)
     {

@@ -67,12 +67,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
     use Clonable;
     use FilterableTrait;
 
-    public static $rightname         = 'config';
+    public static string $rightname         = 'config';
 
     // From CommonDBTM
-    public $dohistory                = true;
+    public bool $dohistory                = true;
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'secret', 'clientsecret',
     ];
 

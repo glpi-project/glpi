@@ -40,13 +40,12 @@
 abstract class HTMLTableBase
 {
     /** @var array<string, array<string, HTMLTableHeader>> */
-    private $headers = [];
+    private array $headers = [];
     /** @var string[] */
-    private $headers_order = [];
+    private array $headers_order = [];
     /** @var array<string, string[]> */
-    private $headers_sub_order = [];
-    /** @var bool */
-    private $super;
+    private array $headers_sub_order = [];
+    private bool $super;
 
     /**
      * @param bool $super

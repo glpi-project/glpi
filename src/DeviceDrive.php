@@ -36,7 +36,7 @@
 /// Class DeviceDrive
 class DeviceDrive extends CommonDevice
 {
-    protected static $forward_entity_to = ['Item_DeviceDrive', 'Infocom'];
+    protected static array $forward_entity_to = ['Item_DeviceDrive', 'Infocom'];
 
     public static function getTypeName($nb = 0)
     {

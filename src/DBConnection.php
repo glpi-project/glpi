@@ -74,8 +74,12 @@ class DBConnection extends CommonGLPI
      */
     public const PROPERTY_ALLOW_SIGNED_KEYS = 'allow_signed_keys';
 
-    /** @var bool */
-    protected static $notable = true;
+    /**
+     * For slave connection.
+     */
+    public const PROPERTY_SLAVE = 'slave';
+
+    protected static bool $notable = true;
 
 
     public static function getTypeName($nb = 0)
@@ -83,6 +87,67 @@ class DBConnection extends CommonGLPI
         return _n('SQL replica', 'SQL replicas', $nb);
     }
 
+    private static function createConfigFile(
+        string $classname,
+        string $filename,
+        string $host,
+        string $user,
+        string $password,
+        string $dbname,
+        bool $slave = false,
+        bool $use_timezones = false,
+        bool $log_deprecation_warnings = false,
+        bool $use_utf8mb4 = false,
+        bool $allow_datetime = true,
+        bool $allow_signed_keys = true,
+        string $config_dir = GLPI_CONFIG_DIR
+    ): bool {
+        // Explode host into array (multiple values separated by a space char)
+        $host = trim($host);
+        if (strpos($host, ' ')) {
+            $host = explode(' ', $host);
+        }
+
+        $properties = [
+            'dbhost'     => $host,
+            'dbuser'     => $user,
+            'dbpassword' => rawurlencode($password),
+            'dbdefault'  => $dbname,
+        ];
+        if ($slave) {
+            $properties[self::PROPERTY_SLAVE] = true;
+        }
+        if ($use_timezones) {
+            $properties[self::PROPERTY_USE_TIMEZONES] = true;
+        }
+        if ($log_deprecation_warnings) {
+            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
+        }
+        if ($use_utf8mb4) {
+            $properties[self::PROPERTY_USE_UTF8MB4] = true;
+        }
+        if (!$allow_datetime) {
+            $properties[self::PROPERTY_ALLOW_DATETIME] = false;
+        }
+        if (!$allow_signed_keys) {
+            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
+        }
+
+        $config_str = '<?php' . "\n" . 'class ' . $classname . ' extends DBmysql {' . "\n";
+        foreach ($properties as $name => $value) {
+            /**
+             * Result will be printed in a file, no risk of XSS.
+             *
+             * @psalm-taint-escape html
+             */
+            $exported_value = call_user_func_array('var_export', [$value, true]);
+
+            $config_str .= sprintf('   public $%s = %s;', $name, $exported_value) . "\n";
+        }
+        $config_str .= '}' . "\n";
+
+        return Toolbox::writeConfig($filename, $config_str, $config_dir);
+    }
 
     /**
      * Create GLPI main configuration file
@@ -114,44 +179,20 @@ class DBConnection extends CommonGLPI
         bool $allow_signed_keys = true,
         string $config_dir = GLPI_CONFIG_DIR
     ): bool {
-
-        $properties = [
-            'dbhost'     => $host,
-            'dbuser'     => $user,
-            'dbpassword' => rawurlencode($password),
-            'dbdefault'  => $dbname,
-        ];
-        if ($use_timezones) {
-            $properties[self::PROPERTY_USE_TIMEZONES] = true;
-        }
-        if ($log_deprecation_warnings) {
-            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
-        }
-        if ($use_utf8mb4) {
-            $properties[self::PROPERTY_USE_UTF8MB4] = true;
-        }
-        if (!$allow_datetime) {
-            $properties[self::PROPERTY_ALLOW_DATETIME] = false;
-        }
-        if (!$allow_signed_keys) {
-            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
-        }
-
-        $config_str = '<?php' . "\n" . 'class DB extends DBmysql {' . "\n";
-        foreach ($properties as $name => $value) {
-
-            /**
-             * Result will be printed in a file, no risk of XSS.
-             *
-             * @psalm-taint-escape html
-             */
-            $exported_value = call_user_func_array('var_export', [$value, true]);
-
-            $config_str .= sprintf('   public $%s = %s;', $name, $exported_value) . "\n";
-        }
-        $config_str .= '}' . "\n";
-
-        return Toolbox::writeConfig('config_db.php', $config_str, $config_dir);
+        return self::createConfigFile(
+            classname: 'DB',
+            filename: 'config_db.php',
+            host: $host,
+            user: $user,
+            password: $password,
+            dbname: $dbname,
+            use_timezones: $use_timezones,
+            log_deprecation_warnings: $log_deprecation_warnings,
+            use_utf8mb4: $use_utf8mb4,
+            allow_datetime: $allow_datetime,
+            allow_signed_keys: $allow_signed_keys,
+            config_dir: $config_dir
+        );
     }
 
 
@@ -263,43 +304,21 @@ class DBConnection extends CommonGLPI
         bool $allow_signed_keys = true,
         string $config_dir = GLPI_CONFIG_DIR
     ): bool {
-
-        // Explode host into array (multiple values separated by a space char)
-        $host = trim($host);
-        if (strpos($host, ' ')) {
-            $host = explode(' ', $host);
-        }
-
-        $properties = [
-            'slave'      => true,
-            'dbhost'     => $host,
-            'dbuser'     => $user,
-            'dbpassword' => rawurlencode($password),
-            'dbdefault'  => $dbname,
-        ];
-        if ($use_timezones) {
-            $properties[self::PROPERTY_USE_TIMEZONES] = true;
-        }
-        if ($log_deprecation_warnings) {
-            $properties[self::PROPERTY_LOG_DEPRECATION_WARNINGS] = true;
-        }
-        if ($use_utf8mb4) {
-            $properties[self::PROPERTY_USE_UTF8MB4] = true;
-        }
-        if (!$allow_datetime) {
-            $properties[self::PROPERTY_ALLOW_DATETIME] = false;
-        }
-        if (!$allow_signed_keys) {
-            $properties[self::PROPERTY_ALLOW_SIGNED_KEYS] = false;
-        }
-
-        $config_str = '<?php' . "\n" . 'class DBSlave extends DBmysql {' . "\n";
-        foreach ($properties as $name => $value) {
-            $config_str .= sprintf('   public $%s = %s;', $name, var_export($value, true)) . "\n";
-        }
-        $config_str .= '}' . "\n";
-
-        return Toolbox::writeConfig('config_db_slave.php', $config_str, $config_dir);
+        return self::createConfigFile(
+            classname: 'DBSlave',
+            filename: 'config_db_slave.php',
+            host: $host,
+            user: $user,
+            password: $password,
+            dbname: $dbname,
+            slave: true,
+            use_timezones: $use_timezones,
+            log_deprecation_warnings: $log_deprecation_warnings,
+            use_utf8mb4: $use_utf8mb4,
+            allow_datetime: $allow_datetime,
+            allow_signed_keys: $allow_signed_keys,
+            config_dir: $config_dir
+        );
     }
 
 

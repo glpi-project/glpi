@@ -37,7 +37,7 @@
 class RuleMailCollector extends Rule
 {
     // From Rule
-    public static $rightname = 'rule_mailcollector';
+    public static string $rightname = 'rule_mailcollector';
 
     public function getTitle()
     {

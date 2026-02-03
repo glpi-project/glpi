@@ -51,7 +51,7 @@ use Toolbox;
 
 final class GlpiPageTile extends CommonDBTM implements TileInterface, ProvideTranslationsInterface
 {
-    public static $rightname = 'config';
+    public static string $rightname = 'config';
 
     public const PAGE_SERVICE_CATALOG = 'service_catalog';
     public const PAGE_FAQ = 'faq';

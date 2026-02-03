@@ -49,27 +49,24 @@ abstract class CommonDBChild extends CommonDBConnexity
     // Mapping between DB fields
     // * definition
     /** @var class-string<CommonDBTM>|string $itemtype Class name or field name (start with itemtype) for link to Parent */
-    public static $itemtype;
-    /** @var string $items_id */
-    public static $items_id; // Field name
+    public static string $itemtype;
+    public static string $items_id; // Field name
     // * rights
     /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
-    public static $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
-    /** @var bool */
-    public static $mustBeAttached     = true;
+    public static int $checkParentRights  = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static bool $mustBeAttached     = true;
     // * log
-    /** @var bool */
-    public static $logs_for_parent    = true;
+    public static bool $logs_for_parent    = true;
     /** @var Log::HISTORY_* */
-    public static $log_history_add    = Log::HISTORY_ADD_SUBITEM;
+    public static int $log_history_add    = Log::HISTORY_ADD_SUBITEM;
     /** @var Log::HISTORY_* */
-    public static $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
+    public static int $log_history_update = Log::HISTORY_UPDATE_SUBITEM;
     /** @var Log::HISTORY_* */
-    public static $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
+    public static int $log_history_delete = Log::HISTORY_DELETE_SUBITEM;
     /** @var Log::HISTORY_* */
-    public static $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
+    public static int $log_history_lock   = Log::HISTORY_LOCK_SUBITEM;
     /** @var Log::HISTORY_* */
-    public static $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
+    public static int $log_history_unlock = Log::HISTORY_UNLOCK_SUBITEM;
 
 
     /**

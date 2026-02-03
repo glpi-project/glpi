@@ -47,74 +47,68 @@ abstract class CommonDBRelation extends CommonDBConnexity
     // Item 1 information
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_1 TODO: remove null */
-    public static $itemtype_1; // Type ref or field name (must start with itemtype)
-    /** @var ?string $items_id_1 */
-    public static $items_id_1; // Field name
+    public static ?string $itemtype_1 = null; // Type ref or field name (must start with itemtype)
+    public static ?string $items_id_1 = null; // Field name
     /** @var bool If entity must be taken from item 1 */
-    public static $take_entity_1          = true;
+    public static bool $take_entity_1          = true;
     // * rights
     /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
-    public static $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkItem_1_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     /** @var bool If item 1 must be attached to the relation */
-    public static $mustBeAttached_1       = true;
+    public static bool $mustBeAttached_1       = true;
     // * log
     /** @var bool If historical logs must be done for item 1 */
-    public static $logs_for_item_1        = true;
+    public static bool $logs_for_item_1        = true;
     /** @var Log::HISTORY_* The historical log entry action type to use for add actions */
-    public static $log_history_1_add      = Log::HISTORY_ADD_RELATION;
+    public static int $log_history_1_add      = Log::HISTORY_ADD_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for update actions */
-    public static $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
+    public static int $log_history_1_update   = Log::HISTORY_UPDATE_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for delete actions */
-    public static $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
+    public static int $log_history_1_delete   = Log::HISTORY_DEL_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for lock actions */
-    public static $log_history_1_lock     = Log::HISTORY_LOCK_RELATION;
+    public static int $log_history_1_lock     = Log::HISTORY_LOCK_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for unlock actions */
-    public static $log_history_1_unlock   = Log::HISTORY_UNLOCK_RELATION;
+    public static int $log_history_1_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
     // Item 2 information
     // * definition
     /** @var null|string|class-string<CommonDBTM> $itemtype_2 TODO: remove null */
-    public static $itemtype_2; // Type ref or field name (must start with itemtype)
-    /** @var ?string $items_id_2 */
-    public static $items_id_2; // Field name
+    public static ?string $itemtype_2 = null; // Type ref or field name (must start with itemtype)
+    public static ?string $items_id_2 = null; // Field name
     /** @var bool If entity must be taken from item 2 */
-    public static $take_entity_2          = false;
+    public static bool $take_entity_2          = false;
     // * rights
     /** @var CommonDBConnexity::DONT_CHECK_ITEM_RIGHTS|CommonDBConnexity::HAVE_VIEW_RIGHT_ON_ITEM|CommonDBConnexity::HAVE_SAME_RIGHT_ON_ITEM */
-    public static $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
+    public static int $checkItem_2_Rights     = self::HAVE_SAME_RIGHT_ON_ITEM;
     /** @var bool If item 2 must be attached to the relation */
-    public static $mustBeAttached_2       = true;
+    public static bool $mustBeAttached_2       = true;
     // * log
     /** @var bool If historical logs must be done for item 2 */
-    public static $logs_for_item_2        = true;
+    public static bool $logs_for_item_2        = true;
     /** @var Log::HISTORY_* The historical log entry action type to use for add actions */
-    public static $log_history_2_add      = Log::HISTORY_ADD_RELATION;
+    public static int $log_history_2_add      = Log::HISTORY_ADD_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for update actions */
-    public static $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
+    public static int $log_history_2_update   = Log::HISTORY_UPDATE_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for delete actions */
-    public static $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
+    public static int $log_history_2_delete   = Log::HISTORY_DEL_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for lock actions */
-    public static $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
+    public static int $log_history_2_lock     = Log::HISTORY_LOCK_RELATION;
     /** @var Log::HISTORY_* The historical log entry action type to use for unlock actions */
-    public static $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
+    public static int $log_history_2_unlock   = Log::HISTORY_UNLOCK_RELATION;
 
     // Relation between items to check
     /// If both items must be checked for rights (default is only one)
-    /** @var bool */
-    public static $checkAlwaysBothItems   = false;
+    public static bool $checkAlwaysBothItems   = false;
     /// If both items must be in viewable each other entities
-    /** @var bool */
-    public static $check_entity_coherency = true;
+    public static bool $check_entity_coherency = true;
 
-    /** @var bool */
-    public $no_form_page                  = true;
+    public bool $no_form_page                  = true;
 
     /**
      * Search option number to use in parent item log.
      * Value is defined during logging process and unset after it.
-     * @var int
      */
-    protected $_force_log_option = 0;
+    protected int $_force_log_option = 0;
 
     /**
      * Get request criteria to search for an item

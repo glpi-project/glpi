@@ -53,9 +53,8 @@ abstract class Spreadsheet extends ExportSearchOutput
     protected BaseWriter|IWriter $writer;
     /**
      * FIXME: remove in GLPI 12, seems not used
-     * @var int
      */
-    protected $count;
+    protected int $count;
 
     public function __construct()
     {

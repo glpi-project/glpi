@@ -43,8 +43,8 @@
 class Change_Group extends CommonITILActor
 {
     // From CommonDBRelation
-    public static $itemtype_1 = Change::class;
-    public static $items_id_1 = 'changes_id';
-    public static $itemtype_2 = Group::class;
-    public static $items_id_2 = 'groups_id';
+    public static ?string $itemtype_1 = Change::class;
+    public static ?string $items_id_1 = 'changes_id';
+    public static ?string $itemtype_2 = Group::class;
+    public static ?string $items_id_2 = 'groups_id';
 }

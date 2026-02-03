@@ -41,13 +41,13 @@ use Glpi\Application\View\TemplateRenderer;
 class PendingReason extends CommonDropdown
 {
     // From CommonDBTM
-    public $dohistory = true;
+    public bool $dohistory = true;
 
     // From CommonDBTM
-    public $can_be_translated = true;
+    public bool $can_be_translated = true;
 
     // Rights managment
-    public static $rightname = 'pendingreason';
+    public static string $rightname = 'pendingreason';
 
     public static function getTypeName($nb = 0)
     {

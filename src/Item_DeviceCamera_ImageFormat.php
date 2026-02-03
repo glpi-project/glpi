@@ -37,11 +37,11 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_DeviceCamera_ImageFormat extends CommonDBRelation
 {
-    public static $itemtype_1 = Item_DeviceCamera::class;
-    public static $items_id_1 = 'items_devicecameras_id';
+    public static ?string $itemtype_1 = Item_DeviceCamera::class;
+    public static ?string $items_id_1 = 'items_devicecameras_id';
 
-    public static $itemtype_2 = ImageFormat::class;
-    public static $items_id_2 = 'imageformats_id';
+    public static ?string $itemtype_2 = ImageFormat::class;
+    public static ?string $items_id_2 = 'imageformats_id';
 
     public static function getTypeName($nb = 0)
     {

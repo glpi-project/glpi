@@ -84,30 +84,30 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
     /**
      * @var array|null
      */
-    protected $lazy_loaded_users = null;
+    protected ?array $lazy_loaded_users = null;
     /** @var class-string<CommonITILActor>  */
-    public $userlinkclass;
+    public string $userlinkclass;
     /// Groups by type
     /**
      * @var array|null
      */
-    protected $lazy_loaded_groups = null;
+    protected ?array $lazy_loaded_groups = null;
     /** @var class-string<CommonITILActor>  */
-    public $grouplinkclass;
+    public string $grouplinkclass;
 
     /// Suppliers by type
     /**
      * @var array|null
      */
-    protected $lazy_loaded_suppliers = null;
+    protected ?array $lazy_loaded_suppliers = null;
     /** @var class-string<CommonITILActor>  */
-    public $supplierlinkclass;
+    public string $supplierlinkclass;
 
     // HELPDESK LINK HARDWARE DEFINITION : CHECKSUM SYSTEM : BOTH=1*2^0+1*2^1=3
     public const HELPDESK_MY_HARDWARE  = 0;
     public const HELPDESK_ALL_HARDWARE = 1;
 
-    protected static $showTitleInNavigationHeader = true;
+    protected static bool $showTitleInNavigationHeader = true;
 
     public const MATRIX_FIELD         = '';
     public const URGENCY_MASK_FIELD   = '';
@@ -1926,7 +1926,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
      */
     public function checkRequiredFieldsFilled(): bool
     {
-        if (empty($this->fields) && $this->input === false) {
+        if ($this->fields === [] && $this->input === false) {
             return false;
         }
         $result = $this->handleTemplateFields($this->fields, false);

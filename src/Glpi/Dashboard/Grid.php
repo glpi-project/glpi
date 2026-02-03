@@ -61,25 +61,16 @@ use function Safe\preg_replace;
 
 class Grid
 {
-    /** @var int */
-    protected $cell_margin     = 3;
-    /** @var int */
-    protected $grid_cols       = 26;
-    /** @var int */
-    protected $grid_rows       = 24;
-    /** @var string */
-    protected $current         = "";
-    /** @var Dashboard|null */
-    protected $dashboard       = null;
-    /** @var array */
-    protected $items           = [];
-    /** @var string */
-    protected $context            = '';
+    protected int $cell_margin     = 3;
+    protected int $grid_cols       = 26;
+    protected int $grid_rows       = 24;
+    protected string $current         = "";
+    protected ?Dashboard $dashboard       = null;
+    protected array $items           = [];
+    protected string $context            = '';
 
-    /** @var bool */
-    public static $embed              = false;
-    /** @var array */
-    public static $all_dashboards     = [];
+    public static bool $embed              = false;
+    public static array $all_dashboards     = [];
 
     public function __construct(string $dashboard_key = "central", int $grid_cols = 26, int $grid_rows = 24, string $context = 'core')
     {
@@ -123,8 +114,7 @@ class Grid
     public static function loadAllDashboards(bool $force = true): bool
     {
         if (
-            !is_array(self::$all_dashboards)
-            || count(self::$all_dashboards) === 0
+            count(self::$all_dashboards) === 0
             || $force
         ) {
             self::$all_dashboards = Dashboard::getAll($force, !self::$embed, '');
@@ -137,8 +127,8 @@ class Grid
     /**
      * Init dashboards cards
      * A define.php constant (GLPI_AJAX_DASHBOARD) exists to control how the cards should be loaded
-     *  - if true: load all cards in seperate ajax request
-     *    pros: slow cards wont impact the others
+     *  - if true: load all cards in separate ajax request
+     *    pros: slow cards won't impact the others
      * - else: load all cards in a single ajax request
      *    pros: less strain for the server
      *

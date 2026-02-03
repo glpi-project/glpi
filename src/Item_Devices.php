@@ -51,35 +51,35 @@ class Item_Devices extends CommonDBRelation implements StateInterface
 {
     use State;
 
-    public static $itemtype_1            = 'itemtype';
-    public static $items_id_1            = 'items_id';
-    public static $mustBeAttached_1      = false;
-    public static $take_entity_1         = false;
+    public static ?string $itemtype_1            = 'itemtype';
+    public static ?string $items_id_1            = 'items_id';
+    public static bool $mustBeAttached_1      = false;
+    public static bool $take_entity_1         = false;
     // static public $checkItem_1_Rights    = self::DONT_CHECK_ITEM_RIGHTS;
 
-    protected static $notable            = true;
+    protected static bool $notable            = true;
 
-    public static $logs_for_item_2       = false;
-    public static $take_entity_2         = true;
+    public static bool $logs_for_item_2       = false;
+    public static bool $take_entity_2         = true;
 
-    public static $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
-    public static $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
-    public static $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
-    public static $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
-    public static $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
+    public static int $log_history_1_add     = Log::HISTORY_ADD_DEVICE;
+    public static int $log_history_1_update  = Log::HISTORY_UPDATE_DEVICE;
+    public static int $log_history_1_delete  = Log::HISTORY_DELETE_DEVICE;
+    public static int $log_history_1_lock    = Log::HISTORY_LOCK_DEVICE;
+    public static int $log_history_1_unlock  = Log::HISTORY_UNLOCK_DEVICE;
 
     // This var is defined by CommonDBRelation ...
-    public $no_form_page                 = false;
+    public bool $no_form_page                 = false;
 
-    public $dohistory = true;
+    public bool $dohistory = true;
 
-    protected static $forward_entity_to  = ['Infocom'];
+    protected static array $forward_entity_to  = ['Infocom'];
 
-    public static $undisclosedFields      = [];
+    public static array $undisclosedFields      = [];
 
-    public static $mustBeAttached_2 = false; // Mandatory to display creation form
+    public static bool $mustBeAttached_2 = false; // Mandatory to display creation form
 
-    public static $rightname = 'device';
+    public static string $rightname = 'device';
 
     public function getCloneRelations(): array
     {

@@ -37,13 +37,13 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Item_OperatingSystem extends CommonDBRelation
 {
-    public static $itemtype_1 = OperatingSystem::class;
-    public static $items_id_1 = 'operatingsystems_id';
-    public static $itemtype_2 = 'itemtype';
-    public static $items_id_2 = 'items_id';
-    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+    public static ?string $itemtype_1 = OperatingSystem::class;
+    public static ?string $items_id_1 = 'operatingsystems_id';
+    public static ?string $itemtype_2 = 'itemtype';
+    public static ?string $items_id_2 = 'items_id';
+    public static int $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
 
-    public static $mustBeAttached_1 = false;
+    public static bool $mustBeAttached_1 = false;
 
 
     public static function getTypeName($nb = 0)

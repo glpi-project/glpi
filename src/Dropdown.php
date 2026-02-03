@@ -58,19 +58,19 @@ class Dropdown
      * List of standard itemtypes options
      * @var array|null
      */
-    private static $standard_itemtypes_options = null;
+    private static ?array $standard_itemtypes_options = null;
 
     /**
      * List of devices itemtypes options
      * @var array|null
      */
-    private static $devices_itemtypes_options = null;
+    private static ?array $devices_itemtypes_options = null;
 
     /**
      * List of devices itemtypes options grouped by category
      * @var array|null
      */
-    private static $devices_itemtypes_options_grouped = null;
+    private static ?array $devices_itemtypes_options_grouped = null;
 
     /**
      * Print out an HTML "<select>" for a dropdown with preselected value

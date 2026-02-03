@@ -62,15 +62,13 @@ class Migration
 
     /**
      * List (name => value) of configuration options to add, if they're missing
-     * @var array
      */
-    private $configs = [];
+    private array $configs = [];
 
     /**
      * Configuration context
-     * @var string
      */
-    private $context = 'core';
+    private string $context = 'core';
 
     public const PRE_QUERY = 'pre';
     public const POST_QUERY = 'post';

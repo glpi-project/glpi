@@ -75,8 +75,8 @@ class User extends CommonDBTM implements TreeBrowseInterface
     use TreeBrowse;
 
     // From CommonDBTM
-    public $dohistory         = true;
-    public $history_blacklist = ['date_mod', 'date_sync', 'last_login',
+    public bool $dohistory         = true;
+    public array $history_blacklist = ['date_mod', 'date_sync', 'last_login',
         'publicbookmarkorder', 'privatebookmarkorder',
     ];
 
@@ -91,9 +91,9 @@ class User extends CommonDBTM implements TreeBrowseInterface
     public const UPDATEAUTHENT       = 4096;
     public const IMPERSONATE         = 8192;
 
-    public static $rightname = 'user';
+    public static string $rightname = 'user';
 
-    public static $undisclosedFields = [
+    public static array $undisclosedFields = [
         'password',
         'password_history',
         'personal_token',

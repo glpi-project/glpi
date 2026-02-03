@@ -80,15 +80,15 @@ class Config extends CommonDBTM
     public const TIMELINE_ABSOLUTE_DATE = 1;
 
     // From CommonGLPI
-    protected $displaylist         = false;
+    protected bool $displaylist         = false;
 
     // From CommonDBTM
-    public $auto_message_on_action = false;
-    public $showdebug              = true;
+    public bool $auto_message_on_action = false;
+    public bool $showdebug              = true;
 
-    public static $rightname              = 'config';
+    public static string $rightname              = 'config';
 
-    public static $undisclosedFields      = [
+    public static array $undisclosedFields      = [
         'proxy_passwd',
         'smtp_passwd',
         'smtp_oauth_client_id',
@@ -100,13 +100,12 @@ class Config extends CommonDBTM
     ];
 
     /** @var string[] */
-    public static $saferUndisclosedFields = ['admin_email', 'replyto_email'];
+    public static array $saferUndisclosedFields = ['admin_email', 'replyto_email'];
 
     /**
      * Indicates whether the GLPI configuration has been loaded.
-     * @var bool
      */
-    private static $loaded = false;
+    private static bool $loaded = false;
 
     public static function getTypeName($nb = 0)
     {

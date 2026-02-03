@@ -46,7 +46,7 @@ use USBVendor;
 
 class Peripheral extends InventoryAsset
 {
-    protected $extra_data = ['inputs' => null];
+    protected array $extra_data = ['inputs' => null];
 
     public function prepare(): array
     {

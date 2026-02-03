@@ -42,7 +42,7 @@ class Manufacturer extends CommonDropdown
     /** @use Clonable<static> */
     use Clonable;
 
-    public $can_be_translated = false;
+    public bool $can_be_translated = false;
 
 
     public static function getTypeName($nb = 0)

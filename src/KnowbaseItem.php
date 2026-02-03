@@ -60,21 +60,19 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
     use Clonable;
     use TreeBrowse;
 
-    /** @var bool */
-    public static $browse_default = true;
+    public static bool $browse_default = true;
 
     // From CommonDBTM
-    public $dohistory    = true;
+    public bool $dohistory    = true;
 
-    /** @var array */
-    protected $items     = [];
+    protected array $items     = [];
 
     public const KNOWBASEADMIN = 1024;
     public const READFAQ       = 2048;
     public const PUBLISHFAQ    = 4096;
     public const COMMENTS      = 8192;
 
-    public static $rightname   = 'knowbase';
+    public static string $rightname   = 'knowbase';
 
     public function getCloneRelations(): array
     {

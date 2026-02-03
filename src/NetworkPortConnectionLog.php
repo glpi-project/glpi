@@ -40,10 +40,10 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class NetworkPortConnectionLog extends CommonDBRelation
 {
-    public static $itemtype_1 = NetworkPort::class;
-    public static $items_id_1 = 'networkports_id_source';
-    public static $itemtype_2 = NetworkPort::class;
-    public static $items_id_2 = 'networkports_id_destination';
+    public static ?string $itemtype_1 = NetworkPort::class;
+    public static ?string $items_id_1 = 'networkports_id_source';
+    public static ?string $itemtype_2 = NetworkPort::class;
+    public static ?string $items_id_2 = 'networkports_id_destination';
 
     public static function getTypeName($nb = 0)
     {

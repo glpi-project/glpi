@@ -52,11 +52,10 @@ use function Safe\parse_url;
 
 class View extends CommonGLPI
 {
-    public static $rightname = 'config';
-    /** @var ?PluginsApi */
-    public static $api       = null;
+    public static string $rightname = 'config';
+    public static ?PluginsApi $api       = null;
 
-    public $get_item_to_display_tab = true;
+    public bool $get_item_to_display_tab = true;
 
 
     public const COL_PAGE = 12;

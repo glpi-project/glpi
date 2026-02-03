@@ -38,12 +38,12 @@
  **/
 class SlaLevel extends LevelAgreementLevel
 {
-    protected $rules_id_field     = 'slalevels_id';
-    protected $ruleactionclass    = SlaLevelAction::class;
-    protected static $parentclass = SLA::class;
-    protected static $fkparent    = 'slas_id';
+    protected string $rules_id_field     = 'slalevels_id';
+    protected string $ruleactionclass    = SlaLevelAction::class;
+    protected static string $parentclass = SLA::class;
+    protected static string $fkparent    = 'slas_id';
     // No criteria
-    protected $rulecriteriaclass = SlaLevelCriteria::class;
+    protected string $rulecriteriaclass = SlaLevelCriteria::class;
 
     public static function getTable($classname = null)
     {

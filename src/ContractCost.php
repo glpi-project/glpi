@@ -42,9 +42,9 @@ use Glpi\Application\View\TemplateRenderer;
 class ContractCost extends CommonDBChild
 {
     // From CommonDBChild
-    public static $itemtype = Contract::class;
-    public static $items_id = 'contracts_id';
-    public $dohistory       = true;
+    public static string $itemtype = Contract::class;
+    public static string $items_id = 'contracts_id';
+    public bool $dohistory       = true;
 
 
     public static function getTypeName($nb = 0)

@@ -144,7 +144,7 @@ class Conf extends CommonGLPI
 
     public const BASIC_AUTH = 'basic_auth';
 
-    public static $rightname = 'inventory';
+    public static string $rightname = 'inventory';
 
     public const IMPORTFROMFILE     = 1024;
     public const UPDATECONFIG       = 2048;

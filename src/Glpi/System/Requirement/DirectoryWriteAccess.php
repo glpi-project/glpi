@@ -48,9 +48,8 @@ class DirectoryWriteAccess extends AbstractRequirement
     /**
      * Directory path.
      *
-     * @var string
      */
-    private $path;
+    private string $path;
 
     /**
      * @param string      $path         Directory path.

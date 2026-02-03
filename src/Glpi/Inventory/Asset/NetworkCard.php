@@ -46,8 +46,8 @@ class NetworkCard extends Device
 
     private Conf $conf;
 
-    protected $extra_data = ['controllers' => null];
-    protected $ignored = ['controllers' => null];
+    protected array $extra_data = ['controllers' => null];
+    protected array $ignored = ['controllers' => null];
     /** @var string[] */
     private array $cards_macs = [];
 
