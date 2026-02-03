@@ -225,11 +225,20 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             ->in($src_subdir);
 
         foreach (iterator_to_array($finder->getIterator()) as $file) {
+            /* @var \SplFileInfo $file */
             $relative_path = $file->getRelativePathname();
             foreach ($banned as $ban) {
-                if (fnmatch($ban, $relative_path) || fnmatch($ban, $file->getFilename()) || preg_match('#^' . preg_quote($ban, '#') . '#', $relative_path)) {
+                if (
+                    \file_exists($file->getRealPath())
+                    && (
+                        fnmatch($ban, $relative_path)
+                        || fnmatch($ban, $file->getFilename())
+                        || preg_match('#^' . preg_quote($ban, '#') . '#', $relative_path)
+                        || ($file->isDir() && rtrim($ban, '/') === $relative_path)
+                    )
+                ) {
                     $fs->remove($file->getPathname());
-                    $this->io->writeln(" Removed: $relative_path", OutputInterface::VERBOSITY_VERBOSE);
+                    $this->io->writeln(" Removed: $relative_path");
                     break;
                 }
             }
