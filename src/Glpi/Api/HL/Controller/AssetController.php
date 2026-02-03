@@ -60,6 +60,7 @@ use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
+use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -71,7 +72,10 @@ use Infocom;
 use Item_DeviceNetworkCard;
 use Item_OperatingSystem;
 use Item_Rack;
+use Item_RemoteManagement;
 use Item_SoftwareVersion;
+use ItemAntivirus;
+use ItemVirtualMachine;
 use Location;
 use Manufacturer;
 use Monitor;
@@ -124,6 +128,9 @@ use SoftwareVersion;
 use State;
 use Unmanaged;
 use User;
+use VirtualMachineState;
+use VirtualMachineSystem;
+use VirtualMachineType;
 use WifiNetwork;
 
 use function Safe\json_decode;
@@ -2125,6 +2132,104 @@ EOT,
             ],
         ];
 
+        $schemas['Antivirus'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => ItemAntivirus::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'manufacturer' => self::getDropdownTypeSchema(class: Manufacturer::class, full_schema: 'Manufacturer'),
+                'antivirus_version' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'signature_version' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'is_active' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_up_to_date' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'x-field' => 'is_uptodate'],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_expiration' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['VirtualMachine'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => ItemVirtualMachine::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'state' => self::getDropdownTypeSchema(class: VirtualMachineState::class, full_schema: 'VirtualMachineState'),
+                'system' => self::getDropdownTypeSchema(class: VirtualMachineSystem::class, full_schema: 'VirtualMachineModel'),
+                'type' => self::getDropdownTypeSchema(class: VirtualMachineType::class, full_schema: 'VirtualMachineType'),
+                'uuid' => ['type' => Doc\Schema::TYPE_STRING],
+                'vcpu' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'ram' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT32],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['PeripheralConnection'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Asset_PeripheralAsset::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype_asset' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id_asset' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'itemtype_peripheral' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id_peripheral' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
+        $schemas['RemoteManagement'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Item_RemoteManagement::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'remoteid' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => [
+                        Item_RemoteManagement::TEAMVIEWER, Item_RemoteManagement::LITEMANAGER, Item_RemoteManagement::ANYDESK,
+                        Item_RemoteManagement::MESHCENTRAL, Item_RemoteManagement::SUPREMO, Item_RemoteManagement::RUSTDESK,
+                    ],
+                ],
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
         $schemas['CommonAsset'] = self::getGlobalAssetSchema($schemas);
 
         return $schemas;
@@ -3299,5 +3404,354 @@ EOT,
     public function deleteSoftwareInstallation(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('SoftwareInstallation', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Antivirus', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Antivirus',
+        description: 'Add an antivirus to an asset'
+    )]
+    public function createItemAntivirus(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('Antivirus', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getItemAntivirus'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Antivirus', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Antivirus',
+        description: 'List or search antiviruses installed on an asset'
+    )]
+    public function searchItemAntivirus(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Antivirus', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Antivirus/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Antivirus',
+        description: 'Get an existing antivirus by the antivirus ID'
+    )]
+    public function getItemAntivirus(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('Antivirus', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Antivirus/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Antivirus',
+        description: 'Update an existing antivirus by the antivirus ID'
+    )]
+    public function updateItemAntivirus(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Antivirus', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Antivirus/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Antivirus',
+        description: 'Delete an antivirus by the antivirus ID',
+    )]
+    public function deleteItemAntivirus(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Antivirus', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/VirtualMachine', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'VirtualMachine',
+        description: 'Add a virtual machine or container to an asset'
+    )]
+    public function createItemVirtualMachine(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getItemVirtualMachine'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/VirtualMachine', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'VirtualMachine',
+        description: 'List or search virtual machines and containers on an asset'
+    )]
+    public function searchItemVirtualMachine(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/VirtualMachine/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'VirtualMachine',
+        description: 'Get an existing virtual machine or container by ID'
+    )]
+    public function getItemVirtualMachine(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/VirtualMachine/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'VirtualMachine',
+        description: 'Update an existing virtual machine or container by the ID'
+    )]
+    public function updateItemVirtualMachine(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/VirtualMachine/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'VirtualMachine',
+        description: 'Delete a virtual machine or container by the ID',
+    )]
+    public function deleteItemVirtualMachine(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('VirtualMachine', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/PeripheralConnection', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'PeripheralConnection',
+        description: 'Connect a peripheral to an asset'
+    )]
+    public function createItemPeripheralConnection(Request $request): Response
+    {
+        $request->setParameter('itemtype_asset', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id_asset', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getItemPeripheralConnection'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/PeripheralConnection', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'PeripheralConnection',
+        description: 'List or search peripherals connected to an asset'
+    )]
+    public function searchItemPeripheralConnection(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/PeripheralConnection/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'PeripheralConnection',
+        description: 'Get an existing peripheral connection by ID'
+    )]
+    public function getItemPeripheralConnection(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype_asset==' . $request->getAttribute('asset_itemtype') . ';items_id_asset==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/PeripheralConnection/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'PeripheralConnection',
+        description: 'Update an existing peripheral connection by the ID'
+    )]
+    public function updateItemPeripheralConnection(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/PeripheralConnection/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'PeripheralConnection',
+        description: 'Delete a peripheral connection by the ID',
+    )]
+    public function deleteItemPeripheralConnection(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('PeripheralConnection', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    // remote management endpoints
+    #[Route(path: '/{asset_itemtype}/{asset_id}/RemoteManagement', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'RemoteManagement',
+        description: 'Add remote management configuration to an asset'
+    )]
+    public function createItemRemoteManagement(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getItemRemoteManagement'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/RemoteManagement', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'RemoteManagement',
+        description: 'List or search remote management configurations on an asset'
+    )]
+    public function searchItemRemoteManagement(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/RemoteManagement/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'RemoteManagement',
+        description: 'Get an existing remote management configuration by ID'
+    )]
+    public function getItemRemoteManagement(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/RemoteManagement/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'RemoteManagement',
+        description: 'Update an existing remote management configuration by the ID'
+    )]
+    public function updateItemRemoteManagement(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/RemoteManagement/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'RemoteManagement',
+        description: 'Delete a remote management configuration by the ID',
+    )]
+    public function deleteItemRemoteManagement(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

@@ -4658,7 +4658,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Config.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.2\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
+	'message' => '#^Cannot access offset \'endpoint\' on array\\{api_version\\: string, version\\: \'2\\.3\\.0\', description\\?\\: string, endpoint\\: string\\}\\|false\\.$#',
 	'identifier' => 'offsetAccess.nonOffsetAccessible',
 	'count' => 3,
 	'path' => __DIR__ . '/src/Config.php',
@@ -6696,12 +6696,6 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$class of static method Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\:\\:getDropdownTypeSchema\\(\\) expects class\\-string\\<CommonDBTM\\>, class\\-string given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter \\#2 \\$headers of class Glpi\\\\Http\\\\Response constructor expects array\\<array\\<string\\>\\|string\\>, array\\<string, list\\<string\\|null\\>\\> given\\.$#',

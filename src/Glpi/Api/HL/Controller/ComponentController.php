@@ -79,6 +79,7 @@ use DeviceSimcardType;
 use DeviceSoundCard;
 use DeviceSoundCardModel;
 use Entity;
+use Filesystem;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
@@ -108,6 +109,7 @@ use Item_DeviceProcessor;
 use Item_DeviceSensor;
 use Item_DeviceSimcard;
 use Item_DeviceSoundCard;
+use Item_Disk;
 use Line;
 use Location;
 use Manufacturer;
@@ -703,6 +705,61 @@ class ComponentController extends AbstractController
                     'systemboard' => self::getDropdownTypeSchema(class: DeviceMotherboard::class, name_field: 'designation', full_schema: 'Systemboard'),
                 ],
             ],
+            'Volume' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Item_Disk::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'device' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'description' => 'The device/partition path, e.g. /dev/sda1',
+                        'maxLength' => 255,
+                    ],
+                    'mount_point' => [
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'x-field' => 'mountpoint',
+                        'description' => 'The mount point of the volume, e.g. /home',
+                        'maxLength' => 255,
+                    ],
+                    'filesystem' => self::getDropdownTypeSchema(class: Filesystem::class, full_schema: 'Filesystem'),
+                    'total_size' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-field' => 'totalsize',
+                    ],
+                    'free_size' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'x-field' => 'freesize',
+                    ],
+                    'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'encryption_status' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'enum' => [Item_Disk::ENCRYPTION_STATUS_NO, Item_Disk::ENCRYPTION_STATUS_YES, Item_Disk::ENCRYPTION_STATUS_PARTIALLY],
+                        'description' => <<<EOT
+                            Encryption status of the volume:
+                            - 0: No encryption
+                            - 1: Fully encrypted
+                            - 2: Partially encrypted
+EOT,
+                    ],
+                    'encryption_tool' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'encryption_algorithm' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'encryption_type' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
         ];
 
         // Remove some properties that refer to missing fields in the database, but should be added later
@@ -911,5 +968,106 @@ class ComponentController extends AbstractController
         $item_schema = $this->getKnownSchema($component_type . 'Item', $this->getAPIVersion($request));
 
         return ResourceAccessor::searchBySchema($item_schema, $request->getParameters());
+    }
+
+    #[Route(path: '/Assets/{asset_itemtype}/{asset_id}/Volume', methods: ['GET'], requirements: [
+        'asset_itemtype' => [AssetController::class, 'getAssetTypes'],
+        'asset_id' => '\d+',
+    ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Volume',
+        description: 'List or search all volumes for an asset'
+    )]
+    public function searchAssetVolumes(Request $request): Response
+    {
+        // Set itemtype and items_id filters
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype');
+        $filters .= ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+
+        $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
+
+        return ResourceAccessor::searchBySchema($item_schema, $request->getParameters());
+    }
+
+    #[Route(path: '/Assets/{asset_itemtype}/{asset_id}/Volume/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [AssetController::class, 'getAssetTypes'],
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], tags: ['Assets', 'Components'], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Volume',
+        description: 'Get a specific volume for an asset'
+    )]
+    public function getAssetVolume(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype');
+        $filters .= ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
+        return ResourceAccessor::getOneBySchema($item_schema, $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Assets/{asset_itemtype}/{asset_id}/Volume', methods: ['POST'], requirements: [
+        'asset_itemtype' => [AssetController::class, 'getAssetTypes'],
+        'asset_id' => '\d+',
+    ], tags: ['Assets', 'Components'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Volume',
+        description: 'Create a new volume for an asset'
+    )]
+    public function createAssetVolume(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
+        return ResourceAccessor::createBySchema(
+            $item_schema,
+            $request->getParameters(),
+            [self::class, 'getAssetVolume'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/Assets/{asset_itemtype}/{asset_id}/Volume/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => [AssetController::class, 'getAssetTypes'],
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], tags: ['Assets', 'Components'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Volume',
+        description: 'Update an existing volume for an asset'
+    )]
+    public function updateAssetVolume(Request $request): Response
+    {
+        $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
+        return ResourceAccessor::updateBySchema($item_schema, $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Assets/{asset_itemtype}/{asset_id}/Volume/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [AssetController::class, 'getAssetTypes'],
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], tags: ['Assets', 'Components'])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Volume',
+        description: 'Delete a volume for an asset',
+    )]
+    public function deleteAssetVolume(Request $request): Response
+    {
+        $item_schema = $this->getKnownSchema('Volume', $this->getAPIVersion($request));
+        return ResourceAccessor::deleteBySchema($item_schema, $request->getAttributes(), $request->getParameters());
     }
 }

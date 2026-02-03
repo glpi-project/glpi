@@ -64,6 +64,7 @@ use DomainType;
 use DropdownVisibility;
 use EnclosureModel;
 use Entity;
+use Filesystem;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\ResourceAccessor;
@@ -1054,6 +1055,23 @@ EOT,
             ],
         ];
 
+        $schemas['Filesystem'] = [
+            'x-version-introduced' => '2.3.0',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Filesystem::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         $schemas['MonitorModel'] = [
             'x-version-introduced' => '2.3',
             'x-itemtype' => MonitorModel::class,
@@ -1910,6 +1928,7 @@ EOT,
                 'LicenseType' => SoftwareLicenseType::getTypeName(1),
                 'SupplierType' => SupplierType::getTypeName(1),
                 'HardDriveType' => DeviceHardDriveType::getTypeName(1),
+                'Filesystem' => Filesystem::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
@@ -1949,7 +1968,7 @@ EOT,
             'PeripheralModel', 'PeripheralType', 'PhoneModel', 'PhoneType', 'PrinterModel', 'PrinterType', 'EnclosureModel',
             'ApplianceType', 'BudgetType', 'CartridgeItemType', 'CertificateType', 'ClusterType', 'ContactType',
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
-            'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType',
+            'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
         ];
     }
 
