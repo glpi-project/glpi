@@ -40,6 +40,8 @@ use Document;
 use Document_Item;
 use Entity;
 use Glpi\Event;
+use Glpi\Exception\Crud\AddException;
+use Glpi\Exception\Crud\UpdateException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Tests\DbTestCase;
@@ -1358,20 +1360,33 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
 
-        $this->assertFalse($computer->update([
-            'id' => $computers_id2,
-            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
-        ]));
+        $exception_thrown = false;
+        try {
+            $computer->update([
+                'id' => $computers_id2,
+                'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
+            ]);
+        } catch (UpdateException $e) {
+            $exception_thrown = true;
+            $this->assertSame('Cannot update item in database', $e->getMessage());
+        }
+        $this->assertTrue($exception_thrown);
 
         $err_msg = 'Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a href="/front/computer.form.php?id=' . $computers_id1 . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="testCheckUnicity01">testCheckUnicity01</a> - ID: ' . $computers_id1 . ' - Serial number:  - Entity: Root entity &gt; _test_root_entity]';
         $this->hasSessionMessages(ERROR, [$err_msg]);
 
-        $this->assertFalse($computer->add([
-            'name' => __FUNCTION__ . '03',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
-        ]));
-
+        $exception_thrown = false;
+        try {
+            $computer->add([
+                'name' => __FUNCTION__ . '03',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
+            ]);
+        } catch (AddException $e) {
+            $exception_thrown = true;
+            $this->assertSame('Cannot add item to database', $e->getMessage());
+        }
+        $this->assertTrue($exception_thrown);
         $this->hasSessionMessages(ERROR, [$err_msg]);
     }
 
@@ -1434,12 +1449,17 @@ class CommonDBTMTest extends DbTestCase
         $this->hasNoSessionMessages([ERROR]);
 
         //create computer with same name should not be possible (because of first computer)
-        $this->assertFalse(
+        $exception_thrown = false;
+        try {
             $computer->add([
                 'name' => __FUNCTION__ . '01',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            ])
-        );
+            ]);
+        } catch (AddException $e) {
+            $exception_thrown = true;
+            $this->assertSame('Cannot add item to database', $e->getMessage());
+        }
+        $this->assertTrue($exception_thrown);
         $err_msg = 'Impossible record for Name = ' . __FUNCTION__ . '01<br>Other item exist<br>[<a href="/front/computer.form.php?id=' . $computers_id . '" data-bs-toggle="tooltip" data-bs-placement="bottom" title="' . __FUNCTION__ . '01">' . __FUNCTION__ . '01</a> - ID: ' . $computers_id . ' - Serial number:  - Entity: Root entity &gt; _test_root_entity]';
         $this->hasSessionMessages(ERROR, [$err_msg]);
 

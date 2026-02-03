@@ -39,6 +39,11 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\Debug\Profiler;
 use Glpi\Event;
+use Glpi\Exception\Crud\AddException;
+use Glpi\Exception\Crud\CloneException;
+use Glpi\Exception\Crud\DeleteException;
+use Glpi\Exception\Crud\PurgeException;
+use Glpi\Exception\Crud\UpdateException;
 use Glpi\Exception\Database\StatementException;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
@@ -1281,7 +1286,7 @@ class CommonDBTM extends CommonGLPI
         global $CFG_GLPI, $DB;
 
         if ($DB->isReplica()) {
-            return false;
+            throw new AddException('Cannot add object in slave database');
         }
 
         // This means we are not adding a cloned object
@@ -1297,7 +1302,10 @@ class CommonDBTM extends CommonGLPI
             if (isset($input['id'])) {
                 $id_to_clone = $input['id'];
             }
-            if (isset($id_to_clone) && $this->getFromDB($id_to_clone)) {
+            if (isset($id_to_clone)) {
+                if ($this->getFromDB($id_to_clone)) {
+                    throw new CloneException('Unable to load item to clone #' . $id_to_clone);
+                }
                 if ($clone_id = $this->clone($input, $history)) {
                     $this->getFromDB($clone_id); // Load created items fields
                 }
@@ -1434,7 +1442,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        return false;
+        throw new AddException('Cannot add item to database');
     }
 
     /**
@@ -1810,7 +1818,7 @@ class CommonDBTM extends CommonGLPI
             }
         }
 
-        return false;
+        throw new UpdateException('Cannot update item in database');
     }
 
 
@@ -2212,7 +2220,12 @@ class CommonDBTM extends CommonGLPI
                 return true;
             }
         }
-        return false;
+
+        if ($force) {
+            throw new PurgeException('Cannot purge item from database');
+        } else {
+            throw new DeleteException('Cannot delete item from database');
+        }
     }
 
 
