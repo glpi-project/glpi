@@ -1,0 +1,83 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2026 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<li class="step-item {{ revision.is_current ? 'active' : '' }}" data-testid="revision">
+    <div class="d-flex align-items-start justify-content-between">
+        <div>
+            <div class="h4 m-0">
+                {% if revision.is_current %}
+                    {{ __("Current version") }}
+                {% elseif revision.is_first %}
+                    {{ __("Initial version") }}
+                {% else %}
+                    {{ __("Version %s")|format(revision.revision) }}
+                {% endif %}
+            </div>
+            <div class="text-secondary small">
+                {% if revision.is_first %}
+                    {{ __("Created by") }}
+                {% else %}
+                    {{ __("Updated by") }}
+                {% endif %}
+                {% if revision.user %}
+                    <a rel="author" href="{{ revision.user.getLinkUrl() }}" class="badge bg-azure-lt ms-1">
+                        @{{ revision.user.getFriendlyName() }}
+                    </a>
+                {% else %}
+                    <span class="badge bg-secondary-lt ms-1">{{ __("Deleted user") }}</span>
+                {% endif %}
+            </div>
+            <div class="text-secondary small">
+                <span
+                    title="{{ revision.date }}"
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                >
+                    {{ revision.date|relative_datetime }}
+                </span>
+            </div>
+        </div>
+        {% if can_revert and not revision.is_current and revision.id %}
+            <button
+                type="button"
+                class="btn btn-ghost-secondary btn-sm"
+                data-glpi-revert-revision="{{ revision.id }}"
+                data-glpi-kb-id="{{ id }}"
+                title="{{ __("Restore this version") }}"
+                data-bs-toggle="tooltip"
+                data-bs-placement="left"
+            >
+                <i class="ti ti-restore"></i>
+            </button>
+        {% endif %}
+    </div>
+</li>

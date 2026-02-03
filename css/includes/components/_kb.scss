@@ -34,6 +34,15 @@
     background-color: var(--tblr-card-cap-bg);
     border-left: 1px solid #e1e4e8;
     height: calc(100vh - 150px);
+
+    .steps-vertical {
+        position: relative;
+        left: -1.5rem;
+        width: calc(100% + 3rem);
+        margin-left: 0;
+        padding-right: 0.5rem;
+        border-left: none;
+    }
 }
 
 .kb-article {
