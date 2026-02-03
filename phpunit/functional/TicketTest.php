@@ -8574,4 +8574,257 @@ HTML,
         $this->assertContains($doc2->getID(), $found_docs);
         $this->assertNotContains($doc3->getID(), $found_docs);
     }
+
+    /**
+     * Data provider for testGetAssociatedDocumentsWithoutActiveSession
+     * Returns different scenarios with timeline items (followup/task/solution) with various visibility and user rights
+     */
+    public static function associatedDocumentsWithoutSessionProvider(): iterable
+    {
+        foreach ([\Ticket::class, \Change::class, \Problem::class] as $itil_itemtype) {
+
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => \ITILFollowup::class,
+                'is_private' => false,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => \ITILFollowup::class,
+                'is_private' => true,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => $itil_itemtype . 'Task',
+                'is_private' => false,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => $itil_itemtype . 'Task',
+                'is_private' => true,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            yield [
+                'parent_itil_itemtype' => $itil_itemtype,
+                'timeline_item_type' => \ITILSolution::class,
+                'is_private' => false,
+                'test_user' => 'tech',
+                'expected' => true,
+            ];
+            if ($itil_itemtype !== \Problem::class) {
+                yield [
+                    'parent_itil_itemtype' => $itil_itemtype,
+                    'timeline_item_type' => $itil_itemtype . 'Validation',
+                    'is_private' => false,
+                    'test_user' => 'tech',
+                    'expected' => true,
+                ];
+                yield [
+                    'parent_itil_itemtype' => $itil_itemtype,
+                    'timeline_item_type' => $itil_itemtype . 'Validation',
+                    'is_private' => true,
+                    'test_user' => 'tech',
+                    'expected' => true,
+                ];
+            }
+        }
+        // Tests for helpdesk user (post-only)
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \ITILFollowup::class,
+            'is_private' => true,
+            'test_user' => 'post-only',
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \ITILFollowup::class,
+            'is_private' => false,
+            'test_user' => 'post-only',
+            'expected' => true,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \TicketTask::class,
+            'is_private' => true,
+            'test_user' => 'post-only',
+            'expected' => false,
+        ];
+        yield [
+            'parent_itil_itemtype' => Ticket::class,
+            'timeline_item_type' => \TicketTask::class,
+            'is_private' => false,
+            'test_user' => 'post-only',
+            'expected' => true,
+        ];
+    }
+
+    /**
+     * Test that documents attached to followups, tasks and solutions are included
+     * in notification emails, even when there is no active session (cron context).
+     * Tests various scenarios with different timeline item types, visibility, and user rights.
+     *
+     * @dataProvider associatedDocumentsWithoutSessionProvider
+     */
+    public function testGetAssociatedDocumentsWithoutActiveSession(
+        string $parent_itil_itemtype,
+        string $timeline_item_type,
+        bool $is_private,
+        string $test_user,
+        bool $expected
+    ): void {
+        global $DB;
+
+        $this->login();
+
+        // Get the test user
+        $user = getItemByTypeName(User::class, $test_user, false);
+
+        $parent_item = $this->createItem($parent_itil_itemtype, [
+            'name'               => 'ITIL Object test',
+            'content'            => 'test',
+            'entities_id'        => $this->getTestRootEntity(true),
+            '_users_id_requester' => $user->getID(),
+        ]);
+
+        // Create a document linked directly to the parent item (ticket/change/problem)
+        $doc_ticket = $this->createItem(\Document::class, [
+            'name' => 'Doc',
+        ]);
+        $this->createItem(\Document_Item::class, [
+            'items_id'          => $parent_item->getID(),
+            'itemtype'          => $parent_itil_itemtype,
+            'documents_id'      => $doc_ticket->getID(),
+            'timeline_position' => CommonITILObject::TIMELINE_LEFT,
+        ]);
+
+        // Create the timeline item with document
+        $timeline_item = null;
+        $doc_timeline = null;
+
+        if ($timeline_item_type === \ITILFollowup::class) {
+            $timeline_item = $this->createItem(\ITILFollowup::class, [
+                'itemtype'   => $parent_itil_itemtype,
+                'items_id'   => $parent_item->getID(),
+                'content'    => 'Followup with document',
+                'is_private' => $is_private ? 1 : 0,
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to ' . ($is_private ? 'private' : 'public') . ' followup',
+            ]);
+        } elseif (strpos($timeline_item_type, 'Task') !== false) {
+            $fk_field = strtolower(str_replace('\\', '', $parent_itil_itemtype)) . 's_id';
+            $timeline_item = $this->createItem($timeline_item_type, [
+                $fk_field    => $parent_item->getID(),
+                'content'    => 'Task with document',
+                'is_private' => $is_private ? 1 : 0,
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to ' . ($is_private ? 'private' : 'public') . ' task',
+            ]);
+        } elseif ($timeline_item_type === \ITILSolution::class) {
+            $timeline_item = $this->createItem(\ITILSolution::class, [
+                'itemtype' => $parent_itil_itemtype,
+                'items_id' => $parent_item->getID(),
+                'content'  => 'Solution with document',
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to solution',
+            ]);
+        } elseif (strpos($timeline_item_type, 'Validation') !== false) {
+            $fk_field = strtolower(str_replace('\\', '', $parent_itil_itemtype)) . 's_id';
+            $timeline_item = $this->createItem($timeline_item_type, [
+                $fk_field            => $parent_item->getID(),
+                'comment_submission' => 'Validation request with document',
+                'users_id_validate'  => $user->getID(),
+            ]);
+            $doc_timeline = $this->createItem(\Document::class, [
+                'name' => 'Doc: linked to ticket validation',
+            ]);
+        }
+
+        // Link document to timeline item
+        $this->createItem(\Document_Item::class, [
+            'items_id'          => $timeline_item->getID(),
+            'itemtype'          => $timeline_item_type,
+            'documents_id'      => $doc_timeline->getID(),
+            'timeline_position' => CommonITILObject::TIMELINE_LEFT,
+        ]);
+
+        // First verify with active session
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs_with_session = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs_with_session[] = $doc_item['documents_id'];
+        }
+
+        // Document linked to parent item (ticket/change/problem)
+        $this->assertContains(
+            $doc_ticket->getID(),
+            $found_docs_with_session,
+        );
+
+        // Check timeline document visibility with session
+        if ($expected) {
+            $this->assertContains(
+                $doc_timeline->getID(),
+                $found_docs_with_session,
+            );
+        } else {
+            $this->assertNotContains(
+                $doc_timeline->getID(),
+                $found_docs_with_session,
+            );
+        }
+
+        // Simulate cron context: logout to clear session rights
+        Session::destroy();
+        $_SESSION['glpiactiveprofile'] = [];
+
+        // Reload parent item from DB
+        $parent_item->getFromDB($parent_item->getID());
+
+        // Test that documents visibility is consistent without session
+        $doc_crit = $parent_item->getAssociatedDocumentsCriteria(false, $user);
+        $doc_items_iterator = $DB->request([
+            'SELECT' => ['documents_id'],
+            'FROM'   => \Document_Item::getTable(),
+            'WHERE'  => $doc_crit,
+        ]);
+        $found_docs_without_session = [];
+        foreach ($doc_items_iterator as $doc_item) {
+            $found_docs_without_session[] = $doc_item['documents_id'];
+        }
+
+        // Document linked to parent item (ticket/change/problem)
+        $this->assertContains(
+            $doc_ticket->getID(),
+            $found_docs_without_session,
+        );
+
+        // Check timeline document visibility without session
+        if ($expected) {
+            $this->assertContains(
+                $doc_timeline->getID(),
+                $found_docs_without_session,
+            );
+        } else {
+            $this->assertNotContains(
+                $doc_timeline->getID(),
+                $found_docs_without_session,
+            );
+        }
+    }
 }

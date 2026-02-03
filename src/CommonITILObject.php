@@ -7970,6 +7970,19 @@ abstract class CommonITILObject extends CommonDBTM
 
         $user_id = $user ? $user->getID() : Session::getLoginUserID();
 
+        $can_view_itilobject = [
+            Ticket::class => [
+                Ticket::READALL, Ticket::READMY, UPDATE,
+                Ticket::READASSIGN, Ticket::READGROUP, Ticket::OWN, READ,
+            ],
+            Change::class => [
+                Change::READALL, Change::READMY,
+            ],
+            Problem::class => [
+                Problem::READALL, Problem::READMY,
+            ],
+        ];
+
         $task_class = $this->getType() . 'Task';
         /** @var DBmysql $DB */
         global $DB; // Used to get subquery results - better performance
@@ -7983,7 +7996,15 @@ abstract class CommonITILObject extends CommonDBTM
         ];
 
         // documents associated to followups
-        if ($bypass_rights || ITILFollowup::canView()) {
+        if (
+            $bypass_rights ||
+            ITILFollowup::canView() ||
+            (
+                $user !== null &&
+                $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
+                $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC, $this->fields['entities_id'])
+            )
+        ) {
             $fup_crits = [
                 ITILFollowup::getTableField('itemtype') => $this->getType(),
                 ITILFollowup::getTableField('items_id') => $this->getID(),
@@ -8016,7 +8037,14 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // documents associated to solutions
-        if ($bypass_rights || ITILSolution::canView()) {
+        if (
+            $bypass_rights ||
+            ITILSolution::canView() ||
+            (
+                $user !== null &&
+                $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+            )
+        ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
@@ -8037,7 +8065,26 @@ abstract class CommonITILObject extends CommonDBTM
 
         // documents associated to ticketvalidation
         $validation_class = static::getType() . 'Validation';
-        if (class_exists($validation_class) && ($bypass_rights ||  $validation_class::canView())) {
+        if (
+            class_exists($validation_class) &&
+            (
+                $bypass_rights ||
+                $validation_class::canView() ||
+                (
+                    $user !== null &&
+                    $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
+                    $user->hasRightsOr(
+                        $validation_class::$rightname,
+                        array_merge(
+                            $validation_class::getCreateRights(),
+                            $validation_class::getValidateRights(),
+                            $validation_class::getPurgeRights()
+                        ),
+                        $this->fields['entities_id']
+                    )
+                )
+            )
+        ) {
             // Run the subquery separately. It's better for huge databases
             $iterator_tmp = $DB->request([
                 'SELECT' => 'id',
@@ -8056,7 +8103,15 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // documents associated to tasks
-        if ($bypass_rights || $task_class::canView()) {
+        if (
+            $bypass_rights ||
+            $task_class::canView() ||
+            (
+                $user !== null &&
+                $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
+                $user->hasRight($task_class::$rightname, $task_class::SEEPUBLIC, $this->fields['entities_id'])
+            )
+        ) {
             $tasks_crit = [
                 $this->getForeignKeyField() => $this->getID(),
             ];
