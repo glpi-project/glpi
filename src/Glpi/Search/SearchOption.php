@@ -805,7 +805,7 @@ final class SearchOption implements ArrayAccess
      * If no itemtype is specified, you may need to clear the needed class-level caches manually.
      * @param string|null $itemtype The itemtype to clear the cache for, or null to clear all caches.
      * @return void
-     * @see \CommonDBTM::clearSearchOptionCache()
+     * @see CommonDBTM::clearSearchOptionCache()
      */
     public static function clearSearchOptionCache(?string $itemtype = null): void
     {
