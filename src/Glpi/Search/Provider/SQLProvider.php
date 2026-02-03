@@ -79,6 +79,7 @@ use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Link;
+use mysqli_result;
 use Notification;
 use OLA;
 use Override;
@@ -4979,6 +4980,7 @@ final class SQLProvider implements SearchProviderInterface
                     $data['data']['totalcount'] = $DBread->numrows($result);
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
+                        /** @var mysqli_result $result_num */
                         $result_num = $DBread->doQuery($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }
