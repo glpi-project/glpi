@@ -555,7 +555,7 @@ class DBmysql
      */
     public function numrows($result)
     {
-        return $result->num_rows;
+        return (int) $result->num_rows;
     }
 
     /**
@@ -635,7 +635,9 @@ class DBmysql
             // We have to retrieve it manually via `LAST_INSERT_ID()`.
             /** @var mysqli_result $request */
             $request = $this->dbh->query('SELECT LAST_INSERT_ID()');
-            $insert_id = $request->fetch_row()[0];
+            /** @var array<int,mixed> $row */
+            $row = $request->fetch_row();
+            $insert_id = $row[0];
         }
         return $insert_id;
     }
@@ -935,18 +937,16 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
+        /** @var mysqli_result $result */
         $result = $this->doQuery(sprintf("SHOW COLUMNS FROM %s", self::quoteName($table)));
-        if ($result) {
-            if ($this->numrows($result) > 0) {
-                $this->field_cache[$table] = [];
-                while ($data = $this->fetchAssoc($result)) {
-                    $this->field_cache[$table][$data["Field"]] = $data;
-                }
-                return $this->field_cache[$table];
+        if ($this->numrows($result) > 0) {
+            $this->field_cache[$table] = [];
+            while ($data = $this->fetchAssoc($result)) {
+                $this->field_cache[$table][$data["Field"]] = $data;
             }
-            return [];
+            return $this->field_cache[$table];
         }
-        return false;
+        return [];
     }
 
     /**
@@ -972,7 +972,7 @@ class DBmysql
      */
     public function affectedRows()
     {
-        return $this->dbh->affected_rows;
+        return (int) $this->dbh->affected_rows;
     }
 
     /**
@@ -1057,10 +1057,11 @@ class DBmysql
     public function getQueriesFromFile(string $path): array
     {
         $script = fopen($path, 'r');
-        if (!$script) {
+        $filesize = filesize($path);
+        if (!$script || $filesize === 0) {
             return [];
         }
-        $sql_query = @fread($script, @filesize($path)) . "\n";
+        $sql_query = fread($script, $filesize) . "\n";
 
         $sql_query = $this->removeSqlRemarks($sql_query);
 
@@ -1748,6 +1749,7 @@ class DBmysql
     {
         /** @var mysqli_result $res */
         $res = $this->doQuery('SELECT version()');
+        /** @var array<string,mixed> $req */
         $req = $res->fetch_array();
         $raw = $req['version()'];
         return $raw;

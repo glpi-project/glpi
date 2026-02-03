@@ -5018,18 +5018,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Cannot access offset \'version\\(\\)\' on array\\|false\\|null\\.$#',
-	'identifier' => 'offsetAccess.nonOffsetAccessible',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysql\\:\\:affectedRows\\(\\) should return int but returns int\\<\\-1, max\\>\\|string\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method DBmysql\\:\\:fetchArray\\(\\) should return array\\<string\\>\\|null but returns array\\|object\\|false\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -5043,12 +5031,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method DBmysql\\:\\:fetchObject\\(\\) should return object\\|null but returns array\\|object\\|false\\|null\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method DBmysql\\:\\:numrows\\(\\) should return int but returns int\\<0, max\\>\\|string\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
@@ -5068,30 +5050,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'table\' might not exist on array\\{0\\?\\: string, 1\\?\\: non\\-falsy\\-string, 2\\?\\: string, 3\\?\\: string, 4\\?\\: non\\-empty\\-string, table\\?\\: non\\-empty\\-string, 5\\?\\: non\\-empty\\-string, 6\\?\\: non\\-empty\\-string\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset 0 might not exist on array\\|null\\.$#',
-	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:fetchAssoc\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$result of method DBmysql\\:\\:numrows\\(\\) expects mysqli_result, mysqli_result\\|true given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$length of function Safe\\\\fread expects int\\<1, max\\>, int\\<0, max\\> given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
