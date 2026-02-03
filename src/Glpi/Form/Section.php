@@ -103,6 +103,12 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     }
 
     #[Override]
+    public function isEntityAssign()
+    {
+        return false;
+    }
+
+    #[Override]
     public function cleanDBonPurge()
     {
         $this->deleteChildrenAndRelationsFromDb(

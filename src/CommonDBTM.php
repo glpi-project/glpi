@@ -2123,7 +2123,7 @@ class CommonDBTM extends CommonGLPI
             || ($this->useDeletedToLockIfDynamic()
               && !$this->isDynamic())
         ) {
-            $force = 1;
+            $force = true;
         }
 
         // Store input in the object to be available in all sub-method / hook
@@ -2195,7 +2195,7 @@ class CommonDBTM extends CommonGLPI
 
                         Log::history(
                             $this->fields["id"],
-                            $this->getType(),
+                            static::class,
                             $changes,
                             0,
                             $logaction
@@ -2356,7 +2356,7 @@ class CommonDBTM extends CommonGLPI
                 ) {
                     $logaction = Log::HISTORY_UNLOCK_ITEM;
                 }
-                Log::history($this->input["id"], $this->getType(), $changes, 0, $logaction);
+                Log::history($this->input["id"], static::class, $changes, 0, $logaction);
             }
 
             $this->post_restoreItem();

@@ -79,6 +79,7 @@ use KnowbaseItem;
 use KnowbaseItem_Profile;
 use KnowbaseItem_User;
 use Link;
+use mysqli_result;
 use Notification;
 use OLA;
 use Override;
@@ -743,49 +744,43 @@ final class SQLProvider implements SearchProviderInterface
                 if (!Session::haveRightsOr('project', [Project::READALL, Project::READMY])) {
                     // Can only see the tasks assigned to the user or one of his groups
                     $teamtable = 'glpi_projecttaskteams';
-                    $group_criteria = [];
+                    $user_criteria = [
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID(),
+                    ];
+                    $or_criteria = [$user_criteria];
                     if (count($_SESSION['glpigroups'])) {
                         $group_criteria = [
                             "$teamtable.itemtype" => Group::class,
                             "$teamtable.items_id" => $_SESSION['glpigroups'],
                         ];
+                        $or_criteria[] = $group_criteria;
                     }
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
                     $criteria = [
                         "glpi_projects.is_template" => 0,
-                        'OR' => [
-                            $user_criteria,
-                        ],
+                        'OR' => $or_criteria,
                     ];
-                    if ($group_criteria !== []) {
-                        $criteria['OR'][] = $group_criteria;
-                    }
                 } elseif (Session::haveRight('project', Project::READMY)) {
                     // User must be the manager, in the manager group or in the project team
                     $teamtable = 'glpi_projectteams';
-                    $group_criteria = [];
+                    $user_criteria = [
+                        "$teamtable.itemtype" => User::class,
+                        "$teamtable.items_id" => Session::getLoginUserID(),
+                    ];
+                    $or_criteria = [
+                        $user_criteria,
+                        'glpi_projects.users_id' => Session::getLoginUserID(),
+                    ];
                     if (count($_SESSION['glpigroups'])) {
                         $group_criteria = [
                             "$teamtable.itemtype" => Group::class,
                             "$teamtable.items_id" => $_SESSION['glpigroups'],
                         ];
+                        $or_criteria[] = $group_criteria;
                     }
-                    $user_criteria = [
-                        "$teamtable.itemtype" => User::class,
-                        "$teamtable.items_id" => Session::getLoginUserID(),
-                    ];
                     $criteria = [
-                        'OR' => [
-                            $user_criteria,
-                            'glpi_projects.users_id' => Session::getLoginUserID(),
-                        ],
+                        'OR' => $or_criteria,
                     ];
-                    if ($group_criteria !== []) {
-                        $criteria['OR'][] = $group_criteria;
-                    }
                 }
                 break;
 
@@ -796,17 +791,20 @@ final class SQLProvider implements SearchProviderInterface
                         "$teamtable.itemtype" => User::class,
                         "$teamtable.items_id" => Session::getLoginUserID(),
                     ];
-                    $group_criteria = [
-                        "$teamtable.itemtype" => Group::class,
-                        "$teamtable.items_id" => $_SESSION['glpigroups'],
+                    $or_criteria = [
+                        "glpi_projects.users_id" => Session::getLoginUserID(),
+                        $user_criteria,
                     ];
+                    if (count($_SESSION['glpigroups'])) {
+                        $group_criteria = [
+                            "$teamtable.itemtype" => Group::class,
+                            "$teamtable.items_id" => $_SESSION['glpigroups'],
+                        ];
+                        $or_criteria[] = ["glpi_projects.groups_id" => $_SESSION['glpigroups']];
+                        $or_criteria[] = $group_criteria;
+                    }
                     $criteria = [
-                        "OR" => [
-                            "glpi_projects.users_id" => Session::getLoginUserID(),
-                            $user_criteria,
-                            "glpi_projects.groups_id" => $_SESSION['glpigroups'],
-                            $group_criteria,
-                        ],
+                        "OR" => $or_criteria,
                     ];
                 }
                 break;
@@ -5099,6 +5097,7 @@ final class SQLProvider implements SearchProviderInterface
                     $data['data']['totalcount'] = $DBread->numrows($result);
                 } else {
                     foreach ($data['sql']['count'] as $sqlcount) {
+                        /** @var mysqli_result $result_num */
                         $result_num = $DBread->doQuery($sqlcount);
                         $data['data']['totalcount'] += $DBread->result($result_num, 0, 0);
                     }

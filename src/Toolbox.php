@@ -2136,9 +2136,11 @@ class Toolbox
             // Enable NO_AUTO_VALUE_ON_ZERO for glpi_entities insertion (needed for id=0 root entity)
             $original_sql_mode = null;
             if ($table === 'glpi_entities') {
-                $original_sql_mode = $database->doQuery(
+                /** @var mysqli_result $request */
+                $request = $database->doQuery(
                     sprintf('SELECT @@sql_mode as %s', $database->quoteName('sql_mode'))
-                )->fetch_assoc()['sql_mode'] ?? '';
+                );
+                $original_sql_mode = $request->fetch_assoc()['sql_mode'] ?? '';
                 $new_sql_mode = $original_sql_mode !== ''
                     ? $original_sql_mode . ',NO_AUTO_VALUE_ON_ZERO'
                     : 'NO_AUTO_VALUE_ON_ZERO';

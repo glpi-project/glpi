@@ -375,7 +375,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|bool Query result handler
+     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      */
     public function doQuery($query)
     {
@@ -501,7 +501,7 @@ class DBmysql
      */
     public function numrows($result)
     {
-        return $result->num_rows;
+        return (int) $result->num_rows;
     }
 
     /**
@@ -579,7 +579,11 @@ class DBmysql
             // See https://www.php.net/manual/en/mysqli.insert-id.php
             // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
             // We have to retrieve it manually via `LAST_INSERT_ID()`.
-            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+            /** @var mysqli_result $request */
+            $request = $this->dbh->query('SELECT LAST_INSERT_ID()');
+            /** @var array<int,mixed> $row */
+            $row = $request->fetch_row();
+            $insert_id = $row[0];
         }
         return $insert_id;
     }
@@ -879,18 +883,16 @@ class DBmysql
         if (!$this->cache_disabled && $usecache && isset($this->field_cache[$table])) {
             return $this->field_cache[$table];
         }
+        /** @var mysqli_result $result */
         $result = $this->doQuery(sprintf("SHOW COLUMNS FROM %s", self::quoteName($table)));
-        if ($result) {
-            if ($this->numrows($result) > 0) {
-                $this->field_cache[$table] = [];
-                while ($data = $this->fetchAssoc($result)) {
-                    $this->field_cache[$table][$data["Field"]] = $data;
-                }
-                return $this->field_cache[$table];
+        if ($this->numrows($result) > 0) {
+            $this->field_cache[$table] = [];
+            while ($data = $this->fetchAssoc($result)) {
+                $this->field_cache[$table][$data["Field"]] = $data;
             }
-            return [];
+            return $this->field_cache[$table];
         }
-        return false;
+        return [];
     }
 
     /**
@@ -916,7 +918,7 @@ class DBmysql
      */
     public function affectedRows()
     {
-        return $this->dbh->affected_rows;
+        return (int) $this->dbh->affected_rows;
     }
 
     /**
@@ -1001,10 +1003,11 @@ class DBmysql
     public function getQueriesFromFile(string $path): array
     {
         $script = fopen($path, 'r');
-        if (!$script) {
+        $filesize = filesize($path);
+        if (!$script || $filesize === 0) {
             return [];
         }
-        $sql_query = @fread($script, @filesize($path)) . "\n";
+        $sql_query = fread($script, $filesize) . "\n";
 
         $sql_query = $this->removeSqlRemarks($sql_query);
 
@@ -1043,6 +1046,7 @@ class DBmysql
     {
         // No translation, used in sysinfo
         $ret = [];
+        /** @var mysqli_result $req */
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
         if (($data = $req->fetch_array())) {
@@ -1079,6 +1083,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1098,6 +1103,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1583,7 +1589,9 @@ class DBmysql
      */
     public function getVersion()
     {
+        /** @var mysqli_result $res */
         $res = $this->doQuery('SELECT version()');
+        /** @var array<string,mixed> $req */
         $req = $res->fetch_array();
         $raw = $req['version()'];
         return $raw;
@@ -1923,6 +1931,7 @@ class DBmysql
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }
 
+            /** @var mysqli_result $warnings_result */
             while ($warning = $warnings_result->fetch_assoc()) {
                 if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                     continue;
@@ -2127,6 +2136,7 @@ class DBmysql
             static::quoteName('Variable_name'),
             implode(', ', array_map([$this, 'quote'], $variables))
         );
+        /** @var mysqli_result $result */
         $result = $this->doQuery($query);
         $values = [];
         while ($row = $result->fetch_assoc()) {
