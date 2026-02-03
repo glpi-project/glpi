@@ -75,7 +75,6 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         $this->setName('tools:plugin:release');
         $this->setDescription('Build a GLPI plugin release archive.');
 
-        $this->addOption('ref', 'r', InputOption::VALUE_REQUIRED, 'Git ref to build', 'HEAD');
         $this->addOption('dest', 'd', InputOption::VALUE_REQUIRED, 'Destination path for the archive (e.g., /build/glpi-myplugin-1.0.0.tar.bz2)');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force rebuild even if release exists');
     }
@@ -117,83 +116,38 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             }
         }
 
-        $ref = $input->getOption('ref');
-        return $this->build($ref, $dest);
+        return $this->build($dest);
     }
 
-    private function build(string $ref, string $dest): int
+    private function build(string $dest): int
     {
-        $this->io->title("Releasing plugin {$this->plugin_name}@{$ref}...");
+        $this->io->title("Releasing plugin {$this->plugin_name}...");
 
         $plugin_dir = $this->getPluginDirectory();
 
-        // git ls-tree
-        $process = new Process(['git', 'ls-tree', '-r', $ref, '--name-only'], $plugin_dir);
-        $process->mustRun();
-        $files = explode("\n", trim($process->getOutput()));
+        // Prepare working directory
+        $src_dir = $this->dist_dir . '/src';
+        $src_subdir = $src_dir . '/' . $this->plugin_name;
+        $fs = new Filesystem();
 
-        // Filter banned
-        $banned = self::BANNED_FILES;
-        $ignore_release_file = $plugin_dir . '/.ignore-release';
-        if (file_exists($ignore_release_file)) {
-            $lines = file($ignore_release_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            $banned = array_merge($banned, $lines);
+        if (is_dir($src_dir)) {
+            $fs->remove($src_dir);
+        }
+        if (!mkdir($src_subdir, 0o777, true)) {
+            $this->io->error(sprintf('Unable to create the `%s` directory.', $src_subdir));
+            return Command::FAILURE;
         }
 
-        $valid_files = [];
-        foreach ($files as $file) {
-            if (empty($file)) {
-                continue;
-            }
-
-            $excluded = false;
-            foreach ($banned as $ban) {
-                if (fnmatch($ban, $file) || fnmatch($ban, basename($file)) || preg_match('#^' . preg_quote($ban, '#') . '#', $file)) {
-                    $excluded = true;
-                    break;
-                }
-            }
-            if (!$excluded) {
-                $valid_files[] = $file;
-            }
-        }
-
-        // Git archive
-        $temp_tar = $this->dist_dir . '/temp.tar';
-        $cmd = ['git', 'archive', '--prefix=' . $this->plugin_name . '/', '--output=' . $temp_tar, $ref];
-        foreach ($valid_files as $f) {
-            $cmd[] = $f;
-        }
-
-        $this->io->text("Archiving GIT ref {$ref}...");
-
-        $process = new Process($cmd, $plugin_dir);
+        // Export current index using checkout-index
+        $this->io->text("Exporting current index...");
+        $process = new Process(
+            ['git', 'checkout-index', '--all', '--force', '--prefix=' . $src_subdir . '/'],
+            $plugin_dir
+        );
         $process->setTimeout(600);
         $process->mustRun(function (string $type, string $buffer): void {
             $this->output->write($buffer);
         });
-
-        // Now we need to prepare (extract, add vendors, re-compress)
-        $src_dir = $this->dist_dir . '/src';
-        $src_subdir = $src_dir . '/' . $this->plugin_name;
-        $fs = new Filesystem();
-        if (is_dir($src_dir)) {
-            $fs->remove($src_dir);
-        }
-        if (!mkdir($src_dir)) {
-            $this->io->error(sprintf('Unable to create the `%s` directory.', $src_dir));
-            return Command::FAILURE;
-        }
-
-        $untar = new Process(['tar', '-xf', $temp_tar, '-C', $src_dir]);
-        $untar->mustRun(function (string $type, string $buffer): void {
-            $this->output->write($buffer);
-        });
-
-        if (!unlink($temp_tar)) {
-            $this->io->error(sprintf('Unable to delete the `%s` file.', $temp_tar));
-            return Command::FAILURE;
-        }
 
         // Composer
         if (file_exists($src_subdir . '/composer.json')) {
@@ -255,7 +209,33 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             $this->io->writeln("<info>Locales compiled.</info>");
         }
 
-        // Compress to bz2
+        // Remove banned files before archiving
+        $this->io->section("Cleaning up banned files...");
+        $banned = self::BANNED_FILES;
+        $ignore_release_file = $src_subdir . '/.ignore-release';
+        if (file_exists($ignore_release_file)) {
+            $lines = file($ignore_release_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+            $banned = array_merge($banned, $lines);
+        }
+
+        $finder = new Finder();
+        $finder
+            ->ignoreDotFiles(false)
+            ->ignoreVCS(false)
+            ->in($src_subdir);
+
+        foreach (iterator_to_array($finder->getIterator()) as $file) {
+            $relative_path = $file->getRelativePathname();
+            foreach ($banned as $ban) {
+                if (fnmatch($ban, $relative_path) || fnmatch($ban, $file->getFilename()) || preg_match('#^' . preg_quote($ban, '#') . '#', $relative_path)) {
+                    $fs->remove($file->getPathname());
+                    $this->io->writeln(" Removed: $relative_path", OutputInterface::VERBOSITY_VERBOSE);
+                    break;
+                }
+            }
+        }
+
+        // Create archive
         $this->io->section("Generating the archive");
         $this->io->writeln("<info>Target: $dest</info>", OutputInterface::VERBOSITY_VERBOSE);
 
