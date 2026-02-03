@@ -100,6 +100,9 @@ class KnowbaseEditor {
                 heading: {
                     levels: [1, 2, 3, 4, 5, 6],
                 },
+                // Disable Link from StarterKit - we configure it separately below
+                // (StarterKit v3 includes Link by default)
+                link: false,
             }),
             TiptapLink.configure({
                 openOnClick: false,
