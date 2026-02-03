@@ -34,7 +34,10 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Certificate;
 use Computer;
+use Database;
+use DatabaseInstance;
 use Glpi\Api\HL\Controller\AssetController;
 use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Asset\Asset;
@@ -52,6 +55,7 @@ use OperatingSystemServicePack;
 use OperatingSystemVersion;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Unmanaged;
+use User;
 
 class AssetControllerTest extends HLAPITestCase
 {
@@ -805,6 +809,90 @@ class AssetControllerTest extends HLAPITestCase
         ];
         $this->api->autoTestCRUD('/Assets/Computer/' . $computer_id . '/RemoteManagement', $create_params, [
             'remoteid' => 'test_remote_mgmt_2',
+        ]);
+    }
+
+    public function testCreateGetDeleteApplianceItem()
+    {
+        $this->loginWeb();
+
+        $appliance_id = $this->createItem('Appliance', [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $request = new Request('POST', '/Assets/Computer/' . $computer_id . '/Appliance');
+        $request->setParameter('appliance', $appliance_id);
+        $new_location = null;
+        $this->login();
+        $this->api->call($request, function ($call) use (&$new_location, $computer_id) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->headers(function ($headers) use (&$new_location, $computer_id) {
+                    $this->assertStringStartsWith('/Assets/Computer/' . $computer_id . '/Appliance/', $headers['Location']);
+                    $new_location = $headers['Location'];
+                });
+        });
+
+        // Get and verify
+        $this->api->call(new Request('GET', $new_location), function ($call) use ($appliance_id) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK()
+                ->jsonContent(function ($content) use ($appliance_id) {
+                    $this->assertEquals($appliance_id, $content['appliance']['id']);
+                });
+        });
+
+        // Delete
+        $this->api->call(new Request('DELETE', $new_location), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isOK();
+        });
+
+        // Verify item does not exist anymore
+        $this->api->call(new Request('GET', $new_location), function ($call) {
+            /** @var HLAPICallAsserter $call */
+            $call->response
+                ->isNotFoundError();
+        });
+    }
+
+    public function testCRUDCertificateItemLink()
+    {
+        $this->loginWeb();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $certificate_id = $this->createItem(Certificate::class, [
+            'name' => 'test_certificate',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $databaseinst_id = $this->createItem(DatabaseInstance::class, [
+            'name' => '_testDBI01',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $user_id = $this->createItem(User::class, [
+            'name' => '_test_user_cert',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->api->autoTestCRUD('/Management/DatabaseInstance/' . $databaseinst_id . '/Certificate', [
+            'certificate' => $certificate_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computers_id . '/Certificate', [
+            'certificate' => $certificate_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
+        ]);
+        $this->api->autoTestCRUD('/Administration/User/' . $user_id . '/Certificate', [
+            'certificate' => $certificate_id,
+        ], [
+            'date_creation' => '2026-03-01T10:00:00+00:00',
         ]);
     }
 }

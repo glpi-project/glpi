@@ -36,6 +36,7 @@ namespace Glpi\Api\HL;
 
 use CommonDBTM;
 use CommonGLPI;
+use DateTime;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\RSQL\RSQLException;
@@ -153,6 +154,15 @@ final class ResourceAccessor
                 $internal_name = $prop['x-join']['fkey'] ?? $prop_name;
             } else {
                 $internal_name = $prop_name;
+            }
+
+            if (array_key_exists('format', $prop) && $prop['format'] === Doc\Schema::FORMAT_STRING_DATE_TIME) {
+                // convert RFC 3339 to YYYY-MM-DD HH:MM:SS
+                if (ArrayPathAccessor::hasElementByArrayPath($request_params, $prop_name)) {
+                    $dt = new DateTime(ArrayPathAccessor::getElementByArrayPath($request_params, $prop_name));
+                    $params[$internal_name] = $dt->format('Y-m-d H:i:s');
+                }
+                continue;
             }
 
             // Modify the request params to support setting a dropdown value by its id as expected from the OpenAPI schema

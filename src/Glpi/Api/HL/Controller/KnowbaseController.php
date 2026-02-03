@@ -48,6 +48,7 @@ use Group;
 use Group_KnowbaseItem;
 use KnowbaseItem;
 use KnowbaseItem_Comment;
+use KnowbaseItem_Item;
 use KnowbaseItem_Profile;
 use KnowbaseItem_Revision;
 use KnowbaseItem_User;
@@ -395,6 +396,23 @@ class KnowbaseController extends AbstractController
                     ],
                     'kbarticle' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBArticle'),
                     'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                ],
+            ],
+            'KBArticle_Item' => [
+                'x-version-introduced' => '2.3.0',
+                'x-itemtype' => KnowbaseItem_Item::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'kbarticle' => self::getDropdownTypeSchema(class: KnowbaseItem::class, full_schema: 'KBArticle'),
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 ],
             ],
         ];

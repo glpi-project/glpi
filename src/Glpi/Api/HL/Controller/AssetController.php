@@ -36,6 +36,9 @@
 namespace Glpi\Api\HL\Controller;
 
 use Appliance;
+use Appliance_Item;
+use Appliance_Item_Relation;
+use ApplianceEnvironment;
 use ApplianceType;
 use AutoUpdateSystem;
 use Cable;
@@ -43,6 +46,7 @@ use Cartridge;
 use CartridgeItem;
 use CartridgeItem_PrinterModel;
 use Certificate;
+use Certificate_Item;
 use CertificateType;
 use CommonDBTM;
 use Computer;
@@ -52,6 +56,7 @@ use Consumable;
 use ConsumableItem;
 use Datacenter;
 use DCRoom;
+use Domain;
 use Enclosure;
 use EnclosureModel;
 use Entity;
@@ -2230,6 +2235,152 @@ EOT,
             ],
         ];
 
+        $schemas['Appliance_Item'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Appliance_Item::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'appliance' => self::getDropdownTypeSchema(class: Appliance::class, full_schema: 'Appliance'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'environment' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'ApplianceEnvironment',
+                        'x-join' => [
+                            'table' => ApplianceEnvironment::getTable(),
+                            'fkey' => 'items_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => Appliance_Item_Relation::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'appliances_items_id',
+                                'condition' => [
+                                    'itemtype' => ApplianceEnvironment::class,
+                                ],
+                            ],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
+                'domain' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Domain',
+                        'x-join' => [
+                            'table' => Domain::getTable(),
+                            'fkey' => 'items_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => Appliance_Item_Relation::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'appliances_items_id',
+                                'condition' => [
+                                    'itemtype' => Domain::class,
+                                ],
+                            ],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
+                'location' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Location',
+                        'x-join' => [
+                            'table' => Location::getTable(),
+                            'fkey' => 'items_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => Appliance_Item_Relation::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'appliances_items_id',
+                                'condition' => [
+                                    'itemtype' => Location::class,
+                                ],
+                            ],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
+                'network' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'Network',
+                        'x-join' => [
+                            'table' => Network::getTable(),
+                            'fkey' => 'items_id',
+                            'field' => 'id',
+                            'ref-join' => [
+                                'table' => Appliance_Item_Relation::getTable(),
+                                'fkey' => 'id',
+                                'field' => 'appliances_items_id',
+                                'condition' => [
+                                    'itemtype' => Network::class,
+                                ],
+                            ],
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $schemas['Certificate_Item'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Certificate_Item::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'certificate' => self::getDropdownTypeSchema(class: Certificate::class, full_schema: 'Certificate'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         $schemas['CommonAsset'] = self::getGlobalAssetSchema($schemas);
 
         return $schemas;
@@ -3753,5 +3904,609 @@ EOT,
     public function deleteItemRemoteManagement(Request $request): Response
     {
         return ResourceAccessor::deleteBySchema($this->getKnownSchema('RemoteManagement', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance', methods: ['POST'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Appliance_Item',
+        description: 'Link an appliance to an asset'
+    )]
+    public function createItemApplianceLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('Appliance_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getItemApplianceLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ]
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Appliance_Item',
+        description: 'Unlink an appliance from an asset by the link ID',
+    )]
+    public function deleteItemApplianceLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Appliance_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Appliance/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => [self::class, 'getAssetTypes'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Appliance_Item',
+        description: 'Get an existing appliance link by the link ID'
+    )]
+    public function getItemApplianceLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema(
+            $this->getKnownSchema('Appliance_Item', $this->getAPIVersion($request)),
+            $request->getAttributes(),
+            $request->getParameters(),
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Domain', methods: ['POST'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Appliance|Certificate|Unmanaged',
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Domain_Item',
+        description: 'Assign a domain to an item'
+    )]
+    public function createDomainItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            (new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getDomainItemLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Domain', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Appliance|Certificate|Unmanaged',
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Domain_Item',
+        description: 'List or search domain links'
+    )]
+    public function searchDomainItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Domain/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Appliance|Certificate|Unmanaged',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Domain_Item',
+        description: 'Get a specific domain link'
+    )]
+    public function getDomainItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Domain/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Appliance|Certificate|Unmanaged',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Domain_Item',
+        description: 'Update a specific domain link'
+    )]
+    public function updateDomainItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Domain/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Appliance|Certificate|Unmanaged',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Domain_Item',
+        description: 'Delete a specific domain link'
+    )]
+    public function deleteDomainItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new ManagementController())->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate', methods: ['POST'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Assign a certificate to an item'
+    )]
+    public function createCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getCertificateItemLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Certificate_Item',
+        description: 'List or search certificate links'
+    )]
+    public function searchCertificateItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Get a specific certificate link'
+    )]
+    public function getCertificateItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Update a specific certificate link'
+    )]
+    public function updateCertificateItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Certificate/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer|SoftwareLicense|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Delete a specific certificate link'
+    )]
+    public function deleteCertificateItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Project', methods: ['POST'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Item_Project',
+        description: 'Assign a project to an item'
+    )]
+    public function createProjectItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            (new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getProjectItemLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Project', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Item_Project',
+        description: 'List or search project links'
+    )]
+    public function searchProjectItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Project/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Item_Project',
+        description: 'Get a specific project link'
+    )]
+    public function getProjectItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Project/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Item_Project',
+        description: 'Update a specific project link'
+    )]
+    public function updateProjectItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Project/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|Certificate|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Item_Project',
+        description: 'Delete a specific project link'
+    )]
+    public function deleteProjectItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new ProjectController())->getKnownSchema('Item_Project', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Line', methods: ['POST'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer',
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Item_Line',
+        description: 'Assign a line to an item'
+    )]
+    public function createLineItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            (new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getLineItemLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Line', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer',
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Item_Line',
+        description: 'List or search line links'
+    )]
+    public function searchLineItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Line/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Item_Line',
+        description: 'Get a specific line link'
+    )]
+    public function getLineItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Line/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Item_Line',
+        description: 'Update a specific line link'
+    )]
+    public function updateLineItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Line/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => 'Computer|NetworkEquipment|Peripheral|Phone|Printer',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Item_Line',
+        description: 'Delete a specific line link'
+    )]
+    public function deleteLineItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new ManagementController())->getKnownSchema('Item_Line', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle', methods: ['POST'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Assign a KB article to an item'
+    )]
+    public function createKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            (new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBArticleItemLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'List or search KB article links'
+    )]
+    public function searchKBArticleItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Get a specific KB article link'
+    )]
+    public function getKBArticleItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Update a specific KB article link'
+    )]
+    public function updateKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Delete a specific KB article link'
+    )]
+    public function deleteKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Contract', methods: ['POST'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Contract_Item',
+        description: 'Assign a contract to an item'
+    )]
+    public function createContractItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('asset_itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('asset_id'));
+        return ResourceAccessor::createBySchema(
+            (new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getContractItemLink'],
+            [
+                'mapped' => [
+                    'asset_itemtype' => $request->getAttribute('asset_itemtype'),
+                    'asset_id' => $request->getAttribute('asset_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Contract', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Contract_Item',
+        description: 'List or search contract links'
+    )]
+    public function searchContractItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Contract/{id}', methods: ['GET'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Contract_Item',
+        description: 'Get a specific contract link'
+    )]
+    public function getContractItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('asset_itemtype') . ';items_id==' . $request->getAttribute('asset_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Contract/{id}', methods: ['PATCH'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Contract_Item',
+        description: 'Update a specific contract link'
+    )]
+    public function updateContractItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{asset_itemtype}/{asset_id}/Contract/{id}', methods: ['DELETE'], requirements: [
+        'asset_itemtype' => 'Computer|Monitor|NetworkEquipment|Peripheral|Phone|Printer|Software|SoftwareLicense|Certificate|DCRoom|Rack|Enclosure|PDU|Appliance',
+        'asset_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Contract_Item',
+        description: 'Delete a specific contract link'
+    )]
+    public function deleteContractItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new ManagementController())->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

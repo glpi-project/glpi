@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use ApplianceEnvironment;
 use ApplianceType;
 use AutoUpdateSystem;
 use Blacklist;
@@ -60,6 +61,7 @@ use DeviceHardDriveType;
 use DocumentCategory;
 use DocumentType;
 use DomainRecordType;
+use DomainRelation;
 use DomainType;
 use DropdownVisibility;
 use EnclosureModel;
@@ -79,11 +81,13 @@ use ITILCategory;
 use ITILFollowupTemplate;
 use ITILValidationTemplate;
 use KnowbaseItemCategory;
+use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
 use MonitorModel;
 use MonitorType;
+use Network;
 use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkPortFiberchannelType;
@@ -1853,6 +1857,76 @@ EOT,
             ],
         ];
 
+        $schemas['ApplianceEnvironment'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => ApplianceEnvironment::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+            ],
+        ];
+
+        $schemas['Network'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => Network::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['DomainRelation'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => DomainRelation::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+            ],
+        ];
+
+        $schemas['LineOperator'] = [
+            'x-version-introduced' => '2.3.0',
+            'x-itemtype' => LineOperator::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => false],
+                'mcc' => ['type' => Doc\Schema::TYPE_INTEGER, 'description' => 'Mobile Country Code'],
+                'mnc' => ['type' => Doc\Schema::TYPE_INTEGER, 'description' => 'Mobile Network Code'],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
         return $schemas;
     }
 
@@ -1929,6 +2003,9 @@ EOT,
                 'SupplierType' => SupplierType::getTypeName(1),
                 'HardDriveType' => DeviceHardDriveType::getTypeName(1),
                 'Filesystem' => Filesystem::getTypeName(1),
+                'ApplianceEnvironment' => ApplianceEnvironment::getTypeName(1),
+                'Network' => Network::getTypeName(1),
+                'DomainRelation' => DomainRelation::getTypeName(1),
             ];
         }
         return $types_only ? array_keys($dropdowns) : $dropdowns;
@@ -1969,6 +2046,7 @@ EOT,
             'ApplianceType', 'BudgetType', 'CartridgeItemType', 'CertificateType', 'ClusterType', 'ContactType',
             'ContractType', 'ConsumableItemType', 'DomainRecordType', 'DomainType', 'LineType', 'NetworkPortType',
             'ProjectTaskType', 'ProjectType', 'LicenseType', 'SupplierType', 'HardDriveType', 'Filesystem',
+            'ApplianceEnvironment', 'Network', 'DomainRelation',
         ];
     }
 

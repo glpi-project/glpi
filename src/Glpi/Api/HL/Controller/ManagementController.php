@@ -46,6 +46,7 @@ use CommonITILObject;
 use Contact;
 use ContactType;
 use Contract;
+use Contract_Item;
 use ContractType;
 use Database;
 use DatabaseInstance;
@@ -55,6 +56,10 @@ use Datacenter;
 use Document;
 use Document_Item;
 use Domain;
+use Domain_Item;
+use DomainRecord;
+use DomainRecordType;
+use DomainRelation;
 use DomainType;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
@@ -66,7 +71,9 @@ use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Group_Item;
+use Item_Line;
 use Line;
+use LineOperator;
 use LineType;
 use Location;
 use Manufacturer;
@@ -173,6 +180,16 @@ final class ManagementController extends AbstractController
     {
         return [
             'DatabaseInstance',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getManagementEndpointTypes23(): array
+    {
+        return [
+            'DomainRecord',
         ];
     }
 
@@ -577,6 +594,17 @@ final class ManagementController extends AbstractController
                     'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
                     'group' => $fn_get_group_property(Line::class),
                     'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'caller_num' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'caller_name' => [
+                        'x-version-introduced' => '2.3.0',
+                        'type' => Doc\Schema::TYPE_STRING,
+                        'maxLength' => 255,
+                    ],
+                    'operator' => self::getDropdownTypeSchema(class: LineOperator::class, full_schema: 'LineOperator') + ['x-version-introduced' => '2.3.0'],
                 ],
             ],
             'Supplier' => [
@@ -749,6 +777,96 @@ final class ManagementController extends AbstractController
                     'x-field' => 'sink_coeff',
                 ],
                 'business_criticity' => self::getDropdownTypeSchema(BusinessCriticity::class),
+            ],
+        ];
+
+        $schemas['Domain_Item'] = [
+            'x-version-introduced' => '2.3',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => Domain_Item::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'domain' => self::getDropdownTypeSchema(class: Domain::class, full_schema: 'Domain'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                'relation' => self::getDropdownTypeSchema(class: DomainRelation::class, full_schema: 'DomainRelation'),
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'is_dynamic' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+            ],
+        ];
+
+        $schemas['DomainRecord'] = [
+            'x-version-introduced' => '2.3',
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'x-itemtype' => DomainRecord::class,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                'data' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'The raw data part of a DNS record',
+                    'example' => '10 mail.example.com',
+                ],
+                'data_obj' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'description' => 'JSON-encoded data object for the record',
+                    'example' => '{"priority":10,"server":"mail.example.com"}',
+                ],
+                'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'domain' => self::getDropdownTypeSchema(class: Domain::class, full_schema: 'Domain'),
+                'type' => self::getDropdownTypeSchema(class: DomainRecordType::class, full_schema: 'DomainRecordType'),
+                'ttl' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT32,
+                    'description' => 'Time to live in seconds',
+                ],
+                'user' => self::getDropdownTypeSchema(class: User::class, full_schema: 'User'),
+                'user_tech' => self::getDropdownTypeSchema(class: User::class, field: 'users_id_tech', full_schema: 'User'),
+                'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['Item_Line'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => Item_Line::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'line' => self::getDropdownTypeSchema(class: Line::class, full_schema: 'Line'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+            ],
+        ];
+
+        $schemas['Contract_Item'] = [
+            'x-version-introduced' => '2.3',
+            'x-itemtype' => Contract_Item::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'readOnly' => true,
+                ],
+                'contract' => self::getDropdownTypeSchema(class: Contract::class, full_schema: 'Contract'),
+                'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 100],
+                'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
             ],
         ];
 
@@ -970,5 +1088,439 @@ final class ManagementController extends AbstractController
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes23'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: '{itemtype}',
+        description: 'List or search management items'
+    )]
+    public function searchItems23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes23'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: '{itemtype}',
+        description: 'Get an existing management item'
+    )]
+    public function getItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes23'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: '{itemtype}',
+        description: 'Create a new management item'
+    )]
+    public function createItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            $request->getParameters() + ['itemtype' => $itemtype],
+            [self::class, 'getItem23']
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: '{itemtype}',
+        description: 'Update an existing management item'
+    )]
+    public function updateItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getManagementEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: '{itemtype}',
+        description: 'Delete a management item'
+    )]
+    public function deleteItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Domain', methods: ['POST'], requirements: [
+        'itemtype' => 'DatabaseInstance|Database',
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Domain_Item',
+        description: 'Assign a domain to an item'
+    )]
+    public function createDomainItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getDomainItemLink'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Domain', methods: ['GET'], requirements: [
+        'itemtype' => 'DatabaseInstance|Database',
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Domain_Item',
+        description: 'List or search domain links'
+    )]
+    public function searchDomainItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Domain/{id}', methods: ['GET'], requirements: [
+        'itemtype' => 'DatabaseInstance|Database',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Domain_Item',
+        description: 'Get a specific domain link'
+    )]
+    public function getDomainItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Domain/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'DatabaseInstance|Database',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Domain_Item',
+        description: 'Update a specific domain link'
+    )]
+    public function updateDomainItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Domain/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'DatabaseInstance|Database',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Domain_Item',
+        description: 'Delete a specific domain link'
+    )]
+    public function deleteDomainItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Domain_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Certificate', methods: ['POST'], requirements: [
+        'itemtype' => 'Domain|DatabaseInstance',
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Assign a certificate to an item'
+    )]
+    public function createCertificateItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            (new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getCertificateItemLink'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Certificate', methods: ['GET'], requirements: [
+        'itemtype' => 'Domain|DatabaseInstance',
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Certificate_Item',
+        description: 'List or search certificate links'
+    )]
+    public function searchCertificateItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Certificate/{id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Domain|DatabaseInstance',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Get a specific certificate link'
+    )]
+    public function getCertificateItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Certificate/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Domain|DatabaseInstance',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Update a specific certificate link'
+    )]
+    public function updateCertificateItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Certificate/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Domain|DatabaseInstance',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Certificate_Item',
+        description: 'Delete a specific certificate link'
+    )]
+    public function deleteCertificateItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new AssetController())->getKnownSchema('Certificate_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Budget/{items_id}/KBArticle', methods: ['POST'], requirements: [
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Assign a KB article to an item'
+    )]
+    public function createKBArticleItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', 'Budget');
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            (new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getKBArticleItemLink'],
+            [
+                'mapped' => [
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/Budget/{items_id}/KBArticle', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'List or search KB article links'
+    )]
+    public function searchKBArticleItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Budget;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/Budget/{items_id}/KBArticle/{id}', methods: ['GET'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Get a specific KB article link'
+    )]
+    public function getKBArticleItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==Budget;items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Budget/{items_id}/KBArticle/{id}', methods: ['PATCH'], requirements: [
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Update a specific KB article link'
+    )]
+    public function updateKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/Budget/{items_id}/KBArticle/{id}', methods: ['DELETE'], requirements: [
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'KBArticle_Item',
+        description: 'Delete a specific KB article link'
+    )]
+    public function deleteKBArticleItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema((new KnowbaseController())->getKnownSchema('KBArticle_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Contract', methods: ['POST'], requirements: [
+        'itemtype' => 'Line|Cluster|Domain|DatabaseInstance',
+        'items_id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(
+        schema_name: 'Contract_Item',
+        description: 'Assign a contract to an item'
+    )]
+    public function createContractItemLink(Request $request): Response
+    {
+        $request->setParameter('itemtype', $request->getAttribute('itemtype'));
+        $request->setParameter('items_id', $request->getAttribute('items_id'));
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)),
+            $request->getParameters(),
+            [self::class, 'getContractItemLink'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                    'items_id' => $request->getAttribute('items_id'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Contract', methods: ['GET'], requirements: [
+        'itemtype' => 'Line|Cluster|Domain|DatabaseInstance',
+        'items_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(
+        schema_name: 'Contract_Item',
+        description: 'List or search contract links'
+    )]
+    public function searchContractItemLinks(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::searchBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Contract/{id}', methods: ['GET'], requirements: [
+        'itemtype' => 'Line|Cluster|Domain|DatabaseInstance',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(
+        schema_name: 'Contract_Item',
+        description: 'Get a specific contract link'
+    )]
+    public function getContractItemLink(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';itemtype==' . $request->getAttribute('itemtype') . ';items_id==' . $request->getAttribute('items_id');
+        $request->setParameter('filter', $filters);
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Contract/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => 'Line|Cluster|Domain|DatabaseInstance',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(
+        schema_name: 'Contract_Item',
+        description: 'Update a specific contract link'
+    )]
+    public function updateContractItemLink(Request $request): Response
+    {
+        return ResourceAccessor::updateBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{items_id}/Contract/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => 'Line|Cluster|Domain|DatabaseInstance',
+        'items_id' => '\d+',
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(
+        schema_name: 'Contract_Item',
+        description: 'Delete a specific contract link'
+    )]
+    public function deleteContractItemLink(Request $request): Response
+    {
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema('Contract_Item', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }

@@ -34,12 +34,16 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Computer;
+use Contract;
 use DatabaseInstance;
 use Document;
+use Domain;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Features\AssignableItemInterface;
 use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
+use Line;
 
 class ManagementControllerTest extends HLAPITestCase
 {
@@ -53,6 +57,15 @@ class ManagementControllerTest extends HLAPITestCase
         foreach ($management_types as $m_name) {
             $this->api->autoTestCRUD('/Management/' . $m_name);
         }
+
+        $domains_id = $this->createItem(Domain::class, [
+            'name' => 'test_domain',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $this->api->autoTestCRUD('/Management/DomainRecord', [
+            'domain' => $domains_id,
+            'ttl' => 3600,
+        ], ['ttl' => 7200]);
     }
 
     public function testDocumentDownload()
@@ -109,7 +122,79 @@ class ManagementControllerTest extends HLAPITestCase
             }
             $this->api->autoTestAssignableItemRights('/Management/' . $m['schema_name'], $m_class);
         }
+    }
 
+    public function testCRUDDomainItemLink()
+    {
+        $this->loginWeb();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $domains_id = $this->createItem(Domain::class, [
+            'name' => 'test_domain',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $database_id = $this->createItem('Database', [
+            'name' => '_testDB01',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
 
+        $this->api->autoTestCRUD('/Management/Database/' . $database_id . '/Domain', [
+            'domain' => $domains_id,
+        ], [
+            'is_deleted' => 1,
+        ]);
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computers_id . '/Domain', [
+            'domain' => $domains_id,
+        ], [
+            'is_deleted' => 1,
+        ]);
+    }
+
+    public function testCRUDLineItemLink()
+    {
+        $this->loginWeb();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $lines_id = $this->createItem(Line::class, [
+            'name' => 'test_line',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computers_id . '/Line', [
+            'line' => $lines_id,
+        ], [
+            'line' => $lines_id,
+        ]);
+    }
+
+    public function testCRUDContractItemLink()
+    {
+        $this->loginWeb();
+        $computers_id = getItemByTypeName(Computer::class, '_test_pc01', true);
+        $contracts_id = $this->createItem(Contract::class, [
+            'name' => 'test_line',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $lines_id = $this->createItem(Line::class, [
+            'name' => 'test_line',
+            'entities_id' => $this->getTestRootEntity(true),
+        ])->getID();
+        $projects_id = getItemByTypeName('Project', '_project01', true);
+
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computers_id . '/Contract', [
+            'contract' => $contracts_id,
+        ], [
+            'contract' => $contracts_id,
+        ]);
+
+        $this->api->autoTestCRUD('/Management/Line/' . $lines_id . '/Contract', [
+            'contract' => $contracts_id,
+        ], [
+            'contract' => $contracts_id,
+        ]);
+
+        $this->api->autoTestCRUD('/Project/Project/' . $projects_id . '/Contract', [
+            'contract' => $contracts_id,
+        ], [
+            'contract' => $contracts_id,
+        ]);
     }
 }

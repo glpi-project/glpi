@@ -48,6 +48,9 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Link;
+use Link_Itemtype;
+use ManualLink;
 use OLA;
 use OlaLevel;
 use SLA;
@@ -117,7 +120,6 @@ EOT,
             'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'execution_time' => [
                 'type' => Doc\Schema::TYPE_INTEGER,
-                'readOnly' => true,
             ],
             'operator' => [
                 'type' => Doc\Schema::TYPE_STRING,
@@ -265,12 +267,66 @@ EOT,
                     'ola' => self::getDropdownTypeSchema(class: OLA::class, full_schema: 'OLA'),
                 ],
             ],
+            'ExternalLink' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Link::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-field' => 'itemtype',
+                            'x-join' => [
+                                'table' => Link_Itemtype::getTable(),
+                                'fkey' => 'id',
+                                'field' => Link::getForeignKeyField(),
+                                'primary-property' => 'id'
+                            ],
+                        ],
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'link' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'data' => ['type' => Doc\Schema::TYPE_STRING],
+                    'open_window' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'ManualLink' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => ManualLink::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'url' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 8096],
+                    'open_window' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'icon' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
         ];
     }
 
     /**
      * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
-     * @return array<class-string<CommonDBTM>, string>
+     * @return array<string, array{itemtype: class-string<CommonDBTM>, label: string}>
      */
     public static function getSetupTypes(bool $types_only = true): array
     {
@@ -278,11 +334,52 @@ EOT,
 
         if ($types === null) {
             $types = [
-                'LDAPDirectory' => AuthLDAP::getTypeName(1),
+                'LDAPDirectory' => [
+                    'itemtype' => AuthLDAP::class,
+                    'label' => AuthLDAP::getTypeName(1)
+                ],
                 // Do not add Config here as it is handled specially
+                'SLM' => [
+                    'itemtype' => SLM::class,
+                    'label' => SLM::getTypeName(1)
+                ],
+                'SLA' => [
+                    'itemtype' => SLA::class,
+                    'label' => SLA::getTypeName(1)
+                ],
+                'OLA' => [
+                    'itemtype' => OLA::class,
+                    'label' => OLA::getTypeName(1)
+                ],
+                'SLALevel' => [
+                    'itemtype' => SlaLevel::class,
+                    'label' => SlaLevel::getTypeName(1)
+                ],
+                'OLALevel' => [
+                    'itemtype' => OlaLevel::class,
+                    'label' => OlaLevel::getTypeName(1)
+                ],
+                'ExternalLink' => [
+                    'itemtype' => Link::class,
+                    'label' => Link::getTypeName(1)
+                ],
+                'ManualLink' => [
+                    'itemtype' => ManualLink::class,
+                    'label' => ManualLink::getTypeName(1)
+                ],
             ];
         }
         return $types_only ? array_keys($types) : $types;
+    }
+
+    public static function getSetupEndpointTypes20()
+    {
+        return ['LDAPDirectory'];
+    }
+
+    public static function getSetupEndpointTypes23()
+    {
+        return ['SLM', 'SLA', 'OLA', 'SLALevel', 'OLALevel', 'ExternalLink', 'ManualLink'];
     }
 
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -306,70 +403,71 @@ EOT,
     public function index(Request $request): Response
     {
         $setup_types = self::getSetupTypes(false);
+        $v20_types = self::getSetupEndpointTypes20();
         $setup_paths = [];
-        foreach ($setup_types as $setup_type => $setup_name) {
+        foreach ($setup_types as $setup_type => $setup_data) {
             $setup_paths[] = [
-                'itemtype'  => $setup_type,
-                'name'      => $setup_name,
-                'href'      => self::getAPIPathForRouteFunction(self::class, 'search', ['itemtype' => $setup_type]),
+                'itemtype'  => $setup_data['itemtype'],
+                'name'      => $setup_data['label'],
+                'href'      => self::getAPIPathForRouteFunction(self::class, in_array($setup_type, $v20_types, true) ? 'search20' : 'search23', ['itemtype' => $setup_type]),
             ];
         }
         return new JSONResponse($setup_paths);
     }
 
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\SearchRoute(schema_name: '{itemtype}')]
-    public function search(Request $request): Response
+    public function search20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
         'id' => '\d+',
     ], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\GetRoute(schema_name: '{itemtype}')]
-    public function getItem(Request $request): Response
+    public function getItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\CreateRoute(schema_name: '{itemtype}')]
-    public function createItem(Request $request): Response
+    public function createItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
-        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem']);
+        return ResourceAccessor::createBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters() + ['itemtype' => $itemtype], [self::class, 'getItem20']);
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\UpdateRoute(schema_name: '{itemtype}')]
-    public function updateItem(Request $request): Response
+    public function updateItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getSetupTypes'],
+        'itemtype' => [self::class, 'getSetupEndpointTypes20'],
         'id' => '\d+',
     ])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\DeleteRoute(schema_name: '{itemtype}')]
-    public function deleteItem(Request $request): Response
+    public function deleteItem20(Request $request): Response
     {
         $itemtype = $request->getAttribute('itemtype');
         return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
@@ -476,5 +574,72 @@ EOT,
         }
         Config::deleteConfigurationValues($context, [$name]);
         return new JSONResponse(null, 204);
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\SearchRoute(schema_name: '{itemtype}')]
+    public function search23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::searchBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+        'id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\GetRoute(schema_name: '{itemtype}')]
+    public function getItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::getOneBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\CreateRoute(schema_name: '{itemtype}')]
+    public function createItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::createBySchema(
+            $this->getKnownSchema($itemtype, $this->getAPIVersion($request)),
+            $request->getParameters() + ['itemtype' => $itemtype],
+            [self::class, 'getItem23'],
+            [
+                'mapped' => [
+                    'itemtype' => $request->getAttribute('itemtype'),
+                ],
+            ],
+        );
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\UpdateRoute(schema_name: '{itemtype}')]
+    public function updateItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::updateBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
+        'itemtype' => [self::class, 'getSetupEndpointTypes23'],
+        'id' => '\d+',
+    ])]
+    #[RouteVersion(introduced: '2.3')]
+    #[Doc\DeleteRoute(schema_name: '{itemtype}')]
+    public function deleteItem23(Request $request): Response
+    {
+        $itemtype = $request->getAttribute('itemtype');
+        return ResourceAccessor::deleteBySchema($this->getKnownSchema($itemtype, $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
     }
 }
