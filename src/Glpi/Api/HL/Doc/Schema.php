@@ -39,6 +39,7 @@ use ArrayAccess;
 use CommonGLPI;
 use Glpi\Api\HL\Router;
 use Glpi\Toolbox\ArrayPathAccessor;
+use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
 use function Safe\strtotime;
@@ -69,6 +70,7 @@ class Schema implements ArrayAccess
 
     // Not defined directly in OpenAPI schema but exist within the format registry (https://spec.openapis.org/registry/format/)
     public const FORMAT_STRING_HTML = 'html';
+    public const FORMAT_STRING_TIME = 'time';
 
     public const PATTERN_UUIDV4 = '/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i';
     public const PATTERN_COLOR_HEX = '/^#([A-Fa-f0-9]{6})$/';
@@ -263,7 +265,9 @@ class Schema implements ArrayAccess
             } elseif ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
                 $new_join = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
-                $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
+                if (array_key_exists('properties', $prop['items'])) {
+                    $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
+                }
             } elseif ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
                 if (isset($prop['x-join'])) {
                     $parent_join = $prop['x-join'];
@@ -478,6 +482,30 @@ class Schema implements ArrayAccess
         return true;
     }
 
+    /**
+     * @param mixed $value
+     * @param array{type: string, format?:string} $prop
+     * @return mixed
+     * @throws DatetimeException
+     */
+    private static function castScalarProperty(mixed $value, array $prop): mixed
+    {
+        // Cast the value to the correct type
+        $value = match ($prop['type']) {
+            self::TYPE_STRING => (string) $value,
+            self::TYPE_INTEGER => (int) $value,
+            self::TYPE_NUMBER => (float) $value,
+            self::TYPE_BOOLEAN => (bool) $value,
+            default => $value
+        };
+
+        // If the value is a datetime, cast to RFC3339
+        if (isset($prop['format']) && $prop['format'] === self::FORMAT_STRING_DATE_TIME) {
+            $value = date(DATE_RFC3339, strtotime($value));
+        }
+        return $value;
+    }
+
     public static function castProperties(array &$content, array $flattened_properties): void
     {
         foreach ($flattened_properties as $sk => $sv) {
@@ -498,18 +526,10 @@ class Schema implements ArrayAccess
             }
             $cv = &$current;
 
-            // Cast the value to the correct type
-            $cv = match ($sv['type']) {
-                self::TYPE_STRING => (string) $cv,
-                self::TYPE_INTEGER => (int) $cv,
-                self::TYPE_NUMBER => (float) $cv,
-                self::TYPE_BOOLEAN => (bool) $cv,
-                default => $cv
-            };
-
-            // If the value is a datetime, cast to RFC3339
-            if (isset($sv['format']) && $sv['format'] === self::FORMAT_STRING_DATE_TIME) {
-                $cv = date(DATE_RFC3339, strtotime($cv));
+            if (is_array($cv)) {
+                $cv = array_map(static fn($v) => self::castScalarProperty($v, $sv), $cv);
+            } else {
+                $cv = self::castScalarProperty($cv, $sv);
             }
         }
     }

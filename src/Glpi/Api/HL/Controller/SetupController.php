@@ -54,7 +54,10 @@ use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Link;
+use Link_Itemtype;
 use MailCollector;
+use ManualLink;
 use OLA;
 use OlaLevel;
 use Plugin;
@@ -126,7 +129,6 @@ EOT,
             'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
             'execution_time' => [
                 'type' => Doc\Schema::TYPE_INTEGER,
-                'readOnly' => true,
             ],
             'operator' => [
                 'type' => Doc\Schema::TYPE_STRING,
@@ -649,12 +651,66 @@ EOT,
                     'license' => ['type' => Doc\Schema::TYPE_STRING, 'readOnly' => true],
                 ],
             ],
+            'ExternalLink' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => Link::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => [
+                        'type' => Doc\Schema::TYPE_ARRAY,
+                        'items' => [
+                            'type' => Doc\Schema::TYPE_STRING,
+                            'x-field' => 'itemtype',
+                            'x-join' => [
+                                'table' => Link_Itemtype::getTable(),
+                                'fkey' => 'id',
+                                'field' => Link::getForeignKeyField(),
+                                'primary-property' => 'id',
+                            ],
+                        ],
+                    ],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'link' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'data' => ['type' => Doc\Schema::TYPE_STRING],
+                    'open_window' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'entity' => self::getDropdownTypeSchema(class: Entity::class, full_schema: 'Entity'),
+                    'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
+            'ManualLink' => [
+                'x-version-introduced' => '2.3',
+                'x-itemtype' => ManualLink::class,
+                'type' => Doc\Schema::TYPE_OBJECT,
+                'properties' => [
+                    'id' => [
+                        'type' => Doc\Schema::TYPE_INTEGER,
+                        'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                        'readOnly' => true,
+                    ],
+                    'itemtype' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'items_id' => ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64],
+                    'name' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'url' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 8096],
+                    'open_window' => ['type' => Doc\Schema::TYPE_BOOLEAN, 'default' => true],
+                    'icon' => ['type' => Doc\Schema::TYPE_STRING, 'maxLength' => 255],
+                    'comment' => ['type' => Doc\Schema::TYPE_STRING],
+                    'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                    'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+                ],
+            ],
         ];
     }
 
     /**
      * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
-     * @return array<class-string<CommonDBTM>, string>
+     * @return array<string, array{itemtype: class-string<CommonDBTM>, label: string}>
      */
     public static function getSetupTypes(bool $types_only = true): array
     {
@@ -662,18 +718,59 @@ EOT,
 
         if ($types === null) {
             $types = [
-                'LDAPDirectory' => AuthLDAP::getTypeName(1),
+                'LDAPDirectory' => [
+                    'itemtype' => AuthLDAP::class,
+                    'label' => AuthLDAP::getTypeName(1),
+                ],
                 // Do not add Config here as it is handled specially
-                'SLM' => SLM::getTypeName(1),
-                'SLA' => SLA::getTypeName(1),
-                'SLALevel' => SlaLevel::getTypeName(1),
-                'OLA' => OLA::getTypeName(1),
-                'OLALevel' => OlaLevel::getTypeName(1),
-                'EmailAuthServer' => AuthMail::getTypeName(1),
-                'FieldUnicity' => FieldUnicity::getTypeName(1),
-                'AutomaticAction' => CronTask::getTypeName(1),
-                'LDAPDirectoryReplicate' => AuthLdapReplicate::getTypeName(1),
-                'EmailCollector' => MailCollector::getTypeName(1),
+                'SLM' => [
+                    'itemtype' => SLM::class,
+                    'label' => SLM::getTypeName(1),
+                ],
+                'SLA' => [
+                    'itemtype' => SLA::class,
+                    'label' => SLA::getTypeName(1),
+                ],
+                'OLA' => [
+                    'itemtype' => OLA::class,
+                    'label' => OLA::getTypeName(1),
+                ],
+                'SLALevel' => [
+                    'itemtype' => SlaLevel::class,
+                    'label' => SlaLevel::getTypeName(1),
+                ],
+                'OLALevel' => [
+                    'itemtype' => OlaLevel::class,
+                    'label' => OlaLevel::getTypeName(1),
+                ],
+                'ExternalLink' => [
+                    'itemtype' => Link::class,
+                    'label' => Link::getTypeName(1),
+                ],
+                'ManualLink' => [
+                    'itemtype' => ManualLink::class,
+                    'label' => ManualLink::getTypeName(1),
+                ],
+                'EmailAuthServer' => [
+                    'itemtype' => AuthMail::class,
+                    'label' => AuthMail::getTypeName(1),
+                ],
+                'FieldUnicity' => [
+                    'itemtype' => FieldUnicity::class,
+                    'label' => FieldUnicity::getTypeName(1),
+                ],
+                'AutomaticAction' => [
+                    'itemtype' => CronTask::class,
+                    'label' => CronTask::getTypeName(1),
+                ],
+                'LDAPDirectoryReplicate' => [
+                    'itemtype' => AuthLdapReplicate::class,
+                    'label' => AuthLdapReplicate::getTypeName(1),
+                ],
+                'EmailCollector' => [
+                    'itemtype' => MailCollector::class,
+                    'label' => MailCollector::getTypeName(1),
+                ],
             ];
         }
         return $types_only ? array_keys($types) : $types;
@@ -694,7 +791,7 @@ EOT,
     {
         return [
             'SLM', 'SLA', 'SLALevel', 'OLA', 'OLALevel', 'EmailAuthServer', 'FieldUnicity',
-            'LDAPDirectoryReplicate', 'EmailCollector',
+            'LDAPDirectoryReplicate', 'EmailCollector', 'ExternalLink', 'ManualLink',
         ];
     }
 
@@ -719,12 +816,13 @@ EOT,
     public function index(Request $request): Response
     {
         $setup_types = self::getSetupTypes(false);
+        $v20_types = self::getSetupEndpointTypes20();
         $setup_paths = [];
-        foreach ($setup_types as $setup_type => $setup_name) {
+        foreach ($setup_types as $setup_type => $setup_data) {
             $setup_paths[] = [
-                'itemtype'  => $setup_type,
-                'name'      => $setup_name,
-                'href'      => '/Setup/' . $setup_type,
+                'itemtype'  => $setup_data['itemtype'],
+                'name'      => $setup_data['label'],
+                'href'      => self::getAPIPathForRouteFunction(self::class, in_array($setup_type, $v20_types, true) ? 'search20' : 'search23', ['itemtype' => $setup_type]),
             ];
         }
         return new JSONResponse($setup_paths);
