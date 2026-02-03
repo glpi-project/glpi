@@ -73,7 +73,8 @@ final class PermissionsRenderer implements RendererInterface
 
         $visiblity_dropdown_params = [
             'type'  => '__VALUE__',
-            'right' => 'knowbaseitem_public',
+            'right' => ($item->getField('is_faq') ? 'faq' : 'knowbase'),
+            'allusers' => 1,
         ];
         if (isset($item->fields['entities_id'])) {
             $visiblity_dropdown_params['entity'] = $item->fields['entities_id'];
