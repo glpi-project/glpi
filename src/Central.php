@@ -648,14 +648,12 @@ class Central extends CommonGLPI
 
             // Check for available plugin updates
             $count = Controller::countUpdatablePlugins();
-            $redirect_mp = Controller::getPluginPageConfig();
 
-            $url = $redirect_mp == Controller::MP_REPLACE_YES ? '/front/marketplace.php' : '/front/plugin.php';
             if ($count > 0) {
                 $messages['warnings'][] = sprintf(
                     _n('You have %d plugin to update', 'You have %d plugins to update', $count),
                     $count
-                ) . ' <a href="' . htmlescape($CFG_GLPI['root_doc']) . $url . '">' . __s('View plugins') . '</a>';
+                ) . ' <a href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/marketplace.php">' . __s('View plugins') . '</a>';
             }
         }
 
