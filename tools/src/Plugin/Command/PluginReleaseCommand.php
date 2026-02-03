@@ -76,7 +76,7 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         $this->setDescription('Build a GLPI plugin release archive.');
 
         $this->addOption('ref', 'r', InputOption::VALUE_REQUIRED, 'Git ref to build', 'HEAD');
-        $this->addOption('archive-name', 'a', InputOption::VALUE_REQUIRED, 'Release archive name, default to the Git ref name');
+        $this->addOption('dest', 'd', InputOption::VALUE_REQUIRED, 'Destination path for the archive (e.g., /build/glpi-myplugin-1.0.0.tar.bz2)');
         $this->addOption('force', 'f', InputOption::VALUE_NONE, 'Force rebuild even if release exists');
     }
 
@@ -90,27 +90,35 @@ final class PluginReleaseCommand extends AbstractPluginCommand
             return Command::FAILURE;
         }
 
-        $this->dist_dir = $plugin_dir . '/dist';
+        $this->plugin_name = $this->getPluginName();
+
+        $dest = $input->getOption('dest');
+        if ($dest === null) {
+            $this->io->error('The --dest option is required.');
+            return Command::FAILURE;
+        }
+
+        // Resolve relative paths based on plugin directory
+        if (!str_starts_with($dest, '/')) {
+            $dest = $plugin_dir . '/' . $dest;
+        }
+
+        // Ensure parent directory exists
+        $this->dist_dir = dirname($dest);
         if (!is_dir($this->dist_dir) && !mkdir($this->dist_dir, 0o777, true)) {
             $this->io->error(sprintf('Unable to create the `%s` directory.', $this->dist_dir));
             return Command::FAILURE;
         }
 
-        $this->plugin_name = $this->getPluginName();
-
-        $ref = $input->getOption('ref');
-        $archive_name = $input->getOption('archive-name') ?: $ref;
-
-        $tarball = $this->dist_dir . DIRECTORY_SEPARATOR . "glpi-{$this->plugin_name}-{$archive_name}.tar.bz2";
-
-        if (!$input->getOption('force') && file_exists($tarball)) {
-            $this->io->warning("Archive $tarball already exists.");
+        if (!$input->getOption('force') && file_exists($dest)) {
+            $this->io->warning("Archive $dest already exists.");
             if (!$this->io->confirm('Do you want to rebuild it?', false)) {
                 return Command::FAILURE;
             }
         }
 
-        return $this->build($ref, $tarball);
+        $ref = $input->getOption('ref');
+        return $this->build($ref, $dest);
     }
 
     private function build(string $ref, string $dest): int
@@ -254,7 +262,8 @@ final class PluginReleaseCommand extends AbstractPluginCommand
         $tar_cmd = [
             'tar',
             '--format=ustar',
-            '-cjf',
+            '--auto-compress',
+            '-cf',
             $dest,
             $this->plugin_name,
         ];
