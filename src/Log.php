@@ -220,7 +220,7 @@ class Log extends CommonDBTM
                                     $values[$key]
                                 ),
                                 $oldval,
-                                (int) $values[$key],
+                                (int)$values[$key],
                             ];
                         }
                     break;
