@@ -681,11 +681,11 @@ final class LicenceHeadersCheckCommand extends AbstractCommand
             }
 
             $before = trim($dates_matches['before'] ?? '');
-            $before_pattern = strlen($before) > 0
+            $before_pattern = $before !== ''
                ? '\s*' . preg_quote($before, '/') . '\s+'
                : '';
             $after = trim($dates_matches['after'] ?? '');
-            $after_pattern = strlen($after) > 0
+            $after_pattern = $after !== ''
                ? '\s+' . preg_quote($after, '/') . '\s*'
                : '';
 
