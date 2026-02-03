@@ -70,17 +70,15 @@ class ProfileRight extends CommonDBChild
 
         $input = $new_item->prepareInputForClone($input);
 
-        $result = $DB->updateOrInsert(static::getTable(), $input, [
+        $DB->updateOrInsert(static::getTable(), $input, [
             'name' => $input['name'],
             'profiles_id' => $input['profiles_id'],
         ]);
-        if ($result !== false) {
-            $new_item->getFromDBByCrit([
-                'name' => $input['name'],
-                'profiles_id' => $input['profiles_id'],
-            ]);
-            $new_item->post_clone($this, $history);
-        }
+        $new_item->getFromDBByCrit([
+            'name' => $input['name'],
+            'profiles_id' => $input['profiles_id'],
+        ]);
+        $new_item->post_clone($this, $history);
 
         return $new_item->fields['id'];
     }

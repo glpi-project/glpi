@@ -394,7 +394,7 @@ class DBmysql
      *
      * @param string $query Query to execute
      *
-     * @return mysqli_result|bool Query result handler
+     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      */
     public function doQuery($query)
     {
@@ -490,7 +490,7 @@ class DBmysql
      * @param string $query   Query to execute
      * @param string $message Explanation of query (default '')
      *
-     * @return mysqli_result Query result handler
+     * @return mysqli_result|true Returns true for add/delete/update; and mysqli_result for select
      *
      * @deprecated 11.0.0
      */
@@ -633,7 +633,9 @@ class DBmysql
             // See https://www.php.net/manual/en/mysqli.insert-id.php
             // `$this->dbh->insert_id` will return 0 value if `INSERT` statement did not change the `AUTO_INCREMENT` value.
             // We have to retrieve it manually via `LAST_INSERT_ID()`.
-            $insert_id = $this->dbh->query('SELECT LAST_INSERT_ID()')->fetch_row()[0];
+            /** @var mysqli_result $request */
+            $request = $this->dbh->query('SELECT LAST_INSERT_ID()');
+            $insert_id = $request->fetch_row()[0];
         }
         return $insert_id;
     }
@@ -1097,6 +1099,7 @@ class DBmysql
     {
         // No translation, used in sysinfo
         $ret = [];
+        /** @var mysqli_result $req */
         $req = $this->doQuery("SELECT @@sql_mode as mode, @@version AS vers, @@version_comment AS stype");
 
         if (($data = $req->fetch_array())) {
@@ -1133,6 +1136,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT GET_LOCK($name, 0)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1152,6 +1156,7 @@ class DBmysql
     {
         $name          = $this->quote($this->dbdefault . '.' . $name);
         $query         = "SELECT RELEASE_LOCK($name)";
+        /** @var mysqli_result $result */
         $result        = $this->doQuery($query);
         [$lock_ok] = $this->fetchRow($result);
 
@@ -1741,6 +1746,7 @@ class DBmysql
      */
     public function getVersion()
     {
+        /** @var mysqli_result $res */
         $res = $this->doQuery('SELECT version()');
         $req = $res->fetch_array();
         $raw = $req['version()'];
@@ -2081,6 +2087,7 @@ class DBmysql
                 $excludes[] = 1681; // Integer display width is deprecated and will be removed in a future release.
             }
 
+            /** @var mysqli_result $warnings_result */
             while ($warning = $warnings_result->fetch_assoc()) {
                 if ($warning['Level'] === 'Note' || in_array($warning['Code'], $excludes)) {
                     continue;
@@ -2285,6 +2292,7 @@ class DBmysql
             static::quoteName('Variable_name'),
             implode(', ', array_map([$this, 'quote'], $variables))
         );
+        /** @var mysqli_result $result */
         $result = $this->doQuery($query);
         $values = [];
         while ($row = $result->fetch_assoc()) {

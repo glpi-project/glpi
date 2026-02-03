@@ -586,6 +586,7 @@ class DBConnection extends CommonGLPI
                 $data['source'][strtolower($var_name)] = $var_value;
             }
 
+            /** @var mysqli_result $result */
             $result = $db_main->doQuery($db_main->getBinaryLogStatusQuery());
             if ($result && $db_main->numrows($result)) {
                 foreach (['File', 'Position'] as $var_name) {
@@ -616,6 +617,7 @@ class DBConnection extends CommonGLPI
                     $data['replica'][$num][strtolower($var_name)] = $var_value;
                 }
 
+                /** @var mysqli_result $result */
                 $result = $db_replica->doQuery($db_replica->getReplicaStatusQuery());
                 if ($result && $db_replica->numrows($result)) {
                     $replica_vars = $db_replica->getReplicaStatusVars();
@@ -645,8 +647,8 @@ class DBConnection extends CommonGLPI
     {
 
         if ($DBconnection->connected) {
-            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date
-                                         FROM `glpi_logs`");
+            /** @var mysqli_result $result */
+            $result = $DBconnection->doQuery("SELECT UNIX_TIMESTAMP(MAX(`date_mod`)) AS max_date FROM `glpi_logs`");
             if ($DBconnection->numrows($result) > 0) {
                 return $DBconnection->result($result, 0, "max_date");
             }
