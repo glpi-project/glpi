@@ -117,7 +117,8 @@ class APIRestTest extends TestCase
     public function tearDown(): void
     {
         // Check that no errors occurred on the test server
-        $this->assertEmpty(file_get_contents($this->getLogFilePath()));
+        $errors = file_get_contents($this->getLogFilePath());
+        $this->assertEmpty($errors, $errors);
         parent::tearDown();
     }
 

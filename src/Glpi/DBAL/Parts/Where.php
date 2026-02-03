@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,64 +32,53 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- *  Sub query class
- **/
-abstract class AbstractQuery
+namespace Glpi\DBAL\Parts;
+
+use Glpi\DBAL\Operator;
+
+class Where extends BasePart
 {
-    protected ?string $alias = null;
-    /** @var array<int, mixed> */
-    protected array $values = [];
+    protected Operator $operator = Operator::NONE;
+    protected string $clause = 'WHERE';
 
-    /**
-     * Create a query
-     *
-     * @param string $alias Alias for the whole subquery
-     */
-    public function __construct($alias = null)
+    public function setOperator(Operator $operator): static
     {
-        $this->alias = $alias;
+        $this->operator = $operator;
+        return $this;
+    }
+
+    public function getOperator(): Operator
+    {
+        return $this->operator;
     }
 
     /**
-     * Get alias
-     *
-     * @return string|null
+     * @return array{FROM: string}
      */
-    public function getAlias()
+    public function getFromClause(): array
     {
-        return $this->alias;
+        return [
+            'FROM' => 'table',
+        ];
     }
 
-    /**
-     *
-     * Get SQL query
-     *
-     * @return string
-     *
-     * @psalm-taint-escape sql
-     */
-    abstract public function getQuery();
-
-    public function __toString()
+    public function getQuery(): string
     {
-        return $this->getQuery();
+        $sql = parent::getQuery();
+        if ($this->operator !== Operator::NONE) {
+            $sql = $this->operator->value . ' ' . $sql;
+        }
+        return $sql;
     }
 
-    /**
-    * @return array<int, mixed>
-    */
-    public function getValues(): array
+    public function setQuery(string $sql): static
     {
-        return $this->values;
-    }
+        parent::setQuery($sql);
 
-    /**
-     * @param array<int, mixed> $values
-     */
-    public function setValues(array $values): static
-    {
-        $this->values = $values;
+        //remove text clause from SQL
+        $this->query = trim(str_replace('SELECT * FROM `table` ' . $this->clause, '', $this->query));
+        //Handle case where clause is missing - which should not happen.
+        $this->query = trim(str_replace('SELECT * FROM `table`', '', $this->query));
         return $this;
     }
 }
