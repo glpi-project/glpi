@@ -264,31 +264,12 @@
 
                     {% if can_link_items %}
                     <button type="button" class="btn btn-sm btn-outline-primary mt-2"
-                            data-bs-toggle="modal" data-bs-target="#kb-link-item-modal">
+                            data-glpi-kb-action="OPEN_MODAL"
+                            data-glpi-kb-action-param-id="{{ item_id }}"
+                            data-glpi-kb-action-param-key="LinkItemModal"
+                            data-glpi-kb-action-param-title="{{ __('Link to another item') }}">
                         <i class="ti ti-link me-1"></i>{{ __('Link to another item') }}
                     </button>
-
-                    {# Modal placeholder #}
-                    <div class="modal fade" id="kb-link-item-modal" tabindex="-1" aria-labelledby="kb-link-item-modal-title">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="kb-link-item-modal-title">
-                                        <i class="ti ti-link me-2"></i>{{ __('Link to another item') }}
-                                    </h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __('Close') }}"></button>
-                                </div>
-                                <div class="modal-body text-center text-muted py-5">
-                                    <i class="ti ti-link fs-1 mb-2"></i>
-                                    <p>{{ __('Item linking coming soon...') }}</p>
-                                    <a href="{{ 'KnowbaseItem'|itemtype_form_path }}?id={{ item_id }}&amp;forcetab=KnowbaseItem_Item$1"
-                                       class="btn btn-primary">
-                                        {{ __('Use existing Associated elements tab') }}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     {% endif %}
                 </div>
             </div>
