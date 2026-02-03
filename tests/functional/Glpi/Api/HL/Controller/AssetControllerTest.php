@@ -43,6 +43,7 @@ use Glpi\Http\Request;
 use Glpi\Tests\HLAPITestCase;
 use Group_Item;
 use HLAPICallAsserter;
+use Item_RemoteManagement;
 use OperatingSystem;
 use OperatingSystemArchitecture;
 use OperatingSystemEdition;
@@ -769,5 +770,41 @@ class AssetControllerTest extends HLAPITestCase
             /** @var HLAPICallAsserter $call */
             $call->response->isNotFoundError();
         });
+    }
+
+    public function testCRUDAntivirus()
+    {
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computer_id . '/Antivirus');
+    }
+
+    public function testCRUDVirtualMachine()
+    {
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computer_id . '/VirtualMachine');
+    }
+
+    public function testCRUDPeripheralConnection()
+    {
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $create_params = [
+            'itemtype_peripheral' => 'Peripheral',
+            'items_id_peripheral' => getItemByTypeName('Peripheral', '_test_peripheral_1', true),
+        ];
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computer_id . '/PeripheralConnection', $create_params, [
+            'items_id_peripheral' => getItemByTypeName('Peripheral', '_test_peripheral_2', true),
+        ]);
+    }
+
+    public function testCRUDRemoteManagement()
+    {
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $create_params = [
+            'type' => Item_RemoteManagement::TEAMVIEWER,
+            'remoteid' => 'test_remote_mgmt_1',
+        ];
+        $this->api->autoTestCRUD('/Assets/Computer/' . $computer_id . '/RemoteManagement', $create_params, [
+            'remoteid' => 'test_remote_mgmt_2',
+        ]);
     }
 }
