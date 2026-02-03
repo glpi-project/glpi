@@ -7101,7 +7101,7 @@ HTML;
      * @param array   $rights Rights to check
      * @param integer $entities_id Entity to check
      *
-     * @return boolean|int
+     * @return bool
      **/
     public function hasRightsOr($module, $rights, $entities_id)
     {

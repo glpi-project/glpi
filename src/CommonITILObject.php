@@ -8001,7 +8001,7 @@ abstract class CommonITILObject extends CommonDBTM
             ITILFollowup::canView() ||
             (
                 $user !== null &&
-                $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
+                $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
                 $user->hasRight(ITILFollowup::$rightname, ITILFollowup::SEEPUBLIC, $this->fields['entities_id'])
             )
         ) {
@@ -8042,7 +8042,7 @@ abstract class CommonITILObject extends CommonDBTM
             ITILSolution::canView() ||
             (
                 $user !== null &&
-                $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+                $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
             )
         ) {
             // Run the subquery separately. It's better for huge databases
@@ -8072,7 +8072,16 @@ abstract class CommonITILObject extends CommonDBTM
                 $validation_class::canView() ||
                 (
                     $user !== null &&
-                    $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+                    $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
+                    $user->hasRightsOr(
+                        $validation_class::$rightname,
+                        array_merge(
+                            $validation_class::getCreateRights(),
+                            $validation_class::getValidateRights(),
+                            $validation_class::getPurgeRights()
+                        ),
+                        $this->fields['entities_id']
+                    )
                 )
             )
         ) {
@@ -8099,7 +8108,8 @@ abstract class CommonITILObject extends CommonDBTM
             $task_class::canView() ||
             (
                 $user !== null &&
-                $user->hasRightsOr($this->getType(), $can_view_itilobject[$this->getType()], $this->fields['entities_id'])
+                $user->hasRightsOr(static::$rightname, $can_view_itilobject[$this->getType()], $this->fields['entities_id']) &&
+                $user->hasRight($task_class::$rightname, $task_class::SEEPUBLIC, $this->fields['entities_id'])
             )
         ) {
             $tasks_crit = [
