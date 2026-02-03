@@ -459,12 +459,12 @@ class RuleImportAsset extends Rule
         }
 
         // No complex criteria
-        if ($this->complex_criteria === [] || $this->found_criteria === 0) {
+        if ($this->complex_criteria === [] || $this->found_criteria === 0) { //@phpstan-ignore booleanOr.alwaysTrue,identical.alwaysTrue (variables are set in preComputeCriteria())
             return true;
         }
 
         // Get all equipment type
-        $itemtypeselected = [];
+        $itemtypeselected = []; //@phpstan-ignore deadCode.unreachable (see above phpstan-ignore comment)
         if (
             isset($input['itemtype'])
             && (is_array($input['itemtype']))

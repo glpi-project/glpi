@@ -1332,7 +1332,7 @@ class MigrationTest extends DbTestCase
         $db = new class ($options) extends \DB {
             private array $_mock_options;
             public array $_queries = [];
-            public string $dbdefault = 'mockedglpi';
+            public $dbdefault = 'mockedglpi';
 
             public function __construct(array $options)
             {

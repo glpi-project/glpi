@@ -20654,12 +20654,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$value of function count expects array\\|Countable, array\\|null given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/RuleImportAsset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Possibly invalid array key type class\\-string\\<CommonDBTM\\>\\|CommonDBTM\\.$#',
 	'identifier' => 'offsetAccess.invalidOffset',
 	'count' => 1,
