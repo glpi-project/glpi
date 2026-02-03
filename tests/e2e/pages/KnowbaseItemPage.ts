@@ -32,12 +32,33 @@
 
 import { Locator, Page } from "@playwright/test";
 import { GlpiPage } from "./GlpiPage";
+import { TipTapEditorHelper } from "../utils/TipTapEditorHelper";
+import { SlashMenuHelper } from "../utils/SlashMenuHelper";
 
 export class KnowbaseItemPage extends GlpiPage
 {
+    private _editorHelper: TipTapEditorHelper | null = null;
+    private _slashMenuHelper: SlashMenuHelper | null = null;
+
     public constructor(page: Page)
     {
         super(page);
+    }
+
+    public get editor(): TipTapEditorHelper
+    {
+        if (!this._editorHelper) {
+            this._editorHelper = new TipTapEditorHelper(this.page);
+        }
+        return this._editorHelper;
+    }
+
+    public get slashMenu(): SlashMenuHelper
+    {
+        if (!this._slashMenuHelper) {
+            this._slashMenuHelper = new SlashMenuHelper(this.page, this.editor);
+        }
+        return this._slashMenuHelper;
     }
 
     public async goto(id: number): Promise<void>
