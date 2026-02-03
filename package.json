@@ -35,7 +35,7 @@
         "diff-match-patch": "^1.0.4",
         "dotenv": "^17.2.3",
         "echarts": "^5.6.0",
-        "eslint-plugin-playwright": "^2.4.1",
+        "eslint-plugin-playwright": "^2.5.1",
         "fittext.js": "^1.2.0",
         "flatpickr": "^4.6.3",
         "fuzzy": "^0.1.3",
