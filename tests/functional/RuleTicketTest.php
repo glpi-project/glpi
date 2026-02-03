@@ -945,11 +945,11 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         );
 
         // Add user to ticket
-        $user = new \User();
-        $user_id = $user->add([
-            'name' => 'test',
-        ]);
-        $this->assertGreaterThan(0, $user_id);
+        $user_id = $this->createItem(\User::class, [
+            'name'        => 'test',
+            '_profiles_id' => getItemByTypeName('Profile', 'Self-Service', true),
+            '_entities_id' => 0,
+        ])->getID();
 
         $ticket->update([
             'id'                  => $ticket_id,
