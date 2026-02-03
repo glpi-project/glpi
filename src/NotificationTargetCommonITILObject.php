@@ -1502,7 +1502,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
         // Complex mode
         if (!$simple) {
-            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item->getType(), $item->getField('id'), true);
+            $linked = CommonITILObject_CommonITILObject::getAllLinkedTo($item->getType(), $item->getField('id'));
             $data['linkedtickets'] = [];
             $data['linkedchanges'] = [];
             $data['linkedproblems'] = [];

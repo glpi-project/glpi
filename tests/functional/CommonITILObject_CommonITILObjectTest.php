@@ -73,8 +73,8 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        // Check the number of links (bypass rights check for this basic test)
-        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id, true));
+        // Check the number of links
+        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
 
         // Create a Problem
         $problem = new \Problem();
@@ -94,7 +94,7 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->assertEquals(2, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id, true));
+        $this->assertEquals(2, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
 
         // Add another ticket
         $tickets_id2 = $ticket->add([
@@ -113,9 +113,9 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $ticket_ticket_id);
 
-        // Count links for both tickets (bypass rights check for this basic test)
-        $this->assertEquals(3, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id, true));
-        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id2, true));
+        // Count links for both tickets
+        $this->assertEquals(3, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id));
+        $this->assertEquals(1, \CommonITILObject_CommonITILObject::countAllLinks('Ticket', $tickets_id2));
     }
 
     public function testCountLinksByStatus()
@@ -290,9 +290,9 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $itil_itil_id);
 
-        $this->assertCount(2, \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $tickets_id, true));
-        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Change', $changes_id, true));
-        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Problem', $problems_id, true));
+        $this->assertCount(2, \CommonITILObject_CommonITILObject::getAllLinkedTo('Ticket', $tickets_id));
+        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Change', $changes_id));
+        $this->assertCount(1, \CommonITILObject_CommonITILObject::getAllLinkedTo('Problem', $problems_id));
     }
 
     public function testGetLinkName()
@@ -589,87 +589,5 @@ class CommonITILObject_CommonITILObjectTest extends DbTestCase
             'link' => \CommonITILObject_CommonITILObject::LINK_TO,
         ]);
         $this->assertFalse($result);
-    }
-
-    /**
-     * Test that rights verification works correctly when getting linked items.
-     * This test verifies the fix for the bug where linked items visibility was not
-     * correctly restricted based on user READ rights.
-     */
-    public function testRightsVerificationOnLinkedItems()
-    {
-        // Login as glpi (tech user with limited rights)
-        $this->login('glpi', 'glpi');
-
-        // Create entity structure: Root > Child1 > Child2
-        $root_entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
-
-        // Create a ticket in root entity (glpi user can see this)
-        $ticket_root = $this->createItem(
-            \Ticket::class,
-            [
-                'name' => 'Ticket in root entity',
-                'content' => 'Test content',
-                'status' => \Ticket::INCOMING,
-                'entities_id' => $root_entity_id,
-            ]
-        );
-
-        // Create another ticket in root entity
-        $ticket_root_2 = $this->createItem(
-            \Ticket::class,
-            [
-                'name' => 'Ticket 2 in root entity',
-                'content' => 'Test content 2',
-                'status' => \Ticket::INCOMING,
-                'entities_id' => $root_entity_id,
-            ]
-        );
-
-        // Link the two tickets
-        $ticket_ticket = new \Ticket_Ticket();
-        $link_id = $ticket_ticket->add([
-            'tickets_id_1' => $ticket_root->getID(),
-            'tickets_id_2' => $ticket_root_2->getID(),
-            'link' => \CommonITILObject_CommonITILObject::LINK_TO,
-        ]);
-        $this->assertGreaterThan(0, $link_id);
-
-        // With bypass = true, we should see the link
-        $links_bypass = \CommonITILObject_CommonITILObject::getAllLinkedTo(
-            \Ticket::class,
-            $ticket_root->getID(),
-            true // bypass rights
-        );
-        $this->assertCount(1, $links_bypass);
-
-        // With bypass = false (default), we should also see it because glpi user has READ rights
-        $links_check_rights = \CommonITILObject_CommonITILObject::getAllLinkedTo(
-            \Ticket::class,
-            $ticket_root->getID(),
-            false // check rights (default)
-        );
-        $this->assertCount(1, $links_check_rights);
-
-        // Count should match
-        $count_bypass = \CommonITILObject_CommonITILObject::countAllLinks(
-            \Ticket::class,
-            $ticket_root->getID(),
-            true
-        );
-        $this->assertEquals(1, $count_bypass);
-
-        $count_check_rights = \CommonITILObject_CommonITILObject::countAllLinks(
-            \Ticket::class,
-            $ticket_root->getID(),
-            false // check rights (default)
-        );
-        $this->assertEquals(1, $count_check_rights);
-
-        // Verify that the returned link has the correct structure
-        $link = reset($links_check_rights);
-        $this->assertEquals(\Ticket::class, $link['itemtype']);
-        $this->assertEquals($ticket_root_2->getID(), $link['items_id']);
-        $this->assertEquals(\CommonITILObject_CommonITILObject::LINK_TO, $link['link']);
     }
 }

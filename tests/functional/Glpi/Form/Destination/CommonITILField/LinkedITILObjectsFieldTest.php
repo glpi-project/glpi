@@ -247,7 +247,7 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         $second_ticket = array_values($created_items)[2];
 
         // Check linked objects for first ticket
-        $linked_objects = CommonITILObject_CommonITILObject::getAllLinkedTo($first_ticket::class, $first_ticket->getID(), true);
+        $linked_objects = CommonITILObject_CommonITILObject::getAllLinkedTo($first_ticket::class, $first_ticket->getID());
         $this->assertEquals(
             [
                 [
@@ -265,7 +265,7 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         );
 
         // Check linked objects for second ticket
-        $linked_objects = CommonITILObject_CommonITILObject::getAllLinkedTo($second_ticket::class, $second_ticket->getID(), true);
+        $linked_objects = CommonITILObject_CommonITILObject::getAllLinkedTo($second_ticket::class, $second_ticket->getID());
         $this->assertEquals(
             [
                 [
@@ -515,7 +515,7 @@ final class LinkedITILObjectsFieldTest extends AbstractDestinationFieldTest
         $this->assertInstanceOf(Ticket::class, $ticket);
 
         // Check linked objects
-        $linked_objects = CommonITILObject_CommonITILObject::getAllLinkedTo($ticket::class, $ticket->getID(), true);
+        $linked_objects = CommonITILObject_CommonITILObject::getAllLinkedTo($ticket::class, $ticket->getID());
         $this->assertEquals(
             count($expected_linked_objects),
             count($linked_objects),
