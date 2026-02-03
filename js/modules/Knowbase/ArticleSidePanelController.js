@@ -34,6 +34,7 @@
 
 import { GlpiKnowbaseCommentsPanelController } from "/js/modules/Knowbase/CommentsPanelController.js";
 import { GlpiKnowbaseServiceCatalogPanelController } from "/js/modules/Knowbase/ServiceCatalogPanelController.js";
+import { GlpiKnowbaseRevisionsPanelController } from "/js/modules/Knowbase/RevisionsPanelController.js";
 
 export class GlpiKnowbaseArticleSidePanelController
 {
@@ -49,6 +50,7 @@ export class GlpiKnowbaseArticleSidePanelController
 
         new GlpiKnowbaseCommentsPanelController(this.#container);
         new GlpiKnowbaseServiceCatalogPanelController(this.#container);
+        new GlpiKnowbaseRevisionsPanelController(this.#container);
     }
 
     #initEventListeners()
