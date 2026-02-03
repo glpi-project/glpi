@@ -252,18 +252,19 @@ class View extends CommonGLPI
             }
 
             $clean_plugin = [
-                'key'           => $key,
-                'name'          => $plugin['name'],
-                'logo_url'      => $logo_url,
-                'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
-                'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
-                'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
-                'note'          => $apidata['note'] ?? -1,
-                'homepage_url'  => $apidata['homepage_url'] ?? "",
-                'issues_url'    => $apidata['issues_url'] ?? "",
-                'readme_url'    => $apidata['readme_url'] ?? "",
-                'version'       => $plugin['version'] ?? "",
-                'changelog_url' => $apidata['changelog_url'] ?? "",
+                'key'                       => $key,
+                'name'                      => $plugin['name'],
+                'logo_url'                  => $logo_url,
+                'description'               => $apidata['descriptions'][0]['short_description'] ?? "",
+                'authors'                   => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
+                'license'                   => $apidata['license'] ?? $plugin['license'] ?? "",
+                'note'                      => $apidata['note'] ?? -1,
+                'homepage_url'              => $apidata['homepage_url'] ?? "",
+                'issues_url'                => $apidata['issues_url'] ?? "",
+                'readme_url'                => $apidata['readme_url'] ?? "",
+                'version'                   => $plugin['version'] ?? "",
+                'changelog_url'             => $apidata['changelog_url'] ?? "",
+                'highest_available_version' => $plugin['highest_available_version'] ?? "0",
             ];
 
             $plugins[] = $clean_plugin;
@@ -532,8 +533,6 @@ JS;
         $plugin_inst  = new Plugin();
         $plugin_inst->getFromDBbyDir($plugin_key);
 
-        $mk_controller = new Controller($plugin_key);
-
         $plugin_info = [
             'key'           => $plugin['key'],
             'name'          => $plugin['name'],
@@ -553,7 +552,7 @@ JS;
             'buttons'       => self::getButtons($plugin_key),
             'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
             'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
-            'updatable'      => $mk_controller->checkUpdate($plugin_inst),
+            'updatable'     => version_compare($plugin['version'], $plugin['highest_available_version'] ?? '0', '<'),
         ];
         return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
             'tab'    => $tab,
