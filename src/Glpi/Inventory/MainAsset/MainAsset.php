@@ -860,7 +860,9 @@ abstract class MainAsset extends InventoryAsset
             $doTransfer = Entity::getUsedConfig('transfers_strategy', $this->item->fields['entities_id'], 'transfers_id', 0);
             $transfer = new Transfer();
             if ($doTransfer > 0 && $transfer->getFromDB($doTransfer)) {
-                $item_to_transfer = [$this->itemtype => [$items_id => $items_id]];
+                /** @var class-string<CommonDBTM> $current_itemtype */
+                $current_itemtype = $this->itemtype;
+                $item_to_transfer = [$current_itemtype => [$items_id]];
                 $transfer->moveItems($item_to_transfer, $entities_id, $transfer->fields);
                 //and set new entity in session
                 $_SESSION['glpiactiveentities']        = [$entities_id];

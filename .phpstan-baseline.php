@@ -12992,12 +12992,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$items of method Transfer\\:\\:moveItems\\(\\) expects array\\<class\\-string\\<CommonDBTM\\>, array\\<int\\>\\>, array\\<string, array\\<int, int\\>\\> given\\.$#',
-	'identifier' => 'argument.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter \\#1 \\$itemtype of static method Dropdown\\:\\:importExternal\\(\\) expects string, class\\-string\\<CommonDBTM\\>\\|null given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
@@ -13378,12 +13372,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Inventory\\\\MainAsset\\\\Unmanaged\\:\\:prepare\\(\\) should return array\\<int, stdClass\\> but returns array\\<int, object\\>\\.$#',
 	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\#1 \\$items of method Transfer\\:\\:moveItems\\(\\) expects array\\<class\\-string\\<CommonDBTM\\>, array\\<int\\>\\>, array\\<string, array\\> given\\.$#',
-	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
 ];
