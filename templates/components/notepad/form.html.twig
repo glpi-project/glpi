@@ -38,10 +38,14 @@
 } %}
 
 <div class="d-flex mb-3 justify-content-between align-items-center">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form" aria-label="{{ _x('button', 'Add a note') }}">
-        <i class="ti ti-link"></i>
-        <span>{{ _x('button', 'Add a note') }}</span>
-    </button>
+    {% if canedit %}
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#new-note-form" aria-label="{{ _x('button', 'Add a note') }}">
+            <i class="ti ti-link"></i>
+            <span>{{ _x('button', 'Add a note') }}</span>
+        </button>
+    {% else %}
+        <span></span>
+    {% endif %}
 
     {% if notes|length > 0 %}
         <small class="me-2">
@@ -60,53 +64,55 @@
     {% endif %}
 </div>
 
-<div class="my-3">
-    <div id="new-note-form" class="modal fade">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h3 class="modal-title">
-                        <i class="ti ti-notes"></i>
-                        {{ __('Add a note') }}
-                    </h3>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+{% if canedit %}
+    <div class="my-3">
+        <div id="new-note-form" class="modal fade">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">
+                            <i class="ti ti-notes"></i>
+                            {{ __('Add a note') }}
+                        </h3>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
 
-                <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
-                    <div class="modal-body">
-                        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                        <input type="hidden" name="itemtype" value="{{ itemtype }}" />
-                        <input type="hidden" name="items_id" value="{{ items_id }}" />
-                        {{ fields.textareaField(
-                            'content',
-                            '',
-                            __("Content"),
-                            fields_options|merge({
-                                enable_richtext: true,
-                                enable_fileupload: true,
-                            })
-                        ) }}
-
-                        {% if itemtype == "Entity" %}
-                            {{ fields.sliderField(
-                                'visible_from_ticket',
-                                false,
-                                __('Visible on tickets'),
-                                fields_options
+                    <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                        <div class="modal-body">
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                            <input type="hidden" name="itemtype" value="{{ itemtype }}" />
+                            <input type="hidden" name="items_id" value="{{ items_id }}" />
+                            {{ fields.textareaField(
+                                'content',
+                                '',
+                                __("Content"),
+                                fields_options|merge({
+                                    enable_richtext: true,
+                                    enable_fileupload: true,
+                                })
                             ) }}
-                        {% endif %}
-                    </div>
 
-                    <div class="modal-footer">
-                        <button type="submit" value="Add" name="add" class="btn btn-primary">
-                            <span>{{ __('Add') }}</span>
-                        </button>
-                    </div>
-                </form>
+                            {% if itemtype == "Entity" %}
+                                {{ fields.sliderField(
+                                    'visible_from_ticket',
+                                    false,
+                                    __('Visible on tickets'),
+                                    fields_options
+                                ) }}
+                            {% endif %}
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="submit" value="Add" name="add" class="btn btn-primary">
+                                <span>{{ __('Add') }}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% endif %}
 
 <div class="accordion">
     {% for note in notes %}
@@ -148,32 +154,34 @@
                                 }, with_context = false) }}
                             </span>
 
-                            <span>
-                                <button
-                                    class="btn btn-sm btn-ghost-danger delete-note"
-                                    name="purge"
-                                    type="submit"
-                                    value="1"
-                                    onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
-                                    data-id="{{ id }}"
-                                    aria-label="{{ __("Delete") }}"
-                                >
-                                    <i class="ti ti-trash"></i>
-                                    <span>{{ __('Delete') }}</span>
-                                </button>
+                            {% if canedit %}
+                                <span>
+                                    <button
+                                        class="btn btn-sm btn-ghost-danger delete-note"
+                                        name="purge"
+                                        type="submit"
+                                        value="1"
+                                        onclick="return confirm('{{ __('Confirm the final deletion?')|e('js') }}');"
+                                        data-id="{{ id }}"
+                                        aria-label="{{ __("Delete") }}"
+                                    >
+                                        <i class="ti ti-trash"></i>
+                                        <span>{{ __('Delete') }}</span>
+                                    </button>
 
-                                <button
-                                    class="btn btn-sm btn-ghost-secondary edit-note"
-                                    type="button"
-                                    data-id="{{ id }}"
-                                    data-bs-toggle="modal"
-                                    data-bs-target="#edit-{{ id }}"
-                                    aria-label="{{ __("Edit") }}"
-                                >
-                                    <i class="ti ti-edit"></i>
-                                    <span>{{ __('Edit') }}</span>
-                                </button>
-                            </span>
+                                    <button
+                                        class="btn btn-sm btn-ghost-secondary edit-note"
+                                        type="button"
+                                        data-id="{{ id }}"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#edit-{{ id }}"
+                                        aria-label="{{ __("Edit") }}"
+                                    >
+                                        <i class="ti ti-edit"></i>
+                                        <span>{{ __('Edit') }}</span>
+                                    </button>
+                                </span>
+                            {% endif %}
                         </div>
 
                         <div
@@ -258,70 +266,48 @@
 </div>
 
 <script>
-/**
- * Toggle all accordions in a notepad container with Bootstrap transitions
- *
- * @param {Element} element - The element that was clicked (button or link)
- */
-function toggleNotesAccordion(element) {
-    // Find the accordion container - it's the next sibling div after the modal div
-    const buttonsContainer = element.closest('.d-flex.mb-3');
-    const modalContainer = buttonsContainer.nextElementSibling;
-    const accordionContainer = modalContainer.nextElementSibling;
-
-    if (!accordionContainer || !accordionContainer.classList.contains('accordion')) {
-        console.warn('Accordion container not found');
-        return;
-    }
-
-    const accordionElements = accordionContainer.querySelectorAll('.accordion-collapse');
-    const elementText = element.querySelector('span');
-    const elementIcon = element.querySelector('i');
-    const isExpanding = elementText.textContent.includes(element.dataset.expandText);
-
-    // Use Bootstrap's native collapse methods for smooth transitions
-    accordionElements.forEach(function(accordion) {
-        try {
-            const bsCollapse = new bootstrap.Collapse(accordion, { toggle: false });
-
-            if (isExpanding) {
-                bsCollapse.show();
+$(function() {
+    /**
+     * Toggle all accordions in a notepad container with Bootstrap transitions
+     */
+    $('.toggle-all-notes').on('click', function(e) {
+        e.preventDefault();
+        
+        var $toggle = $(this);
+        var $accordion = $toggle.closest('.tab-pane').find('.accordion');
+        
+        if (!$accordion.length) {
+            console.warn('Accordion container not found');
+            return;
+        }
+        
+        var $text = $toggle.find('span');
+        var $icon = $toggle.find('i');
+        var expand_text = $toggle.data('expand-text');
+        var collapse_text = $toggle.data('collapse-text');
+        var expand_title = $toggle.data('expand-title');
+        var collapse_title = $toggle.data('collapse-title');
+        var is_expanding = $text.text().includes(expand_text);
+        
+        $accordion.find('.accordion-collapse').each(function() {
+            var collapse = bootstrap.Collapse.getOrCreateInstance(this, { toggle: false });
+            
+            if (is_expanding) {
+                collapse.show();
             } else {
-                bsCollapse.hide();
+                collapse.hide();
             }
-        } catch (error) {
-            console.error('Error with bootstrap.Collapse:', error);
+        });
+        
+        if (is_expanding) {
+            $text.text(collapse_text);
+            $toggle.attr('title', collapse_title);
+            $icon.attr('class', 'ti ti-eye');
+        } else {
+            $text.text(expand_text);
+            $toggle.attr('title', expand_title);
+            $icon.attr('class', 'ti ti-eye-off');
         }
     });
-
-    // Update element text and icon (if present)
-    if (isExpanding) {
-        elementText.textContent = element.dataset.collapseText;
-        element.title = element.dataset.collapseTitle;
-        if (elementIcon) {
-            elementIcon.className = 'ti ti-eye';
-        }
-    } else {
-        elementText.textContent = element.dataset.expandText;
-        element.title = element.dataset.expandTitle;
-        if (elementIcon) {
-            elementIcon.className = 'ti ti-eye-off';
-        }
-    }
-}
-
-// Event listener for toggle all notes button/link
-function setupToggleButton() {
-    const toggleButton = document.querySelector('.toggle-all-notes');
-
-    if (toggleButton && !toggleButton.hasAttribute('data-listener-added')) {
-        toggleButton.setAttribute('data-listener-added', 'true');
-        toggleButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            toggleNotesAccordion(this);
-        });
-    }
-}
-
-setupToggleButton();
+});
 </script>

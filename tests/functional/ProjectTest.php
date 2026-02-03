@@ -34,8 +34,11 @@
 
 namespace tests\units;
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Team\Team;
 use Glpi\Tests\DbTestCase;
+use Notepad;
+use Profile;
 use ProjectState;
 use ProjectTask;
 use ProjectTeam;
@@ -709,4 +712,124 @@ PLAINTEXT;
         $this->assertEquals($itil_project->getID(), $entries[0]['id']);
         $this->assertEquals($project->fields['name'], $entries[0]['name']);
     }
+
+    public function testNotepadDisplayWithReadOnlyRights()
+    {
+        $this->login();
+
+        $project = $this->createItem('Project', [
+            'name' => 'Test Project for Notepad',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem('Notepad', [
+            'itemtype' => 'Project',
+            'items_id' => $project->getID(),
+            'content' => 'Test note content',
+        ]);
+
+        $profile = $this->createItem('Profile', [
+            'name' => 'Test Profile Read Only Notes',
+            'interface' => 'central',
+            'project' => \Project::READALL | READNOTE,
+        ]);
+
+        $user = new \User();
+        $user_id = $user->add([
+            'name' => 'test_readonly_notes',
+            'password' => 'test',
+            'password2' => 'test',
+            '_profiles_id' => $profile->getID(),
+            '_entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        $this->login('test_readonly_notes', 'test');
+
+        $this->assertTrue($project->getFromDB($project->getID()));
+        $this->assertTrue($project->canViewItem());
+        
+        $notepad_test = new Notepad();
+        $notepad_test->fields['itemtype'] = 'Project';
+        $notepad_test->fields['items_id'] = $project->getID();
+        $this->assertFalse($notepad_test->canCreateItem());
+        $this->assertFalse($notepad_test->canUpdateItem());
+
+        $notes = Notepad::getAllForItem($project);
+        $this->assertCount(1, $notes);
+        $this->assertEquals('Test note content', $notes[0]['content']);
+
+        $html = TemplateRenderer::getInstance()->render('components/notepad/form.html.twig', [
+            'rand' => 12345,
+            'url' => \Notepad::getFormURL(),
+            'itemtype' => 'Project',
+            'items_id' => $project->getID(),
+            'notes' => $notes,
+            'canedit' => false,
+            'candelete' => false,
+        ]);
+
+        $this->assertStringNotContainsString('data-bs-target="#new-note-form"', $html);
+        $this->assertStringNotContainsString('id="new-note-form"', $html);
+        $this->assertStringContainsString('Test note content', $html);
+        $this->assertStringContainsString('class="accordion"', $html);
+        $this->assertStringContainsString('toggle-all-notes', $html);
+    }
+
+    public function testNotepadDisplayWithUpdateRights()
+    {
+        $this->login();
+
+        $project = $this->createItem('Project', [
+            'name' => 'Test Project for Notepad Edit',
+            'entities_id' => 0,
+        ]);
+
+        $this->createItem('Notepad', [
+            'itemtype' => 'Project',
+            'items_id' => $project->getID(),
+            'content' => 'Test note for editing',
+        ]);
+
+        $profile = $this->createItem('Profile', [
+            'name' => 'Test Profile Update Notes',
+            'interface' => 'central',
+            'project' => \Project::READALL | READNOTE | UPDATENOTE,
+        ]);
+
+        $user = new \User();
+        $user_id = $user->add([
+            'name' => 'test_update_notes',
+            'password' => 'test',
+            'password2' => 'test',
+            '_profiles_id' => $profile->getID(),
+            '_entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $user_id);
+
+        $this->login('test_update_notes', 'test');
+
+        $this->assertTrue($project->getFromDB($project->getID()));
+        $this->assertTrue($project->canViewItem());
+
+        $notes = Notepad::getAllForItem($project);
+        $this->assertCount(1, $notes);
+
+        $html = TemplateRenderer::getInstance()->render('components/notepad/form.html.twig', [
+            'rand' => 12345,
+            'url' => \Notepad::getFormURL(),
+            'itemtype' => 'Project',
+            'items_id' => $project->getID(),
+            'notes' => $notes,
+            'canedit' => true,
+            'candelete' => true,
+        ]);
+
+        $this->assertStringContainsString('data-bs-target="#new-note-form"', $html);
+        $this->assertStringContainsString('id="new-note-form"', $html);
+        $this->assertStringContainsString('Test note for editing', $html);
+        $this->assertStringContainsString('class="btn btn-sm btn-ghost-danger delete-note"', $html);
+        $this->assertStringContainsString('class="btn btn-sm btn-ghost-secondary edit-note"', $html);
+    }
 }
+
