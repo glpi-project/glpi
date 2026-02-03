@@ -391,6 +391,12 @@ class Controller extends CommonGLPI
         $api_version   = $api_plugin['version'] ?? "";
         $local_version = $local_plugin['version'] ?? "";
 
+        $plugins = new Plugin();
+        $plugins->update([
+            'id'                        => $local_plugin['id'],
+            'highest_available_version' => $api_version,
+        ]);
+
         if (strlen($api_version) && version_compare($api_version, $local_version, '>')) {
             return $api_version;
         }
@@ -461,13 +467,6 @@ class Controller extends CommonGLPI
             $task->addVolume(count($updates));
             foreach ($updates as $plugin_key => $version) {
                 $task->log(sprintf(__("New version for plugin %s: %s"), $plugin_key, $version));
-                $plugins = new Plugin();
-                if ($plugins->getFromDBbyDir($plugin_key)) {
-                    $plugins->update([
-                        'id'                        => $plugins->fields['id'],
-                        'highest_available_version' => $version,
-                    ]);
-                }
             }
 
             if (!$CFG_GLPI["use_notifications"]) {
