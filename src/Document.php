@@ -41,7 +41,10 @@ use Glpi\Features\TreeBrowse;
 use Glpi\Features\TreeBrowseInterface;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Comment;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\Section;
 use Safe\Exceptions\FilesystemException;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -589,7 +592,11 @@ class Document extends CommonDBTM implements TreeBrowseInterface
             return true;
         }
 
-        if ($itemtype === Form::class && $this->canViewFileFromForm($items_id)) {
+        if (
+            $itemtype !== null
+            && is_numeric($items_id)
+            && $this->canViewFileFromForm($itemtype, (int) $items_id)
+        ) {
             return true;
         }
 
@@ -1756,19 +1763,42 @@ class Document extends CommonDBTM implements TreeBrowseInterface
         return file_exists($file) && is_readable($file);
     }
 
-    private function canViewFileFromForm(int $form_id): bool
+    private function canViewFileFromForm(string $itemtype, int $items_id): bool
     {
+        if ($itemtype === Form::class) {
+            $form = Form::getById($items_id);
+            if (!$form) {
+                return false;
+            }
+        } elseif ($itemtype === Section::class) {
+            $section = Section::getById($items_id);
+            if (!$section) {
+                return false;
+            }
+            $form = $section->getForm();
+        } elseif ($itemtype === Question::class) {
+            $question = Question::getById($items_id);
+            if (!$question) {
+                return false;
+            }
+            $section = $question->getSection();
+            $form = $section->getForm();
+        } elseif ($itemtype === Comment::class) {
+            $comment = Comment::getById($items_id);
+            if (!$comment) {
+                return false;
+            }
+            $section = $comment->getSection();
+            $form = $section->getForm();
+        } else {
+            return false;
+        }
+
         $control_manager = FormAccessControlManager::getInstance();
         $parameters = new FormAccessParameters(
             session_info: Session::getCurrentSessionInfo(),
             url_parameters: [],
         );
-
-        $form = Form::getById($form_id);
-        if (!$form) {
-            return false;
-        }
-
         return $control_manager->canAnswerForm($form, $parameters);
     }
 }
