@@ -205,7 +205,7 @@ class GLPITestCase extends TestCase
         mkdir($dir);
     }
 
-    protected function removeDirectory(string $dir): void
+    protected function removeDirectory(string $dir, bool $delete_self = false): void
     {
         if (!is_dir($dir)) {
             return;
@@ -213,12 +213,14 @@ class GLPITestCase extends TestCase
         $files = array_diff(scandir($dir), ['.', '..']);
         foreach ($files as $file) {
             if (is_dir("$dir/$file")) {
-                $this->removeDirectory("$dir/$file");
+                $this->removeDirectory("$dir/$file", true);
             } else {
                 unlink("$dir/$file");
             }
         }
-        rmdir($dir);
+        if ($delete_self) {
+            rmdir($dir);
+        }
     }
 
     /**
