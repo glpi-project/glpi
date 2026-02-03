@@ -48,6 +48,7 @@ use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DashboardController;
 use Glpi\Api\HL\Controller\DropdownController;
 use Glpi\Api\HL\Controller\GraphQLController;
+use Glpi\Api\HL\Controller\InventoryController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\KnowbaseController;
 use Glpi\Api\HL\Controller\ManagementController;
@@ -178,6 +179,11 @@ EOT;
                 'version' => '2.2.0',
                 'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.2',
             ],
+            [
+                'api_version' => '2',
+                'version' => '2.3.0',
+                'endpoint' => $CFG_GLPI['url_base'] . '/api.php/v2.3',
+            ],
         ];
     }
 
@@ -249,6 +255,7 @@ EOT;
             self::$instance->registerController(new NotepadController());
             self::$instance->registerController(new DashboardController());
             self::$instance->registerController(new KnowbaseController());
+            self::$instance->registerController(new InventoryController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
