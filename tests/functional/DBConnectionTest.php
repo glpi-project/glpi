@@ -92,10 +92,10 @@ class DBConnectionTest extends GLPITestCase
                 'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
-   public string|array $dbhost = 'localhost';
-   public string $dbuser = 'glpi';
-   public string $dbpassword = 'secret';
-   public string $dbdefault = 'glpi_db';
+   public $dbhost = 'localhost';
+   public $dbuser = 'glpi';
+   public $dbpassword = 'secret';
+   public $dbdefault = 'glpi_db';
 }
 
 PHP,
@@ -113,14 +113,14 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
-   public string|array $dbhost = '127.0.0.1';
-   public string $dbuser = 'root';
-   public string $dbpassword = '';
-   public string $dbdefault = 'db';
-   public bool $use_timezones = true;
-   public bool $use_utf8mb4 = true;
-   public bool $allow_datetime = false;
-   public bool $allow_signed_keys = false;
+   public $dbhost = '127.0.0.1';
+   public $dbuser = 'root';
+   public $dbpassword = '';
+   public $dbdefault = 'db';
+   public $use_timezones = true;
+   public $use_utf8mb4 = true;
+   public $allow_datetime = false;
+   public $allow_signed_keys = false;
 }
 
 PHP,
@@ -138,11 +138,11 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DB extends DBmysql {
-   public string|array $dbhost = '127.0.0.1';
-   public string $dbuser = 'root';
-   public string $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
-   public string $dbdefault = 'db';
-   public bool $log_deprecation_warnings = true;
+   public $dbhost = '127.0.0.1';
+   public $dbuser = 'root';
+   public $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
+   public $dbdefault = 'db';
+   public $log_deprecation_warnings = true;
 }
 
 PHP,
@@ -200,11 +200,11 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public string|array $dbhost = 'slave.db.domain.org';
-   public string $dbuser = 'glpi';
-   public string $dbpassword = 'secret';
-   public string $dbdefault = 'glpi_db';
-   public bool $slave = true;
+   public $dbhost = 'slave.db.domain.org';
+   public $dbuser = 'glpi';
+   public $dbpassword = 'secret';
+   public $dbdefault = 'glpi_db';
+   public $slave = true;
 }
 
 PHP,
@@ -222,19 +222,19 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public string|array $dbhost = array (
+   public $dbhost = array (
   0 => 'slave1.db.domain.org',
   1 => 'slave2.db.domain.org',
   2 => 'slave3.db.domain.org',
 );
-   public string $dbuser = 'root';
-   public string $dbpassword = '';
-   public string $dbdefault = 'db';
-   public bool $slave = true;
-   public bool $use_timezones = true;
-   public bool $use_utf8mb4 = true;
-   public bool $allow_datetime = false;
-   public bool $allow_signed_keys = false;
+   public $dbuser = 'root';
+   public $dbpassword = '';
+   public $dbdefault = 'db';
+   public $slave = true;
+   public $use_timezones = true;
+   public $use_utf8mb4 = true;
+   public $allow_datetime = false;
+   public $allow_signed_keys = false;
 }
 
 PHP,
@@ -252,12 +252,12 @@ PHP,
                 'expected'                 => <<<'PHP'
 <?php
 class DBSlave extends DBmysql {
-   public string|array $dbhost = '127.0.0.1';
-   public string $dbuser = 'root';
-   public string $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
-   public string $dbdefault = 'db';
-   public bool $slave = true;
-   public bool $log_deprecation_warnings = true;
+   public $dbhost = '127.0.0.1';
+   public $dbuser = 'root';
+   public $dbpassword = 'iT4%25dU9%2ArI9%23jT8%3E';
+   public $dbdefault = 'db';
+   public $slave = true;
+   public $log_deprecation_warnings = true;
 }
 
 PHP,
