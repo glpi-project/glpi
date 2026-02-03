@@ -48,6 +48,7 @@
                 <span>{{ __('Agent sends an inventory file') }}</span>
             </li>
 
+            {% if call('RuleDefineItemtype::canView') %}
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleDefineItemtype'|itemtype_search_path }}">
                     <div class="d-flex align-items-center">
@@ -59,7 +60,9 @@
                     </div>
                 </a>
             </li>
+            {% endif %}
 
+            {% if call('RuleImportEntity::canView') %}
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleImportEntity'|itemtype_search_path }}">
                     <div class="d-flex align-items-center">
@@ -71,7 +74,9 @@
                     </div>
                 </a>
             </li>
+            {% endif %}
 
+            {% if call('RuleLocation::canView') %}
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleLocation'|itemtype_search_path }}">
                     <div class="d-flex align-items-center">
@@ -83,7 +88,9 @@
                     </div>
                 </a>
             </li>
+            {% endif %}
 
+            {% if call('RuleImportAsset::canView') %}
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleImportAsset'|itemtype_search_path }}">
                     <div class="d-flex align-items-center">
@@ -95,7 +102,9 @@
                     </div>
                 </a>
             </li>
+            {% endif %}
 
+            {% if call('RuleDictionnaryDropdownCollection::canView') %}
             <li class="step">
                 <a class="btn flex-column" href="{{ path('/front/dictionnary.php') }}">
                     <div class="d-flex align-items-center">
@@ -107,7 +116,9 @@
                     </div>
                 </a>
             </li>
+            {% endif %}
 
+            {% if call('RuleAsset::canView') %}
             <li class="step">
                 <a class="btn flex-column" href="{{ 'RuleAsset'|itemtype_search_path }}">
                     <div class="d-flex align-items-center">
@@ -119,6 +130,7 @@
                     </div>
                 </a>
             </li>
+            {% endif %}
 
             <li class="end">
                 <i class="ti ti-circle-check me-1 fa-2x"></i>
