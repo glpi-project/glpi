@@ -57,7 +57,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $this->expectExceptionObject(
             new \RuntimeException(
-                "MySQL query error: Table '{$DB->dbdefault}.fakeTable' doesn't exist (1146) in SQL query \"SELECT * FROM `fakeTable`\"."
+                "MySQL prepare error: Table '{$DB->dbdefault}.fakeTable' doesn't exist (1146) in SQL query \"SELECT * FROM `fakeTable`\"."
             )
         );
         $DB->request(['FROM' => 'fakeTable']);
@@ -360,9 +360,10 @@ class DBmysqlIteratorTest extends DbTestCase
             ]
         );
         $this->assertSame(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > \'20\')',
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` OR `field` > ?)',
             $it->getSql()
         );
+        $this->assertEquals([20], $it->getValues());
 
         $it = $this->it->execute(
             [
@@ -380,9 +381,10 @@ class DBmysqlIteratorTest extends DbTestCase
             ]
         );
         $this->assertSame(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')',
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = ?)',
             $it->getSql()
         );
+        $this->assertEquals([42], $it->getValues());
 
         //order in fkey should not matter
         $it = $this->it->execute(
@@ -402,9 +404,10 @@ class DBmysqlIteratorTest extends DbTestCase
             ]
         );
         $this->assertSame(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')',
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = ?)',
             $it->getSql()
         );
+        $this->assertEquals([42], $it->getValues());
 
         //condition set as associative array should work also
         $it = $this->it->execute(
@@ -424,10 +427,10 @@ class DBmysqlIteratorTest extends DbTestCase
             ]
         );
         $this->assertSame(
-            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = \'42\')',
+            'SELECT * FROM `foo` LEFT JOIN `bar` ON (`bar`.`id` = `foo`.`fk` AND `field` = ?)',
             $it->getSql()
         );
-
+        $this->assertEquals([42], $it->getValues());
 
         //test derived table in JOIN statement
         $it = $this->it->execute(
@@ -448,6 +451,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN (SELECT * FROM `bar`) AS `t2` ON (`t2`.`id` = `foo`.`fk`)',
             $it->getSql()
         );
+        $this->assertEquals([], $it->getValues());
 
         // join using query expression as first criterion
         $it = $this->it->execute(
@@ -468,6 +472,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (COALESCE(`bar.id`, 153) = `foo`.`fk`)',
             $it->getSql()
         );
+        $this->assertEquals([], $it->getValues());
 
         // join using query expression as second criterion
         $it = $this->it->execute(
@@ -488,6 +493,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (IFNULL(`bar.parent_id`, `bar.id`) = `foo`.`fk`)',
             $it->getSql()
         );
+        $this->assertEquals([], $it->getValues());
 
         // join using query expression for both criteria
         $it = $this->it->execute(
@@ -508,6 +514,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (COALESCE(`bar.id`, 153) = IFNULL(`bar.parent_id`, `bar.id`))',
             $it->getSql()
         );
+        $this->assertEquals([], $it->getValues());
 
         // join using subquery as first criterion
         $it = $this->it->execute(
@@ -536,10 +543,11 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN `bar` ON ('
                 . '`foo`.`fk`'
                 . ' = '
-                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
+                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = ? ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
                 . ')',
             $it->getSql()
         );
+        $this->assertEquals(['Ticket'], $it->getValues());
 
         // join using subquery as second criterion
         $it = $this->it->execute(
@@ -566,12 +574,13 @@ class DBmysqlIteratorTest extends DbTestCase
         );
         $this->assertSame(
             'SELECT * FROM `foo` LEFT JOIN `bar` ON ('
-                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
+                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = ? ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
                 . ' = '
                 . '`foo`.`fk`'
                 . ')',
             $it->getSql()
         );
+        $this->assertEquals(['Ticket'], $it->getValues());
 
         // join using subquery for both criteria
         $it = $this->it->execute(
@@ -606,12 +615,13 @@ class DBmysqlIteratorTest extends DbTestCase
         );
         $this->assertSame(
             'SELECT * FROM `foo` LEFT JOIN `bar` ON ('
-                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
+                . '(SELECT `last_ticket_bar`.`id` FROM `bar` AS `last_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = ? ORDER BY `last_ticket_bar`.`id` DESC LIMIT 1)'
                 . ' = '
-                . '(SELECT `first_ticket_bar`.`id` FROM `bar` AS `first_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = \'Ticket\' ORDER BY `first_ticket_bar`.`id` ASC LIMIT 1)'
+                . '(SELECT `first_ticket_bar`.`id` FROM `bar` AS `first_ticket_bar` WHERE `last_ticket_bar`.`itemtype` = ? ORDER BY `first_ticket_bar`.`id` ASC LIMIT 1)'
                 . ')',
             $it->getSql()
         );
+        $this->assertEquals(['Ticket', 'Ticket'], $it->getValues());
 
         // using a unique query expression as criterion
         $it = $this->it->execute(
@@ -629,7 +639,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'SELECT * FROM `foo` LEFT JOIN `bar` ON (COALESCE(`bar.id`, 153) = IFNULL(`bar.parent_id`, `bar.id`))',
             $it->getSql()
         );
-
+        $this->assertEquals([], $it->getValues());
     }
 
     public function testBadJoin()
@@ -667,16 +677,20 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testHaving()
     {
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => true]]);
-        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = '1'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = ?", $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => false]]);
-        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = '0'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = ?", $it->getSql());
+        $this->assertEquals([0], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => 1]]);
-        $this->assertSame('SELECT * FROM `foo` HAVING `bar` = \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` HAVING `bar` = ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => 23.5579]]);
-        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = '23.5579'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = ?", $it->getSql());
+        $this->assertEquals([23.5579], $it->getValues());
 
         $stringable_object = new class ("L'Appel de Cthulhu") {
             public function __construct(private string $val) {}
@@ -686,41 +700,53 @@ class DBmysqlIteratorTest extends DbTestCase
                 return $this->val;
             }
         };
+
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => $stringable_object]]);
-        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = 'L\'Appel de Cthulhu'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` HAVING `bar` = ?", $it->getSql());
+        $this->assertEquals(["L'Appel de Cthulhu"], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'HAVING' => ['bar' => ['>', 0]]]);
-        $this->assertSame('SELECT * FROM `foo` HAVING `bar` > \'0\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` HAVING `bar` > ?', $it->getSql());
+        $this->assertEquals([0], $it->getValues());
     }
 
     public function testOperators()
     {
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => 1]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` = \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` = ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['=', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` = \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` = ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['>', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` > \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` > ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['LIKE', '%bar%']]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` LIKE \'%bar%\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` LIKE ?', $it->getSql());
+        $this->assertEquals(['%bar%'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['a' => ['LIKE', '%bar%']]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` LIKE \'%bar%\')', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` LIKE ?)', $it->getSql());
+        $this->assertEquals(['%bar%'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['NOT LIKE', '%bar%']]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` NOT LIKE \'%bar%\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` NOT LIKE ?', $it->getSql());
+        $this->assertEquals(['%bar%'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['<>', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` <> \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` <> ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['&', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` & \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` & ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['a' => ['|', 1]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `a` | \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `a` | ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
     }
 
 
@@ -736,25 +762,31 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` IS NULL', $it->getSql());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 1]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `bar` = \'1\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 1.1549]]);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = '1.1549'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ?", $it->getSql());
+        $this->assertEquals([1.1549], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => [1, 2, 4]]]);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` IN ('1', '2', '4')", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` IN (?, ?, ?)", $it->getSql());
+        $this->assertEquals([1, 2, 4], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => ['a', 'b', 'c']]]);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` IN ('a', 'b', 'c')", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` IN (?, ?, ?)", $it->getSql());
+        $this->assertEquals(['a', 'b', 'c'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => 'val']]);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'val'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ?", $it->getSql());
+        $this->assertEquals(['val'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryExpression('`field`')]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = `field`', $it->getSql());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => '?']]);
-        $this->assertSame('SELECT * FROM `foo` WHERE `bar` = \'?\'', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
+        $this->assertEquals(['?'], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => new QueryParam()]]);
         $this->assertSame('SELECT * FROM `foo` WHERE `bar` = ?', $it->getSql());
@@ -768,7 +800,8 @@ class DBmysqlIteratorTest extends DbTestCase
             }
         };
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $stringable_object]]);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'L\'Appel de Cthulhu'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ?", $it->getSql());
+        $this->assertEquals(["L'Appel de Cthulhu"], $it->getValues());
     }
 
     public function testEmptyIn(): void
@@ -789,16 +822,20 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->assertSame('SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk`', $it->getSql());
 
         $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => true]]]]]);
-        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '1'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = ?", $it->getSql());
+        $this->assertEquals([1], $it->getValues());
 
         $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => false]]]]]);
-        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '0'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = ?", $it->getSql());
+        $this->assertEquals([0], $it->getValues());
 
         $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => 150]]]]]);
-        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '150'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = ?", $it->getSql());
+        $this->assertEquals([150], $it->getValues());
 
         $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => 23.5579]]]]]);
-        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = '23.5579'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = ?", $it->getSql());
+        $this->assertEquals([23.5579], $it->getValues());
 
         $stringable_object = new class ("L'Appel de Cthulhu") {
             public function __construct(private string $val) {}
@@ -809,7 +846,8 @@ class DBmysqlIteratorTest extends DbTestCase
             }
         };
         $it = $this->it->execute(['FROM' => ['foo', 'bar'], 'WHERE' => ['FKEY' => ['`foo`' => 'id', 'bar' => '`fk`', ['AND' => ['baz' => $stringable_object]]]]]);
-        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = 'L\'Appel de Cthulhu'", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo`, `bar` WHERE `foo`.`id` = `bar`.`fk` AND `baz` = ?", $it->getSql());
+        $this->assertEquals(["L'Appel de Cthulhu"], $it->getValues());
     }
 
     public function testGroupBy()
@@ -859,16 +897,20 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testLogical()
     {
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => [['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = \'1\' AND `b` = \'2\')', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)', $it->getSql());
+        $this->assertEquals([1, 2], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['AND' => ['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = \'1\' AND `b` = \'2\')', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? AND `b` = ?)', $it->getSql());
+        $this->assertEquals([1, 2], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['OR' => ['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = \'1\' OR `b` = \'2\')', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE (`a` = ? OR `b` = ?)', $it->getSql());
+        $this->assertEquals([1, 2], $it->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['NOT' => ['a' => 1, 'b' => 2]]]);
-        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` = \'1\' AND `b` = \'2\')', $it->getSql());
+        $this->assertSame('SELECT * FROM `foo` WHERE NOT (`a` = ? AND `b` = ?)', $it->getSql());
+        $this->assertEquals([1, 2], $it->getValues());
 
         $crit = [
             'FROM' => 'foo',
@@ -885,9 +927,10 @@ class DBmysqlIteratorTest extends DbTestCase
                 ],
             ],
         ];
-        $sql = "SELECT * FROM `foo` WHERE ((`items_id` = '15' AND `itemtype` = 'Computer') OR (`items_id` = '3' AND `itemtype` = 'Document'))";
+        $sql = "SELECT * FROM `foo` WHERE ((`items_id` = ? AND `itemtype` = ?) OR (`items_id` = ? AND `itemtype` = ?))";
         $it = $this->it->execute($crit);
         $this->assertSame($sql, $it->getSql());
+        $this->assertEquals([15, 'Computer', 3, 'Document'], $it->getValues());
 
         $crit = [
             'FROM' => 'foo',
@@ -905,9 +948,10 @@ class DBmysqlIteratorTest extends DbTestCase
                 ],
             ],
         ];
-        $sql = "SELECT * FROM `foo` WHERE `a` = '1' AND (`b` = '2' OR NOT (`c` IN ('2', '3') AND (`d` = '4' AND `e` = '5')))";
+        $sql = "SELECT * FROM `foo` WHERE `a` = ? AND (`b` = ? OR NOT (`c` IN (?, ?) AND (`d` = ? AND `e` = ?)))";
         $it = $this->it->execute($crit);
         $this->assertSame($sql, $it->getSql());
+        $this->assertEquals([1, 2, 2, 3, 4, 5], $it->getValues());
 
         $crit = [
             'FROM'   => 'foo',
@@ -917,7 +961,8 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
         $it = $this->it->execute($crit);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) = '5')", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ? AND ((SELECT COUNT(*) FROM xyz) = ?)", $it->getSql());
+        $this->assertEquals(['baz', 5], $it->getValues());
 
         $crit = [
             'FROM'   => 'foo',
@@ -927,7 +972,8 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
         $it = $this->it->execute($crit);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) > '2')", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ? AND ((SELECT COUNT(*) FROM xyz) > ?)", $it->getSql());
+        $this->assertEquals(['baz', 2], $it->getValues());
 
         $crit = [
             'FROM'   => 'foo',
@@ -937,7 +983,8 @@ class DBmysqlIteratorTest extends DbTestCase
             ],
         ];
         $it = $this->it->execute($crit);
-        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) IN ('3', '4'))", $it->getSql());
+        $this->assertSame("SELECT * FROM `foo` WHERE `bar` = ? AND ((SELECT COUNT(*) FROM xyz) IN (?, ?))", $it->getSql());
+        $this->assertEquals(['baz', 3, 4], $it->getValues());
     }
 
 
@@ -948,9 +995,10 @@ class DBmysqlIteratorTest extends DbTestCase
             'FROM'   => 'foo',
             'WHERE'  => ['c' => 1],
         ];
-        $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = '1'";
+        $sql = "SELECT `a`, `b` FROM `foo` WHERE `c` = ?";
         $it = $this->it->execute($req);
         $this->assertSame($sql, $it->getSql());
+        $this->assertEquals([1], $it->getValues());
     }
 
 
@@ -1030,10 +1078,11 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testSubQuery()
     {
         $crit = ['SELECT' => 'id', 'FROM' => 'baz', 'WHERE' => ['z' => 'f']];
-        $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = 'f')";
+        $raw_subq = "(SELECT `id` FROM `baz` WHERE `z` = ?)";
 
         $sub_query = new QuerySubQuery($crit);
         $this->assertSame($raw_subq, $sub_query->getQuery());
+        $this->assertEquals(['f'], $sub_query->getValues());
 
         $it = $this->it->execute(['FROM' => 'foo', 'WHERE' => ['bar' => $sub_query]]);
         $this->assertSame(
@@ -1121,7 +1170,6 @@ class DBmysqlIteratorTest extends DbTestCase
     {
 
         $fk = \Ticket::getForeignKeyField();
-        $users_table = \User::getTable();
         $users_table = 'glpi_ticket_users';
         $groups_table = 'glpi_groups_tickets';
 
@@ -1172,14 +1220,18 @@ class DBmysqlIteratorTest extends DbTestCase
                      . " FROM ((SELECT `usr`.`id` AS `users_id`, `tu`.`type` AS `type`"
                      . " FROM `$users_table` AS `tu`"
                      . " LEFT JOIN `glpi_users` AS `usr` ON (`tu`.`users_id` = `usr`.`id`)"
-                     . " WHERE `tu`.`$fk` = '42')"
+                     . " WHERE `tu`.`$fk` = ?)"
                      . " UNION ALL"
                      . " (SELECT `usr`.`id` AS `users_id`, `gt`.`type` AS `type`"
                      . " FROM `$groups_table` AS `gt`"
                      . " LEFT JOIN `glpi_groups_users` AS `gu` ON (`gu`.`groups_id` = `gt`.`groups_id`)"
                      . " LEFT JOIN `glpi_users` AS `usr` ON (`gu`.`users_id` = `usr`.`id`)"
-                     . " WHERE `gt`.`$fk` = '42')"
+                     . " WHERE `gt`.`$fk` = ?)"
                      . ") AS `allactors`";
+        $parameters = [
+            42, // tu.fk
+            42, // gt.fk
+        ];
 
         $union = new QueryUnion([$subquery1, $subquery2], false, 'allactors');
         $it = $this->it->execute([
@@ -1191,6 +1243,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'FROM'            => $union,
         ]);
         $this->assertSame($raw_query, $it->getSql());
+        $this->assertEquals($parameters, $it->getValues());
     }
 
     public function testComplexUnionQueryAgain()
@@ -1199,6 +1252,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
         //Old build way
         $queries = [];
+        $parameters = [];
 
         foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
             $table = getTableForItemType($itemtype);
@@ -1217,15 +1271,20 @@ class DBmysqlIteratorTest extends DbTestCase
                                  '$itemtype' AS `item_type`
                         FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
                         INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
-                                                            AND `ADDR`.`itemtype` = 'NetworkName'
-                                                            AND `ADDR`.`is_deleted` = '0')
+                                                            AND `ADDR`.`itemtype` = ?
+                                                            AND `ADDR`.`is_deleted` = ?)
                         INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
-                                                               AND `NAME`.`itemtype` = 'NetworkPort')
+                                                               AND `NAME`.`itemtype` = ?)
                         INNER JOIN `glpi_networkports` AS `PORT` ON (`NAME`.`items_id` = `PORT`.`id`
-                                                               AND `PORT`.`itemtype` = '$itemtype')
+                                                               AND `PORT`.`itemtype` = ?)
                         INNER JOIN `$table` AS `ITEM` ON (`ITEM`.`id` = `PORT`.`items_id`)
                         LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
-                        WHERE `LINK`.`ipnetworks_id` = '42')";
+                        WHERE `LINK`.`ipnetworks_id` = ?)";
+            $parameters[] = 'NetworkName'; //ADDR.itemtype
+            $parameters[] = 0; // is_deleted
+            $parameters[] = 'NetworkPort'; // NAME.itemtype
+            $parameters[] = $itemtype; //PORT.itemtype
+            $parameters[] = 42; // LINK/.ipnetworks_id
         }
 
         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
@@ -1243,16 +1302,21 @@ class DBmysqlIteratorTest extends DbTestCase
                               NULL AS `item_type`
                      FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
                      INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
-                                                         AND `ADDR`.`itemtype` = 'NetworkName'
-                                                         AND `ADDR`.`is_deleted` = '0')
+                                                         AND `ADDR`.`itemtype` = ?
+                                                         AND `ADDR`.`is_deleted` = ?)
                      INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
-                                                            AND `NAME`.`itemtype` = 'NetworkPort')
+                                                            AND `NAME`.`itemtype` = ?)
                      INNER JOIN `glpi_networkports` AS `PORT`
                         ON (`NAME`.`items_id` = `PORT`.`id`
                              AND NOT (`PORT`.`itemtype`
-                                      IN ('" . implode("', '", $CFG_GLPI["networkport_types"]) . "')))
+                                      IN (" . str_repeat('?, ', count($CFG_GLPI["networkport_types"]) - 1) . '?' . ")))
                      LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
-                     WHERE `LINK`.`ipnetworks_id` = '42')";
+                     WHERE `LINK`.`ipnetworks_id` = ?)";
+        $parameters[] = 'NetworkName'; //ADDR.itemtype
+        $parameters[] = 0; // is_deleted
+        $parameters[] = 'NetworkPort'; // NAME.itemtype
+        $parameters = array_merge($parameters, $CFG_GLPI["networkport_types"]); // PORT.itemtype
+        $parameters[] = 42; // LINK.ipnetworks_id
 
         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
                               `ADDR`.`binary_1` AS `binary_1`,
@@ -1269,12 +1333,16 @@ class DBmysqlIteratorTest extends DbTestCase
                               NULL AS `item_type`
                      FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
                      INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
-                                                         AND `ADDR`.`itemtype` = 'NetworkName'
-                                                         AND `ADDR`.`is_deleted` = '0')
+                                                         AND `ADDR`.`itemtype` = ?
+                                                         AND `ADDR`.`is_deleted` = ?)
                      INNER JOIN `glpi_networknames` AS `NAME` ON (`NAME`.`id` = `ADDR`.`items_id`
-                                                            AND `NAME`.`itemtype` != 'NetworkPort')
+                                                            AND `NAME`.`itemtype` != ?)
                      LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
-                     WHERE `LINK`.`ipnetworks_id` = '42')";
+                     WHERE `LINK`.`ipnetworks_id` = ?)";
+        $parameters[] = 'NetworkName'; //ADDR.itemtype
+        $parameters[] = 0; // is_deleted
+        $parameters[] = 'NetworkPort'; // NAME.itemtype
+        $parameters[] = 42; // LINK.ipnetworks_id
 
         $queries[] = "(SELECT `ADDR`.`binary_0` AS `binary_0`,
                               `ADDR`.`binary_1` AS `binary_1`,
@@ -1291,10 +1359,13 @@ class DBmysqlIteratorTest extends DbTestCase
                               NULL AS `item_type`
                      FROM `glpi_ipaddresses_ipnetworks` AS `LINK`
                      INNER JOIN `glpi_ipaddresses` AS `ADDR` ON (`ADDR`.`id` = `LINK`.`ipaddresses_id`
-                                                         AND `ADDR`.`itemtype` != 'NetworkName'
-                                                         AND `ADDR`.`is_deleted` = '0')
+                                                         AND `ADDR`.`itemtype` != ?
+                                                         AND `ADDR`.`is_deleted` = ?)
                      LEFT JOIN `glpi_entities` ON (`ADDR`.`entities_id` = `glpi_entities`.`id`)
-                     WHERE `LINK`.`ipnetworks_id` = '42')";
+                     WHERE `LINK`.`ipnetworks_id` = ?)";
+        $parameters[] = 'NetworkName'; //ADDR.itemtype
+        $parameters[] = 0; // is_deleted
+        $parameters[] = 42; // LINK.ipnetworks_id
 
         $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
@@ -1451,6 +1522,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute($criteria);
         $this->assertSame($raw_query, $it->getSql());
+        $this->assertEquals($parameters, $it->getValues());
     }
 
     public function testAnalyseCrit()
@@ -1634,35 +1706,46 @@ class DBmysqlIteratorTest extends DbTestCase
     public function testInCriteria()
     {
         global $DB;
-        $iterator = new \DBmysqlIterator($DB);
-        $to_sql_array = static function ($values) use ($DB) {
-            $str = '(';
-            foreach ($values as $value) {
-                $str .= $DB->quoteValue($value) . ', ';
-            }
-            return rtrim($str, ', ') . ')';
+        $to_parameters_array = static function ($values) {
+            return sprintf(
+                '(%s)',
+                implode(
+                    ', ',
+                    array_fill(
+                        0,
+                        count($values),
+                        '?'
+                    )
+                )
+            );
         };
 
-        // Reguar IN
+        // Regular IN
         $criteria = [
             'id' => [1, 2, 3],
         ];
-        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id']);
+        $expected = $DB::quoteName('id') . " IN " . $to_parameters_array($criteria['id']);
+        $iterator = new \DBmysqlIterator($DB);
         $this->assertEquals($expected, $iterator->analyseCrit($criteria));
+        $this->assertArraysEqualRecursive($criteria['id'], $iterator->getValues());
 
         // Explicit IN (array form)
         $criteria = [
             'id' => ['IN', [1, 2, 3]],
         ];
-        $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id'][1]);
+        $expected = $DB::quoteName('id') . " IN " . $to_parameters_array($criteria['id'][1]);
+        $iterator = new \DBmysqlIterator($DB);
         $this->assertEquals($expected, $iterator->analyseCrit($criteria));
+        $this->assertArraysEqualRecursive($criteria['id'][1], $iterator->getValues());
 
         // Explicit NOT IN (array form)
         $criteria = [
             'id' => ['NOT IN', [1, 2, 3]],
         ];
-        $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
+        $expected = $DB::quoteName('id') . " NOT IN " . $to_parameters_array($criteria['id'][1]);
+        $iterator = new \DBmysqlIterator($DB);
         $this->assertEquals($expected, $iterator->analyseCrit($criteria));
+        $this->assertArraysEqualRecursive($criteria['id'][1], $iterator->getValues());
     }
 
     public static function resultProvider(): iterable
@@ -1756,12 +1839,16 @@ class DBmysqlIteratorTest extends DbTestCase
         $mysqli_result = $this->createMock(\mysqli_result::class);
         $mysqli_result->method('fetch_assoc')->willReturn($db_data);
         $mysqli_result->method('data_seek')->willReturn(true);
+        $mysqli_stmt = $this->createMock(\mysqli_stmt::class);
+        $mysqli_stmt->method('execute')->willReturn(true);
+        $mysqli_stmt->method('get_result')->willReturn($mysqli_result);
 
         $db = $this->getMockBuilder(\DBMysql::class)
-            ->onlyMethods(['connect', 'doQuery', 'numrows'])
+            ->onlyMethods(['connect', 'doQuery', 'numrows', 'prepare'])
             ->getMock();
         $db->method('doQuery')->willReturn($mysqli_result);
         $db->method('numrows')->willReturn(1);
+        $db->method('prepare')->willReturn($mysqli_stmt);
 
         // Check result with active unsanitization
         $db->setMustUnsanitizeData(true);

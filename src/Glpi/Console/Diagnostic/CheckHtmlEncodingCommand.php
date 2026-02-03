@@ -195,6 +195,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
                 }
 
                 // Build the SQL query
+                //FIXME: not compatible with statements...
                 $dump_content .= $DB->buildUpdate(
                     $item::getTable(),
                     $object_state,

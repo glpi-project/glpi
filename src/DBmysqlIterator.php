@@ -36,8 +36,10 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\Database\StatementException;
 
 use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 use function Safe\preg_split;
 
 /**
@@ -52,6 +54,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     private ?DBmysql $conn = null;
     // Current SQL query
     private ?string $sql = null;
+    /** @var array<int, mixed> */
+    private array $values = [];
     // Current result
     private mysqli_result|bool $res = false;
 
@@ -117,8 +121,24 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function execute(array $criteria): self
     {
+        $this->values = []; //reset values
         $this->buildQuery($criteria);
-        $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
+        $this->res = false;
+        if ($this->conn) {
+            if (($scount = substr_count($this->sql, '?')) != ($vcount = count($this->values))) {
+                throw new StatementException(
+                    sprintf(
+                        'Number of placeholders (%d) in SQL statement does not match number of values (%d). SQL: %s',
+                        $scount,
+                        $vcount,
+                        $this->sql
+                    )
+                );
+            }
+            $stmt = $this->conn->prepare($this->sql);
+            $this->conn->executeStatement($stmt, $this->values);
+            $this->res = $stmt->get_result();
+        }
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
         return $this;
@@ -271,8 +291,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if ($table instanceof AbstractQuery) {
                 $query = $table;
                 $table = $query->getQuery();
+                $this->values = array_merge($this->values, $query->getValues());
             } elseif ($table instanceof QueryExpression) {
-                $table = $table->getValue();
+                $query = $table;
+                $table = $query->getValue();
+                $this->values = array_merge($this->values, $query->getValues());
             } else {
                 $table = DBmysql::quoteName($table);
             }
@@ -404,8 +427,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             if ($f instanceof AbstractQuery) {
+                $this->values = array_merge($this->values, $f->getValues());
                 return $f->getQuery();
             } elseif ($f instanceof QueryExpression) {
+                $this->values = array_merge($this->values, $f->getValues());
                 return $f->getValue();
             } else {
                 return DBmysql::quoteName($f);
@@ -486,6 +511,14 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
+     * @return array<int, mixed>
+     */
+    public function getValues(): array
+    {
+        return $this->values;
+    }
+
+    /**
      * Destructor
      *
      * @return void
@@ -495,6 +528,34 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if ($this->res instanceof mysqli_result) {
             $this->conn->freeResult($this->res);
         }
+    }
+
+    /**
+     * Generate the SQL statement for a array of criteria
+     *
+     * @param array<int|string,mixed> $crit Criteria
+     * @param string   $bool Boolean operator (default AND)
+     *
+     * @return string
+     */
+    public function rawAnalyseCrit($crit, $bool = "AND")
+    {
+        //to be used outside statements
+        $analyzed = $this->analyseCrit($crit, $bool);
+        //replace placeholder by values
+        $i = 0;
+        return preg_replace_callback(
+            '/\?/',
+            function () use (&$i) {
+                if (!array_key_exists($i, $this->values)) {
+                    throw new LogicException("Not enough values provided for the placeholders in criteria.");
+                }
+                $value = $this->values[$i];
+                $i++;
+                return $this->conn->quoteValue($value);
+            },
+            $analyzed
+        );
     }
 
     /**
@@ -515,8 +576,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if (is_numeric($name)) {
                 // no key and direct expression
                 if ($value instanceof QueryExpression) {
+                    $this->values = array_merge($this->values, $value->getValues());
                     $ret .= $value->getValue();
                 } elseif ($value instanceof QuerySubQuery) {
+                    $this->values = array_merge($this->values, $value->getValues());
                     $ret .= $value->getQuery();
                 } else {
                     // No Key case => recurse.
@@ -601,12 +664,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function getCriterionValue($value): string
     {
-        return match (true) {
-            $value instanceof AbstractQuery => $value->getQuery(),
-            $value instanceof QueryExpression => $value->getValue(),
-            $value instanceof QueryParam => $value->getValue(),
-            default => $this->analyseCriterionValue($value)
-        };
+        switch (true) {
+            case $value instanceof AbstractQuery:
+                $this->values = array_merge($this->values, $value->getValues());
+                return $value->getQuery();
+            case $value instanceof QueryExpression:
+                $this->values = array_merge($this->values, $value->getValues());
+                return $value->getValue();
+            case $value instanceof QueryParam:
+                return $value->getValue();
+            default:
+                return $this->analyseCriterionValue($value);
+        }
     }
 
     /**
@@ -618,13 +687,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $crit_value = null;
         if (is_array($value)) {
-            $values = [];
+            $crit_value = '(' . str_repeat('?, ', count($value) - 1) . '?)';
             foreach ($value as $v) {
-                $values[] = DBmysql::quoteValue($v);
+                if (!($v instanceof QueryParam)) {
+                    $this->values[] = $v;
+                }
             }
-            $crit_value = '(' . implode(', ', $values) . ')';
         } else {
-            $crit_value = DBmysql::quoteValue($value);
+            $crit_value = '?';
+            $this->values[] = $value;
         }
         return $crit_value;
     }
@@ -659,6 +730,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 // QueryExpression support, can be removed once Search::getDefaultJoin no longer returns raw SQL
                 if ($jointablecrit instanceof QueryExpression) {
                     $query .= $jointablecrit->getValue();
+                    $this->values = array_merge($this->values, $jointablecrit->getValues());
                     continue;
                 }
 
@@ -699,12 +771,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $left_value = $f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression
                     ? (string) $f1
                     : (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1));
+                if ($f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression) {
+                    $this->values = array_merge($this->values, $f1->getValues());
+                }
 
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
                 $right_value = $f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression
                     ? (string) $f2
                     : (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+                if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
+                    $this->values = array_merge($this->values, $f2->getValues());
+                }
 
                 return $left_value . ' = ' . $right_value;
             } elseif (count($values) == 3) {
