@@ -10164,13 +10164,10 @@ HTML,
         $this->login();
 
         // Disabled user as requester
-        $user_id = $this->createItem(
-            User::class,
-            [
-                'name' => $this->getUniqueString(),
-                'is_active' => 0,
-            ]
-        )->getID();
+        $user_id = $this->createItem(User::class, [
+            'name' => $this->getUniqueString(),
+            'is_active' => 0,
+        ])->getID();
 
         $ticket = $this->createItem(Ticket::class, [
             'name'        => 'Ticket for disabled user',
@@ -10182,13 +10179,10 @@ HTML,
         $this->checkActors($ticket, []);
 
         // Deleted user as requester
-        $user_id = $this->createItem(
-            User::class,
-            [
-                'name' => $this->getUniqueString(),
-                'is_deleted' => 1,
-            ]
-        );
+        $user_id = $this->createItem(User::class, [
+            'name' => $this->getUniqueString(),
+            'is_deleted' => 1,
+        ])->getID();
 
         $ticket = $this->createItem(Ticket::class, [
             'name'        => 'Ticket for deleted user',
