@@ -55,6 +55,7 @@ test('Can view revision history and restore a previous version', async ({ page, 
     // Toggle history panel
     await expect(kb.getHeading('History')).not.toBeAttached();
     await page.getByTitle('More actions').click();
+    await expect(page.getByTestId('revisions-counter')).toHaveText("2");
     await kb.getButton('History').click();
     await expect(kb.getHeading('History')).toBeVisible();
 
@@ -81,4 +82,8 @@ test('Can view revision history and restore a previous version', async ({ page, 
 
     // Restored content should be visible after reload
     await expect(page.getByText('Original content')).toBeVisible();
+
+    // Counter should be updated (new revision created from previous current version)
+    await page.getByTitle('More actions').click();
+    await expect(page.getByTestId('revisions-counter')).toHaveText("3");
 });

@@ -1021,6 +1021,10 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                     'id' => $this->fields['id'],
                     'key' => 'revisions',
                 ],
+                counter: countElementsInTable(KnowbaseItem_Revision::getTable(), [
+                    'knowbaseitems_id' => $this->fields['id'],
+                    'language' => '',
+                ]),
             );
         }
         $out = TemplateRenderer::getInstance()->render('pages/tools/kb/article.html.twig', [
