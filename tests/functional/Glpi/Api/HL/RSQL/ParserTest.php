@@ -92,12 +92,13 @@ class ParserTest extends GLPITestCase
         return new Parser($search);
     }
 
-    public static function parseProvider()
+    public static function parseProvider(): array
     {
         return [
             [
                 [[5, 'id'], [6, '=='], [7, '20']], /** Tokens. First element is the token type. See T_* consts in {@link \Glpi\Api\HL\RSQL\Lexer} */
-                "(`_`.`id` = '20')",
+                "(`_`.`id` = ?)",
+                [20],
             ],
             [
                 [
@@ -106,111 +107,138 @@ class ParserTest extends GLPITestCase
                     [6, "=in="], [7, "(A2602,A2604,A2603,A2605)"], [1, ";"], [5, "name"], [6, "=like="], [7, "*Student*"],
                     [4, ")"], [4, ")"], [2, ","], [5, "name"], [6, "=in="], [7, "(A2436,A2764,A2437,A2766)"],
                 ],
-                "(((`model`.`name` IN ('A2696', 'A2757', 'A2777')) AND (`_`.`name` LIKE CAST('%Staff%' AS BINARY))) OR ((`model`.`name` IN ('A2602', 'A2604', 'A2603', 'A2605')) AND (`_`.`name` LIKE CAST('%Student%' AS BINARY)))) OR (`_`.`name` IN ('A2436', 'A2764', 'A2437', 'A2766'))",
+                "(((`model`.`name` IN (?, ?, ?)) AND (`_`.`name` LIKE CAST(? AS BINARY))) OR ((`model`.`name` IN (?, ?, ?, ?)) AND (`_`.`name` LIKE CAST(? AS BINARY)))) OR (`_`.`name` IN (?, ?, ?, ?))", //FIXME? see CAST
+                ['A2696', 'A2757', 'A2777', '%Staff%', 'A2602', 'A2604', 'A2603', 'A2605', '%Student%', 'A2436', 'A2764', 'A2437', 'A2766'],
             ],
             [
                 [[5, 'name'], [6, '=='], [7, '(test']],
-                "(`_`.`name` = '(test')",
+                "(`_`.`name` = ?)",
+                ['(test'],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, '1']],
-                "(`scalar_join`.`external_prop` = '1')", // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
+                "(`scalar_join`.`external_prop` = ?)", // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
+                ['1'],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, 'true']],
-                "(`scalar_join`.`external_prop` = '1')",
+                "(`scalar_join`.`external_prop` = ?)",
+                ['1'],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, '0']],
-                "(`scalar_join`.`external_prop` = '0')",
+                "(`scalar_join`.`external_prop` = ?)",
+                ['0'],
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, 'false']],
-                "(`scalar_join`.`external_prop` = '0')",
+                "(`scalar_join`.`external_prop` = ?)",
+                ['0'],
             ],
             [
                 [[5, 'extra_fields.extra1'], [6, '=='], [7, 'test']],
-                "(`extra_fieldsextra1`.`extra1` = 'test')",
+                "(`extra_fieldsextra1`.`extra1` = ?)",
+                ['test'],
             ],
             [
                 [[5, 'id'], [6, '=in='], [7, '(4,7)']],
-                "(`_`.`id` IN ('4', '7'))",
+                "(`_`.`id` IN (?, ?))",
+                [4, 7],
             ],
             [
                 [[5, 'id'], [6, '=out='], [7, '(4,7)']],
-                "( NOT (`_`.`id` IN ('4', '7')))",
+                "( NOT (`_`.`id` IN (?, ?)))",
+                [4, 7],
             ],
             [
                 [[5, 'id'], [6, '=gt='], [7, '4']],
-                "(`_`.`id` > '4')",
+                "(`_`.`id` > ?)",
+                [4],
             ],
             [
                 [[5, 'id'], [6, '=ge='], [7, '4']],
-                "(`_`.`id` >= '4')",
+                "(`_`.`id` >= ?)",
+                [4],
             ],
             [
                 [[5, 'id'], [6, '=lt='], [7, '4']],
-                "(`_`.`id` < '4')",
+                "(`_`.`id` < ?)",
+                [4],
             ],
             [
                 [[5, 'id'], [6, '=le='], [7, '4']],
-                "(`_`.`id` <= '4')",
+                "(`_`.`id` <= ?)",
+                [4],
             ],
             [
                 [[5, 'name'], [6, '=like='], [7, '*test*']],
-                "(`_`.`name` LIKE CAST('%test%' AS BINARY))",
+                "(`_`.`name` LIKE CAST(? AS BINARY))",
+                ['%test%'],
             ],
             [
                 [[5, 'name'], [6, '=ilike='], [7, '%Test*']],
-                "(`_`.`name` LIKE '_Test%')",
+                "(`_`.`name` LIKE ?)",
+                ['_Test%'],
             ],
             [
                 [[5, 'name'], [6, '=isnull='], [7, 'test']],
                 "(`_`.`name` IS NULL)",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=isnull='], [8, '']],
                 "(`_`.`name` IS NULL)",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=notnull='], [7, 'test']],
                 "( NOT (`_`.`name` IS NULL))",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=notnull='], [8, '']],
                 "( NOT (`_`.`name` IS NULL))",
+                [],
             ],
             [
                 [[5, 'name'], [6, '=empty='], [7, 'test']],
-                "(((`_`.`name` = '') OR (`_`.`name` IS NULL)))",
+                "(((`_`.`name` = ?) OR (`_`.`name` IS NULL)))",
+                [''],
             ],
             [
                 [[5, 'name'], [6, '=empty='], [8, '']],
-                "(((`_`.`name` = '') OR (`_`.`name` IS NULL)))",
+                "(((`_`.`name` = ?) OR (`_`.`name` IS NULL)))",
+                [''],
             ],
             [
                 [[5, 'name'], [6, '=notempty='], [7, 'test']],
-                "(((`_`.`name` <> '') AND  NOT (`_`.`name` IS NULL)))",
+                "(((`_`.`name` <> ?) AND  NOT (`_`.`name` IS NULL)))",
+                [''],
             ],
             [
                 [[5, 'name'], [6, '=notempty='], [8, '']],
-                "(((`_`.`name` <> '') AND  NOT (`_`.`name` IS NULL)))",
+                "(((`_`.`name` <> ?) AND  NOT (`_`.`name` IS NULL)))",
+                [''],
             ],
             [
                 [[5, 'name'], [6, '=notlike='], [7, 'test']],
-                "(`_`.`name` NOT LIKE CAST('test' AS BINARY))",
+                "(`_`.`name` NOT LIKE CAST(? AS BINARY))",
+                ['test'],
             ],
             [
                 [[5, 'name'], [6, '=notilike='], [7, 'test']],
-                "(`_`.`name` NOT LIKE 'test')",
+                "(`_`.`name` NOT LIKE ?)",
+                ['test'],
             ],
         ];
     }
 
     #[DataProvider('parseProvider')]
-    public function testParse(array $tokens, string $expected)
+    public function testParse(array $tokens, string $expected, array $expected_values)
     {
-        $this->assertEquals($expected, (string) $this->getParserInstance()->parse($tokens)->getSQLWhereCriteria());
+        $wexpr = $this->getParserInstance()->parse($tokens)->getSQLWhereCriteria();
+        $this->assertEquals($expected, $wexpr->getValue());
+        $this->assertEquals($expected_values, $wexpr->getParams());
     }
 
     /**
@@ -234,9 +262,12 @@ class ParserTest extends GLPITestCase
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test']]);
         $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['test']);
+
         // Test an invalid filter with a valid one
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]);
-        $this->assertEquals("(`_`.`name` = 'test')", (string) $result->getSQLWhereCriteria());
+        $wexpr = $result->getSQLWhereCriteria();
+        $this->assertEquals("(`_`.`name` = ?)", $wexpr->getValue());
+        $this->assertEquals(['test'], $wexpr->getParams());
         $this->assertEquals(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['test']);
 
         // Test invalid operator

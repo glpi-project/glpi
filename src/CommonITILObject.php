@@ -4747,7 +4747,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 'jointype'  => 'itemtype_item',
                 // Get only last created solution
                 'condition' => [
-                    'NEWTABLE.id'  => new QueryExpression($last_solution_condition->getQuery()),
+                    'NEWTABLE.id'  => new QueryExpression($last_solution_condition->getQuery(), values: $last_solution_condition->getParams()),
                 ],
             ],
         ];

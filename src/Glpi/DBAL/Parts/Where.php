@@ -32,22 +32,43 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL;
+namespace Glpi\DBAL\Parts;
 
-class QueryParam
+use Glpi\DBAL\Operator;
+
+class Where extends BasePart
 {
-    /**
-     * Query parameter value.
-     *
-     * @return string
-     */
-    public function getValue()
+    protected Operator $operator = Operator::NONE;
+    protected ?string $clause = 'WHERE';
+
+    public function setOperator(Operator $operator): static
     {
-        return '?';
+        $this->operator = $operator;
+        return $this;
     }
 
-    public function __toString()
+    public function getOperator(): Operator
     {
-        return $this->getValue();
+        return $this->operator;
+    }
+
+    public function getQuery(): string
+    {
+        $sql = parent::getQuery();
+        if ($this->operator !== Operator::NONE) {
+            $sql = $this->operator->value . ' ' . $sql;
+        }
+        return $sql;
+    }
+
+    public function setQuery(string $sql): static
+    {
+        parent::setQuery($sql);
+
+        //remove text clause from SQL
+        $this->query = trim(str_replace('SELECT * FROM `table` ' . $this->clause, '', $this->query));
+        //Handle case where clause is missing - which should not happen.
+        $this->query = trim(str_replace('SELECT * FROM `table`', '', $this->query));
+        return $this;
     }
 }

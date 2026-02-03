@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Glpi\DBAL\Parts\Select;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
@@ -149,19 +150,22 @@ class DBTest extends GLPITestCase
                     'field'  => 'value',
                     'other'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                ['value', 'doe'],
             ], [
                 '`table`', [
                     '`field`'  => 'value',
                     '`other`'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                ['value', 'doe'],
             ], [
                 'table', [
                     'field'  => new QueryParam(),
                     'other'  => new QueryParam(),
                 ],
                 'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
+                [],
             ], [
                 'table', new QuerySubQuery([
                     'SELECT' => ['id', 'name'],
@@ -169,15 +173,18 @@ class DBTest extends GLPITestCase
                     'WHERE' => ['NOT' => ['name' => null]],
                 ]),
                 'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))',
+                [],
             ],
         ];
     }
 
     #[DataProvider('dataInsert')]
-    public function testBuildInsert($table, $values, $expected)
+    public function testBuildInsert(string $table, array|QuerySubQuery $values, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildInsert($table, $values));
+        $insert = $instance->buildInsert($table, $values);
+        $this->assertSame($expected_sql, $insert->getQuery());
+        $this->assertSame($expected_values, $insert->getParams());
     }
 
     public static function dataUpdate()
@@ -191,7 +198,8 @@ class DBTest extends GLPITestCase
                     'id'  => 1,
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\'',
+                'UPDATE `table` SET `field` = ?, `other` = ? WHERE `id` = ?',
+                ['value', 'doe', 1],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -199,7 +207,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = ? WHERE `id` IN (?, ?)',
+                ['value', 1, 2],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -207,7 +216,8 @@ class DBTest extends GLPITestCase
                     'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))',
+                'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
+                ['value', 1, 2],
             ], [
                 'table', [
                     'field'  => new QueryParam(),
@@ -216,6 +226,7 @@ class DBTest extends GLPITestCase
                 ],
                 [],
                 'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
+                [],
             ], [
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
@@ -223,7 +234,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'field'  => new QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
@@ -231,7 +243,8 @@ class DBTest extends GLPITestCase
                     'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'field'  => 'value',
@@ -257,16 +270,45 @@ class DBTest extends GLPITestCase
                 'UPDATE `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+                . ' SET `field` = ? WHERE `id` IN (?, ?)',
+                ['value', 1, 2],
+            ], [
+                // JOIN with a placeholder in its ON clause: values must be ordered
+                // as they appear in the query (JOIN, then SET, then WHERE).
+                'glpi_rulecriterias', [
+                    'criteria' => 'name',
+                ], [
+                    'criteria' => 'servicepack_name',
+                ],
+                [
+                    'INNER JOIN' => [
+                        'glpi_rules' => [
+                            'FKEY' => [
+                                'glpi_rulecriterias' => 'rules_id',
+                                'glpi_rules'         => 'id',
+                                [
+                                    'AND' => ['glpi_rules.sub_type' => 'RuleDictionnaryOperatingSystemServicePack'],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                'UPDATE `glpi_rulecriterias`'
+                . ' INNER JOIN `glpi_rules` ON (`glpi_rulecriterias`.`rules_id` = `glpi_rules`.`id`'
+                . ' AND `glpi_rules`.`sub_type` = ?)'
+                . ' SET `criteria` = ? WHERE `criteria` = ?',
+                ['RuleDictionnaryOperatingSystemServicePack', 'name', 'servicepack_name'],
             ],
         ];
     }
 
     #[DataProvider('dataUpdate')]
-    public function testBuildUpdate($table, $values, $where, array $joins, $expected)
+    public function testBuildUpdate(string $table, array $values, array $where, array $joins, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildUpdate($table, $values, $where, $joins));
+        $update = $instance->buildUpdate($table, $values, $where, $joins);
+        $this->assertSame($expected_sql, $update->getQuery());
+        $this->assertSame($expected_values, $update->getParams());
     }
 
     public function testBuildUpdateWException()
@@ -284,25 +326,29 @@ class DBTest extends GLPITestCase
                     'id'  => 1,
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` = \'1\'',
+                'DELETE `table` FROM `table` WHERE `id` = ?',
+                [1],
             ], [
                 'table', [
                     'id'  => [1, 2],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')',
+                'DELETE `table` FROM `table` WHERE `id` IN (?, ?)',
+                [1, 2],
             ], [
                 'table', [
                     'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))',
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
+                [1, 2],
             ], [
                 'table', [
                     'NOT'  => ['id' => [new QueryParam(), new QueryParam()]],
                 ],
                 [],
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
+                [],
             ], [
                 'table', [
                     'id'  => 1,
@@ -326,16 +372,19 @@ class DBTest extends GLPITestCase
                 'DELETE `table` FROM `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' WHERE `id` = \'1\'',
+                . ' WHERE `id` = ?',
+                [1],
             ],
         ];
     }
 
     #[DataProvider('dataDelete')]
-    public function testBuildDelete($table, $where, array $joins, $expected)
+    public function testBuildDelete(string $table, array $where, array $joins, string $expected_sql, array $expected_values)
     {
         $instance = new \DB();
-        $this->assertSame($expected, $instance->buildDelete($table, $where, $joins));
+        $delete = $instance->buildDelete($table, $where, $joins);
+        $this->assertSame($expected_sql, $delete->getQuery());
+        $this->assertSame($expected_values, $delete->getParams());
     }
 
     public function testBuildDeleteWException()
@@ -343,6 +392,72 @@ class DBTest extends GLPITestCase
         $instance = new \DB();
         $this->expectExceptionMessage('Cannot run an DELETE query without WHERE clause!');
         $instance->buildDelete('table', []);
+    }
+
+    /**
+     * doQuery() must accept a BasePart instance (as returned by buildInsert(),
+     * buildUpdate() and buildDelete()) and run it as a prepared statement, with
+     * its parameters bound, instead of sending the raw query - which still holds
+     * `?` placeholders - to the server.
+     */
+    public function testDoQueryWithBasePart()
+    {
+        $db = new \DB();
+        $db->log_deprecation_warnings = false; // Prevent deprecation warning from MySQL server
+
+        $table = sprintf('glpitests_%s', uniqid());
+        $db->doQuery(
+            sprintf(
+                'CREATE TABLE `%s` (`id` INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(255) NULL) ENGINE=InnoDB',
+                $table
+            )
+        );
+
+        try {
+            // INSERT - a value that requires escaping makes sure parameters are
+            // actually bound and not concatenated into the query.
+            $insert = $db->buildInsert($table, ['name' => "O'Brien"]);
+            $this->assertTrue($db->doQuery($insert));
+            $this->assertSame(1, $db->getAffectedRows());
+            $id = $db->insertId();
+
+            $rows = iterator_to_array($db->request(['FROM' => $table]));
+            $this->assertCount(1, $rows);
+            $this->assertSame("O'Brien", reset($rows)['name']);
+
+            // UPDATE
+            $update = $db->buildUpdate($table, ['name' => 'updated'], ['id' => $id]);
+            $this->assertTrue($db->doQuery($update));
+            $this->assertSame(1, $db->getAffectedRows());
+
+            $row = $db->request(['FROM' => $table, 'WHERE' => ['id' => $id]])->current();
+            $this->assertSame('updated', $row['name']);
+
+            // DELETE
+            $delete = $db->buildDelete($table, ['id' => $id]);
+            $this->assertTrue($db->doQuery($delete));
+            $this->assertSame(1, $db->getAffectedRows());
+            $this->assertCount(0, iterator_to_array($db->request(['FROM' => $table])));
+        } finally {
+            $db->doQuery(sprintf('DROP TABLE `%s`', $table));
+        }
+    }
+
+    /**
+     * A BasePart that produces a result set (a SELECT) must make doQuery()
+     * return the corresponding mysqli_result, with its parameters bound.
+     */
+    public function testDoQueryWithBasePartReturningResult()
+    {
+        $db = new \DB();
+
+        $select = (new Select())
+            ->setQuery('SELECT ? AS `value`')
+            ->setParams([42]);
+
+        $result = $db->doQuery($select);
+        $this->assertInstanceOf(\mysqli_result::class, $result);
+        $this->assertSame('42', $result->fetch_assoc()['value']);
     }
 
     public function testListTables()

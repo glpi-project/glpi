@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\System\Diagnostic;
 
 use ArrayIterator;
+use Glpi\DBAL\Parts\BasePart;
 use Glpi\System\Diagnostic\DatabaseSchemaIntegrityChecker;
 use Glpi\Tests\GLPITestCase;
 use mysqli_result;
@@ -2195,7 +2196,7 @@ DIFF,
                 return true;
             }
 
-            public function doQuery($query)
+            public function doQuery(BasePart|string $query): true|mysqli_result
             {
                 if (isset($this->_mock_options['_mock_doQuery'])) {
                     return is_callable($this->_mock_options['_mock_doQuery'])

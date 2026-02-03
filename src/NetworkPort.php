@@ -1259,7 +1259,7 @@ class NetworkPort extends CommonDBChild
                             ) {
                                 $netport_table = $this->getTable();
                                 $already_link_tables = [];
-                                $join = Search::addLeftJoin(
+                                $ljoin = Search::addLeftJoin(
                                     self::class,
                                     $netport_table,
                                     $already_link_tables,
@@ -1270,9 +1270,10 @@ class NetworkPort extends CommonDBChild
                                     $option["joinparams"],
                                     $option["field"]
                                 );
+                                $qexpr = new QueryExpression($ljoin->getQuery(), values: $ljoin->getParams());
                                 $iterator = $DB->request([
                                     'FROM'   => $netport_table,
-                                    'JOIN'   => [new QueryExpression($join)],
+                                    'JOIN'   => [$qexpr],
                                     'WHERE'  => [
                                         "$netport_table.id" => $port['id'],
                                     ],

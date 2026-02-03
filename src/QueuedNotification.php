@@ -681,7 +681,7 @@ class QueuedNotification extends CommonDBTM
                     new QueryExpression(QueryFunction::unixTimestamp('send_time') . ' < ' . $DB::quoteValue($send_time)),
                 ]
             );
-            $vol = $DB->affectedRows();
+            $vol = $DB->getAffectedRows();
         }
 
         $task->setVolume($vol);
@@ -719,7 +719,7 @@ class QueuedNotification extends CommonDBTM
                     ),
                 ]
             );
-            $vol = $DB->affectedRows();
+            $vol = $DB->getAffectedRows();
         }
 
         $task->setVolume($vol);

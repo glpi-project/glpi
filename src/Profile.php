@@ -777,7 +777,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'OR'                             => $right_subqueries,
             ],
         ]);
-        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery());
+        $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery(), values: $sub_query->getParams());
 
         if (Session::getCurrentInterface() === 'central') {
             return [

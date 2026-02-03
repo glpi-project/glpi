@@ -32,22 +32,16 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL;
+namespace Glpi\DBAL\Parts;
 
-class QueryParam
+class LeftJoin extends BasePart
 {
-    /**
-     * Query parameter value.
-     *
-     * @return string
-     */
-    public function getValue()
+    public function setQuery(string $sql): static
     {
-        return '?';
-    }
+        parent::setQuery($sql);
 
-    public function __toString()
-    {
-        return $this->getValue();
+        //remove FROM clause from SQL
+        $this->query = trim(str_replace('SELECT * FROM `table`', '', $this->query));
+        return $this;
     }
 }

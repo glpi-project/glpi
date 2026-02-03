@@ -32,22 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL;
+namespace Glpi\DBAL\Parts;
 
-class QueryParam
+class Having extends Where
 {
-    /**
-     * Query parameter value.
-     *
-     * @return string
-     */
-    public function getValue()
-    {
-        return '?';
-    }
-
-    public function __toString()
-    {
-        return $this->getValue();
-    }
+    protected ?string $clause = 'HAVING';
 }

@@ -36,6 +36,7 @@
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
+use Glpi\Exception\Database\StatementException;
 
 use function Safe\preg_replace;
 use function Safe\preg_split;
@@ -52,6 +53,8 @@ class DBmysqlIterator implements SeekableIterator, Countable
     private ?DBmysql $conn = null;
     // Current SQL query
     private ?string $sql = null;
+    /** @var array<int, mixed> */
+    private array $values = [];
     // Current result
     private mysqli_result|bool $res = false;
 
@@ -107,6 +110,30 @@ class DBmysqlIterator implements SeekableIterator, Countable
     }
 
     /**
+     * Only the built query state is serializable.
+     * Database connection, result, and so on cannot (and must not) be
+     * serialized
+     *
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        return [
+            'sql'    => $this->sql,
+            'values' => $this->values,
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     */
+    public function __unserialize(array $data): void
+    {
+        $this->sql    = $data['sql'] ?? null;
+        $this->values = $data['values'] ?? [];
+    }
+
+    /**
      * Executes the query
      *
      * @param array<string, mixed> $criteria Query criteria
@@ -117,8 +144,24 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function execute(array $criteria): self
     {
+        $this->values = []; //reset values
         $this->buildQuery($criteria);
-        $this->res = $this->conn ? $this->conn->doQuery($this->sql) : false;
+        $this->res = false;
+        if ($this->conn) {
+            if (($scount = substr_count($this->sql ?? '', '?')) != ($vcount = count($this->values))) {
+                throw new StatementException(
+                    sprintf(
+                        'Number of placeholders (%d) in SQL statement does not match number of values (%d). SQL: %s',
+                        $scount,
+                        $vcount,
+                        $this->sql
+                    )
+                );
+            }
+            $stmt = $this->conn->prepare($this->sql ?? '');
+            $this->conn->executeStatement($stmt, $this->values);
+            $this->res = $stmt->get_result();
+        }
         $this->count = $this->res instanceof mysqli_result ? $this->conn->numrows($this->res) : 0;
         $this->setPosition(0);
         return $this;
@@ -271,8 +314,11 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if ($table instanceof AbstractQuery) {
                 $query = $table;
                 $table = $query->getQuery();
+                $this->values = array_merge($this->values, $query->getParams());
             } elseif ($table instanceof QueryExpression) {
-                $table = $table->getValue();
+                $query = $table;
+                $table = $query->getValue();
+                $this->values = array_merge($this->values, $query->getParams());
             } else {
                 $table = DBmysql::quoteName($table);
             }
@@ -369,6 +415,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
 
             } elseif ($o instanceof QueryExpression) {
                 $cleanorderby[] = $o->getValue();
+                $this->values = array_merge($this->values, $o->getParams());
             } else {
                 throw new LogicException("Invalid order clause.");
             }
@@ -414,8 +461,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
             }
 
             if ($f instanceof AbstractQuery) {
+                $this->values = array_merge($this->values, $f->getParams());
                 return $f->getQuery();
             } elseif ($f instanceof QueryExpression) {
+                $this->values = array_merge($this->values, $f->getParams());
                 return $f->getValue();
             } else {
                 return DBmysql::quoteName($f);
@@ -492,7 +541,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     public function getSql()
     {
-        return preg_replace('/ +/', ' ', $this->sql);
+        return preg_replace('/ +/', ' ', $this->sql ?? '');
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function getValues(): array
+    {
+        return $this->values;
     }
 
     /**
@@ -525,8 +582,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
             if (is_numeric($name)) {
                 // no key and direct expression
                 if ($value instanceof QueryExpression) {
+                    $this->values = array_merge($this->values, $value->getParams());
                     $ret .= $value->getValue();
                 } elseif ($value instanceof QuerySubQuery) {
+                    $this->values = array_merge($this->values, $value->getParams());
                     $ret .= $value->getQuery();
                 } else {
                     // No Key case => recurse.
@@ -611,12 +670,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private function getCriterionValue($value): string
     {
-        return match (true) {
-            $value instanceof AbstractQuery => $value->getQuery(),
-            $value instanceof QueryExpression => $value->getValue(),
-            $value instanceof QueryParam => $value->getValue(),
-            default => $this->analyseCriterionValue($value)
-        };
+        switch (true) {
+            case $value instanceof AbstractQuery:
+                $this->values = array_merge($this->values, $value->getParams());
+                return $value->getQuery();
+            case $value instanceof QueryExpression:
+                $this->values = array_merge($this->values, $value->getParams());
+                return $value->getValue();
+            case $value instanceof QueryParam:
+                return $value->getValue();
+            default:
+                return $this->analyseCriterionValue($value);
+        }
     }
 
     /**
@@ -628,13 +693,15 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
         $crit_value = null;
         if (is_array($value)) {
-            $values = [];
+            $crit_value = '(' . str_repeat('?, ', count($value) - 1) . '?)';
             foreach ($value as $v) {
-                $values[] = DBmysql::quoteValue($v);
+                if (!($v instanceof QueryParam)) {
+                    $this->values[] = $v;
+                }
             }
-            $crit_value = '(' . implode(', ', $values) . ')';
         } else {
-            $crit_value = DBmysql::quoteValue($value);
+            $crit_value = '?';
+            $this->values[] = $value;
         }
         return $crit_value;
     }
@@ -669,6 +736,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 // QueryExpression support, can be removed once Search::getDefaultJoin no longer returns raw SQL
                 if ($jointablecrit instanceof QueryExpression) {
                     $query .= $jointablecrit->getValue();
+                    $this->values = array_merge($this->values, $jointablecrit->getParams());
                     continue;
                 }
 
@@ -681,6 +749,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
 
                 if ($jointablekey instanceof QuerySubQuery) {
+                    $this->values = array_merge($this->values, $jointablekey->getParams());
                     $jointablekey = $jointablekey->getQuery();
                 } else {
                     $jointablekey = DBmysql::quoteName($jointablekey);
@@ -709,12 +778,18 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $left_value = $f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression
                     ? (string) $f1
                     : (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1));
+                if ($f1 instanceof QuerySubQuery || $f1 instanceof QueryExpression) {
+                    $this->values = array_merge($this->values, $f1->getParams());
+                }
 
                 $t2 = $keys[1];
                 $f2 = $values[$t2];
                 $right_value = $f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression
                     ? (string) $f2
                     : (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
+                if ($f2 instanceof QuerySubQuery || $f2 instanceof QueryExpression) {
+                    $this->values = array_merge($this->values, $f2->getParams());
+                }
 
                 return $left_value . ' = ' . $right_value;
             } elseif (count($values) == 3) {

@@ -457,7 +457,7 @@ trait InventoryNetworkPort
                         $netname_stmt = $DB->prepare($query);
                     }
 
-                    $DB->executeStatement($netname_stmt, [$keydb]);
+                    $DB->executeStatement($netname_stmt, [NetworkPort::class, $keydb]);
                     $results = $netname_stmt->get_result();
 
                     if ($results->num_rows) {

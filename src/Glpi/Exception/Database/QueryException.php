@@ -32,22 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\DBAL;
+namespace Glpi\Exception\Database;
 
-class QueryParam
-{
-    /**
-     * Query parameter value.
-     *
-     * @return string
-     */
-    public function getValue()
-    {
-        return '?';
-    }
+use RuntimeException;
 
-    public function __toString()
-    {
-        return $this->getValue();
-    }
-}
+final class QueryException extends RuntimeException {}

@@ -773,4 +773,18 @@ class DbTestCase extends GLPITestCase
             'items_id',
         ]);
     }
+
+    protected function cleanSQL(string $sql): string
+    {
+        // Clean whitespaces
+        $sql = preg_replace('/\s+/', ' ', $sql);
+
+        // Remove whitespaces around parenthesis
+        $sql = preg_replace('/\(\s+/', '(', $sql);
+        $sql = preg_replace('/\s+\)/', ')', $sql);
+
+        $sql = trim($sql);
+
+        return $sql;
+    }
 }

@@ -36,6 +36,7 @@
 namespace Glpi\Console\Migration;
 
 use Glpi\Console\AbstractCommand;
+use Glpi\Exception\Database\QueryException;
 use Log;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -93,8 +94,9 @@ class BuildMissingTimestampsCommand extends AbstractCommand
 
             $target_date = $column === 'date_creation' ? 'MIN(`date_mod`)' : 'MAX(`date_mod`)';
 
-            $result = $this->db->doQuery(
-                "
+            try {
+                $result = $this->db->doQuery(
+                    "
             UPDATE `$table`
             LEFT JOIN (
                SELECT $target_date AS `date_mod`, `itemtype`, `items_id`
@@ -104,8 +106,8 @@ class BuildMissingTimestampsCommand extends AbstractCommand
             ON `logs`.`itemtype` = '$itemtype' AND `logs`.`items_id` = `$table`.`id`
             SET  `$table`.`$column` = `logs`.`date_mod` WHERE `$table`.`$column` IS NULL
             "
-            );
-            if (false === $result) {
+                );
+            } catch (QueryException $e) {
                 $message = sprintf(
                     __('Update of `%s`.`%s` failed with message "(%s) %s".'),
                     $table,

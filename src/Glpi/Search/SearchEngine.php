@@ -547,6 +547,7 @@ final class SearchEngine
     /**
      * @param bool $only_not
      * @return array
+     * FIXME: maybe try to use Operator enum
      */
     public static function getLogicalOperators($only_not = false): array
     {

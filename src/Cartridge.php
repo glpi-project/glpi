@@ -252,7 +252,7 @@ class Cartridge extends CommonDBRelation
                 'id' => $input['id'],
             ]
         );
-        if ($result && ($DB->affectedRows() > 0)) {
+        if ($result && ($DB->getAffectedRows() > 0)) {
             $changesCartrige = [
                 0,
                 '',
@@ -314,7 +314,7 @@ class Cartridge extends CommonDBRelation
                     'date_use'  => null,
                 ]
             );
-            if ($result && ($DB->affectedRows() > 0)) {
+            if ($result && ($DB->getAffectedRows() > 0)) {
                 $changes = [
                     '0',
                     '',
@@ -373,7 +373,7 @@ class Cartridge extends CommonDBRelation
 
             if (
                 $result
-                && ($DB->affectedRows() > 0)
+                && ($DB->getAffectedRows() > 0)
             ) {
                 $changes = [
                     '0',

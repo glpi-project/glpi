@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,64 +32,73 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- *  Sub query class
- **/
-abstract class AbstractQuery
+namespace Glpi\DBAL\Parts;
+
+use DBmysqlIterator;
+
+abstract class BasePart
 {
-    protected ?string $alias = null;
+    protected string $query;
     /** @var array<int, mixed> */
-    protected array $params = [];
+    protected array $params;
+    protected ?string $clause = null;
 
     /**
-     * Create a query
-     *
-     * @param string $alias Alias for the whole subquery
+     * @param array<string, mixed> $criteria
      */
-    public function __construct($alias = null)
+    public function withCriteria(array $criteria): static
     {
-        $this->alias = $alias;
+        global $DB;
+
+        if ($criteria === []) {
+            return $this;
+        }
+
+        $iterator = new DBmysqlIterator($DB);
+        $it_criteria = ['FROM' => 'table'];
+        if ($this->clause !== null) {
+            $it_criteria += [$this->clause => $criteria];
+        } else {
+            $it_criteria += $criteria;
+        }
+        $iterator->buildQuery($it_criteria);
+
+        return $this
+            ->setQuery($iterator->getSql())
+            ->setParams($iterator->getValues())
+        ;
+    }
+
+    public function setQuery(string $query): static
+    {
+        $this->query = $query;
+        return $this;
+    }
+
+    public function getQuery(): string
+    {
+        return $this->query ?? '';
     }
 
     /**
-     * Get alias
-     *
-     * @return string|null
+     * @param array<int, mixed> $values
      */
-    public function getAlias()
+    public function setParams(array $values): static
     {
-        return $this->alias;
+        $this->params = $values;
+        return $this;
     }
 
     /**
-     *
-     * Get SQL query
-     *
-     * @return string
-     *
-     * @psalm-taint-escape sql
+     * @return array<int, mixed>
      */
-    abstract public function getQuery();
+    public function getParams(): array
+    {
+        return $this->params ?? [];
+    }
 
     public function __toString()
     {
         return $this->getQuery();
-    }
-
-    /**
-    * @return array<int, mixed>
-    */
-    public function getParams(): array
-    {
-        return $this->params;
-    }
-
-    /**
-     * @param array<int, mixed> $params
-     */
-    public function setParams(array $params): static
-    {
-        $this->params = $params;
-        return $this;
     }
 }

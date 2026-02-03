@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2026 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +34,7 @@
 
 namespace Glpi\DBAL;
 
+use AbstractQuery;
 use DBmysqlIterator;
 
 use function Safe\preg_match;
@@ -71,18 +71,20 @@ class QueryFunction
      * Format the given data as a SQL function call.
      * The alias should not be quoted. It will be done in the returned QueryExpression when its value is evaluated.
      * @param string $func_name SQL function name
-     * @param array<int, string|QueryExpression|null> $params Array of quoted identifiers or QueryExpressions
+     * @param array<int, string|QueryExpression|null> $func_args Array of quoted identifiers or QueryExpressions
+     * @param array<int, mixed> $params Array of statement values
      * @param string|null $alias Unquoted alias
      * @return QueryExpression
      */
-    private static function getExpression(string $func_name, array $params, ?string $alias = null): QueryExpression
+    private static function getExpression(string $func_name, array $func_args, array $params, ?string $alias = null): QueryExpression
     {
         global $DB;
-        $params = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $params);
-        return new QueryExpression($func_name . '(' . implode(', ', $params) . ')', $alias);
+        $func_args = array_map(static fn($p) => $p instanceof QueryExpression || $p === null ? $p : $DB::quoteName($p), $func_args);
+        return new QueryExpression($func_name . '(' . implode(', ', $func_args) . ')', $alias, $params);
     }
 
     /**
+     *
      * @param string $name
      * @param array<int|string, mixed> $arguments
      *
@@ -96,6 +98,13 @@ class QueryFunction
             $params = [$params];
         }
 
+        $values = [];
+        foreach ($params as $param) {
+            if ($param instanceof QueryExpression || $param instanceof AbstractQuery) {
+                $values = array_merge($values, $param->getParams());
+            }
+        }
+
         // Map camelCase function names to SQL function names
         $func_name = match (true) {
             // if the name is in camelCase, convert camelCase to snake_case
@@ -104,7 +113,7 @@ class QueryFunction
             default => $name,
         };
         $func_name = strtoupper($func_name);
-        return self::getExpression($func_name, $params, $args[1] ?? null);
+        return self::getExpression($func_name, $params, $values, $args[1] ?? null);
     }
 
     /**
@@ -151,10 +160,21 @@ class QueryFunction
      */
     public static function if(string|QueryExpression|array $condition, string|QueryExpression $true_expression, string|QueryExpression $false_expression, ?string $alias = null): QueryExpression
     {
+        $values = [];
         if (is_array($condition)) {
-            $condition = new QueryExpression((new DBmysqlIterator(null))->analyseCrit($condition));
+            $iterator = new DBmysqlIterator(null);
+            $condition = new QueryExpression($iterator->analyseCrit($condition), values: $iterator->getValues());
+            $values = $iterator->getValues();
+        } elseif ($condition instanceof QueryExpression) {
+            $values = array_merge($values, $condition->getParams());
         }
-        return self::getExpression('IF', [$condition, $true_expression, $false_expression], $alias);
+        if ($true_expression instanceof QueryExpression) {
+            $values = array_merge($values, $true_expression->getParams());
+        }
+        if ($false_expression instanceof QueryExpression) {
+            $values = array_merge($values, $false_expression->getParams());
+        }
+        return self::getExpression('IF', [$condition, $true_expression, $false_expression], $values, $alias);
     }
 
     /**
@@ -166,7 +186,14 @@ class QueryFunction
      */
     public static function ifnull(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('IFNULL', [$expression, $value], $alias);
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        if ($value instanceof QueryExpression) {
+            $values = array_merge($values, $value->getParams());
+        }
+        return self::getExpression('IFNULL', [$expression, $value], $values, $alias);
     }
 
     /**
@@ -195,7 +222,12 @@ class QueryFunction
             $exp .= ' SEPARATOR ' . $DB::quoteValue($separator);
         }
         $exp .= ')';
-        return new QueryExpression($exp, $alias);
+
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        return new QueryExpression($exp, $alias, $values);
     }
 
     /**
@@ -215,7 +247,12 @@ class QueryFunction
             $exp .= 'DISTINCT ';
         }
         $exp .= $expression . ')';
-        return new QueryExpression($exp, $alias);
+
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        return new QueryExpression($exp, $alias, $values);
     }
 
     /**
@@ -235,7 +272,12 @@ class QueryFunction
             $exp .= 'DISTINCT ';
         }
         $exp .= $expression . ')';
-        return new QueryExpression($exp, $alias);
+
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        return new QueryExpression($exp, $alias, $values);
     }
 
     /**
@@ -250,7 +292,12 @@ class QueryFunction
         global $DB;
 
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
-        return new QueryExpression('CAST(' . $expression . ' AS ' . $type . ')', $alias);
+
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        return new QueryExpression('CAST(' . $expression . ' AS ' . $type . ')', $alias, $values);
     }
 
     /**
@@ -264,7 +311,13 @@ class QueryFunction
     {
         global $DB;
         $expression = $expression instanceof QueryExpression ? $expression : $DB::quoteName($expression);
-        return new QueryExpression('CONVERT(' . $expression . ' USING ' . $transcoding . ')', $alias);
+
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        return new QueryExpression('CONVERT(' . $expression . ' USING ' . $transcoding . ')', $alias, $values);
+
     }
 
     /**
@@ -297,7 +350,17 @@ class QueryFunction
      */
     public static function replace(string|QueryExpression $expression, string|QueryExpression $search, string|QueryExpression $replace, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('REPLACE', [$expression, $search, $replace], $alias);
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        if ($search instanceof QueryExpression) {
+            $values = array_merge($values, $search->getParams());
+        }
+        if ($replace instanceof QueryExpression) {
+            $values = array_merge($values, $replace->getParams());
+        }
+        return self::getExpression('REPLACE', [$expression, $search, $replace], $values, $alias);
     }
 
     /**
@@ -310,10 +373,17 @@ class QueryFunction
     public static function fromUnixtime(string|QueryExpression $expression, string|QueryExpression|null $format = null, ?string $alias = null): QueryExpression
     {
         $params = [$expression];
+        $values = [];
         if ($format !== null) {
             $params[] = $format;
         }
-        return self::getExpression('FROM_UNIXTIME', $params, $alias);
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        if ($format instanceof QueryExpression) {
+            $values = array_merge($values, $format->getParams());
+        }
+        return self::getExpression('FROM_UNIXTIME', $params, $values, $alias);
     }
 
     /**
@@ -326,8 +396,12 @@ class QueryFunction
     public static function dateFormat(string|QueryExpression $expression, string $format, ?string $alias = null): QueryExpression
     {
         global $DB;
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
         $format = new QueryExpression($DB::quoteValue($format));
-        return self::getExpression('DATE_FORMAT', [$expression, $format], $alias);
+        return self::getExpression('DATE_FORMAT', [$expression, $format], $values, $alias);
     }
 
     /**
@@ -341,9 +415,15 @@ class QueryFunction
     public static function lpad(string|QueryExpression $expression, int $length, string $pad_string, ?string $alias = null): QueryExpression
     {
         global $DB;
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
         $length = new QueryExpression((string) $length);
+        $values = array_merge($values, $length->getParams());
         $pad_string = new QueryExpression($DB::quoteValue($pad_string));
-        return self::getExpression('LPAD', [$expression, $length, $pad_string], $alias);
+        $values = array_merge($values, $pad_string->getParams());
+        return self::getExpression('LPAD', [$expression, $length, $pad_string], $values, $alias);
     }
 
     /**
@@ -356,9 +436,16 @@ class QueryFunction
      */
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
+        $start_expr = new QueryExpression((string) $start);
+        $length_expr = new QueryExpression((string) $length);
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        $values = array_merge($values, $start_expr->getParams(), $length_expr->getParams());
         return self::getExpression('SUBSTRING', [
-            $expression, new QueryExpression((string) $start), new QueryExpression((string) $length),
-        ], $alias);
+            $expression, $start_expr, $length_expr,
+        ], $values, $alias);
     }
 
     /**
@@ -370,8 +457,13 @@ class QueryFunction
      */
     public static function round(string|QueryExpression $expression, int $precision = 0, ?string $alias = null): QueryExpression
     {
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
         $precision = new QueryExpression((string) $precision);
-        return self::getExpression('ROUND', [$expression, $precision], $alias);
+        $values = array_merge($values, $precision->getParams());
+        return self::getExpression('ROUND', [$expression, $precision], $values, $alias);
     }
 
     /**
@@ -383,7 +475,14 @@ class QueryFunction
      */
     public static function nullif(string|QueryExpression $expression, string|QueryExpression $value, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('NULLIF', [$expression, $value], $alias);
+        $values = [];
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        if ($value instanceof QueryExpression) {
+            $values = array_merge($values, $value->getParams());
+        }
+        return self::getExpression('NULLIF', [$expression, $value], $values, $alias);
     }
 
     /**
@@ -396,7 +495,15 @@ class QueryFunction
      */
     public static function timestampdiff(string $unit, string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('TIMESTAMPDIFF', [new QueryExpression($unit), $expression1, $expression2], $alias);
+        $unit_expr = new QueryExpression($unit);
+        $values = $unit_expr->getParams();
+        if ($expression1 instanceof QueryExpression) {
+            $values = array_merge($values, $expression1->getParams());
+        }
+        if ($expression2 instanceof QueryExpression) {
+            $values = array_merge($values, $expression2->getParams());
+        }
+        return self::getExpression('TIMESTAMPDIFF', [$unit_expr, $expression1, $expression2], $values, $alias);
     }
 
     /**
@@ -408,7 +515,14 @@ class QueryFunction
      */
     public static function datediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('DATEDIFF', [$expression1, $expression2], $alias);
+        $values = [];
+        if ($expression1 instanceof QueryExpression) {
+            $values = array_merge($values, $expression1->getParams());
+        }
+        if ($expression2 instanceof QueryExpression) {
+            $values = array_merge($values, $expression2->getParams());
+        }
+        return self::getExpression('DATEDIFF', [$expression1, $expression2], $values, $alias);
     }
 
     /**
@@ -420,7 +534,14 @@ class QueryFunction
      */
     public static function timediff(string|QueryExpression $expression1, string|QueryExpression $expression2, ?string $alias = null): QueryExpression
     {
-        return self::getExpression('TIMEDIFF', [$expression1, $expression2], $alias);
+        $values = [];
+        if ($expression1 instanceof QueryExpression) {
+            $values = array_merge($values, $expression1->getParams());
+        }
+        if ($expression2 instanceof QueryExpression) {
+            $values = array_merge($values, $expression2->getParams());
+        }
+        return self::getExpression('TIMEDIFF', [$expression1, $expression2], $values, $alias);
     }
 
     /**
@@ -432,10 +553,14 @@ class QueryFunction
     public static function unixTimestamp(string|QueryExpression|null $expression = null, ?string $alias = null): QueryExpression
     {
         $params = [];
+        $values = [];
         if ($expression !== null) {
             $params = [$expression];
+            if ($expression instanceof QueryExpression) {
+                $values = array_merge($values, $expression->getParams());
+            }
         }
-        return self::getExpression('UNIX_TIMESTAMP', $params, $alias);
+        return self::getExpression('UNIX_TIMESTAMP', $params, $values, $alias);
     }
 
     /**
@@ -449,7 +574,11 @@ class QueryFunction
     {
         global $DB;
         $substring = is_string($substring) ? new QueryExpression($DB::quoteValue($substring)) : $substring;
-        return self::getExpression('LOCATE', [$substring, $expression], $alias);
+        $values = $substring->getParams();
+        if ($expression instanceof QueryExpression) {
+            $values = array_merge($values, $expression->getParams());
+        }
+        return self::getExpression('LOCATE', [$substring, $expression], $values, $alias);
     }
 
     /**
@@ -498,6 +627,7 @@ class QueryFunction
     {
         global $DB;
 
+        $values = [];
         if (is_string($target)) {
             $target = new QueryExpression($DB::quoteName($target));
         }
@@ -507,6 +637,7 @@ class QueryFunction
         }
 
         $path = new QueryExpression($DB::quoteValue($path));
+        $values = array_merge($values, $candidate->getParams());
 
         return self::getExpression(
             'JSON_CONTAINS',
@@ -515,6 +646,7 @@ class QueryFunction
                 $DB->getVersionAndServer()['server'] === 'MariaDB' ? $candidate : QueryFunction::cast($candidate, 'JSON'),
                 $path,
             ],
+            $values,
             $alias
         );
     }

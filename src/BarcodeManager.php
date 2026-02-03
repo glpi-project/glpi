@@ -92,7 +92,7 @@ class BarcodeManager
                 'nosort'        => true,
                 'datatype'      => 'string',
                 'computation'   => QueryFunction::concat([
-                    new QueryExpression($DB::quoteValue($url_prefix)),
+                    new QueryExpression('?', null, [$url_prefix]),
                     'TABLE.id',
                 ]),
             ],
