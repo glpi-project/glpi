@@ -1903,7 +1903,7 @@ class CommonDBTM extends CommonGLPI
                 )
             );
             foreach ($fields as $field) {
-                $stmt->bind_param('s', $field);
+                $DB->executeStatement($stmt, [$field]);
                 $res = $stmt->execute();
                 if ($res === false) {
                     if ($DB->errno() != 1062) {

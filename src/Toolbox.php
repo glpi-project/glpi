@@ -2252,20 +2252,22 @@ class Toolbox
 
                 $stmt = $database->prepare($database->buildInsert($table, $reference));
 
-                $types = str_repeat('s', count($data[0]));
                 foreach ($data as $row) {
-                    $res = $stmt->bind_param($types, ...array_values($row));
-                    if (false === $res) {
+                    try {
+                        $database->bindStatementParams($stmt, $row);
+                    } catch (RuntimeException $e) {
                         $msg = "Error binding params in table $table\n";
                         $msg .= json_encode($row);
-                        throw new RuntimeException($msg);
+                        throw new RuntimeException($msg, 0, $e);
                     }
-                    $res = $stmt->execute();
-                    if (false === $res) {
+
+                    try {
+                        $database->executeStatement($stmt);
+                    } catch (RuntimeException $e) {
                         $msg = $stmt->error;
                         $msg .= "\nError execution statement in table $table\n";
                         $msg .= json_encode($row);
-                        throw new RuntimeException($msg);
+                        throw new RuntimeException($msg, 0, $e);
                     }
 
                     $progress_indicator?->advance();

@@ -103,11 +103,14 @@ class Right extends CommonDBChild
         foreach ($rights as $fk => $right_line) {
             $itemtype = getItemtypeForForeignKeyField($fk);
             foreach ($right_line as $items_id) {
-                $stmt->bind_param(
-                    'isi',
-                    $dashboards_id,
-                    $itemtype,
-                    $items_id
+                $DB->bindStatementParams(
+                    $stmt,
+                    [
+                        $dashboards_id,
+                        $itemtype,
+                        $items_id,
+                    ],
+                    'isi'
                 );
                 $DB->executeStatement($stmt);
             }

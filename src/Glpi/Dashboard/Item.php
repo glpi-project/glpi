@@ -127,16 +127,19 @@ class Item extends CommonDBChild
             $card_options = exportArrayToDB($card_options);
             $gridstack_id = $item['gridstack_id'] ?? $item['gs_id'];
 
-            $stmt->bind_param(
-                'issiiiis',
-                $dashboards_id,
-                $gridstack_id,
-                $item['card_id'],
-                $item['x'],
-                $item['y'],
-                $item['width'],
-                $item['height'],
-                $card_options
+            $DB->bindStatementParams(
+                $stmt,
+                [
+                    $dashboards_id,
+                    $gridstack_id,
+                    $item['card_id'],
+                    $item['x'],
+                    $item['y'],
+                    $item['width'],
+                    $item['height'],
+                    $card_options,
+                ],
+                'issiiiis'
             );
             $DB->executeStatement($stmt);
         }

@@ -50,7 +50,6 @@ use mysqli_stmt;
 use NetworkName;
 use NetworkPort;
 use NetworkPortAggregate;
-use RuntimeException;
 use stdClass;
 use Toolbox;
 use Unmanaged;
@@ -172,11 +171,7 @@ trait InventoryNetworkPort
 
         foreach ($this->ports as $port) {
             if (!$this->isMainPartial() && property_exists($port, 'mac') && $port->mac != '') {
-                $stmt->bind_param(
-                    'ss',
-                    ...([Unmanaged::class, $port->mac])
-                );
-                $DB->executeStatement($stmt);
+                $DB->executeStatement($stmt, [Unmanaged::class, $port->mac,]);
                 $results = $stmt->get_result();
 
                 if ($results->num_rows > 0) {
@@ -237,19 +232,15 @@ trait InventoryNetworkPort
             }
             $stmt = $this->ipnetwork_stmt;
 
-            $res = $stmt->bind_param(
-                'ssss',
-                $this->entities_id,
-                $port->subnet,
-                $port->netmask,
-                $port->gateway
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $this->entities_id,
+                    $port->subnet,
+                    $port->netmask,
+                    $port->gateway,
+                ]
             );
-            if (false === $res) {
-                $msg = "Error binding params";
-                throw new RuntimeException($msg);
-            }
-
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             $row = $results->fetch_object();
@@ -472,11 +463,7 @@ trait InventoryNetworkPort
                         $netname_stmt = $DB->prepare($query);
                     }
 
-                    $netname_stmt->bind_param(
-                        's',
-                        $keydb
-                    );
-                    $DB->executeStatement($netname_stmt);
+                    $DB->executeStatement($netname_stmt, [$keydb]);
                     $results = $netname_stmt->get_result();
 
                     if ($results->num_rows) {
@@ -621,13 +608,14 @@ trait InventoryNetworkPort
             }
 
             $stmt = $this->idevice_stmt;
-            $stmt->bind_param(
-                'sss',
-                $this->itemtype,
-                $this->items_id,
-                $data->mac
+            $DB->executeStatement(
+                $stmt,
+                [
+                    $this->itemtype,
+                    $this->items_id,
+                    $data->mac,
+                ]
             );
-            $DB->executeStatement($stmt);
             $results = $stmt->get_result();
 
             if ($results->num_rows > 0) {

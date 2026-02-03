@@ -2112,14 +2112,63 @@ class DBmysql
     }
 
     /**
-     * Executes a prepared statement
+     * Binds parameters to a prepared statement
      *
-     * @param mysqli_stmt $stmt Statement to execute
+     * @param mysqli_stmt $stmt   Statement to bind parameters to
+     * @param array<int|string, mixed> $params Parameters to bind
+     * @param string|null $types  Types string (e.g. 'issd'), or null to auto-detect types
      *
      * @return void
      */
-    public function executeStatement(mysqli_stmt $stmt): void
+    public function bindStatementParams(mysqli_stmt $stmt, array $params, ?string $types = null): void
     {
+        if (count($params) === 0) {
+            return;
+        }
+        $params = array_values($params); //no need for the keys
+
+        if ($types === null) {
+            //try to guess param types
+            $types = '';
+            foreach ($params as $param) {
+                if (is_int($param)) {
+                    $types .= 'i';
+                } elseif (is_float($param)) {
+                    $types .= 'd';
+                } elseif (is_null($param)) {
+                    $types .= 's'; // No null type in mysqli, use string and pass null value
+                } else {
+                    $types .= 's';
+                }
+            }
+        }
+
+        $res = $stmt->bind_param($types, ...$params);
+        if (false === $res) {
+            throw new RuntimeException(
+                sprintf(
+                    'Error binding params in SQL query "%s": %s (%d).',
+                    $this->current_query,
+                    $stmt->error,
+                    $stmt->errno
+                )
+            );
+        }
+    }
+
+    /**
+     * Executes a prepared statement
+     *
+     * @param mysqli_stmt $stmt Statement to execute
+     * @param ?array<int|string, mixed> $params Parameters to bind
+     *
+     * @return void
+     */
+    public function executeStatement(mysqli_stmt $stmt, ?array $params = null): void
+    {
+        if ($params !== null) {
+            $this->bindStatementParams($stmt, $params);
+        }
         if (!$stmt->execute()) {
             throw new RuntimeException(
                 sprintf(
