@@ -165,4 +165,14 @@ class ComponentControllerTest extends HLAPITestCase
                 });
         });
     }
+
+    public function testCRUDVolume()
+    {
+        $computer_id = getItemByTypeName('Computer', '_test_pc01', true);
+        $this->api->autoTestCRUD("/Assets/Computer/$computer_id/Volume", [
+            'device' => '/dev/sda1',
+            'mount_point' => '/data',
+            'entity' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+    }
 }
