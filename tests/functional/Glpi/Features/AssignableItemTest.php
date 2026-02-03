@@ -41,6 +41,7 @@ use Glpi\Tests\Glpi\Asset\ProviderTrait;
 use Group;
 use Group_Item;
 use PHPUnit\Framework\Attributes\DataProvider;
+use tests\units\TicketTest;
 
 class AssignableItemTest extends DbTestCase
 {
@@ -140,7 +141,7 @@ class AssignableItemTest extends DbTestCase
      * -> only last group is associated
      *
      *  Notice behavior is not always the same, for ticket, previous group is preserved.
-     * @see \tests\units\TicketTest::testAssignGroup()
+     * @see TicketTest::testAssignGroup()
      */
     #[DataProvider('assignableAssetsItemtypeProvider')]
     public function testAssignGroupRemovePreviousData(string $class): void
